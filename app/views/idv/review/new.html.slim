@@ -7,5 +7,5 @@ h1.h3 = t('idv.titles.session.review')
 .mt4
   = accordion('review-verified-info', t('idv.messages.review.intro')) do
     - phone = @idv_params[:phone]
-    - formatted_phone = PhoneFormatter.new.format(phone)
+    - formatted_phone = PhoneFormatter.format(phone)
     = render 'shared/pii_review', pii: @idv_params, phone: formatted_phone

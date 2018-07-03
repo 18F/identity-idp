@@ -53,6 +53,34 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   end
 
   describe '#fallback_links' do
+    it 'does not list an account reset link when the phone is unconfirmed' do
+      allow(presenter).to receive(:unconfirmed_phone).and_return(true)
+
+      expect(presenter.fallback_links.join(' ')).to_not include(account_reset_delete_account_link)
+    end
+
+    it 'does not list an account reset link when the feature is disabled' do
+      allow(presenter).to receive(:unconfirmed_phone).and_return(false)
+      allow(Figaro.env).to receive(:account_reset_enabled).and_return('false')
+
+      expect(presenter.fallback_links.join(' ')).to_not include(account_reset_delete_account_link)
+    end
+
+    it 'shows an account reset link when the user has not requested a delete' do
+      allow(presenter).to receive(:unconfirmed_phone).and_return(false)
+      allow(Figaro.env).to receive(:account_reset_enabled).and_return('enabled')
+
+      expect(presenter.fallback_links.join(' ')).to include(account_reset_delete_account_link)
+    end
+
+    it 'shows a cancel link when the user has requested a delete' do
+      allow(presenter).to receive(:unconfirmed_phone).and_return(false)
+      allow(presenter).to receive(:account_reset_token).and_return('foo')
+      allow(Figaro.env).to receive(:account_reset_enabled).and_return('enabled')
+
+      expect(presenter.fallback_links.join(' ')).to include(account_reset_cancel_link('foo'))
+    end
+
     it 'handles multiple locales' do
       I18n.available_locales.each do |locale|
         presenter_for_locale = presenter_with_locale(locale)
@@ -162,5 +190,17 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
                                "#{locale == :en ? nil : '/' + locale.to_s}/idv/phone"),
       view: view
     )
+  end
+
+  def account_reset_cancel_link(account_reset_token)
+    I18n.t('devise.two_factor_authentication.account_reset.pending_html', cancel_link:
+      view.link_to(t('devise.two_factor_authentication.account_reset.cancel_link'),
+                   account_reset_cancel_url(token: account_reset_token)))
+  end
+
+  def account_reset_delete_account_link
+    I18n.t('devise.two_factor_authentication.account_reset.text_html', link:
+      view.link_to(t('devise.two_factor_authentication.account_reset.link'),
+                   account_reset_request_path(locale: LinkLocaleResolver.locale)))
   end
 end

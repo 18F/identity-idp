@@ -96,7 +96,11 @@ class ApplicationController < ActionController::Base
     unless current_user
       flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     end
-    redirect_to url_for(permitted_timeout_params)
+    begin
+      redirect_to url_for(permitted_timeout_params)
+    rescue ActionController::UrlGenerationError # binary data in params cause redirect to throw this
+      head :bad_request
+    end
   end
 
   def permitted_timeout_params

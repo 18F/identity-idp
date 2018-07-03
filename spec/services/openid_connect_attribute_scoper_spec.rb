@@ -36,7 +36,7 @@ RSpec.describe OpenidConnectAttributeScoper do
         given_name: 'John',
         family_name: 'Jones',
         birthdate: '1970-01-01',
-        phone: '+1 (555) 555-5555',
+        phone: '+1 (703) 555-5555',
         phone_verified: true,
         address: {
           formatted: "123 Fake St\nWashington, DC 12345",

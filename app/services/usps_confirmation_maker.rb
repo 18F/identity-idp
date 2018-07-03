@@ -10,8 +10,7 @@ class UspsConfirmationMaker
   end
 
   def perform
-    entry = UspsConfirmationEntry.new_from_hash(attributes)
-    UspsConfirmation.create!(entry: entry.encrypted)
+    UspsConfirmation.create!(entry: attributes)
     UspsConfirmationCode.create!(
       profile: profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)

@@ -70,7 +70,7 @@ class UserFlowFormatter < RSpec::Core::Formatters::DocumentationFormatter
 
   def flows_output_url
     host = Rails.application.config.action_controller.asset_host || 'localhost:3000'
-    protocol = host =~ /localhost/ ? 'http://' : 'https://'
+    protocol = host.match?(/localhost/) ? 'http://' : 'https://'
 
     "#{protocol}#{host}/user_flows"
   end

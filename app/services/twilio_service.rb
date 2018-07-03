@@ -1,11 +1,6 @@
 require 'typhoeus/adapters/faraday'
 
 class TwilioService
-  INVALID_VOICE_NUMBER_ERROR_CODE = 13_224
-  SMS_ERROR_CODE = 21_614
-  INVALID_ERROR_CODE = 21_211
-  INVALID_CALLING_AREA_ERROR_CODE = 21_215
-
   cattr_accessor :telephony_service do
     Twilio::REST::Client
   end

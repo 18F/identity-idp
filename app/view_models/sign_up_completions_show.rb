@@ -17,6 +17,7 @@ class SignUpCompletionsShow
     [[:email], :email],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
+    [[:x509_subject], :x509_subject],
   ].freeze
 
   MAX_RECENT_IDENTITIES = 5

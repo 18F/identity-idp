@@ -27,7 +27,7 @@ class UserPhoneForm
   end
 
   def phone_changed?
-    user.phone != phone
+    formatted_user_phone != phone
   end
 
   private
@@ -43,7 +43,7 @@ class UserPhoneForm
   def ingest_submitted_params(params)
     self.international_code = params[:international_code]
     self.submitted_phone = params[:phone]
-    self.phone = PhoneFormatter.new.format(
+    self.phone = PhoneFormatter.format(
       submitted_phone,
       country_code: international_code
     )
@@ -60,5 +60,9 @@ class UserPhoneForm
   def update_otp_delivery_preference_for_user
     user_attributes = { otp_delivery_preference: otp_delivery_preference }
     UpdateUser.new(user: user, attributes: user_attributes).call
+  end
+
+  def formatted_user_phone
+    Phonelib.parse(user.phone).international
   end
 end

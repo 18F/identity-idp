@@ -135,9 +135,8 @@ es:
         link: Use una clave personal en su lugar
         text_html: "¿No tiene acceso a su teléfono? %{link}."
       personal_key_header_text: Ingrese su clave personal
-      personal_key_prompt: Puede usar esta clave personal una vez. Si todavía necesita
-        un código después de iniciar una sesión, vaya a la página de configuración
-        de su cuenta para obtener una clave nueva.
+      personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
+        se le dará una nueva clave.
       phone_sms_label: Número de teléfono móvil
       phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
         <strong>cada vez que inicie sesión</strong>.
@@ -151,6 +150,16 @@ es:
       please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
+      account_reset:
+        successful_cancel: Gracias. La solicitud para eliminar su cuenta de login.gov
+          ha sido cancelado.
+        link: eliminando su cuenta
+        text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
+          puede restablecer tus preferencias por %{link}.
+        cancel_link: Cancelar su solicitud
+        pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
+          Se necesitan 24 horas desde el momento en que realizó la solicitud para
+          completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
       read_about_two_factor_authentication:
         link: leer acerca de la autenticación de dos factores
         text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
@@ -176,6 +185,23 @@ es:
       two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
         agregando una segunda capa de seguridad.
       two_factor_choice_cancel: "‹ Elige otra opción"
+      two_factor_login_choice: Asegure su cuenta
+      two_factor_login_choice_options:
+        voice: Llamada telefónica
+        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
+        sms: Mensaje de texto / SMS
+        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+        auth_app: Aplicación de autenticación
+        auth_app_info: Configure una aplicación de autenticación para obtener su código
+          de seguridad sin proporcionar un número de teléfono.
+        piv_cac: Empleados del Gobierno
+        piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
+        personal_key: Clave personal
+        personal_key_info: Use la clave personal de 12 caracteres que usó en la creación
+          de la cuenta.
+      two_factor_login_choice_intro: login.gov se asegura de que pueda acceder a su
+        cuenta agregando una segunda capa de seguridad.
+      two_factor_login_choice_cancel: "‹ Elige otra opción"
       two_factor_setup: Añada un número de teléfono
       user:
         new_otp_sent: Le enviamos un nuevo código de sólo un uso

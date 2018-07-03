@@ -1,0 +1,15 @@
+- title t('account_reset.delete_account.title')
+
+h1.h3.my0 = t('account_reset.delete_account.title')
+p.mt-tiny.mb0
+  = t('account_reset.delete_account.info')
+br
+h4.my2 = t('account_reset.delete_account.are_you_sure')
+
+= button_to t('account_reset.delete_account.delete_button'), \
+    account_reset_delete_account_path(token: session[:granted_token]), method: :delete, \
+    class: 'btn btn-red col-6 p2 rounded-lg border bw2 bg-lightest-red border-red border-box'
+br
+br
+hr
+= link_to t('account_reset.delete_account.cancel'), root_url

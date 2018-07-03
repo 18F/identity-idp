@@ -65,6 +65,16 @@ describe UpdateUserPasswordForm, type: :model do
 
         expect(email_notifier).to have_received(:send_password_changed_email)
       end
+
+      it 'increments password metrics for the password' do
+        params[:password] = 'saltypickles'
+        stub_email_delivery
+
+        subject.submit(params)
+
+        expect(PasswordMetric.where(metric: 'length', value: 12, count: 1).count).to eq(1)
+        expect(PasswordMetric.where(metric: 'guesses_log10', value: 7.1, count: 1).count).to eq(1)
+      end
     end
 
     context 'when the user has an active profile' do

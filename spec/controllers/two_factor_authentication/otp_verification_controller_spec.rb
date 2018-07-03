@@ -262,7 +262,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'phone confirmation' do
       before do
         sign_in_as_user
-        subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
+        subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
         @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
         subject.current_user.create_direct_otp
@@ -318,11 +318,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'does not clear session data' do
-            expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
+            expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (703) 555-5555')
           end
 
           it 'does not update user phone or phone_confirmed_at attributes' do
-            expect(subject.current_user.phone).to eq('+1 (202) 555-1212')
+            expect(subject.current_user.phone).to eq('+1 202-555-1212')
             expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
           end
 
@@ -433,8 +433,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         idv_session = Idv::Session.new(
           user_session: subject.user_session, current_user: user, issuer: nil
         )
-        idv_session.params = { 'phone' => '+1 (555) 555-5555' }
-        subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
+        idv_session.params = { 'phone' => '+1 (703) 555-5555' }
+        subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'idv'
         @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
         allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -489,7 +489,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
 
         it 'does not update user phone attributes' do
-          expect(subject.current_user.reload.phone).to eq '+1 (202) 555-1212'
+          expect(subject.current_user.reload.phone).to eq '+1 202-555-1212'
           expect(subject.current_user.reload.phone_confirmed_at).to eq @previous_phone_confirmed_at
         end
 
@@ -510,11 +510,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
 
         it 'does not clear session data' do
-          expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
+          expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (703) 555-5555')
         end
 
         it 'does not update user phone or phone_confirmed_at attributes' do
-          expect(subject.current_user.phone).to eq('+1 (202) 555-1212')
+          expect(subject.current_user.phone).to eq('+1 202-555-1212')
           expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
           expect(subject.idv_session.params['phone_confirmed_at']).to be_nil
         end

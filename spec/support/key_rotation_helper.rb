@@ -5,10 +5,10 @@ module KeyRotationHelper
     allow(env).to receive(:hmac_fingerprinter_key_queue).and_return(
       "[\"#{old_hmac_key}\"]"
     )
-    allow(env).to receive(:hmac_fingerprinter_key).and_return('a-new-key')
+    allow(env).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end
 
-  def rotate_attribute_encryption_key(new_key = 'a-new-key', new_cost = '4000$8$2$')
+  def rotate_attribute_encryption_key(new_key = '4' * 32, new_cost = '4000$8$2$')
     env = Figaro.env
     old_key = env.attribute_encryption_key
     old_cost = env.attribute_cost
@@ -33,6 +33,6 @@ module KeyRotationHelper
     allow(env).to receive(:attribute_encryption_key_queue).and_return(
       [{ key: 'key-that-was-never-used-in-the-past', cost: '4000$8$2$' }].to_json
     )
-    allow(env).to receive(:attribute_encryption_key).and_return('a-new-key')
+    allow(env).to receive(:attribute_encryption_key).and_return('4' * 32)
   end
 end
