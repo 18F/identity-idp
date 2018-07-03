@@ -132,6 +132,7 @@ UncommunicativeModuleName:
 UnusedParameters:
   exclude:
     - SmsOtpSenderJob#perform
+    - VoiceOtpSenderJob#perform
 UnusedPrivateMethod:
   exclude:
     - ApplicationController
