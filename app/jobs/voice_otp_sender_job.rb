@@ -4,9 +4,15 @@ class VoiceOtpSenderJob < ApplicationJob
 
   queue_as :voice
 
-  def perform(code:, phone:, otp_created_at:)
-    send_otp(TwilioService.new, code, phone) if otp_valid?(otp_created_at)
+  # rubocop:disable Lint/UnusedMethodArgument
+  # locale is an argument used for the Twilio/Authy Verify service, which uses
+  # a localized message for delivering OTPs via SMS and Voice. As of this
+  # writing, we are only using Verify for non-US SMS, but we might expand
+  # to Voice later.
+  def perform(code:, phone:, otp_created_at:, locale: nil)
+    send_otp(TwilioService::Utils.new, code, phone) if otp_valid?(otp_created_at)
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

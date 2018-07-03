@@ -125,6 +125,17 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
+
+    context 'with voice option and US number' do
+      it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
+        sign_in_before_2fa
+        select_2fa_option('voice')
+        fill_in 'user_phone_form_phone', with: '7035551212'
+        click_send_security_code
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      end
+    end
   end
 
   def phone_field
