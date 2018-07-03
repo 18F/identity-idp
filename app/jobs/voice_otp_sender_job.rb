@@ -10,7 +10,7 @@ class VoiceOtpSenderJob < ApplicationJob
   # writing, we are only using Verify for non-US SMS, but we might expand
   # to Voice later.
   def perform(code:, phone:, otp_created_at:, locale: nil)
-    send_otp(TwilioService::Utils.new, code, phone) if otp_valid?(otp_created_at)
+    send_otp(TwilioService.new, code, phone) if otp_valid?(otp_created_at)
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
