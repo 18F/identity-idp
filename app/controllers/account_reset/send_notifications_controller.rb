@@ -1,5 +1,6 @@
 module AccountReset
   class SendNotificationsController < ApplicationController
+    skip_before_action :verify_authenticity_token
     before_action :authorize
 
     def update
