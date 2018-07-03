@@ -12,6 +12,10 @@ module TwoFactorAuthentication
       true
     end
 
+    def setup_path
+      phone_setup_path
+    end
+
     ###
     ### Method-specific data management
     ###

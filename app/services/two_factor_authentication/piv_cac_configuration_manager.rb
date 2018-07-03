@@ -12,6 +12,10 @@ module TwoFactorAuthentication
       enabled?
     end
 
+    def setup_path
+      setup_piv_cac_path
+    end
+
     ###
     ### Method-specific data management
     ###

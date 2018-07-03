@@ -12,6 +12,10 @@ module TwoFactorAuthentication
       user&.totp_enabled?
     end
 
+    def setup_path
+      authenticator_setup_path
+    end
+
     ###
     ### Method-specific data management
     ###

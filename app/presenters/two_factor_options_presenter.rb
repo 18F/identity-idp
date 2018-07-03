@@ -25,31 +25,23 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    available_2fa_types.map do |type|
-      type = :auth_app if type == :totp
-      OpenStruct.new(
-        type: type.to_s,
-        label: t("devise.two_factor_authentication.two_factor_choice_options.#{type}"),
-        info: t("devise.two_factor_authentication.two_factor_choice_options.#{type}_info"),
-        selected: type == :sms
-      )
-    end
+    available_2fa_managers.map(&:selection_presenter)
   end
 
   private
 
   delegate :two_factor_method_manager, to: :current_user
 
-  def available_2fa_types
+  def available_2fa_managers
     two_factor_method_manager.
-      configurable_configuration_managers.
-      map(&:method) | piv_cac_if_available
+      configurable_configuration_managers | piv_cac_if_available
   end
 
   def piv_cac_if_available
-    return [] if two_factor_method_manager.two_factor_enabled?(%i[piv_cac])
-    return %i[piv_cac] if two_factor_method_manager.two_factor_configurable?(%i[piv_cac]) ||
-                          service_provider&.piv_cac_available?
+    piv_cac_manager = two_factor_method_manager.configuration_manager(:piv_cac)
+    return [] if piv_cac_manager.enabled?
+    return [piv_cac_manager] if piv_cac_manager.configurable? ||
+                                service_provider&.piv_cac_available?
     []
   end
 end
