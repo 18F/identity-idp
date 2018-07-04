@@ -5,7 +5,6 @@ module UserSessionContext
     user_session[:context] || DEFAULT_CONTEXT
   end
 
-  # TODO: Figure out better names for this and the method below
   def initial_authentication_context?
     context == DEFAULT_CONTEXT
   end

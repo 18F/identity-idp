@@ -201,10 +201,6 @@ development:
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
 #
-# TODO: remove empty/fake values from this block, which create the misleading
-# impression that these values aren't used. In fact they will be used unless
-# they are overriden by keys with the same name in the application.yml in the
-# app secrets bucket.
 production:
   aamva_cert_enabled: 'true'
   aamva_public_key: # Base64 encoded public key for AAMVA
