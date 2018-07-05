@@ -14,7 +14,7 @@ p == @presenter.phone_number_message
       autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
       autocomplete: 'off', type: 'tel')
-  = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
+  = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12'
   - if @presenter.remember_device_available?
     .border.col-9.rounded-lg.mt2
       = check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1'
