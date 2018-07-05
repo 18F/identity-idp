@@ -94,6 +94,5 @@ exclude_patterns:
   - 'lib/tasks/create_test_accounts.rb'
   - 'lib/user_flow_exporter.rb'
   - 'scripts/load_testing/'
-  - 'spec/'
   - 'tmp/'
   - 'config/initializers/jwt.rb'

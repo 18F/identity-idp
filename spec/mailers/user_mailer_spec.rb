@@ -145,9 +145,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).to have_content(strip_tags( \
-        t('user_mailer.account_reset_request.intro', \
-        cancel_account_reset: t('user_mailer.account_reset_granted.cancel_link_text'))))
+      reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
+      expect(mail.html_part.body).to have_content(
+        strip_tags(
+          t('user_mailer.account_reset_request.intro', cancel_account_reset: reset_text)
+        )
+      )
     end
   end
 
@@ -184,7 +187,8 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).to have_content(strip_tags(t('user_mailer.account_reset_complete.intro')))
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.account_reset_complete.intro')))
     end
   end
 
