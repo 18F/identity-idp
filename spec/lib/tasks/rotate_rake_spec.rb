@@ -9,7 +9,7 @@ describe 'rotate' do
       Rake.application.rake_require('lib/tasks/rotate', [Rails.root.to_s])
       Rake::Task.define_task(:environment)
 
-      user = create(:user, phone: '555-555-5555')
+      user = create(:user, phone: '703-555-5555')
       old_email = user.email
       old_phone = user.phone
       old_encrypted_email = user.encrypted_email

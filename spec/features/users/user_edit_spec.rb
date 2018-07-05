@@ -53,7 +53,7 @@ feature 'User edit' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_now)
 
-      fill_in 'user_phone_form_phone', with: '555-555-5000'
+      fill_in 'user_phone_form_phone', with: '703-555-5000'
       choose 'Phone call'
 
       click_button t('forms.buttons.submit.confirm_change')

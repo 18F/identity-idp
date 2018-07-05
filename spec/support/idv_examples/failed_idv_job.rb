@@ -82,7 +82,7 @@ shared_examples 'failed idv job' do |step|
     end
   end
 
-  # rubocop:disable Lint/HandleExceptions
+  # rubocop:disable Lint/HandleExceptions, Style/RedundantBegin
   def stub_idv_job_to_raise_error_in_background(idv_job_class)
     allow(Idv::Agent).to receive(:new).and_raise('this is a test error')
     allow(idv_job_class).to receive(:perform_now).and_wrap_original do |perform_now, *args|
@@ -93,7 +93,7 @@ shared_examples 'failed idv job' do |step|
       end
     end
   end
-  # rubocop:enable Lint/HandleExceptions
+  # rubocop:enable Lint/HandleExceptions, Style/RedundantBegin
 
   def stub_idv_job_to_timeout_in_background(idv_job_class)
     allow(idv_job_class).to receive(:perform_now)

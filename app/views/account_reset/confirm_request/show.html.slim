@@ -1,0 +1,8 @@
+- title t('account_reset.confirm_request.check_your_email')
+
+.my2.p3.sm-px4.border.border-teal.rounded.rounded-xl.relative
+  = image_tag(asset_url('check-email.svg'), size: '48x48', alt: '',\
+    class: 'absolute top-n24 left-0 right-0 mx-auto')
+  h1.mt1.mb-12p.h3 = t('headings.verify_email')
+  p
+    == t('account_reset.confirm_request.instructions', email: email)

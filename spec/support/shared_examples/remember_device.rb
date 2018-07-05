@@ -25,7 +25,7 @@ shared_examples 'remember device' do
 
     sign_in_user(user)
     visit manage_phone_path
-    fill_in 'user_phone_form_phone', with: '5551230000'
+    fill_in 'user_phone_form_phone', with: '7032231000'
     click_button t('forms.buttons.submit.confirm_change')
     click_submit_default
     first(:link, t('links.sign_out')).click

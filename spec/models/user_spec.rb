@@ -10,6 +10,7 @@ describe User do
     it { is_expected.to have_many(:agency_identities) }
     it { is_expected.to have_many(:profiles) }
     it { is_expected.to have_many(:events) }
+    it { is_expected.to have_one(:account_reset_request) }
   end
 
   it 'does not send an email when #create is called' do
@@ -415,21 +416,6 @@ describe User do
       salt = JSON.parse(user.encrypted_password_digest)['password_salt']
 
       expect(user.authenticatable_salt).to eq(salt)
-    end
-  end
-
-  context 'when a password is updated' do
-    it 'writes encrypted_password_digest and the legacy password attributes' do
-      user = create(:user)
-
-      expected = {
-        encrypted_password: user.encrypted_password,
-        encryption_key: user.encryption_key,
-        password_salt: user.password_salt,
-        password_cost: user.password_cost,
-      }.to_json
-
-      expect(user.encrypted_password_digest).to eq(expected)
     end
   end
 end

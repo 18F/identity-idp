@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Idv::OtpDeliveryMethodPresenter do
-  let(:phone) { '555-555-0000' }
-  let(:formatted_phone) { '+1 (555) 555-0000' }
+  let(:phone) { '(703) 555-0000' }
+  let(:formatted_phone) { '+1 703-555-0000' }
   let(:phone_number_capabilities) { PhoneNumberCapabilities.new(formatted_phone) }
 
   subject { Idv::OtpDeliveryMethodPresenter.new(phone) }

@@ -50,7 +50,7 @@ feature 'Sign Up' do
 
   scenario 'renders an error when twilio api responds with an error' do
     twilio_error = Twilio::REST::RestError.new(
-      '', FakeTwilioErrorResponse.new(TwilioService::SMS_ERROR_CODE)
+      '', FakeTwilioErrorResponse.new(21_614)
     )
 
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)

@@ -57,7 +57,7 @@ module IdvHelper
   end
 
   def fill_out_phone_form_fail
-    fill_in :idv_phone_form_phone, with: '(555) 555-5555'
+    fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
   def click_idv_continue

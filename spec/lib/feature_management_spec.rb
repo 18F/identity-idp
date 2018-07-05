@@ -431,4 +431,26 @@ describe 'FeatureManagement', type: :feature do
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
     end
   end
+
+  describe '#account_reset_enabled?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:account_reset_enabled).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.account_reset_enabled?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:account_reset_enabled).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.account_reset_enabled?).to eq(false)
+      end
+    end
+  end
 end

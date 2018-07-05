@@ -10,17 +10,17 @@ RSpec.describe UspsUploader do
 
     before do
       sftp_options = [
-        Figaro.env.equifax_sftp_host,
-        Figaro.env.equifax_sftp_username,
-        { key_data: [RequestKeyManager.equifax_ssh_key.to_pem] },
+        Figaro.env.usps_upload_sftp_host,
+        Figaro.env.usps_upload_sftp_username,
+        { password: Figaro.env.usps_upload_sftp_password },
       ]
       expect(Net::SFTP).to receive(:start).
         with(*sftp_options).and_yield(sftp_connection)
     end
 
-    it 'creates a PGP-encrypted file and uploads it via SFTP and deletes it after' do
+    it 'creates a file, uploads it via SFTP, and deletes it after' do
       expect(sftp_connection).to receive(:upload!).
-        with(uploader.local_path.to_s, File.join(Figaro.env.equifax_sftp_directory, 'batch.pgp'))
+        with(uploader.local_path.to_s, upload_folder)
 
       run
 
@@ -35,5 +35,9 @@ RSpec.describe UspsUploader do
 
       expect(File.exist?(uploader.local_path)).to eq(true)
     end
+  end
+
+  def upload_folder
+    File.join(Figaro.env.usps_upload_sftp_directory, 'batch.psv')
   end
 end

@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 describe UserPhoneForm do
+  include Shoulda::Matchers::ActiveModel
+
   let(:user) { build(:user, :signed_up) }
   let(:params) do
     {
-      phone: '555-555-5000',
+      phone: '703-555-5000',
       international_code: 'US',
       otp_delivery_preference: 'sms',
     }
@@ -16,7 +18,7 @@ describe UserPhoneForm do
   it 'loads initial values from the user object' do
     user = build_stubbed(
       :user,
-      phone: '+1 (555) 500-5000',
+      phone: '+1 (703) 500-5000',
       otp_delivery_preference: 'voice'
     )
     subject = UserPhoneForm.new(user)
@@ -31,6 +33,23 @@ describe UserPhoneForm do
     subject = UserPhoneForm.new(user)
 
     expect(subject.international_code).to eq('JP')
+  end
+
+  describe 'phone validation' do
+    it do
+      should validate_inclusion_of(:international_code).
+        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+    end
+
+    it 'validates that the number matches the requested international code' do
+      params[:phone] = '123 123 1234'
+      params[:international_code] = 'MA'
+      result = subject.submit(params)
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to include(:phone)
+    end
   end
 
   describe '#submit' do
@@ -74,7 +93,7 @@ describe UserPhoneForm do
     end
 
     context 'when otp_delivery_preference is voice and phone number does not support voice' do
-      let(:unsupported_phone) { '242-555-5000' }
+      let(:unsupported_phone) { '242-327-0143' }
       let(:params) do
         {
           phone: unsupported_phone,
@@ -154,7 +173,7 @@ describe UserPhoneForm do
         expect(user_updater).to receive(:call)
 
         params = {
-          phone: '555-555-5000',
+          phone: '703-555-5000',
           international_code: 'US',
           otp_delivery_preference: 'voice',
         }

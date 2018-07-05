@@ -2,9 +2,7 @@ require 'rails_helper'
 
 describe RemoteSettingsService do
   subject(:service) { RemoteSettingsService }
-  before {
-    WebMock.allow_net_connect!
-  }
+  before { WebMock.allow_net_connect! }
 
   describe '.load_yml_erb' do
     it 'loads the remote location' do
@@ -34,13 +32,11 @@ describe RemoteSettingsService do
     end
   end
 
-
   describe '.load' do
     it 'loads the remote location' do
       expect do
         service.load('https://github.com/18F/identity-idp/blob/master/public/images/logo.svg')
       end.to_not raise_error
-
     end
 
     it 'raises an error if the location is not https://' do
