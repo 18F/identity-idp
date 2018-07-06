@@ -6,6 +6,7 @@ ControlParameter:
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
     - PhoneFormatter#self.format
+    - Users::TwoFactorAuthenticationController#invalid_phone_number
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -47,6 +48,7 @@ FeatureEnvy:
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
     - PersonalKeyGenerator#create_legacy_recovery_code
+    - TwoFactorAuthenticationController#capture_analytics_for_exception
 InstanceVariableAssumption:
   exclude:
     - User
@@ -105,6 +107,7 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
+    - Users::TwoFactorAuthenticationController#send_code
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
