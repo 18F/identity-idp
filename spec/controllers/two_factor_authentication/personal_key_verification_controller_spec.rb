@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
-  let(:payload) { { personal_key_form: personal_key } }
+  let(:payload) { { two_factor_authentication_personal_key_verify_form: personal_key } }
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -31,12 +31,11 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     context 'when the user enters a valid personal key' do
       before do
         stub_sign_in_before_2fa(build(:user, personal_key: 'foo'))
-        form = instance_double(PersonalKeyForm)
+        form = instance_double(TwoFactorAuthentication::PersonalKeyVerifyForm)
         response = FormResponse.new(
           success: true, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, 'foo').and_return(form)
+        allow(subject).to receive(:verify_form).with(personal_key: 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
 
@@ -67,7 +66,9 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       user = create(:user)
       old_key = PersonalKeyGenerator.new(user).create
       stub_sign_in_before_2fa(user)
-      post :create, params: { personal_key_form: { personal_key: old_key } }
+      post :create, params: {
+        two_factor_authentication_personal_key_verify_form: { personal_key: old_key }
+      }
       user.reload
 
       expect(user.personal_key).to_not be_nil
@@ -76,16 +77,15 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     context 'when the personal key field is empty' do
       let(:personal_key) { { personal_key: '' } }
-      let(:payload) { { personal_key_form: personal_key } }
+      let(:payload) { { two_factor_authentication_personal_key_verify_form: personal_key } }
 
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
-        form = instance_double(PersonalKeyForm)
+        form = instance_double(TwoFactorAuthentication::PersonalKeyVerifyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, '').and_return(form)
+        allow(subject).to receive(:verify_form).with(personal_key: '').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
 
@@ -100,12 +100,11 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     context 'when the user enters an invalid personal key' do
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
-        form = instance_double(PersonalKeyForm)
+        form = instance_double(TwoFactorAuthentication::PersonalKeyVerifyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, 'foo').and_return(form)
+        allow(subject).to receive(:verify_form).with(personal_key: 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
 

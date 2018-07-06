@@ -4,6 +4,9 @@ module TwoFactorAuthentication
 
     METHODS = %i[sms voice totp piv_cac personal_key].freeze
 
+    ##
+    # @param user [User]
+    #
     def initialize(user)
       @user = user
     end
@@ -12,6 +15,10 @@ module TwoFactorAuthentication
       methods.map(&method(:configuration_manager))
     end
 
+    ##
+    # @param desired_methods [Array<Atom|String>]
+    # @return [True|False]
+    #
     def two_factor_enabled?(desired_methods = [])
       desired_methods = methods unless desired_methods&.any?
       (methods & desired_methods).any? do |method|
@@ -19,6 +26,10 @@ module TwoFactorAuthentication
       end
     end
 
+    ##
+    # @param desired_methods [Array<Atom|String>]
+    # @return [True|False]
+    #
     def two_factor_configurable?(desired_methods = [])
       desired_methods = methods unless desired_methods&.any?
       (methods & desired_methods).any? do |method|
@@ -26,16 +37,26 @@ module TwoFactorAuthentication
       end
     end
 
-    # Eventually, we'll allow multiple selection presenters for a single method if
-    # that method supports multiple configurations. We really want one presenter per
-    # configuration for configured/enabled setups and one presenter per method for
-    # configurable methods.
-
-    # Used when presenting the user with a list of options during setup
+    ##
+    # List configuration managers for all configurable 2FA methods for the
+    # user. Used when presenting the user with a list of options during setup.
+    #
+    # For now, this methods returns at most one configuration manager per
+    # 2FA method. This shouldn't change when we support multiple configurations
+    # for some 2FA methods.
+    #
+    # @return [Array<TwoFactorAuthentication::ConfigurationManager>]
+    #
     def configurable_configuration_managers
       promote_preferred(configuration_managers.select(&:configurable?))
     end
 
+    ##
+    # Create a configuration manager for the given method.
+    #
+    # @param method [Atom|String]
+    # @return [TwoFactorAuthentication::ConfigurationManager]
+    #
     def configuration_manager(method)
       class_constant(method, 'ConfigurationManager')&.new(user)
     end

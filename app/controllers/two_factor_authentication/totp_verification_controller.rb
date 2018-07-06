@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = TotpVerificationForm.new(current_user, params[:code].strip).submit
+      result = verification_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
 
@@ -21,6 +21,14 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def verification_form
+      TwoFactorAuthentication::TotpVerifyForm.new(
+        user: current_user,
+        configuration_manager: configuration_manager,
+        code: params[:code].strip
+      )
+    end
 
     def confirm_totp_enabled
       return if configuration_manager.enabled?

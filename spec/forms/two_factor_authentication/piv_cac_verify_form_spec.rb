@@ -1,9 +1,21 @@
 require 'rails_helper'
 
-describe UserPivCacVerificationForm do
-  let(:form) { described_class.new(user: user, token: token, nonce: nonce) }
+describe TwoFactorAuthentication::PivCacVerifyForm do
+  let(:form) do
+    described_class.new(
+      user: user,
+      configuration_manager: configuration_manager,
+      token: token,
+      nonce: nonce
+    )
+  end
+
   let(:user) { create(:user, :with_piv_or_cac) }
   let(:nonce) { 'once' }
+
+  let(:configuration_manager) do
+    user.two_factor_method_manager.configuration_manager(:piv_cac)
+  end
 
   describe '#submit' do
     before(:each) do

@@ -12,7 +12,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
+      result = verification_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
 
@@ -24,6 +24,12 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def verification_form
+      configuration_manager.verify_form(
+        code: form_params[:code].strip
+      )
+    end
 
     def confirm_two_factor_enabled
       return if confirmation_context? || phone_enabled?

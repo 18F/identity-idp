@@ -1,14 +1,26 @@
 require 'rails_helper'
 
-describe PersonalKeyForm do
+describe TwoFactorAuthentication::PersonalKeyVerifyForm do
   describe '#submit' do
+    let(:configuration_manager) do
+      user.two_factor_method_manager.configuration_manager(:personal_key)
+    end
+
     context 'when the form is valid' do
+      let(:user) { create(:user) }
+
+      let!(:raw_code) { PersonalKeyGenerator.new(user).create }
+      let(:form) do
+        described_class.new(
+          user: user,
+          configuration_manager: configuration_manager,
+          personal_key: raw_code
+        )
+      end
+
       it 'returns FormResponse with success: true' do
-        user = create(:user)
-        raw_code = PersonalKeyGenerator.new(user).create
         old_key = user.reload.personal_key
 
-        form = PersonalKeyForm.new(user, raw_code)
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 
@@ -20,11 +32,18 @@ describe PersonalKeyForm do
     end
 
     context 'when the form is invalid' do
+      let(:user) { create(:user, :signed_up, personal_key: 'code') }
+      let(:form) do
+        described_class.new(
+          user: user,
+          configuration_manager: configuration_manager,
+          personal_key: 'foo'
+        )
+      end
+
       it 'returns FormResponse with success: false' do
-        user = create(:user, :signed_up, personal_key: 'code')
         errors = { personal_key: ['Incorrect personal key'] }
 
-        form = PersonalKeyForm.new(user, 'foo')
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 

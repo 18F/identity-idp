@@ -9,11 +9,11 @@ module TwoFactorAuthentication
         Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
       )
 
-      @personal_key_form = PersonalKeyForm.new(current_user)
+      @personal_key_form = verify_form
     end
 
     def create
-      @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
+      @personal_key_form = verify_form(personal_key: personal_key_param)
       result = @personal_key_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
@@ -22,6 +22,8 @@ module TwoFactorAuthentication
     end
 
     private
+
+    delegate :verify_form, to: :configuration_manager
 
     def handle_result(result)
       if result.success?
@@ -54,7 +56,7 @@ module TwoFactorAuthentication
     end
 
     def personal_key_param
-      params[:personal_key_form][:personal_key]
+      params[:two_factor_authentication_personal_key_verify_form][:personal_key]
     end
 
     def normalized_personal_key
