@@ -332,11 +332,18 @@ describe Users::TwoFactorAuthenticationController do
         }
         twilio_error = "[HTTP 400]  : error message\n\n"
 
+        twilio_error_hash = {
+          error: twilio_error,
+          code: '',
+          context: 'confirmation',
+          country: 'US',
+        }
+
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: twilio_error, code: '')
+          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_hash)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
@@ -357,12 +364,18 @@ describe Users::TwoFactorAuthenticationController do
           country_code: '1',
           area_code: '202',
         }
+        twilio_error_hash = {
+          error: error_message,
+          code: code,
+          context: 'confirmation',
+          country: 'US',
+        }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: error_message, code: code)
+          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_hash)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
