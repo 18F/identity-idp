@@ -562,6 +562,45 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
+
+    context 'with SMS and international number that Verify does not think is valid' do
+      it 'rescues the VerifyError' do
+        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
+          SmsOtpSenderJob.perform_now(*args)
+        end
+        PhoneVerification.adapter = FakeAdapter
+        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+
+        user = create(:user, :signed_up, phone: '+212 661-289324')
+        sign_in_user(user)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).
+          to have_content t('errors.messages.phone_unsupported')
+      end
+    end
+
+    context 'user with Voice preference sends SMS, causing a Twilio error' do
+      it 'does not change their OTP delivery preference' do
+        allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
+        allow(VoiceOtpSenderJob).to receive(:perform_later)
+        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
+          SmsOtpSenderJob.perform_now(*args)
+        end
+        PhoneVerification.adapter = FakeAdapter
+        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+
+        user = create(:user, :signed_up, phone: '+17035551212', otp_delivery_preference: 'voice')
+        sign_in_user(user)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+
+        click_link t('links.two_factor_authentication.sms')
+
+        expect(page).to have_content t('errors.messages.invalid_phone_number')
+        expect(user.reload.otp_delivery_preference).to eq 'voice'
+      end
+    end
   end
 
   describe 'when the user is not piv/cac enabled' do
