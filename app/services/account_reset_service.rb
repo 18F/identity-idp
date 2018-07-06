@@ -66,10 +66,6 @@ class AccountResetService
   def self.reset_and_notify(arr)
     user = arr.user
     return false unless AccountResetService.new(user).grant_request
-    SmsAccountResetNotifierJob.perform_now(
-      phone: user.phone,
-      cancel_token: arr.request_token
-    )
     UserMailer.account_reset_granted(user, arr).deliver_later
     true
   end
