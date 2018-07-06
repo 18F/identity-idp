@@ -6,6 +6,7 @@ ControlParameter:
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
     - PhoneFormatter#self.format
+    - Users::TwoFactorAuthenticationController#invalid_phone_number
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -104,6 +105,7 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
+    - Users::TwoFactorAuthenticationController#send_code
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
