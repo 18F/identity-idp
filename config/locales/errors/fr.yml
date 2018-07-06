@@ -39,6 +39,9 @@ fr:
       otp_incorrect: Code non valide. L'avez-vous inscrit correctement?
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
+      phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour
+        le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
+        ou utilisez votre clé personnelle.
       requires_phone: vous demande d'entrer votre numéro de téléphone.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: NOT TRANSLATED YET

@@ -40,6 +40,8 @@ en:
       otp_incorrect: Incorrect code. Did you type it correctly?
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
+      phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
+        the phone call option below, or use your personal key.
       requires_phone: requires you to enter your phone number.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
