@@ -124,13 +124,13 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
-    context 'when the selection is auth_app' do
+    context 'when the selection is totp' do
       it 'redirects to authentication app setup page' do
         stub_sign_in_before_2fa
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'auth_app',
+            selection: 'totp',
           },
         }
 

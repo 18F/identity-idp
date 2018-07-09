@@ -1,9 +1,12 @@
 class TwoFactorOptionsForm
   include ActiveModel::Model
 
-  attr_reader :selection
+  attr_reader :selection, :user
 
-  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac] }
+  validates :selection, two_factor_method: {
+    state: 'configurable',
+    or_in: %w[piv_cac],
+  }
 
   def initialize(user)
     self.user = user
@@ -20,13 +23,12 @@ class TwoFactorOptionsForm
   end
 
   def selected?(type)
-    type == (selection || 'sms')
+    type.to_s == (selection || 'sms')
   end
 
   private
 
-  attr_accessor :user
-  attr_writer :selection
+  attr_writer :selection, :user
 
   def extra_analytics_attributes
     {

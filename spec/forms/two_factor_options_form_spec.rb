@@ -6,7 +6,7 @@ describe TwoFactorOptionsForm do
 
   describe '#submit' do
     it 'is successful if the selection is valid' do
-      %w[voice sms auth_app piv_cac].each do |selection|
+      %w[voice sms totp piv_cac].each do |selection|
         result = subject.submit(selection: selection)
 
         expect(result.success?).to eq true
@@ -48,7 +48,7 @@ describe TwoFactorOptionsForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        subject.submit(selection: 'auth_app')
+        subject.submit(selection: 'totp')
       end
     end
   end

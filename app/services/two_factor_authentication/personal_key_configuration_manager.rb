@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class PersonalKeyConfigurationManager < TwoFactorAuthentication::ConfigurationManager
+  class PersonalKeyConfigurationManager < ConfigurationManager
     def enabled?
       personal_key.present?
     end

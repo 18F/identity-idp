@@ -31,19 +31,27 @@ module Users
       TwoFactorOptionsPresenter.new(current_user, current_sp)
     end
 
+    delegate :two_factor_method_manager, to: :current_user
+
     def process_valid_form
-      case @two_factor_options_form.selection
-      when 'sms', 'voice'
-        redirect_to phone_setup_url
-      when 'auth_app'
-        redirect_to authenticator_setup_url
-      when 'piv_cac'
-        redirect_to setup_piv_cac_url
-      end
+      method_manager = two_factor_method_manager.configuration_manager(
+        @two_factor_options_form.selection
+      )
+      redirect_to full_url(method_manager.setup_path)
     end
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection)
+    end
+
+    # This is ugly, but it's the only way to get regular rspec and Capybara
+    # tests to pass since the options for url generation in controllers are
+    # different than when including url_helpers in a non-controller class.
+    def full_url(path)
+      (root_url + path).
+        split(%r{://}, 2).
+        map { |part| part.gsub(%r{//+}, '/') }.
+        join('://')
     end
   end
 end

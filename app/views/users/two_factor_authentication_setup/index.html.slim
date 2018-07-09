@@ -11,11 +11,11 @@ p.mt-tiny.mb3 = @presenter.info
     fieldset.m0.p0.border-none.
       legend.mb1.h4.serif.bold = @presenter.label
       - @presenter.options.each do |option|
-        label.btn-border.col-12.mb1 for="two_factor_options_form_selection_#{option.type}"
+        label.btn-border.col-12.mb1 for="two_factor_options_form_selection_#{option.method}"
           .radio
             = radio_button_tag('two_factor_options_form[selection]',
-              option.type,
-              @two_factor_options_form.selected?(option.type))
+              option.method,
+              @two_factor_options_form.selected?(option.method))
             span.indicator.mt-tiny
             span.blue.bold.fs-20p = option.label
             .regular.gray-dark.fs-10p.mb-tiny = option.info

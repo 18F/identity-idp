@@ -398,7 +398,7 @@ module Features
     end
 
     def set_up_2fa_with_authenticator_app
-      select_2fa_option('auth_app')
+      select_2fa_option('totp')
 
       expect(page).to have_current_path authenticator_setup_path
 

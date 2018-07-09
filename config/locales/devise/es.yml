@@ -177,8 +177,8 @@ es:
         voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
         sms: Mensaje de texto / SMS
         sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
-        auth_app: Aplicación de autenticación
-        auth_app_info: Configure una aplicación de autenticación para obtener su código
+        totp: Aplicación de autenticación
+        totp_info: Configure una aplicación de autenticación para obtener su código
           de seguridad sin proporcionar un número de teléfono.
         piv_cac: Empleados del Gobierno
         piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
