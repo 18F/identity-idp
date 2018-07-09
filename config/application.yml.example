@@ -67,8 +67,6 @@ use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
-usps_mail_batch_hours: '24'
-
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
