@@ -66,7 +66,7 @@ module Idv
     end
 
     def handle_idv_redirect
-      redirect_to account_url and return if current_user.personal_key.present?
+      redirect_to account_url and return if current_user.encrypted_recovery_code_digest.present?
       user_session[:personal_key] = create_new_code
       redirect_to manage_personal_key_url
     end
