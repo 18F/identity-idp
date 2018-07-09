@@ -69,9 +69,7 @@ module TwoFactorAuthentication
     end
 
     def piv_cac_verfication_form
-      @piv_cac_verification_form ||= TwoFactorAuthentication::PivCacVerifyForm.new(
-        user: current_user,
-        configuration_manager: configuration_manager,
+      @piv_cac_verification_form ||= verify_form(
         token: params[:token],
         nonce: piv_cac_nonce
       )

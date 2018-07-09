@@ -332,6 +332,7 @@ module TwoFactorAuthenticatable
   end
 
   delegate :two_factor_method_manager, to: :current_user
+  delegate :verify_form, to: :configuration_manager
 
   def configuration_manager
     @configuration_manager ||= two_factor_method_manager.configuration_manager(method)

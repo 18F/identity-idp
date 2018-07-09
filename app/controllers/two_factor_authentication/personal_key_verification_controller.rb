@@ -23,8 +23,6 @@ module TwoFactorAuthentication
 
     private
 
-    delegate :verify_form, to: :configuration_manager
-
     def handle_result(result)
       if result.success?
         generate_new_personal_key
