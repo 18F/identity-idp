@@ -660,7 +660,6 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  # TODO: readd profile redirect, modal tests
   describe 'signing in when user does not already have personal key' do
     # For example, when migrating users from another DB
     it 'displays personal key and redirects to profile' do
