@@ -12,7 +12,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
+      result = verify_form(code: form_params[:code].strip).submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
 

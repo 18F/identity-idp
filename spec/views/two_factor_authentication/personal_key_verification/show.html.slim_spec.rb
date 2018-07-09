@@ -4,7 +4,10 @@ describe 'two_factor_authentication/personal_key_verification/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up) }
 
   before do
-    @personal_key_form = PersonalKeyForm.new(user)
+    @personal_key_form = TwoFactorAuthentication::PersonalKeyVerifyForm.new(
+      user: user,
+      configuration_manager: user.two_factor_method_manager.configuration_manager(:personal_key)
+    )
     allow(view).to receive(:current_user).and_return(user)
   end
 

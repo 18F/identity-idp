@@ -54,7 +54,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'redirects to the profile' do
-        expect(subject.current_user).to receive(:confirm_piv_cac?).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         get :show, params: { token: 'good-token' }
