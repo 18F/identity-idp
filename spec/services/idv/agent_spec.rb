@@ -72,7 +72,7 @@ describe Idv::Agent do
                     proc { |_, r| r.add_message('bah humbug').add_error(:bad, 'stuff') }
                   end
           Class.new(Proofer::Base) do
-            attributes(:foo)
+            required_attributes(:foo)
             proof(&logic)
           end
         end
