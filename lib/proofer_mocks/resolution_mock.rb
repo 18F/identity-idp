@@ -1,5 +1,5 @@
 class ResolutionMock < Proofer::Base
-  attributes :first_name, :ssn, :zipcode
+  required_attributes :first_name, :ssn, :zipcode
 
   stage :resolution
 
