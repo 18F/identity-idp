@@ -1,14 +1,25 @@
 require 'rails_helper'
 
-describe TotpSetupForm do
+describe TwoFactorAuthentication::TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }
+  let(:configuration_manager) do
+    user.two_factor_method_manager.configuration_manager(:totp)
+  end
+
+  let(:form) do
+    described_class.new(
+      user: user,
+      configuration_manager: configuration_manager,
+      secret: secret,
+      code: code
+    )
+  end
 
   describe '#submit' do
     context 'when TOTP code is valid' do
       it 'returns FormResponse with success: true' do
-        form = TotpSetupForm.new(user, secret, code)
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
@@ -21,8 +32,8 @@ describe TotpSetupForm do
     end
 
     context 'when TOTP code is invalid' do
+      let(:code) { 'kode' }
       it 'returns FormResponse with success: false' do
-        form = TotpSetupForm.new(user, secret, 'kode')
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).

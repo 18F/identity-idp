@@ -14,7 +14,7 @@ module Users
     end
 
     def confirm
-      result = TotpSetupForm.new(current_user, new_totp_secret, params[:code].strip).submit
+      result = setup_form(secret: new_totp_secret, code: params[:code].strip).submit
 
       analytics.track_event(Analytics::TOTP_SETUP, result.to_h)
 
@@ -36,9 +36,9 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      two_factor_method_manager.two_factor_enabled?
-    end
+    delegate :two_factor_method_manager, to: :current_user
+    delegate :two_factor_enabled?, to: :two_factor_method_manager
+    delegate :setup_form, to: :configuration_manager
 
     def track_event
       properties = { user_signed_up: two_factor_enabled? }
@@ -76,10 +76,6 @@ module Users
 
     def new_totp_secret
       user_session[:new_totp_secret]
-    end
-
-    def two_factor_method_manager
-      @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(current_user)
     end
 
     def configuration_manager

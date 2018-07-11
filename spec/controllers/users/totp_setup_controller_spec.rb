@@ -13,9 +13,10 @@ describe Users::TotpSetupController, devise: true do
 
   describe '#new' do
     context 'user is setting up authenticator app after account creation' do
+      let(:user) { build(:user, phone: '703-555-1212') }
+
       before do
         stub_analytics
-        user = build(:user, phone: '703-555-1212')
         stub_sign_in(user)
         allow(@analytics).to receive(:track_event)
         get :new
@@ -88,9 +89,10 @@ describe Users::TotpSetupController, devise: true do
 
   describe '#confirm' do
     context 'user is already signed up' do
+      let(:user) { build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO') }
+
       context 'when user presents invalid code' do
         before do
-          user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
@@ -114,7 +116,6 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         before do
-          user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
@@ -122,10 +123,10 @@ describe Users::TotpSetupController, devise: true do
           code = '123455'
           totp_secret = 'abdef'
           subject.user_session[:new_totp_secret] = totp_secret
-          form = instance_double(TotpSetupForm)
+          form = instance_double(TwoFactorAuthentication::TotpSetupForm)
 
-          allow(TotpSetupForm).to receive(:new).
-            with(subject.current_user, totp_secret, code).and_return(form)
+          allow(subject).to receive(:setup_form).
+            with(secret: totp_secret, code: code).and_return(form)
           response = FormResponse.new(success: true, errors: {})
           allow(form).to receive(:submit).and_return(response)
 
@@ -180,10 +181,10 @@ describe Users::TotpSetupController, devise: true do
           code = '123455'
           totp_secret = 'abdef'
           subject.user_session[:new_totp_secret] = totp_secret
-          form = instance_double(TotpSetupForm)
+          form = instance_double(TwoFactorAuthentication::TotpSetupForm)
 
-          allow(TotpSetupForm).to receive(:new).
-            with(subject.current_user, totp_secret, code).and_return(form)
+          allow(subject).to receive(:setup_form).
+            with(secret: totp_secret, code: code).and_return(form)
           response = FormResponse.new(success: true, errors: {})
           allow(form).to receive(:submit).and_return(response)
 
