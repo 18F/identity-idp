@@ -10,7 +10,7 @@ module IdvFailureConcern
 
   def render_idv_step_failure(step, reason)
     return render_failure('shared/_failure', failure_presenter(step)) if reason == :fail
-    render_failure('idv/shared/other_failure', warning_presenter(step, reason))
+    render_failure('idv/shared/verification_failure', warning_presenter(step, reason))
   end
 
   def render_failure(template, presenter)
