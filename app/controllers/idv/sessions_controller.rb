@@ -4,25 +4,26 @@ module Idv
     include IdvFailureConcern
     include PersonalKeyConcern
 
+    attr_reader :idv_form
+
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed, except: %i[destroy success failure]
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: %i[destroy success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
+    before_action :set_idv_form, only: %i[new create]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
       user_session[:context] = 'idv'
-      @idv_form = idv_form
       @selected_state = user_session[:idv_jurisdiction]
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
     def create
-      @idv_form = idv_form
-      result = @idv_form.submit(profile_params)
+      result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
 
       if result.success?
@@ -76,9 +77,9 @@ module Idv
     end
 
     def process_form_failure
-      redirect_to idv_session_failure_url(:dupe_ssn) and return if @idv_form.duplicate_ssn?
-      if (sp_name = decorated_session.sp_name) && @idv_form.unsupported_jurisdiction?
-        @idv_form.add_sp_unsupported_jurisdiction_error(sp_name)
+      redirect_to idv_session_failure_url(:dupe_ssn) and return if idv_form.duplicate_ssn?
+      if (sp_name = decorated_session.sp_name) && idv_form.unsupported_jurisdiction?
+        idv_form.add_sp_unsupported_jurisdiction_error(sp_name)
       end
       render :new
     end
@@ -96,8 +97,8 @@ module Idv
       Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 
-    def idv_form
-      @_idv_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
+    def set_idv_form
+      @idv_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
     end
 
     def initialize_idv_session

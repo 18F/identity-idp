@@ -3,9 +3,12 @@ module Idv
     include IdvStepConcern
     include IdvFailureConcern
 
+    attr_reader :idv_form
+
     before_action :confirm_step_needed
     before_action :confirm_step_allowed, except: [:failure]
     before_action :refresh_if_not_ready, only: [:show]
+    before_action :set_idv_form, only: %i[new create]
 
     def new
       @idv_form = idv_form
@@ -72,8 +75,8 @@ module Idv
       redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
-    def idv_form
-      @_idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+    def set_idv_form
+      @idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
     end
 
     def failure_url(reason)
