@@ -1,33 +1,56 @@
 Hi! Before submitting your PR for review, and/or before merging it, please
-go through the following checklist:
+go through the checklists below. These represent the more critical elements
+of our code quality guidelines. The rest of the list can be found in
+[CONTRIBUTING.md]
 
-- [ ] For DB changes, check for missing indexes, check to see if the changes
-affect other apps (such as the dashboard), make sure the DB columns in the
-various environments are properly populated, coordinate with devops, plan
-migrations in separate steps.
+[CONTRIBUTING.md]: https://github.com/18F/identity-idp/blob/master/CONTRIBUTING.md#pull-request-guidelines
 
-- [ ] For route changes, make sure GET requests don't change state or result in
-destructive behavior. GET requests should only result in information being
-read, not written.
+### Controllers
 
-- [ ] For encryption changes, make sure it is compatible with data that was
-encrypted with the old code.
+- [ ] When adding a new controller that requires the user to be fully
+authenticated, make sure to add `before_action :confirm_two_factor_authenticated`
+as the first callback.
 
-- [ ] For secrets changes, [make sure to update the S3 secrets bucket](https://github.com/18F/identity-private/wiki/Secrets-S3-buckets) with the 
-new configs in **all** environments. 
+### Database
 
-- [ ] Do not disable Rubocop or Reek offenses unless you are absolutely sure
-they are false positives. If you're not sure how to fix the offense, please
-ask a teammate.
+- [ ] Unsafe migrations are implemented over several PRs and over several
+deploys to avoid production errors. The [strong_migrations](https://github.com/ankane/strong_migrations#the-zero-downtime-way) gem
+will warn you about unsafe migrations and has great step-by-step instructions
+for various scenarios.
 
-- [ ] When reading data, write tests for nil values, empty strings,
-and invalid formats.
+- [ ] Indexes were added if necessary. This article provides a good overview
+of [indexes in Rails](https://semaphoreci.com/blog/2017/05/09/faster-rails-is-your-database-properly-indexed.html).
 
-- [ ] When calling `redirect_to` in a controller, use `_url`, not `_path`.
+- [ ] Verified that the changes don't affect other apps (such as the dashboard)
+
+- [ ] When relevant, a rake task is created to populate the necessary DB columns
+in the various environments right before deploying, taking into account the users
+who might not have interacted with this column yet (such as users who have not
+set a password yet)
+
+- [ ] Migrations against existing tables have been tested against a copy of the
+production database. See #2127 for an example when a migration caused deployment
+issues. In that case, all the migration did was add a new column and an index to
+the Users table, which might seem innocuous.
+
+### Encryption
+
+- [ ] The changes are compatible with data that was encrypted with the old code.
+
+### Routes
+
+- [ ] GET requests are not vulnerable to CSRF attacks (i.e. they don't change
+state or result in destructive behavior).
+
+### Session
 
 - [ ] When adding user data to the session, use the `user_session` helper
 instead of the `session` helper so the data does not persist beyond the user's
 session.
 
-- [ ] When adding a new controller that requires the user to be fully
-authenticated, make sure to add `before_action :confirm_two_factor_authenticated`.
+### Testing
+
+- [ ] Tests added for this feature/bug
+- [ ] Prefer feature/integration specs over controller specs
+- [ ] When adding code that reads data, write tests for nil values, empty strings,
+and invalid inputs.
