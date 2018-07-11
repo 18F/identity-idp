@@ -1,0 +1,53 @@
+---
+fr:
+  account_reset:
+    request:
+      title: Suppression de compte et réinitialisation
+      info: Si vous ne pouvez pas accéder à votre compte via les options de sécurité
+        que vous avez définies auparavant, la suppression de votre compte et la création
+        d'un nouveau compte est la seule option.  <br><br> Nous ne pouvons pas annuler
+        un compte supprimer, alors s'il vous plaît assurez-vous que vous n'avez pas
+        une autre option de sécurité que vous pouvez utiliser à la place comme votre
+        clé personnelle.
+      personal_key: Avez-vous votre clé personnelle?
+      personal_key_info: Votre clé personnelle est un code de 16 caractères qui a
+        été donné à vous à la création de compte comme une méthode de récupération
+        - voir l'exemple ci-dessous.
+      personal_key_trailer: Si vous avez votre clé personnelle, vous pouvez l'utiliser
+        pour %{link} au lieu de réinitialiser.
+      access_your_account: accéder à votre compte
+      delete_account: Supprimer votre compte
+      delete_account_info: Supprimer votre compte existant et en créer un nouveau
+        vous permet d'utiliser la même adresse e-mail et de définir de nouvelles options
+        de sécurité. cependant, la suppression supprimera toutes les applications
+        d'agence que vous avez liées à votre compte et vous devrez restaurer chaque
+        connexion. <br> <br> Si vous continuez, vous recevra d'abord un email de confirmation.
+        Par mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien
+        pour continuer la suppression de votre compte 24 heures après l'email de confirmation
+        initial arrive.
+      are_you_sure: Êtes-vous sûr de n'avoir accès à aucune de vos méthodes de sécurité?
+        OU votre clé personnelle?
+      no_cancel: Non, annuler
+      yes_continue: Oui, continuez la suppression.
+    confirm_request:
+      check_your_email: Vérifiez votre email
+      instructions: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour commencer
+        le compte. Supprimer le processus. Suivez les instructions dans votre e-mail
+        pour terminer le processus.<br> <br>Par mesure de sécurité, nous avons également
+        envoyé un SMS sur votre téléphone enregistré nombre. <br> <br> Vous pouvez
+        fermer cette fenêtre si vous avez terminé.
+    delete_account:
+      title: La suppression de votre compte devrait être votre dernier recours
+      info: La suppression de votre compte devrait être votre dernier recours si vous
+        êtes en lock-out de votre compte Vous ne pourrez pas récupérer les informations
+        liées à ton compte. Une fois votre compte supprimé, vous pouvez en créer un
+        nouveau en utilisant la même adresse e-mail.
+      are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte?
+      delete_button: Supprimer le compte
+      cancel: Annuler
+    confirm_delete_account:
+      title: Vous avez supprimé votre compte
+      info: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé
+        un email de confirmation de la suppression du compte. <br> <br> Vous pouvez
+        %{link} ou fermer cette fenêtre si vous avez terminé.
+      link_text: créer un nouveau compte

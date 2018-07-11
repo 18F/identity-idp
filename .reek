@@ -6,6 +6,7 @@ ControlParameter:
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
     - PhoneFormatter#self.format
+    - Users::TwoFactorAuthenticationController#invalid_phone_number
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -19,6 +20,7 @@ DuplicateMethodCall:
     - fallback_to_english
     - Idv::Proofer#load_vendors!
     - Upaya::RandomTools#self.random_weighted_sample
+    - SmsController#authenticate
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -45,6 +47,8 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
+    - PersonalKeyGenerator#create_legacy_recovery_code
+    - TwoFactorAuthenticationController#capture_analytics_for_exception
 InstanceVariableAssumption:
   exclude:
     - User
@@ -58,11 +62,12 @@ ManualDispatch:
 NestedIterators:
   exclude:
     - UserFlowExporter#self.massage_html
-    - TwilioService#sanitize_phone_number
+    - TwilioService::Utils#sanitize_phone_number
     - ServiceProviderSeeder#run
 NilCheck:
   enabled: false
 LongParameterList:
+  max_params: 4
   exclude:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
@@ -102,6 +107,7 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
+    - Users::TwoFactorAuthenticationController#send_code
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -113,6 +119,8 @@ TooManyMethods:
     - Idv::SessionsController
     - ServiceProviderSessionDecorator
     - SessionDecorator
+    - HolidayService
+    - PhoneDeliveryPresenter
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -125,6 +133,10 @@ UncommunicativeModuleName:
     - X509::Attribute
     - X509::Attributes
     - X509::SessionStore
+UnusedParameters:
+  exclude:
+    - SmsOtpSenderJob#perform
+    - VoiceOtpSenderJob#perform
 UnusedPrivateMethod:
   exclude:
     - ApplicationController

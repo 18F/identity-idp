@@ -103,6 +103,39 @@ feature 'Two Factor Authentication' do
         expect(phone_field.value).to eq('12345678901234567890')
       end
     end
+
+    context 'with SMS option, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_now)
+
+        user = sign_in_before_2fa
+        select_2fa_option('sms')
+        select 'Morocco', from: 'user_phone_form_international_code'
+        fill_in 'user_phone_form_phone', with: '6 61 28 93 24'
+        click_send_security_code
+
+        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
+    end
+
+    context 'with voice option and US number' do
+      it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
+        sign_in_before_2fa
+        select_2fa_option('voice')
+        fill_in 'user_phone_form_phone', with: '7035551212'
+        click_send_security_code
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      end
+    end
   end
 
   def phone_field
@@ -444,8 +477,6 @@ feature 'Two Factor Authentication' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       expect(page).not_to have_link(t('links.two_factor_authentication.app'))
@@ -465,8 +496,6 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, :with_piv_or_cac, otp_secret_key: 'foo')
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       click_link t('links.two_factor_authentication.app')
@@ -477,7 +506,6 @@ feature 'Two Factor Authentication' do
     scenario 'user can cancel PIV/CAC process' do
       user = create(:user, :signed_up, :with_piv_or_cac)
       sign_in_before_2fa(user)
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
 
       expect(current_path).to eq login_two_factor_piv_cac_path
       click_link t('links.cancel')
@@ -514,6 +542,64 @@ feature 'Two Factor Authentication' do
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
+    end
+
+    context 'with SMS, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_later)
+
+        user = create(:user, :signed_up, phone: '+212 661-289324')
+        sign_in_user(user)
+
+        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
+    end
+
+    context 'with SMS and international number that Verify does not think is valid' do
+      it 'rescues the VerifyError' do
+        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
+          SmsOtpSenderJob.perform_now(*args)
+        end
+        PhoneVerification.adapter = FakeAdapter
+        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+
+        user = create(:user, :signed_up, phone: '+212 661-289324')
+        sign_in_user(user)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        expect(page).
+          to have_content t('errors.messages.phone_unsupported')
+      end
+    end
+
+    context 'user with Voice preference sends SMS, causing a Twilio error' do
+      it 'does not change their OTP delivery preference' do
+        allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
+        allow(VoiceOtpSenderJob).to receive(:perform_later)
+        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
+          SmsOtpSenderJob.perform_now(*args)
+        end
+        PhoneVerification.adapter = FakeAdapter
+        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+
+        user = create(:user, :signed_up, phone: '+17035551212', otp_delivery_preference: 'voice')
+        sign_in_user(user)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+
+        click_link t('links.two_factor_authentication.sms')
+
+        expect(page).to have_content t('errors.messages.invalid_phone_number')
+        expect(user.reload.otp_delivery_preference).to eq 'voice'
+      end
     end
   end
 
@@ -574,7 +660,6 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  # TODO: readd profile redirect, modal tests
   describe 'signing in when user does not already have personal key' do
     # For example, when migrating users from another DB
     it 'displays personal key and redirects to profile' do

@@ -36,7 +36,9 @@ RSpec.describe AgencySeeder do
     context 'when agencies.yml has a remote setting' do
       before do
         location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/agencies.yml'
-        RemoteSetting.create(name: 'agencies.yml', url:location, contents: "test:\n  1:\n    name: 'CBP'")
+        RemoteSetting.create(
+          name: 'agencies.yml', url: location, contents: "test:\n  1:\n    name: 'CBP'"
+        )
       end
 
       it 'updates the attributes based on the current value of the yml file' do

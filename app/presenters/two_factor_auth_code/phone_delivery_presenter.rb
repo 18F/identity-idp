@@ -21,6 +21,7 @@ module TwoFactorAuthCode
         update_phone_link,
         piv_cac_option,
         personal_key_link,
+        account_reset_link,
       ].compact
     end
 
@@ -43,6 +44,7 @@ module TwoFactorAuthCode
       :phone_number,
       :unconfirmed_phone,
       :otp_delivery_preference,
+      :account_reset_token,
       :confirmation_for_phone_change,
       :voice_otp_delivery_unsupported,
       :confirmation_for_idv
@@ -69,6 +71,23 @@ module TwoFactorAuthCode
 
       link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
       t('instructions.mfa.wrong_number_html', link: link)
+    end
+
+    def account_reset_link
+      return if unconfirmed_phone || !FeatureManagement.account_reset_enabled?
+      account_reset_or_cancel_link
+    end
+
+    def account_reset_or_cancel_link
+      if account_reset_token
+        t('devise.two_factor_authentication.account_reset.pending_html', cancel_link:
+          view.link_to(t('devise.two_factor_authentication.account_reset.cancel_link'),
+                       account_reset_cancel_url(token: account_reset_token)))
+      else
+        t('devise.two_factor_authentication.account_reset.text_html', link:
+          view.link_to(t('devise.two_factor_authentication.account_reset.link'),
+                       account_reset_request_path(locale: LinkLocaleResolver.locale)))
+      end
     end
 
     def phone_fallback_link

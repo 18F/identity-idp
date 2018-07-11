@@ -44,7 +44,7 @@ class UserPivCacVerificationForm
       false
     else
       self.x509_dn_uuid = @data['uuid']
-      self.x509_dn = @data['dn']
+      self.x509_dn = @data['subject']
       true
     end
   end

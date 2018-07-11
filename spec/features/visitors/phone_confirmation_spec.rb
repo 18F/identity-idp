@@ -13,7 +13,8 @@ feature 'Phone confirmation during sign up' do
       expect(SmsOtpSenderJob).to have_received(:perform_now).with(
         code: @user.reload.direct_otp,
         phone: '+1 703-555-5555',
-        otp_created_at: @user.direct_otp_sent_at.to_s
+        otp_created_at: @user.direct_otp_sent_at.to_s,
+        locale: nil
       )
     end
 

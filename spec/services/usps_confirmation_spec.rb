@@ -19,11 +19,15 @@ describe UspsConfirmation do
       expect(subject[:entry]).to be_a(String)
       expect(subject[:entry]).not_to be_empty
       expect(subject[:entry]).not_to eq(attributes.to_json)
-      expect(JSON.parse(encryptor.decrypt(subject[:entry]), symbolize_names: true)).to eq(attributes)
+      expect(parse(subject[:entry])).to eq(attributes)
     end
 
     it 'retrieves the entry as an unencrypted hash with symbolized keys' do
       expect(subject.entry).to eq(attributes)
     end
+  end
+
+  def parse(json)
+    JSON.parse(encryptor.decrypt(json), symbolize_names: true)
   end
 end

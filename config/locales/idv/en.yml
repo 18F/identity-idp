@@ -8,7 +8,7 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
-      send_confirmation_code: Send confirmation code
+      send_confirmation_code: Continue
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -123,7 +123,7 @@ en:
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
-        phone_number_html: We will send a code to <strong>%{phone}</strong>
+        phone_number_html: We'll send a code to <strong>%{phone}</strong>
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
@@ -181,7 +181,7 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       no_id: We are unable to verify your identity without a state-issued ID
-      otp_delivery_method: Get a code by phone
+      otp_delivery_method: How would you like to receive a code?
       phone: Phone number of record
       review: Review and submit
       select_verification: Choose how to confirm your address

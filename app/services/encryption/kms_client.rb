@@ -12,11 +12,19 @@ module Encryption
     end
 
     def decrypt(ciphertext)
-      return decrypt_kms(ciphertext) if FeatureManagement.use_kms? && looks_like_kms?(ciphertext)
+      return decrypt_kms(ciphertext) if use_kms?(ciphertext)
       decrypt_local(ciphertext)
     end
 
+    def self.looks_like_kms?(ciphertext)
+      ciphertext.start_with?(KEY_TYPE[:KMS])
+    end
+
     private
+
+    def use_kms?(ciphertext)
+      FeatureManagement.use_kms? && self.class.looks_like_kms?(ciphertext)
+    end
 
     def encrypt_kms(plaintext)
       ciphertext_blob = aws_client.encrypt(
@@ -39,10 +47,6 @@ module Encryption
 
     def decrypt_local(ciphertext)
       encryptor.decrypt(ciphertext, Figaro.env.password_pepper)
-    end
-
-    def looks_like_kms?(ciphertext)
-      ciphertext.start_with?(KEY_TYPE[:KMS])
     end
 
     def aws_client

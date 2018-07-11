@@ -59,7 +59,7 @@ class UserPivCacSetupForm
 
   def piv_cac_not_already_associated
     self.x509_dn_uuid = @data['uuid']
-    self.x509_dn = @data['dn']
+    self.x509_dn = @data['subject']
     if User.find_by(x509_dn_uuid: x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false

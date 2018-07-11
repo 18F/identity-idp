@@ -19,7 +19,8 @@ p.mt-tiny.mb0 = @presenter.info
       strong.left = @presenter.label
     = f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' }
-  = f.button :submit, t('forms.buttons.send_security_code')
+  div
+    = f.button :submit, t('forms.buttons.send_security_code'), class: 'sm-col-6 col-12 btn-wide mb3'
 .mt2.pt1.border-top
   - path = current_user.piv_cac_enabled? ? account_recovery_setup_path : two_factor_options_path
   = link_to t('devise.two_factor_authentication.two_factor_choice_cancel'), path

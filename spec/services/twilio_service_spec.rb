@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe TwilioService do
+describe TwilioService::Utils do
   context 'when telephony is disabled' do
     before do
       expect(FeatureManagement).to receive(:telephony_disabled?).at_least(:once).and_return(true)
     end
 
     it 'uses NullTwilioClient' do
-      TwilioService.telephony_service = Twilio::REST::Client
+      TwilioService::Utils.telephony_service = Twilio::REST::Client
 
       client = instance_double(NullTwilioClient)
       expect(NullTwilioClient).to receive(:new).and_return(client)
@@ -16,15 +16,15 @@ describe TwilioService do
       expect(http_client).to receive(:adapter=).with(:typhoeus)
       expect(Twilio::REST::Client).to_not receive(:new)
 
-      TwilioService.new
+      TwilioService::Utils.new
     end
 
     it 'does not send OTP messages', twilio: true do
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       SmsOtpSenderJob.perform_now(
         code: '1234',
-        phone: '555-5555',
+        phone: '17035551212',
         otp_created_at: Time.zone.now.to_s
       )
 
@@ -36,7 +36,7 @@ describe TwilioService do
     before do
       expect(FeatureManagement).to receive(:telephony_disabled?).
         at_least(:once).and_return(false)
-      TwilioService.telephony_service = Twilio::REST::Client
+      TwilioService::Utils.telephony_service = Twilio::REST::Client
     end
 
     it 'uses a real Twilio client' do
@@ -46,20 +46,20 @@ describe TwilioService do
       http_client = Struct.new(:adapter)
       expect(client).to receive(:http_client).and_return(http_client)
       expect(http_client).to receive(:adapter=).with(:typhoeus)
-      TwilioService.new
+      TwilioService::Utils.new
     end
   end
 
   describe '#phone_number' do
     it 'randomly samples one of the numbers' do
-      expect(TWILIO_NUMBERS).to include(TwilioService.new.phone_number)
+      expect(TWILIO_NUMBERS).to include(TwilioService::Utils.new.phone_number)
     end
   end
 
   describe '#place_call' do
     it 'initiates a phone call with options', twilio: true do
-      TwilioService.telephony_service = FakeVoiceCall
-      service = TwilioService.new
+      TwilioService::Utils.telephony_service = FakeVoiceCall
+      service = TwilioService::Utils.new
 
       service.place_call(
         to: '5555555555',
@@ -74,7 +74,7 @@ describe TwilioService do
     end
 
     it 'partially redacts phone numbers embedded in error messages from Twilio' do
-      TwilioService.telephony_service = FakeVoiceCall
+      TwilioService::Utils.telephony_service = FakeVoiceCall
       raw_message = 'Unable to create record: Account not authorized to call +123456789012.'
       error_code = '21215'
       status_code = 400
@@ -82,7 +82,7 @@ describe TwilioService do
                           "Unable to create record: Account " \
                           "not authorized to call +12345#######.\n\n"
 
-      service = TwilioService.new
+      service = TwilioService::Utils.new
 
       raw_error = Twilio::REST::RestError.new(
         raw_message, FakeTwilioErrorResponse.new(error_code)
@@ -100,8 +100,8 @@ describe TwilioService do
     it 'sends an SMS with valid attributes', twilio: true do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      TwilioService.telephony_service = FakeSms
-      service = TwilioService.new
+      TwilioService::Utils.telephony_service = FakeSms
+      service = TwilioService::Utils.new
 
       service.send_sms(
         to: '5555555555',
@@ -118,14 +118,14 @@ describe TwilioService do
     end
 
     it 'partially redacts phone numbers embedded in error messages from Twilio' do
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
       error_code = '21211'
       status_code = 400
       sanitized_message = "[HTTP #{status_code}] #{error_code} : The 'To' " \
                           "number +1 (888) 5##-#### is not a valid phone number\n\n"
 
-      service = TwilioService.new
+      service = TwilioService::Utils.new
       raw_error = Twilio::REST::RestError.new(
         raw_message, FakeTwilioErrorResponse.new(error_code)
       )

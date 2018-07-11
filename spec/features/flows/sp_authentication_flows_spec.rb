@@ -183,10 +183,6 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
               end
             end
           end
-
-          # context 'when choosing to sign in' do
-          #   TODO: duplicate scenarios from Create Account here
-          # end
         end
 
         context 'when LOA1' do
@@ -334,9 +330,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
   def complete_phone_form_with_valid_phone
     phone = Faker::PhoneNumber.cell_phone
-    until Phonelib.valid_for_country?(phone, 'US')
-      phone = Faker::PhoneNumber.cell_phone
-    end
+    phone = Faker::PhoneNumber.cell_phone until Phonelib.valid_for_country?(phone, 'US')
     fill_in 'user_phone_form_phone', with: phone
   end
 end

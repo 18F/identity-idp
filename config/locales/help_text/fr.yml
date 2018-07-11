@@ -12,6 +12,7 @@ fr:
         %{sp}:'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
+      x509_subject: NOT TRANSLATED YET
     no_factor:
       delete_account: Pour supprimer votre compte, veuillez confirmer votre mot de
         passe et votre code de sécurité.

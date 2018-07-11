@@ -69,4 +69,14 @@ describe Encryption::KmsClient do
       end
     end
   end
+
+  describe '#looks_like_kms?' do
+    it 'returns true for kms encrypted data' do
+      expect(subject.class.looks_like_kms?('KMSx' + kms_ciphertext)).to eq(true)
+    end
+
+    it 'returns false for non kms encrypted data' do
+      expect(subject.class.looks_like_kms?('abcdef.' + kms_ciphertext)).to eq(false)
+    end
+  end
 end

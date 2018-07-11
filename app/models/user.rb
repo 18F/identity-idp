@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_one :account_reset_request, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
