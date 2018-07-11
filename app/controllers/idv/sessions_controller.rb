@@ -12,17 +12,18 @@ module Idv
     before_action :confirm_step_needed, except: %i[destroy success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
-    before_action :set_idv_form, only: %i[new create]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
       user_session[:context] = 'idv'
+      set_idv_form
       @selected_state = user_session[:idv_jurisdiction]
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
     def create
+      set_idv_form
       result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
 

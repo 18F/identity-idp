@@ -8,15 +8,13 @@ module Idv
     before_action :confirm_step_needed
     before_action :confirm_step_allowed, except: [:failure]
     before_action :refresh_if_not_ready, only: [:show]
-    before_action :set_idv_form, only: %i[new create]
+    before_action :set_idv_form, except: [:failure]
 
     def new
-      @idv_form = idv_form
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
     def create
-      @idv_form = idv_form
       result = @idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
 

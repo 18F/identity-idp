@@ -5,7 +5,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :set_jurisdiction_form, only: %i[new create]
+    before_action :set_jurisdiction_form, except: [:failure]
 
     def new
       analytics.track_event(Analytics::IDV_JURISDICTION_VISIT)
