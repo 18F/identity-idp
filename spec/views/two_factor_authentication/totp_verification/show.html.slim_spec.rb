@@ -33,19 +33,15 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
   it 'allows the user to fallback to SMS and voice' do
     expect(rendered).to have_link(
-      t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-      href: otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
-    )
-    expect(rendered).to have_link(
-      t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-      href: otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'voice' })
+      t('two_factor_authentication.login_options_link_text'),
+      href: login_two_factor_options_path
     )
   end
 
   it 'provides an option to use a personal key' do
     expect(rendered).to have_link(
-      t('devise.two_factor_authentication.personal_key_fallback.link'),
-      href: login_two_factor_personal_key_path
+      t('two_factor_authentication.login_options_link_text'),
+      href: login_two_factor_options_path
     )
   end
 
