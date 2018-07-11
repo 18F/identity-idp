@@ -16,7 +16,7 @@ p == @presenter.phone_number_message
       autocomplete: 'off', type: 'tel')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12'
   - if @presenter.remember_device_available?
-    .border.col-9.rounded-lg.mt2
+    .border.col-12.rounded-lg.mt2
       = check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1'
       = label_tag 'remember_device',
         t('forms.messages.remember_device', duration: Figaro.env.remember_device_expiration_days),
