@@ -45,6 +45,7 @@ module Idv
 
     def success; end
 
+    # TODO: Delete this method
     def destroy
       idv_session = user_session[:idv]
       idv_session&.clear
@@ -65,6 +66,7 @@ module Idv
       )
     end
 
+    # TODO: Delete this method
     def handle_idv_redirect
       redirect_to account_url and return if current_user.personal_key.present?
       user_session[:personal_key] = create_new_code
