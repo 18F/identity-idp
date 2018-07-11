@@ -35,6 +35,8 @@ module Users
 
     private
 
+    delegate :setup_form, to: :configuration_manager
+
     def two_factor_enabled?
       two_factor_method_manager.two_factor_enabled?
     end
@@ -50,8 +52,7 @@ module Users
     end
 
     def user_piv_cac_form
-      @user_piv_cac_form ||= UserPivCacSetupForm.new(
-        user: current_user,
+      @user_piv_cac_form ||= setup_form(
         token: params[:token],
         nonce: piv_cac_nonce
       )
