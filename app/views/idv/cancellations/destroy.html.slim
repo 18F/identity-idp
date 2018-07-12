@@ -1,0 +1,10 @@
+= render 'shared/failure', presenter: @presenter
+
+ul
+  - @presenter.cancellation_effects.each do |effect|
+    li = effect
+
+/ TODO: Move these into translations
+p
+  / TODO: Have the presenter put the SP name or "account" here
+  = 'return to whatever you were doing'

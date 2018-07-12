@@ -23,4 +23,5 @@ p.mt4.mb0 id='jurisdiction-label' = t('idv.messages.jurisdiction.where')
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
       = t('forms.buttons.continue')
 
-= render 'shared/cancel', link: idv_cancel_path
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_step_path(:jurisdiction), class: 'h5'
