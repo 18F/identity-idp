@@ -5,6 +5,7 @@ fr:
       legend: NOT TRANSLATED YET
     buttons:
       back: Retour
+      cancel: Oui, annuler
       continue: Continuer
       disable: Désactiver
       edit: Modifier

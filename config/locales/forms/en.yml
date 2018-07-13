@@ -5,6 +5,7 @@ en:
       legend: Select a secondary authentication option
     buttons:
       back: Back
+      cancel: Yes, cancel
       continue: Continue
       disable: Disable
       edit: Edit

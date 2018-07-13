@@ -11,10 +11,10 @@ shared_examples 'cancel at idv step' do |step, sp|
 
     click_link t('links.cancel')
 
-    # TODO: Expect some kinda message or whatever
+    expect(page).to have_content(t('idv.cancel.modal_header'))
     expect(page).to have_current_path(idv_cancel_step_path(step: step))
 
-    click_on 'Go back'
+    click_on t('links.go_back')
 
     expect(page).to have_current_path(original_path)
   end
@@ -22,12 +22,12 @@ shared_examples 'cancel at idv step' do |step, sp|
   it 'shows the user a cancellation message with the option to cancel and reset idv' do
     click_link t('links.cancel')
 
-    # TODO: Expect some kinda message or whatever
+    expect(page).to have_content(t('idv.cancel.modal_header'))
     expect(page).to have_current_path(idv_cancel_step_path(step: step))
 
-    click_on 'Yes, cancel'
+    click_on t('forms.buttons.cancel')
 
-    # TODO: Expect another message of some sort
+    expect(page).to have_content(t('headings.cancellations.confirmation'))
     expect(page).to have_current_path(idv_cancel_path)
 
     # TODO: Add a test to test that the SP link shows up when coming from an SP

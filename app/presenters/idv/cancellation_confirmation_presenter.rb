@@ -5,11 +5,11 @@ module Idv
     end
 
     def title
-      'You have cancelled verifying your identity with login.gov'
+      I18n.t('headings.cancellations.confirmation')
     end
 
     def header
-      'You have cancelled verifying your identity with login.gov'
+      I18n.t('headings.cancellations.confirmation')
     end
 
     def cancellation_effects

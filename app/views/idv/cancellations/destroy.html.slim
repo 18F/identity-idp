@@ -1,10 +1,8 @@
 = render 'shared/failure', presenter: @presenter
 
-ul
+ul class="list-reset #{@presenter.state_color}-dots"
   - @presenter.cancellation_effects.each do |effect|
     li = effect
 
-/ TODO: Move these into translations
-p
-  / TODO: Have the presenter put the SP name or "account" here
-  = 'return to whatever you were doing'
+/ TODO: Have the presenter put the SP name or "account" here
+.mt2 = link_to "#{t('headings.cancellations.return_to')} #{'ADD SP NAME OR ACCOUNT'}"

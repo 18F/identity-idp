@@ -1,13 +1,12 @@
 = render 'shared/failure', presenter: @presenter
 
-strong
-  = 'If you cancel now'
-ul
+p.mb1.bold = t('sign_up.cancel.warning_header')
+
+ul class="list-reset #{@presenter.state_color}-dots"
   - @presenter.cancellation_warnings.each do |warning|
     li = warning
 
-/ TODO: Move these into translations
-p
-  = button_to "Yes, cancel", idv_cancel_path, method: :delete, class: 'btn btn-primary'
-p
-  = link_to "Go back", @presenter.go_back_path, class: 'btn btn-secondary'
+.mt3 = button_to t('forms.buttons.cancel'), idv_cancel_path,
+  method: :delete, class: 'btn btn-primary sm-col-6 col-12 btn-wide'
+.mt2 = link_to t('links.go_back'), @presenter.go_back_path,
+  class: 'btn btn-secondary sm-col-6 col-12 btn-wide'

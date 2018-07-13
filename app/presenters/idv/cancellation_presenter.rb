@@ -20,11 +20,11 @@ module Idv
     end
 
     def title
-      'Are you sure you want to cancel'
+      I18n.t('headings.cancellations.prompt')
     end
 
     def header
-      'Are you sure you want to cancel'
+      I18n.t('headings.cancellations.prompt')
     end
 
     def cancellation_warnings
