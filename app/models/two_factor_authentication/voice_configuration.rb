@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class VoiceConfigurationManager < TwoFactorAuthentication::PhoneConfigurationManager
+  class VoiceConfiguration < PhoneConfiguration
     def available?
       super && !PhoneNumberCapabilities.new(phone).sms_only?
     end

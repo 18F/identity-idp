@@ -1,9 +1,9 @@
 module TwoFactorAuthentication
-  class ConfigurationManager
+  class MethodConfiguration
     attr_reader :user
 
-    def initialize(current_user)
-      @user = current_user
+    def initialize(user:)
+      @user = user
     end
 
     # The default is that we can configure the method if it isn't already
@@ -18,7 +18,7 @@ module TwoFactorAuthentication
 
     def method
       @method ||= begin
-        self.class.name.demodulize.sub(/ConfigurationManager$/, '').snakecase.to_sym
+        self.class.name.demodulize.sub(/Configuration$/, '').snakecase.to_sym
       end
     end
   end

@@ -35,9 +35,7 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      two_factor_method_manager.two_factor_enabled?
-    end
+    delegate :two_factor_enabled?, to: :current_user
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
@@ -67,7 +65,7 @@ module Users
     end
 
     def next_step
-      if current_user.two_factor_method_manager.two_factor_enabled?(%i[sms voice])
+      if two_factor_enabled?(%i[sms voice])
         account_url
       else
         account_recovery_setup_url
@@ -88,12 +86,8 @@ module Users
       redirect_to account_url if configuration_manager.configured?
     end
 
-    def two_factor_method_manager
-      @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(current_user)
-    end
-
     def configuration_manager
-      @configuration_manager ||= two_factor_method_manager.configuration_manager(:piv_cac)
+      @configuration_manager ||= current_user.two_factor_configuration(:piv_cac)
     end
   end
 end

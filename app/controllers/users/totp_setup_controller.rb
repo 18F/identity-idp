@@ -36,9 +36,7 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      two_factor_method_manager.two_factor_enabled?
-    end
+    delegate :two_factor_enabled?, to: :current_user
 
     def track_event
       properties = { user_signed_up: two_factor_enabled? }
@@ -78,12 +76,8 @@ module Users
       user_session[:new_totp_secret]
     end
 
-    def two_factor_method_manager
-      @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(current_user)
-    end
-
     def configuration_manager
-      @configuration_manager ||= two_factor_method_manager.configuration_manager(:totp)
+      @configuration_manager ||= current_user.two_factor_configuration(:totp)
     end
   end
 end

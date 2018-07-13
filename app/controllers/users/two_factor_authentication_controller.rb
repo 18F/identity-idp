@@ -5,11 +5,11 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      if two_factor_method_manager.two_factor_enabled?([:piv_cac])
+      if two_factor_enabled?([:piv_cac])
         redirect_to login_two_factor_piv_cac_url
-      elsif two_factor_method_manager.two_factor_enabled?([:totp])
+      elsif two_factor_enabled?([:totp])
         redirect_to login_two_factor_authenticator_url
-      elsif two_factor_method_manager.two_factor_enabled?(%i[sms voice])
+      elsif two_factor_enabled?(%i[sms voice])
         validate_otp_delivery_preference_and_send_code
       else
         redirect_to two_factor_options_url
@@ -30,6 +30,8 @@ module Users
     end
 
     private
+
+    delegate :two_factor_enabled?, to: :current_user
 
     def validate_otp_delivery_preference_and_send_code
       delivery_preference = current_user.otp_delivery_preference

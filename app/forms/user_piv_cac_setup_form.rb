@@ -78,6 +78,6 @@ class UserPivCacSetupForm
   end
 
   def configuration_manager
-    @configuration_manager ||= TwoFactorAuthentication::PivCacConfigurationManager.new(user)
+    @configuration_manager ||= user.two_factor_configuration(:piv_cac)
   end
 end

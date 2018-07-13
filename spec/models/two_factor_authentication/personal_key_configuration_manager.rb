@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PersonalKeyConfigurationManager do
-  let(:subject) { described_class.new(user) }
+RSpec.describe TwoFactorAuthentication::PersonalKeyConfiguration do
+  let(:subject) { described_class.new(user: user) }
 
   context 'with a personal key configured' do
     let(:user) { build(:user, :with_personal_key) }

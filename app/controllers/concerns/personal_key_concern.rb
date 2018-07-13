@@ -26,7 +26,6 @@ module PersonalKeyConcern
   end
 
   def configuration_manager
-    @configuration_manager ||=
-      TwoFactorAuthentication::PersonalKeyConfigurationManager.new(current_user)
+    @configuration_manager ||= current_user.two_factor_configuration(:personal_key)
   end
 end

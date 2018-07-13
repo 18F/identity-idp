@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class TotpConfigurationManager < ConfigurationManager
+  class TotpConfiguration < MethodConfiguration
     def enabled?
       user&.totp_enabled?
     end

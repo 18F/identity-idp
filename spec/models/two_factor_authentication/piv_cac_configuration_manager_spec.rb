@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PivCacConfigurationManager do
-  let(:subject) { described_class.new(user) }
+RSpec.describe TwoFactorAuthentication::PivCacConfiguration do
+  let(:subject) { described_class.new(user: user) }
 
   context 'with a piv/cac configured' do
     let(:user) { build(:user, :with_piv_or_cac) }

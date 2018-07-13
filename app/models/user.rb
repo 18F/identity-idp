@@ -1,7 +1,7 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
   include NonNullUuid
-  include UserDeprecatedMethods
+  include UserTwoFactorMethods
 
   after_validation :set_default_role, if: :new_record?
 
@@ -58,10 +58,6 @@ class User < ApplicationRecord
     two_factor_enabled?
   end
 
-  def two_factor_enabled?
-    two_factor_method_manager.two_factor_enabled?(%i[sms voice totp piv_cac])
-  end
-
   def send_two_factor_authentication_code(_code)
     # The two_factor_authentication gem assumes that if a user needs to receive
     # a code, the code should be automatically sent right after Warden signs
@@ -109,10 +105,6 @@ class User < ApplicationRecord
 
   def decorate
     UserDecorator.new(self)
-  end
-
-  def two_factor_method_manager
-    @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(self)
   end
 
   # Devise automatically downcases and strips any attribute defined in

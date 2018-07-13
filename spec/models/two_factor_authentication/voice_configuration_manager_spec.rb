@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::VoiceConfigurationManager do
-  let(:subject) { described_class.new(user) }
+RSpec.describe TwoFactorAuthentication::VoiceConfiguration do
+  let(:subject) { described_class.new(user: user) }
 
   context 'with a phone configured' do
     let(:user) { build(:user, :with_phone) }

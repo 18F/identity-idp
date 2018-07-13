@@ -1,4 +1,4 @@
 module TwoFactorAuthentication
-  class SmsConfigurationManager < TwoFactorAuthentication::PhoneConfigurationManager
+  class SmsConfiguration < PhoneConfiguration
   end
 end

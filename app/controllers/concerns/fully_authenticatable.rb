@@ -2,9 +2,7 @@ module FullyAuthenticatable
   def confirm_two_factor_authenticated(id = nil)
     return redirect_to sign_up_start_url(request_id: id) unless user_signed_in?
 
-    two_factor_method_manager = TwoFactorAuthentication::MethodManager.new(current_user)
-
-    return prompt_to_set_up_2fa unless two_factor_method_manager.two_factor_enabled?
+    return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
 
     prompt_to_enter_otp
   end

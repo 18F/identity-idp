@@ -29,19 +29,13 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      two_factor_method_manager.two_factor_enabled?
-    end
+    delegate :two_factor_enabled?, to: :current_user
 
     def user_phone_form_params
       params.require(:user_phone_form).permit(
         :international_code,
         :phone
       )
-    end
-
-    def two_factor_method_manager
-      @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(current_user)
     end
   end
 end

@@ -55,7 +55,7 @@ class AccountShow
   end
 
   def totp_partial
-    if two_factor_method_manager.two_factor_enabled?([:totp])
+    if decorated_user.two_factor_enabled?([:totp])
       'accounts/actions/disable_totp'
     else
       'accounts/actions/enable_totp'
@@ -63,7 +63,7 @@ class AccountShow
   end
 
   def piv_cac_partial
-    if two_factor_method_manager.two_factor_enabled?([:piv_cac])
+    if decorated_user.two_factor_enabled?([:piv_cac])
       'accounts/actions/disable_piv_cac'
     else
       'accounts/actions/enable_piv_cac'
@@ -93,7 +93,7 @@ class AccountShow
   end
 
   def totp_content
-    if two_factor_method_manager.two_factor_enabled?([:totp])
+    if decorated_user.two_factor_enabled?([:totp])
       'account.index.auth_app_enabled'
     else
       'account.index.auth_app_disabled'
@@ -101,7 +101,7 @@ class AccountShow
   end
 
   def piv_cac_content
-    if two_factor_method_manager.two_factor_enabled?([:piv_cac])
+    if decorated_user.two_factor_enabled?([:piv_cac])
       'account.index.piv_cac_enabled'
     else
       'account.index.piv_cac_disabled'
@@ -109,6 +109,4 @@ class AccountShow
   end
 
   delegate :recent_events, to: :decorated_user
-
-  delegate :two_factor_method_manager, to: :decorated_user
 end

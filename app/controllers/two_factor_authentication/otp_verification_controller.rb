@@ -25,6 +25,8 @@ module TwoFactorAuthentication
 
     private
 
+    delegate :two_factor_enabled?, to: :current_user
+
     def confirm_two_factor_enabled
       return if confirmation_context? || phone_enabled?
 
@@ -36,11 +38,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      two_factor_method_manager.two_factor_enabled?(%i[sms voice])
-    end
-
-    def two_factor_enabled?
-      two_factor_method_manager.two_factor_enabled?
+      two_factor_enabled?(%i[sms voice])
     end
 
     def confirm_voice_capability

@@ -45,9 +45,7 @@ module TwoFactorAuthentication
     end
 
     def alternate_2fa_enabled?
-      %i[sms voice].any? do |method|
-        two_factor_method_manager.configuration_manager(method).enabled?
-      end
+      current_user.two_factor_enabled?(%i[sms voice])
     end
 
     def handle_invalid_piv_cac
@@ -62,8 +60,8 @@ module TwoFactorAuthentication
         two_factor_authentication_method: two_factor_authentication_method,
         user_email: current_user.email,
         remember_device_available: false,
-        totp_enabled: two_factor_method_manager.two_factor_enabled?([:totp]),
-        phone_enabled: two_factor_method_manager.two_factor_enabled?(%i[sms voice]),
+        totp_enabled: current_user.two_factor_enabled?([:totp]),
+        phone_enabled: current_user.two_factor_enabled?(%i[sms voice]),
         piv_cac_nonce: piv_cac_nonce,
       }.merge(generic_data)
     end

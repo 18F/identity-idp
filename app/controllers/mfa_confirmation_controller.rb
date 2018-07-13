@@ -20,7 +20,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_valid_password
-    if current_user.two_factor_method_manager.two_factor_enabled?([:totp])
+    if current_user.two_factor_enabled?([:totp])
       redirect_to login_two_factor_authenticator_url(reauthn: true)
     else
       redirect_to user_two_factor_authentication_url(reauthn: true)

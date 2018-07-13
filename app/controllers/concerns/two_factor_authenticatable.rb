@@ -199,11 +199,11 @@ module TwoFactorAuthenticatable
   def after_otp_action_required?
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      two_factor_method_manager.configuration_manager(:personal_key).should_acknowledge?(session)
+      current_user.two_factor_configuration(:personal_key).should_acknowledge?(session)
   end
 
   def after_otp_action_url
-    personal_key_manager = two_factor_method_manager.configuration_manager(:personal_key)
+    personal_key_manager = current_user.two_factor_configuration(:personal_key)
     if personal_key_manager.should_acknowledge?(user_session)
       sign_up_personal_key_url
     elsif @updating_existing_number
@@ -227,7 +227,7 @@ module TwoFactorAuthenticatable
   def personal_key_unavailable?
     idv_or_confirmation_context? ||
       profile_context? ||
-      !two_factor_method_manager.two_factor_enabled?([:personal_key])
+      !current_user.two_factor_enabled?([:personal_key])
   end
 
   def unconfirmed_phone?
@@ -245,7 +245,7 @@ module TwoFactorAuthenticatable
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      totp_enabled: two_factor_method_manager.two_factor_enabled?([:totp]),
+      totp_enabled: current_user.two_factor_enabled?([:totp]),
       remember_device_available: !idv_context?,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
@@ -261,14 +261,14 @@ module TwoFactorAuthenticatable
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       remember_device_available: false,
-      phone_enabled: two_factor_method_manager.two_factor_enabled?(%i[sms voice]),
+      phone_enabled: current_user.two_factor_enabled?(%i[sms voice]),
     }.merge(generic_data)
   end
 
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
-      has_piv_cac_configured: two_factor_method_manager.two_factor_enabled?([:piv_cac]),
+      has_piv_cac_configured: current_user.two_factor_enabled?([:piv_cac]),
       reauthn: reauthn?,
       configuration_manager: configuration_manager,
     }
@@ -331,9 +331,7 @@ module TwoFactorAuthenticatable
     end
   end
 
-  delegate :two_factor_method_manager, to: :current_user
-
   def configuration_manager
-    @configuration_manager ||= two_factor_method_manager.configuration_manager(method)
+    @configuration_manager ||= current_user.two_factor_configuration(method)
   end
 end

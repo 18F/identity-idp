@@ -59,11 +59,15 @@ class UserPivCacVerificationForm
   end
 
   def user_has_piv_cac
-    if user.two_factor_method_manager.configuration_manager(:piv_cac).enabled?
+    if configuration_manager.enabled?
       true
     else
       self.error_type = 'user.no_piv_cac_associated'
       false
     end
+  end
+
+  def configuration_manager
+    @configuration_manager ||= user.two_factor_configuration(:piv_cac)
   end
 end

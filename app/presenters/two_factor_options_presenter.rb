@@ -38,17 +38,13 @@ class TwoFactorOptionsPresenter
 
   private
 
-  delegate :two_factor_method_manager, to: :current_user
-
   def available_2fa_types
-    two_factor_method_manager.
-      configurable_configuration_managers.
-      map(&:method) | piv_cac_if_available
+    current_user.two_factor_configurable_method_configurations.map(&:method) | piv_cac_if_available
   end
 
   def piv_cac_if_available
-    return [] if two_factor_method_manager.two_factor_enabled?(%i[piv_cac])
-    return %i[piv_cac] if two_factor_method_manager.two_factor_configurable?(%i[piv_cac]) ||
+    return [] if current_user.two_factor_enabled?(%i[piv_cac])
+    return %i[piv_cac] if current_user.two_factor_configurable?(%i[piv_cac]) ||
                           service_provider&.piv_cac_available?
     []
   end

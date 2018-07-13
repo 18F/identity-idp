@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::TotpConfigurationManager do
-  let(:subject) { described_class.new(user) }
+RSpec.describe TwoFactorAuthentication::TotpConfiguration do
+  let(:subject) { described_class.new(user: user) }
 
   context 'with an authenticator app configured' do
     let(:user) { build(:user, :with_authentication_app) }

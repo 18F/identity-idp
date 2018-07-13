@@ -3,7 +3,7 @@ class PhoneSetupPresenter
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user
-  delegate :otp_delivery_preference, :two_factor_method_manager, to: :user
+  delegate :otp_delivery_preference, :two_factor_enabled?, to: :user
 
   def initialize(user)
     @user = user
@@ -26,7 +26,7 @@ class PhoneSetupPresenter
   end
 
   def cancel_path
-    if two_factor_method_manager.two_factor_enabled?([:piv_cac])
+    if two_factor_enabled?([:piv_cac])
       account_recovery_setup_path
     else
       two_factor_options_path

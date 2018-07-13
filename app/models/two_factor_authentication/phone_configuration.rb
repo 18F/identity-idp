@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class PhoneConfigurationManager < ConfigurationManager
+  class PhoneConfiguration < MethodConfiguration
     def enabled?
       phone.present? && available?
     end

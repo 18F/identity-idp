@@ -26,6 +26,6 @@ class TotpSetupForm
   end
 
   def configuration_manager
-    @configuration_manager ||= TwoFactorAuthentication::TotpConfigurationManager.new(user)
+    @configuration_manager ||= user.two_factor_configuration(:totp)
   end
 end

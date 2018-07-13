@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class PivCacConfigurationManager < ConfigurationManager
+  class PivCacConfiguration < MethodConfiguration
     def enabled?
       x509_dn_uuid.present?
     end

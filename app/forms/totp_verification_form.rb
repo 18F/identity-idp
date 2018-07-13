@@ -2,7 +2,7 @@ class TotpVerificationForm
   def initialize(user, code)
     @user = user
     @code = code
-    @configuration_manager = TwoFactorAuthentication::TotpConfigurationManager.new(user)
+    @configuration_manager = user.two_factor_configuration(:totp)
   end
 
   def submit
