@@ -1,7 +1,9 @@
 class UserPivCacSetupForm
   include ActiveModel::Model
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type
+  attr_accessor :x509_dn, :token, :user, :nonce, :error_type
+
+  delegate :x509_dn_uuid, to: :configuration_manager
 
   validates :token, presence: true
   validates :nonce, presence: true
@@ -16,9 +18,7 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    user.x509_dn_uuid = x509_dn_uuid
-    user.save!
-    Event.create(user_id: user.id, event_type: :piv_cac_enabled)
+    configuration_manager.save_configuration
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
@@ -58,9 +58,9 @@ class UserPivCacSetupForm
   end
 
   def piv_cac_not_already_associated
-    self.x509_dn_uuid = @data['uuid']
+    configuration_manager.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
-    if User.find_by(x509_dn_uuid: x509_dn_uuid)
+    if configuration_manager.associated?
       self.error_type = 'piv_cac.already_associated'
       false
     else
@@ -69,11 +69,15 @@ class UserPivCacSetupForm
   end
 
   def user_has_no_piv_cac
-    if user.piv_cac_enabled?
+    if configuration_manager.enabled?
       self.error_type = 'user.piv_cac_associated'
       false
     else
       true
     end
+  end
+
+  def configuration_manager
+    @configuration_manager ||= user.two_factor_configuration(:piv_cac)
   end
 end

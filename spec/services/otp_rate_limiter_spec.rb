@@ -52,7 +52,7 @@ RSpec.describe OtpRateLimiter do
 
       otp_rate_limiter.lock_out_user
 
-      expect(current_user.second_factor_locked_at.to_i).to eq(Time.zone.now.to_i)
+      expect(current_user.second_factor_locked_at).to be_within(1.second).of Time.zone.now
     end
   end
 end

@@ -6,11 +6,11 @@ module Users
 
     # rubocop:disable Metrics/MethodLength
     def show
-      if current_user.piv_cac_enabled?
+      if two_factor_enabled?([:piv_cac])
         redirect_to login_two_factor_piv_cac_url
-      elsif current_user.totp_enabled?
+      elsif two_factor_enabled?([:totp])
         redirect_to login_two_factor_authenticator_url
-      elsif current_user.phone_enabled?
+      elsif two_factor_enabled?(%i[sms voice])
         validate_otp_delivery_preference_and_send_code
       else
         redirect_to two_factor_options_url
@@ -35,6 +35,8 @@ module Users
     end
 
     private
+
+    delegate :two_factor_enabled?, to: :current_user
 
     def validate_otp_delivery_preference_and_send_code
       delivery_preference = current_user.otp_delivery_preference

@@ -4,7 +4,7 @@ module Users
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
-      return redirect_to account_url if current_user.totp_enabled?
+      return redirect_to account_url if configuration_manager.enabled?
 
       track_event
       store_totp_secret_in_session
@@ -26,10 +26,9 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled?
+      if configuration_manager.enabled?
         analytics.track_event(Analytics::TOTP_USER_DISABLED)
-        create_user_event(:authenticator_disabled)
-        UpdateUser.new(user: current_user, attributes: { otp_secret_key: nil }).call
+        configuration_manager.remove_configuration
         flash[:success] = t('notices.totp_disabled')
       end
       redirect_to account_url
@@ -37,17 +36,15 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      current_user.two_factor_enabled?
-    end
+    delegate :two_factor_enabled?, to: :current_user
 
     def track_event
-      properties = { user_signed_up: current_user.two_factor_enabled? }
+      properties = { user_signed_up: two_factor_enabled? }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
     end
 
     def store_totp_secret_in_session
-      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
+      user_session[:new_totp_secret] = configuration_manager.generate_secret if new_totp_secret.nil?
     end
 
     def process_valid_code
@@ -77,6 +74,10 @@ module Users
 
     def new_totp_secret
       user_session[:new_totp_secret]
+    end
+
+    def configuration_manager
+      @configuration_manager ||= current_user.two_factor_configuration(:totp)
     end
   end
 end

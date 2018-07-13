@@ -23,9 +23,7 @@ module TwoFactorAuthentication
     private
 
     def confirm_totp_enabled
-      return if current_user.totp_enabled?
-
-      redirect_to user_two_factor_authentication_url
+      redirect_to user_two_factor_authentication_url unless configuration_manager.enabled?
     end
   end
 end

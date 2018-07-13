@@ -22,9 +22,8 @@ module Users
 
     def delete
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
-      current_user.update!(x509_dn_uuid: nil)
+      configuration_manager.remove_configuration
       clear_piv_cac_information
-      Event.create(user_id: current_user.id, event_type: :piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
       redirect_to account_url
     end
@@ -36,9 +35,7 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      current_user.two_factor_enabled?
-    end
+    delegate :two_factor_enabled?, to: :current_user
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
@@ -68,8 +65,11 @@ module Users
     end
 
     def next_step
-      return account_url if current_user.phone_enabled?
-      account_recovery_setup_url
+      if two_factor_enabled?(%i[sms voice])
+        account_url
+      else
+        account_recovery_setup_url
+      end
     end
 
     def process_invalid_submission
@@ -79,11 +79,15 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      redirect_to account_url unless current_user.piv_cac_enabled?
+      redirect_to account_url unless configuration_manager.configured?
     end
 
     def authorize_piv_cac_setup
-      redirect_to account_url if current_user.piv_cac_enabled?
+      redirect_to account_url if configuration_manager.configured?
+    end
+
+    def configuration_manager
+      @configuration_manager ||= current_user.two_factor_configuration(:piv_cac)
     end
   end
 end

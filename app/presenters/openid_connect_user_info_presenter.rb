@@ -101,6 +101,6 @@ class OpenidConnectUserInfoPresenter
   end
 
   def x509_session?
-    identity.piv_cac_enabled?
+    identity.two_factor_enabled?([:piv_cac])
   end
 end

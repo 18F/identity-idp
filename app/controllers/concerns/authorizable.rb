@@ -1,6 +1,6 @@
 module Authorizable
   def authorize_user
-    return unless current_user.phone_enabled?
+    return unless current_user.two_factor_enabled?(%i[sms voice])
 
     if user_fully_authenticated?
       redirect_to account_url

@@ -20,7 +20,7 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
-        expect(PhoneSetupPresenter).to receive(:new).with(user.otp_delivery_preference)
+        expect(PhoneSetupPresenter).to receive(:new).with(user)
         expect(UserPhoneForm).to receive(:new).with(user)
 
         get :index

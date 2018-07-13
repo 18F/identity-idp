@@ -223,7 +223,6 @@ describe Users::TotpSetupController, devise: true do
         expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
-        expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
     end
   end

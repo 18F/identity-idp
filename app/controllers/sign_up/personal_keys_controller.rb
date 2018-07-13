@@ -20,11 +20,11 @@ module SignUp
 
     def confirm_user_needs_initial_personal_key
       redirect_to(account_url) if user_session[:personal_key].nil? &&
-                                  current_user.personal_key.present?
+                                  configuration_manager.configured?
     end
 
     def assign_initial_personal_key
-      user_session[:personal_key] = create_new_code if current_user.personal_key.nil?
+      user_session[:personal_key] = create_new_code unless configuration_manager.configured?
     end
 
     def next_step

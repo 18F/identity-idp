@@ -2,6 +2,7 @@ class TotpVerificationForm
   def initialize(user, code)
     @user = user
     @code = code
+    @configuration_manager = user.two_factor_configuration(:totp)
   end
 
   def submit
@@ -10,19 +11,10 @@ class TotpVerificationForm
 
   private
 
-  attr_reader :user, :code
+  attr_reader :user, :code, :configuration_manager
 
   def valid_totp_code?
-    return false unless code.match? pattern_matching_totp_code_format
-    user.authenticate_totp(code)
-  end
-
-  def pattern_matching_totp_code_format
-    /\A\d{#{totp_code_length}}\Z/
-  end
-
-  def totp_code_length
-    Devise.otp_length
+    configuration_manager.authenticate(code)
   end
 
   def extra_analytics_attributes

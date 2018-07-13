@@ -25,10 +25,12 @@ module TwoFactorAuthentication
 
     private
 
+    delegate :two_factor_enabled?, to: :current_user
+
     def confirm_two_factor_enabled
       return if confirmation_context? || phone_enabled?
 
-      if current_user.two_factor_enabled? && !phone_enabled? && user_signed_in?
+      if two_factor_enabled? && !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
@@ -36,7 +38,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      current_user.phone_enabled?
+      two_factor_enabled?(%i[sms voice])
     end
 
     def confirm_voice_capability

@@ -1,10 +1,12 @@
 class PhoneSetupPresenter
+  include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :otp_delivery_preference
+  attr_reader :user
+  delegate :otp_delivery_preference, :two_factor_enabled?, to: :user
 
-  def initialize(otp_delivery_preference)
-    @otp_delivery_preference = otp_delivery_preference
+  def initialize(user)
+    @user = user
   end
 
   def heading
@@ -21,5 +23,13 @@ class PhoneSetupPresenter
 
   def image
     "2FA-#{otp_delivery_preference}.svg"
+  end
+
+  def cancel_path
+    if two_factor_enabled?([:piv_cac])
+      account_recovery_setup_path
+    else
+      two_factor_options_path
+    end
   end
 end

@@ -8,12 +8,7 @@ module PersonalKeyConcern
   end
 
   def create_new_code
-    if active_profile.present?
-      Pii::ReEncryptor.new(user: current_user, user_session: user_session).perform
-      active_profile.personal_key
-    else
-      PersonalKeyGenerator.new(current_user).create
-    end
+    configuration_manager.create_new_code(user_session)
   end
 
   private
@@ -28,5 +23,9 @@ module PersonalKeyConcern
     sign_out
     flash[:alert] = t('errors.invalid_authenticity_token')
     redirect_to new_user_session_url
+  end
+
+  def configuration_manager
+    @configuration_manager ||= current_user.two_factor_configuration(:personal_key)
   end
 end

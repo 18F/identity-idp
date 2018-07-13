@@ -1,6 +1,7 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
   include NonNullUuid
+  include UserTwoFactorMethods
 
   after_validation :set_default_role, if: :new_record?
 
@@ -53,28 +54,8 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
-  def confirm_piv_cac?(proposed_uuid)
-    x509_dn_uuid == proposed_uuid if proposed_uuid
-  end
-
-  def piv_cac_enabled?
-    FeatureManagement.piv_cac_enabled? && x509_dn_uuid.present?
-  end
-
-  def piv_cac_available?
-    piv_cac_enabled? || identities.any?(&:piv_cac_available?)
-  end
-
   def need_two_factor_authentication?(_request)
     two_factor_enabled?
-  end
-
-  def phone_enabled?
-    phone.present?
-  end
-
-  def two_factor_enabled?
-    phone_enabled? || totp_enabled? || piv_cac_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
