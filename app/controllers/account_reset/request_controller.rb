@@ -28,10 +28,13 @@ module AccountReset
     end
 
     def send_notifications
-      SmsAccountResetNotifierJob.perform_now(
-        phone: current_user.phone,
-        cancel_token: current_user.account_reset_request.request_token
-      )
+      phone = current_user.phone
+      if phone
+        SmsAccountResetNotifierJob.perform_now(
+          phone: phone,
+          cancel_token: current_user.account_reset_request.request_token
+        )
+      end
       UserMailer.account_reset_request(current_user).deliver_later
     end
 

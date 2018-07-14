@@ -158,8 +158,8 @@ fr:
         le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
-        successful_cancel: Je vous remercie. La demande de suppression de votre compte
-          login.gov a été annulé.
+        successful_cancel: Je vous remercie. Votre demande de suppression de votre
+          compte login.gov a été annulée.
         link: supprimer votre compte
         text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité
           ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.

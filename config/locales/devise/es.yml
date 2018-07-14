@@ -151,8 +151,8 @@ es:
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
-        successful_cancel: Gracias. La solicitud para eliminar su cuenta de login.gov
-          ha sido cancelado.
+        successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
+          ha sido cancelada.
         link: eliminando su cuenta
         text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
           puede restablecer tus preferencias por %{link}.

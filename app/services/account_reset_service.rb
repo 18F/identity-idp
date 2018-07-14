@@ -18,6 +18,7 @@ class AccountResetService
     account_reset.update(cancelled_at: Time.zone.now,
                          request_token: nil,
                          granted_token: nil)
+    account_reset
   end
 
   def self.report_fraud(token)
