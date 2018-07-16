@@ -44,7 +44,9 @@ class SmsController < ApplicationController
       result.to_h
     )
 
-    head :forbidden
+    # Invalid requests don't require a response for now, and 4xx
+    # errors from random incoming messages junk up the logs
+    head :ok
   end
 
   # `http_basic_authenticate_with name` had issues related to testing, so using
