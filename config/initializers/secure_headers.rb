@@ -18,8 +18,8 @@ SecureHeaders::Configuration.default do |config|
       '*.nr-data.net',
       '*.google-analytics.com',
     ],
-    font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', 'login.gov'],
+    font_src: ["'self'", 'data:', Figaro.env.asset_host],
+    img_src: ["'self'", 'data:', 'login.gov', Figaro.env.asset_host],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [
@@ -30,8 +30,9 @@ SecureHeaders::Configuration.default do |config|
       '*.google-analytics.com',
       'www.google.com',
       'www.gstatic.com',
+      Figaro.env.asset_host,
     ],
-    style_src: ["'self'"],
+    style_src: ["'self'", Figaro.env.asset_host],
     base_uri: ["'self'"],
   }
 
