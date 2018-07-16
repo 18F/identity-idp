@@ -15,7 +15,7 @@ module Idv
     end
 
     def create
-      result = @idv_form.submit(step_params)
+      result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
 
       if result.success?
