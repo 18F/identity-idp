@@ -32,7 +32,7 @@ describe UspsExporter do
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",
       service_provider.friendly_name,
-      service_provider.return_to_sp_url,
+      "https://#{Figaro.env.domain_name}",
     ]
     values.join('|')
   end
