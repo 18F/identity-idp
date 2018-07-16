@@ -59,13 +59,6 @@ module Idv
       )
     end
 
-    # TODO: Delete this method
-    def handle_idv_redirect
-      redirect_to account_url and return if current_user.personal_key.present?
-      user_session[:personal_key] = create_new_code
-      redirect_to manage_personal_key_url
-    end
-
     def process_success
       redirect_to idv_session_success_url
     end

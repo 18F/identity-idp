@@ -13,7 +13,6 @@ module Idv
       @presenter = CancellationConfirmationPresenter.new
       idv_session = user_session[:idv]
       idv_session&.clear
-      # TODO: We should find a way to redirect to personal key for users who cancel during sign up
     end
 
     private

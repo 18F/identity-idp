@@ -30,8 +30,6 @@ shared_examples 'cancel at idv step' do |step, sp|
     expect(page).to have_content(t('headings.cancellations.confirmation'))
     expect(page).to have_current_path(idv_cancel_path)
 
-    # TODO: Add a test to test that the SP link shows up when coming from an SP
-
     # After visiting /verify, expect to redirect to the jurisdiction step,
     # the first step in the IdV flow
     visit idv_path
