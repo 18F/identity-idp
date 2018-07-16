@@ -75,5 +75,5 @@ p = link_to t('links.access_help'),
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
       = t('forms.buttons.continue')
 .mt2.pt1.border-top
-  = link_to t('links.cancel'), idv_cancel_step_path(:profile), class: 'h5'
+  = link_to t('links.cancel'), idv_cancel_step_path(step: :profile), class: 'h5'
 = render @view_model.modal_partial, view_model: @view_model

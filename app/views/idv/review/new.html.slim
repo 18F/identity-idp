@@ -11,4 +11,4 @@ h1.h3 = t('idv.titles.session.review')
     = render 'shared/pii_review', pii: @idv_params, phone: formatted_phone
 
   .mt2.pt1.border-top
-    = link_to t('links.cancel'), idv_cancel_step_path(:review), class: 'h5'
+    = link_to t('links.cancel'), idv_cancel_step_path(step: :review), class: 'h5'

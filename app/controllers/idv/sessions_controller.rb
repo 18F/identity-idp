@@ -45,13 +45,6 @@ module Idv
 
     def success; end
 
-    # TODO: Delete this method
-    def destroy
-      idv_session = user_session[:idv]
-      idv_session&.clear
-      handle_idv_redirect
-    end
-
     private
 
     def confirm_step_needed

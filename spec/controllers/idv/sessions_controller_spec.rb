@@ -338,14 +338,5 @@ describe Idv::SessionsController do
         end
       end
     end
-
-    describe '#destroy' do
-      it 'clears the idv session and returns the user to their profile' do
-        delete :destroy
-
-        expect(controller.user_session[:idv]).to eq({})
-        expect(response).to redirect_to(account_path)
-      end
-    end
   end
 end

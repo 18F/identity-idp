@@ -84,7 +84,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
         visit idv_path
         click_on t('links.cancel')
-        click_on t('idv.buttons.cancel')
+        click_on t('forms.buttons.cancel')
 
         expect(current_path).to match(account_path)
       end

@@ -21,5 +21,5 @@ ul.py1.m0
   = f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt6 sm-col-6 col-12'
 
 .mt2.pt1.border-top
-  = link_to t('links.cancel'), idv_cancel_step_path(:phone), class: 'h5'
+  = link_to t('links.cancel'), idv_cancel_step_path(step: :phone), class: 'h5'
 = render @view_model.modal_partial, view_model: @view_model
