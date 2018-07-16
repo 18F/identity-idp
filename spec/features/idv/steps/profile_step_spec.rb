@@ -78,6 +78,12 @@ feature 'idv profile step', :idv_job do
     it_behaves_like 'cancel at idv step', :profile, :saml
   end
 
+  context 'cancelling IdV after profile success' do
+    it_behaves_like 'cancel at idv step', :profile_success
+    it_behaves_like 'cancel at idv step', :profile_success, :oidc
+    it_behaves_like 'cancel at idv step', :profile_success, :saml
+  end
+
   context 'when the IdV background job fails' do
     it_behaves_like 'failed idv job', :profile
   end

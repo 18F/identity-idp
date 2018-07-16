@@ -1,14 +1,14 @@
 module Idv
   class CancellationPresenter < FailurePresenter
-    # TODO: i18n
-
     delegate :idv_jurisdiction_path,
              :idv_otp_delivery_method_path,
              :idv_phone_path,
              :idv_session_path,
+             :idv_session_success_path,
              :idv_review_path,
              :idv_usps_path,
              :login_two_factor_path,
+             :t,
              to: :view_context
 
     attr_reader :step, :view_context
@@ -20,11 +20,11 @@ module Idv
     end
 
     def title
-      I18n.t('headings.cancellations.prompt')
+      t('headings.cancellations.prompt')
     end
 
     def header
-      I18n.t('headings.cancellations.prompt')
+      t('headings.cancellations.prompt')
     end
 
     def cancellation_warnings
@@ -42,6 +42,7 @@ module Idv
         phone_otp_verification: login_two_factor_path(otp_delivery_preference: :sms),
         phone: idv_phone_path,
         profile: idv_session_path,
+        profile_success: idv_session_success_path,
         review: idv_review_path,
         usps: idv_usps_path,
       }[step] || idv_path
