@@ -11,14 +11,14 @@ es:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
+      return_to_account: NOT TRANSLATED YET
       warning_header: Si usted cancela ahora
-      warning_points:
-      - No podremos verificar su identidad
-      - No mantendremos un registro de su nombre, dirección, fecha de nacimiento o
-        número de Seguro Social
-      - No podrá acceder a su información con seguridad usando login.gov
-      - Usted todavía tiene una cuenta de login.gov con su email
-      - Puede administrar esa cuenta en su página de perfil
+      warnings:
+        warning_1: NOT TRANSLATED YET
+        warning_2: NOT TRANSLATED YET
+        warning_3: NOT TRANSLATED YET
+        warning_4: NOT TRANSLATED YET
+        warning_5: NOT TRANSLATED YET
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.

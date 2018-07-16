@@ -1,21 +1,25 @@
 module Idv
   class CancellationConfirmationPresenter < FailurePresenter
+    include ActionView::Helpers::TranslationHelper
+
     def initialize
       super(:failure)
     end
 
     def title
-      I18n.t('headings.cancellations.confirmation')
+      t('headings.cancellations.confirmation')
     end
 
     def header
-      I18n.t('headings.cancellations.confirmation')
+      t('headings.cancellations.confirmation')
     end
 
     def cancellation_effects
       [
-        'bad things have happened',
-        'other bad things also happened',
+        t('idv.cancel.warnings.warning_2'),
+        t('idv.cancel.warnings.warning_3', app: APP_NAME),
+        t('idv.cancel.warnings.warning_4'),
+        t('idv.cancel.warnings.warning_5'),
       ]
     end
   end

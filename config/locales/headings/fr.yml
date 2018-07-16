@@ -14,7 +14,6 @@ fr:
     cancellations:
       confirmation: Vous avez annulé la vérification de votre identité avec login.gov
       prompt: Es-tu sûre de vouloir annuler?
-      return_to: Retourner à
     confirmations:
       new: Envoyer un autre courriel de confirmation
     create_account_with_sp:

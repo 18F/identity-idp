@@ -29,8 +29,11 @@ module Idv
 
     def cancellation_warnings
       [
-        'bad things will happen',
-        'other bad things will happen',
+        t('idv.cancel.warnings.warning_1'),
+        t('idv.cancel.warnings.warning_2'),
+        t('idv.cancel.warnings.warning_3', app: APP_NAME),
+        t('idv.cancel.warnings.warning_4'),
+        t('idv.cancel.warnings.warning_5'),
       ]
     end
 
@@ -38,7 +41,6 @@ module Idv
       {
         jurisdiction: idv_jurisdiction_path,
         phone_otp_delivery_selection: idv_otp_delivery_method_path,
-        # TODO: Figure out otp delivery preference
         phone_otp_verification: login_two_factor_path(otp_delivery_preference: :sms),
         phone: idv_phone_path,
         profile: idv_session_path,

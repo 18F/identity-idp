@@ -14,7 +14,6 @@ es:
     cancellations:
       confirmation: Ha cancelado la verificación de su identidad con login.gov
       prompt: "¿Estas seguro que quieres cancelar?"
-      return_to: Volver a
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
