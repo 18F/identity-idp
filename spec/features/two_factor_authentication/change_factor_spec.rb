@@ -109,7 +109,7 @@ feature 'Changing authentication factor' do
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
           visit manage_phone_path
           complete_2fa_confirmation_without_entering_otp
-          click_link t('links.two_factor_authentication.resend_code.sms')
+          click_link t('links.two_factor_authentication.get_another_code')
 
           expect(SmsOtpSenderJob).to have_received(:perform_later).
             with(

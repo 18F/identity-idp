@@ -23,7 +23,6 @@ describe 'account_reset/confirm_delete_account/show.html.slim' do
   it 'contains link to create a new account' do
     render
 
-    puts rendered.inspect
     expect(rendered).to have_link(
       t('account_reset.confirm_delete_account.link_text', app: APP_NAME),
       href: root_path

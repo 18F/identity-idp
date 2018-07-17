@@ -101,12 +101,7 @@ class User < ApplicationRecord
   end
 
   def active_identities
-    identities.where(
-      'session_uuid IS NOT ?',
-      nil
-    ).order(
-      last_authenticated_at: :asc
-    ) || []
+    identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
   end
 
   def multiple_identities?
