@@ -5,7 +5,7 @@ class SmsOtpSenderJob < ApplicationJob
   def perform(code:, phone:, otp_created_at:, locale: nil)
     return unless otp_valid?(otp_created_at)
 
-    if us_number?
+    if programmable_sms_number?
       send_sms_via_twilio_rest_api
     else
       send_sms_via_twilio_verify_api(locale)
@@ -24,7 +24,7 @@ class SmsOtpSenderJob < ApplicationJob
   end
 
   def send_sms_via_twilio_rest_api
-    TwilioService.new.send_sms(
+    TwilioService::Utils.new.send_sms(
       to: phone,
       body: I18n.t(
         'jobs.sms_otp_sender_job.message',
@@ -37,8 +37,9 @@ class SmsOtpSenderJob < ApplicationJob
     PhoneVerification.new(phone: phone, locale: locale, code: code).send_sms
   end
 
-  def us_number?
-    Phonelib.parse(phone).country == 'US'
+  def programmable_sms_number?
+    programmable_sms_countries = Figaro.env.programmable_sms_countries.split(',')
+    programmable_sms_countries.include?(Phonelib.parse(phone).country)
   end
 
   def otp_valid?(otp_created_at)

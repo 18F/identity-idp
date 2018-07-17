@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
 
+  # Twilio Request URL for inbound SMS
+  post '/api/sms/receive' => 'sms#receive'
+
   post '/api/service_provider' => 'service_provider#update'
   match '/api/voice/otp' => 'voice/otp#show',
         via: %i[get post],
@@ -62,6 +65,9 @@ Rails.application.routes.draw do
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
+
+      get '/login/two_factor/options' => 'two_factor_authentication/options#index'
+      post '/login/two_factor/options' => 'two_factor_authentication/options#create'
 
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'

@@ -75,8 +75,6 @@ module PivCacService
     end
 
     def authenticate(token)
-      # TODO: make this secret required once we have everything deployed and configured
-      # The piv/cac service side is pending, so this is not critical yet.
       secret = Figaro.env.piv_cac_verify_token_secret
       return '' if secret.blank?
       nonce = SecureRandom.hex(10)

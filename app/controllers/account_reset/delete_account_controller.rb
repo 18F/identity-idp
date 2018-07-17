@@ -7,8 +7,10 @@ module AccountReset
     def show; end
 
     def delete
-      analytics.track_event(Analytics::ACCOUNT_RESET, event: :delete, token_valid: true)
-      email = reset_session_and_set_email
+      user = @account_reset_request.user
+      analytics.track_event(Analytics::ACCOUNT_RESET,
+                            event: :delete, token_valid: true, user_id: user.uuid)
+      email = reset_session_and_set_email(user)
       UserMailer.account_reset_complete(email).deliver_later
       redirect_to account_reset_confirm_delete_account_url
     end
@@ -19,8 +21,7 @@ module AccountReset
       redirect_to root_url unless FeatureManagement.account_reset_enabled?
     end
 
-    def reset_session_and_set_email
-      user = @account_reset_request.user
+    def reset_session_and_set_email(user)
       email = user.email
       user.destroy!
       sign_out
