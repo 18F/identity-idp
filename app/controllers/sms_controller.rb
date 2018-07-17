@@ -5,29 +5,21 @@ class SmsController < ApplicationController
   # Twilio supports HTTP Basic Auth for request URL
   # https://www.twilio.com/docs/usage/security
   before_action :authenticate
+  before_action :set_message, only: [:receive]
 
   # Disable CSRF check
   skip_before_action :verify_authenticity_token, only: [:receive]
 
   def receive
-    signature = request.headers[TwilioService::Sms::Request::SIGNATURE_HEADER]
-    message = TwilioService::Sms::Request.new(request.url, params, signature)
+    result = SmsForm.new(@message).submit
 
-    handle_result(message, SmsForm.new(message).submit)
+    result.success? ? process_success(result) : process_failure(result)
   end
 
   private
 
-  def handle_result(message, result)
-    if result.success?
-      process_success(message, result)
-    else
-      process_failure(result)
-    end
-  end
-
-  def process_success(message, result)
-    response = TwilioService::Sms::Response.new(message)
+  def process_success(result)
+    response = TwilioService::Sms::Response.new(@message)
     SmsReplySenderJob.perform_later(response.reply)
 
     analytics.track_event(
@@ -44,9 +36,11 @@ class SmsController < ApplicationController
       result.to_h
     )
 
-    # Invalid requests don't require a response for now, and 4xx
-    # errors from random incoming messages junk up the logs
-    head :ok
+    if !@message.signature_valid?
+      head :forbidden
+    else
+      head :ok
+    end
   end
 
   # `http_basic_authenticate_with name` had issues related to testing, so using
@@ -72,5 +66,11 @@ class SmsController < ApplicationController
   def auth_configured?(env)
     env.twilio_http_basic_auth_username.present? &&
       env.twilio_http_basic_auth_password.present?
+  end
+
+  def set_message
+    signature = request.headers[TwilioService::Sms::Request::SIGNATURE_HEADER]
+
+    @message = TwilioService::Sms::Request.new(request.url, params, signature)
   end
 end
