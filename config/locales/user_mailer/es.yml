@@ -6,7 +6,7 @@ es:
       link_text: NOT TRANSLATED YET
       subject: NOT TRANSLATED YET
     account_reset_cancel:
-      intro: Este correo electrónico confirma que ha cancelado la solicitud para eliminar
+      intro: Este correo electrónico confirma que ha cancelado su solicitud para eliminar
         su cuenta de login.gov.
       subject: Eliminar su cuenta
       help: ''

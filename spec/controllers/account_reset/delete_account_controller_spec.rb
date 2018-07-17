@@ -57,5 +57,23 @@ describe AccountReset::DeleteAccountController do
 
       expect(response).to render_template(:show)
     end
+
+    it 'displays a flash and redirects to root if the token is expired' do
+      user = create(:user)
+      AccountResetService.new(user).create_request
+      AccountResetService.new(user).grant_request
+
+      stub_analytics
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET,
+             event: :delete, token_valid: true, expired: true, user_id: user.uuid)
+
+      Timecop.travel(Time.zone.now + 2.days) do
+        get :show, params: { token: AccountResetRequest.all[0].granted_token }
+      end
+
+      expect(response).to redirect_to(root_url)
+      expect(flash[:error]).to eq t('devise.two_factor_authentication.account_reset.link_expired')
+    end
   end
 end

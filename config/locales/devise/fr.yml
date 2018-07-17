@@ -158,6 +158,8 @@ fr:
         le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
+        link_expired: Le lien pour supprimer votre compte login.gov a expiré. Veuillez
+          créer une autre demande pour supprimer votre compte.
         successful_cancel: Je vous remercie. Votre demande de suppression de votre
           compte login.gov a été annulée.
         link: supprimer votre compte

@@ -151,6 +151,8 @@ es:
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
+        link_expired: El enlace para eliminar su cuenta de login.gov ha caducado.
+          Crea otra solicitud para eliminar tu cuenta.
         successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
           ha sido cancelada.
         link: eliminando su cuenta
