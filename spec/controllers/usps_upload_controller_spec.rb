@@ -29,6 +29,8 @@ describe UspsUploadController do
 
       context 'on a federal workday' do
         it 'runs the uploader' do
+          expect(controller).to receive(:today).and_return(Date.new(2018, 7, 3))
+
           usps_uploader = instance_double(UspsUploader)
           expect(usps_uploader).to receive(:run)
           expect(UspsUploader).to receive(:new).and_return(usps_uploader)

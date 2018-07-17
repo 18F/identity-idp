@@ -412,7 +412,7 @@ feature 'Sign in' do
       user = create(:user, :signed_up)
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
-      click_link t('devise.two_factor_authentication.personal_key_fallback.link')
+      choose_another_security_option('personal_key')
       enter_personal_key(personal_key: old_personal_key)
       click_submit_default
       visit account_path

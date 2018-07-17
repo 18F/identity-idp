@@ -12,7 +12,6 @@ describe 'account_reset/delete_account/show.html.slim' do
   end
 
   it 'has button to delete' do
-
     render
     expect(rendered).to have_button t('account_reset.delete_account.delete_button')
   end

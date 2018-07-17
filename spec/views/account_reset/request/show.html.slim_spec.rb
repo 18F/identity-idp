@@ -8,7 +8,6 @@ describe 'account_reset/request/show.html.slim' do
   end
 
   it 'has button to delete' do
-
     render
     expect(rendered).to have_button t('account_reset.request.yes_continue')
   end

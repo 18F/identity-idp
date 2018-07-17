@@ -8,7 +8,7 @@ module TwoFactorAuthentication
       analytics.track_event(
         Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
       )
-
+      @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
     end
 

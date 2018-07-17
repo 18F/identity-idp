@@ -5,9 +5,9 @@ Rails.application.configure do
   config.cache_classes = true
   config.eager_load = true
   config.consider_all_requests_local = false
-  config.action_controller.asset_host = Figaro.env.domain_name
   config.action_controller.perform_caching = true
-  config.serve_static_files = ENV['RAILS_SERVE_STATIC_FILES'].present?
+
+  config.action_controller.asset_host = Figaro.env.asset_host || Figaro.env.domain_name
   config.assets.js_compressor = :uglifier
   config.assets.compile = false
   config.assets.digest = true
@@ -19,7 +19,7 @@ Rails.application.configure do
     host: Figaro.env.domain_name,
     protocol: 'https',
   }
-  config.action_mailer.asset_host = Figaro.env.mailer_domain_name
+  config.action_mailer.asset_host = Figaro.env.asset_host || Figaro.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_options = { from: Figaro.env.email_from }
   config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
