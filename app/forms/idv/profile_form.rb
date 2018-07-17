@@ -29,6 +29,15 @@ module Idv
       FormResponse.new(success: valid?, errors: errors.messages)
     end
 
+    def add_sp_unsupported_jurisdiction_error(sp_name)
+      error_message = [
+        I18n.t('idv.errors.unsupported_jurisdiction'),
+        I18n.t('idv.errors.unsupported_jurisdiction_sp', sp_name: sp_name),
+      ].join(' ')
+      errors.delete(:state)
+      errors.add(:state, error_message)
+    end
+
     private
 
     def consume_params(params)

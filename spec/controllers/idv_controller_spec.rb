@@ -142,7 +142,7 @@ describe IdvController do
 
         get :fail
 
-        expect(response).to render_template(:fail)
+        expect(response).to render_template('shared/_failure')
       end
     end
   end

@@ -3,12 +3,14 @@ module Idv
     include IdvStepConcern
     include IdvFailureConcern
 
+    attr_reader :idv_form
+
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed
+    before_action :confirm_step_allowed, except: [:failure]
     before_action :refresh_if_not_ready, only: [:show]
+    before_action :set_idv_form, except: [:failure]
 
     def new
-      @view_model = view_model
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
@@ -20,7 +22,6 @@ module Idv
         Idv::Job.submit(idv_session, [:address])
         redirect_to idv_phone_result_url
       else
-        @view_model = view_model
         render :new
       end
     end
@@ -30,12 +31,12 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result.to_h)
       increment_step_attempts
 
-      if result.success?
-        redirect_to_next_step
-      else
-        render_failure
-        render :new
-      end
+      redirect_to_next_step and return if result.success?
+      redirect_to idv_phone_failure_url(idv_step_failure_reason)
+    end
+
+    def failure
+      render_idv_step_failure(:phone, params[:reason].to_sym)
     end
 
     private
@@ -64,10 +65,6 @@ module Idv
       )
     end
 
-    def view_model_class
-      Idv::PhoneNew
-    end
-
     def step_params
       params.require(:idv_phone_form).permit(:phone)
     end
@@ -76,8 +73,12 @@ module Idv
       redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
-    def idv_form
-      @_idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+    def set_idv_form
+      @idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+    end
+
+    def failure_url(reason)
+      idv_phone_failure_url(reason)
     end
   end
 end
