@@ -582,6 +582,7 @@ production:
       - 'https://portal.dot.gov/openid-connect/dot_login'
       - 'https://fmcsa.portal.dot.gov/openid-connect/dot_login'
       - 'https://portal.dot.gov/'
+      - 'https://score.fmcsa.dot.gov/'
     restrict_to_deploy_env: 'prod'
 
   # NGA GEOWorks Symphony
