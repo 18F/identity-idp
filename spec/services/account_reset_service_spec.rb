@@ -37,12 +37,13 @@ describe AccountResetService do
   describe '#cancel_request' do
     it 'removes tokens from a account reset request' do
       subject.create_request
-      AccountResetService.cancel_request(user.account_reset_request.request_token)
+      cancel = AccountResetService.cancel_request(user.account_reset_request.request_token)
       arr = AccountResetRequest.find_by(user_id: user.id)
       expect(arr.request_token).to_not be_present
       expect(arr.granted_token).to_not be_present
       expect(arr.requested_at).to be_present
       expect(arr.cancelled_at).to be_present
+      expect(arr).to eq(cancel)
     end
 
     it 'does not raise an error for a cancel request with a blank token' do

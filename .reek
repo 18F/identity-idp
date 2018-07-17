@@ -163,6 +163,7 @@ UtilityFunction:
     - LocaleHelper#locale_url_param
     - IdvSession#timed_out_vendor_error
     - JWT::Signature#sign
+    - SmsAccountResetCancellationNotifierJob#perform
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
