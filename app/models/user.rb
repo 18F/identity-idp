@@ -1,5 +1,7 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
+  self.ignored_columns = %w[encrypted_password password_salt password_cost]
+
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
