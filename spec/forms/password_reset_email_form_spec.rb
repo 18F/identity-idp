@@ -9,7 +9,7 @@ describe PasswordResetEmailForm do
   describe '#submit' do
     context 'when email is valid and user exists' do
       it 'returns hash with properties about the event and the user' do
-        user = build(:user, :signed_up, email: 'test1@test.com')
+        user = create(:user, :signed_up, email: 'test1@test.com')
         subject = PasswordResetEmailForm.new('Test1@test.com')
 
         extra = {
@@ -65,7 +65,7 @@ describe PasswordResetEmailForm do
 
     context 'when recaptcha is valid' do
       it 'returns hash with properties about the event and the user' do
-        user = build(:user, :signed_up, email: 'test1@test.com')
+        user = create(:user, :signed_up, email: 'test1@test.com')
 
         captcha_results = mock_captcha(enabled: true, present: true, valid: true)
         subject = PasswordResetEmailForm.new('Test1@test.com', captcha_results)
@@ -90,7 +90,7 @@ describe PasswordResetEmailForm do
 
     context 'when recaptcha is invalid' do
       it 'returns hash with properties about the event and the user' do
-        user = build(:user, :signed_up, email: 'test1@test.com')
+        user = create(:user, :signed_up, email: 'test1@test.com')
 
         captcha_results = mock_captcha(enabled: true, present: true, valid: false)
         subject = PasswordResetEmailForm.new('Test1@test.com', captcha_results)
