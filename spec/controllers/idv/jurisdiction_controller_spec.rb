@@ -56,7 +56,7 @@ describe Idv::JurisdictionController do
       it 'redirects to the unsupported jurisdiction fail page' do
         post :create, params: { jurisdiction: { state: unsupported_jurisdiction } }
 
-        expect(response).to redirect_to(idv_jurisdiction_fail_url(:unsupported_jurisdiction))
+        expect(response).to redirect_to(idv_jurisdiction_failure_url(:unsupported_jurisdiction))
       end
     end
 
@@ -69,7 +69,7 @@ describe Idv::JurisdictionController do
     end
   end
 
-  describe '#show' do
+  describe '#failure' do
     let(:reason) { 'unsupported_jurisdiction' }
 
     before do
@@ -77,7 +77,7 @@ describe Idv::JurisdictionController do
     end
 
     it 'renders the `_failure` template' do
-      get :show, params: { reason: reason }
+      get :failure, params: { reason: reason }
 
       expect(response).to render_template('shared/_failure')
     end

@@ -7,7 +7,7 @@ feature 'Signing in via one-time use personal key' do
 
     personal_key = PersonalKeyGenerator.new(user).create
 
-    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
+    choose_another_security_option('personal_key')
 
     enter_personal_key(personal_key: personal_key)
 
@@ -26,7 +26,7 @@ feature 'Signing in via one-time use personal key' do
       personal_key = PersonalKeyGenerator.new(user).create
       wrong_personal_key = personal_key.split('-').reverse.join
 
-      click_link t('devise.two_factor_authentication.personal_key_fallback.link')
+      choose_another_security_option('personal_key')
       enter_personal_key(personal_key: wrong_personal_key)
       click_submit_default
 

@@ -23,7 +23,6 @@ en:
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
-      hardfail: We were unable to verify your identity at this time.
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:
@@ -33,6 +32,35 @@ en:
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
+    failure:
+      attempts:
+        one: You have <strong>1 attempt remaining.</strong>
+        other: You have <strong>%{count} attempts remaining.</strong>
+      button:
+        fail: Okay
+        jobfail: Try again tomorrow
+        timeout: Try again
+        warning: Try again
+      errors:
+        link: please contact us
+        text: If you keep getting these errors, %{link}, or try again tomorrow.
+      phone:
+        fail: For your security, identity verification for your account is <strong>locked
+          for 24 hours</strong>.
+        heading: We could not find records matching your phone information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
+        timeout: Our request to verify your information timed out.
+        warning: Please check the information you entered.
+      sessions:
+        fail: For your security, identity verification for your account is <strong>locked
+          for 24 hours</strong>.
+        heading: We could not find records matching your personal information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
+        timeout: Our request to verify your information timed out.
+        warning: Please check the information you entered. Common mistakes are an
+          incorrect Social Security Number, ZIP Code, or date of birth.
     form:
       activate_by_mail: get a code via mail instead ›
       address1: Address
@@ -78,7 +106,6 @@ en:
       dupe_ssn2_link: sign out now and sign back in
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
-      hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       help_center_html: Visit our <strong>Help Center</strong> to learn more about
         verifying your account.
       jurisdiction:
@@ -108,6 +135,9 @@ en:
         - not a virtual phone (such as Google Voice or Skype)
         - not a pre-paid phone number
         - a U.S. number
+      read_about_security_and_privacy:
+        link: read about how login.gov keeps your information safe
+        text: You can %{link} on our help page.
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -132,32 +162,6 @@ en:
         success: It should arrive in 5 to 10 business days.
       agencies_login: You can now continue to and log into these agencies.
       agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
-    modal:
-      attempts:
-        one: You have <strong>1 attempt remaining.</strong>
-        other: You have <strong>%{count} attempts remaining.</strong>
-      button:
-        fail: Okay
-        jobfail: Try again tomorrow
-        warning: Try again
-      phone:
-        fail: Your account is <strong>locked for 24 hours</strong> before you can
-          try to verify again. Check our Help section for more information about identity
-          verification.
-        heading: We could not find records matching your phone information.
-        jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
-        warning: Please check the information you entered.
-      sessions:
-        fail: Your account is <strong>locked for 24 hours</strong> before you can
-          try to verify again.
-        heading: We could not find records matching your personal information.
-        jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
-        warning: Please check the information you entered. Common mistakes are an
-          incorrect Social Security Number, ZIP Code, or date of birth.
     review:
       dob: Date of birth
       full_name: Full name

@@ -27,10 +27,6 @@ class SessionDecorator
     I18n.t('idv.messages.select_verification_without_sp')
   end
 
-  def idv_hardfail4_partial
-    'idv/no_sp_hardfail'
-  end
-
   def cancel_link_url
     view_context.root_url
   end

@@ -49,6 +49,7 @@ FeatureEnvy:
     - Idv::Proofer#validate_vendors
     - PersonalKeyGenerator#create_legacy_recovery_code
     - TwoFactorAuthenticationController#capture_analytics_for_exception
+    - Users::SessionsController#configure_permitted_parameters
 InstanceVariableAssumption:
   exclude:
     - User
@@ -59,6 +60,7 @@ ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
     - CloudhsmKeyGenerator#initialize_settings
+    - Users::SessionsController#configure_permitted_parameters
 NestedIterators:
   exclude:
     - UserFlowExporter#self.massage_html
@@ -161,6 +163,7 @@ UtilityFunction:
     - LocaleHelper#locale_url_param
     - IdvSession#timed_out_vendor_error
     - JWT::Signature#sign
+    - SmsAccountResetCancellationNotifierJob#perform
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

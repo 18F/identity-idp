@@ -57,7 +57,7 @@ describe Idv::PhoneController do
 
       get :new
 
-      expect(response).to redirect_to idv_fail_path
+      expect(response).to redirect_to idv_phone_failure_url(:fail)
     end
   end
 
@@ -185,8 +185,7 @@ describe Idv::PhoneController do
       it 'displays an error' do
         get :show
 
-        expect(response).to render_template :new
-        expect(flash[:warning]).to include(t('idv.modal.phone.timeout'))
+        expect(response).to redirect_to idv_phone_failure_path(:timeout)
       end
 
       it 'tracks the failure as a timeout' do
@@ -242,8 +241,7 @@ describe Idv::PhoneController do
             vendor: { messages: [], context: {}, exception: nil },
           }
 
-          expect(flash[:warning]).to match t('idv.modal.phone.heading')
-          expect(flash[:warning]).to match t('idv.modal.attempts', count: max_attempts - 1)
+          expect(response).to redirect_to idv_phone_failure_path(:warning)
           expect(@analytics).to have_received(:track_event).with(
             Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
           )

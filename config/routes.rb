@@ -66,6 +66,9 @@ Rails.application.routes.draw do
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
 
+      get '/login/two_factor/options' => 'two_factor_authentication/options#index'
+      post '/login/two_factor/options' => 'two_factor_authentication/options#create'
+
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
@@ -186,16 +189,18 @@ Rails.application.routes.draw do
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
         get '/phone/result' => 'phone#show'
+        get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         get '/review' => 'review#new'
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
         get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
-        get '/session/dupe' => 'sessions#dupe'
+        get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
+        delete '/session' => 'sessions#destroy'
         get '/jurisdiction' => 'jurisdiction#new'
         post '/jurisdiction' => 'jurisdiction#create'
-        get '/jurisdiction/:reason' => 'jurisdiction#show', as: :jurisdiction_fail
+        get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
         get '/cancel/:step' => 'cancellations#new', as: :cancel_step
         delete '/cancel' => 'cancellations#destroy'
       end

@@ -24,7 +24,11 @@ class IdvController < ApplicationController
   end
 
   def fail
-    redirect_to idv_url unless ok_to_fail?
+    redirect_to idv_url and return unless idv_attempter.exceeded?
+    presenter = Idv::IdvFailurePresenter.new(
+      view_context: view_context
+    )
+    render_full_width('shared/_failure', locals: { presenter: presenter })
   end
 
   private
@@ -37,9 +41,5 @@ class IdvController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
-  end
-
-  def ok_to_fail?
-    idv_attempter.exceeded? || flash[:max_attempts_exceeded]
   end
 end

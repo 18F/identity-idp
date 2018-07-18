@@ -78,10 +78,6 @@ class ServiceProviderSessionDecorator
     I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
-  def idv_hardfail4_partial
-    'idv/hardfail4'
-  end
-
   def requested_attributes
     sp_session[:requested_attributes].sort
   end
@@ -111,11 +107,11 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_alert_name
-    sp_alert? ? SP_ALERTS[sp_name][:i18n_name] : nil
+    SP_ALERTS.dig(sp_name, :i18n_name)
   end
 
   def sp_alert_learn_more
-    sp_alert? ? SP_ALERTS[sp_name][:learn_more] : nil
+    SP_ALERTS.dig(sp_name, :learn_more)
   end
 
   private

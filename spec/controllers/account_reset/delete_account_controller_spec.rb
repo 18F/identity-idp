@@ -10,7 +10,7 @@ describe AccountReset::DeleteAccountController do
       session[:granted_token] = AccountResetRequest.all[0].granted_token
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :delete, token_valid: true)
+        with(Analytics::ACCOUNT_RESET, event: :delete, token_valid: true, user_id: user.uuid)
 
       delete :delete
     end

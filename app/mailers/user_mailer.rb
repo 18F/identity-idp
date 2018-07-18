@@ -42,4 +42,8 @@ class UserMailer < ActionMailer::Base
   def account_reset_complete(email)
     mail(to: email, subject: t('user_mailer.account_reset_complete.subject'))
   end
+
+  def account_reset_cancel(email)
+    mail(to: email, subject: t('user_mailer.account_reset_cancel.subject'))
+  end
 end

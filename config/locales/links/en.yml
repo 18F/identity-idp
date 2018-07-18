@@ -18,7 +18,6 @@ en:
     passwords:
       forgot: Forgot your password?
     phone_confirmation:
-      auth_app_fallback_html: " or %{link}."
       fallback_to_sms_html: Send me a text message with the code instead
       fallback_to_voice_html: If you can't get text message right now, you can get
         a security code via %{link}
@@ -30,10 +29,5 @@ en:
     sign_out: Sign out
     two_factor_authentication:
       app_option: Use an authentication application instead.
-      app: get a security code via authentication app
-      resend_code:
-        sms: Get another text message
-        voice: Get another phone call
-      sms: get a security code via text message
-      voice: get a security code via phone call
+      get_another_code: Get another code
     what_is_totp: What is an authentication app?

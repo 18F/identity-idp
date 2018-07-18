@@ -44,19 +44,19 @@ module Idv
     end
 
     def try_again_step
-      try_again_link = link_to(t('idv.messages.jurisdiction.try_again_link'), idv_jurisdiction_path)
-      t('idv.messages.jurisdiction.try_again', link: try_again_link)
+      link = link_to(t('idv.messages.jurisdiction.try_again_link'), idv_jurisdiction_path)
+      t('idv.messages.jurisdiction.try_again', link: link)
     end
 
     def sp_step
       return unless (sp_name = decorated_session.sp_name)
-      support_link = link_to(sp_name, decorated_session.sp_alert_learn_more)
-      t('idv.messages.jurisdiction.sp_support', link: support_link)
+      link = link_to(sp_name, decorated_session.sp_return_url)
+      t('idv.messages.jurisdiction.sp_support', link: link)
     end
 
     def profile_step
-      profile_link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
-      t('idv.messages.jurisdiction.profile', link: profile_link)
+      link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
+      t('idv.messages.jurisdiction.profile', link: link)
     end
   end
 end

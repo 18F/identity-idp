@@ -63,7 +63,7 @@ feature 'idv profile step', :idv_job do
         complete_idv_steps_before_profile_step
         fill_out_idv_form_fail(state: state)
         click_continue
-        click_button t('idv.modal.button.warning')
+        click_on t('idv.failure.button.warning')
       end
 
       it 'populates the state from the form' do
