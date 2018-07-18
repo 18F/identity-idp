@@ -10,6 +10,14 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def choose_another_security_option(option)
+      click_link t('two_factor_authentication.login_options_link_text')
+
+      expect(current_path).to eq login_two_factor_options_path
+
+      select_2fa_option(option)
+    end
+
     def select_2fa_option(option)
       find("label[for='two_factor_options_form_selection_#{option}']").click
       click_on t('forms.buttons.continue')
@@ -441,11 +449,11 @@ module Features
     end
 
     def stub_twilio_service
-      twilio_service = instance_double(TwilioService)
+      twilio_service = instance_double(TwilioService::Utils)
       allow(twilio_service).to receive(:send_sms)
       allow(twilio_service).to receive(:place_call)
 
-      allow(TwilioService).to receive(:new).and_return(twilio_service)
+      allow(TwilioService::Utils).to receive(:new).and_return(twilio_service)
     end
 
     def stub_piv_cac_service

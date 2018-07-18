@@ -96,7 +96,6 @@ class OpenidConnectTokenForm
                                    sub: client_id, verify_sub: true)
     validate_aud_claim(payload)
   rescue JWT::DecodeError => err
-    # TODO: i18n these JWT gem error messages
     errors.add(:client_assertion, err.message)
   end
 

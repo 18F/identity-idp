@@ -20,6 +20,7 @@ p.mt-tiny.mb3 = @presenter.info
             span.blue.bold.fs-20p = option.label
             .regular.gray-dark.fs-10p.mb-tiny = option.info
 
-  = f.button :submit, t('forms.buttons.continue')
+  div
+    = f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide mb3'
 
 = render 'shared/cancel', link: destroy_user_session_path

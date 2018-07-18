@@ -34,28 +34,6 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     it { expect(presenter.piv_cac_capture_text).to eq expected_text }
   end
 
-  describe '#fallback_links' do
-    context 'with phone enabled' do
-      let(:presenter) do
-        presenter_with(reauthn: reauthn, user_email: user_email, phone_enabled: true)
-      end
-
-      it 'has two options' do
-        expect(presenter.fallback_links.count).to eq 2
-      end
-    end
-
-    context 'with phone disabled' do
-      let(:presenter) do
-        presenter_with(reauthn: reauthn, user_email: user_email, phone_enabled: false)
-      end
-
-      it 'has one option' do
-        expect(presenter.fallback_links.count).to eq 1
-      end
-    end
-  end
-
   describe '#cancel_link' do
     let(:locale) { LinkLocaleResolver.locale }
 
