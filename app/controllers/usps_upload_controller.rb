@@ -1,4 +1,6 @@
 class UspsUploadController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def create
     authorize do
       UspsUploader.new.run unless HolidayService.observed_holiday?(today)
@@ -17,11 +19,11 @@ class UspsUploadController < ApplicationController
     end
   end
 
-  def authorization_token
-    request.headers['X-USPS-UPLOAD-TOKEN']
-  end
-
   def today
     Time.zone.today
+  end
+
+  def authorization_token
+    request.headers['X-API-AUTH-TOKEN']
   end
 end
