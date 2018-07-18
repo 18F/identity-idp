@@ -4,7 +4,7 @@ class PersonalKeyLoginOptionPolicy
   end
 
   def configured?
-    user.personal_key.present?
+    user.encrypted_recovery_code_digest.present?
   end
 
   private
