@@ -47,7 +47,6 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
-    - PersonalKeyGenerator#create_legacy_recovery_code
     - TwoFactorAuthenticationController#capture_analytics_for_exception
     - Users::SessionsController#configure_permitted_parameters
 InstanceVariableAssumption:
