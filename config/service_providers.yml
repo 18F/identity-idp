@@ -733,3 +733,17 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # Forest Service Open Forest Permits
+  'urn:gov:gsa:open-id-connect:sp:sso:usda-forestservice:epermit-prod':
+    agency_id: 11
+    friendly_name: 'Forest Service Open Forest Permits'
+    agency: 'USFS'
+    logo: 'usfs.svg'
+    cert: 'usfs_prod'
+    return_to_sp_url: 'https://openforest.fs.usda.gov/'
+    redirect_uris:
+      - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
