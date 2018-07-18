@@ -9,13 +9,18 @@ class PersonalKeyGenerator
   end
 
   def create
-    user.personal_key = raw_personal_key
+    digest = create_encrypted_recovery_code_digest
+    # Until we drop the old columns, still write to them so that we can rollback
+    create_legacy_recovery_code(digest)
     user.save!
     raw_personal_key.tr(' ', '-')
   end
 
   def verify(plaintext_code)
-    user.valid_personal_key?(normalize(plaintext_code))
+    Encryption::PasswordVerifier.verify(
+      password: normalize(plaintext_code),
+      digest: user.encrypted_recovery_code_digest
+    )
   end
 
   def normalize(plaintext_code)
@@ -31,6 +36,21 @@ class PersonalKeyGenerator
   private
 
   attr_reader :user
+
+  def create_legacy_recovery_code(digest)
+    user.personal_key = [
+      digest.encryption_key,
+      digest.encrypted_password,
+    ].join(Encryption::Encryptors::AesEncryptor::DELIMITER)
+    user.recovery_salt = digest.password_salt
+    user.recovery_cost = digest.password_cost
+  end
+
+  def create_encrypted_recovery_code_digest
+    digest = Encryption::PasswordVerifier.digest(raw_personal_key)
+    user.encrypted_recovery_code_digest = digest.to_s
+    digest
+  end
 
   def encode_code(code:, length:, split:)
     decoded = Base32::Crockford.decode(code)

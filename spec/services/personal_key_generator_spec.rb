@@ -27,7 +27,7 @@ describe PersonalKeyGenerator do
 
       generator.create
 
-      expect(user.encrypted_recovery_code_digest).to_not eq personal_key
+      expect(user.personal_key).to_not eq personal_key
     end
 
     it 'generates a phrase of 4 words by default' do
@@ -44,10 +44,20 @@ describe PersonalKeyGenerator do
     it 'sets the encrypted recovery code digest' do
       user = create(:user)
       generator = PersonalKeyGenerator.new(user)
-      key = generator.create
+      generator.create
 
-      expect(user.encrypted_recovery_code_digest).to_not be_empty
-      expect(generator.verify(key)).to eq(true)
+      encrypted_recovery_code_data = JSON.parse(
+        user.encrypted_recovery_code_digest, symbolize_names: true
+      )
+
+      expect(
+        encrypted_recovery_code_data[:encryption_key]
+      ).to eq(user.personal_key.split('.').first)
+      expect(
+        encrypted_recovery_code_data[:encrypted_password]
+      ).to eq(user.personal_key.split('.').second)
+      expect(encrypted_recovery_code_data[:password_cost]).to eq(user.recovery_cost)
+      expect(encrypted_recovery_code_data[:password_salt]).to eq(user.recovery_salt)
     end
   end
 

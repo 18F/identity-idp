@@ -3,11 +3,11 @@ shared_examples_for 'personal key page' do
 
   context 'regenerating personal key with `Get another code` button' do
     scenario 'displays a flash message and a new code' do
-      old_digest = @user.reload.encrypted_recovery_code_digest
+      old_code = @user.reload.personal_key
 
       click_button t('users.personal_key.get_another')
 
-      expect(@user.reload.encrypted_recovery_code_digest).to_not eq old_digest
+      expect(@user.reload.personal_key).to_not eq old_code
       expect(page).to have_content t('notices.send_code.personal_key')
     end
   end

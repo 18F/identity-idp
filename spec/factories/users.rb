@@ -17,7 +17,7 @@ FactoryBot.define do
 
     trait :with_personal_key do
       after :build do |user|
-        PersonalKeyGenerator.new(user).create
+        user.personal_key = PersonalKeyGenerator.new(user).create
       end
     end
 

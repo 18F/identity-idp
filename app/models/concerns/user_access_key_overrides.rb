@@ -17,24 +17,7 @@ module UserAccessKeyOverrides
   def password=(new_password)
     @password = new_password
     return if @password.blank?
-    self.encrypted_password_digest = Encryption::PasswordVerifier.digest(@password)
-  end
-
-  def valid_personal_key?(normalized_personal_key)
-    Encryption::PasswordVerifier.verify(
-      password: normalized_personal_key,
-      digest: encrypted_recovery_code_digest
-    )
-  end
-
-  def personal_key
-    @personal_key
-  end
-
-  def personal_key=(new_personal_key)
-    @personal_key = new_personal_key
-    return if @personal_key.blank?
-    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.digest(@personal_key)
+    self.encrypted_password_digest = Encryption::PasswordVerifier.digest(@password).to_s
   end
 
   # This is a devise method, which we are overriding. This should not be removed

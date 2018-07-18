@@ -9,13 +9,12 @@ describe Encryption::PasswordVerifier do
       digest = described_class.digest('saltypickles')
 
       uak = Encryption::UserAccessKey.new(password: 'saltypickles', salt: salt)
-      parsed_digest = JSON.parse(digest, symbolize_names: true)
-      uak.unlock(parsed_digest[:encryption_key])
+      uak.unlock(digest.encryption_key)
 
-      expect(parsed_digest[:encrypted_password]).to eq(uak.encrypted_password)
-      expect(parsed_digest[:encryption_key]).to eq(uak.encryption_key)
-      expect(parsed_digest[:password_salt]).to eq(salt)
-      expect(parsed_digest[:password_cost]).to eq(uak.cost)
+      expect(digest.encrypted_password).to eq(uak.encrypted_password)
+      expect(digest.encryption_key).to eq(uak.encryption_key)
+      expect(digest.password_salt).to eq(salt)
+      expect(digest.password_cost).to eq(uak.cost)
     end
   end
 
@@ -23,14 +22,14 @@ describe Encryption::PasswordVerifier do
     it 'returns true if the password matches' do
       password = 'saltypickles'
 
-      digest = described_class.digest(password)
+      digest = described_class.digest(password).to_s
       result = described_class.verify(password: password, digest: digest)
 
       expect(result).to eq(true)
     end
 
     it 'returns false if the password does not match' do
-      digest = described_class.digest('saltypickles')
+      digest = described_class.digest('saltypickles').to_s
       result = described_class.verify(password: 'pepperpickles', digest: digest)
 
       expect(result).to eq(false)
