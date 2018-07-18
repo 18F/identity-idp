@@ -1,6 +1,9 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
-  self.ignored_columns = %w[encrypted_password password_salt password_cost]
+  self.ignored_columns = %w[
+    encrypted_password password_salt password_cost
+    recovery_code recovery_cost recovery_salt
+  ]
 
   include NonNullUuid
 
