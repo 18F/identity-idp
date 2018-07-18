@@ -44,6 +44,10 @@ es:
         o el %{contact_link}.
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
+    please_reset_password:
+      call_to_action: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+      subject: NOT TRANSLATED YET
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.
