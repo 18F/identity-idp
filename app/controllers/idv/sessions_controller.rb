@@ -6,10 +6,10 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_two_factor_authenticated, except: [:destroy]
-    before_action :confirm_idv_attempts_allowed, except: %i[destroy success failure]
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_attempts_allowed, except: %i[success failure]
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed, except: %i[destroy success]
+    before_action :confirm_step_needed, except: [:success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
 
