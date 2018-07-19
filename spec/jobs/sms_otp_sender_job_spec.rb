@@ -6,7 +6,7 @@ describe SmsOtpSenderJob do
   describe '.perform' do
     before do
       reset_job_queues
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
       FakeSms.messages = []
     end
 
@@ -23,7 +23,7 @@ describe SmsOtpSenderJob do
     it 'sends a message containing the OTP code to the mobile number', twilio: true do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 
@@ -44,7 +44,7 @@ describe SmsOtpSenderJob do
       allow(I18n).to receive(:locale).and_return(:en).at_least(:once)
       allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
 
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 
@@ -83,7 +83,7 @@ describe SmsOtpSenderJob do
       end
     end
 
-    context 'when the parsed country of the phone number is not US' do
+    context 'when the phone number country is not in the programmable_sms_countries list' do
       it 'sends the SMS via PhoneVerification class' do
         PhoneVerification.adapter = FakeAdapter
         phone = '+1 787-327-0143'
@@ -101,6 +101,31 @@ describe SmsOtpSenderJob do
           phone: phone,
           otp_created_at: otp_created_at,
           locale: locale
+        )
+      end
+    end
+
+    context 'when the phone number country is in the programmable_sms_countries list' do
+      it 'sends the SMS via TwilioService' do
+        allow(Figaro.env).to receive(:programmable_sms_countries).and_return('US,CA,FR')
+        phone = '+33 661 32 70 14'
+        service = instance_double(TwilioService::Utils)
+        code = '123456'
+
+        expect(TwilioService::Utils).to receive(:new).and_return(service)
+        expect(service).to receive(:send_sms).with(
+          to: phone,
+          body: I18n.t(
+            'jobs.sms_otp_sender_job.message',
+            code: code, app: APP_NAME, expiration: Devise.direct_otp_valid_for.to_i / 60
+          )
+        )
+
+        SmsOtpSenderJob.perform_now(
+          code: code,
+          phone: phone,
+          otp_created_at: otp_created_at,
+          locale: 'fr'
         )
       end
     end

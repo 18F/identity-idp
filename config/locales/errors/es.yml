@@ -38,7 +38,10 @@ es:
       otp_incorrect: El código es incorrecto. ¿Lo escribió correctamente?
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
+      phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe
+        la opción de llamada telefónica a continuación o use su clave personal.
       requires_phone: requiere que ingrese su número de teléfono.
+      twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Proveedor de servicio no autorizado

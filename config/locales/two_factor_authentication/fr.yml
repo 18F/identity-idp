@@ -1,0 +1,29 @@
+---
+fr:
+  two_factor_authentication:
+    login_options:
+      auth_app: Application d'authentification
+      auth_app_info: Utilisez votre application d'authentification pour obtenir votre
+        code de sécurité
+      personal_key: Clé personnelle
+      personal_key_info: Utilisez la clé personnelle de 16 caractères que vous avez
+        utilisée lors de la création du compte.
+      piv_cac: Employés du gouvernement
+      piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
+      sms: SMS
+      sms_info: Obtenez votre code de sécurité par SMS.
+      voice: Appel téléphonique
+      voice_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
+        les numéros de téléphone en Amerique du Nord)
+    login_options_title: Sélectionnez votre option de sécurité
+    login_options_link_text: Choisissez une autre option de sécurité
+    login_intro: Vous les avez configurés lorsque vous avez crée votre compte
+    choose_another_option: "‹ Choisissez une autre option"
+    personal_key_fallback:
+      question: Vous n'avez pas votre clé personnelle?
+    phone_fallback:
+      question: Vous n'avez pas accès à votre téléphone maintenant?
+    piv_cac_fallback:
+      question: Vous n'avez pas accès à votre carte PIV/CAC?
+    totp_fallback:
+      question: Vous n'avez pas votre application d'authentification?

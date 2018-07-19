@@ -5,7 +5,7 @@ describe VoiceOtpSenderJob do
 
   describe '.perform' do
     before do
-      TwilioService.telephony_service = FakeVoiceCall
+      TwilioService::Utils.telephony_service = FakeVoiceCall
       FakeVoiceCall.calls = []
     end
 

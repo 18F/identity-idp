@@ -41,7 +41,9 @@ describe AccountResetRequest do
     end
 
     it 'returns the record if the token is valid' do
-      arr = AccountResetRequest.create(id: 1, user_id: 2, granted_token: '123', granted_at: Time.zone.now)
+      arr = AccountResetRequest.create(
+        id: 1, user_id: 2, granted_token: '123', granted_at: Time.zone.now
+      )
 
       expect(AccountResetRequest.from_valid_granted_token('123')).to eq(arr)
     end

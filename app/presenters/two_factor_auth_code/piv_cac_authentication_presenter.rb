@@ -17,14 +17,6 @@ module TwoFactorAuthCode
       t('forms.piv_cac_mfa.submit')
     end
 
-    def fallback_links
-      [
-        otp_fallback_options,
-        auth_app_fallback,
-        personal_key_link,
-      ].compact
-    end
-
     def cancel_link
       locale = LinkLocaleResolver.locale
       if reauthn
@@ -38,42 +30,12 @@ module TwoFactorAuthCode
       redirect_to_piv_cac_service_url
     end
 
+    def fallback_question
+      t('two_factor_authentication.piv_cac_fallback.question')
+    end
+
     private
 
     attr_reader :user_email, :two_factor_authentication_method, :totp_enabled, :phone_enabled
-
-    def otp_fallback_options
-      return unless phone_enabled
-      t(
-        'devise.two_factor_authentication.totp_fallback.text_html',
-        sms_link: sms_link,
-        voice_link: voice_link
-      )
-    end
-
-    def sms_link
-      view.link_to(
-        t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-        login_two_factor_path(locale: LinkLocaleResolver.locale, otp_delivery_preference: 'sms')
-      )
-    end
-
-    def voice_link
-      view.link_to(
-        t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-        login_two_factor_path(locale: LinkLocaleResolver.locale, otp_delivery_preference: 'voice')
-      )
-    end
-
-    def auth_app_fallback
-      safe_join([auth_app_fallback_tag, '.']) if totp_enabled
-    end
-
-    def auth_app_fallback_tag
-      view.link_to(
-        t('links.two_factor_authentication.app'),
-        login_two_factor_authenticator_path(locale: LinkLocaleResolver.locale)
-      )
-    end
   end
 end

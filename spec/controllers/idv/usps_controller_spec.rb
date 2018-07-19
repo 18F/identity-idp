@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-require 'proofer/vendor/mock'
-
 describe Idv::UspsController do
   let(:user) { create(:user) }
 
