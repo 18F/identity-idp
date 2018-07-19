@@ -7,7 +7,7 @@ class StateIdMock < Proofer::Base
     drivers_license drivers_permit state_id_card
   ].freeze
 
-  required_attributes :state_id_number, :state_id_type, :state_id_jurisdiction
+  attributes :state_id_number, :state_id_type, :state_id_jurisdiction
 
   stage :state_id
 

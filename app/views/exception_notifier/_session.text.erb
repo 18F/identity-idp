@@ -16,8 +16,6 @@ Referer: <%= @request.referer %>
 <% session['user_return_to'] = session['user_return_to']&.split('?')&.first %>
 Session: <%= session %>
 
-<% user = @kontroller.analytics_user %>
-User UUID: <%= user.uuid %>
-User's Country (based on phone): <%= Phonelib.parse(user.phone).country %>
+User UUID: <%= @kontroller.analytics_user.uuid %>
 
 Visitor ID: <%= @request.cookies['ahoy_visitor'] %>

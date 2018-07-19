@@ -8,20 +8,22 @@ describe AccountReset::ReportFraudController do
 
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :fraud, token_valid: true)
+        with(Analytics::ACCOUNT_RESET, {event: :fraud, token_valid: true})
 
-      post :update, params: { token: AccountResetRequest.all[0].request_token }
+      post :update, params: {token:AccountResetRequest.all[0].request_token}
     end
 
     it 'logs a bad token to the analytics' do
+
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :fraud, token_valid: false)
+        with(Analytics::ACCOUNT_RESET, {event: :fraud, token_valid: false})
 
-      post :update, params: { token: 'FOO' }
+      post :update, params: {token:'FOO'}
     end
 
     it 'redirects to the root' do
+
       post :update
       expect(response).to redirect_to root_url
     end

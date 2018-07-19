@@ -72,7 +72,6 @@ p = link_to t('links.access_help'),
           input_html: { class: 'zipcode', value: @view_model.idv_form.zipcode }
 
   .mt3
-    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
-      = t('forms.buttons.continue')
+    button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
 = render 'shared/cancel', link: idv_cancel_path
 = render @view_model.modal_partial, view_model: @view_model

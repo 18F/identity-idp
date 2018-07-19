@@ -183,6 +183,10 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
               end
             end
           end
+
+          # context 'when choosing to sign in' do
+          #   TODO: duplicate scenarios from Create Account here
+          # end
         end
 
         context 'when LOA1' do

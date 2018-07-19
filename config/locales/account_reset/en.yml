@@ -20,7 +20,7 @@ en:
         and you will need to restore each connection. <br><br> If you continue, you
         will first receive an email confirmation.  As a security measure, you will
         receive another email with the link to continue deleting your account 24 hours
-        after the initial confirmation email arrives.
+        after the intial confirmation email arrives.
       are_you_sure: Are you sure you don't have access to any of your security methods
         OR your personal key?
       no_cancel: No, cancel

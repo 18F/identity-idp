@@ -11,13 +11,9 @@ namespace :rotate do
     User.find_in_batches.with_index do |users, _batch|
       User.transaction do
         users.each do |user|
-          begin
-            rotator = KeyRotator::AttributeEncryption.new(user)
-            rotator.rotate
-            progress&.increment
-          rescue StandardError => err # Don't use user.email in output...
-            Kernel.puts "Error with user id:#{user.id} #{err.message} #{err.backtrace}"
-          end
+          rotator = KeyRotator::AttributeEncryption.new(user)
+          rotator.rotate
+          progress&.increment
         end
       end
     end

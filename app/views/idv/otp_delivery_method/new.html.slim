@@ -1,52 +1,33 @@
 h1.h3.my0 = t('idv.titles.otp_delivery_method')
-p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
+p = t('idv.messages.otp_delivery_method.phone_number_html',
       phone: @set_otp_delivery_method_presenter.phone)
 = simple_form_for(@otp_delivery_selection_form, url: idv_otp_delivery_method_url,
-  html: { autocomplete: 'off', method: 'put', role: 'form', class: 'mt3' }) do |f|
-    fieldset.mb3.p0.border-none
-      label.btn-border.col-12.mb1
+  html: { autocomplete: 'off', method: 'put', role: 'form', class: 'mt2' }) do |f|
+  fieldset.mb3.p0.border-none
+    legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_delivery_preference.title')
+    label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
+      .radio
+        = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :sms, true,
+          class: :otp_delivery_preference_sms
+        span.indicator
+        = t('devise.two_factor_authentication.otp_delivery_preference.sms')
+    - if @set_otp_delivery_method_presenter.sms_only?
+      label.btn-border.col-12.sm-col-5.mb0.btn-disabled
         .radio
-          = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :sms, true,
-            class: :otp_delivery_preference_sms
-          span.indicator.mt-tiny
-          span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.otp_delivery_preference.sms')
-          .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.sms_info')
-      - if @set_otp_delivery_method_presenter.sms_only?
-        label.btn-border.col-12.mb0.btn-disabled
-          .radio
-            = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]',
-              :voice, false,
-              disabled: true,
-              class: :otp_delivery_preference_voice
-            span.indicator.mt-tiny
-            span.blue.bold.fs-20p
-              = t('devise.two_factor_authentication.otp_delivery_preference.voice')
-            .regular.gray-dark.fs-10p.mb-tiny
-              = t('devise.two_factor_authentication.two_factor_choice_options.voice_info')
-                p.mt2.mb0 = @set_otp_delivery_method_presenter.phone_unsupported_message
-      - else
-        label.btn-border.col-12.mb0
-          .radio
-            = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]',
-              :voice, false,
-              class: :otp_delivery_preference_voice
-            span.indicator.mt-tiny
-            span.blue.bold.fs-20p
-              = t('devise.two_factor_authentication.otp_delivery_preference.voice')
-            .regular.gray-dark.fs-10p.mb-tiny
-              = t('devise.two_factor_authentication.two_factor_choice_options.voice_info')
-      .mt3
-        = t('idv.form.no_alternate_phone_html',
-        link: link_to(t('idv.form.activate_by_mail'), idv_usps_path))
-      .mt2
-        = t('instructions.mfa.wrong_number_html',
-        link: link_to(t('forms.two_factor.try_again'), idv_phone_path))
-    .mt3
-      = f.submit t('idv.buttons.send_confirmation_code'),
-        type: :submit,
-        class: 'sm-col-6 col-12 btn btn-primary'
-.mt3.border-top
-  .mt1
-    = link_to t('links.cancel'), idv_phone_path
+          = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :voice, false,
+            disabled: true,
+            class: :otp_delivery_preference_voice
+          span.indicator
+          = t('devise.two_factor_authentication.otp_delivery_preference.voice')
+      p.mt2.mb0 = @set_otp_delivery_method_presenter.phone_unsupported_message
+    - else
+      label.btn-border.col-12.sm-col-5.mb0
+        .radio
+          = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :voice, false,
+            class: :otp_delivery_preference_voice
+          span.indicator
+          = t('devise.two_factor_authentication.otp_delivery_preference.voice')
+  = f.submit t('idv.buttons.send_confirmation_code'), type: :submit, class: 'btn btn-primary'
+.mt2.pt1.border-top
+  = t('instructions.mfa.wrong_number_html',
+    link: link_to(t('forms.two_factor.try_again'), idv_phone_path))

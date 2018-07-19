@@ -11,8 +11,12 @@ module TwoFactorAuthCode
         tooltip: view.tooltip(t('tooltips.authentication_app')))
     end
 
-    def fallback_question
-      t('two_factor_authentication.totp_fallback.question')
+    def fallback_links
+      [
+        otp_fallback_options,
+        piv_cac_link,
+        personal_key_link,
+      ].compact
     end
 
     def cancel_link
@@ -27,5 +31,30 @@ module TwoFactorAuthCode
     private
 
     attr_reader :user_email, :two_factor_authentication_method, :phone_enabled
+
+    def otp_fallback_options
+      return unless phone_enabled
+      t(
+        'devise.two_factor_authentication.totp_fallback.text_html',
+        sms_link: sms_link,
+        voice_link: voice_link
+      )
+    end
+
+    def sms_link
+      view.link_to(
+        t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+        otp_send_path(locale: LinkLocaleResolver.locale, otp_delivery_selection_form:
+          { otp_delivery_preference: 'sms' })
+      )
+    end
+
+    def voice_link
+      view.link_to(
+        t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+        otp_send_path(locale: LinkLocaleResolver.locale, otp_delivery_selection_form:
+          { otp_delivery_preference: 'voice' })
+      )
+    end
   end
 end

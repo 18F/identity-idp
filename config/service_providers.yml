@@ -582,7 +582,6 @@ production:
       - 'https://portal.dot.gov/openid-connect/dot_login'
       - 'https://fmcsa.portal.dot.gov/openid-connect/dot_login'
       - 'https://portal.dot.gov/'
-      - 'https://score.fmcsa.dot.gov/'
     restrict_to_deploy_env: 'prod'
 
   # NGA GEOWorks Symphony
@@ -717,19 +716,4 @@ production:
     return_to_sp_url: 'gov.dhs.cbp.opa.mycbp://result'
     redirect_uris:
       - 'gov.dhs.cbp.opa.mycbp://result'
-    restrict_to_deploy_env: 'prod'
-
-  # A DoD system that allows tsps to manage moves.
-  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
-    agency_id: 8
-    friendly_name: 'tsp.move.mil'
-    agency: 'DOD'
-    logo: 'move_mil.svg'
-    cert: 'move_mil_prod'
-    return_to_sp_url: 'https://tsp.move.mil'
-    redirect_uris:
-      - 'https://tsp.move.mil'
-      - 'https://tsp.move.mil/auth/login-gov/callback'
-    attribute_bundle:
-      - email
     restrict_to_deploy_env: 'prod'

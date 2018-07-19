@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'proofer/vendor/mock'
+
 describe Idv::ReviewController do
   let(:user) do
     create(

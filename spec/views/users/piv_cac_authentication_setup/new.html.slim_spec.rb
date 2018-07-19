@@ -24,7 +24,7 @@ describe 'users/piv_cac_authentication_setup/new.html.slim' do
       render
 
       expect(rendered).to have_link(
-        t('two_factor_authentication.choose_another_option'),
+        t('devise.two_factor_authentication.two_factor_choice_cancel'),
         href: two_factor_options_path
       )
     end

@@ -3,7 +3,7 @@ class SmsAccountResetNotifierJob < ApplicationJob
   include Rails.application.routes.url_helpers
 
   def perform(phone:, cancel_token:)
-    TwilioService::Utils.new.send_sms(
+    TwilioService.new.send_sms(
       to: phone,
       body: I18n.t(
         'jobs.sms_account_reset_notifier_job.message',
