@@ -73,11 +73,25 @@ class OpenidConnectRedirector
     errors.add(error_attr, t('openid_connect.authorization.errors.redirect_uri_no_match'))
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
   def redirect_uri_matches_sp_redirect_uri?
-    redirect_uri.present? &&
-      service_provider.active? &&
-      service_provider.redirect_uris.any? do |sp_redirect_uri|
-        redirect_uri.start_with?(sp_redirect_uri)
-      end
+    return unless redirect_uri.present? && service_provider.active?
+    parsed_redirect_uri = URI(redirect_uri)
+    service_provider.redirect_uris.any? do |sp_redirect_uri|
+      parsed_sp_redirect_uri = URI(sp_redirect_uri)
+
+      parsed_redirect_uri.scheme == parsed_sp_redirect_uri.scheme &&
+        parsed_redirect_uri.port == parsed_sp_redirect_uri.port &&
+        parsed_redirect_uri.host == parsed_sp_redirect_uri.host &&
+        parsed_redirect_uri.path.start_with?(parsed_sp_redirect_uri.path)
+    end
+  rescue URI::Error
+    false
   end
+
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength
 end
