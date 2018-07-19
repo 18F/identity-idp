@@ -662,14 +662,14 @@ feature 'Two Factor Authentication' do
     # For example, when migrating users from another DB
     it 'displays personal key and redirects to profile' do
       user = create(:user, :signed_up)
-      UpdateUser.new(user: user, attributes: { personal_key: nil }).call
+      UpdateUser.new(user: user, attributes: { encrypted_recovery_code_digest: nil }).call
 
       sign_in_user(user)
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(user.reload.personal_key).not_to be_nil
+      expect(user.reload.encrypted_recovery_code_digest).not_to be_nil
 
       click_acknowledge_personal_key
 
