@@ -1,21 +1,15 @@
 module Idv
   class CancellationPresenter < FailurePresenter
-    delegate :idv_jurisdiction_path,
-             :idv_otp_delivery_method_path,
-             :idv_phone_path,
-             :idv_session_path,
-             :idv_session_success_path,
-             :idv_review_path,
-             :idv_usps_path,
-             :login_two_factor_path,
-             :t,
+    include ActionView::Helpers::TranslationHelper
+
+    delegate :idv_path,
+             :request,
              to: :view_context
 
-    attr_reader :step, :view_context
+    attr_reader :view_context
 
-    def initialize(step:, view_context:)
+    def initialize(view_context:)
       super(:warning)
-      @step = step
       @view_context = view_context
     end
 
@@ -38,16 +32,24 @@ module Idv
     end
 
     def go_back_path
-      {
-        jurisdiction: idv_jurisdiction_path,
-        phone_otp_delivery_selection: idv_otp_delivery_method_path,
-        phone_otp_verification: login_two_factor_path(otp_delivery_preference: :sms),
-        phone: idv_phone_path,
-        profile: idv_session_path,
-        profile_success: idv_session_success_path,
-        review: idv_review_path,
-        usps: idv_usps_path,
-      }[step] || idv_path
+      referer_path || idv_path
+    end
+
+    private
+
+    def referer_path
+      referer_string = request.env['HTTP_REFERER']
+      return if referer_string.blank?
+      referer_uri = URI.parse(referer_string)
+      return unless referer_uri.host == Figaro.env.domain_name
+      extract_path_and_query_from_uri(referer_uri)
+    end
+
+    def extract_path_and_query_from_uri(uri)
+      path = uri.path
+      query = uri.query
+      return "#{path}?#{query}" if query.present?
+      path
     end
   end
 end

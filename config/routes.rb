@@ -201,7 +201,7 @@ Rails.application.routes.draw do
         get '/jurisdiction' => 'jurisdiction#new'
         post '/jurisdiction' => 'jurisdiction#create'
         get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
-        get '/cancel/:step' => 'cancellations#new', as: :cancel_step
+        get '/cancel/' => 'cancellations#new', as: :cancel
         delete '/cancel' => 'cancellations#destroy'
       end
     end

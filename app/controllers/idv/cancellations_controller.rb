@@ -6,19 +6,15 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      @presenter = CancellationPresenter.new(step: current_step, view_context: view_context)
+      # TODO analytics
+      @presenter = CancellationPresenter.new(view_context: view_context)
     end
 
     def destroy
+      # TODO analytics
       @presenter = CancellationConfirmationPresenter.new
       idv_session = user_session[:idv]
       idv_session&.clear
-    end
-
-    private
-
-    def current_step
-      params.require(:step).to_sym
     end
   end
 end
