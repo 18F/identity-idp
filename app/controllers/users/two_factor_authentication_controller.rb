@@ -4,7 +4,6 @@ module Users
 
     before_action :check_remember_device_preference
 
-    # rubocop:disable Metrics/MethodLength
     def show
       if current_user.piv_cac_enabled?
         redirect_to login_two_factor_piv_cac_url
@@ -15,10 +14,7 @@ module Users
       else
         redirect_to two_factor_options_url
       end
-    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception, action: 'show')
     end
-    # rubocop:enable Metrics/MethodLength
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
@@ -26,12 +22,11 @@ module Users
 
       if result.success?
         handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
-        update_otp_delivery_preference_if_needed
       else
         handle_invalid_otp_delivery_preference(result)
       end
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception, action: 'send_code')
+      invalid_phone_number(exception)
     end
 
     private
@@ -49,56 +44,19 @@ module Users
       end
     end
 
-    def update_otp_delivery_preference_if_needed
-      OtpDeliveryPreferenceUpdater.new(
-        user: current_user,
-        preference: delivery_params[:otp_delivery_preference],
-        context: otp_delivery_selection_form.context
-      ).call
-    end
-
     def handle_invalid_otp_delivery_preference(result)
       flash[:error] = result.errors[:phone].first
       preference = current_user.otp_delivery_preference
       redirect_to login_two_factor_url(otp_delivery_preference: preference)
     end
 
-    def invalid_phone_number(exception, action:)
-      capture_analytics_for_exception(exception)
-
-      if action == 'show'
-        redirect_to_otp_verification_with_error
-      else
-        flash[:error] = error_message(exception.code)
-        redirect_back(fallback_location: account_url)
-      end
-    end
-
-    def redirect_to_otp_verification_with_error
-      flash[:error] = t('errors.messages.phone_unsupported')
-      redirect_to login_two_factor_url(
-        otp_delivery_preference: current_user.otp_delivery_preference, reauthn: reauthn?
+    def invalid_phone_number(exception)
+      code = exception.code
+      analytics.track_event(
+        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: code
       )
-    end
-
-    # rubocop:disable Metrics/MethodLength
-    def capture_analytics_for_exception(exception)
-      attributes = {
-        error: exception.message,
-        code: exception.code,
-        context: context,
-        country: parsed_phone.country,
-      }
-      if exception.is_a?(PhoneVerification::VerifyError)
-        attributes[:status] = exception.status
-        attributes[:response] = exception.response
-      end
-      analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, attributes)
-    end
-    # rubocop:enable Metrics/MethodLength
-
-    def parsed_phone
-      @parsed_phone ||= Phonelib.parse(phone_to_deliver_to)
+      flash[:error] = error_message(code)
+      redirect_back(fallback_location: account_url)
     end
 
     def error_message(code)
@@ -110,9 +68,7 @@ module Users
     end
 
     def otp_delivery_selection_form
-      @otp_delivery_selection_form ||= OtpDeliverySelectionForm.new(
-        current_user, phone_to_deliver_to, context
-      )
+      OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to, context)
     end
 
     def reauthn_param

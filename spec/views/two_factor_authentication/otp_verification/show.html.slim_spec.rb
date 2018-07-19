@@ -46,9 +46,22 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'OTP copy' do
       let(:help_text) do
-        t('instructions.mfa.sms.number_message',
-          number: content_tag(:strong, presenter_data[:phone_number]),
-          expiration: Figaro.env.otp_valid_for)
+        code_link = link_to(
+          t('links.two_factor_authentication.resend_code.sms'),
+          otp_send_path(
+            locale: LinkLocaleResolver.locale,
+            otp_delivery_selection_form: {
+              otp_delivery_preference: 'sms',
+              resend: true,
+            }
+          )
+        )
+
+        t(
+          "instructions.mfa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
+          number: "<strong>#{presenter_data[:phone_number]}</strong>",
+          resend_code_link: code_link
+        )
       end
 
       it 'informs the user that an OTP has been sent to their number via #help_text' do
@@ -79,8 +92,8 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       it 'provides an option to use a personal key' do
         expect(rendered).to have_link(
-          t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          t('devise.two_factor_authentication.personal_key_fallback.link'),
+          href: login_two_factor_personal_key_path
         )
       end
     end
@@ -165,8 +178,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to have_link(
-          t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
         )
       end
     end
@@ -191,17 +203,23 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
                                     })
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
           href: resend_path
         )
       end
 
       it 'has a fallback link to send confirmation with voice' do
+        expected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
+        )
+        expected_link = link_to(
+          t('links.two_factor_authentication.voice'), expected_fallback_path
+        )
+
         render
 
-        expect(rendered).to have_link(
-          t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+        expect(rendered).to include(
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
@@ -247,17 +265,25 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
           href: resend_path
         )
       end
 
       it 'has a fallback link to send confirmation as SMS' do
+        expected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: 'sms',
+          }
+        )
+        expected_link = link_to(
+          t('links.two_factor_authentication.sms'), expected_fallback_path
+        )
+
         render
 
-        expect(rendered).to have_link(
-          t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+        expect(rendered).to include(
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 

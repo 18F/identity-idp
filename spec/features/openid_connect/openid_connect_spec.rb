@@ -5,9 +5,7 @@ class MockSession; end
 shared_examples 'OpenID Connect' do |cloudhsm_enabled|
   include IdvHelper
 
-  before do
-    enable_cloudhsm(cloudhsm_enabled)
-  end
+  before { enable_cloudhsm(cloudhsm_enabled) }
   after(:all) do
     SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
   end

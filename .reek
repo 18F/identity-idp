@@ -6,7 +6,6 @@ ControlParameter:
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
     - PhoneFormatter#self.format
-    - Users::TwoFactorAuthenticationController#invalid_phone_number
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -20,7 +19,6 @@ DuplicateMethodCall:
     - fallback_to_english
     - Idv::Proofer#load_vendors!
     - Upaya::RandomTools#self.random_weighted_sample
-    - SmsController#authenticate
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -48,8 +46,6 @@ FeatureEnvy:
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
     - PersonalKeyGenerator#create_legacy_recovery_code
-    - TwoFactorAuthenticationController#capture_analytics_for_exception
-    - Users::SessionsController#configure_permitted_parameters
 InstanceVariableAssumption:
   exclude:
     - User
@@ -60,11 +56,10 @@ ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
     - CloudhsmKeyGenerator#initialize_settings
-    - Users::SessionsController#configure_permitted_parameters
 NestedIterators:
   exclude:
     - UserFlowExporter#self.massage_html
-    - TwilioService::Utils#sanitize_phone_number
+    - TwilioService#sanitize_phone_number
     - ServiceProviderSeeder#run
 NilCheck:
   enabled: false
@@ -109,7 +104,6 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
-    - Users::TwoFactorAuthenticationController#send_code
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -163,7 +157,6 @@ UtilityFunction:
     - LocaleHelper#locale_url_param
     - IdvSession#timed_out_vendor_error
     - JWT::Signature#sign
-    - SmsAccountResetCancellationNotifierJob#perform
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

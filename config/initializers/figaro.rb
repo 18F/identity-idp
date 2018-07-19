@@ -30,7 +30,6 @@ Figaro.require_keys(
   'password_max_attempts',
   'password_pepper',
   'password_strength_enabled',
-  'programmable_sms_countries',
   'queue_health_check_dead_interval_seconds',
   'reauthn_window',
   'recovery_code_length',

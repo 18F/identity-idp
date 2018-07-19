@@ -67,7 +67,7 @@ plugins:
     - '.codeclimate.yml'
     config:
       strings:
-      - TODO
+      # Removed TODO from this list, as we want to allow TODOs in the codebase
       - FIXME
       - HACK
       - BUG
@@ -94,5 +94,6 @@ exclude_patterns:
   - 'lib/tasks/create_test_accounts.rb'
   - 'lib/user_flow_exporter.rb'
   - 'scripts/load_testing/'
+  - 'spec/'
   - 'tmp/'
   - 'config/initializers/jwt.rb'

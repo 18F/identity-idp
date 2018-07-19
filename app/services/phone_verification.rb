@@ -18,18 +18,9 @@ class PhoneVerification
     @locale = locale
   end
 
-  # rubocop:disable Style/GuardClause
   def send_sms
-    unless start_request.success?
-      raise VerifyError.new(
-        code: error_code,
-        message: error_message,
-        status: start_request.response_code,
-        response: start_request.response_body
-      )
-    end
+    raise VerifyError.new(code: error_code, message: error_message) unless start_request.success?
   end
-  # rubocop:enable Style/GuardClause
 
   private
 
@@ -45,8 +36,6 @@ class PhoneVerification
 
   def response_body
     @response_body ||= JSON.parse(start_request.response_body)
-  rescue JSON::ParserError
-    {}
   end
 
   def start_request
@@ -84,13 +73,11 @@ class PhoneVerification
   end
 
   class VerifyError < StandardError
-    attr_reader :code, :message, :status, :response
+    attr_reader :code, :message
 
-    def initialize(code:, message:, status:, response:)
+    def initialize(code:, message:)
       @code = code
       @message = message
-      @status = status
-      @response = response
     end
   end
 end

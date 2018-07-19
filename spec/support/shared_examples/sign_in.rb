@@ -35,7 +35,7 @@ shared_examples 'signing in as LOA1 with personal key' do |sp|
     visit_idp_from_sp_with_loa1(sp)
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
-    choose_another_security_option('personal_key')
+    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
 
@@ -65,7 +65,7 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
     visit_idp_from_sp_with_loa3(sp)
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
-    choose_another_security_option('personal_key')
+    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
     enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
     click_submit_default
 
@@ -90,7 +90,7 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
     visit_idp_from_sp_with_loa1(sp)
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
-    choose_another_security_option('personal_key')
+    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
 
@@ -117,7 +117,7 @@ shared_examples 'signing in as LOA3 with personal key after resetting password' 
     visit_idp_from_sp_with_loa3(sp)
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
-    choose_another_security_option('personal_key')
+    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
     enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
     click_submit_default
 

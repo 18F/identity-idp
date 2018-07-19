@@ -12,6 +12,7 @@ RSpec.describe WorkerHealthChecker do
   end
 
   def create_sidekiq_queues(*queues)
+    # TODO: find an API to use rather than manually mess with redis?
     Sidekiq.redis do |redis|
       queues.each do |queue|
         redis.sadd('queues', queue)

@@ -17,7 +17,7 @@ describe 'users/phone_setup/index.html.slim' do
 
   it 'renders a link to choose a different option' do
     expect(rendered).to have_link(
-      t('two_factor_authentication.choose_another_option'),
+      t('devise.two_factor_authentication.two_factor_choice_cancel'),
       href: two_factor_options_path
     )
   end

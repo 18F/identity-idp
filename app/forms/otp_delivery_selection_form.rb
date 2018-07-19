@@ -2,7 +2,7 @@ class OtpDeliverySelectionForm
   include ActiveModel::Model
   include OtpDeliveryPreferenceValidator
 
-  attr_reader :otp_delivery_preference, :phone, :context
+  attr_reader :otp_delivery_preference, :phone
 
   validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
   validates :phone, presence: true
@@ -20,6 +20,7 @@ class OtpDeliverySelectionForm
     @success = valid?
 
     change_otp_delivery_preference_to_sms if unsupported_phone?
+    update_otp_delivery_preference if should_update_user?
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -28,7 +29,7 @@ class OtpDeliverySelectionForm
 
   attr_writer :otp_delivery_preference
   attr_accessor :resend
-  attr_reader :success, :user
+  attr_reader :success, :user, :context
 
   def change_otp_delivery_preference_to_sms
     user_attributes = { otp_delivery_preference: 'sms' }
@@ -40,6 +41,24 @@ class OtpDeliverySelectionForm
     return false unless error_messages.key?(:phone)
 
     error_messages[:phone].first != I18n.t('errors.messages.missing_field')
+  end
+
+  def update_otp_delivery_preference
+    user_attributes = { otp_delivery_preference: otp_delivery_preference }
+    UpdateUser.new(user: user, attributes: user_attributes).call
+  end
+
+  def idv_context?
+    context == 'idv'
+  end
+
+  def otp_delivery_preference_changed?
+    otp_delivery_preference != user.otp_delivery_preference
+  end
+
+  def should_update_user?
+    return false if unsupported_phone?
+    success && otp_delivery_preference_changed? && !idv_context?
   end
 
   def extra_analytics_attributes

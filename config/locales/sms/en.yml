@@ -1,8 +1,0 @@
----
-en:
-  sms:
-    help:
-      message: 'login.gov: Get help at www.login.gov/help or email us at hello@login.gov.'
-    stop:
-      message: login.gov is not a subscription service. You will only receive security
-        codes when you sign in. Reply HELP for help or see www.login.gov/help.

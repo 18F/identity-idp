@@ -1,5 +1,5 @@
 class AddressMock < Proofer::Base
-  required_attributes :phone
+  attributes :phone
 
   stage :address
 

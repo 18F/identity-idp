@@ -24,6 +24,7 @@ const personalKey = scrapePersonalKey();
 
 // The following methods are strictly fallbacks for IE < 11. There is limited
 // support for HTML5 validation attributes in those browsers
+// TODO: Potentially investigate readding client-side JS errors in a robust way
 function setInvalidHTML() {
   if (isInvalidForm) return;
 

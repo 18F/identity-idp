@@ -146,7 +146,7 @@ en:
         code below.
       please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
-        successful_cancel: Thank you. Your request to delete your login.gov account
+        successful_cancel: Thank you. The request to delete your login.gov account
           has been cancelled.
         link: deleting your account
         text_html: If you can't use any of these security options above, you can reset
@@ -178,6 +178,23 @@ en:
         piv_cac_info: Use your PIV/CAC card to secure your account.
       two_factor_choice_intro: login.gov makes sure you can access your account by
         adding a second layer of security.
+      two_factor_choice_cancel: "‹ Choose another option"
+      two_factor_login_choice: Secure your account
+      two_factor_login_choice_options:
+        voice: Phone call
+        voice_info: Get your security code via phone call.
+        sms: Text message / SMS
+        sms_info: Get your security code via text message / SMS.
+        auth_app: Authentication application
+        auth_app_info: Set up an authentication application to get your security code
+          without providing a phone number.
+        piv_cac: Government employees
+        piv_cac_info: Use your PIV/CAC card to secure your account.
+        personal_key: Personal Key
+        personal_key_info: Use the 12 character personal key you used at account creation.
+      two_factor_login_choice_intro: login.gov makes sure you can access your account
+        by adding a second layer of security.
+      two_factor_login_choice_cancel: "‹ Choose another option"
       two_factor_setup: Add a phone number
       user:
         new_otp_sent: We sent you a new one-time security code.

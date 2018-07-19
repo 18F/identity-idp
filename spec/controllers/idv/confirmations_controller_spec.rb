@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'proofer/vendor/mock'
 
 describe Idv::ConfirmationsController do
   include SamlAuthHelper

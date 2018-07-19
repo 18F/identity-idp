@@ -151,8 +151,8 @@ es:
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
       account_reset:
-        successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
-          ha sido cancelada.
+        successful_cancel: Gracias. La solicitud para eliminar su cuenta de login.gov
+          ha sido cancelado.
         link: eliminando su cuenta
         text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
           puede restablecer tus preferencias por %{link}.
@@ -184,6 +184,24 @@ es:
         piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
       two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
         agregando una segunda capa de seguridad.
+      two_factor_choice_cancel: "‹ Elige otra opción"
+      two_factor_login_choice: Asegure su cuenta
+      two_factor_login_choice_options:
+        voice: Llamada telefónica
+        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
+        sms: Mensaje de texto / SMS
+        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+        auth_app: Aplicación de autenticación
+        auth_app_info: Configure una aplicación de autenticación para obtener su código
+          de seguridad sin proporcionar un número de teléfono.
+        piv_cac: Empleados del Gobierno
+        piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
+        personal_key: Clave personal
+        personal_key_info: Use la clave personal de 12 caracteres que usó en la creación
+          de la cuenta.
+      two_factor_login_choice_intro: login.gov se asegura de que pueda acceder a su
+        cuenta agregando una segunda capa de seguridad.
+      two_factor_login_choice_cancel: "‹ Elige otra opción"
       two_factor_setup: Añada un número de teléfono
       user:
         new_otp_sent: Le enviamos un nuevo código de sólo un uso

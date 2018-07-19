@@ -58,7 +58,7 @@ feature 'Password recovery via personal key', idv_job: true do
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
-    choose_another_security_option('personal_key')
+    click_link t('devise.two_factor_authentication.personal_key_fallback.link')
     enter_personal_key(personal_key: personal_key)
     click_submit_default
 

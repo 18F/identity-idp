@@ -1,7 +1,5 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
-  self.ignored_columns = %w[encrypted_password password_salt password_cost]
-
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
@@ -103,7 +101,12 @@ class User < ApplicationRecord
   end
 
   def active_identities
-    identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+    identities.where(
+      'session_uuid IS NOT ?',
+      nil
+    ).order(
+      last_authenticated_at: :asc
+    ) || []
   end
 
   def multiple_identities?

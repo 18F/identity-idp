@@ -10,7 +10,7 @@ describe AccountReset::DeleteAccountController do
       session[:granted_token] = AccountResetRequest.all[0].granted_token
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :delete, token_valid: true, user_id: user.uuid)
+        with(Analytics::ACCOUNT_RESET, {event: :delete, token_valid: true})
 
       delete :delete
     end
@@ -18,9 +18,9 @@ describe AccountReset::DeleteAccountController do
     it 'logs a bad token to the analytics' do
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :delete, token_valid: false)
+        with(Analytics::ACCOUNT_RESET, {event: :delete, token_valid: false})
 
-      delete :delete, params: { token: 'FOO' }
+      delete :delete, params: {token:'FOO'}
     end
 
     it 'redirects to root if there is no token' do
@@ -36,13 +36,13 @@ describe AccountReset::DeleteAccountController do
       AccountResetService.new(user).create_request
       AccountResetService.new(user).grant_request
 
-      get :show, params: { token: AccountResetRequest.all[0].granted_token }
+      get :show, params: {token: AccountResetRequest.all[0].granted_token}
 
       expect(response).to redirect_to(account_reset_delete_account_url)
     end
 
     it 'redirects to root if the token is bad' do
-      get :show, params: { token: 'FOO' }
+      get :show, params: {token: 'FOO'}
 
       expect(response).to redirect_to(root_url)
     end

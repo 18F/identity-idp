@@ -69,7 +69,7 @@ feature 'Two Factor Authentication' do
           location: 'Bahamas'
         )
 
-        click_on t('two_factor_authentication.choose_another_option')
+        click_on t('devise.two_factor_authentication.two_factor_choice_cancel')
 
         expect(current_path).to eq two_factor_options_path
       end
@@ -203,7 +203,7 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       old_code = find('input[@name="code"]').value
 
-      click_link t('links.two_factor_authentication.get_another_code')
+      click_link t('links.two_factor_authentication.resend_code.sms')
 
       new_code = find('input[@name="code"]').value
 
@@ -231,7 +231,7 @@ feature 'Two Factor Authentication' do
 
       allow(VoiceOtpSenderJob).to receive(:perform_later)
 
-      choose_another_security_option('voice')
+      click_on t('links.two_factor_authentication.voice')
 
       expect(VoiceOtpSenderJob).to have_received(:perform_later)
     end
@@ -285,7 +285,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(user)
 
         Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
-          click_link t('links.two_factor_authentication.get_another_code')
+          click_link t('links.two_factor_authentication.resend_code.sms')
         end
 
         expect(page).to have_content t('titles.account_locked')
@@ -318,7 +318,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(user)
 
         Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
-          click_link t('links.two_factor_authentication.get_another_code')
+          click_link t('links.two_factor_authentication.resend_code.sms')
         end
 
         expect(page).to have_content t('titles.account_locked')
@@ -340,7 +340,7 @@ feature 'Two Factor Authentication' do
 
         sign_in_before_2fa(user)
         (max_attempts - 1).times do
-          click_link t('links.two_factor_authentication.get_another_code')
+          click_link t('links.two_factor_authentication.resend_code.sms')
         end
         click_submit_default
 
@@ -357,7 +357,7 @@ feature 'Two Factor Authentication' do
 
         expect(rate_limited_phone.reload.otp_send_count).to eq 1
 
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_link t('links.two_factor_authentication.resend_code.sms')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
@@ -375,14 +375,14 @@ feature 'Two Factor Authentication' do
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
 
         sign_in_before_2fa(first_user)
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_link t('links.two_factor_authentication.resend_code.sms')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
         visit destroy_user_session_url
 
         sign_in_before_2fa(second_user)
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_link t('links.two_factor_authentication.resend_code.sms')
         phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone)
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
@@ -415,7 +415,7 @@ feature 'Two Factor Authentication' do
         submit_2fa_setup_form_with_valid_phone
 
         max_attempts.times do
-          click_link t('links.two_factor_authentication.get_another_code')
+          click_link t('links.two_factor_authentication.resend_code.sms')
         end
 
         expect(page).to have_content t('titles.account_locked')
@@ -479,13 +479,15 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_piv_cac_path
 
-      choose_another_security_option('sms')
+      expect(page).not_to have_link(t('links.two_factor_authentication.app'))
+
+      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_piv_cac_path
 
-      choose_another_security_option('voice')
+      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
     end
@@ -496,7 +498,7 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_piv_cac_path
 
-      choose_another_security_option('auth_app')
+      click_link t('links.two_factor_authentication.app')
 
       expect(current_path).to eq login_two_factor_authenticator_path
     end
@@ -560,45 +562,6 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
-
-    context 'with SMS and international number that Verify does not think is valid' do
-      it 'rescues the VerifyError' do
-        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
-          SmsOtpSenderJob.perform_now(*args)
-        end
-        PhoneVerification.adapter = FakeAdapter
-        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
-
-        user = create(:user, :signed_up, phone: '+212 661-289324')
-        sign_in_user(user)
-
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(page).
-          to have_content t('errors.messages.phone_unsupported')
-      end
-    end
-
-    context 'user with Voice preference sends SMS, causing a Twilio error' do
-      it 'does not change their OTP delivery preference' do
-        allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
-        allow(VoiceOtpSenderJob).to receive(:perform_later)
-        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
-          SmsOtpSenderJob.perform_now(*args)
-        end
-        PhoneVerification.adapter = FakeAdapter
-        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
-
-        user = create(:user, :signed_up, phone: '+17035551212', otp_delivery_preference: 'voice')
-        sign_in_user(user)
-
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
-
-        choose_another_security_option('sms')
-
-        expect(page).to have_content t('errors.messages.invalid_phone_number')
-        expect(user.reload.otp_delivery_preference).to eq 'voice'
-      end
-    end
   end
 
   describe 'when the user is not piv/cac enabled' do
@@ -615,13 +578,13 @@ feature 'Two Factor Authentication' do
       user = create(:user, :with_authentication_app, :with_phone)
       sign_in_before_2fa(user)
 
-      choose_another_security_option('sms')
+      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_authenticator_path
 
-      choose_another_security_option('voice')
+      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
     end
@@ -658,6 +621,7 @@ feature 'Two Factor Authentication' do
     end
   end
 
+  # TODO: readd profile redirect, modal tests
   describe 'signing in when user does not already have personal key' do
     # For example, when migrating users from another DB
     it 'displays personal key and redirects to profile' do

@@ -66,38 +66,56 @@ describe OtpDeliverySelectionForm do
       end
     end
 
-    context 'with voice preference and unsupported phone' do
-      it 'changes the otp_delivery_preference to sms' do
-        user = build_stubbed(:user, otp_delivery_preference: 'voice')
-        form = OtpDeliverySelectionForm.new(
-          user,
-          '+12423270143',
-          'authentication'
-        )
-        attributes = { otp_delivery_preference: 'sms' }
+    context 'with authentication context' do
+      context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'sms')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'authentication')
 
-        updated_user = instance_double(UpdateUser)
-        allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: attributes).and_return(updated_user)
+          expect(UpdateUser).to_not receive(:new)
 
-        expect(updated_user).to receive(:call)
+          form.submit(otp_delivery_preference: 'sms')
+        end
+      end
 
-        form.submit(otp_delivery_preference: 'voice')
+      context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
+        it 'updates the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'voice')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'authentication')
+          attributes = { otp_delivery_preference: 'sms' }
+
+          updated_user = instance_double(UpdateUser)
+          allow(UpdateUser).to receive(:new).
+            with(user: user, attributes: attributes).and_return(updated_user)
+
+          expect(updated_user).to receive(:call)
+
+          form.submit(otp_delivery_preference: 'sms')
+        end
       end
     end
 
-    context 'with voice preference and supported phone' do
-      it 'does not change the otp_delivery_preference to sms' do
-        user = build_stubbed(:user, otp_delivery_preference: 'voice')
-        form = OtpDeliverySelectionForm.new(
-          user,
-          '+17035551212',
-          'authentication'
-        )
+    context 'with idv context' do
+      context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'sms')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'idv')
 
-        expect(UpdateUser).to_not receive(:new)
+          expect(UpdateUser).to_not receive(:new)
 
-        form.submit(otp_delivery_preference: 'voice')
+          form.submit(otp_delivery_preference: 'sms')
+        end
+      end
+
+      context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'voice')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'idv')
+
+          expect(UpdateUser).to_not receive(:new)
+
+          form.submit(otp_delivery_preference: 'sms')
+        end
       end
     end
   end

@@ -45,21 +45,5 @@ describe PhoneVerification do
         expect(error).to be_a(PhoneVerification::VerifyError)
       end
     end
-
-    it 'raises VerifyError when response body is not valid JSON' do
-      PhoneVerification.adapter = FakeAdapter
-      phone = '17035551212'
-      code = '123456'
-
-      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::EmptyResponse.new)
-
-      expect { PhoneVerification.new(phone: phone, code: code).send_sms }.to raise_error do |error|
-        expect(error.code).to eq 0
-        expect(error.message).to eq ''
-        expect(error.status).to eq 400
-        expect(error.response).to eq ''
-        expect(error).to be_a(PhoneVerification::VerifyError)
-      end
-    end
   end
 end
