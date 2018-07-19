@@ -77,7 +77,7 @@ Rails.application.routes.draw do
         get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
-           as: :login_two_factor
+           as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
            as: :login_otp
 

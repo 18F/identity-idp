@@ -425,6 +425,19 @@ feature 'Sign in' do
     end
   end
 
+  context 'user attempts sign in with bad personal key' do
+    it 'remains on the login with personal key page' do
+      user = create(:user, :signed_up)
+      signin(user.email, user.password)
+      choose_another_security_option('personal_key')
+      enter_personal_key(personal_key: 'foo')
+      click_submit_default
+
+      expect(page).to have_current_path(login_two_factor_personal_key_path)
+      expect(page).to have_content t('devise.two_factor_authentication.invalid_personal_key')
+    end
+  end
+
   it 'does not whitelist style-src in CSP' do
     allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
     visit root_path
