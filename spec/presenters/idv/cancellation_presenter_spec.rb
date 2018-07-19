@@ -50,5 +50,13 @@ describe Idv::CancellationPresenter do
         expect(subject.go_back_path).to eq(idv_path)
       end
     end
+
+    context 'with a referer header with a javascript scheme' do
+      let(:referer_header) { 'javascript://do-some-evil-stuff' }
+
+      it 'returns the idv_path' do
+        expect(subject.go_back_path).to eq(idv_path)
+      end
+    end
   end
 end
