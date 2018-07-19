@@ -6,12 +6,12 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      # TODO analytics
+      analytics.track_event(Analytics::IDV_CANCELLATION)
       @presenter = CancellationPresenter.new(view_context: view_context)
     end
 
     def destroy
-      # TODO analytics
+      analytics.track_event(Analytics::IDV_CANCELLATION_CONFIRMED)
       @presenter = CancellationConfirmationPresenter.new
       idv_session = user_session[:idv]
       idv_session&.clear
