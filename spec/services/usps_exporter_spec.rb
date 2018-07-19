@@ -51,7 +51,9 @@ describe UspsExporter do
         issuer: service_provider.issuer,
         profile: build(:profile)
       )
+
       allow(confirmation_maker).to receive(:otp).and_return(otp)
+
       confirmation_maker.perform
     end
 
