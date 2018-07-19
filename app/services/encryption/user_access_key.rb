@@ -64,9 +64,20 @@ module Encryption
     attr_writer :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
     def build_scrypt_password(password, salt, cost)
-      scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
+      scrypt_salt = cost + transform_password_salt_to_scrypt_salt(salt)
       scrypted = SCrypt::Engine.hash_secret password, scrypt_salt, 32
       SCrypt::Password.new(scrypted)
+    end
+
+    def transform_password_salt_to_scrypt_salt(salt)
+      # Legacy passwords had 20 byte salts, so we took a SHA256 digest to get
+      # to 32 bytes. While passwords exist with 20 byte salts, we will need this
+      # line, otherwise the passwords are effectively expired.
+      #
+      # Also note that the salt arg will have a lenghth of 64 chars since it is
+      # a hex digest of 32 random bytes
+      return OpenSSL::Digest::SHA256.hexdigest(salt) if salt.length == 20
+      salt
     end
 
     def kms_client
