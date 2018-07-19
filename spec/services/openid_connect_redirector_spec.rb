@@ -35,6 +35,16 @@ RSpec.describe OpenidConnectRedirector do
   end
 
   describe '#validate' do
+    context 'with a redirect_uri that spoofs a hostname' do
+      let(:redirect_uri) { 'https://example.com.evilish.com/' }
+
+      it 'is invalid' do
+        redirector.validate
+        expect(errors[:redirect_uri]).
+          to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+      end
+    end
+
     context 'with a valid redirect_uri' do
       let(:redirect_uri) { 'http://localhost:7654/result/more/extra' }
       it 'is valid' do
