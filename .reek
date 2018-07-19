@@ -76,6 +76,7 @@ LongParameterList:
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
     - JWT
+    - SmsOtpSenderJob#perform
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
