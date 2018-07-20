@@ -76,7 +76,7 @@ module Encryption
       #
       # Also note that the salt arg will have a lenghth of 64 chars since it is
       # a hex digest of 32 random bytes
-      return OpenSSL::Digest::SHA256.hexdigest(salt) if salt.length == 20
+      return OpenSSL::Digest::SHA256.hexdigest(salt) if salt.length != 64
       salt
     end
 
