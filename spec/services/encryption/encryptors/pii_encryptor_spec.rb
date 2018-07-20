@@ -14,10 +14,12 @@ describe Encryption::Encryptors::PiiEncryptor do
     end
 
     it 'uses the user access key encryptor to encrypt the plaintext' do
-      salt = '0' * 20
-      allow(Devise).to receive(:friendly_token).and_return(salt)
+      salt = '0' * 64
+      allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
+      allow(SecureRandom).to receive(:hex).and_call_original
 
-      scrypt_digest = '1' * 64
+      scrypt_digest = '31' * 32 # hex_encode('1111..')
+      decoded_scrypt_digest = '1' * 32
 
       scrypt_password = instance_double(SCrypt::Password)
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
@@ -26,7 +28,7 @@ describe Encryption::Encryptors::PiiEncryptor do
       cipher = instance_double(Encryption::AesCipher)
       expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:encrypt).
-        with(plaintext, scrypt_digest[0...32]).
+        with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
 
       kms_client = instance_double(Encryption::KmsClient)
@@ -63,10 +65,10 @@ describe Encryption::Encryptors::PiiEncryptor do
     end
 
     it 'uses layered AES and KMS to decrypt the contents' do
-      salt = '0' * 20
-      allow(Devise).to receive(:friendly_token).and_return(salt)
+      salt = '0' * 64
 
-      scrypt_digest = '1' * 64
+      scrypt_digest = '31' * 32 # hex_encode('1111..')
+      decoded_scrypt_digest = '1' * 32
 
       scrypt_password = instance_double(SCrypt::Password)
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
@@ -81,7 +83,7 @@ describe Encryption::Encryptors::PiiEncryptor do
       cipher = instance_double(Encryption::AesCipher)
       expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:decrypt).
-        with('aes_ciphertext', scrypt_digest[0...32]).
+        with('aes_ciphertext', decoded_scrypt_digest).
         and_return(plaintext)
 
       result = subject.decrypt({
