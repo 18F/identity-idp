@@ -178,7 +178,6 @@ Rails.application.routes.draw do
       scope '/verify', as: 'idv' do
         get '/' => 'idv#index'
         get '/activated' => 'idv#activated'
-        get '/cancel' => 'idv#cancel'
         get '/fail' => 'idv#fail'
       end
       scope '/verify', module: 'idv', as: 'idv' do
@@ -202,6 +201,8 @@ Rails.application.routes.draw do
         get '/jurisdiction' => 'jurisdiction#new'
         post '/jurisdiction' => 'jurisdiction#create'
         get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+        get '/cancel/' => 'cancellations#new', as: :cancel
+        delete '/cancel' => 'cancellations#destroy'
       end
     end
 

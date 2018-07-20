@@ -20,4 +20,5 @@ ul.py1.m0
 
   = f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt6 sm-col-6 col-12'
 
-= render 'shared/cancel', link: idv_cancel_path
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'

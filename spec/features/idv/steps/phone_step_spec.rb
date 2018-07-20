@@ -86,8 +86,10 @@ feature 'idv phone step', :idv_job do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  xcontext 'cancelling IdV' do
-    # The phone step does not have any cancel behavior :(
+  context 'cancelling IdV' do
+    it_behaves_like 'cancel at idv step', :phone
+    it_behaves_like 'cancel at idv step', :phone, :oidc
+    it_behaves_like 'cancel at idv step', :phone, :saml
   end
 
   context "when the user's information cannot be verified" do
