@@ -68,7 +68,7 @@ describe Encryption::PasswordVerifier do
     it 'allows verification of a legacy password with a 20 byte salt' do
       # Legacy passwords had 20 bytes salts, which were SHA256 digested to get
       # to a 32 byte salt (64 char hexdigest). This test verifies that the
-      # password verifier is capabale of properly verifying those passwords
+      # password verifier is capable of properly verifying those passwords
       # using known values.
 
       password = 'saltypickles'

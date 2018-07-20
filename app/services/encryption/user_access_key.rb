@@ -74,7 +74,7 @@ module Encryption
       # to 32 bytes. While passwords exist with 20 byte salts, we will need this
       # line, otherwise the passwords are effectively expired.
       #
-      # Also note that the salt arg will have a lenghth of 64 chars since it is
+      # Also note that the salt arg will have a length of 64 chars since it is
       # a hex digest of 32 random bytes
       return OpenSSL::Digest::SHA256.hexdigest(salt) if salt.length != 64
       salt
