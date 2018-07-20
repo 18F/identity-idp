@@ -15,8 +15,8 @@ describe Encryption::Encryptors::PiiEncryptor do
 
     it 'uses the user access key encryptor to encrypt the plaintext' do
       salt = '0' * 64
-      allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
       allow(SecureRandom).to receive(:hex).and_call_original
+      allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
       scrypt_digest = '31' * 32 # hex_encode('1111..')
       decoded_scrypt_digest = '1' * 32
