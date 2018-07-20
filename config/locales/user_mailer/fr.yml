@@ -6,8 +6,8 @@ fr:
       link_text: NOT TRANSLATED YET
       subject: NOT TRANSLATED YET
     account_reset_cancel:
-      intro: Cet e-mail confirme que vous avez annulé la demande de suppression de
-        votre compte login.gov.
+      intro: Cet e-mail confirme que vous avez annulé votre demande de suppression
+        de votre compte login.gov.
       subject: Supprimer votre compte
       help: ''
     account_reset_request:
