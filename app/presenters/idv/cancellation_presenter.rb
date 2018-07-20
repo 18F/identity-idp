@@ -43,14 +43,11 @@ module Idv
       referer_uri = URI.parse(referer_string)
       return if referer_uri.scheme == 'javascript'
       return unless referer_uri.host == Figaro.env.domain_name
-      extract_path_and_query_from_uri(referer_uri)
+      [path, query].join('?')
     end
 
     def extract_path_and_query_from_uri(uri)
-      path = uri.path
-      query = uri.query
-      return "#{path}?#{query}" if query.present?
-      path
+      [uri.path, uri.query].join('?')
     end
   end
 end
