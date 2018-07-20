@@ -47,7 +47,10 @@ module Idv
     end
 
     def extract_path_and_query_from_uri(uri)
-      [uri.path, uri.query].join('?')
+      path = uri.path
+      query = uri.query
+      return "#{path}?#{query}" if query.present?
+      path
     end
   end
 end
