@@ -56,6 +56,6 @@ describe UspsUploadController do
   end
 
   def headers(token)
-    request.headers['X-USPS-UPLOAD-TOKEN'] = token
+    request.headers['X-API-AUTH-TOKEN'] = token
   end
 end

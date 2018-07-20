@@ -37,7 +37,7 @@ module Encryption
         uak.encryption_key,
         salt,
         uak.cost
-      )
+      ).to_s
     end
 
     def self.verify(password:, digest:)

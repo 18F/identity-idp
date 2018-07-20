@@ -54,8 +54,8 @@ class UspsExporter
       entry[:otp],
       "#{now.strftime('%-B %-e')}, #{now.year}",
       "#{due.strftime('%-B %-e')}, #{due.year}",
-      service_provider.friendly_name,
-      service_provider.return_to_sp_url,
+      service_provider.friendly_name || 'Login.gov',
+      "https://#{Figaro.env.domain_name}",
     ]
   end
   # rubocop:enable MethodLength, AbcSize

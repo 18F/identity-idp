@@ -112,7 +112,7 @@ class UserDecorator
 
     sp_session = session[:sp]
 
-    user.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
+    user.encrypted_recovery_code_digest.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events

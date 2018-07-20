@@ -32,7 +32,7 @@ describe UspsExporter do
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",
       service_provider.friendly_name,
-      service_provider.return_to_sp_url,
+      "https://#{Figaro.env.domain_name}",
     ]
     values.join('|')
   end
@@ -51,7 +51,9 @@ describe UspsExporter do
         issuer: service_provider.issuer,
         profile: build(:profile)
       )
+
       allow(confirmation_maker).to receive(:otp).and_return(otp)
+
       confirmation_maker.perform
     end
 
