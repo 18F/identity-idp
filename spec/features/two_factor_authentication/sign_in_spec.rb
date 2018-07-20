@@ -653,7 +653,7 @@ feature 'Two Factor Authentication' do
         click_submit_default
 
         expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :authenticator)
+        expect(current_path).to eq login_two_factor_authenticator_path
       end
     end
   end
@@ -675,6 +675,13 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq account_path
     end
+  end
+
+  it 'generates a 404 with bad otp_delivery_preference' do
+    sign_in_before_2fa
+    visit '/login/two_factor/bad'
+
+    expect(page.status_code).to eq(404)
   end
 
   describe 'visiting OTP delivery and verification pages after fully authenticating' do
