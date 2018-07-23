@@ -1,27 +1,33 @@
 module Encryption
   module Encryptors
     class SessionEncryptor
-      def encrypt(plaintext)
-        user_access_key = self.class.load_or_init_user_access_key
-        UserAccessKeyEncryptor.new(user_access_key).encrypt(plaintext)
-      end
+      include Encodable
+
+      delegate :encrypt, to: :deprecated_encryptor
 
       def decrypt(ciphertext)
-        user_access_key = self.class.load_or_init_user_access_key
-        UserAccessKeyEncryptor.new(user_access_key).decrypt(ciphertext)
+        return deprecated_encryptor.decrypt(ciphertext) if legacy?(ciphertext)
+
+        aes_ciphertext = KmsClient.new.decrypt(decode(ciphertext))
+        aes_encryptor.decrypt(aes_ciphertext, aes_encryption_key)
       end
 
-      def self.load_or_init_user_access_key
-        if @user_access_key_scrypt_hash.present?
-          return UserAccessKey.new(scrypt_hash: @user_access_key_scrypt_hash)
-        end
+      private
 
-        key = Figaro.env.session_encryption_key
-        user_access_key = UserAccessKey.new(
-          password: key, salt: OpenSSL::Digest::SHA256.hexdigest(key)
-        )
-        @user_access_key_scrypt_hash = user_access_key.as_scrypt_hash
-        user_access_key
+      def legacy?(ciphertext)
+        ciphertext.index('.')
+      end
+
+      def aes_encryptor
+        AesEncryptor.new
+      end
+
+      def aes_encryption_key
+        Figaro.env.session_encryption_key[0...32]
+      end
+
+      def deprecated_encryptor
+        DeprecatedSessionEncryptor.new
       end
     end
   end
