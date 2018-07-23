@@ -109,7 +109,7 @@ feature 'Changing authentication factor' do
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
           visit manage_phone_path
           complete_2fa_confirmation_without_entering_otp
-          click_link t('links.two_factor_authentication.resend_code.sms')
+          click_link t('links.two_factor_authentication.get_another_code')
 
           expect(SmsOtpSenderJob).to have_received(:perform_later).
             with(
@@ -172,6 +172,25 @@ feature 'Changing authentication factor' do
         update_phone_number
         expect(page).to have_link t('links.cancel'), href: account_path
       end
+    end
+  end
+
+  context 'with SMS and number that Verify does not think is valid' do
+    it 'rescues the VerifyError' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+      PhoneVerification.adapter = FakeAdapter
+      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+
+      user = create(:user, :signed_up, phone: '+17035551212')
+      visit new_user_session_path
+      sign_in_live_with_2fa(user)
+      visit manage_phone_path
+      select 'Morocco', from: 'user_phone_form_international_code'
+      fill_in 'user_phone_form_phone', with: '+212 661-289325'
+      click_button t('forms.buttons.submit.confirm_change')
+
+      expect(current_path).to eq manage_phone_path
+      expect(page).to have_content t('errors.messages.invalid_phone_number')
     end
   end
 

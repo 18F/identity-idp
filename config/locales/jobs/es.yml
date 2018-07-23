@@ -4,6 +4,8 @@ es:
     sms_otp_sender_job:
       message: "%{code} es su %{app} código de seguridad de sólo un uso. Este código
         caducará en %{expiration} minutos."
+    sms_account_reset_cancel_job:
+      message: Su solicitud para eliminar su cuenta de login.gov ha sido cancelada.
     sms_account_reset_notifier_job:
       message: 'Has solicitado eliminar tu cuenta de login.gov. Su solicitud será
         ser procesado en 24 horas. Si no desea eliminar su cuenta, por favor cancelar:

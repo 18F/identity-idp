@@ -1,0 +1,27 @@
+---
+en:
+  two_factor_authentication:
+    login_options:
+      auth_app: Authentication app
+      auth_app_info: Use your authentication application to get security code.
+      personal_key: Personal Key
+      personal_key_info: Use the 16 character personal key you received at account
+        creation.
+      piv_cac: Government employee ID
+      piv_cac_info: Use your PIV/CAC card instead of a security code.
+      sms: Text message
+      sms_info: Get security code via text message.
+      voice: Automated phone call
+      voice_info: Get security code via phone call (North America phone numbers only).
+    login_options_title: Select your security option
+    login_options_link_text: Choose another security option
+    login_intro: You set these up when you created your account
+    choose_another_option: "‹ Choose another option"
+    personal_key_fallback:
+      question: Don't have your personal key?
+    phone_fallback:
+      question: Don't have access to your phone right now?
+    piv_cac_fallback:
+      question: Don't have your piv/cac card available?
+    totp_fallback:
+      question: Don't have your authenticator app?

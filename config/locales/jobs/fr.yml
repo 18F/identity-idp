@@ -4,6 +4,8 @@ fr:
     sms_otp_sender_job:
       message: "%{code} est votre %{app} code de sécurité à utilisation unique. Ce
         code expirera dans %{expiration} minutes."
+    sms_account_reset_cancel_job:
+      message: Votre demande de suppression de votre compte login.gov a été annulée.
     sms_account_reset_notifier_job:
       message: 'Vous avez demandé à supprimer votre compte login.gov. Votre demande
         sera être traité en 24 heures. Si vous ne souhaitez pas supprimer votre compte,
