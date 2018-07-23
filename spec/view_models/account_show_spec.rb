@@ -77,8 +77,7 @@ describe AccountShow do
     context 'user needs profile usps verification' do
       it 'returns the accounts/pending_profile_usps partial' do
         user = User.new
-        allow(user).to receive(:needs_profile_usps_verification?).and_return(true)
-        allow(user).to receive(:needs_profile_phone_verification?).and_return(false)
+        allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: 'foo', decorated_user: user
         )
@@ -87,22 +86,10 @@ describe AccountShow do
       end
     end
 
-    context 'user needs profile phone verification' do
-      it 'returns the accounts/pending_profile_phone partial' do
-        user = User.new
-        allow(user).to receive(:needs_profile_usps_verification?).and_return(false)
-        allow(user).to receive(:needs_profile_phone_verification?).and_return(true)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
-
-        expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_phone'
-      end
-    end
-
     context 'user does not need profile verification' do
       it 'returns the shared/null partial' do
         user = User.new
-        allow(user).to receive(:needs_profile_phone_verification?).and_return(false)
-        allow(user).to receive(:needs_profile_usps_verification?).and_return(false)
+        allow(user).to receive(:pending_profile_requires_verification?).and_return(false)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.pending_profile_partial).to eq 'shared/null'

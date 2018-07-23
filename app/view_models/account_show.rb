@@ -33,10 +33,8 @@ class AccountShow
   end
 
   def pending_profile_partial
-    if decorated_user.needs_profile_usps_verification?
+    if decorated_user.pending_profile_requires_verification?
       'accounts/pending_profile_usps'
-    elsif decorated_user.needs_profile_phone_verification?
-      'accounts/pending_profile_phone'
     else
       'shared/null'
     end
