@@ -23,6 +23,10 @@ module TwoFactorAuthentication
 
     private
 
+    def presenter_for_two_factor_authentication_method
+      TwoFactorAuthCode::PersonalKeyPresenter.new
+    end
+
     def handle_result(result)
       if result.success?
         generate_new_personal_key
