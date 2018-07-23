@@ -22,6 +22,7 @@ feature 'Phone confirmation during sign up' do
       click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_present
+      expect(@user.reload.phone_configuration.confirmed_at).to be_present
       expect(current_path).to eq sign_up_personal_key_path
 
       click_acknowledge_personal_key
@@ -75,6 +76,7 @@ feature 'Phone confirmation during sign up' do
       click_submit_default
 
       expect(@user.reload.phone_confirmed_at).to be_nil
+      expect(@user.reload.phone_configuration).to be_nil
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end

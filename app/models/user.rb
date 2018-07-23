@@ -38,6 +38,7 @@ class User < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
+  has_one :phone_configuration, dependent: :destroy, inverse_of: :user
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

@@ -35,6 +35,7 @@ feature 'Two Factor Authentication' do
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
+      expect(user.reload.phone_configuration).to be_nil
       expect(user.sms?).to eq true
     end
 
