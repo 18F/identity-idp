@@ -17,7 +17,9 @@ module Encryption
         end
 
         key = Figaro.env.session_encryption_key
-        user_access_key = UserAccessKey.new(password: key, salt: key)
+        user_access_key = UserAccessKey.new(
+          password: key, salt: OpenSSL::Digest::SHA256.hexdigest(key)
+        )
         @user_access_key_scrypt_hash = user_access_key.as_scrypt_hash
         user_access_key
       end
