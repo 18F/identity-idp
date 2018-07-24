@@ -407,8 +407,8 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.2)
     rack (2.0.5)
-    rack-attack (5.2.0)
-      rack
+    rack-attack (5.4.0)
+      rack (>= 1.0, < 3)
     rack-cors (1.0.2)
     rack-headers_filter (0.0.1)
     rack-mini-profiler (1.0.0)
