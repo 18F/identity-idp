@@ -163,7 +163,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     base32-crockford (0.1.0)
-    bcrypt (3.1.11)
+    bcrypt (3.1.12)
     benchmark-ips (2.7.2)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
@@ -374,7 +374,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     newrelic_rpm (5.2.0.345)
-    nio4r (2.3.0)
+    nio4r (2.3.1)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
@@ -608,7 +608,7 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
-    two_factor_authentication (2.1.0)
+    two_factor_authentication (2.1.1)
       devise
       encryptor
       rails (>= 3.1.1)
