@@ -173,7 +173,7 @@ development:
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
   saml_secret_rotation_secret_key_password:
-  scrypt_cost: '10000$8$1$'
+  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
@@ -295,7 +295,7 @@ production:
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
   saml_secret_rotation_secret_key_password:
-  scrypt_cost: '10000$8$1$'
+  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
