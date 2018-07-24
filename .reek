@@ -49,6 +49,7 @@ FeatureEnvy:
     - Idv::Proofer#validate_vendors
     - TwoFactorAuthenticationController#capture_analytics_for_exception
     - Users::SessionsController#configure_permitted_parameters
+    - UspsConfirmationExporter#make_entry_row
 InstanceVariableAssumption:
   exclude:
     - User
@@ -65,6 +66,7 @@ NestedIterators:
     - UserFlowExporter#self.massage_html
     - TwilioService::Utils#sanitize_phone_number
     - ServiceProviderSeeder#run
+    - UspsConfirmationUploader#upload_export
 NilCheck:
   enabled: false
 LongParameterList:

@@ -3,7 +3,7 @@ class UspsUploadController < ApplicationController
 
   def create
     authorize do
-      UspsUploader.new.run unless HolidayService.observed_holiday?(today)
+      UspsConfirmationUploader.new.run unless HolidayService.observed_holiday?(today)
       render plain: 'ok'
     end
   end
