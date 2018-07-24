@@ -196,30 +196,12 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         )
       end
 
-      it 'has a fallback link to send confirmation with voice' do
+      it 'has a link to choose a different 2FA method' do
         render
 
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
           href: login_two_factor_options_path
-        )
-      end
-
-      it 'does not have a fallback link to send confirmation via SMS' do
-        unexpected_fallback_path = otp_send_path(
-          otp_delivery_selection_form: {
-            otp_delivery_preference: otp_delivery_preference,
-          }
-        )
-        unexpected_link = link_to(
-          t("links.two_factor_authentication.#{otp_delivery_preference}"),
-          unexpected_fallback_path
-        )
-
-        render
-
-        expect(rendered).not_to include(
-          t('instructions.mfa.voice.fallback_html', link: unexpected_link)
         )
       end
     end
@@ -258,24 +240,6 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
           href: login_two_factor_options_path
-        )
-      end
-
-      it 'does not have a fallback link to send a confirmation as SMS' do
-        unexpected_fallback_path = otp_send_path(
-          otp_delivery_selection_form: {
-            otp_delivery_preference: otp_delivery_preference,
-          }
-        )
-        unexpected_link = link_to(
-          t("links.two_factor_authentication.#{otp_delivery_preference}"),
-          unexpected_fallback_path
-        )
-
-        render
-
-        expect(rendered).not_to include(
-          t('instructions.mfa.sms.fallback_html', link: unexpected_link)
         )
       end
     end

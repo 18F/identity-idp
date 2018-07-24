@@ -31,7 +31,6 @@ fr:
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Voici votre clé personnelle
     piv_cac_setup:
-      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.
         expired: Le certificat que vous avez sélectionné a expiré.
@@ -39,6 +38,7 @@ fr:
         none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
         revoked: Le certificat que vous avez sélectionné a été retiré de votre carte.
         unverified: Le certificat que vous avez sélectionné n'est pas valide.
+      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
         already_associated: NOT TRANSLATED YET
       token:

@@ -9,17 +9,16 @@ en:
       link_text: Create your account
       subject: Your login.gov password reset request
     account_reset_cancel:
+      help: ''
       intro: This email confirms you have cancelled your request to delete your login.gov
         account.
       subject: Delete your account
+    account_reset_complete:
       help: ''
-    account_reset_request:
-      help: ''
-      intro: You’ve requested to delete your login.gov account. <br><br><strong>Your
-        request will be processed in 24 hours.</strong> <br><br> If you don’t want
-        to delete your account, <u>%{cancel_account_reset}</u>.
-      subject: Delete your account
+      intro: This email confirms you have deleted your login.gov account.
+      subject: Account deleted
     account_reset_granted:
+      button: Yes, continue deleting
       cancel_link_text: please cancel
       help: If you don’t want to delete your account, %{cancel_account_reset}.
       intro: You are receiving this email because you requested to delete and reset
@@ -28,12 +27,13 @@ en:
         any information linked to your account. Once your account is deleted, you
         can create a new one using the same email address. <br><br>Are you sure you
         want to delete your account?
-      button: Yes, continue deleting
       subject: Delete your account
-    account_reset_complete:
-      intro: This email confirms you have deleted your login.gov account.
-      subject: Account deleted
+    account_reset_request:
       help: ''
+      intro: You’ve requested to delete your login.gov account. <br><br><strong>Your
+        request will be processed in 24 hours.</strong> <br><br> If you don’t want
+        to delete your account, <u>%{cancel_account_reset}</u>.
+      subject: Delete your account
     contact_link_text: contact us
     email_changed:
       help: If you did not want to change your email address, please visit the %{app}

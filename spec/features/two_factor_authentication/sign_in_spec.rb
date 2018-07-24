@@ -50,6 +50,8 @@ feature 'Two Factor Authentication' do
         end
 
         expect(page).to have_content t('titles.account_locked')
+        expect(page).
+          to have_content t('devise.two_factor_authentication.max_otp_login_attempts_reached')
       end
     end
 

@@ -90,6 +90,8 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
       activated_link: Contáctenos
+      agencies_login: NOT TRANSLATED YET
+      agency_login_html: NOT TRANSLATED YET
       cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
         información personal básica, así como su información financiera para completar
         este proceso. Si no tiene la información que necesitamos en este momento,
@@ -116,10 +118,10 @@ es:
         try_again_link: intentarlo de nuevo
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
           estados y esperamos apoyar a %{state} pronto.
-        why: Para verificar su identidad, necesitará información de su identificación
-          emitida por el estado.
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
           del estado?"
+        why: Para verificar su identidad, necesitará información de su identificación
+          emitida por el estado.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
@@ -148,8 +150,8 @@ es:
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
-        id_information_subtitle: Información de identificación
         id_information_message: como aparece en su identificación emitida por el estado
+        id_information_subtitle: Información de identificación
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
@@ -161,8 +163,6 @@ es:
           verificada en el archivo.
         resend: Envíeme otra carta.
         success: Debe llegar en 5 a 10 días laborales.
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
     review:
       dob: Fecha de nacimiento
       full_name: Nombre completo

@@ -1,6 +1,8 @@
 ---
 es:
   two_factor_authentication:
+    choose_another_option: "‹ Elige otra opción"
+    login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
       auth_app: Aplicación de autenticación
       auth_app_info: Use su aplicación de autenticación para obtener el código de
@@ -15,10 +17,8 @@ es:
       voice: Llamada telefónica automatizada
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
         (Solo números de teléfono de América del Norte).
-    login_options_title: Seleccione su opción de seguridad
     login_options_link_text: Elige otra opción de seguridad
-    login_intro: Usted configuró esto cuando creó su cuenta
-    choose_another_option: "‹ Elige otra opción"
+    login_options_title: Seleccione su opción de seguridad
     personal_key_fallback:
       question: "¿No tiene su clave personal?"
     phone_fallback:
