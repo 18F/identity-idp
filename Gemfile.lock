@@ -413,7 +413,7 @@ GEM
     rack-headers_filter (0.0.1)
     rack-mini-profiler (1.0.0)
       rack (>= 1.2.0)
-    rack-protection (2.0.2)
+    rack-protection (2.0.3)
       rack
     rack-proxy (0.6.4)
       rack
@@ -562,10 +562,10 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
-    sinatra (2.0.2)
+    sinatra (2.0.3)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.2)
+      rack-protection (= 2.0.3)
       tilt (~> 2.0)
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
