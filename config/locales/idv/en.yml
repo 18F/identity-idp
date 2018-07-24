@@ -11,14 +11,15 @@ en:
       send_confirmation_code: Continue
     cancel:
       modal_header: Are you sure you want to cancel?
+      return_to_account: Return to account
       warning_header: If you cancel now
-      warning_points:
-      - We won’t be able to verify your identity
-      - We won't keep a record of your name, address, birth date, or Social Security
-        number
-      - You won't be able to securely access your information using login.gov
-      - You’ll still have a login.gov account for your email address
-      - You can manage that account on your profile page
+      warnings:
+        warning_1: We won't be able to verify your identity
+        warning_2: We won't keep a record of your name, address, birth date, or Social
+          Security number
+        warning_3: You won't be able to securely access your information using %{app}
+        warning_4: You'll still have a login.gov account for your email address
+        warning_5: You can manage or delete that account on your profile page
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
@@ -89,6 +90,8 @@ en:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
       activated_link: contact us
+      agencies_login: You can now continue to and log into these agencies.
+      agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
       cancel: To continue, %{app} needs to verify your identity. We need to collect
         some basic personal information as well as some financial information from
         you to complete this process. If you don’t have the information we need at
@@ -117,9 +120,9 @@ en:
         try_again_link: try again
         unsupported_jurisdiction_failure: We're working hard to add more states and
           hope to support %{state} soon.
+        where: Where was your driver's license, driver's permit, or state ID issued?
         why: To verify your identity, you'll need information from your state-issued
           ID.
-        where: Where was your driver's license, driver's permit, or state ID issued?
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
@@ -147,8 +150,8 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
-        id_information_subtitle: ID Information
         id_information_message: as it appears on your state-issued ID
+        id_information_subtitle: ID Information
         no_pii: Do not use real personal information (demo purposes only)
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
@@ -159,8 +162,6 @@ en:
           on file.
         resend: Send me another letter.
         success: It should arrive in 5 to 10 business days.
-      agencies_login: You can now continue to and log into these agencies.
-      agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
     review:
       dob: Date of birth
       full_name: Full name

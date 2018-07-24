@@ -27,27 +27,16 @@ fr:
         le bon indicatif international ou régional.
       missing_field: Veuillez remplir ce champ.
       must_have_us_country_code: NOT TRANSLATED YET
-      no_password_reset_profile: Aucun profil récemment désactivé en raison d'une
-        réinitialisation de mot de passe
       no_pending_profile: Aucun profil en attente de vérification
-      not_found: introuvable
-      not_locked: n'a pas été verrouillé
-      not_saved:
-        one: '1 erreur a interdit la sauvegarde de cette %{resource} :'
-        other: "%{count} des erreurs ont empêché la sauvegarde de cette %{resource}
-          :"
       otp_failed: NOT TRANSLATED YET
-      otp_incorrect: Code non valide. L'avez-vous inscrit correctement?
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
-      requires_phone: vous demande d'entrer votre numéro de téléphone.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Fournisseur de service non autorisé
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
-    not_authorized: Vous n'êtes pas autorisé(e) à effectuer cette action.

@@ -25,6 +25,18 @@ feature 'idv phone step', :idv_job do
       expect(page).to have_content(t('idv.titles.session.review'))
       expect(page).to have_current_path(idv_review_path)
     end
+
+    it 'allows a user without a phone number to continue' do
+      user = create(:user, otp_secret_key: '123abc')
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      fill_out_phone_form_ok
+      click_idv_continue
+
+      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
+    end
   end
 
   context 'after submitting valid information' do
@@ -86,8 +98,10 @@ feature 'idv phone step', :idv_job do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  xcontext 'cancelling IdV' do
-    # The phone step does not have any cancel behavior :(
+  context 'cancelling IdV' do
+    it_behaves_like 'cancel at idv step', :phone
+    it_behaves_like 'cancel at idv step', :phone, :oidc
+    it_behaves_like 'cancel at idv step', :phone, :saml
   end
 
   context "when the user's information cannot be verified" do

@@ -3,7 +3,7 @@ class IdvController < ApplicationController
   include AccountReactivationConcern
 
   before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_needed, only: %i[cancel fail]
+  before_action :confirm_idv_needed, only: [:fail]
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index
@@ -22,8 +22,6 @@ class IdvController < ApplicationController
     idv_attempter.reset
     idv_session.clear
   end
-
-  def cancel; end
 
   def fail
     redirect_to idv_url and return unless idv_attempter.exceeded?

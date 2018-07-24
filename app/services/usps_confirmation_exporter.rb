@@ -1,22 +1,21 @@
-class UspsExporter
-  OTP_MAX_VALID_DAYS = Figaro.env.usps_confirmation_max_days.to_i
+class UspsConfirmationExporter
+  DELIMITER = '|'.freeze
+  LINE_ENDING = "\r\n".freeze
   HEADER_ROW_ID = '01'.freeze
   CONTENT_ROW_ID = '02'.freeze
+  OTP_MAX_VALID_DAYS = Figaro.env.usps_confirmation_max_days.to_i
 
-  def initialize(psv_file_path)
-    @psv_file_path = psv_file_path
+  def initialize(confirmations)
+    @confirmations = confirmations
   end
 
   def run
-    CSV.open(psv_file_path, 'a', col_sep: '|', row_sep: "\r\n") do |csv|
-      make_psv(csv)
-    end
-    clear_confirmations
+    CSV.generate(col_sep: DELIMITER, row_sep: LINE_ENDING, &method(:make_psv))
   end
 
   private
 
-  attr_reader :psv_file_path
+  attr_reader :confirmations
 
   def make_psv(csv)
     csv << make_header_row(confirmations.size)
@@ -25,21 +24,13 @@ class UspsExporter
     end
   end
 
-  def confirmations
-    @confirmations ||= UspsConfirmation.all
-  end
-
-  def clear_confirmations
-    UspsConfirmation.where(id: confirmations.map(&:id)).destroy_all
-  end
-
   def make_header_row(num_entries)
     [HEADER_ROW_ID, num_entries]
   end
 
   # rubocop:disable MethodLength, AbcSize
   def make_entry_row(entry)
-    now = Time.zone.now
+    now = current_date
     due = now + OTP_MAX_VALID_DAYS.days
     service_provider = ServiceProvider.from_issuer(entry[:issuer])
 
@@ -52,11 +43,19 @@ class UspsExporter
       entry[:state],
       entry[:zipcode],
       entry[:otp],
-      "#{now.strftime('%-B %-e')}, #{now.year}",
-      "#{due.strftime('%-B %-e')}, #{due.year}",
-      service_provider.friendly_name,
-      service_provider.return_to_sp_url,
+      format_date(now),
+      format_date(due),
+      service_provider.friendly_name || 'Login.gov',
+      "https://#{Figaro.env.domain_name}",
     ]
   end
   # rubocop:enable MethodLength, AbcSize
+
+  def format_date(date)
+    "#{date.strftime('%-B %-e')}, #{date.year}"
+  end
+
+  def current_date
+    Time.zone.now
+  end
 end

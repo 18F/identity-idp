@@ -6,10 +6,10 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_two_factor_authenticated, except: [:destroy]
-    before_action :confirm_idv_attempts_allowed, except: %i[destroy success failure]
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_attempts_allowed, except: %i[success failure]
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed, except: %i[destroy success]
+    before_action :confirm_step_needed, except: [:success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
 
@@ -51,12 +51,6 @@ module Idv
 
     def success; end
 
-    def destroy
-      idv_session = user_session[:idv]
-      idv_session&.clear
-      handle_idv_redirect
-    end
-
     private
 
     def confirm_step_needed
@@ -69,12 +63,6 @@ module Idv
         idv_session: idv_session,
         vendor_validator_result: vendor_validator_result
       )
-    end
-
-    def handle_idv_redirect
-      redirect_to account_url and return if current_user.encrypted_recovery_code_digest.present?
-      user_session[:personal_key] = create_new_code
-      redirect_to manage_personal_key_url
     end
 
     def process_form_failure

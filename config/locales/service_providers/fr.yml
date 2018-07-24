@@ -1,30 +1,8 @@
 ---
 fr:
   service_providers:
-    trusted_traveler:
-      header: Êtes-vous venu(e) de Trusted Traveler Programs?
-      account_page:
-        body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
-          Veuillez créer un nouveau compte login.gov.
-      body_html: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
-        Veuillez %{link}
-      create_account_link: créer un nouveau compte login.gov.
-      create_account_page:
-        body: ''
-    usa_jobs:
-      header: Êtes-vous venu(e) de USAJOBS?
-      account_page:
-        body: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse e-mail
-          principale ou secondaire que vous avez utilisée pour USAJOBS pour créer
-          votre nouveau compte login.gov.
-      body_html: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse
-        e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
-      create_account_link: créer votre nouveau compte login.gov
-      create_account_page:
-        body: ''
     learn_more: En savoir plus.
     sam:
-      header: Êtes-vous venu(e) de SAM?
       account_page:
         body: Votre ancien nom d'utilisateur et mot de passe SAM ne marchera pas.
           Veuillez créer un nouveau compte login.gov avec la même adresse e-mail que
@@ -35,3 +13,25 @@ fr:
       create_account_page:
         body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
           avez utilisée pour SAM.
+      header: Êtes-vous venu(e) de SAM?
+    trusted_traveler:
+      account_page:
+        body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+          Veuillez créer un nouveau compte login.gov.
+      body_html: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+        Veuillez %{link}
+      create_account_link: créer un nouveau compte login.gov.
+      create_account_page:
+        body: ''
+      header: Êtes-vous venu(e) de Trusted Traveler Programs?
+    usa_jobs:
+      account_page:
+        body: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse e-mail
+          principale ou secondaire que vous avez utilisée pour USAJOBS pour créer
+          votre nouveau compte login.gov.
+      body_html: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse
+        e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
+      create_account_link: créer votre nouveau compte login.gov
+      create_account_page:
+        body: ''
+      header: Êtes-vous venu(e) de USAJOBS?

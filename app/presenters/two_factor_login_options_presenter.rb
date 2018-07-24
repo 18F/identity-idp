@@ -46,7 +46,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_or_cancel_link
-    account_reset_token ? account_reset_cancel_link : account_reset_link
+    account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end
 
   private
@@ -69,6 +69,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_token
     current_user&.account_reset_request&.request_token
+  end
+
+  def account_reset_token_valid?
+    current_user&.account_reset_request&.granted_token_valid?
   end
 
   def configured_2fa_types

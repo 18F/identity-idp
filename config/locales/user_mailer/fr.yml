@@ -6,17 +6,16 @@ fr:
       link_text: NOT TRANSLATED YET
       subject: NOT TRANSLATED YET
     account_reset_cancel:
-      intro: Cet e-mail confirme que vous avez annulé la demande de suppression de
-        votre compte login.gov.
-      subject: Supprimer votre compte
       help: ''
-    account_reset_request:
-      help: ''
-      intro: Vous avez demandé à supprimer votre compte login.gov.<br><br><strong>Votre
-        la demande sera traitée dans les 24 heures.</strong><br><br>Si vous ne voulez
-        pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
+      intro: Cet e-mail confirme que vous avez annulé votre demande de suppression
+        de votre compte login.gov.
       subject: Supprimer votre compte
+    account_reset_complete:
+      help: ''
+      intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
+      subject: Compte supprimé
     account_reset_granted:
+      button: Oui, continuez la suppression
       cancel_link_text: veuillez annuler
       help: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
       intro: Vous recevez cet e-mail parce que vous avez demandé à supprimer et à
@@ -25,12 +24,13 @@ fr:
         pas en mesure de récupérer toute information liée à votre compte. Une fois
         votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même
         adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre compte?
-      button: Oui, continuez la suppression
       subject: Supprimer votre compte
-    account_reset_complete:
-      intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
-      subject: Compte supprimé
+    account_reset_request:
       help: ''
+      intro: Vous avez demandé à supprimer votre compte login.gov.<br><br><strong>Votre
+        la demande sera traitée dans les 24 heures.</strong><br><br>Si vous ne voulez
+        pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
+      subject: Supprimer votre compte
     contact_link_text: communiquez avec nous
     email_changed:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter

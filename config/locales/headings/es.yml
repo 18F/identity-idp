@@ -11,6 +11,9 @@ es:
       verified_account: Cuenta verificada
     account_recovery_setup:
       piv_cac_linked: NOT TRANSLATED YET
+    cancellations:
+      confirmation: Ha cancelado la verificación de su identidad con login.gov
+      prompt: "¿Estas seguro que quieres cancelar?"
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
@@ -28,7 +31,6 @@ es:
       forgot: "¿Olvidó su contraseña?"
     personal_key: Aquí está su clave personal
     piv_cac_setup:
-      new: Use su tarjeta PIV/CAC para asegurar su cuenta
       certificate:
         bad: El certificado que seleccionaste no es válido.
         expired: El certificado que seleccionó ha expirado.
@@ -36,6 +38,7 @@ es:
         none: No podemos detectar un certificado en su tarjeta PIV/CAC.
         revoked: El certificado que seleccionó ha sido revocado de su tarjeta.
         unverified: El certificado que seleccionaste no es válido.
+      new: Use su tarjeta PIV/CAC para asegurar su cuenta
       piv_cac:
         already_associated: NOT TRANSLATED YET
       token:

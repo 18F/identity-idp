@@ -10,7 +10,8 @@ p == presenter.description
 .col-2
   hr class="mt3 mb2 bw4 rounded border-#{presenter.state_color}"
 
-h2.h4.mb2.mt3.my0 = presenter.message
+- if presenter.message.present?
+  h2.h4.mb2.mt3.my0 = presenter.message
 
 - presenter.next_steps.each do |step|
   p == step

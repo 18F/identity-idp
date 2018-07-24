@@ -5,30 +5,24 @@ es:
       already_confirmed: Su email ha sido confirmado. %{action}
       confirmed: Usted ha confirmado su email.
       confirmed_but_must_set_password: Usted ha confirmado su email.
-      send_instructions: En pocos minutos recibirá un email con instrucciones para
-        confirmar el uso de su email.
-      send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
-        para confirmar el uso de su email.
       sign_in: Inicie la sesión de nuevo.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
-      invalid_link_text: restablecer su contraseña
       invalid_html: El email o la contraseña que ingresó son incorrectos. Intente
         %{link}.
+      invalid_link_text: restablecer su contraseña
       last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
       locked: Su cuenta está bloqueada.
-      not_found_in_database_link_text: restablecer su contraseña
       not_found_in_database_html: El email o la contraseña que ingresó son incorrectos.
         Intente %{link}.
+      not_found_in_database_link_text: restablecer su contraseña
       session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
         navegador. Inicie una sesión nueva para continuar en este navegador.
       timeout: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
       unauthenticated: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
       unconfirmed: Debe confirmar su email antes de continuar.
     mailer:
-      account_locked:
-        subject: Su cuenta de login.gov ha sido bloqueada.
       confirmation_instructions:
         subject: Confirme su email
       password_updated:
@@ -53,28 +47,14 @@ es:
         nueva.
     registrations:
       close_window: Puedes cerrar esta ventana si terminaste.
-      destroy_confirm: No se puede deshacer la eliminación de su cuenta. Todos los
-        datos asociados a su cuenta se eliminarán. ¿Confirma que desea eliminar su
-        cuenta?
       destroyed: Su cuenta se ha eliminado exitosamente.
-      email_and_phone_need_confirmation: Antes de terminar de actualizar su cuenta,
-        debemos confirmar su nuevo número y nuevo email. Siga las siguientes instrucciones
-        para confirmar su nuevo número y, luego, encuentre el email que le enviamos
-        nosotros. Siga el enlace en el email para confirmar su nueva dirección de
-        email.
       email_update_needs_confirmation: Ha actualizado su cuenta, pero debemos confirmar
         su nueva dirección de email. Encuentre el email que nosotros le enviamos y
         siga el enlace para confirmar su nueva dirección.
-      enabled_twofactor: Ha habilitado la autenticación de dos factores.
       phone_update_needs_confirmation: Su solicitud para actualizar su número de teléfono
         fue procesada, pero necesitamos confirmar primero su número nuevo. Por favor,
         siga las siguientes instrucciones. Si no confirma su nuevo número, seguiremos
         usando su número de teléfono antiguo.
-      signed_up: "¡Bienvenido/a! Usted ha creado una cuenta."
-      signed_up_but_inactive: Usted ha creado una cuenta. No hemos podido iniciar
-        su sesión porque su cuenta aún no está activada.
-      signed_up_but_locked: Usted ha creado una cuenta. No hemos podido iniciar su
-        sesión porque su cuenta está bloqueada.
       start:
         accordion: También necesitarás
         bullet_1_html: Una <strong>dirección de correo electrónico</strong>.
@@ -88,21 +68,22 @@ es:
           clave personal</strong>. Escríbala y guárdela en un lugar seguro; es importante.
           Se le pedirá la clave personal cada vez que realice cambios en su cuenta.
         learn_more: Obtenga más información sobre la verificación de su identidad.
-      updated: "¡Su cuenta ha sido actualizada!"
     sessions:
-      already_signed_out: Su sesión ha terminado ahora.
       signed_in: ''
       signed_out: Su sesión ha terminado ahora.
     two_factor_authentication:
-      buttons:
-        confirm_with_sms: Confirmar con mensaje de texto
-        confirm_with_voice: Confirmar con llamada de voz
-      choose_delivery_confirmation: "¿Cómo le gustaría recibir su código de confirmación
-        para %{phone}?"
-      choose_otp_delivery_html: Lo enviaremos a %{phone} inmediatamente. Puede estar
-        sujeto a cargos de mensajería y datos.
-      contact_administrator: Por favor, póngase en contacto con el administrador del
-        sistema.
+      account_reset:
+        cancel_link: Cancelar su solicitud
+        link: eliminando su cuenta
+        link_expired: El enlace para eliminar su cuenta de login.gov ha caducado.
+          Crea otra solicitud para eliminar tu cuenta.
+        pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
+          Se necesitan 24 horas desde el momento en que realizó la solicitud para
+          completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+        successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
+          ha sido cancelada.
+        text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
+          puede restablecer tus preferencias por %{link}.
       header_text: Ingrese su código de seguridad
       invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo
         de nuevo o solicitar un nuevo código de seguridad de sólo un uso.
@@ -124,66 +105,34 @@ es:
         sms: Mensaje de texto (SMS, sigla en inglés)
         title: "¿Cómo deberíamos enviarle un código?"
         voice: Llamada telefónica
-      otp_phone_label_info: El móvil o teléfono fijo. Si tiene un teléfono fijo, seleccione
-        "Llamada telefónica" en la siguiente pregunta.
-      otp_phone_label_info_mobile_only: NOT TRANSLATED YET
-      otp_setup_html: "<strong>Cada vez que inicie una sesión,</ strong> le enviaremos
-        un código de seguridad de sólo un uso por mensaje de texto o llamada telefónica.
-        Esto ayuda a proteger su cuenta."
-      otp_sms_disclaimer: Puede estar sujeto a cargos de mensajería y datos.
-      personal_key_fallback:
-        link: Use una clave personal en su lugar
-        text_html: "¿No tiene acceso a su teléfono? %{link}."
       personal_key_header_text: Ingrese su clave personal
       personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
         se le dará una nueva clave.
-      phone_sms_label: Número de teléfono móvil
       phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
         <strong>cada vez que inicie sesión</strong>.
-      phone_voice_label: Número de teléfono
+      phone_sms_label: Número de teléfono móvil
       phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada
         vez que inicies sesión</strong>.
+      phone_voice_label: Número de teléfono
       piv_cac_fallback:
         link: Use su PIV/CAC en su lugar
         text_html: "¿Tiene usted PIV/CAC? %{link}"
       piv_cac_header_text: NOT TRANSLATED YET
-      please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
-        el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
-      account_reset:
-        successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
-          ha sido cancelada.
-        link: eliminando su cuenta
-        text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
-          puede restablecer tus preferencias por %{link}.
-        cancel_link: Cancelar su solicitud
-        pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
-          Se necesitan 24 horas desde el momento en que realizó la solicitud para
-          completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
       read_about_two_factor_authentication:
         link: leer acerca de la autenticación de dos factores
         text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
-      totp_fallback:
-        sms_link_text: Recibir un código por mensaje de texto
-        text_html: Si no puede usar su app de autenticación ahora, puede %{sms_link}
-          o %{voice_link}.
-        voice_link_text: obtenga un código con una llamada telefónica
       totp_header_text: Ingrese su código de la app de autenticación
-      totp_info: Use cualquier app de autenticación para escanear el código QR que
-        aparece a continuación.
       two_factor_choice: Asegure su cuenta
+      two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
+        agregando una segunda capa de seguridad.
       two_factor_choice_options:
-        voice: Llamada telefónica
-        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
-        sms: Mensaje de texto / SMS
-        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
         auth_app: Aplicación de autenticación
         auth_app_info: Configure una aplicación de autenticación para obtener su código
           de seguridad sin proporcionar un número de teléfono.
         piv_cac: Empleados del Gobierno
         piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
-      two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
-        agregando una segunda capa de seguridad.
-      two_factor_setup: Añada un número de teléfono
-      user:
-        new_otp_sent: Le enviamos un nuevo código de sólo un uso
+        sms: Mensaje de texto / SMS
+        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+        voice: Llamada telefónica
+        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.

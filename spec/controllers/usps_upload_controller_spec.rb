@@ -31,9 +31,9 @@ describe UspsUploadController do
         it 'runs the uploader' do
           expect(controller).to receive(:today).and_return(Date.new(2018, 7, 3))
 
-          usps_uploader = instance_double(UspsUploader)
+          usps_uploader = instance_double(UspsConfirmationUploader)
           expect(usps_uploader).to receive(:run)
-          expect(UspsUploader).to receive(:new).and_return(usps_uploader)
+          expect(UspsConfirmationUploader).to receive(:new).and_return(usps_uploader)
 
           post :create
 
@@ -45,7 +45,7 @@ describe UspsUploadController do
         it 'does not run the uploader' do
           expect(controller).to receive(:today).and_return(Date.new(2019, 1, 1))
 
-          expect(UspsUploader).not_to receive(:new)
+          expect(UspsConfirmationUploader).not_to receive(:new)
 
           post :create
 
@@ -56,6 +56,6 @@ describe UspsUploadController do
   end
 
   def headers(token)
-    request.headers['X-USPS-UPLOAD-TOKEN'] = token
+    request.headers['X-API-AUTH-TOKEN'] = token
   end
 end

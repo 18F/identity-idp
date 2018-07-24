@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
           input.addEventListener('input', function () {
             if (buttons.length !== 0 && input.checkValidity()) {
               [].forEach.call(buttons, function(button) {
-                if (button.disabled) {
+                if (button.disabled && !button.classList.contains('no-auto-enable')) {
                   button.disabled = false;
                 }
               });

@@ -11,15 +11,14 @@ fr:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
+      return_to_account: NOT TRANSLATED YET
       warning_header: Si vous annulez maintenant
-      warning_points:
-      - Nous ne serons pas en mesure de vérifier votre identité
-      - Nous ne conserverons pas de dossier contenant votre nom, adresse, date de
-        naissance ou numéro de sécurité sociale
-      - Vous ne pourrez pas accéder à votre information de manière sécuritaire en
-        utilisant login.gov
-      - Vous conserverez un compte login.gov pour votre adresse courriel
-      - Vous pouvez gérer ce compte sur la page de votre profil
+      warnings:
+        warning_1: NOT TRANSLATED YET
+        warning_2: NOT TRANSLATED YET
+        warning_3: NOT TRANSLATED YET
+        warning_4: NOT TRANSLATED YET
+        warning_5: NOT TRANSLATED YET
     errors:
       bad_dob: Votre date de naissance doit être une date valide.
       duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
@@ -96,6 +95,8 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
+      agencies_login: NOT TRANSLATED YET
+      agency_login_html: NOT TRANSLATED YET
       cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons recueillir
         quelques informations personnelles de base ainsi que certaines informations
         financières pour compléter ce processus. Si vous n'avez pas cette information
@@ -123,10 +124,10 @@ fr:
         try_again_link: réessayer
         unsupported_jurisdiction_failure: Nous travaillons dur pour ajouter plus d'états
           et espérons pouvoir bientôt prendre en charge %{state}.
-        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
-          de votre carte d'identité officielle.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
+        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
+          de votre carte d'identité officielle.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
@@ -158,8 +159,8 @@ fr:
         à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré
         votre code de confirmation.
       sessions:
-        id_information_subtitle: Informations d'identification
         id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
+        id_information_subtitle: Informations d'identification
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
@@ -172,8 +173,6 @@ fr:
           Celle-ci contient un code de confirmation.
         resend: Envoyez-moi une autre lettre.
         success: Elle devrait arriver dans 5 à 10 jours ouvrables.
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
     review:
       dob: Date de naissance
       full_name: Nom complet

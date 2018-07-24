@@ -1,3 +1,22 @@
+@mixin color-list($color: $yellow) {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding-left: 1rem;
+    text-indent: -1rem;
+
+    &::before {
+      color: $color;
+      content: '•';
+      font-size: 2rem;
+      line-height: 1.5rem;
+      padding-right: .5rem;
+      vertical-align: -3px;
+    }
+  }
+}
+
 .circle-number {
   font-size: 13px;
   font-weight: bold;
@@ -23,40 +42,14 @@
   }
 }
 
+.red-dots {
+  @include color-list($red)
+}
+
 .teal-dots {
-  list-style: none;
-  padding: 0;
-
-  li {
-    padding-left: 1rem;
-    text-indent: -1rem;
-
-    &::before {
-      color: $teal;
-      content: '•';
-      font-size: 2rem;
-      line-height: 1.5rem;
-      padding-right: .5rem;
-      vertical-align: -3px;
-    }
-  }
+  @include color-list($teal)
 }
 
 .yellow-dots {
-  list-style: none;
-  padding: 0;
-
-  li {
-    padding-left: 1rem;
-    text-indent: -1rem;
-
-    &::before {
-      color: $yellow;
-      content: '•';
-      font-size: 2rem;
-      line-height: 1.5rem;
-      padding-right: .5rem;
-      vertical-align: -3px;
-    }
-  }
+  @include color-list($yellow);
 }

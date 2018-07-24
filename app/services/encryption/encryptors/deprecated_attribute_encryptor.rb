@@ -26,7 +26,9 @@ module Encryption
         @_scypt_hashes_by_key ||= {}
         scrypt_hash = @_scypt_hashes_by_key["#{key}:#{cost}"]
         return UserAccessKey.new(scrypt_hash: scrypt_hash) if scrypt_hash.present?
-        uak = UserAccessKey.new(password: key, salt: key, cost: cost)
+        uak = UserAccessKey.new(
+          password: key, salt: OpenSSL::Digest::SHA256.hexdigest(key), cost: cost
+        )
         @_scypt_hashes_by_key["#{key}:#{cost}"] = uak.as_scrypt_hash
         uak
       end
