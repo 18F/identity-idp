@@ -17,7 +17,6 @@ es:
     passwords:
       forgot: "¿Olvidó su contraseña?"
     phone_confirmation:
-      auth_app_fallback_html: o %{link}.
       fallback_to_sms_html: Envíeme un mensaje de texto con el código en su lugar
       fallback_to_voice_html: Si no puede recibir un mensaje de texto ahora mismo,
         puede obtener un código de seguridad a través de %{link}
@@ -29,10 +28,5 @@ es:
     sign_out: Cerrar sesión
     two_factor_authentication:
       app_option: Use una aplicación de autenticación en su lugar.
-      app: Obtener un código de seguridad mediante la app de autenticación
-      resend_code:
-        sms: Obtener otro mensaje de texto
-        voice: Obtener otra llamada telefónica
-      sms: Obtener un código de seguridad a través de un mensaje de texto
-      voice: Obtener un código de seguridad a través de una llamada telefónica
+      get_another_code: Obtener otro código
     what_is_totp: "¿Qué es una app de autenticación?"

@@ -20,5 +20,23 @@ module FakeAdapter
         message: 'Invalid number',
       }.to_json
     end
+
+    def response_code
+      400
+    end
+  end
+
+  class EmptyResponse
+    def success?
+      false
+    end
+
+    def response_body
+      ''
+    end
+
+    def response_code
+      400
+    end
   end
 end
