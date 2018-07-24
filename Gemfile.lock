@@ -588,7 +588,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     stringex (2.8.4)
-    strong_migrations (0.2.2)
+    strong_migrations (0.2.3)
       activerecord (>= 3.2.0)
     sysexits (1.2.0)
     systemu (2.6.5)
