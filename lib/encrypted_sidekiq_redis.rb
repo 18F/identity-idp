@@ -52,11 +52,11 @@ class EncryptedSidekiqRedis
     ret
   end
 
-  # rubocop:disable Style/MethodMissing
+  # rubocop:disable Style/MethodMissingSuper
   def method_missing(meth, *args, &block)
     redis.send(meth, *args, &block)
   end
-  # rubocop:enable Style/MethodMissing
+  # rubocop:enable Style/MethodMissingSuper
 
   def respond_to_missing?(meth, include_private)
     redis.respond_to?(meth, include_private)
