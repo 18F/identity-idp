@@ -389,7 +389,7 @@ GEM
     parser (2.5.1.0)
       ast (~> 2.4.0)
     pg (1.0.0)
-    phonelib (0.6.21)
+    phonelib (0.6.23)
     pkcs11 (0.2.7)
     powerpack (0.1.1)
     premailer (1.11.1)
