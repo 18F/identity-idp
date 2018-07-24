@@ -282,7 +282,7 @@ GEM
       thor (~> 0.14)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
-    front_matter_parser (0.1.1)
+    front_matter_parser (0.2.0)
     geocoder (1.4.9)
     get_process_mem (0.2.1)
     gibberish (2.1.0)
