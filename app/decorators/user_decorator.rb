@@ -121,6 +121,10 @@ class UserDecorator
     (events + identities).sort_by(&:happened_at).reverse
   end
 
+  def connected_apps
+    user.identities.order('created_at DESC').map(&:decorate)
+  end
+
   def verified_account_partial
     if identity_verified?
       'accounts/verified_account_badge'

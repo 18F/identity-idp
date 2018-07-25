@@ -104,5 +104,5 @@ class AccountShow
     I18n.t('account.index.piv_cac_disabled')
   end
 
-  delegate :recent_events, to: :decorated_user
+  delegate :recent_events, :connected_apps, to: :decorated_user
 end
