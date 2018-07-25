@@ -13,10 +13,10 @@ module Users
     def new
       if params.key?(:token)
         process_piv_cac_setup
+      elsif flash[:error_type].present?
+        render_error
       else
-        analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-        @presenter = PivCacAuthenticationSetupPresenter.new(user_piv_cac_form)
-        render :new
+        render_prompt
       end
     end
 
@@ -35,6 +35,17 @@ module Users
     end
 
     private
+
+    def render_prompt
+      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
+      @presenter = PivCacAuthenticationSetupPresenter.new(user_piv_cac_form)
+      render :new
+    end
+
+    def render_error
+      @presenter = PivCacAuthenticationSetupErrorPresenter.new(error: flash[:error_type])
+      render :error
+    end
 
     def two_factor_enabled?
       current_user.two_factor_enabled?
@@ -73,9 +84,9 @@ module Users
     end
 
     def process_invalid_submission
-      @presenter = PivCacAuthenticationSetupErrorPresenter.new(user_piv_cac_form)
       clear_piv_cac_information
-      render :error
+      flash[:error_type] = user_piv_cac_form.error_type
+      redirect_to setup_piv_cac_url
     end
 
     def authorize_piv_cac_disable

@@ -58,6 +58,40 @@ feature 'PIV/CAC Management' do
         expect(user.x509_dn_uuid).to eq uuid
       end
 
+      scenario 'displays error for a bad piv/cac' do
+        stub_piv_cac_service
+
+        sign_in_and_2fa_user(user)
+        visit account_path
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
+
+        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        visit_piv_cac_service(setup_piv_cac_url,
+                              nonce: nonce,
+                              error: 'certificate.bad')
+        expect(current_path).to eq setup_piv_cac_path
+        expect(page).to have_content(t('headings.piv_cac_setup.certificate.bad'))
+      end
+
+      scenario 'displays error for an expired piv/cac' do
+        stub_piv_cac_service
+
+        sign_in_and_2fa_user(user)
+        visit account_path
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
+
+        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        visit_piv_cac_service(setup_piv_cac_url,
+                              nonce: nonce,
+                              error: 'certificate.expired')
+        expect(current_path).to eq setup_piv_cac_path
+        expect(page).to have_content(t('headings.piv_cac_setup.certificate.expired'))
+      end
+
       scenario "doesn't allow unassociation of a piv/cac" do
         stub_piv_cac_service
 
@@ -109,7 +143,7 @@ feature 'PIV/CAC Management' do
         PivCacService.send(:reset_piv_cac_avaialable_agencies)
       end
 
-      scenario 'does not allow association of a piv/cac with an account' do
+      scenario "doesn't advertise association of a piv/cac with an account" do
         stub_piv_cac_service
 
         sign_in_and_2fa_user(user)

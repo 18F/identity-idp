@@ -102,8 +102,8 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 're-renders the piv/cac entry screen' do
-        expect(response).to render_template(:show)
+      it 'redirects to the piv/cac entry screen' do
+        expect(response).to redirect_to login_two_factor_piv_cac_path
       end
 
       it 'displays flash error message' do
@@ -126,8 +126,8 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 're-renders the piv/cac entry screen' do
-        expect(response).to render_template(:show)
+      it 'redirects to the piv/cac entry screen' do
+        expect(response).to redirect_to login_two_factor_piv_cac_path
       end
 
       it 'displays flash error message' do
