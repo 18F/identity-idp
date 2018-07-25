@@ -3,7 +3,6 @@ en:
   service_providers:
     learn_more: Learn more.
     sam:
-      header: First time here from SAM?
       account_page:
         body: Your old SAM username and password won’t work. Please create a login.gov
           account using the same email address you use for SAM.
@@ -13,6 +12,7 @@ en:
       create_account_page:
         body: Please create a login.gov account using the same email address you use
           for SAM.
+      header: First time here from SAM?
     trusted_traveler:
       account_page:
         body: Your old GOES userID and password won’t work. Please create a login.gov

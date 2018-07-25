@@ -3,7 +3,6 @@ fr:
   service_providers:
     learn_more: En savoir plus.
     sam:
-      header: Êtes-vous venu(e) de SAM?
       account_page:
         body: Votre ancien nom d'utilisateur et mot de passe SAM ne marchera pas.
           Veuillez créer un nouveau compte login.gov avec la même adresse e-mail que
@@ -14,6 +13,7 @@ fr:
       create_account_page:
         body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
           avez utilisée pour SAM.
+      header: Êtes-vous venu(e) de SAM?
     trusted_traveler:
       account_page:
         body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
