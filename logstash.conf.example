@@ -1,0 +1,9 @@
+input {
+  file {
+    path => "path_to_repo/log/events.log"
+  }
+}
+output {
+  elasticsearch { hosts => ["localhost:9200"] }
+  stdout { codec => rubydebug }
+}
