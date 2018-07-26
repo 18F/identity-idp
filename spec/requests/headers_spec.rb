@@ -10,7 +10,9 @@ RSpec.describe 'Headers' do
   it 'does not blow up with a malicious host value' do
     get root_path, headers: { 'Host' => "mTpvPME6'));select pg_sleep(9); --" }
 
-    expect(response.code.to_i).to eq(200)
+    # it will redirect to the canonical host
+    expect(response.code.to_i).to eq(301)
+    expect(response).to redirect_to root_url
   end
 
   it 'does not blow up with bad formats in the headers' do
@@ -28,6 +30,8 @@ RSpec.describe 'Headers' do
   it 'does not raise an error when HTTP_HOST Header is encoded with ASCII-8BIT' do
     get root_path, headers: { 'Host' => '¿’¿”'.force_encoding(Encoding::ASCII_8BIT) }
 
-    expect(response.status).to eq 200
+    # it will redirect to the canonical host
+    expect(response.status).to eq 301
+    expect(response).to redirect_to root_url
   end
 end
