@@ -15,10 +15,9 @@ class UspsConfirmationUploader
   end
 
   def upload_export(export)
+    io = StringIO.new(export)
     Net::SFTP.start(*sftp_config) do |sftp|
-      sftp.file.open(remote_path, 'w') do |file|
-        file.write(export)
-      end
+      sftp.upload!(io, remote_path)
     end
   end
 

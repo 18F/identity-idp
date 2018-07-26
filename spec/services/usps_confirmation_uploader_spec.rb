@@ -48,14 +48,12 @@ RSpec.describe UspsConfirmationUploader do
     subject { uploader.send(:upload_export, export) }
 
     let(:sftp_connection) { instance_double('Net::SFTP::Session') }
-    let(:File) { class_double('File') }
-    let(:file) { instance_double('File') }
+    let(:string_io) { StringIO.new(export) }
 
     it 'uploads the export via sftp' do
       expect(Net::SFTP).to receive(:start).with(*sftp_options).and_yield(sftp_connection)
-      expect(sftp_connection).to receive(:file).and_return(File)
-      expect(File).to receive(:open).with(upload_folder, write_permission).and_yield(file)
-      expect(file).to receive(:write).with(export)
+      expect(StringIO).to receive(:new).with(export).and_return(string_io)
+      expect(sftp_connection).to receive(:upload!).with(string_io, upload_folder)
 
       subject
     end
