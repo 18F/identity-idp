@@ -55,7 +55,9 @@ feature 'Visitor signs up with email address' do
   end
 
   it 'returns a bad request if the email contains invalid bytes' do
-    sign_up_with("test@\xFFbar\xF8.com")
-    expect(page).to have_content 'Bad request'
+    suppress_output do
+      sign_up_with("test@\xFFbar\xF8.com")
+      expect(page).to have_content 'Bad request'
+    end
   end
 end
