@@ -89,9 +89,10 @@ RSpec.describe UspsConfirmationUploader do
 
   def sftp_options
     [
-      Figaro.env.usps_upload_sftp_host,
-      Figaro.env.usps_upload_sftp_username,
-      { password: Figaro.env.usps_upload_sftp_password },
+      env.usps_upload_sftp_host,
+      env.usps_upload_sftp_username,
+      password: env.usps_upload_sftp_password,
+      timeout: env.usps_upload_sftp_timeout.to_i,
     ]
   end
 
@@ -101,5 +102,9 @@ RSpec.describe UspsConfirmationUploader do
 
   def write_permission
     'w'
+  end
+
+  def env
+    Figaro.env
   end
 end
