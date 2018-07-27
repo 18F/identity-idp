@@ -67,6 +67,8 @@ use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
+usps_upload_sftp_timeout: '15'
+
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
@@ -191,10 +193,10 @@ development:
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
-  usps_upload_sftp_directory: '/directory'
-  usps_upload_sftp_host: 'example.com'
-  usps_upload_sftp_username: 'user'
-  usps_upload_sftp_password: 'pass'
+  usps_upload_sftp_directory: '/gsa_order'
+  usps_upload_sftp_host: 'localhost'
+  usps_upload_sftp_username: 'brady'
+  usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
 
 # These values serve as defaults for all production-like environments, which

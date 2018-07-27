@@ -34,6 +34,7 @@ class UspsConfirmationUploader
       env.usps_upload_sftp_host,
       env.usps_upload_sftp_username,
       password: env.usps_upload_sftp_password,
+      timeout: env.usps_upload_sftp_timeout.to_i,
     ]
   end
 
