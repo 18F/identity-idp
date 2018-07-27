@@ -37,9 +37,10 @@ p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
               = t('devise.two_factor_authentication.otp_delivery_preference.voice')
             .regular.gray-dark.fs-10p.mb-tiny
               = t('devise.two_factor_authentication.two_factor_choice_options.voice_info')
-      .mt3
-        = t('idv.form.no_alternate_phone_html',
-        link: link_to(t('idv.form.activate_by_mail'), idv_usps_path))
+      - if FeatureManagement.enable_usps_verification?
+        .mt3
+          = t('idv.form.no_alternate_phone_html',
+          link: link_to(t('idv.form.activate_by_mail'), idv_usps_path))
       .mt2
         = t('instructions.mfa.wrong_number_html',
         link: link_to(t('forms.two_factor.try_again'), idv_phone_path))
