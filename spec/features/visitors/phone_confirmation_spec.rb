@@ -14,6 +14,7 @@ feature 'Phone confirmation during sign up' do
         code: @user.reload.direct_otp,
         phone: '+1 703-555-5555',
         otp_created_at: @user.direct_otp_sent_at.to_s,
+        message: 'jobs.sms_otp_sender_job.verify_message',
         locale: nil
       )
     end

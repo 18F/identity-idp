@@ -122,6 +122,7 @@ feature 'Two Factor Authentication' do
           code: user.reload.direct_otp,
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.verify_message',
           locale: 'ar'
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -557,6 +558,7 @@ feature 'Two Factor Authentication' do
           code: user.reload.direct_otp,
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.login_message',
           locale: 'ar'
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')

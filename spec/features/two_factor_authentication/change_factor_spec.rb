@@ -91,6 +91,7 @@ feature 'Changing authentication factor' do
             code: user.reload.direct_otp,
             phone: old_phone,
             otp_created_at: user.reload.direct_otp_sent_at.to_s,
+            message: 'jobs.sms_otp_sender_job.login_message',
             locale: nil
           )
 
@@ -116,6 +117,7 @@ feature 'Changing authentication factor' do
               code: user.reload.direct_otp,
               phone: old_phone,
               otp_created_at: user.reload.direct_otp_sent_at.to_s,
+              message: 'jobs.sms_otp_sender_job.login_message',
               locale: nil
             )
 
