@@ -25,6 +25,7 @@ describe TwilioService::Utils do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '17035551212',
+        message: 'jobs.sms_otp_sender_job.verify_message',
         otp_created_at: Time.zone.now.to_s
       )
 
