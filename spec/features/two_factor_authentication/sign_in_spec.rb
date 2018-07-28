@@ -263,7 +263,8 @@ feature 'Two Factor Authentication' do
                otp_delivery_preference: 'voice',
                with: { phone: '+12255551000', delivery_preference: 'voice' })
       end
-      let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: '+12255551000') }
+      let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone_confirmed: true,
+                                                  phone: '+12255551000') }
 
       it 'does not change their OTP delivery preference' do
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)

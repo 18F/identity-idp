@@ -191,10 +191,10 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
-        allow(OtpRateLimiter).to receive(:new).with(
-          phone: MfaContext.new(@user).phone_configurations.first.phone,
-          user: @user,
-        ).and_return(otp_rate_limiter)
+        allow(OtpRateLimiter).to receive(:new).
+          with(phone: MfaContext.new(@user).phone_configurations.first.phone,
+               user: @user, phone_confirmed: true).
+          and_return(otp_rate_limiter)
 
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
