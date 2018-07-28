@@ -119,8 +119,10 @@ feature 'LOA1 Single Sign On' do
 
       visit saml_authn_request
       sp_request_id = ServiceProviderRequest.last.uuid
-      page.set_rack_session(sp: {})
-      visit new_user_session_url(request_id: sp_request_id)
+
+      visit timeout_path
+      expect(current_url).to eq root_url(request_id: sp_request_id)
+
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue
