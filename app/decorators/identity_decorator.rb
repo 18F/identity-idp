@@ -10,6 +10,10 @@ IdentityDecorator = Struct.new(:identity) do
     'accounts/identity_item'
   end
 
+  def failure_to_proof_url
+    identity.sp_metadata[:failure_to_proof_url]
+  end
+
   def return_to_sp_url
     identity.sp_metadata[:return_to_sp_url]
   end
