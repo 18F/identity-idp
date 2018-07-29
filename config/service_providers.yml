@@ -152,7 +152,7 @@ development:
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency_id: 1
     redirect_uris:
-      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -260,7 +260,7 @@ production:
     friendly_name: 'Example Sinatra OIDC App'
     logo: '18f.svg'
     redirect_uris:
-      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
       <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
       <% end %>
