@@ -26,6 +26,7 @@ RSpec.describe Health::HealthController do
         expect(json[:healthy]).to eq(true)
         expect(json[:statuses][:workers][:all_healthy]).to eq(true)
         expect(json[:statuses][:database][:healthy]).to eq(true)
+        expect(json[:statuses][:account_reset][:healthy]).to eq(true)
       end
     end
 
