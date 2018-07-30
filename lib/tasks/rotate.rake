@@ -13,6 +13,11 @@ namespace :rotate do
         users.each do |user|
           rotator = KeyRotator::AttributeEncryption.new(user)
           rotator.rotate
+          phone_configuration = user.phone_configuration
+          if phone_configuration.present?
+            rotator = KeyRotator::AttributeEncryption.new(phone_configuration)
+            rotator.rotate
+          end
           progress&.increment
         rescue StandardError => err # Don't use user.email in output...
           Kernel.puts "Error with user id:#{user.id} #{err.message} #{err.backtrace}"

@@ -6,6 +6,16 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password '!1a Z@6s' * 16 # Maximum length password.
 
+    after :build do |user|
+      if user.phone
+        user.build_phone_configuration(
+          phone: user.phone,
+          confirmed_at: user.phone_confirmed_at,
+          delivery_preference: user.otp_delivery_preference
+        )
+      end
+    end
+
     trait :with_phone do
       phone '+1 202-555-1212'
       phone_confirmed_at Time.zone.now

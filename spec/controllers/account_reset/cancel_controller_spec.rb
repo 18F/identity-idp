@@ -47,6 +47,7 @@ describe AccountReset::CancelController do
       allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
       user.phone = nil
       user.save!
+      user.phone_configuration.destroy
 
       post :cancel, params: { token: AccountResetRequest.all[0].request_token }
 
