@@ -324,6 +324,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'does not update user phone or phone_confirmed_at attributes' do
             expect(subject.current_user.phone).to eq('+1 202-555-1212')
             expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
+            expect(subject.current_user.phone_configuration.phone).to eq('+1 202-555-1212')
+            expect(
+              subject.current_user.phone_configuration.confirmed_at
+            ).to eq(@previous_phone_confirmed_at)
           end
 
           it 'renders :show' do
@@ -353,6 +357,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         before do
           subject.current_user.phone = nil
           subject.current_user.phone_confirmed_at = nil
+          subject.current_user.phone_configuration.destroy
+          subject.current_user.phone_configuration = nil
           subject.current_user.create_direct_otp
         end
 
@@ -491,6 +497,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'does not update user phone attributes' do
           expect(subject.current_user.reload.phone).to eq '+1 202-555-1212'
           expect(subject.current_user.reload.phone_confirmed_at).to eq @previous_phone_confirmed_at
+
+          configuration = subject.current_user.reload.phone_configuration
+          expect(configuration.phone).to eq '+1 202-555-1212'
+          expect(configuration.confirmed_at).to eq @previous_phone_confirmed_at
         end
 
         it 'redirects to idv_review_path' do
@@ -516,6 +526,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'does not update user phone or phone_confirmed_at attributes' do
           expect(subject.current_user.phone).to eq('+1 202-555-1212')
           expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
+
+          configuration = subject.current_user.reload.phone_configuration
+          expect(configuration.phone).to eq '+1 202-555-1212'
+          expect(configuration.confirmed_at).to eq @previous_phone_confirmed_at
+
           expect(subject.idv_session.params['phone_confirmed_at']).to be_nil
         end
 

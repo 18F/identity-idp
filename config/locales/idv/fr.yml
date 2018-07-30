@@ -11,20 +11,18 @@ fr:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
+      return_to_account: NOT TRANSLATED YET
       warning_header: Si vous annulez maintenant
-      warning_points:
-      - Nous ne serons pas en mesure de vérifier votre identité
-      - Nous ne conserverons pas de dossier contenant votre nom, adresse, date de
-        naissance ou numéro de sécurité sociale
-      - Vous ne pourrez pas accéder à votre information de manière sécuritaire en
-        utilisant login.gov
-      - Vous conserverez un compte login.gov pour votre adresse courriel
-      - Vous pouvez gérer ce compte sur la page de votre profil
+      warnings:
+        warning_1: NOT TRANSLATED YET
+        warning_2: NOT TRANSLATED YET
+        warning_3: NOT TRANSLATED YET
+        warning_4: NOT TRANSLATED YET
+        warning_5: NOT TRANSLATED YET
     errors:
       bad_dob: Votre date de naissance doit être une date valide.
       duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
         chiffres.
-      hardfail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment.
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
@@ -38,6 +36,36 @@ fr:
         de cet état.
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
+    failure:
+      attempts:
+        one: Il ne vous reste qu' strongune tentative./strong
+        other: Il ne vous reste que strong%{count} tentatives./strong
+      button:
+        fail: OK
+        jobfail: Essayez à nouveau demain
+        timeout: Essayez à nouveau
+        warning: Essayez à nouveau
+      errors:
+        link: contactez-nous
+        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
+      phone:
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations
+          téléphoniques.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Veuillez vérifier l'information que vous avez fournie.
+      sessions:
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations
+          téléphoniques.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
+          de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
+          des erreurs communes.
     form:
       activate_by_mail: obtenir un code par courrier à la place ›
       address1: Adresse
@@ -67,6 +95,8 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
+      agencies_login: NOT TRANSLATED YET
+      agency_login_html: NOT TRANSLATED YET
       cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons recueillir
         quelques informations personnelles de base ainsi que certaines informations
         financières pour compléter ce processus. Si vous n'avez pas cette information
@@ -81,7 +111,6 @@ fr:
         originalement.
       dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
       hardfail: NOT TRANSLATED YET
-      hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
         davantage sur la façon dont nous vérifions votre compte.
       jurisdiction:
@@ -95,10 +124,10 @@ fr:
         try_again_link: réessayer
         unsupported_jurisdiction_failure: Nous travaillons dur pour ajouter plus d'états
           et espérons pouvoir bientôt prendre en charge %{state}.
-        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
-          de votre carte d'identité officielle.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
+        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
+          de votre carte d'identité officielle.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
@@ -114,6 +143,9 @@ fr:
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain
+      read_about_security_and_privacy:
+        link: lire comment login.gov protège vos informations
+        text: Vous pouvez %{link} sur notre page d'aide.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -127,8 +159,8 @@ fr:
         à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré
         votre code de confirmation.
       sessions:
-        id_information_subtitle: Informations d'identification
         id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
+        id_information_subtitle: Informations d'identification
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
@@ -141,35 +173,6 @@ fr:
           Celle-ci contient un code de confirmation.
         resend: Envoyez-moi une autre lettre.
         success: Elle devrait arriver dans 5 à 10 jours ouvrables.
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
-    modal:
-      attempts:
-        one: Il ne vous reste qu' strongune tentative./strong
-        other: Il ne vous reste que strong%{count} tentatives./strong
-      button:
-        fail: OK
-        jobfail: Essayez à nouveau demain
-        warning: Essayez à nouveau
-      phone:
-        fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles
-          vous ne pourrez pas y accéder. Consultez notre Centre d'aide pour plus d'information
-          sur la vérification de votre identité.
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Veuillez vérifier l'information que vous avez fournie.
-      sessions:
-        fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles
-          vous ne pourrez pas y accéder.
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
-          de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
-          des erreurs communes.
     review:
       dob: Date de naissance
       full_name: Nom complet

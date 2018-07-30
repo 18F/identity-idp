@@ -11,18 +11,17 @@ es:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
+      return_to_account: NOT TRANSLATED YET
       warning_header: Si usted cancela ahora
-      warning_points:
-      - No podremos verificar su identidad
-      - No mantendremos un registro de su nombre, dirección, fecha de nacimiento o
-        número de Seguro Social
-      - No podrá acceder a su información con seguridad usando login.gov
-      - Usted todavía tiene una cuenta de login.gov con su email
-      - Puede administrar esa cuenta en su página de perfil
+      warnings:
+        warning_1: NOT TRANSLATED YET
+        warning_2: NOT TRANSLATED YET
+        warning_3: NOT TRANSLATED YET
+        warning_4: NOT TRANSLATED YET
+        warning_5: NOT TRANSLATED YET
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
-      hardfail: No pudimos verificar su identidad en este momento.
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
@@ -33,6 +32,35 @@ es:
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
+    failure:
+      attempts:
+        one: Tiene usted <strong> 1 intento restante.</ strong>
+        other: Tiene usted <strong>%{count} intentos restantes.</strong>
+      button:
+        fail: Bueno
+        jobfail: Inténtelo de nuevo mañana
+        timeout: Inténtelo de nuevo
+        warning: Inténtelo de nuevo
+      errors:
+        link: contáctanos
+        text: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
+      phone:
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
+        heading: No hemos podido encontrar registros que coincidan con la información
+          de su teléfono.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Compruebe la información que ingresó.
+      sessions:
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
+        heading: No hemos podido encontrar registros que coincidan con su información
+          personal.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Compruebe la información que ingresó. Los errores comunes son números
+          incorrectos de Seguro Social, código postal o fecha de nacimiento.
     form:
       activate_by_mail: obtener un código por correo electrónico en su lugar ›
       address1: Dirección
@@ -62,6 +90,8 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
       activated_link: Contáctenos
+      agencies_login: NOT TRANSLATED YET
+      agency_login_html: NOT TRANSLATED YET
       cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
         información personal básica, así como su información financiera para completar
         este proceso. Si no tiene la información que necesitamos en este momento,
@@ -75,7 +105,6 @@ es:
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
       dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
       hardfail: NOT TRANSLATED YET
-      hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visite nuestro <strong>Centro de Ayuda</strong> para obtener
         más información sobre la verificación de su cuenta.
       jurisdiction:
@@ -89,10 +118,10 @@ es:
         try_again_link: intentarlo de nuevo
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
           estados y esperamos apoyar a %{state} pronto.
-        why: Para verificar su identidad, necesitará información de su identificación
-          emitida por el estado.
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
           del estado?"
+        why: Para verificar su identidad, necesitará información de su identificación
+          emitida por el estado.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
@@ -107,6 +136,9 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
+      read_about_security_and_privacy:
+        link: leer sobre cómo login.gov mantiene su información segura
+        text: Puede %{link} en nuestra página de ayuda.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -118,8 +150,8 @@ es:
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
-        id_information_subtitle: Información de identificación
         id_information_message: como aparece en su identificación emitida por el estado
+        id_information_subtitle: Información de identificación
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
@@ -131,34 +163,6 @@ es:
           verificada en el archivo.
         resend: Envíeme otra carta.
         success: Debe llegar en 5 a 10 días laborales.
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
-    modal:
-      attempts:
-        one: Tiene usted <strong> 1 intento restante.</ strong>
-        other: Tiene usted <strong>%{count} intentos restantes.</strong>
-      button:
-        fail: Bueno
-        jobfail: Inténtelo de nuevo mañana
-        warning: Inténtelo de nuevo
-      phone:
-        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
-          verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
-          información sobre la verificación de identidad.
-        heading: No hemos podido encontrar registros que coincidan con la información
-          de su teléfono.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Compruebe la información que ingresó.
-      sessions:
-        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
-          pueda intentar verificarla de nuevo.
-        heading: No hemos podido encontrar registros que coincidan con su información
-          personal.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Compruebe la información que ingresó. Los errores comunes son números
-          incorrectos de Seguro Social, código postal o fecha de nacimiento.
     review:
       dob: Fecha de nacimiento
       full_name: Nombre completo

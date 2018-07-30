@@ -2,11 +2,11 @@ class SmsOtpSenderJob < ApplicationJob
   queue_as :sms
 
   # rubocop:disable Lint/UnusedMethodArgument
-  def perform(code:, phone:, otp_created_at:, locale: nil)
+  def perform(code:, phone:, otp_created_at:, message:, locale: nil)
     return unless otp_valid?(otp_created_at)
 
     if programmable_sms_number?
-      send_sms_via_twilio_rest_api
+      send_sms_via_twilio_rest_api(message)
     else
       send_sms_via_twilio_verify_api(locale)
     end
@@ -23,11 +23,11 @@ class SmsOtpSenderJob < ApplicationJob
     arguments[0][:phone]
   end
 
-  def send_sms_via_twilio_rest_api
+  def send_sms_via_twilio_rest_api(message)
     TwilioService::Utils.new.send_sms(
       to: phone,
       body: I18n.t(
-        'jobs.sms_otp_sender_job.message',
+        message,
         code: code, app: APP_NAME, expiration: otp_valid_for_minutes
       )
     )

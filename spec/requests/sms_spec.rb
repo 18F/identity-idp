@@ -7,6 +7,8 @@ describe 'SMS receiving' do
   let(:password) { 'auth_password' }
   let(:access_denied) { 'HTTP Basic: Access denied' }
   let(:credentials) { "Basic #{Base64.encode64("#{username}:#{password}")}" }
+  let(:help_message) { 'help' }
+  let(:invalid_message) { 'blargh' }
 
   describe 'HTTP Basic Authentication' do
     context 'without required credentials' do
@@ -30,7 +32,7 @@ describe 'SMS receiving' do
           receive(:validate).and_return(true)
         )
 
-        post_message
+        post_message(help_message)
 
         expect(response).to have_http_status(:accepted)
       end
@@ -48,16 +50,28 @@ describe 'SMS receiving' do
     end
 
     context 'when failing' do
-      it 'does not send a reply' do
+      it 'does not send a reply and 403s when signature is invalid' do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
           receive(:validate).and_return(false)
         )
 
         expect(SmsReplySenderJob).to_not receive(:perform_later)
 
-        post_message
+        post_message(help_message)
 
         expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'responds with a 200 status when signature is valid' do
+        allow_any_instance_of(Twilio::Security::RequestValidator).to(
+          receive(:validate).and_return(true)
+        )
+
+        expect(SmsReplySenderJob).to_not receive(:perform_later)
+
+        post_message(invalid_message)
+
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -69,7 +83,7 @@ describe 'SMS receiving' do
 
         expect(SmsReplySenderJob).to receive(:perform_later)
 
-        post_message
+        post_message(help_message)
 
         expect(response).to have_http_status(:accepted)
       end
@@ -78,10 +92,10 @@ describe 'SMS receiving' do
 
   private
 
-  def post_message
+  def post_message(body)
     post(
       api_sms_receive_path,
-      params: { Body: 'help' },
+      params: { Body: body },
       headers: { 'HTTP_AUTHORIZATION': credentials }
     )
   end

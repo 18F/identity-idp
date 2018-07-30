@@ -62,6 +62,8 @@ class Analytics
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
+  IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
+  IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze

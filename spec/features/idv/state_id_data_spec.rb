@@ -3,6 +3,8 @@ require 'rails_helper'
 feature 'idv state id data entry', :idv_job do
   include IdvStepHelper
 
+  let(:locale) { LinkLocaleResolver.locale }
+
   before do
     start_idv_from_sp
     complete_idv_steps_before_profile_step
@@ -13,8 +15,8 @@ feature 'idv state id data entry', :idv_job do
     fill_in :profile_state_id_number, with: '000000000'
     click_idv_continue
 
-    expect(page).to have_content t('idv.modal.sessions.warning')
-    expect(current_path).to eq(idv_session_result_path)
+    expect(page).to have_content t('idv.failure.sessions.warning')
+    expect(current_path).to eq(idv_session_failure_path(:warning, locale: locale))
   end
 
   it 'renders an error for blank state id number and does not submit a job', :email do

@@ -5,6 +5,7 @@ class ServiceProviderSessionDecorator
     'CBP Trusted Traveler Programs' => {
       i18n_name: 'trusted_traveler',
       learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
+      exclude_paths: ['/sign_up/enter_email'],
     },
     'USAJOBS' => {
       i18n_name: 'usa_jobs',
@@ -78,10 +79,6 @@ class ServiceProviderSessionDecorator
     I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
-  def idv_hardfail4_partial
-    'idv/hardfail4'
-  end
-
   def requested_attributes
     sp_session[:requested_attributes].sort
   end
@@ -95,8 +92,12 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uris.present? && openid_connect_redirector.valid?
-      openid_connect_redirector.decline_redirect_uri
+    if sp.redirect_uris.present? && valid_oidc_request?
+      URIService.add_params(
+        oidc_redirect_uri,
+        error: 'access_denied',
+        state: request_params[:state]
+      )
     else
       sp.return_to_sp_url
     end
@@ -106,27 +107,43 @@ class ServiceProviderSessionDecorator
     view_context.sign_up_start_url(request_id: sp_session[:request_id])
   end
 
-  def sp_alert?
-    SP_ALERTS[sp_name].present?
+  def sp_alert?(path)
+    sp_alert.present? && !sp_alert[:exclude_paths]&.include?(path)
   end
 
   def sp_alert_name
-    sp_alert? ? SP_ALERTS[sp_name][:i18n_name] : nil
+    SP_ALERTS.dig(sp_name, :i18n_name)
   end
 
   def sp_alert_learn_more
-    sp_alert? ? SP_ALERTS[sp_name][:learn_more] : nil
+    SP_ALERTS.dig(sp_name, :learn_more)
   end
 
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
+  def sp_alert
+    @sp_alert ||= SP_ALERTS[sp_name]
+  end
+
   def request_url
     sp_session[:request_url] || service_provider_request.url
   end
 
-  def openid_connect_redirector
-    @_openid_connect_redirector ||= OpenidConnectRedirector.from_request_url(request_url)
+  def valid_oidc_request?
+    authorize_form .valid?
+  end
+
+  def authorize_form
+    OpenidConnectAuthorizeForm.new(request_params)
+  end
+
+  def oidc_redirect_uri
+    request_params[:redirect_uri]
+  end
+
+  def request_params
+    @request_params ||= URIService.params(request_url)
   end
 end

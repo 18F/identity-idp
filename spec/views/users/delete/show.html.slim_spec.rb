@@ -20,18 +20,20 @@ describe 'users/delete/show.html.slim' do
     render
 
     expect(rendered).to have_content(t('users.delete.bullet_1', app: APP_NAME))
-    expect(rendered).to have_content(t(user.decorate.delete_account_bullet_key, app: APP_NAME))
+    expect(rendered).to have_content(user.decorate.delete_account_bullet_key)
     expect(rendered).to have_content(t('users.delete.bullet_3', app: APP_NAME))
   end
 
   it 'displays bullets for loa1' do
     allow(decorated_user).to receive(:identity_verified?).and_return(false)
-    expect(user.decorate.delete_account_bullet_key).to eq 'users.delete.bullet_2_loa1'
+    expect(user.decorate.delete_account_bullet_key).
+      to eq t('users.delete.bullet_2_loa1', app: APP_NAME)
   end
 
   it 'displays bullets for loa1' do
     allow(decorated_user).to receive(:identity_verified?).and_return(true)
-    expect(user.decorate.delete_account_bullet_key).to eq 'users.delete.bullet_2_loa3'
+    expect(user.decorate.delete_account_bullet_key).
+      to eq t('users.delete.bullet_2_loa3', app: APP_NAME)
   end
 
   it 'contains link to delete account button' do

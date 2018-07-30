@@ -160,4 +160,19 @@ describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: 'foo' }
     end
   end
+
+  describe 'Two users simultaneously confirm email with race condition' do
+    it 'does not throw a 500 error' do
+      create(:user, :unconfirmed, confirmation_token: 'foo')
+      allow_any_instance_of(SignUp::EmailConfirmationsController).
+        to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
+
+      get :create, params: { confirmation_token: 'foo' }
+
+      expect(flash[:error]).
+        to eq t('devise.confirmations.already_confirmed',
+                action: t('devise.confirmations.sign_in'))
+      expect(response).to redirect_to root_url
+    end
+  end
 end

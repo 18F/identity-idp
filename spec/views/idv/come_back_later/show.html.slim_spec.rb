@@ -26,7 +26,7 @@ describe 'idv/come_back_later/show.html.slim' do
         strip_tags(t(
                      'idv.messages.come_back_later_sp_html',
                      sp: @decorated_session.sp_name
-        ))
+                   ))
       )
     end
   end
@@ -61,7 +61,7 @@ describe 'idv/come_back_later/show.html.slim' do
         strip_tags(t(
                      'idv.messages.come_back_later_no_sp_html',
                      app: APP_NAME
-        ))
+                   ))
       )
     end
   end

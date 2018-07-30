@@ -73,7 +73,7 @@ describe Idv::SessionsController do
 
           expect(@analytics).to have_received(:track_event).
             with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-          expect(response).to redirect_to idv_fail_url
+          expect(response).to redirect_to idv_session_failure_url(:fail)
         end
       end
     end
@@ -106,8 +106,7 @@ describe Idv::SessionsController do
 
           post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
-          expect(response).to redirect_to(idv_session_dupe_path)
-          expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
+          expect(response).to redirect_to(idv_session_failure_url(:dupe_ssn))
         end
       end
 
@@ -115,7 +114,7 @@ describe Idv::SessionsController do
         it 'renders the form' do
           post :create, params: { profile: user_attrs.merge(ssn: '') }
 
-          expect(response).to_not redirect_to(idv_session_dupe_path)
+          expect(response).to_not redirect_to(idv_session_failure_url(:dupe_ssn))
           expect(response).to render_template(:new)
         end
       end
@@ -171,8 +170,7 @@ describe Idv::SessionsController do
         it 'displays an error' do
           get :show
 
-          expect(response).to render_template :new
-          expect(flash[:warning]).to include(t('idv.modal.sessions.timeout'))
+          expect(response).to redirect_to(idv_session_failure_url(:timeout))
         end
 
         it 'tracks the failure as a timeout' do
@@ -216,12 +214,10 @@ describe Idv::SessionsController do
             )
           end
 
-          it 're-renders form' do
+          it 'redirects to the failure page' do
             get :show
 
-            expect(flash[:warning]).to match t('idv.modal.sessions.heading')
-            expect(flash[:warning]).to match(t('idv.modal.attempts', count: max_attempts - 1))
-            expect(response).to render_template(:new)
+            expect(response).to redirect_to(idv_session_failure_url(:warning))
           end
 
           it 'creates analytics event' do
@@ -252,7 +248,7 @@ describe Idv::SessionsController do
             )
           end
 
-          it 'logs failure and re-renders form' do
+          it 'logs failure and redirects to the failure page' do
             get :show
 
             result = {
@@ -266,7 +262,7 @@ describe Idv::SessionsController do
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-            expect(response).to render_template(:new)
+            expect(response).to redirect_to(idv_session_failure_url(:warning))
           end
         end
 
@@ -315,7 +311,7 @@ describe Idv::SessionsController do
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-            expect(response).to redirect_to idv_fail_url
+            expect(response).to redirect_to idv_session_failure_url(:fail)
           end
         end
 
@@ -339,12 +335,23 @@ describe Idv::SessionsController do
       end
     end
 
-    describe '#destroy' do
-      it 'clears the idv session and returns the user to their profile' do
-        delete :destroy
+    describe '#failure' do
+      context 'reason == :dupe_ssn' do
+        it 'renders the dupe_ssn failure screen' do
+          get :failure, params: { reason: :dupe_ssn }
 
-        expect(controller.user_session[:idv]).to eq({})
-        expect(response).to redirect_to(account_path)
+          expect(response).to render_template('shared/_failure')
+        end
+      end
+
+      context 'reason != :dupe_ssn' do
+        let(:reason) { :fail }
+
+        it 'calls `render_step_failure` with step_name of :sessions and the reason' do
+          expect(controller).to receive(:render_idv_step_failure).with(:sessions, reason)
+
+          get :failure, params: { reason: reason }
+        end
       end
     end
   end

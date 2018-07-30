@@ -43,7 +43,7 @@ const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
   return null;
 };
 
-const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo,
+const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
   warningMessage) => {
   phoneRadio.disabled = true;
   phoneLabel.classList.add('btn-disabled');
@@ -51,13 +51,10 @@ const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
   deliveryMethodHint.innerText = warningMessage;
 };
 
-const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint, optPhoneLabelInfo) => {
+const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint) => {
   phoneRadio.disabled = false;
   phoneLabel.classList.remove('btn-disabled');
   deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
-  if (optPhoneLabelInfo) {
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
-  }
 };
 
 const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
@@ -79,16 +76,15 @@ const updateOTPDeliveryMethods = () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const phoneLabel = phoneRadio.parentNode.parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
-  const optPhoneLabelInfo = document.querySelector('#otp_phone_label_info');
 
   const phone = phoneInput.value;
 
   const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
   if (warningMessage) {
-    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo,
+    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
       warningMessage);
   } else {
-    enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo);
+    enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint);
   }
 };
 

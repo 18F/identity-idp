@@ -61,6 +61,8 @@ feature 'idv usps step', :idv_job do
   end
 
   context 'cancelling IdV' do
-    # USPS step does not have a cancel button :(
+    it_behaves_like 'cancel at idv step', :usps
+    it_behaves_like 'cancel at idv step', :usps, :oidc
+    it_behaves_like 'cancel at idv step', :usps, :saml
   end
 end

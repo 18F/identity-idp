@@ -5,6 +5,12 @@ describe CloudhsmKeyGenerator do
   let(:subject) { CloudhsmKeyGenerator.new }
   before(:each) { mock_cloudhsm }
 
+  around(:each) do |example|
+    suppress_output do
+      example.run
+    end
+  end
+
   describe '#generate_saml_key' do
     it 'generates saml secret key, crt, and transcript' do
       label = subject.generate_saml_key

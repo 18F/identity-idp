@@ -91,7 +91,7 @@ On OS X, the easiest way is with Homebrew:
 ```
 brew tap homebrew/services
 
-brew install elasticsearch logstash kibana # or brew upgrade if already installed
+brew install elasticsearch logstash kibana
 
 brew services start elasticsearch
 brew services start kibana
@@ -106,6 +106,79 @@ When you trigger an event in the app (such as signing in), you should see some
 output in the logstash window.
 
 To explore the data with Kibana, visit http://localhost:5601
+
+##### Troubleshooting Kibana errors
+Below are some common errors:
+
+- On the Kibana website: "Your Kibana index is out of date, reset it or use the
+X-Pack upgrade assistant."
+
+- In the logstash output:
+  ```
+  Failed to parse mapping [_default_]: [include_in_all] is not allowed for
+  indices created on or after version 6.0.0 as [_all] is deprecated. As a
+  replacement, you can use an [copy_to] on mapping fields to create your own
+  catch all field.
+  ```
+
+Solution, assuming you don't use these services for other apps and are OK with
+deleting existing data:
+
+1. Stop all services:
+  - Press `ctrl-c` to stop logstash if it's running
+  ```console
+  brew services stop elasticsearch
+  brew services stop kibana
+  ```
+
+2. Uninstall everything:
+  ```console
+  brew uninstall --force elasticsearch
+  brew uninstall --force logstash
+  brew uninstall --force kibana
+  ```
+3. Reinstall everything:
+  ```console
+  brew install elasticsearch logstash kibana
+  ```
+
+4. Start the services:
+  ```console
+  brew services start elasticsearch
+  brew services start kibana
+  ```
+
+5. Delete the old Kibana index:
+  ```console
+  curl -XDELETE http://localhost:9200/.kibana
+  ```
+
+6. Delete the old logstash template:
+  - Visit http://localhost:5601/app/kibana#/dev_tools/console?_g=()
+  - Paste `DELETE /_template/logstash` in the box on the left and click
+  the green "play" button to run the command
+
+7. Start logstash in a new Terminal tab:
+  ```console
+  logstash -f logstash.conf
+  ```
+
+8. Launch the IdP app and sign in to generate some events. You should see output
+in the logstash tab without any errors.
+
+9. Visit http://localhost:5601/ and click "Discover" on the left sidebar. If you
+get a warning that no default index pattern exists, copy the last pattern that
+appears in the list, which will have the format `logstash-year.month.day`. Paste
+it into the "Index pattern" field, then click the "Next step" button.
+
+10. On `Step 2 of 2: Configure settings`, select `@timestamp` from the
+`Time Filter field name` dropdown, then click "Create index pattern".
+
+11. Create some more events on the IdP app
+
+12. Refresh the Kibana website. You should now see new events show up in the
+Discover section.
+
 
 #### Using Docker
 
