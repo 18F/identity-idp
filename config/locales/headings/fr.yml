@@ -4,6 +4,7 @@ fr:
     account:
       account_history: Historique du compte
       account_management: Gestion de compte
+      connected_apps: Applications
       login_info: Votre compte
       profile_info: Information du profil
       reactivate: Réactivez votre compte
@@ -11,6 +12,9 @@ fr:
       verified_account: Compte vérifié
     account_recovery_setup:
       piv_cac_linked: NOT TRANSLATED YET
+    cancellations:
+      confirmation: Vous avez annulé la vérification de votre identité avec login.gov
+      prompt: Es-tu sûre de vouloir annuler?
     confirmations:
       new: Envoyer un autre courriel de confirmation
     create_account_with_sp:
@@ -28,7 +32,6 @@ fr:
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Voici votre clé personnelle
     piv_cac_setup:
-      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.
         expired: Le certificat que vous avez sélectionné a expiré.
@@ -36,6 +39,7 @@ fr:
         none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
         revoked: Le certificat que vous avez sélectionné a été retiré de votre carte.
         unverified: Le certificat que vous avez sélectionné n'est pas valide.
+      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
         already_associated: NOT TRANSLATED YET
       token:

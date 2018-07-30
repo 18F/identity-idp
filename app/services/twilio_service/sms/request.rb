@@ -32,10 +32,6 @@ module TwilioService
         }
       end
 
-      private
-
-      attr_reader :url, :params, :signature
-
       # First, validate the message signature using Twilio's library:
       # https://github.com/twilio/twilio-ruby/wiki/Request-Validator
       def signature_valid?
@@ -51,6 +47,10 @@ module TwilioService
         # before processing the submission; however this is on-hold during the
         # initial phase.
       end
+
+      private
+
+      attr_reader :url, :params, :signature
     end
   end
 end

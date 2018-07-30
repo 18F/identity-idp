@@ -1,4 +1,5 @@
 shared_examples 'failed idv job' do |step|
+  let(:locale) { LinkLocaleResolver.locale }
   let(:idv_job_class) { Idv::ProoferJob }
   let(:step_locale_key) do
     return :sessions if step == :profile
@@ -20,25 +21,11 @@ shared_examples 'failed idv job' do |step|
       click_idv_continue
     end
 
-    context 'without js' do
-      it 'shows a warning' do
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.jobfail")
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
-    end
-
-    context 'with js', :js do
-      it 'shows a modal' do
-        expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-warning',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.jobfail"))
-        )
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+    it 'renders a jobfail failure screen' do
+      expect(page).to have_current_path(session_failure_path(:jobfail)) if step == :profile
+      expect(page).to have_current_path(phone_failure_path(:jobfail)) if step == :phone
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.jobfail")
     end
   end
 
@@ -60,29 +47,18 @@ shared_examples 'failed idv job' do |step|
       Timecop.return
     end
 
-    context 'without js' do
-      it 'shows a warning' do
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.timeout")
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
-    end
-
-    context 'with js' do
-      it 'shows a modal' do
-        expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-warning',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.timeout"))
-        )
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+    it 'renders a timeout failure page' do
+      expect(page).to have_current_path(session_failure_path(:timeout)) if step == :profile
+      expect(page).to have_current_path(phone_failure_path(:timeout)) if step == :phone
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
     end
   end
 
-  # rubocop:disable Lint/HandleExceptions, Style/RedundantBegin
+  # rubocop:disable Lint/HandleExceptions
+  # rubocop:disable Style/RedundantBegin
+  # Disabling Style/RedundantBegin because when i remove make the changes
+  # to remove it, fasterer can no longer parse the code...
   def stub_idv_job_to_raise_error_in_background(idv_job_class)
     allow(Idv::Agent).to receive(:new).and_raise('this is a test error')
     allow(idv_job_class).to receive(:perform_now).and_wrap_original do |perform_now, *args|
@@ -93,9 +69,18 @@ shared_examples 'failed idv job' do |step|
       end
     end
   end
-  # rubocop:enable Lint/HandleExceptions, Style/RedundantBegin
+  # rubocop:enable Style/RedundantBegin
+  # rubocop:enable Lint/HandleExceptions
 
   def stub_idv_job_to_timeout_in_background(idv_job_class)
     allow(idv_job_class).to receive(:perform_now)
+  end
+
+  def session_failure_path(reason)
+    idv_session_failure_path(reason, locale: locale)
+  end
+
+  def phone_failure_path(reason)
+    idv_phone_failure_path(reason, locale: locale)
   end
 end

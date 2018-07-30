@@ -17,10 +17,14 @@ p.mt-tiny.mb0 = @presenter.info
   .sm-col-8.mb3
     = f.label :phone
       strong.left = @presenter.label
+    .mb1 class='text-hint'
+      span = t('forms.example') + ' '
+      span id='ex-phone'
     = f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' }
   div
-    = f.button :submit, t('forms.buttons.send_security_code'), class: 'sm-col-6 col-12 btn-wide mb3'
+    = f.button :submit, t('forms.buttons.send_security_code'),
+        class: 'sm-col-6 col-12 btn-wide mb3 no-auto-enable'
 .mt2.pt1.border-top
   - path = current_user.piv_cac_enabled? ? account_recovery_setup_path : two_factor_options_path
   = link_to t('two_factor_authentication.choose_another_option'), path

@@ -1,28 +1,8 @@
 ---
 en:
   service_providers:
-    trusted_traveler:
-      header: Coming from Trusted Traveler Programs?
-      account_page:
-        body: Your old GOES userID and password won’t work. Please create a login.gov
-          account below.
-      body_html: Your old GOES userID and password won't work. Please %{link}
-      create_account_link: create a login.gov account.
-      create_account_page:
-        body: ''
-    usa_jobs:
-      header: First time here from USAJOBS?
-      account_page:
-        body: Your old USAJOBS username and password won’t work. Please create a login.gov
-          account using the same email address you use for USAJOBS.
-      body_html: Your old USAJOBS username and password won’t work. Please %{link}
-        using the same email address you use for USAJOBS.
-      create_account_link: create a login.gov account
-      create_account_page:
-        body: ''
     learn_more: Learn more.
     sam:
-      header: First time here from SAM?
       account_page:
         body: Your old SAM username and password won’t work. Please create a login.gov
           account using the same email address you use for SAM.
@@ -32,3 +12,24 @@ en:
       create_account_page:
         body: Please create a login.gov account using the same email address you use
           for SAM.
+      header: First time here from SAM?
+    trusted_traveler:
+      account_page:
+        body: Your old GOES userID and password won’t work. Please create a login.gov
+          account below.
+      body_html: Your old GOES userID and password won't work. Please %{link}
+      create_account_link: create a login.gov account.
+      create_account_page:
+        body: ''
+      header: Coming from Trusted Traveler Programs?
+    usa_jobs:
+      account_page:
+        body: Your old USAJOBS username and password won’t work. Please create a login.gov
+          account using the same email address you use for USAJOBS.
+      body_html: Your old USAJOBS username and password won’t work. Please %{link}
+        using the same email address you use for USAJOBS.
+      create_account_link: create a login.gov account
+      create_account_page:
+        body: Please create a login.gov account using the same email address you use
+          for USAJOBS
+      header: First time here from USAJOBS?

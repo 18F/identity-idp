@@ -19,6 +19,10 @@ describe 'IdvStepConcern' do
       def show
         render plain: 'Hello'
       end
+
+      def failure_url(__)
+        'foobar'
+      end
     end
 
     before(:each) do
@@ -33,12 +37,11 @@ describe 'IdvStepConcern' do
         user.idv_attempts = 3
         user.idv_attempted_at = Time.zone.now
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+        get :show
       end
 
       it 'redirects to hardfail page' do
-        get :show
-
-        expect(response).to redirect_to idv_fail_url
+        expect(response).to redirect_to 'foobar'
       end
     end
 
@@ -47,12 +50,11 @@ describe 'IdvStepConcern' do
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         user.idv_attempts = 3
         user.idv_attempted_at = Time.zone.now
+        get :show
       end
 
       it 'redirects to hardfail page' do
-        get :show
-
-        expect(response).to redirect_to idv_fail_url
+        expect(response).to redirect_to 'foobar'
       end
     end
 

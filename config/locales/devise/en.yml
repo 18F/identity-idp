@@ -5,29 +5,23 @@ en:
       already_confirmed: Your email address has already been confirmed. %{action}
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
-      send_instructions: You will receive an email with instructions for how to confirm
-        your email address in a few minutes.
-      send_paranoid_instructions: You will receive an email with instructions for
-        how to confirm your email address in a few minutes.
       sign_in: Please sign in.
     failure:
       already_authenticated: ''
       inactive: Your account hasn't been activated.
-      invalid_link_text: resetting your password
       invalid_html: The email or password you've entered is wrong. Try %{link}.
+      invalid_link_text: resetting your password
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account has been locked.
-      not_found_in_database_link_text: resetting your password
       not_found_in_database_html: The email or password you've entered is wrong. Try
         %{link}.
+      not_found_in_database_link_text: resetting your password
       session_limited: Your login credentials were used in another browser. Please
         sign in again to continue in this browser.
       timeout: Your session has expired. Please sign in again to continue.
       unauthenticated: Your session has expired. Please sign in again to continue.
       unconfirmed: You need to confirm your email address before continuing.
     mailer:
-      account_locked:
-        subject: Your login.gov account has been locked
       confirmation_instructions:
         subject: Confirm your email
       password_updated:
@@ -50,26 +44,14 @@ en:
         new password.
     registrations:
       close_window: You can close this window if you're done.
-      destroy_confirm: Deleting your account cannot be undone. All data associated
-        with your account will be removed. Are you sure you want to delete your account?
       destroyed: Your account has been successfully deleted.
-      email_and_phone_need_confirmation: Before we finish updating your account, we
-        need to confirm both your new phone number and your new email address. Please
-        follow the instructions below to confirm your phone number. To confirm your
-        new email address, check for an email from us and follow the link provided.
       email_update_needs_confirmation: You have updated your account, but we need
         to confirm your new email address. Check for an email from us, then follow
         the link in the email to confirm your new address.
-      enabled_twofactor: You have enabled two-factor authentication.
       phone_update_needs_confirmation: Your request to update your phone number was
         processed, but we need to confirm your new number first. Please follow the
         instructions below. If you do not confirm your new number, we will keep using
         your old phone number.
-      signed_up: Welcome! You have created an account.
-      signed_up_but_inactive: You have created an account. However, we could not sign
-        you in because your account is not yet activated.
-      signed_up_but_locked: You have created an account. However, we could not sign
-        you in because your account is locked.
       start:
         accordion: You will also need
         bullet_1_html: An <strong>email address</strong>.
@@ -84,20 +66,22 @@ en:
           You’ll be asked for the personal key every time you make changes to your
           account.
         learn_more: Learn more about verifying your identity
-      updated: Your account has been updated!
     sessions:
-      already_signed_out: You are now signed out.
       signed_in: ''
       signed_out: You are now signed out.
     two_factor_authentication:
-      buttons:
-        confirm_with_sms: Confirm with text message
-        confirm_with_voice: Confirm with voice call
-      choose_delivery_confirmation: How would you like to receive your confirmation
-        security code for %{phone}?
-      choose_otp_delivery_html: We will send it to %{phone} immediately. Message and
-        data rates may apply.
-      contact_administrator: Please contact your system administrator.
+      account_reset:
+        cancel_link: Cancel your request
+        link: deleting your account
+        link_expired: The link to delete your login.gov account has expired.  Please
+          create another request to delete your account.
+        pending_html: You currently have a pending request to delete your account.
+          It takes 24 hours from the time you made the request to complete the process.
+          Please check back later. %{cancel_link}
+        successful_cancel: Thank you. Your request to delete your login.gov account
+          has been cancelled.
+        text_html: If you can't use any of these security options above, you can reset
+          your preferences by %{link}.
       header_text: Enter your security code
       invalid_otp: That security code is invalid. You can try entering it again or
         request a new one-time security code.
@@ -121,63 +105,33 @@ en:
         sms: Text message (SMS)
         title: How should we send you a code?
         voice: Phone call
-      otp_phone_label_info: Mobile phone or landline
-      otp_phone_label_info_mobile_only: Mobile phone
-      otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
-        one-time security code via text message or phone call. This helps safeguard
-        your account."
-      otp_sms_disclaimer: Message and data rates may apply.
-      personal_key_fallback:
-        link: Use a personal key instead
-        text_html: Don’t have access to your phone? %{link}.
       personal_key_header_text: Enter your personal key
       personal_key_prompt: You can use this personal key once. After you enter it,
         you'll be provided a new key.
-      phone_sms_label: Mobile phone number
       phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
-      phone_voice_label: Phone number
+      phone_sms_label: Mobile phone number
       phone_voice_info_html: We'll call you with a security code <strong>each time
         you sign in</strong>.
+      phone_voice_label: Phone number
       piv_cac_fallback:
         link: Use your PIV/CAC instead
         text_html: Do you have your PIV/CAC? %{link}
       piv_cac_header_text: Present your PIV/CAC
-      please_confirm: Your phone number has been set. Confirm it by entering the security
-        code below.
       please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
-      account_reset:
-        successful_cancel: Thank you. Your request to delete your login.gov account
-          has been cancelled.
-        link: deleting your account
-        text_html: If you can't use any of these security options above, you can reset
-          your preferences by %{link}.
-        cancel_link: Cancel your request
-        pending_html: You currently have a pending request to delete your account.
-          It takes 24 hours from the time you made the request to complete the process.
-          Please check back later. %{cancel_link}
       read_about_two_factor_authentication:
         link: read about two-factor authentication
         text_html: You can %{link} and why we use it at our Help page.
-      totp_fallback:
-        sms_link_text: get a code via text message
-        text_html: If you can’t use your authenticator app right now you can %{sms_link}
-          or %{voice_link}.
-        voice_link_text: Receive a code via phone call
       totp_header_text: Enter your authentication app code
-      totp_info: Use any authenticator app to scan the QR code below.
       two_factor_choice: Secure your account
+      two_factor_choice_intro: login.gov makes sure you can access your account by
+        adding a second layer of security.
       two_factor_choice_options:
-        voice: Phone call
-        voice_info: Get your security code via phone call.
-        sms: Text message / SMS
-        sms_info: Get your security code via text message / SMS.
         auth_app: Authentication application
         auth_app_info: Set up an authentication application to get your security code
           without providing a phone number.
         piv_cac: Government employees
         piv_cac_info: Use your PIV/CAC card to secure your account.
-      two_factor_choice_intro: login.gov makes sure you can access your account by
-        adding a second layer of security.
-      two_factor_setup: Add a phone number
-      user:
-        new_otp_sent: We sent you a new one-time security code.
+        sms: Text message / SMS
+        sms_info: Get your security code via text message / SMS.
+        voice: Phone call
+        voice_info: Get your security code via phone call.

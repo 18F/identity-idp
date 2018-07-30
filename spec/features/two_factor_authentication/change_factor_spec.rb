@@ -40,6 +40,7 @@ feature 'Changing authentication factor' do
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(user.reload.phone).to_not eq new_phone
+      expect(user.reload.phone_configuration.phone).to_not eq new_phone
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
       submit_correct_otp
@@ -49,6 +50,9 @@ feature 'Changing authentication factor' do
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
+      expect(
+        user.reload.phone_configuration.confirmed_at
+      ).to_not eq(@previous_phone_confirmed_at)
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       expect(current_path).to eq account_path
@@ -91,6 +95,7 @@ feature 'Changing authentication factor' do
             code: user.reload.direct_otp,
             phone: old_phone,
             otp_created_at: user.reload.direct_otp_sent_at.to_s,
+            message: 'jobs.sms_otp_sender_job.login_message',
             locale: nil
           )
 
@@ -116,6 +121,7 @@ feature 'Changing authentication factor' do
               code: user.reload.direct_otp,
               phone: old_phone,
               otp_created_at: user.reload.direct_otp_sent_at.to_s,
+              message: 'jobs.sms_otp_sender_job.login_message',
               locale: nil
             )
 

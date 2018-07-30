@@ -1,11 +1,13 @@
 module EncryptableAttribute
   extend ActiveSupport::Concern
 
-  module ClassMethods
-    cattr_accessor :encryptable_attributes do
+  def self.included(base)
+    base.send :cattr_accessor, :encryptable_attributes do
       []
     end
+  end
 
+  module ClassMethods
     private
 
     def encrypted_attribute_getter(name)

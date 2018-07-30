@@ -192,6 +192,28 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'please_reset_password' do
+    let(:mail) { UserMailer.please_reset_password(user.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.please_reset_password.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.please_reset_password.intro')))
+
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
+    end
+  end
+
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end

@@ -3,6 +3,9 @@ fr:
   help_text:
     change_factor: Avant de pouvoir modifier votre %{factor}, vous devrez confirmer
       votre mot de passe et recevoir un code de sécurité sur votre téléphone.
+    no_factor:
+      delete_account: Pour supprimer votre compte, veuillez confirmer votre mot de
+        passe et votre code de sécurité.
     requested_attributes:
       address: Adresse postale
       birthdate: Date de naissance
@@ -13,6 +16,3 @@ fr:
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       x509_subject: NOT TRANSLATED YET
-    no_factor:
-      delete_account: Pour supprimer votre compte, veuillez confirmer votre mot de
-        passe et votre code de sécurité.

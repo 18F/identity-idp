@@ -25,4 +25,14 @@ class MarketingSite
   def self.help_authentication_app_url
     URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-an-authentication-app/').to_s
   end
+
+  def self.help_privacy_and_security_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help',
+      'privacy-and-security',
+      'how-does-logingov-protect-my-data'
+    ).to_s
+  end
 end

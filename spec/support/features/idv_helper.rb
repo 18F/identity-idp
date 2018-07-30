@@ -78,16 +78,6 @@ module IdvHelper
     click_on t('idv.buttons.send_confirmation_code')
   end
 
-  def click_idv_cancel_modal
-    within('.modal') do
-      click_on t('idv.buttons.cancel')
-    end
-  end
-
-  def click_idv_cancel
-    click_on t('idv.buttons.cancel')
-  end
-
   def complete_idv_profile_ok(_user, password = user_password)
     fill_out_idv_form_ok
     click_idv_continue
