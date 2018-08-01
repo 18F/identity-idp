@@ -64,56 +64,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
     end
   end
 
-  context 'canceling verification' do
-    context 'with js', js: true do
-      it 'returns user to personal key page if they sign up via loa3' do
-        user = create(:user, phone: '1 (111) 111-1111', personal_key: nil)
-        sign_in_with_warden(user)
-        loa3_sp_session
-
-        visit idv_path
-        click_on t('links.cancel')
-        click_on t('idv.buttons.cancel')
-
-        expect(current_path).to eq(manage_personal_key_path)
-      end
-
-      it 'returns user to profile page if they have previously signed up' do
-        sign_in_and_2fa_user
-        loa3_sp_session
-
-        visit idv_path
-        click_on t('links.cancel')
-        click_on t('idv.buttons.cancel')
-
-        expect(current_path).to match(account_path)
-      end
-    end
-
-    context 'without js' do
-      it 'returns user to personal key page if they sign up via loa3' do
-        user = create(:user, phone: '1 (111) 111-1111', personal_key: nil)
-        sign_in_with_warden(user)
-        loa3_sp_session
-
-        visit idv_path
-        click_idv_cancel
-
-        expect(current_path).to eq(manage_personal_key_path)
-      end
-
-      it 'returns user to profile page if they have previously signed up' do
-        sign_in_and_2fa_user
-        loa3_sp_session
-
-        visit idv_path
-        click_idv_cancel
-
-        expect(current_url).to eq(account_url)
-      end
-    end
-  end
-
   context 'continuing verification' do
     let(:user) { profile.user }
     let(:profile) do
@@ -184,7 +134,8 @@ feature 'LOA3 Single Sign On', idv_job: true do
         click_idv_continue
         fill_out_idv_form_ok
         click_idv_continue
-        click_idv_cancel
+        click_on t('links.cancel')
+        click_on t('forms.buttons.cancel')
         visit saml_authn_request
         fill_out_idv_jurisdiction_ok
         click_idv_continue

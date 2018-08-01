@@ -26,6 +26,7 @@ describe Users::PhonesController do
       it 'lets user know they need to confirm their new phone' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(user.reload.phone).to_not eq '+1 202-555-4321'
+        expect(user.reload.phone_configuration.phone).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
@@ -48,6 +49,7 @@ describe Users::PhonesController do
         }
 
         expect(user.reload.phone).to be_present
+        expect(user.reload.phone_configuration.phone).to be_present
         expect(response).to render_template(:edit)
       end
     end
@@ -69,6 +71,7 @@ describe Users::PhonesController do
       it 'processes successfully and informs user' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(user.reload.phone).to_not eq second_user.phone
+        expect(user.reload.phone_configuration.phone).to_not eq second_user.phone
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
@@ -93,6 +96,7 @@ describe Users::PhonesController do
         }
 
         expect(user.phone).not_to eq invalid_phone
+        expect(user.phone_configuration.phone).not_to eq invalid_phone
         expect(response).to render_template(:edit)
       end
     end

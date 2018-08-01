@@ -14,13 +14,14 @@ describe SmsOtpSenderJob do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '+1 (888) 555-5555',
+        message: 'jobs.sms_otp_sender_job.login_message',
         otp_created_at: otp_created_at
       )
     end
 
     let(:otp_created_at) { Time.zone.now.to_s }
 
-    it 'sends a message containing the OTP code to the mobile number', twilio: true do
+    it 'sends a sign in message containing the OTP code to the mobile number', twilio: true do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
       TwilioService::Utils.telephony_service = FakeSms
@@ -36,10 +37,34 @@ describe SmsOtpSenderJob do
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (888) 555-5555')
       expect(msg.body).to eq(
-        I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME, expiration: '10')
+        I18n.t('jobs.sms_otp_sender_job.login_message',
+               code: '1234', app: APP_NAME, expiration: '10')
       )
     end
 
+    it 'sends a verify message containing the OTP code to the mobile number', twilio: true do
+      allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
+
+      TwilioService::Utils.telephony_service = FakeSms
+
+      SmsOtpSenderJob.perform_now(
+        code: '1234',
+        phone: '+1 (888) 555-5555',
+        message: 'jobs.sms_otp_sender_job.verify_message',
+        otp_created_at: otp_created_at
+      )
+
+      messages = FakeSms.messages
+
+      expect(messages.size).to eq(1)
+
+      msg = messages.first
+
+      expect(msg.messaging_service_sid).to eq('fake_sid')
+      expect(msg.to).to eq('+1 (888) 555-5555')
+      expect(msg.body).to eq(I18n.t('jobs.sms_otp_sender_job.verify_message',
+                                    code: '1234', app: APP_NAME, expiration: '10'))
+    end
     it 'includes the expiration period in the message body' do
       allow(I18n).to receive(:locale).and_return(:en).at_least(:once)
       allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
@@ -100,6 +125,7 @@ describe SmsOtpSenderJob do
           code: code,
           phone: phone,
           otp_created_at: otp_created_at,
+          message: nil,
           locale: locale
         )
       end
@@ -116,7 +142,7 @@ describe SmsOtpSenderJob do
         expect(service).to receive(:send_sms).with(
           to: phone,
           body: I18n.t(
-            'jobs.sms_otp_sender_job.message',
+            'jobs.sms_otp_sender_job.login_message',
             code: code, app: APP_NAME, expiration: Devise.direct_otp_valid_for.to_i / 60
           )
         )
@@ -125,6 +151,7 @@ describe SmsOtpSenderJob do
           code: code,
           phone: phone,
           otp_created_at: otp_created_at,
+          message: 'jobs.sms_otp_sender_job.login_message',
           locale: 'fr'
         )
       end

@@ -80,11 +80,15 @@ RSpec.describe OpenidConnect::LogoutController do
 
         it 'tracks analytics' do
           stub_analytics
+
+          errors = {
+            redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
+          }
           expect(@analytics).to receive(:track_event).
             with(Analytics::LOGOUT_INITIATED,
                  success: false,
                  client_id: service_provider,
-                 errors: hash_including(:post_logout_redirect_uri),
+                 errors: errors,
                  sp_initiated: true,
                  oidc: true)
 

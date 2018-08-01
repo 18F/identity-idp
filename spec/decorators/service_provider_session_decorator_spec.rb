@@ -49,12 +49,6 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#idv_hardfail4_partial' do
-    it 'returns the correct partial' do
-      expect(subject.idv_hardfail4_partial).to eq 'idv/hardfail4'
-    end
-  end
-
   describe '#sp_name' do
     it 'returns the SP friendly name if present' do
       expect(subject.sp_name).to eq sp.friendly_name

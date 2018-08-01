@@ -32,12 +32,10 @@ es:
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."
-        fallback_html: Si no puede recibir mensajes de texto ahora, puede %{link}
         number_message: Enviamos un código de seguridad al %{number}. Este código
           caducará en %{expiration} minutos.
       voice:
         confirm_code_html: "¿Desea que le llamemos de nuevo? %{resend_code_link}"
-        fallback_html: Si no puede recibir una llamada de teléfono ahora, puede %{link}
         number_message: Acabamos de llamarte en %{number}.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:

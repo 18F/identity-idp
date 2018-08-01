@@ -19,6 +19,8 @@ test:
     name: 'GSA'
   10:
     name: 'DOE'
+  11:
+    name: 'USFS'
 
 development:
   1:
@@ -41,6 +43,8 @@ development:
     name: 'GSA'
   10:
     name: 'DOE'
+  11:
+    name: 'USFS'
 
 production:
   1:
@@ -63,3 +67,5 @@ production:
     name: 'GSA'
   10:
     name: 'DOE'
+  11:
+    name: 'USFS'

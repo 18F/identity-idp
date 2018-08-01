@@ -137,7 +137,7 @@ RSpec.describe OpenidConnectLogoutForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:post_logout_redirect_uri]).to be_present
+          expect(form.errors[:redirect_uri]).to be_present
         end
       end
 
@@ -146,7 +146,7 @@ RSpec.describe OpenidConnectLogoutForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:post_logout_redirect_uri]).
+          expect(form.errors[:redirect_uri]).
             to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
         end
       end

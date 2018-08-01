@@ -5,6 +5,7 @@ es:
       legend: NOT TRANSLATED YET
     buttons:
       back: Atrás
+      cancel: Sí, cancelar
       continue: Continuar
       disable: Suspender
       edit: Editar
@@ -17,6 +18,7 @@ es:
         update: Actualización
     confirmation:
       show_hdr: Crear una contraseña segura
+    example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador por %{duration} días
     passwords:
@@ -49,21 +51,22 @@ es:
         unverified_html: Elija un certificado diferente de su PIV/CAC o póngase en
           contacto con su administrador para asegurarse de que su certificado esté
           actualizado.
+      choose_different_certificate: Elija un certificado diferente
       piv_cac:
         already_associated_html: NOT TRANSLATED YET
-      token:
-        bad_html: NOT TRANSLATED YET
-        invalid_html: NOT TRANSLATED YET
-        missing_html: NOT TRANSLATED YET
-      choose_different_certificate: Elija un certificado diferente
       piv_cac_intro_html: Le pediremos que presente su tarjeta PIV/CAC <strong>cada
         vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después
         de hacer clic en "Agregar PIV/CAC", su navegador le solicitará su PIN PIV/CAC
         y le pedirá que seleccione un certificado.
       submit: Agregar tarjeta PIV/CAC
+      token:
+        bad_html: NOT TRANSLATED YET
+        invalid_html: NOT TRANSLATED YET
+        missing_html: NOT TRANSLATED YET
     registration:
       labels:
         email: Email
+    select: "- Seleccionar -"
     totp_setup:
       totp_intro_html: Al iniciar una sesión, puede obtener el código de seguridad
         de una app de autenticación. %{link}
@@ -81,4 +84,3 @@ es:
       name: Código de confirmación
       submit: Confirmar cuenta
       title: Confirme su cuenta
-    select: "- Seleccionar -"

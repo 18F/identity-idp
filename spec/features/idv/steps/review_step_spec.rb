@@ -105,4 +105,10 @@ feature 'idv review step', :idv_job do
       end
     end
   end
+
+  context 'cancelling IdV' do
+    it_behaves_like 'cancel at idv step', :review
+    it_behaves_like 'cancel at idv step', :review, :oidc
+    it_behaves_like 'cancel at idv step', :review, :saml
+  end
 end

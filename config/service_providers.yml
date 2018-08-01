@@ -47,6 +47,7 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/logout'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
@@ -57,7 +58,7 @@ test:
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
     redirect_uris:
-      - 'http://localhost:7654/'
+      - 'http://localhost:7654/auth/result'
       - 'https://example.com'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
@@ -151,7 +152,7 @@ development:
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency_id: 1
     redirect_uris:
-      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -259,7 +260,7 @@ production:
     friendly_name: 'Example Sinatra OIDC App'
     logo: '18f.svg'
     redirect_uris:
-      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
       <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
       <% end %>
@@ -632,7 +633,7 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-  
+
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
@@ -730,6 +731,20 @@ production:
     redirect_uris:
       - 'https://tsp.move.mil'
       - 'https://tsp.move.mil/auth/login-gov/callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # Forest Service Open Forest Permits
+  'urn:gov:gsa:open-id-connect:sp:sso:usda-forestservice:epermit-prod':
+    agency_id: 11
+    friendly_name: 'Forest Service Open Forest Permits'
+    agency: 'USFS'
+    logo: 'usfs.svg'
+    cert: 'usfs_prod'
+    return_to_sp_url: 'https://openforest.fs.usda.gov/'
+    redirect_uris:
+      - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'

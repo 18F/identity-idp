@@ -42,13 +42,13 @@ h1.hide = t('titles.account')
 
   = render 'account_item',
     name: t('account.index.authentication_app'),
-    content: content_tag(:em, t(@view_model.totp_content)),
+    content: content_tag(:em, @view_model.totp_content),
     action: @view_model.totp_partial
 
   - if current_user.piv_cac_available?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),
-      content: content_tag(:em, t(@view_model.piv_cac_content)),
+      content: content_tag(:em, @view_model.piv_cac_content),
       action: @view_model.piv_cac_partial
 
   - @view_model.manage_personal_key_partial do
@@ -57,6 +57,13 @@ h1.hide = t('titles.account')
       action: @view_model.personal_key_action_partial
 
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.connected_apps')
+    = image_tag asset_url('connected_apps.png'), width: 12, class: 'ml1'
+  - @view_model.connected_apps.each do |identity|
+    = render identity.connected_app_partial, identity: identity
 
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix

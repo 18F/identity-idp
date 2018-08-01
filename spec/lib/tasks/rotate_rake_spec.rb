@@ -18,16 +18,23 @@ describe 'rotate' do
       old_phone = user.phone
       old_encrypted_email = user.encrypted_email
       old_encrypted_phone = user.encrypted_phone
+      old_encrypted_configuration_phone = user.phone_configuration.encrypted_phone
 
       rotate_attribute_encryption_key
 
       Rake::Task['rotate:attribute_encryption_key'].execute
 
       user.reload
+      user.phone_configuration.reload
       expect(user.phone).to eq old_phone
+      expect(user.phone_configuration.phone).to eq old_phone
       expect(user.email).to eq old_email
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(user.encrypted_phone).to_not eq old_encrypted_phone
+      expect(user.phone_configuration.encrypted_phone).to_not eq old_encrypted_configuration_phone
+      expect(user.phone_configuration.phone).to eq user.phone
+      # this double checks that we're not using the same IV for both
+      expect(user.phone_configuration.encrypted_phone).to_not eq user.encrypted_phone
     end
 
     it 'does not raise an exception when encrypting/decrypting a user' do

@@ -8,9 +8,20 @@ const isPhoneValid = (phone, countryCode) => {
   return phoneValid;
 };
 
+const updatePlaceholder = (phoneInput) => {
+  if (phoneInput && phoneInput.placeholder) {
+    const exPhoneElement = document.querySelector('#ex-phone');
+    if (exPhoneElement) {
+      exPhoneElement.textContent = phoneInput.placeholder;
+      phoneInput.placeholder = '';
+    }
+  }
+};
+
 const checkPhoneValidity = () => {
   const sendCodeButton = document.querySelector('[data-international-phone-form] input[name=commit]');
   const phoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
+  updatePlaceholder(phoneInput);
   const countryCodeInput = document.querySelector('[data-international-phone-form] .international-code');
 
   if (phoneInput && countryCodeInput && sendCodeButton) {
@@ -32,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (intlPhoneInput) {
     intlPhoneInput.addEventListener('keyup', checkPhoneValidity);
+    intlPhoneInput.addEventListener('focus', checkPhoneValidity);
   }
   if (codeInput) {
     codeInput.addEventListener('change', checkPhoneValidity);
