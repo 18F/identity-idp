@@ -7,7 +7,7 @@
 
   ul.px2.yellow-dots
     li.mb1 = t('users.delete.bullet_1', app: APP_NAME)
-    li.mb1 = t(current_user.decorate.delete_account_bullet_key, app: APP_NAME)
+    li.mb1 = current_user.decorate.delete_account_bullet_key
     li.mb1 = t('users.delete.bullet_3', app: APP_NAME)
   .center
     = button_to t('users.delete.actions.delete'), account_delete_path,

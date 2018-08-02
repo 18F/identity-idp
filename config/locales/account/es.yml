@@ -1,6 +1,8 @@
 ---
 es:
   account:
+    connected_apps:
+      associated: Asociado
     index:
       address: Dirección actual
       auth_app_disabled: no permitido

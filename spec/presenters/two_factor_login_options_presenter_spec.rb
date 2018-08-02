@@ -19,9 +19,13 @@ describe TwoFactorLoginOptionsPresenter do
       t('two_factor_authentication.login_options_title')
   end
 
-  it 'supplies a cancel link when there is an account reset token' do
+  it 'supplies a cancel link when the token is valid' do
+    allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
+      receive(:account_reset_token_valid?).and_return(true)
+
     allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
       receive(:account_reset_token).and_return('foo')
+
     expect(presenter.account_reset_or_cancel_link).to eq \
       t('devise.two_factor_authentication.account_reset.pending_html',
         cancel_link: view.link_to(
@@ -30,9 +34,10 @@ describe TwoFactorLoginOptionsPresenter do
         ))
   end
 
-  it 'supplies a reset link when there is no account reset token' do
+  it 'supplies a reset link when the token is not valid' do
     allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
-      receive(:account_reset_token).and_return(nil)
+      receive(:account_reset_token_valid?).and_return(false)
+
     expect(presenter.account_reset_or_cancel_link).to eq \
       t('devise.two_factor_authentication.account_reset.text_html',
         link: view.link_to(

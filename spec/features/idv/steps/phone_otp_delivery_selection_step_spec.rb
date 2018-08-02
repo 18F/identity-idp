@@ -50,6 +50,8 @@ feature 'IdV phone OTP deleivery method selection', :idv_job do
   end
 
   context 'cancelling IdV' do
-    # Phone OTP delivery method step doesn't have a cancel button :(
+    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection
+    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :oidc
+    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :saml
   end
 end

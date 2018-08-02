@@ -38,18 +38,11 @@ class User < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
+  has_one :phone_configuration, dependent: :destroy, inverse_of: :user
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
   attr_accessor :asserted_attributes
-
-  def personal_key
-    recovery_code
-  end
-
-  def personal_key=(value)
-    self.recovery_code = value
-  end
 
   def set_default_role
     self.role ||= :user

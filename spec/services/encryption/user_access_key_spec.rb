@@ -2,23 +2,22 @@ require 'rails_helper'
 
 describe Encryption::UserAccessKey do
   let(:password) { 'this is a password' }
-  let(:password_salt) { 'this is a salt' }
-
+  let(:salt) { '1' * 64 } # hex encoded 32 random bytes
   let(:cost) { '800$8$1$' }
-  let(:scrypt_salt) { 'bd305e29843227105aa7c820ddef8e2a6b4c88831abd84a8702370d401b44245' }
-  let(:z1) { '0a9bcfee214c15a6bbafef7204a0af88' }
-  let(:z2) { '8747755bcd92f295330e438059163eb1' }
-  let(:scrypt_hash) { "#{cost}#{scrypt_salt}$#{z1}#{z2}" }
+
+  let(:z1) { 'a0db7e92c1cfe24df10cc1e1dbc17831' }
+  let(:z2) { '9fd0149eed6c9f42d3aa16ec23ae7317' }
+  let(:scrypt_hash) { "#{cost}#{salt}$#{z1}#{z2}" }
 
   let(:random_r) { '1' * 32 }
   let(:encrypted_random_r) { '2' * 128 }
   let(:encryption_key) do
     'e31jSAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI
-    CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJTC1BRVFdXAAMGUQM
-    HUwRQUFNUV1QFAAIGUwJTVAoK'.gsub(/\s/, '')
+    CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAlMCVlAFVwsAUQNRVFc
+    ABlZUAwJRUQNXA1ZQUQMFCgED'.gsub(/\s/, '')
   end
-  let(:cek) { '7374ebc97ba0f2b7a38b03fd76b2faafadded15c78c16dafaa0cf8e5e4740ff5' }
-  let(:encrypted_password) { '2e1ec56ad48694902e0b96d0979135363c14bd443707200c931358849bcb0a94' }
+  let(:cek) { 'a863b23a356db1619b1ae6fa565c6b6f4c6d52cdb8ec728b19306aeb9131ade5' }
+  let(:encrypted_password) { '8ffa77a1504706acfcb16d67d3cf5b8dc859f6bbbde14435223d73b0a5803eb2' }
 
   before do
     allow(FeatureManagement).to receive(:use_kms?).and_return(true)
@@ -30,10 +29,10 @@ describe Encryption::UserAccessKey do
 
   describe '.new' do
     it 'allows creation of a uak using password and salt' do
-      uak = described_class.new(password: password, salt: password_salt)
+      uak = described_class.new(password: password, salt: salt)
 
       expect(uak.cost).to eq(cost)
-      expect(uak.salt).to eq(scrypt_salt)
+      expect(uak.salt).to eq(salt)
       expect(uak.z1).to eq(z1)
       expect(uak.z2).to eq(z2)
       expect(uak.as_scrypt_hash).to eq(scrypt_hash)
@@ -43,10 +42,35 @@ describe Encryption::UserAccessKey do
       uak = described_class.new(scrypt_hash: scrypt_hash)
 
       expect(uak.cost).to eq(cost)
-      expect(uak.salt).to eq(scrypt_salt)
+      expect(uak.salt).to eq(salt)
       expect(uak.z1).to eq(z1)
       expect(uak.z2).to eq(z2)
       expect(uak.as_scrypt_hash).to eq(scrypt_hash)
+    end
+
+    context 'with a legacy password with a 20 byte salt' do
+      # Legacy passwords had 20 bytes salts, which were SHA256 digested to get
+      # to a 32 byte salt (64 char hexdigest). This test verifies that the
+      # UAK behaves properly when used to verify those legacy passwords
+
+      let(:password) { 'this is a password' }
+      let(:salt) { '1' * 20 }
+
+      let(:cost) { '800$8$1$' }
+      let(:digested_salt) { 'd1b3707fbdc6a22d16e95bf6b910646f5d9c2b3ed81bd637d454ffb9bb0948e4' }
+      let(:z1) { '76ad344efc442269ec28aaa28457ead2' }
+      let(:z2) { '75442e6f2354b60f4f2b40de8cdc92bb' }
+      let(:scrypt_hash) { "#{cost}#{digested_salt}$#{z1}#{z2}" }
+
+      it 'can successfully create a uak using the password and the salt' do
+        uak = described_class.new(password: password, salt: salt)
+
+        expect(uak.cost).to eq(cost)
+        expect(uak.z1).to eq(z1)
+        expect(uak.salt).to eq(digested_salt)
+        expect(uak.z2).to eq(z2)
+        expect(uak.as_scrypt_hash).to eq(scrypt_hash)
+      end
     end
   end
 

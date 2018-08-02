@@ -51,12 +51,6 @@ feature 'idv profile step', :idv_job do
     end
   end
 
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :profile
-    it_behaves_like 'cancel at idv step', :profile, :oidc
-    it_behaves_like 'cancel at idv step', :profile, :saml
-  end
-
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :profile
 
@@ -69,13 +63,25 @@ feature 'idv profile step', :idv_job do
         complete_idv_steps_before_profile_step
         fill_out_idv_form_fail(state: state)
         click_continue
-        click_button t('idv.modal.button.warning')
+        click_on t('idv.failure.button.warning')
       end
 
       it 'populates the state from the form' do
         expect(page).to have_selector("option[selected='selected'][value='#{abbrev}']")
       end
     end
+  end
+
+  context 'cancelling IdV' do
+    it_behaves_like 'cancel at idv step', :profile
+    it_behaves_like 'cancel at idv step', :profile, :oidc
+    it_behaves_like 'cancel at idv step', :profile, :saml
+  end
+
+  context 'cancelling IdV after profile success' do
+    it_behaves_like 'cancel at idv step', :profile_success
+    it_behaves_like 'cancel at idv step', :profile_success, :oidc
+    it_behaves_like 'cancel at idv step', :profile_success, :saml
   end
 
   context 'when the IdV background job fails' do

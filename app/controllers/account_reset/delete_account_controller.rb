@@ -38,12 +38,31 @@ module AccountReset
     def prevent_parameter_leak
       token = params[:token]
       return if token.blank?
-      if AccountResetRequest.find_by(granted_token: token)&.granted_token_valid?
+      remove_token_from_url(token)
+    end
+
+    def remove_token_from_url(token)
+      ar = AccountResetRequest.find_by(granted_token: token)
+      if ar&.granted_token_valid?
         session[:granted_token] = token
         redirect_to url_for
-      else
-        redirect_to root_url
+        return
       end
+      handle_expired_token(ar) if ar&.granted_token_expired?
+      redirect_to root_url
+    end
+
+    def handle_expired_token(ar)
+      analytics.track_event(Analytics::ACCOUNT_RESET,
+                            event: :delete,
+                            token_valid: true,
+                            expired: true,
+                            user_id: ar&.user&.uuid)
+      flash[:error] = link_expired
+    end
+
+    def link_expired
+      t('devise.two_factor_authentication.account_reset.link_expired')
     end
   end
 end

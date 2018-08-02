@@ -1,4 +1,5 @@
 shared_examples 'verification step max attempts' do |step, sp|
+  let(:locale) { LinkLocaleResolver.locale }
   let(:user) { user_with_2fa }
   let(:step_locale_key) do
     return :sessions if step == :profile
@@ -22,13 +23,21 @@ shared_examples 'verification step max attempts' do |step, sp|
     scenario 'more than 3 attempts in 24 hours prevents further attempts' do
       # Blocked if visiting verify directly
       visit idv_url
-      advance_to_phone_step if step == :phone
-      expect_user_to_be_unable_to_perform_idv(sp)
+      if step == :phone
+        advance_to_phone_step
+        expect_user_to_fail_at_phone_step
+      else
+        expect_user_to_fail_at_profile_step
+      end
 
       # Blocked if visiting from an SP
       visit_idp_from_sp_with_loa3(:oidc)
-      advance_to_phone_step if step == :phone
-      expect_user_to_be_unable_to_perform_idv(sp)
+      if step == :phone
+        advance_to_phone_step
+        expect_user_to_fail_at_phone_step
+      else
+        expect_user_to_fail_at_profile_step
+      end
 
       if step == :sessions
         user.reload
@@ -47,7 +56,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         click_link t('links.sign_in')
         sign_in_live_with_2fa(user)
 
-        expect(page).to_not have_content(t("idv.modal.#{step_locale_key}.heading"))
+        expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
         expect(current_url).to eq(idv_jurisdiction_url)
 
         fill_out_idv_jurisdiction_ok
@@ -60,22 +69,9 @@ shared_examples 'verification step max attempts' do |step, sp|
       end
     end
 
-    scenario 'user sees failure flash message' do
-      expect(page).to have_css('.alert-error', text: t("idv.modal.#{step_locale_key}.heading"))
-      expect(page).to have_css(
-        '.alert-error',
-        text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
-      )
-    end
-
-    context 'with js', :js do
-      scenario 'user sees the failure modal' do
-        expect(page).to have_css('.modal-fail', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-fail',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
-        )
-      end
+    scenario 'user sees the failure screen' do
+      expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
+      expect(page).to have_content(strip_tags(t("idv.failure.#{step_locale_key}.fail")))
     end
   end
 
@@ -85,6 +81,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         fill_out_idv_form_fail if step == :profile
         fill_out_phone_form_fail if step == :phone
         click_continue
+        click_on t('idv.failure.button.warning')
       end
 
       fill_out_idv_form_ok if step == :profile
@@ -105,27 +102,20 @@ shared_examples 'verification step max attempts' do |step, sp|
     max_attempts_less_one.times do
       yield
       click_idv_continue
-      click_button t('idv.modal.button.warning') if javascript_enabled?
+      click_on t('idv.failure.button.warning')
     end
     yield
     click_idv_continue
   end
 
-  def expect_user_to_be_unable_to_perform_idv(sp)
+  def expect_user_to_fail_at_profile_step
     expect(page).to have_content(t('idv.titles.hardfail', app: 'login.gov'))
-    if sp.present?
-      expect(page).to have_content(
-        t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
-      )
-      expect(page).to have_content(
-        strip_tags(t('idv.messages.hardfail4_html', sp: 'Test SP'))
-      )
-    else
-      expect(page).to have_content(
-        strip_tags(t('idv.messages.help_center_html'))
-      )
-    end
     expect(current_url).to eq(idv_fail_url)
+  end
+
+  def expect_user_to_fail_at_phone_step
+    expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
+    expect(current_url).to eq(idv_phone_failure_url(:fail, locale: locale))
   end
 
   def advance_to_phone_step

@@ -5,7 +5,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :set_jurisdiction_form, only: %i[new create]
+    before_action :set_jurisdiction_form, except: [:failure]
 
     def new
       analytics.track_event(Analytics::IDV_JURISDICTION_VISIT)
@@ -22,12 +22,12 @@ module Idv
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
         # `strong_params`.
-        redirect_to idv_jurisdiction_fail_url(:unsupported_jurisdiction)
+        redirect_to failure_url(:unsupported_jurisdiction)
       end
     end
 
-    def show
-      presenter = JurisdictionFailurePresenter.new(
+    def failure
+      presenter = Idv::JurisdictionFailurePresenter.new(
         reason: params[:reason],
         jurisdiction: user_session[:idv_jurisdiction],
         view_context: view_context
@@ -43,6 +43,10 @@ module Idv
 
     def set_jurisdiction_form
       @jurisdiction_form ||= Idv::JurisdictionForm.new
+    end
+
+    def failure_url(reason)
+      idv_jurisdiction_failure_url(reason)
     end
   end
 end

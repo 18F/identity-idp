@@ -26,11 +26,11 @@ feature 'View personal key' do
     context 'regenerating personal key' do
       scenario 'displays new code' do
         user = sign_in_and_2fa_user
-        old_code = user.personal_key
+        old_digest = user.encrypted_recovery_code_digest
 
         click_button t('account.links.regenerate_personal_key')
 
-        expect(user.reload.personal_key).to_not eq old_code
+        expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
     end
 
@@ -40,13 +40,13 @@ feature 'View personal key' do
 
         user = sign_in_and_2fa_user
 
-        old_code = user.personal_key
+        old_digest = user.encrypted_recovery_code_digest
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
         click_on(t('account.links.regenerate_personal_key'))
 
-        expect(user.reload.personal_key).to_not eq old_code
+        expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
     end
 
@@ -62,13 +62,13 @@ feature 'View personal key' do
     context 'visitting the personal key path' do
       scenario 'does not regenerate the personal and redirects to account' do
         user = sign_in_and_2fa_user
-        old_code = user.personal_key
+        old_digest = user.encrypted_recovery_code_digest
 
         visit sign_up_personal_key_path
 
         user.reload
 
-        expect(user.personal_key).to eq(old_code)
+        expect(user.encrypted_recovery_code_digest).to eq(old_digest)
         expect(current_path).to eq(account_path)
       end
     end

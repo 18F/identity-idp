@@ -38,7 +38,7 @@ module Encryption
       end
 
       def encrypt(plaintext)
-        salt = Devise.friendly_token[0, 20]
+        salt = SecureRandom.hex(32)
         cost = Figaro.env.scrypt_cost
         aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
@@ -61,7 +61,7 @@ module Encryption
         scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
         scrypted = SCrypt::Engine.hash_secret password, scrypt_salt, 32
         scrypt_password_digest = SCrypt::Password.new(scrypted).digest
-        scrypt_password_digest[0...32]
+        [scrypt_password_digest].pack('H*')
       end
     end
   end

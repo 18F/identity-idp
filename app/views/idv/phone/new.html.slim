@@ -1,4 +1,4 @@
-- title @view_model.title
+- title t('idv.titles.phone')
 
 h1.h2.my0 = t('idv.titles.session.phone')
 
@@ -9,7 +9,7 @@ ul.py1.m0
   - t('idv.messages.phone.rules').each do |msg|
     li = msg
 
-= simple_form_for(@view_model.idv_form, url: idv_phone_path,
+= simple_form_for(@idv_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
   = f.label :phone, label: t('idv.form.phone'), class: 'bold'
   = f.input :phone, required: true, input_html: { class: 'us-phone' }, label: false,
@@ -20,6 +20,5 @@ ul.py1.m0
 
   = f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt6 sm-col-6 col-12'
 
-= render 'shared/cancel', link: idv_cancel_path
-
-= render @view_model.modal_partial, view_model: @view_model
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'
