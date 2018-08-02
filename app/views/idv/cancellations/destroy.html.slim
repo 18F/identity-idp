@@ -1,0 +1,7 @@
+= render 'shared/failure', presenter: @presenter
+
+ul class="list-reset #{@presenter.state_color}-dots"
+  - @presenter.cancellation_effects.each do |effect|
+    li = effect
+
+.mt2 = link_to t('idv.cancel.return_to_account'), account_path

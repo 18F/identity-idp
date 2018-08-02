@@ -12,16 +12,12 @@ es:
     contact: Contactar
     copy: Copiar
     create_account: Crear cuenta
+    go_back: Regresa
     help: Ayuda
     next: Siguiente
     passwords:
       forgot: "¿Olvidó su contraseña?"
-    phone_confirmation:
-      fallback_to_sms_html: Envíeme un mensaje de texto con el código en su lugar
-      fallback_to_voice_html: Si no puede recibir un mensaje de texto ahora mismo,
-        puede obtener un código de seguridad a través de %{link}
     privacy_policy: Privacidad y seguridad
-    remove: Retirar
     resend: Reenviar
     reverify: Verifique su identidad nuevamente.
     sign_in: Iniciar sesión

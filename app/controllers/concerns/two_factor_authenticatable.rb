@@ -224,7 +224,9 @@ module TwoFactorAuthenticatable
   end
 
   def personal_key_unavailable?
-    idv_or_confirmation_context? || profile_context? || current_user.personal_key.blank?
+    idv_or_confirmation_context? ||
+      profile_context? ||
+      current_user.encrypted_recovery_code_digest.blank?
   end
 
   def unconfirmed_phone?

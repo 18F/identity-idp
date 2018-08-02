@@ -18,10 +18,9 @@ fr:
       forgot: Réinitialisez le mot de passe de votre compte
     personal_key: Juste au cas
     phone_setup:
-      voice: Envoyez votre code de sécurité par appel téléphonique
       sms: Envoyer votre code de sécurité par SMS
+      voice: Envoyez votre code de sécurité par appel téléphonique
     piv_cac_setup:
-      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       certificate:
         bad: Erreur de certificat PIV/CAC
         expired: Erreur de certificat PIV/CAC
@@ -29,6 +28,7 @@ fr:
         none: Erreur de certificat PIV/CAC
         revoked: Erreur de certificat PIV/CAC
         unverified: Erreur de certificat PIV/CAC
+      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
         already_associated: NOT TRANSLATED YET
       token:
@@ -43,8 +43,8 @@ fr:
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé votre compte
-      verified: Vous avez verifié votre identité avec %{app}
       new_sp: NOT TRANSLATED YET
+      verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
       new: Configurer l'authentification à deux facteurs
     two_factor_setup: Configuration de l'authentification à deux facteurs

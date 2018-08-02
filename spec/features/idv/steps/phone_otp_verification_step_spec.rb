@@ -27,7 +27,9 @@ feature 'phone otp verification step spec', :idv_job do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it_behaves_like 'cancel at idv step', :phone_otp_verification
-  it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
-  it_behaves_like 'cancel at idv step', :phone_otp_verification, :saml
+  context 'cancelling IdV' do
+    it_behaves_like 'cancel at idv step', :phone_otp_verification
+    it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
+    it_behaves_like 'cancel at idv step', :phone_otp_verification, :saml
+  end
 end

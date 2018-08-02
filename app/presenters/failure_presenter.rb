@@ -1,4 +1,3 @@
-
 class FailurePresenter
   attr_reader :state
 

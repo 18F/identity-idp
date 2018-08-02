@@ -5,22 +5,18 @@ fr:
       already_confirmed: Votre adresse courriel a déjà été confirmée. %{action}
       confirmed: Vous avez confirmé votre adresse courriel
       confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
-      send_instructions: Vous recevrez dans quelques instants un courriel avec des
-        instructions pour confirmer votre adresse courriel.
-      send_paranoid_instructions: Vous recevrez dans quelques instants un courriel
-        avec des instructions pour confirmer votre adresse courriel.
       sign_in: Veuillez vous connecter de nouveau.
     failure:
       already_authenticated: ''
       inactive: Votre compte n'est pas encore activé.
-      invalid_link_text: réinitialiser votre mot de passe
       invalid_html: L'adresse courriel ou le mot de passe que vous avez entré est
         erroné. Essayez de %{link}.
+      invalid_link_text: réinitialiser votre mot de passe
       last_attempt: Il vous reste un essai avant que votre compte ne soit verrouillé.
       locked: Votre compte est maintenant verrouillé.
-      not_found_in_database_link_text: réinitialiser votre mot de passe
       not_found_in_database_html: L'adresse courriel ou le mot de passe que vous avez
         entré est erroné. Essayez de %{link}.
+      not_found_in_database_link_text: réinitialiser votre mot de passe
       session_limited: Vos authentifiants ont été utilisés dans un autre navigateur.
         Veuillez vous connecter de nouveau pour continuer avec ce navigateur.
       timeout: Votre session est expirée. Veuillez vous connecter de nouveau pour
@@ -29,8 +25,6 @@ fr:
         pour continuer.
       unconfirmed: Vous devez confirmer votre adresse courriel avant de continuer.
     mailer:
-      account_locked:
-        subject: Votre compte login.gov a été verrouillé
       confirmation_instructions:
         subject: Confirmez votre adresse courriel
       password_updated:
@@ -56,31 +50,16 @@ fr:
         avec votre nouveau mot de passe.
     registrations:
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
-      destroy_confirm: La suppression de votre compte est irréversible. Toutes les
-        données associées à votre compte seront effacées. Souhaitez-vous vraiment
-        supprimer votre compte?
       destroyed: Votre compte a bien été supprimé.
-      email_and_phone_need_confirmation: Avant de terminer la mise-à-jour de votre
-        compte, nous devons confirmer votre nouveau numéro et votre nouvelle adresse
-        courriel. Veuillez suivre les instructions ci-dessous pour confirmer votre
-        nouveau numéro, puis surveillez la réception d'un courriel envoyé par login.gov.
-        Suivez le lien inclus dans le courriel pour confirmer votre nouvelle adresse
-        courriel.
       email_update_needs_confirmation: Vous avez mis à jour votre compte, mais nous
         devons confirmer votre nouvelle adresse courriel. Surveillez la réception
         d'un courriel envoyé par nous et suivez le lien inscrit pour confirmer votre
         nouvelle adresse courriel.
-      enabled_twofactor: Vous avez activé l'authentification à deux facteurs.
       phone_update_needs_confirmation: Votre demande de mise à jour de votre numéro
         de téléphone a été traitée, mais nous devons d'abord confirmer votre nouveau
         numéro. Veuillez suivre les instructions ci-dessous. Si vous ne confirmez
         pas votre nouveau numéro, nous continuerons d'utiliser votre ancien numéro
         de téléphone.
-      signed_up: Bienvenue! Vous avez créé un compte.
-      signed_up_but_inactive: Vous avez créé un compte. Cependant, nous n'avons pu
-        vous connecter, car votre compte n'est pas encore activé.
-      signed_up_but_locked: Vous avez créé un compte. Cependant, nous n'avons pu vous
-        connecter, car votre compte est verrouillé.
       start:
         accordion: Vous aurez aussi besoin
         bullet_1_html: Une <strong>adresse e-mail</strong>.
@@ -95,20 +74,23 @@ fr:
           sûr. C'est important. La clé personnelle vous sera demandée chaque fois
           que vous apportez des modifications à votre compte.
         learn_more: En savoir plus sur la vérification de votre identité
-      updated: Votre compte a été mis à jour!
     sessions:
-      already_signed_out: Vous êtes maintenant connecté(e).
       signed_in: ''
       signed_out: Vous êtes maintenant déconnecté(e).
     two_factor_authentication:
-      buttons:
-        confirm_with_sms: Confirmer par SMS
-        confirm_with_voice: Confirmer avec un appel vocal
-      choose_delivery_confirmation: Comment souhaitez-vous recevoir votre code de
-        sécurité de confirmation pour %{phone}?
-      choose_otp_delivery_html: Nous l'envoyons à %{phone} immédiatement. Les tarifs
-        liés aux SMS et aux données peuvent s'appliquer.
-      contact_administrator: Veuillez communiquer avec votre administrateur système.
+      account_reset:
+        cancel_link: Annuler votre demande
+        link: supprimer votre compte
+        link_expired: Le lien pour supprimer votre compte login.gov a expiré. Veuillez
+          créer une autre demande pour supprimer votre compte.
+        pending_html: Vous avez actuellement une demande en attente pour supprimer
+          votre compte.  Il faut compter 24 heures à partir du moment où vous avez
+          fait la demande pour terminer le processus.  Veuillez vérifier plus tard.
+          %{cancel_link}
+        successful_cancel: Je vous remercie. Votre demande de suppression de votre
+          compte login.gov a été annulée.
+        text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité
+          ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.
       header_text: Entrez votre code de sécurité
       invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
         de nouveau ou demander un nouveau code de sécurité à utilisation unique.
@@ -131,68 +113,35 @@ fr:
         sms: Message texte (SMS)
         title: Comment devrions-nous vous envoyer un code?
         voice: Appel téléphonique
-      otp_phone_label_info: Cellulaire ou ligne fixe. Si vous entrez une ligne fixe,
-        veuillez choisir l'option "Appel téléphonique" ci-dessous.
-      otp_phone_label_info_mobile_only: NOT TRANSLATED YET
-      otp_setup_html: "<strong>Chaque fois que vous vous connecterez,</strong> nous
-        vous enverrons un code de sécurité à utilisation unique par message texte
-        ou par appel téléphonique. Cela aide à protéger votre compte."
-      otp_sms_disclaimer: Les tarifs liés aux SMS et aux données peuvent s'appliquer.
-      personal_key_fallback:
-        link: Utlisez plutôt une clé personnelle
-        text_html: Vous n'avez pas accès à votre téléphone? %{link}.
       personal_key_header_text: Entrez votre clé personnelle
       personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
         Une fois que vous l'entrez, vous recevrez une nouvelle clé.
-      phone_sms_label: Numéro de téléphone portable
       phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque
         fois que vous vous connectez</strong>.
-      phone_voice_label: Numéro de téléphone
+      phone_sms_label: Numéro de téléphone portable
       phone_voice_info_html: Nous vous appellerons avec un code de sécurité <strong>chaque
         fois que vous vous connectez</strong>.
+      phone_voice_label: Numéro de téléphone
       piv_cac_fallback:
         link: Utilisez plutôt votre PIV/CAC
         text_html: Avez-vous votre PIV/CAC? %{link}
       piv_cac_header_text: NOT TRANSLATED YET
-      please_confirm: Votre numéro de téléphone a été entré. Confirmez-le en entrant
-        le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
-      account_reset:
-        successful_cancel: Je vous remercie. Votre demande de suppression de votre
-          compte login.gov a été annulée.
-        link: supprimer votre compte
-        text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité
-          ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.
-        cancel_link: Annuler votre demande
-        pending_html: Vous avez actuellement une demande en attente pour supprimer
-          votre compte.  Il faut compter 24 heures à partir du moment où vous avez
-          fait la demande pour terminer le processus.  Veuillez vérifier plus tard.
-          %{cancel_link}
       read_about_two_factor_authentication:
         link: lire sur l'authentification à deux facteurs
         text_html: Vous pouvez %{link} et pourquoi nous l'utilisons sur notre page
           d'aide.
-      totp_fallback:
-        sms_link_text: Obtenir un code via message texte
-        text_html: Si vous ne pouvez utiliser votre application d'authentification
-          maintenant, vous pouvez %{sms_link} ou %{voice_link}.
-        voice_link_text: obtenir un code par appel téléphonique
       totp_header_text: Entrez votre code d'application d'authentification
-      totp_info: Utilisez n'importe quelle application d'authentification pour balayer
-        le code QR ci-dessous.
       two_factor_choice: Sécurise ton compte
+      two_factor_choice_intro: login.gov s'assure que vous pouvez accéder à votre
+        compte en ajoutant une deuxième couche de sécurité.
       two_factor_choice_options:
-        voice: Appel téléphonique
-        voice_info: Obtenez votre code de sécurité par appel téléphonique.
-        sms: SMS
-        sms_info: Obtenez votre code de sécurité par SMS
         auth_app: Application d'authentification
         auth_app_info: Configurez une application d'authentification pour obtenir
           votre code de sécurité sans fournir de numéro de téléphone.
         piv_cac: Employés du gouvernement
         piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
-      two_factor_choice_intro: login.gov s'assure que vous pouvez accéder à votre
-        compte en ajoutant une deuxième couche de sécurité.
-      two_factor_setup: Ajoutez un numéro de téléphone
-      user:
-        new_otp_sent: Nous vous avons envoyé un code de sécurité à utilisation unique.
+        sms: SMS
+        sms_info: Obtenez votre code de sécurité par SMS
+        voice: Appel téléphonique
+        voice_info: Obtenez votre code de sécurité par appel téléphonique.

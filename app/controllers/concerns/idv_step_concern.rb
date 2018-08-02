@@ -28,7 +28,6 @@ module IdvStepConcern
   end
 
   def redirect_to_fail_url
-    flash[:max_attempts_exceeded] = true
-    redirect_to idv_fail_url
+    redirect_to failure_url(:fail)
   end
 end

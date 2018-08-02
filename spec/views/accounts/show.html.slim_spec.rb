@@ -130,6 +130,12 @@ describe 'accounts/show.html.slim' do
     expect(rendered).to have_content t('headings.account.account_history')
   end
 
+  it 'contains connected applications' do
+    render
+
+    expect(rendered).to have_content t('headings.account.connected_apps')
+  end
+
   it 'shows the auth nav bar' do
     render
 

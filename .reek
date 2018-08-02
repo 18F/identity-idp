@@ -47,9 +47,9 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
-    - PersonalKeyGenerator#create_legacy_recovery_code
     - TwoFactorAuthenticationController#capture_analytics_for_exception
     - Users::SessionsController#configure_permitted_parameters
+    - UspsConfirmationExporter#make_entry_row
 InstanceVariableAssumption:
   exclude:
     - User
@@ -66,6 +66,7 @@ NestedIterators:
     - UserFlowExporter#self.massage_html
     - TwilioService::Utils#sanitize_phone_number
     - ServiceProviderSeeder#run
+    - UspsConfirmationUploader#upload_export
 NilCheck:
   enabled: false
 LongParameterList:
@@ -75,6 +76,7 @@ LongParameterList:
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
     - JWT
+    - SmsOtpSenderJob#perform
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController

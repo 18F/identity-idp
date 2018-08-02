@@ -79,6 +79,7 @@ describe UserPhoneForm do
 
         user.reload
         expect(user.phone).to_not eq('+1 504 444 1643')
+        expect(user.phone_configuration).to be_nil
       end
 
       it 'preserves the format of the submitted phone number if phone is invalid' do

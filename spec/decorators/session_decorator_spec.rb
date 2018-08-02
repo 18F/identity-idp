@@ -43,12 +43,6 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#idv_hardfail4_partial' do
-    it 'returns the correct partial' do
-      expect(subject.idv_hardfail4_partial).to eq 'idv/no_sp_hardfail'
-    end
-  end
-
   describe '#sp_logo' do
     it 'returns nil' do
       expect(subject.sp_logo).to be_nil

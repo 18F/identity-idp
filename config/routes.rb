@@ -178,7 +178,6 @@ Rails.application.routes.draw do
       scope '/verify', as: 'idv' do
         get '/' => 'idv#index'
         get '/activated' => 'idv#activated'
-        get '/cancel' => 'idv#cancel'
         get '/fail' => 'idv#fail'
       end
       scope '/verify', module: 'idv', as: 'idv' do
@@ -190,17 +189,20 @@ Rails.application.routes.draw do
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
         get '/phone/result' => 'phone#show'
+        get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         get '/review' => 'review#new'
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
         get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
+        get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
         delete '/session' => 'sessions#destroy'
-        get '/session/dupe' => 'sessions#dupe'
         get '/jurisdiction' => 'jurisdiction#new'
         post '/jurisdiction' => 'jurisdiction#create'
-        get '/jurisdiction/:reason' => 'jurisdiction#show', as: :jurisdiction_fail
+        get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+        get '/cancel/' => 'cancellations#new', as: :cancel
+        delete '/cancel' => 'cancellations#destroy'
       end
     end
 

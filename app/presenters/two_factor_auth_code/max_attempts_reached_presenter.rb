@@ -56,8 +56,7 @@ module TwoFactorAuthCode
         MarketingSite.help_url
       )
 
-      t('read_about_two_factor_authentication.text_html',
-        scope: T_SCOPE, link: link)
+      t('read_about_two_factor_authentication.text_html', scope: T_SCOPE, link: link)
     end
   end
 end
