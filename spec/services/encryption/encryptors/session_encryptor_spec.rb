@@ -4,19 +4,15 @@ describe Encryption::Encryptors::SessionEncryptor do
   let(:plaintext) { '{ "foo": "bar" }' }
 
   describe '#encrypt' do
-    it 'returns a KMS wrapped AES encrypted ciphertext' do
-      aes_encryptor = instance_double(Encryption::Encryptors::AesEncryptor)
-      kms_client = instance_double(Encryption::KmsClient)
-      allow(aes_encryptor).to receive(:encrypt).
-        with(plaintext, Figaro.env.session_encryption_key[0...32]).
-        and_return('aes output')
-      allow(kms_client).to receive(:encrypt).
-        with('aes output').
-        and_return('kms output')
-      allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(aes_encryptor)
-      allow(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+    it 'returns ciphertext created by the deprecated session encryptor' do
+      expected_ciphertext = '123abc'
 
-      expected_ciphertext = Base64.strict_encode64('kms output')
+      deprecated_encryptor = Encryption::Encryptors::DeprecatedSessionEncryptor.new
+      expect(deprecated_encryptor).to receive(:encrypt).
+        with(plaintext).
+        and_return(expected_ciphertext)
+      expect(Encryption::Encryptors::DeprecatedSessionEncryptor).to receive(:new).
+        and_return(deprecated_encryptor)
 
       ciphertext = subject.encrypt(plaintext)
 
@@ -34,7 +30,12 @@ describe Encryption::Encryptors::SessionEncryptor do
     end
 
     context 'with a 2L-KMS ciphertext' do
-      let(:ciphertext) { Encryption::Encryptors::SessionEncryptor.new.encrypt(plaintext) }
+      let(:ciphertext) do
+        key = Figaro.env.session_encryption_key[0...32]
+        aes_ciphertext = Encryption::Encryptors::AesEncryptor.new.encrypt(plaintext, key)
+        kms_ciphertext = Encryption::KmsClient.new.encrypt(aes_ciphertext)
+        Base64.strict_encode64(kms_ciphertext)
+      end
 
       it 'decrypts the ciphertext' do
         expect(subject.decrypt(ciphertext)).to eq(plaintext)
