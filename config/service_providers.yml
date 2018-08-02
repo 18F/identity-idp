@@ -47,7 +47,6 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
-      - 'gov.gsa.openidconnect.test://result/logout'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
@@ -58,7 +57,7 @@ test:
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
     redirect_uris:
-      - 'http://localhost:7654/auth/result'
+      - 'http://localhost:7654/'
       - 'https://example.com'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
@@ -633,7 +632,7 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-
+  
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
