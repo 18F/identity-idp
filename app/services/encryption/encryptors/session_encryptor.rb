@@ -3,7 +3,11 @@ module Encryption
     class SessionEncryptor
       include Encodable
 
-      delegate :encrypt, to: :deprecated_encryptor
+      def encrypt(plaintext)
+        aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
+        kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext)
+        encode(kms_ciphertext)
+      end
 
       def decrypt(ciphertext)
         return deprecated_encryptor.decrypt(ciphertext) if legacy?(ciphertext)
