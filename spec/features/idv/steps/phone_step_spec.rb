@@ -36,6 +36,12 @@ feature 'idv phone step', :idv_job do
 
       expect(page).to have_content(t('idv.titles.otp_delivery_method'))
       expect(page).to have_current_path(idv_otp_delivery_method_path)
+
+      choose_idv_otp_delivery_method_sms
+
+      expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
+      expect(page).to_not have_content(t('devise.two_factor_authentication.totp_header_text'))
+      expect(page).to_not have_content(t('two_factor_authentication.login_options_link_text'))
     end
   end
 
