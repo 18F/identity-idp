@@ -26,13 +26,17 @@ module TwoFactorAuthentication
     private
 
     def confirm_two_factor_enabled
-      return if confirmation_context? || phone_enabled?
+      return if confirming_phone? || phone_enabled?
 
       if current_user.two_factor_enabled? && !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
       redirect_to phone_setup_url
+    end
+
+    def confirming_phone?
+      idv_context? || confirmation_context?
     end
 
     def phone_enabled?
