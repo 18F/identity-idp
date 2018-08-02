@@ -3,8 +3,8 @@ require 'rails_helper'
 describe Encryption::PasswordVerifier do
   describe '.digest' do
     it 'creates a digest from the password' do
-      salt = '1' * 20
-      allow(Devise).to receive(:friendly_token).and_return(salt)
+      salt = '1' * 64 # 32 hex encoded bytes is 64 characters
+      allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
       digest = described_class.digest('saltypickles')
 
@@ -40,29 +40,6 @@ describe Encryption::PasswordVerifier do
       result = described_class.verify(password: 'saltypickles', digest: 'this is fake')
 
       expect(result).to eq(false)
-    end
-
-    it 'allows verification of a password with a 32 byte salt' do
-      # Once all new password digests are 32 bytes, this test can be torn down
-      # as it will be covered by the tests above
-
-      password = 'saltypickles'
-      password_digest = {
-        encrypted_password: '8a5c5b165fd3a2fce81bc914d91a106b76dfdd9e8c2addf0e0f27424a32ca4cb',
-        encryption_key: 'VUl6QFRZeQZ5Xl9IUVsBZmRndkNkXHJDYgAFRX9nYVl8c3paUWhyX2p
-        oegBqaFgAeVpfWWpmcgRRXnJHfANAaFJdfQR/eHJbfXVASn0AYnx9dlRifAJ2BFF4dkFmdWZ
-        /Y3VASn0DfUlqZHp2aWdEAWZlWHRhWmZnY2dbAFMAfQFiW0hCVWNEAmFoan9TSnEEZUpcdmR
-        nanZ/dHZ/agJqR1VkWEd+XlgCUnRUXFFnYkdqXVQBZHRiUVMCantRAVRef3ZYZmNnW0JTdHJ
-        RfltYR353akVRAAV9VHZmAmUBZkBlXlxnZXVUe1RKWAJVXGp2Y1tqSmQBVFlnXWpiYkp6eWZ
-        dQEd/eFhHYWVYd2VKflhpA3lKZGZlSH5dal1+eHZJZWQACXlZR1lUd3ZeeVpfWVNnelhmewB
-        VZ2p7C3hqf3lhXV0XYDp0YmBnL0dlZQcKLQtUXA=='.gsub(/\s/, ''),
-        password_salt: '6bb7555423136772304b40c10afe11e459c4021a1a47dfd11fcc955e0a2161e2',
-        password_cost: '4000$8$4$',
-      }.to_json
-
-      result = described_class.verify(password: password, digest: password_digest)
-
-      expect(result).to eq(true)
     end
 
     it 'allows verification of a legacy password with a 20 byte salt' do
