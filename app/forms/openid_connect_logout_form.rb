@@ -1,7 +1,6 @@
 class OpenidConnectLogoutForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include RedirectUriValidator
 
   ATTRS = %i[
     id_token_hint
@@ -17,6 +16,7 @@ class OpenidConnectLogoutForm
   validates :post_logout_redirect_uri, presence: true
   validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
 
+  validate :validate_redirect_uri
   validate :validate_identity
 
   def initialize(params)
@@ -25,6 +25,7 @@ class OpenidConnectLogoutForm
     end
 
     @identity = load_identity
+    @openid_connect_redirector = build_openid_connect_redirector
   end
 
   def submit
@@ -38,6 +39,7 @@ class OpenidConnectLogoutForm
   private
 
   attr_reader :identity,
+              :openid_connect_redirector,
               :success
 
   def load_identity
@@ -54,6 +56,20 @@ class OpenidConnectLogoutForm
     uuid = payload[:sub]
     sp = payload[:aud]
     AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+  end
+
+  def build_openid_connect_redirector
+    OpenidConnectRedirector.new(
+      redirect_uri: post_logout_redirect_uri,
+      service_provider: service_provider,
+      state: state,
+      errors: errors,
+      error_attr: :post_logout_redirect_uri
+    )
+  end
+
+  def validate_redirect_uri
+    openid_connect_redirector.validate
   end
 
   def validate_identity
@@ -74,23 +90,10 @@ class OpenidConnectLogoutForm
   end
 
   def redirect_uri
-    success ? logout_redirect_uri : error_redirect_uri
-  end
-
-  def logout_redirect_uri
-    uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
-
-    URIService.add_params(uri, state: state)
-  end
-
-  def error_redirect_uri
-    uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
-
-    URIService.add_params(
-      uri,
-      error: 'invalid_request',
-      error_description: errors.full_messages.join(' '),
-      state: state
-    )
+    if success
+      openid_connect_redirector.logout_redirect_uri
+    else
+      openid_connect_redirector.error_redirect_uri
+    end
   end
 end
