@@ -1,3 +1,5 @@
+require 'base64'
+
 module Encryption
   class KmsClient
     include Encodable
@@ -27,16 +29,51 @@ module Encryption
     end
 
     def encrypt_kms(plaintext)
-      ciphertext_blob = aws_client.encrypt(
+      if plaintext.bytesize > 4096
+        encrypt_in_chunks(plaintext)
+      else
+        KEY_TYPE[:KMS] + encrypt_raw_kms(plaintext)
+      end
+    end
+
+    # chunk plaintext into ~4096 byte chunks, but not less than 1024 bytes in a chunk if chunking.
+    # we do this by counting how many chunks we have and adding one.
+    # :reek:FeatureEnvy
+    def encrypt_in_chunks(plaintext)
+      plain_size = plaintext.bytesize
+      number_chunks = plain_size / 4096
+      chunk_size = plain_size / (1 + number_chunks)
+      ciphertext_set = plaintext.scan(/.{1,#{chunk_size}}/m).map(&method(:encrypt_raw_kms))
+      KEY_TYPE[:KMS] + ciphertext_set.map { |chunk| Base64.strict_encode64(chunk) }.to_json
+    end
+
+    def encrypt_raw_kms(plaintext)
+      raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
+      aws_client.encrypt(
         key_id: Figaro.env.aws_kms_key_id,
         plaintext: plaintext
       ).ciphertext_blob
-      KEY_TYPE[:KMS] + ciphertext_blob
     end
 
+    # :reek:DuplicateMethodCall
     def decrypt_kms(ciphertext)
-      kms_input = ciphertext.sub(KEY_TYPE[:KMS], '')
-      aws_client.decrypt(ciphertext_blob: kms_input).plaintext
+      raw_ciphertext = ciphertext.sub(KEY_TYPE[:KMS], '')
+      if raw_ciphertext[0] == '[' && raw_ciphertext[-1] == ']'
+        decrypt_chunked_kms(raw_ciphertext)
+      else
+        decrypt_raw_kms(raw_ciphertext)
+      end
+    end
+
+    def decrypt_chunked_kms(raw_ciphertext)
+      ciphertext_set = JSON.parse(raw_ciphertext).map { |chunk| Base64.strict_decode64(chunk) }
+      ciphertext_set.map(&method(:decrypt_raw_kms)).join('')
+    rescue JSON::ParserError, ArgumentError
+      decrypt_raw_kms(raw_ciphertext)
+    end
+
+    def decrypt_raw_kms(raw_ciphertext)
+      aws_client.decrypt(ciphertext_blob: raw_ciphertext).plaintext
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
