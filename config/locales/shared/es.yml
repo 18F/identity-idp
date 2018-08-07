@@ -5,3 +5,5 @@ es:
       gsa: Administración General de Servicios de EE. UU.
     usa_banner:
       official_site: Un sitio oficial del Gobierno de Estados Unidos
+    fake_banner:
+      fake_site: Un FALSO sitio web del gobierno de Estados Unidos

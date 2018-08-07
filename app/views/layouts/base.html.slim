@@ -52,7 +52,8 @@ html lang="#{I18n.locale}" class='no-js'
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       = render 'shared/no_pii_banner' if FeatureManagement.no_pii_mode?
-      = render 'shared/usa_banner'
+      = render 'shared/fake_banner' if FeatureManagement.no_pii_mode?
+      = render 'shared/usa_banner' if !(FeatureManagement.no_pii_mode?)
       - if content_for?(:nav)
         = yield(:nav)
       - else

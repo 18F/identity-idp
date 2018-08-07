@@ -161,7 +161,7 @@ fr:
       sessions:
         id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
         id_information_subtitle: Informations d'identification
-        no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
+        no_pii: FAKE N'utilisez pas de véritables données personnelles (il s'agit d'une FAKE
           démonstration seulement)
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
           vos informations personnelles. Nous faisons cela pour nous assurer que personne
