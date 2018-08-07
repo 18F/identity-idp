@@ -45,29 +45,6 @@ function resetForm() {
   unsetInvalidHTML();
 }
 
-function handleSubmit(event) {
-  event.preventDefault();
-
-  // As above, in case browser lacks HTML5 validation (e.g., IE < 11)
-  if(input.value.length < 19) {
-    setInvalidHTML();
-    return;
-  }
-
-  let value = formatInput(input.value);
-
-  if (value === personalKey) {
-    unsetInvalidHTML();
-    // Recovery code page, without js enabled, has a form submission that posts
-    // to the server with no body.
-    // Mimic that here.
-    formEl.removeEventListener('submit', handleSubmit);
-    formEl.submit();
-  } else {
-    setInvalidHTML();
-  }
-}
-
 function formatInput(value) {
   // Coerce mistaken user input from 'problem' letters:
   // https://en.wikipedia.org/wiki/Base32#Crockford.27s_Base32
@@ -79,6 +56,29 @@ function formatInput(value) {
 
   // And uppercase
   return value.toUpperCase();
+}
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  // As above, in case browser lacks HTML5 validation (e.g., IE < 11)
+  if (input.value.length < 19) {
+    setInvalidHTML();
+    return;
+  }
+
+  const value = formatInput(input.value);
+
+  if (value === personalKey) {
+    unsetInvalidHTML();
+    // Recovery code page, without js enabled, has a form submission that posts
+    // to the server with no body.
+    // Mimic that here.
+    formEl.removeEventListener('submit', handleSubmit);
+    formEl.submit();
+  } else {
+    setInvalidHTML();
+  }
 }
 
 function show(event) {
