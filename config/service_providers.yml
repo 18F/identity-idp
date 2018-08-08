@@ -706,6 +706,7 @@ production:
       - 'https://fossil.energy.gov/fergas-fe/#/certify_redirect'
       - 'https://fossil.energy.gov/fergas-fe/#/login'
       - 'https://fossil.energy.gov/fergas-fe/#/login_redirect'
+      - 'https://fossil.energy.gov/fergas-fe/#/notice/13'
       - 'https://fossil.energy.gov/fergas-fe/#/notice/15'
     restrict_to_deploy_env: 'prod'
 
