@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CancelAccountResetRequest do
+describe AccountReset::Cancel do
   include AccountResetHelper
 
   let(:user) { create(:user, :signed_up) }
@@ -8,13 +8,13 @@ describe CancelAccountResetRequest do
   before { TwilioService::Utils.telephony_service = FakeSms }
 
   it 'validates presence of token' do
-    request = CancelAccountResetRequest.new(nil).call
+    request = AccountReset::Cancel.new(nil).call
 
     expect(request.success?).to eq false
   end
 
   it 'validates validity of token' do
-    request = CancelAccountResetRequest.new('foo').call
+    request = AccountReset::Cancel.new('foo').call
 
     expect(request.success?).to eq false
   end
@@ -25,7 +25,7 @@ describe CancelAccountResetRequest do
         token = create_account_reset_request_for(user)
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
 
-        CancelAccountResetRequest.new(token).call
+        AccountReset::Cancel.new(token).call
 
         expect(SmsAccountResetCancellationNotifierJob).
           to have_received(:perform_now).with(phone: user.phone)
@@ -38,7 +38,7 @@ describe CancelAccountResetRequest do
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
         user.update!(phone: nil)
 
-        CancelAccountResetRequest.new(token).call
+        AccountReset::Cancel.new(token).call
 
         expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
       end
@@ -51,14 +51,14 @@ describe CancelAccountResetRequest do
       expect(UserMailer).to receive(:account_reset_cancel).with(user.email).
         and_return(@mailer)
 
-      CancelAccountResetRequest.new(token).call
+      AccountReset::Cancel.new(token).call
     end
 
     it 'updates the account_reset_request' do
       token = create_account_reset_request_for(user)
       account_reset_request = AccountResetRequest.find_by(user_id: user.id)
 
-      CancelAccountResetRequest.new(token).call
+      AccountReset::Cancel.new(token).call
       account_reset_request.reload
 
       expect(account_reset_request.request_token).to_not be_present
@@ -73,7 +73,7 @@ describe CancelAccountResetRequest do
       it 'does not notify the user via SMS of the account reset cancellation' do
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
 
-        CancelAccountResetRequest.new('foo').call
+        AccountReset::Cancel.new('foo').call
 
         expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
       end
@@ -84,7 +84,7 @@ describe CancelAccountResetRequest do
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
         user.update!(phone: nil)
 
-        CancelAccountResetRequest.new('foo').call
+        AccountReset::Cancel.new('foo').call
 
         expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
       end
@@ -93,14 +93,14 @@ describe CancelAccountResetRequest do
     it 'does not notify the user via email of the account reset cancellation' do
       expect(UserMailer).to_not receive(:account_reset_cancel)
 
-      CancelAccountResetRequest.new('foo').call
+      AccountReset::Cancel.new('foo').call
     end
 
     it 'does not update the account_reset_request' do
       create_account_reset_request_for(user)
       account_reset_request = AccountResetRequest.find_by(user_id: user.id)
 
-      CancelAccountResetRequest.new('foo').call
+      AccountReset::Cancel.new('foo').call
       account_reset_request.reload
 
       expect(account_reset_request.request_token).to be_present

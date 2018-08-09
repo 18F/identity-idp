@@ -1,7 +1,7 @@
 module AccountReset
   class CancelController < ApplicationController
     def create
-      result = CancelAccountResetRequest.new(params[:token]).call
+      result = AccountReset::Cancel.new(params[:token]).call
 
       analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h)
 
