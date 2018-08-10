@@ -1,20 +1,32 @@
 ---
 es:
   account_reset:
+    confirm_delete_account:
+      info: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros enviamos
+        una confirmación por correo electrónico de la eliminación de la cuenta. <br><br>
+        Puede %{link} o cierra esta ventana si ya terminaste.
+      link_text: crea una cuenta nueva
+      title: Has eliminado tu cuenta
+    confirm_request:
+      check_your_email: Consultar su correo electrónico
+      instructions: Enviamos un correo electrónico a <strong>%{email}</strong> para
+        comenzar el proceso de eliminación de cuenta. Siga las instrucciones en su
+        correo electrónico para completar el proceso.<br><br>Como medida de seguridad,
+        también enviamos un mensaje de texto a su registro número de teléfono.<br><br>
+        Puede cerrar esta ventana si ha terminado.
+    delete_account:
+      are_you_sure: "¿Seguro que quieres eliminar tu cuenta?"
+      cancel: Cancelar
+      delete_button: Borrar cuenta
+      info: Eliminar su cuenta debe ser su último recurso si está bloqueado         
+        de tu cuenta No podrá recuperar ninguna información vinculada a su cuenta.
+        Una vez que se elimine su cuenta, puede crear una nueva usando la misma dirección
+        de correo electrónico.
+      title: Eliminar tu cuenta debería ser tu último recurso
     request:
-      title: Eliminación y restablecimiento de cuenta
-      info: Si no puede acceder a su cuenta a través de las opciones de seguridad
-        que configuró anteriormente, eliminar la cuenta y crear una nueva es la única
-        opción.  <br><br> No podemos deshacer la eliminación de una cuenta, así que
-        por favor asegúrese de no tener otra opción de seguridad que puede usar como
-        su clave personal.
-      personal_key: "¿Tienes tu clave personal?"
-      personal_key_info: Su clave personal es un código de 16 caracteres que se le
-        dio a en la creación de la cuenta como método de recuperación; consulte el
-        ejemplo a continuación.
-      personal_key_trailer: Si tiene su clave personal, puede usarla en %{link}         
-        en lugar de restablecer.
       access_your_account: acceder a tu cuenta
+      are_you_sure: "¿Estás seguro de que no tienes acceso a ninguno de tus métodos
+        de seguridad?  O tu clave personal?"
       delete_account: Eliminar su cuenta
       delete_account_info: Eliminar su cuenta existente y crear una nueva         
         le permite usar la misma dirección de correo electrónico y configurar nuevas
@@ -24,29 +36,17 @@ es:
         Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace
         para seguir eliminando su cuenta las 24 horas después del correo electrónico
         de confirmación inicial llega.
-      are_you_sure: "¿Estás seguro de que no tienes acceso a ninguno de tus métodos
-        de seguridad?  O tu clave personal?"
+      info: Si no puede acceder a su cuenta a través de las opciones de seguridad
+        que configuró anteriormente, eliminar la cuenta y crear una nueva es la única
+        opción.  <br><br> No podemos deshacer la eliminación de una cuenta, así que
+        por favor asegúrese de no tener otra opción de seguridad que puede usar como
+        su clave personal.
       no_cancel: No, cancelar
+      personal_key: "¿Tienes tu clave personal?"
+      personal_key_info: Su clave personal es un código de 16 caracteres que se le
+        dio a en la creación de la cuenta como método de recuperación; consulte el
+        ejemplo a continuación.
+      personal_key_trailer: Si tiene su clave personal, puede usarla en %{link}         
+        en lugar de restablecer.
+      title: Eliminación y restablecimiento de cuenta
       yes_continue: Sí, continúa la eliminación.
-    confirm_request:
-      check_your_email: Consultar su correo electrónico
-      instructions: Enviamos un correo electrónico a <strong>%{email}</strong> para
-        comenzar el proceso de eliminación de cuenta. Siga las instrucciones en su
-        correo electrónico para completar el proceso.<br><br>Como medida de seguridad,
-        también enviamos un mensaje de texto a su registro número de teléfono.<br><br>
-        Puede cerrar esta ventana si ha terminado.
-    delete_account:
-      title: Eliminar tu cuenta debería ser tu último recurso
-      info: Eliminar su cuenta debe ser su último recurso si está bloqueado         
-        de tu cuenta No podrá recuperar ninguna información vinculada a su cuenta.
-        Una vez que se elimine su cuenta, puede crear una nueva usando la misma dirección
-        de correo electrónico.
-      are_you_sure: "¿Seguro que quieres eliminar tu cuenta?"
-      delete_button: Borrar cuenta
-      cancel: Cancelar
-    confirm_delete_account:
-      title: Has eliminado tu cuenta
-      info: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros enviamos
-        una confirmación por correo electrónico de la eliminación de la cuenta. <br><br>
-        Puede %{link} o cierra esta ventana si ya terminaste.
-      link_text: crea una cuenta nueva

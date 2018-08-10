@@ -129,19 +129,32 @@ describe Users::TwoFactorAuthenticationController do
         allow(SmsOtpSenderJob).to receive(:perform_later)
       end
 
-      it 'sends OTP via SMS' do
+      it 'sends OTP via SMS for login' do
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
           phone: subject.current_user.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
           login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+        )
+      end
+
+      it 'sends OTP via SMS for signing in' do
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+          code: subject.current_user.direct_otp,
+          phone: subject.current_user.phone,
+          otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.login_message',
+          locale: nil
         )
       end
 
@@ -254,6 +267,7 @@ describe Users::TwoFactorAuthenticationController do
           code: subject.current_user.direct_otp,
           phone: @unconfirmed_phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.verify_message',
           locale: nil
         )
       end

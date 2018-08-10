@@ -73,6 +73,8 @@ feature 'PIV/CAC Management' do
           stub_piv_cac_service
 
           user.update(phone: nil, otp_secret_key: 'secret')
+          user.phone_configuration.destroy
+          user.phone_configuration = nil
           sign_in_and_2fa_user(user)
           visit account_path
           click_link t('forms.buttons.enable'), href: setup_piv_cac_url

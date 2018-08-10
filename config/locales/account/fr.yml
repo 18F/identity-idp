@@ -1,6 +1,8 @@
 ---
 fr:
   account:
+    connected_apps:
+      associated: Associé
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée

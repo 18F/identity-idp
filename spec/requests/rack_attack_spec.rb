@@ -20,13 +20,11 @@ describe 'throttling requests' do
     it 'reads the limit and period from ENV vars' do
       get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
 
-      data = {
-        count: 1,
-        limit: Figaro.env.requests_per_ip_limit.to_i,
-        period: Figaro.env.requests_per_ip_period.to_i,
-      }
+      throttle_data = request.env['rack.attack.throttle_data']['req/ip']
 
-      expect(request.env['rack.attack.throttle_data']['req/ip']).to eq(data)
+      expect(throttle_data[:count]).to eq(1)
+      expect(throttle_data[:limit]).to eq(Figaro.env.requests_per_ip_limit.to_i)
+      expect(throttle_data[:period]).to eq(Figaro.env.requests_per_ip_period.to_i)
     end
 
     context 'when the number of requests is lower than the limit' do
@@ -112,13 +110,11 @@ describe 'throttling requests' do
     it 'reads the limit and period from ENV vars' do
       post '/', params: { user: { email: 'test@test.com' } }, headers: { REMOTE_ADDR: '1.2.3.4' }
 
-      data = {
-        count: 1,
-        limit: Figaro.env.logins_per_ip_limit.to_i,
-        period: Figaro.env.logins_per_ip_period.to_i.seconds,
-      }
+      throttle_data = request.env['rack.attack.throttle_data']['logins/ip']
 
-      expect(request.env['rack.attack.throttle_data']['logins/ip']).to eq(data)
+      expect(throttle_data[:count]).to eq(1)
+      expect(throttle_data[:limit]).to eq(Figaro.env.logins_per_ip_limit.to_i)
+      expect(throttle_data[:period]).to eq(Figaro.env.logins_per_ip_period.to_i.seconds)
     end
 
     context 'when the number of requests is lower than the limit' do

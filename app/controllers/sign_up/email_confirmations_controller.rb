@@ -4,6 +4,8 @@ module SignUp
 
     def create
       validate_token
+    rescue ActiveRecord::RecordNotUnique
+      process_already_confirmed_user
     end
 
     private

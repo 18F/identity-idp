@@ -113,6 +113,10 @@ class UserDecorator
     (events + identities).sort_by(&:happened_at).reverse
   end
 
+  def connected_apps
+    user.identities.order('created_at DESC').map(&:decorate)
+  end
+
   def verified_account_partial
     if identity_verified?
       'accounts/verified_account_badge'
@@ -123,9 +127,9 @@ class UserDecorator
 
   def delete_account_bullet_key
     if identity_verified?
-      'users.delete.bullet_2_loa3'
+      I18n.t('users.delete.bullet_2_loa3', app: APP_NAME)
     else
-      'users.delete.bullet_2_loa1'
+      I18n.t('users.delete.bullet_2_loa1', app: APP_NAME)
     end
   end
 

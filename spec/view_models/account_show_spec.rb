@@ -168,22 +168,22 @@ describe AccountShow do
 
   describe '#totp_content' do
     context 'user has enabled an authenticator app' do
-      it 'returns profile.index.auth_app_enabled ' do
+      it 'returns localization for auth_app_enabled' do
         user = User.new
         allow(user).to receive(:totp_enabled?).and_return(true)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-        expect(profile_index.totp_content).to eq 'account.index.auth_app_enabled'
+        expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
       end
     end
 
     context 'user does not have an authenticator app enabled' do
-      it 'returns profile.index.auth_app_disabled' do
+      it 'returns localization for auth_app_disabled' do
         user = User.new
         allow(user).to receive(:totp_enabled?).and_return(false)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-        expect(profile_index.totp_content).to eq 'account.index.auth_app_disabled'
+        expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
       end
     end
   end

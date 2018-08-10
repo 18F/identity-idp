@@ -1,6 +1,20 @@
 ---
 fr:
   users:
+    delete:
+      actions:
+        cancel: Annuler et retourner à votre profil
+        delete: Supprimer le compte
+      bullet_1: Vous n'aurez pas de compte %{app}.
+      bullet_2_loa1: "%{app} supprimera votre adresse e-mail, votre mot de passe et
+        votre numéro de téléphone de notre système."
+      bullet_2_loa3: "%{app} supprimera votre adresse e-mail, votre mot de passe et
+        votre numéro de téléphone, votre nom, votre adresse, votre date de naissance
+        et votre numéro de sécurité sociale de notre système."
+      bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
+        utilisant %{app}.
+      heading: Êtes-vous sûr de vouloir supprimer votre compte?
+      subheading: Si vous supprimez votre compte
     personal_key:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.
@@ -20,17 +34,3 @@ fr:
     totp_setup:
       new:
         qr_img_alt: Code QR pour l'application d'authentification
-    delete:
-      heading: Êtes-vous sûr de vouloir supprimer votre compte?
-      subheading: Si vous supprimez votre compte
-      actions:
-        delete: Supprimer le compte
-        cancel: Annuler et retourner à votre profil
-      bullet_1: Vous n'aurez pas de compte %{app}.
-      bullet_2_loa1: "%{app} supprimera votre adresse e-mail, votre mot de passe et
-        votre numéro de téléphone de notre système."
-      bullet_2_loa3: "%{app} supprimera votre adresse e-mail, votre mot de passe et
-        votre numéro de téléphone, votre nom, votre adresse, votre date de naissance
-        et votre numéro de sécurité sociale de notre système."
-      bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
-        utilisant %{app}.

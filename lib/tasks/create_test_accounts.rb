@@ -18,6 +18,11 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
   user.phone = mfa_phone || phone
   user.phone_confirmed_at = Time.zone.now
   user.save!
+  user.create_phone_configuration(
+    phone: mfa_phone || phone,
+    confirmed_at: user.phone_confirmed_at,
+    delivery_preference: user.otp_delivery_preference
+  )
   Event.create(user_id: user.id, event_type: :account_created)
 
   if verified

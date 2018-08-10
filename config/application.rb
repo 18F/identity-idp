@@ -60,5 +60,7 @@ module Upaya
       Rack::TwilioWebhookAuthentication,
       Figaro.env.twilio_auth_token, '/api/voice/otp'
     )
+
+    config.middleware.use Rack::Timeout, service_timeout: Figaro.env.service_timeout.to_i
   end
 end

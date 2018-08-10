@@ -29,7 +29,7 @@ module Encryption
     end
 
     def self.digest(password)
-      salt = Devise.friendly_token[0, 20]
+      salt = SecureRandom.hex(32)
       uak = UserAccessKey.new(password: password, salt: salt)
       uak.build
       PasswordDigest.new(

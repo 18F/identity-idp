@@ -91,16 +91,16 @@ class AccountShow
   end
 
   def totp_content
-    return 'account.index.auth_app_enabled' if decorated_user.totp_enabled?
+    return I18n.t('account.index.auth_app_enabled') if decorated_user.totp_enabled?
 
-    'account.index.auth_app_disabled'
+    I18n.t('account.index.auth_app_disabled')
   end
 
   def piv_cac_content
-    return 'account.index.piv_cac_enabled' if decorated_user.piv_cac_enabled?
+    return I18n.t('account.index.piv_cac_enabled') if decorated_user.piv_cac_enabled?
 
-    'account.index.piv_cac_disabled'
+    I18n.t('account.index.piv_cac_disabled')
   end
 
-  delegate :recent_events, to: :decorated_user
+  delegate :recent_events, :connected_apps, to: :decorated_user
 end

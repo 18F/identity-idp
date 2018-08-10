@@ -56,4 +56,5 @@ load_test: $(CONFIG)
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
+	i18n-tasks normalize
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml
