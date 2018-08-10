@@ -8,6 +8,13 @@ feature 'Sign in' do
   include SpAuthHelper
   include IdvHelper
 
+  scenario 'make certain banner shows fake when not in production' do
+    signin('test@example.com', 'Please123!')
+
+    expect(page).
+        to have_content 'FAKE'
+  end
+
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
     link_url = new_user_password_url

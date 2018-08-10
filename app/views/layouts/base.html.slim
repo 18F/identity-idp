@@ -52,7 +52,6 @@ html lang="#{I18n.locale}" class='no-js'
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       - if FeatureManagement.fake_banner_mode?
-        = render 'shared/no_pii_banner'
         = render 'shared/fake_banner'
       - else
         = render 'shared/usa_banner'

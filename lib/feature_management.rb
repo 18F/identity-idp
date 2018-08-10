@@ -82,8 +82,7 @@ class FeatureManagement
   end
 
   def self.fake_banner_mode?
-    # Rails.env.production? && Figaro.env.domain_name != 'secure.login.gov'
-    # enable_identity_verification? && Figaro.env.profile_proofing_vendor == :mock
+    Rails.env.production? == false && Figaro.env.domain_name != 'secure.login.gov'
   end
 
   def self.enable_saml_cert_rotation?

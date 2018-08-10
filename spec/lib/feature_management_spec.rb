@@ -206,7 +206,7 @@ describe 'FeatureManagement', type: :feature do
       context 'with identity verification disabled' do
         let(:enable_identity_verification) { false }
 
-        it { expect(fake_banner_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(true) }
       end
     end
 
@@ -216,13 +216,13 @@ describe 'FeatureManagement', type: :feature do
       context 'with identity verification enabled' do
         let(:enable_identity_verification) { true }
 
-        it { expect(fake_banner_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(true) }
       end
 
       context 'with identity verification disabled' do
         let(:enable_identity_verification) { false }
 
-        it { expect(fake_banner_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(true) }
       end
     end
   end
