@@ -336,7 +336,7 @@ GEM
     io-like (0.3.0)
     jaro_winkler (1.5.1)
     jmespath (1.4.0)
-    json (1.8.6)
+    json (2.1.0)
     json-jwt (1.9.4)
       activesupport
       aes_key_wrap
@@ -468,7 +468,7 @@ GEM
     readthis (2.2.0)
       connection_pool (~> 2.1)
       redis (>= 3.0, < 5.0)
-    recaptcha (4.8.0)
+    recaptcha (4.11.1)
       json
     redis (3.3.5)
     reek (4.8.1)
