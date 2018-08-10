@@ -12,15 +12,6 @@ class AccountResetService
                          granted_token: nil)
   end
 
-  def self.cancel_request(token)
-    account_reset = token.blank? ? nil : AccountResetRequest.find_by(request_token: token)
-    return false unless account_reset
-    account_reset.update(cancelled_at: Time.zone.now,
-                         request_token: nil,
-                         granted_token: nil)
-    account_reset
-  end
-
   def self.report_fraud(token)
     account_reset = token.blank? ? nil : AccountResetRequest.find_by(request_token: token)
     return false unless account_reset

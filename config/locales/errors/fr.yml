@@ -1,6 +1,9 @@
 ---
 fr:
   errors:
+    account_reset:
+      cancel_token_invalid: NOT TRANSLATED YET
+      cancel_token_missing: NOT TRANSLATED YET
     confirm_password_incorrect: Mot de passe incorrect.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
