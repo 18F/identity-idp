@@ -4,6 +4,7 @@ module AccountReset
 
     before_action :check_account_reset_enabled
     before_action :confirm_two_factor_enabled
+    before_action :confirm_user_not_verified
 
     def show; end
 
@@ -19,6 +20,11 @@ module AccountReset
 
     def check_account_reset_enabled
       redirect_to root_url unless FeatureManagement.account_reset_enabled?
+    end
+
+    def confirm_user_not_verified
+      # IAL1 users should not be able to reset account to comply with AAL2 reqs
+      redirect_to account_url if decorated_user.identity_verified?
     end
 
     def reset_session_with_email
