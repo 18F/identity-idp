@@ -181,7 +181,7 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '.no_pii_mode?' do
+  describe '.fake_banner_mode?' do
     let(:proofing_vendor) { :mock }
     let(:enable_identity_verification) { false }
 
@@ -192,7 +192,7 @@ describe 'FeatureManagement', type: :feature do
         and_return(enable_identity_verification.to_json)
     end
 
-    subject(:no_pii_mode?) { FeatureManagement.no_pii_mode? }
+    subject(:fake_banner_mode?) { FeatureManagement.fake_banner_mode? }
 
     context 'with mock ID-proofing vendors' do
       let(:proofing_vendor) { :mock }
@@ -200,13 +200,13 @@ describe 'FeatureManagement', type: :feature do
       context 'with identity verification enabled' do
         let(:enable_identity_verification) { true }
 
-        it { expect(no_pii_mode?).to eq(true) }
+        it { expect(fake_banner_mode?).to eq(true) }
       end
 
       context 'with identity verification disabled' do
         let(:enable_identity_verification) { false }
 
-        it { expect(no_pii_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(false) }
       end
     end
 
@@ -216,13 +216,13 @@ describe 'FeatureManagement', type: :feature do
       context 'with identity verification enabled' do
         let(:enable_identity_verification) { true }
 
-        it { expect(no_pii_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(false) }
       end
 
       context 'with identity verification disabled' do
         let(:enable_identity_verification) { false }
 
-        it { expect(no_pii_mode?).to eq(false) }
+        it { expect(fake_banner_mode?).to eq(false) }
       end
     end
   end
