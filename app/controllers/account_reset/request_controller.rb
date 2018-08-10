@@ -23,7 +23,7 @@ module AccountReset
     end
 
     def confirm_user_not_verified
-      # IAL1 users should not be able to reset account to comply with AAL2 reqs
+      # IAL2 users should not be able to reset account to comply with AAL2 reqs
       redirect_to account_url if decorated_user.identity_verified?
     end
 
