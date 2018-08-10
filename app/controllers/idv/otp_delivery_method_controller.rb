@@ -1,8 +1,9 @@
 module Idv
   class OtpDeliveryMethodController < ApplicationController
     include IdvSession
-    include PhoneConfirmation
+    # include PhoneConfirmation
 
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_phone_step_complete
     before_action :confirm_step_needed
     before_action :set_otp_delivery_method_presenter
@@ -13,11 +14,8 @@ module Idv
     def create
       result = @otp_delivery_selection_form.submit(otp_delivery_selection_params)
       if result.success?
-        prompt_to_confirm_phone(
-          phone: @otp_delivery_selection_form.phone,
-          context: 'idv',
-          selected_delivery_method: @otp_delivery_selection_form.otp_delivery_preference
-        )
+        save_delivery_preference_in_session
+        redirect_to idv_send_phone_otp_url
       else
         render :new
       end
@@ -52,6 +50,11 @@ module Idv
         idv_session.params[:phone],
         'idv'
       )
+    end
+
+    def save_delivery_preference_in_session
+      idv_session.phone_confirmation_otp_delivery_method =
+        @otp_delivery_selection_form.otp_delivery_preference
     end
   end
 end

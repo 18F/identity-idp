@@ -8,6 +8,11 @@ module Idv
       params
       vendor_phone_confirmation
       user_phone_confirmation
+      phone_confirmation_attempt_count
+      phone_confirmation_locked_at
+      phone_confirmation_otp_delivery_method
+      phone_confirmation_otp_sent_at
+      phone_confirmation_otp
       pii
       profile_confirmation
       profile_id

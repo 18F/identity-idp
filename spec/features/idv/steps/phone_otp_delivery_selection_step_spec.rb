@@ -13,7 +13,7 @@ feature 'IdV phone OTP deleivery method selection', :idv_job do
       choose_idv_otp_delivery_method_sms
 
       expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(current_path).to eq(idv_otp_verification_path)
     end
   end
 
@@ -27,7 +27,7 @@ feature 'IdV phone OTP deleivery method selection', :idv_job do
       choose_idv_otp_delivery_method_voice
 
       expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :voice))
+      expect(current_path).to eq(idv_otp_verification_path)
     end
   end
 
@@ -47,6 +47,19 @@ feature 'IdV phone OTP deleivery method selection', :idv_job do
       expect(page).to have_content(t('errors.messages.must_have_us_country_code'))
       expect(current_path).to eq(idv_phone_path)
     end
+  end
+
+  it 'does not modify the otp column on the user model when sending an OTP' do
+    user = user_with_2fa
+
+    start_idv_from_sp
+    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
+
+    old_direct_otp = user.direct_otp
+    choose_idv_otp_delivery_method_sms
+    user.reload
+
+    expect(user.direct_otp).to eq(old_direct_otp)
   end
 
   context 'cancelling IdV' do

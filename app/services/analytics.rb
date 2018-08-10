@@ -71,6 +71,9 @@ class Analytics
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'.freeze
   IDV_PHONE_CONFIRMATION_VENDOR = 'IdV: phone confirmation vendor'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visitted'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze

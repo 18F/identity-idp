@@ -18,6 +18,8 @@ feature 'disabling USPS address verification', :idv_job do
     end
 
     it 'allows verification without the option to confirm address with usps' do
+      allow(Idv::PhoneConfirmationOtpGenerator).to receive(:generate_otp).and_return('777777')
+
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
@@ -32,7 +34,8 @@ feature 'disabling USPS address verification', :idv_job do
       expect(page).to_not have_content(t('idv.form.activate_by_mail'))
 
       choose_idv_otp_delivery_method_sms
-      enter_correct_otp_code_for_user(user)
+      fill_in(:code, with: '777777')
+      click_submit_default
       fill_in 'Password', with: user.password
       click_continue
       click_acknowledge_personal_key

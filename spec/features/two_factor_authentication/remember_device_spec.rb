@@ -87,7 +87,7 @@ feature 'Remembering a 2FA device' do
     end
 
     it 'requires 2FA and does not offer the option to remember device' do
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(current_path).to eq(idv_otp_verification_path)
       expect(page).to_not have_content(
         t('forms.messages.remember_device', duration: Figaro.env.remember_device_expiration_days!)
       )
