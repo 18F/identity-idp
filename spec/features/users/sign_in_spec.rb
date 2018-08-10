@@ -11,8 +11,7 @@ feature 'Sign in' do
   scenario 'make certain banner shows fake when not in production' do
     signin('test@example.com', 'Please123!')
 
-    expect(page).
-        to have_content 'FAKE'
+    expect(page).to have_content 'FAKE'
   end
 
   scenario 'user cannot sign in if not registered' do
