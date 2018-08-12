@@ -182,48 +182,25 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '.fake_banner_mode?' do
-    let(:proofing_vendor) { :mock }
-    let(:enable_identity_verification) { false }
-
-    before do
-      allow_any_instance_of(Figaro.env).to receive(:profile_proofing_vendor).
-        and_return(proofing_vendor)
-      allow(Figaro.env).to receive(:enable_identity_verification).
-        and_return(enable_identity_verification.to_json)
-    end
-
     subject(:fake_banner_mode?) { FeatureManagement.fake_banner_mode? }
 
-    context 'with mock ID-proofing vendors' do
-      let(:proofing_vendor) { :mock }
-
-      context 'with identity verification enabled' do
-        let(:enable_identity_verification) { true }
-
-        it { expect(fake_banner_mode?).to eq(true) }
-      end
-
-      context 'with identity verification disabled' do
-        let(:enable_identity_verification) { false }
-
-        it { expect(fake_banner_mode?).to eq(true) }
+    context 'fake banner mode in production' do
+      it 'returns true' do
+        allow(Figaro.env).to receive(:domain_name).
+          and_return('secure.login.gov')
+        allow(Rails.env).to receive(:production?).
+          and_return(true)
+        expect(FeatureManagement.fake_banner_mode?).to eq(false)
       end
     end
 
-    context 'with real ID-proofing vendors' do
-      let(:proofing_vendor) { :not_mock }
-
-      context 'with identity verification enabled' do
-        let(:enable_identity_verification) { true }
-
-        it { expect(fake_banner_mode?).to eq(true) }
-      end
-
-      context 'with identity verification disabled' do
-        let(:enable_identity_verification) { false }
-
-        it { expect(fake_banner_mode?).to eq(true) }
-      end
+    context 'fake Banner mode in test'
+    it 'returns true' do
+      allow(Figaro.env).to receive(:domain_name).
+        and_return('test.login.gov')
+      allow(Rails.env).to receive(:production?).
+        and_return(true)
+      expect(FeatureManagement.fake_banner_mode?).to eq(true)
     end
   end
 

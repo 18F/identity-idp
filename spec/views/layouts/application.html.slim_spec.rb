@@ -29,6 +29,18 @@ describe 'layouts/application.html.slim' do
     end
   end
 
+  context 'shows FAKE when logging in' do
+    it 'shows banner' do
+      allow(Figaro.env).to receive(:domain_name).
+        and_return('test.login.gov')
+      allow(Rails.env).to receive(:production?).
+        and_return(true)
+
+      render
+      expect(rendered).to have_content('FAKE')
+    end
+  end
+
   context 'when i18n mode enabled' do
     before do
       allow(FeatureManagement).to receive(:enable_i18n_mode?).and_return(true)
