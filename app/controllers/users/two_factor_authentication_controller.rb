@@ -140,9 +140,25 @@ module Users
 
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
-      job.send(job_priority, code: current_user.direct_otp, phone: phone_to_deliver_to,
-                             otp_created_at: current_user.direct_otp_sent_at.to_s,
-                             locale: user_locale)
+      job.send(job_priority,
+               method == 'sms' ? job_params.merge(message: sms_message) : job_params)
+    end
+
+    def job_params
+      {
+        code: current_user.direct_otp,
+        phone: phone_to_deliver_to,
+        otp_created_at: current_user.direct_otp_sent_at.to_s,
+        locale: user_locale,
+      }
+    end
+
+    def sms_message
+      if SmsLoginOptionPolicy.new(current_user).configured?
+        'jobs.sms_otp_sender_job.login_message'
+      else
+        'jobs.sms_otp_sender_job.verify_message'
+      end
     end
 
     def user_selected_otp_delivery_preference

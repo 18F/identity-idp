@@ -1,66 +1,84 @@
 require 'rails_helper'
 
 describe AccountReset::CancelController do
-  let(:user) { create(:user, :signed_up, phone: '+1 (703) 555-0000') }
+  include AccountResetHelper
+
+  let(:user) { create(:user, :signed_up) }
   before do
     TwilioService::Utils.telephony_service = FakeSms
   end
 
-  describe '#cancel' do
+  describe '#create' do
     it 'logs a good token to the analytics' do
-      AccountResetService.new(user).create_request
+      token = create_account_reset_request_for(user)
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET,
-             event: :cancel, token_valid: true, user_id: user.uuid)
+      analytics_hash = {
+        success: true,
+        errors: {},
+        event: 'cancel',
+        user_id: user.uuid,
+      }
 
-      post :cancel, params: { token: AccountResetRequest.all[0].request_token }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET, analytics_hash)
+
+      post :create, params: { token: token }
     end
 
     it 'logs a bad token to the analytics' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :cancel, token_valid: false)
+      analytics_hash = {
+        success: false,
+        errors: { token: [t('errors.account_reset.cancel_token_invalid')] },
+        event: 'cancel',
+        user_id: 'anonymous-uuid',
+      }
 
-      post :cancel, params: { token: 'FOO' }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET, analytics_hash)
+
+      post :create, params: { token: 'FOO' }
     end
 
-    it 'redirects to the root' do
-      post :cancel
+    it 'logs a missing token to the analytics' do
+      stub_analytics
+      analytics_hash = {
+        success: false,
+        errors: { token: [t('errors.account_reset.cancel_token_missing')] },
+        event: 'cancel',
+        user_id: 'anonymous-uuid',
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET, analytics_hash)
+
+      post :create
+    end
+
+    it 'redirects to the root without a flash message when the token is missing or invalid' do
+      post :create
       expect(response).to redirect_to root_url
     end
 
-    it 'sends an SMS if there is a phone' do
-      AccountResetService.new(user).create_request
-      allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
+    it 'redirects to the root with a flash message when the token is valid' do
+      token = create_account_reset_request_for(user)
 
-      post :cancel, params: { token: AccountResetRequest.all[0].request_token }
+      post :create, params: { token: token }
 
-      expect(SmsAccountResetCancellationNotifierJob).to have_received(:perform_now).with(
-        phone: user.phone
-      )
+      expect(flash[:success]).
+        to eq t('devise.two_factor_authentication.account_reset.successful_cancel')
+      expect(response).to redirect_to root_url
     end
 
-    it 'does not send an SMS if there is no phone' do
-      AccountResetService.new(user).create_request
-      allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
-      user.phone = nil
-      user.save!
+    it 'signs the user out if signed in and if the token is valid' do
+      stub_sign_in(user)
 
-      post :cancel, params: { token: AccountResetRequest.all[0].request_token }
+      token = create_account_reset_request_for(user)
 
-      expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
-    end
+      expect(controller).to receive(:sign_out)
 
-    it 'sends an email' do
-      AccountResetService.new(user).create_request
-
-      @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-      allow(UserMailer).to receive(:account_reset_cancel).with(user.email).
-        and_return(@mailer)
-
-      post :cancel, params: { token: AccountResetRequest.all[0].request_token }
+      post :create, params: { token: token }
     end
   end
 end

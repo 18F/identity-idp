@@ -1,4 +1,4 @@
-- if decorated_session.sp_alert?
+- if decorated_session.sp_alert?(request.path)
   - sp_alert_name = decorated_session.sp_alert_name
   .alert.alert-notice.sm-left-align
     .bold = t("service_providers.#{sp_alert_name}.header")

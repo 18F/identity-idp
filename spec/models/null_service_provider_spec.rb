@@ -58,6 +58,12 @@ describe NullServiceProvider do
     end
   end
 
+  describe '#failure_to_proof_url' do
+    it 'returns nil' do
+      expect(subject.failure_to_proof_url).to be_nil
+    end
+  end
+
   describe '#issuer' do
     it 'returns the issuer argument' do
       expect(subject.issuer).to eq 'foo'

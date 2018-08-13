@@ -67,6 +67,8 @@ use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
+usps_upload_sftp_timeout: '5'
+
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
@@ -173,7 +175,7 @@ development:
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
   saml_secret_rotation_secret_key_password:
-  scrypt_cost: '10000$8$1$'
+  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
@@ -191,10 +193,10 @@ development:
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
-  usps_upload_sftp_directory: '/directory'
-  usps_upload_sftp_host: 'example.com'
-  usps_upload_sftp_username: 'user'
-  usps_upload_sftp_password: 'pass'
+  usps_upload_sftp_directory: '/gsa_order'
+  usps_upload_sftp_host: 'localhost'
+  usps_upload_sftp_username: 'brady'
+  usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
 
 # These values serve as defaults for all production-like environments, which
@@ -295,7 +297,7 @@ production:
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
   saml_secret_rotation_secret_key_password:
-  scrypt_cost: '10000$8$1$'
+  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'

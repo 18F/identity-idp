@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180724154947) do
+ActiveRecord::Schema.define(version: 20180728122856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,18 @@ ActiveRecord::Schema.define(version: 20180724154947) do
     t.index ["value"], name: "index_password_metrics_on_value"
   end
 
+  create_table "phone_configurations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "encrypted_phone", null: false
+    t.integer "delivery_preference", default: 0, null: false
+    t.boolean "mfa_enabled", default: true, null: false
+    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_phone_configurations_on_user_id"
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "active", default: false, null: false
@@ -167,6 +179,7 @@ ActiveRecord::Schema.define(version: 20180724154947) do
     t.boolean "native", default: false, null: false
     t.string "redirect_uris", default: [], array: true
     t.integer "agency_id"
+    t.text "failure_to_proof_url"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

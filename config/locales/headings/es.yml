@@ -4,6 +4,7 @@ es:
     account:
       account_history: Historial de cuenta
       account_management: Manejo de cuenta
+      connected_apps: Aplicaciones
       login_info: Su cuenta
       profile_info: Información de perfil
       reactivate: Reactive su cuenta

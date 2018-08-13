@@ -1,0 +1,10 @@
+.p2.clearfix.border-top
+  .clearfix.mxn1
+    .sm-col.sm-col-6.px1
+      .bold.truncate
+        - if identity.return_to_sp_url.present?
+          = link_to(identity.display_name, identity.return_to_sp_url)
+        - else
+          = identity.display_name
+    .sm-col.sm-col-6.px1.sm-right-align
+      = t('account.connected_apps.associated') + ' ' + identity.created_at_in_words

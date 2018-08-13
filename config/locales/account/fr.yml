@@ -1,6 +1,8 @@
 ---
 fr:
   account:
+    connected_apps:
+      associated: Associé
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée
@@ -25,7 +27,6 @@ fr:
         instructions: Votre compte requiert la vérification d'un code secret.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
-        with_phone_button: Verifiez avec votre téléphone
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle

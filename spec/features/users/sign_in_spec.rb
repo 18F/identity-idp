@@ -17,8 +17,10 @@ feature 'Sign in' do
   end
 
   it 'does not throw an exception if the email contains invalid bytes' do
-    signin("test@\xFFbar\xF8.com", 'Please123!')
-    expect(page).to have_content 'Bad request'
+    suppress_output do
+      signin("test@\xFFbar\xF8.com", 'Please123!')
+      expect(page).to have_content 'Bad request'
+    end
   end
 
   scenario 'user cannot sign in with wrong email' do

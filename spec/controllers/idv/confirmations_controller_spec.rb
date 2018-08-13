@@ -15,7 +15,6 @@ describe Idv::ConfirmationsController do
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      phone_confirmed: true,
       user_password: password
     )
     profile = profile_maker.save_profile

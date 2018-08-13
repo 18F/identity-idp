@@ -45,7 +45,7 @@ class SessionDecorator
 
   def requested_attributes; end
 
-  def sp_alert?; end
+  def sp_alert?(_path); end
 
   def sp_alert_name; end
 

@@ -74,14 +74,6 @@ class UserDecorator
     user.active_profile.activated_at >= pending_profile.created_at
   end
 
-  def needs_profile_phone_verification?
-    pending_profile_requires_verification? && pending_profile.phone_confirmed?
-  end
-
-  def needs_profile_usps_verification?
-    pending_profile_requires_verification? && !pending_profile.phone_confirmed?
-  end
-
   # This user's most recently activated profile that has also been deactivated
   # due to a password reset, or nil if there is no such profile
   def password_reset_profile
@@ -119,6 +111,10 @@ class UserDecorator
     events = user.events.order('created_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
     identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
     (events + identities).sort_by(&:happened_at).reverse
+  end
+
+  def connected_apps
+    user.identities.order('created_at DESC').map(&:decorate)
   end
 
   def verified_account_partial

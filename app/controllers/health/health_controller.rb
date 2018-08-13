@@ -6,6 +6,7 @@ module Health
       checkers = {
         database: DatabaseHealthChecker,
         workers: WorkerHealthChecker,
+        account_reset: AccountResetHealthChecker,
       }
       # Don't run worker health checks if we're not using workers (i.e. if the
       # queue adapter is inline or async)

@@ -58,7 +58,7 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#cancel'
+      get '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/report_fraud' => 'account_reset/report_fraud#update'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
@@ -115,8 +115,6 @@ Rails.application.routes.draw do
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
-    get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
-    post '/account/verify_phone' => 'users/verify_profile_phone#create'
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
     if FeatureManagement.piv_cac_enabled?

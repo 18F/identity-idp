@@ -18,6 +18,7 @@ en:
         update: Update
     confirmation:
       show_hdr: Create a strong password
+    example: 'example:'
     messages:
       remember_device: Remember this browser for %{duration} days
     passwords:

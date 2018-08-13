@@ -76,6 +76,7 @@ LongParameterList:
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
     - JWT
+    - SmsOtpSenderJob#perform
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
@@ -91,6 +92,7 @@ TooManyInstanceVariables:
     - OpenidConnectRedirector
     - Idv::VendorResult
     - CloudhsmKeyGenerator
+    - CloudhsmKeySharer
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -124,6 +126,7 @@ TooManyMethods:
     - SessionDecorator
     - HolidayService
     - PhoneDeliveryPresenter
+    - CloudhsmKeyGenerator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
