@@ -17,8 +17,7 @@ RSpec.describe Users::VerifyAccountController do
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
     )
-    allow(decorated_user).to receive(:needs_profile_phone_verification?).and_return(false)
-    allow(decorated_user).to receive(:needs_profile_usps_verification?).
+    allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
   end
 
