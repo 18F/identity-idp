@@ -19,7 +19,7 @@ will warn you about unsafe migrations and has great step-by-step instructions
 for various scenarios.
 
 - [ ] Indexes were added if necessary. This article provides a good overview
-of [indexes in Rails](https://semaphoreci.com/blog/2017/05/09/faster-rails-is-your-database-properly-indexed.html).
+of [indexes in Rails](https://goo.gl/1DARYi).
 
 - [ ] Verified that the changes don't affect other apps (such as the dashboard)
 

@@ -62,8 +62,6 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
-      user_session[:openid_auth_request] = authorization_params if user_session
-
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
 
       @authorize_decorator = OpenidConnectAuthorizeDecorator.new(

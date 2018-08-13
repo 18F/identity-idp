@@ -1,6 +1,9 @@
 ---
 es:
   errors:
+    account_reset:
+      cancel_token_invalid: NOT TRANSLATED YET
+      cancel_token_missing: NOT TRANSLATED YET
     confirm_password_incorrect: La contraseña es incorrecta.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
