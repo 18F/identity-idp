@@ -64,6 +64,7 @@ Metrics/ClassLength:
   - app/services/analytics.rb
   - app/services/idv/session.rb
   - app/presenters/two_factor_auth_code/phone_delivery_presenter.rb
+  - lib/cloudhsm/cloudhsm_key_generator.rb
 
 Metrics/LineLength:
   Description: Limit lines to 100 characters.

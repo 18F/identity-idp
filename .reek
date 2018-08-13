@@ -92,6 +92,7 @@ TooManyInstanceVariables:
     - OpenidConnectRedirector
     - Idv::VendorResult
     - CloudhsmKeyGenerator
+    - CloudhsmKeySharer
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -125,6 +126,7 @@ TooManyMethods:
     - SessionDecorator
     - HolidayService
     - PhoneDeliveryPresenter
+    - CloudhsmKeyGenerator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

@@ -1,6 +1,9 @@
 ---
 en:
   errors:
+    account_reset:
+      cancel_token_invalid: cancel token is invalid
+      cancel_token_missing: cancel token is missing
     confirm_password_incorrect: Incorrect password.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.

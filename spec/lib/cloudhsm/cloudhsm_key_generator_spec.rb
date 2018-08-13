@@ -3,6 +3,12 @@ require 'cloudhsm/cloudhsm_key_generator'
 
 describe CloudhsmKeyGenerator do
   let(:subject) { CloudhsmKeyGenerator.new }
+  let(:wrapping_key) { '1234' }
+  let(:key_owner_name) { 'username' }
+  let(:key_owner_password) { 'password' }
+  let(:share_with_username) { 'username2' }
+  let(:key_handle) { '5678' }
+
   before(:each) { mock_cloudhsm }
 
   around(:each) do |example|
@@ -13,57 +19,89 @@ describe CloudhsmKeyGenerator do
 
   describe '#generate_saml_key' do
     it 'generates saml secret key, crt, and transcript' do
-      label = subject.generate_saml_key
+      greenletters = mock_cloudhsm
+      label, handle = subject.generate_saml_key
       saml_key = "#{label}.key"
       saml_crt = "#{label}.crt"
       transcript = "#{label}.txt"
+      secrets_fn = "#{label}.scr"
 
+      expect(greenletters).to have_received(:<<).
+        with("loginHSM -u CU -s #{key_owner_name} -p #{key_owner_password}\n").once
+      expect(greenletters).to have_received(:<<).
+        with("genSymKey -t 31 -s 16 -sess -l wrapping_key_for_import\n").once
+      expect(greenletters).to have_received(:<<).
+        with("importPrivateKey -f #{label}.key -l #{label} -w #{wrapping_key}\n").once
+      expect(greenletters).to have_received(:<<).with("exit\n").once
+
+      expect(handle).to eq(key_handle)
       expect(File.exist?(saml_key)).to eq(true)
       expect(File.exist?(saml_crt)).to eq(true)
       expect(File.exist?(transcript)).to eq(true)
 
-      subject.cleanup
+      expect(File.read(secrets_fn)).
+        to eq("#{key_owner_name}:#{key_owner_password}:#{key_handle}:#{share_with_username}\n")
+      cleanup(label)
     end
 
     it 'raises an error if the openssl call fails' do
       allow_any_instance_of(CloudhsmKeyGenerator).to receive(:user_input).and_return(__FILE__)
-      expect { subject.generate_saml_key }.to raise_error(RuntimeError, 'Call to openssl failed')
+
+      label = nil
+      expect do
+        label, _handle = subject.generate_saml_key
+      end.to raise_error(RuntimeError, 'Call to openssl failed')
+
+      cleanup(label)
     end
 
     it 'raises an error if the openssl.conf is not found' do
-      allow_any_instance_of(CloudhsmKeyGenerator).to receive(:user_input).and_return('filenotfound')
+      allow_any_instance_of(CloudhsmKeyGenerator).to receive(:user_input).
+        and_return(key_owner_name, 'bad_filename', share_with_username)
 
-      expect { subject.generate_saml_key }.to raise_error(RuntimeError, 'openssl.conf not found')
+      label = nil
+      expect { label, _handle = subject.generate_saml_key }.
+        to raise_error(RuntimeError, 'openssl.conf not found at (bad_filename)')
+
+      cleanup(label)
     end
 
     it 'creates a saml key label with a 12 digit timestamp' do
-      label = subject.generate_saml_key
+      label, _handle = subject.generate_saml_key
 
       expect(label =~ /\d{1,12}/).to_not be_nil
 
-      subject.cleanup
-    end
-  end
-
-  describe '#cleanup' do
-    it 'removes all the files if we request cleanup' do
-      label = subject.generate_saml_key
-      subject.cleanup
-
-      saml_key = "#{label}.key"
-      saml_crt = "#{label}.crt"
-      transcript = "#{label}.txt"
-      expect(File.exist?(saml_key)).to eq(false)
-      expect(File.exist?(saml_crt)).to eq(false)
-      expect(File.exist?(transcript)).to eq(false)
+      cleanup(label)
     end
   end
 
   def mock_cloudhsm
-    allow(STDIN).to receive(:noecho).and_return('password')
-    allow_any_instance_of(Greenletters::Process).to receive(:wait_for).and_return(true)
-    allow_any_instance_of(Greenletters::Process).to receive(:<<).and_return(true)
+    allow(STDIN).to receive(:noecho).and_return(key_owner_password)
+
+    greenletters = instance_double(Greenletters::Process)
+    allow(Greenletters::Process).to receive(:new).and_return(greenletters)
+    allow(greenletters).to receive(:start!).and_return(true)
+    allow(greenletters).to receive(:wait_for).and_return(true)
+    allow(greenletters).to receive(:<<).and_return(true)
+    allow(greenletters).to receive(:wait_for).with(:output, /Key Handle: \d+/).
+      and_yield(nil, StringScanner.new(''))
+    allow_any_instance_of(StringScanner).to receive(:matched).
+      and_return("Key Handle: #{wrapping_key}\n", "Key Handle: #{key_handle}\n")
+
     allow_any_instance_of(CloudhsmKeyGenerator).to receive(:user_input).
-      and_return('config/openssl.conf')
+      and_return(key_owner_name, 'config/openssl.conf', share_with_username)
+
+    greenletters
+  end
+
+  def cleanup(label)
+    safe_delete("#{label}.crt")
+    safe_delete("#{label}.txt")
+    safe_delete("#{label}.key")
+    safe_delete("#{label}.scr")
+  end
+
+  def safe_delete(fn)
+    File.delete(fn) if File.exist?(fn)
   end
 end
