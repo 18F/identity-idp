@@ -33,5 +33,6 @@ fr:
         e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
       create_account_link: créer votre nouveau compte login.gov
       create_account_page:
-        body: ''
+        body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
+          avez utilisée pour USAJOBS.
       header: Êtes-vous venu(e) de USAJOBS?

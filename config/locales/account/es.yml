@@ -1,6 +1,8 @@
 ---
 es:
   account:
+    connected_apps:
+      associated: Asociado
     index:
       address: Dirección actual
       auth_app_disabled: no permitido
@@ -23,7 +25,6 @@ es:
         instructions: Su cuenta requiere que un código secreto sea verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Su cuenta ha sido verificada.
-        with_phone_button: Verifique con su teléfono.
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal

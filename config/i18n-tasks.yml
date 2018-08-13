@@ -115,11 +115,12 @@ ignore_unused:
   - 'headings.piv_cac_setup.*'
   - 'idv.errors.pattern_mismatch.*'
   - 'idv.messages.jurisdiction.{no_id,unsupported_jurisdiction}_failure'
+  - 'jobs.sms_otp_sender_job.login_message'
+  - 'jobs.sms_otp_sender_job.verify_message'
   - 'simple_form.*'
   - 'time.*'
   - 'titles.piv_cac_setup.*'
   - 'valid_email.validations.email.invalid'
-
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

@@ -8,5 +8,9 @@ fr:
         sera être traité en 24 heures. Si vous ne souhaitez pas supprimer votre compte,
         veuillez cancel: %{cancel_link}'
     sms_otp_sender_job:
-      message: "%{code} est votre %{app} code de sécurité à utilisation unique. Ce
-        code expirera dans %{expiration} minutes."
+      login_message: "%{code} est votre code de sécurité %{app}. Utilisez-le pour
+        continuer à vous connecter à votre compte. Ce code expirera dans %{expiration}
+        minutes."
+      verify_message: "%{code} est votre code de confirmation %{app}. Utilisez-le
+        pour confirmer votre numéro de téléphone. Ce code expirera dans %{expiration}
+        minutes."

@@ -80,7 +80,6 @@ describe Deploy::Activate do
 
     it 'uses a default logger with a progname' do
       subject = Deploy::Activate.new(s3_client: s3_client)
-      subject.run
 
       expect(subject.logger.progname).to eq('deploy/activate')
     end

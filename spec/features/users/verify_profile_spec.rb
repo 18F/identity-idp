@@ -9,7 +9,6 @@ feature 'verify profile with OTP' do
       :profile,
       deactivation_reason: :verification_pending,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '703-555-9999' },
-      phone_confirmed: phone_confirmed,
       user: user
     )
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
@@ -17,11 +16,13 @@ feature 'verify profile with OTP' do
   end
 
   context 'USPS letter' do
-    let(:phone_confirmed) { false }
-
-    scenario 'profile phone not confirmed' do
+    scenario 'valid OTP' do
       sign_in_live_with_2fa(user)
-      expect(page).to have_link(t('idv.buttons.cancel'), href: account_path)
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      expect(page).to have_content(t('account.index.verification.success'))
+      expect(page).to have_current_path(account_path)
     end
 
     scenario 'OTP has expired' do
@@ -43,22 +44,6 @@ feature 'verify profile with OTP' do
       expect(current_path).to eq verify_account_path
       expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
       expect(page.body).to_not match('the wrong code')
-    end
-  end
-
-  context 'profile phone confirmed' do
-    let(:phone_confirmed) { true }
-
-    before do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    end
-
-    scenario 'not yet verified with user' do
-      sign_in_live_with_2fa(user)
-      click_submit_default
-
-      expect(current_path).to eq account_path
-      expect(page).to_not have_content(t('account.index.verification.with_phone_button'))
     end
   end
 end

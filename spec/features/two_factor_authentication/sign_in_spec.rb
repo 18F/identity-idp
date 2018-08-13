@@ -35,6 +35,7 @@ feature 'Two Factor Authentication' do
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
+      expect(user.reload.phone_configuration).to be_nil
       expect(user.sms?).to eq true
     end
 
@@ -122,6 +123,7 @@ feature 'Two Factor Authentication' do
           code: user.reload.direct_otp,
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.verify_message',
           locale: 'ar'
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -557,6 +559,7 @@ feature 'Two Factor Authentication' do
           code: user.reload.direct_otp,
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
+          message: 'jobs.sms_otp_sender_job.login_message',
           locale: 'ar'
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')

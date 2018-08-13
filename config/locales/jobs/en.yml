@@ -8,5 +8,7 @@ en:
         be processed in 24 hours. If you don’t want to delete your account, please
         cancel: %{cancel_link}'
     sms_otp_sender_job:
-      message: "%{code} is your %{app} one-time security code. This code will expire
-        in %{expiration} minutes."
+      login_message: "%{code} is your %{app} security code. Use this to continue signing
+        in to your account. This code will expire in %{expiration} minutes."
+      verify_message: "%{code} is your %{app} confirmation code. Use this to confirm
+        your phone number. This code will expire in %{expiration} minutes."

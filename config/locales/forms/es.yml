@@ -18,6 +18,7 @@ es:
         update: Actualización
     confirmation:
       show_hdr: Crear una contraseña segura
+    example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador por %{duration} días
     passwords:

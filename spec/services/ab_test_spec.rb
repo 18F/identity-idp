@@ -35,7 +35,8 @@ RSpec.describe AbTest do
 
       it 'it returns true or false for a new session' do
         enabled = ab_test.enabled?({}, true)
-        expect(enabled == true || enabled == false).to eq(true)
+
+        expect([false, true].include?(enabled)).to eq(true)
       end
 
       it 'it returns the same value for the next session' do

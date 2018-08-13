@@ -46,6 +46,10 @@ fr:
         visiter le %{help_link} de %{app} ou %{contact_link}.
       intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
       subject: Nouveau numéro de téléphone
+    please_reset_password:
+      call_to_action: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+      subject: NOT TRANSLATED YET
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
         erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
