@@ -58,7 +58,7 @@ class AccountResetService
   def self.reset_and_notify(arr)
     user = arr.user
     return false unless AccountResetService.new(user).grant_request
-    UserMailer.account_reset_granted(user, arr).deliver_later
+    UserMailer.account_reset_granted(user, arr.reload).deliver_later
     true
   end
   private_class_method :reset_and_notify
