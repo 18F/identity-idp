@@ -58,7 +58,7 @@ describe UsersController do
       parser = instance_double(ParseControllerFromReferer)
 
       expect(ParseControllerFromReferer).to receive(:new).and_return(parser)
-      expect(parser).to receive(:call)
+      expect(parser).to receive(:call).and_return({})
 
       delete :destroy
     end
