@@ -58,7 +58,7 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#cancel'
+      get '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/report_fraud' => 'account_reset/report_fraud#update'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'

@@ -98,8 +98,7 @@ def deploy_to_int
   Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
     puts "Deploying the `stages/int` branch to the `int` environment"
     ENV['AWS_PROFILE'] = 'identitysandbox.gov'
-    run "bin/asg-recycle.sh int idp"
-    run "bin/asg-recycle.sh int worker"
+    run "bin/asg-recycle int idp"
   end
 
   remove_login_dot_gov_dir
@@ -111,8 +110,7 @@ def deploy_to_staging
   Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
     puts "Deploying the `stages/staging` branch to the `staging` environment"
     ENV['AWS_PROFILE'] = 'login.gov'
-    run "bin/asg-recycle.sh staging idp"
-    run "bin/asg-recycle.sh staging worker"
+    run "bin/asg-recycle staging idp"
   end
 
   remove_login_dot_gov_dir
@@ -124,8 +122,7 @@ def deploy_to_prod
   Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
     puts "Deploying the `stages/prod` branch to the `prod` environment"
     ENV['AWS_PROFILE'] = 'login.gov'
-    run "bin/asg-recycle.sh prod idp"
-    run "bin/asg-recycle.sh prod worker"
+    run "bin/asg-recycle prod idp"
   end
 
   remove_login_dot_gov_dir
