@@ -4,7 +4,9 @@ module Idv
 
     before_action :confirm_user_needs_usps_confirmation
 
-    def show; end
+    def show
+      analytics.track_event(Analytics::IDV_COME_BACK_LATER_VISIT)
+    end
 
     private
 

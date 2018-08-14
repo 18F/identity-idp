@@ -4,9 +4,7 @@ class ParseControllerFromReferer
   end
 
   def call
-    return 'no referer' if referer.nil?
-
-    controller_and_action_from_referer
+    { request_came_from: controller_and_action_from_referer }
   end
 
   private
@@ -14,6 +12,7 @@ class ParseControllerFromReferer
   attr_reader :referer
 
   def controller_and_action_from_referer
+    return 'no referer' if referer.nil?
     "#{controller_that_made_the_request}##{controller_action}"
   end
 

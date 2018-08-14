@@ -14,6 +14,10 @@ describe Idv::ComeBackLaterController do
 
   context 'user needs USPS address verification' do
     it 'renders the show template' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).with(Analytics::IDV_COME_BACK_LATER_VISIT)
+
       get :show
 
       expect(response).to render_template :show
