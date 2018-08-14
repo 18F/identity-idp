@@ -3,7 +3,13 @@ module Idv
     include IdvSession
     include TwoFactorAuthenticatable
 
+    # Skip TwoFactorAuthenticatable before action that depends on MFA contexts
+    # to redirect to account url for signed in users. This controller does not
+    # use or maintain MFA contexts
+    skip_before_action :check_already_authenticated
+
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_step_needed
     before_action :handle_locked_out_user
     before_action :confirm_otp_delivery_preference_selected
     before_action :confirm_otp_sent, only: %i[show update]
@@ -39,6 +45,11 @@ module Idv
     end
 
     private
+
+    def confirm_step_needed
+      return unless idv_session.user_phone_confirmation
+      redirect_to idv_review_url
+    end
 
     def handle_locked_out_user
       reset_attempt_count_if_user_no_longer_locked_out

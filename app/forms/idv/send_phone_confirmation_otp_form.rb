@@ -100,8 +100,6 @@ module Idv
         otp_delivery_preference: otp_delivery_preference,
         country_code: parsed_phone.country_code,
         area_code: parsed_phone.area_code,
-        max_requests_reached: otp_rate_limiter.max_requests_reached?,
-        rate_limit_period_expired: otp_rate_limiter.rate_limit_period_expired?,
         rate_limit_exceeded: rate_limit_exceeded?,
       }
     end
