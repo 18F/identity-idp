@@ -57,7 +57,6 @@ module Idv
 
     def send_otp
       idv_session.phone_confirmation_otp = PhoneConfirmationOtpGenerator.generate_otp
-      idv_session.phone_confirmation_otp_delivery_method = otp_delivery_preference
       idv_session.phone_confirmation_otp_sent_at = Time.zone.now.to_s
       if otp_delivery_preference == :sms
         send_sms_otp
