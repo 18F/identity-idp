@@ -37,7 +37,11 @@ describe Idv::JurisdictionController do
 
   describe '#create' do
     it 'tracks analytics' do
-      result = { success: true, errors: {} }
+      result = {
+        success: true,
+        errors: {},
+        state: supported_jurisdiction,
+      }
 
       post :create, params: { jurisdiction: { state: supported_jurisdiction } }
 
@@ -54,9 +58,18 @@ describe Idv::JurisdictionController do
 
     context 'with an unsupported jurisdiction' do
       it 'redirects to the unsupported jurisdiction fail page' do
+        result = {
+          success: false,
+          errors: { state: [t('idv.errors.unsupported_jurisdiction')] },
+          state: unsupported_jurisdiction,
+        }
+
         post :create, params: { jurisdiction: { state: unsupported_jurisdiction } }
 
         expect(response).to redirect_to(idv_jurisdiction_failure_url(:unsupported_jurisdiction))
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_JURISDICTION_FORM, result
+        )
       end
     end
 

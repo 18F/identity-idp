@@ -5,29 +5,26 @@ module Idv
 
     ATTRIBUTES = [:state].freeze
 
-    attr_accessor :state
+    attr_reader :state
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Jurisdiction')
     end
 
     def submit(params)
-      consume_params(params)
+      self.state = params[:state]
 
-      FormResponse.new(success: valid?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
     end
 
     private
 
-    def consume_params(params)
-      params.each do |key, value|
-        raise_invalid_jurisdiction_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-        send("#{key}=", value)
-      end
-    end
+    attr_writer :state
 
-    def raise_invalid_jurisdiction_parameter_error(key)
-      raise ArgumentError, "#{key} is an invalid jurisdiction attribute"
+    def extra_analytics_attributes
+      {
+        state: state,
+      }
     end
   end
 end
