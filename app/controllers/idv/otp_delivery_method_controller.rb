@@ -1,7 +1,6 @@
 module Idv
   class OtpDeliveryMethodController < ApplicationController
     include IdvSession
-    # include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_phone_step_complete
