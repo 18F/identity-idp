@@ -153,6 +153,7 @@ development:
     agency_id: 1
     redirect_uris:
       - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -633,7 +634,7 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-  
+
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
