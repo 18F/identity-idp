@@ -39,6 +39,7 @@ Vagrantfile
 /config/aws.yml
 /keys/*.key.enc
 !/keys/*.key.enc.example
+/keys/equifax_rsa
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
