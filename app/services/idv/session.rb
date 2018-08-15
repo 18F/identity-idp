@@ -129,7 +129,6 @@ module Idv
     def build_profile_maker(user_password)
       Idv::ProfileMaker.new(
         applicant: applicant_params,
-        phone_confirmed: vendor_phone_confirmation || false,
         user: current_user,
         user_password: user_password
       )

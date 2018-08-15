@@ -38,13 +38,14 @@ module Users
 
     def timeout
       analytics.track_event(Analytics::SESSION_TIMED_OUT)
+      request_id = sp_session[:request_id]
       sign_out
       flash[:notice] = t(
         'session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes
       )
-      redirect_to root_url
+      redirect_to root_url(request_id: request_id)
     end
 
     private

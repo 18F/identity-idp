@@ -52,7 +52,7 @@ module OpenidConnect
 
     def apply_secure_headers_override
       override_content_security_policy_directives(
-        form_action: ["'self'", authorization_params[:redirect_uri]].compact,
+        form_action: ["'self'", @authorize_form.sp_redirect_uri].compact,
         preserve_schemes: true
       )
     end
@@ -62,8 +62,6 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
-      user_session[:openid_auth_request] = authorization_params if user_session
-
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
 
       @authorize_decorator = OpenidConnectAuthorizeDecorator.new(

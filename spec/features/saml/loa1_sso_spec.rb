@@ -81,7 +81,7 @@ feature 'LOA1 Single Sign On' do
     it 'user can view and confirm personal key during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
-      code = 'ABC1-DEF2-GHI3-JKL4'
+      code = 'ABC1-DEF2-GH13-JK14'
       stub_personal_key(user: user, code: code)
 
       loa1_sp_session
@@ -90,6 +90,25 @@ feature 'LOA1 Single Sign On' do
 
       click_on(t('forms.buttons.continue'))
       enter_personal_key_words_on_modal(code)
+      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+
+      expect(current_path).to eq sign_up_completed_path
+    end
+
+    it 'coerces invalid characters into their Crockford Base32 equivalents', :js do
+      displayed_personal_key = '0000-1111-1111-1234'
+      misread_personal_key = 'ooOO-iiII-llLL-1234'
+
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = create(:user, :with_phone)
+      stub_personal_key(user: user, code: displayed_personal_key)
+
+      loa1_sp_session
+      sign_in_and_require_viewing_personal_key(user)
+      expect(current_path).to eq sign_up_personal_key_path
+
+      click_on(t('forms.buttons.continue'))
+      enter_personal_key_words_on_modal(misread_personal_key)
       click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
 
       expect(current_path).to eq sign_up_completed_path
@@ -119,8 +138,10 @@ feature 'LOA1 Single Sign On' do
 
       visit saml_authn_request
       sp_request_id = ServiceProviderRequest.last.uuid
-      page.set_rack_session(sp: {})
-      visit new_user_session_url(request_id: sp_request_id)
+
+      visit timeout_path
+      expect(current_url).to eq root_url(request_id: sp_request_id)
+
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue

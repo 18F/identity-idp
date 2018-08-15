@@ -3,6 +3,7 @@ Attribute:
 ControlParameter:
   exclude:
     - CustomDeviseFailureApp#i18n_message
+    - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
     - PhoneFormatter#self.format
     - Users::TwoFactorAuthenticationController#invalid_phone_number
@@ -88,8 +89,10 @@ TooManyConstants:
 TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
+    - OpenidConnectRedirector
     - Idv::VendorResult
     - CloudhsmKeyGenerator
+    - CloudhsmKeySharer
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -123,6 +126,7 @@ TooManyMethods:
     - SessionDecorator
     - HolidayService
     - PhoneDeliveryPresenter
+    - CloudhsmKeyGenerator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

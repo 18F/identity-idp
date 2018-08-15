@@ -56,7 +56,6 @@ feature 'idv usps step', :idv_job do
 
       expect(profile.active?).to eq false
       expect(profile.deactivation_reason).to eq 'verification_pending'
-      expect(profile.phone_confirmed).to eq false
     end
   end
 

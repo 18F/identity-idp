@@ -92,12 +92,8 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uris.present? && valid_oidc_request?
-      URIService.add_params(
-        oidc_redirect_uri,
-        error: 'access_denied',
-        state: request_params[:state]
-      )
+    if sp.redirect_uris.present? && openid_connect_redirector.valid?
+      openid_connect_redirector.decline_redirect_uri
     else
       sp.return_to_sp_url
     end
@@ -131,19 +127,7 @@ class ServiceProviderSessionDecorator
     sp_session[:request_url] || service_provider_request.url
   end
 
-  def valid_oidc_request?
-    authorize_form .valid?
-  end
-
-  def authorize_form
-    OpenidConnectAuthorizeForm.new(request_params)
-  end
-
-  def oidc_redirect_uri
-    request_params[:redirect_uri]
-  end
-
-  def request_params
-    @request_params ||= URIService.params(request_url)
+  def openid_connect_redirector
+    @_openid_connect_redirector ||= OpenidConnectRedirector.from_request_url(request_url)
   end
 end

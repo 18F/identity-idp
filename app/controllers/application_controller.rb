@@ -126,7 +126,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    user_session[:stored_location] || sp_session[:request_url] || signed_in_url
+    user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
   end
 
   def signed_in_url
