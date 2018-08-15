@@ -113,6 +113,5 @@ end
 
 group :production do
   gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.1.0'
-  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
   gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.1.0'
 end
