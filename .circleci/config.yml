@@ -77,7 +77,6 @@ jobs:
             cp certs/saml2018.crt.example certs/saml2018.crt
             cp keys/saml.key.enc.example keys/saml.key.enc
             cp keys/saml2018.key.enc.example keys/saml2018.key.enc
-            bin/generate-example-keys
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile
 

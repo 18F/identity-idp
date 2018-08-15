@@ -111,17 +111,6 @@ development:
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
-  equifax_avs_username: 'sekret'
-  equifax_development_example_gpg_passphrase: 'sekret'
-  equifax_eid_username: 'sekret'
-  equifax_endpoint: 'sekret'
-  equifax_gpg_email: 'logs@login.gov'
-  equifax_password: 'sekret'
-  equifax_phone_username: 'sekret'
-  equifax_sftp_directory: '/directory'
-  equifax_sftp_host: 'example.com'
-  equifax_sftp_username: 'user'
-  equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -235,17 +224,6 @@ production:
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
-  equifax_avs_username:
-  equifax_development_example_gpg_passphrase:
-  equifax_eid_username:
-  equifax_endpoint:
-  equifax_gpg_email:
-  equifax_password:
-  equifax_phone_username:
-  equifax_sftp_directory: # '/directory'
-  equifax_sftp_host: # 'example.com'
-  equifax_sftp_username:
-  equifax_ssh_passphrase:
   exception_recipients: 'user1@example.com,user2@example.com'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
@@ -360,17 +338,6 @@ test:
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
-  equifax_avs_username: 'sekret'
-  equifax_development_example_gpg_passphrase: 'sekret'
-  equifax_eid_username: 'sekret'
-  equifax_endpoint: 'sekret'
-  equifax_gpg_email: 'logs@login.gov'
-  equifax_password: 'sekret'
-  equifax_phone_username: 'sekret'
-  equifax_sftp_directory: '/directory'
-  equifax_sftp_host: 'example.com'
-  equifax_sftp_username: 'user'
-  equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'

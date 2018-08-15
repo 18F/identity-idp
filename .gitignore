@@ -40,8 +40,8 @@ Vagrantfile
 /keys/*.key.enc
 !/keys/*.key.enc.example
 /keys/equifax_rsa
-/keys/equifax_rsa.pub
 /keys/equifax_gpg.pub.bin
+/keys/equifax_rsa.pub
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
