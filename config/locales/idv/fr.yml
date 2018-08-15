@@ -162,7 +162,7 @@ fr:
         id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
         id_information_subtitle: Informations d'identification
         no_pii: TRUQUÉ N'utilisez pas de véritables données personnelles (il s'agit
-          d'une TRUQUÉ démonstration seulement)
+          d'une démonstration seulement) TRUQUÉ
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
           vos informations personnelles. Nous faisons cela pour nous assurer que personne
           d'autre ne puisse accéder à vos informations.

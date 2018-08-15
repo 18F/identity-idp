@@ -203,12 +203,12 @@ describe 'FeatureManagement', type: :feature do
     end
 
     context 'when the host is not secure.login.gov and the Rails env is not in production' do
-      it 'displays the fake banner' do
+      it 'does not display the fake banner' do
         allow(Figaro.env).to receive(:domain_name).
           and_return('test.login.gov')
         allow(Rails.env).to receive(:production?).
           and_return(false)
-        expect(FeatureManagement.fake_banner_mode?).to eq(true)
+        expect(FeatureManagement.fake_banner_mode?).to eq(false)
       end
     end
   end
