@@ -16,6 +16,16 @@ FactoryBot.define do
       end
     end
 
+    after :stub do |user|
+      if user.phone
+        user.phone_configuration = build_stubbed(:phone_configuration,
+                                                 user: user,
+                                                 phone: user.phone,
+                                                 confirmed_at: user.phone_confirmed_at,
+                                                 delivery_preference: user.otp_delivery_preference)
+      end
+    end
+
     trait :with_phone do
       phone '+1 202-555-1212'
       phone_confirmed_at Time.zone.now

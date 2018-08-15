@@ -61,7 +61,7 @@ feature 'Phone confirmation during sign up' do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       select_2fa_option('sms')
-      fill_in 'user_phone_form_phone', with: @existing_user.phone
+      fill_in 'user_phone_form_phone', with: @existing_user.phone_configuration.phone
       click_send_security_code
     end
 

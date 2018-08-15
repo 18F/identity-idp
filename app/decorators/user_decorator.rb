@@ -36,7 +36,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.phone)
+    masked_number(user.phone_configuration&.phone)
   end
 
   def active_identity_for(service_provider)

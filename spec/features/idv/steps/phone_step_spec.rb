@@ -19,7 +19,7 @@ feature 'idv phone step', :idv_job do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(user.phone)
+      fill_out_phone_form_ok(user.phone_configuration.phone)
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.session.review'))

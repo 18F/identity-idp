@@ -68,7 +68,7 @@ class User < ApplicationRecord
   end
 
   def phone_enabled?
-    phone.present?
+    phone_configuration&.mfa_enabled?
   end
 
   def two_factor_enabled?

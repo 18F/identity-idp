@@ -1,9 +1,12 @@
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include UserEagerLoading
 
     before_action :confirm_two_factor_enabled
     before_action :confirm_voice_capability, only: [:show]
+
+    load_current_user with: [:phone_configuration], only: [:create]
 
     def show
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
@@ -40,7 +43,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      current_user.phone_enabled?
+      current_user.phone_configuration&.mfa_enabled?
     end
 
     def confirm_voice_capability

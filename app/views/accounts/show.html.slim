@@ -36,7 +36,7 @@ h1.hide = t('titles.account')
 
   = render 'account_item',
     name: t('account.index.phone'),
-    content: current_user.phone,
+    content: current_user.phone_configuration&.phone,
     path: manage_phone_path,
     action: @view_model.edit_action_partial
 
