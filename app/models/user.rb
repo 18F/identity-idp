@@ -56,11 +56,11 @@ class User < ApplicationRecord
   end
 
   def piv_cac_enabled?
-    FeatureManagement.piv_cac_enabled? && x509_dn_uuid.present?
+    PivCacLoginOptionPolicy.new(self).enabled?
   end
 
   def piv_cac_available?
-    piv_cac_enabled? || identities.any?(&:piv_cac_available?)
+    PivCacLoginOptionPolicy.new(self).available?
   end
 
   def need_two_factor_authentication?(_request)
