@@ -182,10 +182,8 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '.fake_banner_mode?' do
-    subject(:fake_banner_mode?) { FeatureManagement.fake_banner_mode? }
-
-    context 'fake banner mode in production' do
-      it 'returns true' do
+    context 'when on secure.login.gov' do
+      it 'does not display the fake banner' do
         allow(Figaro.env).to receive(:domain_name).
           and_return('secure.login.gov')
         allow(Rails.env).to receive(:production?).
@@ -194,13 +192,24 @@ describe 'FeatureManagement', type: :feature do
       end
     end
 
-    context 'fake Banner mode in test'
-    it 'returns true' do
-      allow(Figaro.env).to receive(:domain_name).
-        and_return('test.login.gov')
-      allow(Rails.env).to receive(:production?).
-        and_return(true)
-      expect(FeatureManagement.fake_banner_mode?).to eq(true)
+    context 'when the host is not secure.login.gov and the Rails env is production' do
+      it 'displays the fake banner' do
+        allow(Figaro.env).to receive(:domain_name).
+          and_return('test.login.gov')
+        allow(Rails.env).to receive(:production?).
+          and_return(true)
+        expect(FeatureManagement.fake_banner_mode?).to eq(true)
+      end
+    end
+
+    context 'when the host is not secure.login.gov and the Rails env is not in production' do
+      it 'displays the fake banner' do
+        allow(Figaro.env).to receive(:domain_name).
+          and_return('test.login.gov')
+        allow(Rails.env).to receive(:production?).
+          and_return(false)
+        expect(FeatureManagement.fake_banner_mode?).to eq(true)
+      end
     end
   end
 
