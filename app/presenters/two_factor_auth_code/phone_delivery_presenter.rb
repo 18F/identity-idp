@@ -33,8 +33,6 @@ module TwoFactorAuthCode
       locale = LinkLocaleResolver.locale
       if confirmation_for_phone_change || reauthn
         account_path(locale: locale)
-      elsif confirmation_for_idv
-        idv_cancel_path(locale: locale)
       else
         sign_out_path(locale: locale)
       end
@@ -50,7 +48,6 @@ module TwoFactorAuthCode
       :account_reset_token,
       :confirmation_for_phone_change,
       :voice_otp_delivery_unsupported,
-      :confirmation_for_idv
     )
 
     def account_reset_link

@@ -38,6 +38,7 @@ module OpenidConnect
     end
 
     def profile_or_identity_needs_verification?
+      return unless @authorize_form.loa3_requested?
       profile_needs_verification? || identity_needs_verification?
     end
 

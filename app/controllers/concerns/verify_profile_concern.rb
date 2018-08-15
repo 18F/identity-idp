@@ -10,7 +10,6 @@ module VerifyProfileConcern
   end
 
   def account_or_verify_profile_route
-    return 'account' if idv_context? || profile_context?
     return 'account' unless profile_needs_verification?
     'verify_account'
   end

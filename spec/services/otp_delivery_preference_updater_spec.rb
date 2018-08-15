@@ -40,38 +40,6 @@ describe OtpDeliveryPreferenceUpdater do
       end
     end
 
-    context 'with idv context' do
-      context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
-        it 'does not update the user' do
-          user = build_stubbed(:user, otp_delivery_preference: 'sms')
-          updater = OtpDeliveryPreferenceUpdater.new(
-            user: user,
-            preference: 'sms',
-            context: 'idv'
-          )
-
-          expect(UpdateUser).to_not receive(:new)
-
-          updater.call
-        end
-      end
-
-      context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
-        it 'does not update the user' do
-          user = build_stubbed(:user, otp_delivery_preference: 'voice')
-          updater = OtpDeliveryPreferenceUpdater.new(
-            user: user,
-            preference: 'sms',
-            context: 'idv'
-          )
-
-          expect(UpdateUser).to_not receive(:new)
-
-          updater.call
-        end
-      end
-    end
-
     context 'when user is nil' do
       it 'does not update the user' do
         updater = OtpDeliveryPreferenceUpdater.new(

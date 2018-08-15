@@ -22,7 +22,6 @@ describe Idv::ConfirmationsController do
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
-    allow(subject).to receive(:user_session).and_return(context: 'idv')
   end
 
   let(:password) { 'sekrit phrase' }
