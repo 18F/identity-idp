@@ -5,8 +5,7 @@ h1.h3.my0 = @presenter.heading
 p.mt-tiny.mb0 = @presenter.info
 = simple_form_for(@user_phone_form,
     html: { autocomplete: 'off', role: 'form' },
-    data: { unsupported_area_codes: unsupported_area_codes,
-      international_phone_form: true },
+    data: { international_phone_form: true },
     method: :patch,
     url: phone_setup_path) do |f|
   .sm-col-8.js-intl-tel-code-select
