@@ -16,7 +16,7 @@ Referer: <%= @request.referer %>
 <% session['user_return_to'] = session['user_return_to']&.split('?')&.first %>
 Session: <%= session %>
 
-<% user = @kontroller.analytics_user %>
+<% user = @kontroller.analytics_user || AnonymousUser.new %>
 User UUID: <%= user.uuid %>
 User's Country (based on phone): <%= Phonelib.parse(user.phone).country %>
 

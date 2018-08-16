@@ -1,16 +1,12 @@
 require 'rails_helper'
 
 describe AccountResetService do
-  include Rails.application.routes.url_helpers
+  include AccountResetHelper
 
   let(:user) { create(:user) }
   let(:subject) { AccountResetService.new(user) }
   let(:user2) { create(:user) }
   let(:subject2) { AccountResetService.new(user2) }
-
-  before do
-    allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return('1')
-  end
 
   describe '#create_request' do
     it 'creates a new account reset request on the user' do
@@ -31,31 +27,6 @@ describe AccountResetService do
       expect(arr.cancelled_at).to be_nil
       expect(arr.granted_at).to be_nil
       expect(arr.granted_token).to be_nil
-    end
-  end
-
-  describe '#cancel_request' do
-    it 'removes tokens from a account reset request' do
-      subject.create_request
-      cancel = AccountResetService.cancel_request(user.account_reset_request.request_token)
-      arr = AccountResetRequest.find_by(user_id: user.id)
-      expect(arr.request_token).to_not be_present
-      expect(arr.granted_token).to_not be_present
-      expect(arr.requested_at).to be_present
-      expect(arr.cancelled_at).to be_present
-      expect(arr).to eq(cancel)
-    end
-
-    it 'does not raise an error for a cancel request with a blank token' do
-      AccountResetService.cancel_request('')
-    end
-
-    it 'does not raise an error for a cancel request with a nil token' do
-      AccountResetService.cancel_request('')
-    end
-
-    it 'does not raise an error for a cancel request with a bad token' do
-      AccountResetService.cancel_request('ABC')
     end
   end
 
@@ -112,7 +83,7 @@ describe AccountResetService do
 
       it 'does not send notifications when the request was cancelled' do
         subject.create_request
-        AccountResetService.cancel_request(AccountResetRequest.all[0].request_token)
+        cancel_request_for(user)
 
         after_waiting_the_full_wait_period do
           notifications_sent = AccountResetService.grant_tokens_and_send_notifications
@@ -152,7 +123,7 @@ describe AccountResetService do
 
       it 'does not send notifications when the request was cancelled' do
         subject.create_request
-        AccountResetService.cancel_request(AccountResetRequest.all[0].request_token)
+        cancel_request_for(user)
 
         notifications_sent = AccountResetService.grant_tokens_and_send_notifications
         expect(notifications_sent).to eq(0)
