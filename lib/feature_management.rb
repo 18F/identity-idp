@@ -81,8 +81,8 @@ class FeatureManagement
     ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(Figaro.env.domain_name)
   end
 
-  def self.no_pii_mode?
-    enable_identity_verification? && Figaro.env.profile_proofing_vendor == :mock
+  def self.fake_banner_mode?
+    Rails.env.production? && Figaro.env.domain_name != 'secure.login.gov'
   end
 
   def self.enable_saml_cert_rotation?
