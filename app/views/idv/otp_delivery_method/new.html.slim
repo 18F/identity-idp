@@ -1,8 +1,8 @@
 h1.h3.my0 = t('idv.titles.otp_delivery_method')
 p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
       phone: @idv_phone)
-= form_tag(idv_otp_delivery_method_url , method: 'put', autocomplete: 'off',
-    role: 'form', class: 'mt3') do |f|
+= form_tag(idv_otp_delivery_method_url, method: 'put', autocomplete: 'off',
+    role: 'form', class: 'mt3')
     fieldset.mb3.p0.border-none
       label.btn-border.col-12.mb1
         .radio
