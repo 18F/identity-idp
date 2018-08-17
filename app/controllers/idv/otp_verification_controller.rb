@@ -17,14 +17,12 @@ module Idv
     before_action :set_otp_verification_presenter, only: %i[show update]
 
     def new
-      result = send_phone_confirmation_otp_form.submit
+      result = send_phone_confirmation_otp_service.call
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
-      if result.success?
-        redirect_to idv_otp_verification_url
-      elsif send_phone_confirmation_otp_form.user_locked_out?
+      if send_phone_confirmation_otp_service.user_locked_out?
         handle_too_many_otp_sends
       else
-        redirect_to idv_otp_delivery_method_url
+        redirect_to idv_otp_verification_url
       end
     end
 
@@ -90,8 +88,8 @@ module Idv
       end
     end
 
-    def send_phone_confirmation_otp_form
-      @send_phone_confirmation_otp_form ||= SendPhoneConfirmationOtpForm.new(
+    def send_phone_confirmation_otp_service
+      @send_phone_confirmation_otp_form ||= SendPhoneConfirmationOtp.new(
         user: current_user,
         idv_session: idv_session,
         locale: user_locale

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SendPhoneConfirmationOtpForm do
+describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '2255555000' }
   let(:parsed_phone) { '+1 225-555-5000' }
   let(:otp_delivery_preference) { 'sms' }
@@ -30,12 +30,12 @@ describe Idv::SendPhoneConfirmationOtpForm do
 
   subject { described_class.new(user: user, idv_session: idv_session, locale: 'en') }
 
-  describe '#submit' do
+  describe '#call' do
     context 'with sms' do
       it 'sends an sms' do
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
-        result = subject.submit
+        result = subject.call
 
         expect(result.success?).to eq(true)
 
@@ -59,7 +59,7 @@ describe Idv::SendPhoneConfirmationOtpForm do
       it 'makes a phone call' do
         allow(VoiceOtpSenderJob).to receive(:perform_later)
 
-        result = subject.submit
+        result = subject.call
 
         expect(result.success?).to eq(true)
 
@@ -74,32 +74,6 @@ describe Idv::SendPhoneConfirmationOtpForm do
           locale: 'en'
         )
       end
-
-      context 'with a number that does not support voice' do
-        let(:phone) { '+81543543643' }
-        let(:parsed_phone) { '+81 54-354-3643' }
-
-        it 'sends an sms' do
-          allow(SmsOtpSenderJob).to receive(:perform_later)
-
-          result = subject.submit
-
-          expect(result.success?).to eq(true)
-
-          sent_at = Time.zone.parse(idv_session.phone_confirmation_otp_sent_at)
-
-          expect(idv_session.phone_confirmation_otp).to eq(phone_confirmation_otp)
-          expect(sent_at).to be_within(1.second).
-            of(Time.zone.now)
-          expect(SmsOtpSenderJob).to have_received(:perform_later).with(
-            otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-            code: phone_confirmation_otp,
-            phone: parsed_phone,
-            message: 'jobs.sms_otp_sender_job.verify_message',
-            locale: 'en'
-          )
-        end
-      end
     end
 
     context 'when the user has requested too many otps' do
@@ -111,24 +85,7 @@ describe Idv::SendPhoneConfirmationOtpForm do
         expect(VoiceOtpSenderJob).to_not receive(:perform_later)
         expect(VoiceOtpSenderJob).to_not receive(:perform_now)
 
-        result = subject.submit
-
-        expect(result.success?).to eq(false)
-        expect(idv_session.phone_confirmation_otp).to be_nil
-        expect(idv_session.phone_confirmation_otp_sent_at).to be_nil
-      end
-    end
-
-    context 'with an invalid delivery method' do
-      let(:otp_delivery_preference) { 'noise' }
-
-      it 'does not make a phone call or send an sms' do
-        expect(SmsOtpSenderJob).to_not receive(:perform_later)
-        expect(SmsOtpSenderJob).to_not receive(:perform_now)
-        expect(VoiceOtpSenderJob).to_not receive(:perform_later)
-        expect(VoiceOtpSenderJob).to_not receive(:perform_now)
-
-        result = subject.submit
+        result = subject.call
 
         expect(result.success?).to eq(false)
         expect(idv_session.phone_confirmation_otp).to be_nil
@@ -147,7 +104,7 @@ describe Idv::SendPhoneConfirmationOtpForm do
       let(:exceeded_otp_send_limit) { true }
 
       it 'returns true' do
-        subject.submit
+        subject.call
 
         expect(subject.user_locked_out?).to eq(true)
       end
@@ -155,7 +112,7 @@ describe Idv::SendPhoneConfirmationOtpForm do
 
     context 'the user is not locked out' do
       it 'returns false' do
-        subject.submit
+        subject.call
 
         expect(subject.user_locked_out?).to be_falsey
       end

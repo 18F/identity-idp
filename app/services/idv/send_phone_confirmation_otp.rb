@@ -1,11 +1,7 @@
 module Idv
-  # :reek:InstanceVariableAssumption
-  class SendPhoneConfirmationOtpForm
-    include ActiveModel::Model
-
+  # Ignore instance variable assumption on @user_locked_out :reek:InstanceVariableAssumption
+  class SendPhoneConfirmationOtp
     attr_accessor :user, :idv_session, :locale
-
-    validates :otp_delivery_preference, inclusion: { in: %i[sms voice] }
 
     def initialize(user:, idv_session:, locale:)
       self.user = user
@@ -13,18 +9,7 @@ module Idv
       self.locale = locale
     end
 
-    def submit
-      return handle_valid_otp_delivery_preference if valid?
-      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
-    end
-
-    def user_locked_out?
-      @user_locked_out
-    end
-
-    private
-
-    def handle_valid_otp_delivery_preference
+    def call
       otp_rate_limiter.reset_count_and_otp_last_sent_at if user.decorate.no_longer_locked_out?
 
       return too_many_otp_sends_response if rate_limit_exceeded?
@@ -34,6 +19,12 @@ module Idv
       send_otp
       FormResponse.new(success: true, errors: {}, extra: extra_analytics_attributes)
     end
+
+    def user_locked_out?
+      @user_locked_out
+    end
+
+    private
 
     def too_many_otp_sends_response
       FormResponse.new(
@@ -89,8 +80,7 @@ module Idv
     end
 
     def otp_delivery_preference
-      return :sms if PhoneNumberCapabilities.new(phone).sms_only?
-      @otp_delivery_preference ||= idv_session.phone_confirmation_otp_delivery_method.to_sym
+      idv_session.phone_confirmation_otp_delivery_method.to_sym
     end
 
     def extra_analytics_attributes

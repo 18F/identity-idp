@@ -45,15 +45,6 @@ describe Idv::OtpVerificationController do
       end
     end
 
-    context 'the delivery method is invalid' do
-      let(:phone_confirmation_otp_delivery_method) { 'noise' }
-
-      it 'redirects to the otp delivery method selection' do
-        get :new
-        expect(response).to redirect_to(idv_otp_delivery_method_path)
-      end
-    end
-
     it 'tracks an analytics event' do
       get :new
 
