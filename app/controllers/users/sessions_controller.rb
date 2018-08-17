@@ -7,6 +7,7 @@ module Users
 
     skip_before_action :session_expires_at, only: [:active]
     skip_before_action :require_no_authentication, only: [:new]
+    before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new]
     before_action :configure_permitted_parameters, only: [:new]
@@ -88,7 +89,6 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_active_profile
-      store_sp_metadata_in_session unless request_id.empty?
       redirect_to user_two_factor_authentication_url
     end
 
@@ -118,6 +118,7 @@ module Users
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         stored_location: session['user_return_to'],
+        sp_request_url_present: sp_session[:request_url].present?,
       }
 
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)
@@ -144,12 +145,12 @@ module Users
     end
 
     def store_sp_metadata_in_session
-      return if sp_session[:issuer]
+      return if sp_session[:issuer] || request_id.empty?
       StoreSpMetadataInSession.new(session: session, request_id: request_id).call
     end
 
     def request_id
-      params[:user].fetch(:request_id, '')
+      params.fetch(:request_id, '')
     end
   end
 end
