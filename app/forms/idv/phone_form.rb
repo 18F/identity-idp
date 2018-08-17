@@ -20,7 +20,7 @@ module Idv
       success = valid?
       update_idv_params(formatted_phone) if success
 
-      FormResponse.new(success: success, errors: errors.messages)
+      FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end
 
     private
@@ -50,6 +50,17 @@ module Idv
 
     def formatted_user_phone
       Phonelib.parse(user.phone).international
+    end
+
+    def parsed_phone
+      @parsed_phone ||= Phonelib.parse(phone)
+    end
+
+    def extra_analytics_attributes
+      {
+        country_code: parsed_phone.country,
+        area_code: parsed_phone.area_code,
+      }
     end
   end
 end

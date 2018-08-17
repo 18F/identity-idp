@@ -5,19 +5,17 @@ module Idv
 
     before_action :confirm_phone_step_complete
     before_action :confirm_step_needed
-    before_action :set_otp_delivery_method_presenter
-    before_action :set_otp_delivery_selection_form
+    before_action :idv_phone # Memoize to use ivar in the view
 
-    def new; end
+    def new
+      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+    end
 
     def create
-      result = @otp_delivery_selection_form.submit(otp_delivery_selection_params)
+      result = otp_delivery_selection_form.submit(otp_delivery_selection_params)
+      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
       if result.success?
-        prompt_to_confirm_phone(
-          phone: @otp_delivery_selection_form.phone,
-          context: 'idv',
-          selected_delivery_method: @otp_delivery_selection_form.otp_delivery_preference
-        )
+        prompt_to_confirm_idv_phone
       else
         render :new
       end
@@ -26,12 +24,24 @@ module Idv
     private
 
     def confirm_phone_step_complete
-      redirect_to idv_review_url if idv_session.vendor_phone_confirmation != true
+      redirect_to idv_phone_url if idv_session.vendor_phone_confirmation != true
     end
 
     def confirm_step_needed
       redirect_to idv_review_url if idv_session.address_verification_mechanism != 'phone' ||
                                     idv_session.user_phone_confirmation == true
+    end
+
+    def idv_phone
+      @idv_phone = PhoneFormatter.format(idv_session.params[:phone])
+    end
+
+    def prompt_to_confirm_idv_phone
+      prompt_to_confirm_phone(
+        phone: idv_phone,
+        context: 'idv',
+        selected_delivery_method: otp_delivery_selection_form.otp_delivery_preference
+      )
     end
 
     def otp_delivery_selection_params
@@ -40,18 +50,8 @@ module Idv
       )
     end
 
-    def set_otp_delivery_method_presenter
-      @set_otp_delivery_method_presenter = Idv::OtpDeliveryMethodPresenter.new(
-        idv_session.params[:phone]
-      )
-    end
-
-    def set_otp_delivery_selection_form
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(
-        current_user,
-        idv_session.params[:phone],
-        'idv'
-      )
+    def otp_delivery_selection_form
+      @otp_delivery_selection_form ||= Idv::OtpDeliveryMethodForm.new
     end
   end
 end
