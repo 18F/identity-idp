@@ -25,7 +25,7 @@ describe OtpDeliverySelectionForm do
         extra = {
           otp_delivery_preference: 'sms',
           resend: true,
-          country_code: '1',
+          country_code: 'US',
           area_code: '202',
           context: 'authentication',
         }
