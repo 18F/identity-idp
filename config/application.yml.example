@@ -308,6 +308,7 @@ test:
   account_reset_enabled: 'true'
   account_reset_token_valid_for_days: '1'
   account_reset_wait_period_days: '1'
+  allowed_domain_names: '["127.0.0.1", "example.com", "localhost"]'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)

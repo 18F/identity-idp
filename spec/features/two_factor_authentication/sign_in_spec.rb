@@ -715,19 +715,13 @@ feature 'Two Factor Authentication' do
     it 'renders the requested pages' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_link t('links.help')
-
-      expect(current_url).to eq MarketingSite.help_url
+      expect(find_link(t('links.help'))[:href]).to eq MarketingSite.help_url
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
-      click_link t('links.contact')
-
-      expect(current_url).to eq MarketingSite.contact_url
+      expect(find_link(t('links.contact'))[:href]).to eq MarketingSite.contact_url
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
-      click_link t('links.privacy_policy')
-
-      expect(current_url).to eq MarketingSite.privacy_url
+      expect(find_link(t('links.privacy_policy'))[:href]).to eq MarketingSite.privacy_url
     end
   end
 end
