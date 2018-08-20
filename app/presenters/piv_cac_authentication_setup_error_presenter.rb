@@ -1,6 +1,8 @@
 class PivCacAuthenticationSetupErrorPresenter < PivCacAuthenticationSetupBasePresenter
-  def error
-    form.error_type
+  attr_accessor :error
+
+  def initialize(error:)
+    @error = error
   end
 
   def may_select_another_certificate?

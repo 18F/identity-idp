@@ -46,9 +46,16 @@ module TwoFactorAuthentication
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      # create new nonce for retry
-      create_piv_cac_nonce
       handle_invalid_otp(type: 'piv_cac')
+    end
+
+    # This overrides the method in TwoFactorAuthenticatable so that we
+    # redirect back to ourselves rather than rendering the :show template.
+    # This removes the token from the address bar and preserves the error
+    # in the flash.
+    def render_show_after_invalid
+      flash[:error] = flash.now[:error]
+      redirect_to login_two_factor_piv_cac_url
     end
 
     def piv_cac_view_data
