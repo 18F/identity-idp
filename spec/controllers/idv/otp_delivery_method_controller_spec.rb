@@ -99,7 +99,7 @@ describe Idv::OtpDeliveryMethodController do
       it 'redirects to the otp send path for sms' do
         post :create, params: params
         expect(subject.idv_session.phone_confirmation_otp_delivery_method).to eq('sms')
-        expect(response).to redirect_to idv_send_phone_otp_path
+        expect(response).to redirect_to idv_otp_verification_path
       end
     end
 
@@ -115,7 +115,7 @@ describe Idv::OtpDeliveryMethodController do
       it 'redirects to the otp send path for voice' do
         post :create, params: params
         expect(subject.idv_session.phone_confirmation_otp_delivery_method).to eq('voice')
-        expect(response).to redirect_to idv_send_phone_otp_path
+        expect(response).to redirect_to idv_otp_verification_path
       end
     end
 
