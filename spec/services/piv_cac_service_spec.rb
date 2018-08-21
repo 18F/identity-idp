@@ -198,6 +198,7 @@ describe PivCacService do
 
     context 'with the agency not configured to be available' do
       before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar"]')
       end
 
@@ -206,6 +207,7 @@ describe PivCacService do
 
     context 'with the agency configured to be available' do
       before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar","foo"]')
       end
 
@@ -218,6 +220,7 @@ describe PivCacService do
 
     context 'with the agency not configured to be available' do
       before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar"]')
       end
 
@@ -226,6 +229,7 @@ describe PivCacService do
 
     context 'with the agency configured to be available' do
       before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar","foo"]')
       end
 

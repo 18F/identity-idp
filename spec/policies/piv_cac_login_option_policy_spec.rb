@@ -42,14 +42,6 @@ describe PivCacLoginOptionPolicy do
       it { expect(subject.available?).to be_truthy }
     end
 
-    context 'when available for the email' do
-      before(:each) do
-        allow(subject).to receive(:available_for_email?).and_return(true)
-      end
-
-      it { expect(subject.available?).to be_truthy }
-    end
-
     context 'when associated with a supported identity' do
       before(:each) do
         identity = double
