@@ -106,6 +106,7 @@ fr:
       max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
         temporairement verrouillé, car vous avez entré le code de sécurité à utilisation
         unique de façon erronée à de trop nombreuses reprises.
+      max_piv_cac_login_attempts_reached: NOT TRANSLATED YET
       otp_delivery_preference:
         instruction: Vous pouvez changer cette sélection la prochaine fois que vous
           vous connectez.
