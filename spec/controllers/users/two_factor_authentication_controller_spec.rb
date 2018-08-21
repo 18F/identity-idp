@@ -167,7 +167,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'sms',
           resend: nil,
           context: 'authentication',
-          country_code: '1',
+          country_code: 'US',
           area_code: '202',
         }
 
@@ -236,7 +236,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'voice',
           resend: nil,
           context: 'authentication',
-          country_code: '1',
+          country_code: 'US',
           area_code: '202',
         }
 
@@ -341,7 +341,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'sms',
           resend: nil,
           context: 'confirmation',
-          country_code: '1',
+          country_code: 'US',
           area_code: '202',
         }
         twilio_error = "[HTTP 400]  : error message\n\n"
@@ -379,7 +379,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'sms',
           resend: nil,
           context: 'confirmation',
-          country_code: '1',
+          country_code: 'US',
           area_code: '202',
         }
         twilio_error_hash = {

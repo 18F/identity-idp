@@ -3,8 +3,7 @@
 h1.h3.my0 = t('headings.edit_info.phone')
 = simple_form_for(@user_phone_form,
     html: { autocomplete: 'off', method: :put, role: 'form' },
-    data: { unsupported_area_codes: unsupported_area_codes,
-      international_phone_form: true },
+    data: { international_phone_form: true },
     url: manage_phone_path) do |f|
   .sm-col-8.js-intl-tel-code-select
     = f.input :international_code,

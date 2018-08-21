@@ -161,6 +161,7 @@ describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         stored_location: 'http://example.com',
+        sp_request_url_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -178,6 +179,7 @@ describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         stored_location: nil,
+        sp_request_url_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -193,6 +195,7 @@ describe Users::SessionsController, devise: true do
         user_id: 'anonymous-uuid',
         user_locked_out: false,
         stored_location: nil,
+        sp_request_url_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -214,12 +217,30 @@ describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: true,
         stored_location: nil,
+        sp_request_url_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
+    end
+
+    it 'tracks the presence of SP request_url in session' do
+      subject.session[:sp] = { request_url: 'http://example.com' }
+      stub_analytics
+      analytics_hash = {
+        success: false,
+        user_id: 'anonymous-uuid',
+        user_locked_out: false,
+        stored_location: nil,
+        sp_request_url_present: true,
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+
+      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
     context 'LOA1 user' do
@@ -281,6 +302,7 @@ describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           stored_location: nil,
+          sp_request_url_present: false,
         }
 
         expect(@analytics).to receive(:track_event).

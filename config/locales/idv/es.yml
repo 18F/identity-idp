@@ -152,7 +152,8 @@ es:
       sessions:
         id_information_message: como aparece en su identificación emitida por el estado
         id_information_subtitle: Información de identificación
-        no_pii: No utilice información personal real (sólo para propósitos de demostración)
+        no_pii: FALSO No utilice información personal real (sólo para propósitos de
+          demostración) FALSO
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
           su información.

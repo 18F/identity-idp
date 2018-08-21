@@ -1,17 +1,12 @@
 require 'rails_helper'
 
 describe PivCacAuthenticationSetupErrorPresenter do
-  let(:presenter) { described_class.new(form) }
-  let(:form) do
-    OpenStruct.new(
-      error_type: error
-    )
-  end
+  let(:presenter) { described_class.new(error: error) }
   let(:error) { 'certificate.none' }
 
   describe '#error' do
     it 'reflects the form' do
-      expect(presenter.error).to eq form.error_type
+      expect(presenter.error).to eq error
     end
   end
 

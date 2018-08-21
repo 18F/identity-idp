@@ -64,6 +64,7 @@ class Analytics
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
   IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
+  IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
@@ -74,6 +75,8 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'.freeze
   IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'.freeze
   IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'.freeze
+  IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'.freeze
+  IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze

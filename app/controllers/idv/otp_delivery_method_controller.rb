@@ -10,16 +10,17 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_phone_step_complete
-    before_action :handle_locked_out_user
     before_action :confirm_step_needed
-    before_action :set_otp_delivery_method_presenter
-    before_action :set_otp_delivery_selection_form
+    before_action :handle_locked_out_user
+    before_action :set_idv_phone
 
-    def new; end
+    def new
+      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+    end
 
     def create
-      result = @otp_delivery_selection_form.submit(otp_delivery_selection_params)
-      # TODO: analytics
+      result = otp_delivery_selection_form.submit(otp_delivery_selection_params)
+      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
       return render(:new) unless result.success?
       send_phone_confirmation_otp
     end
@@ -27,7 +28,7 @@ module Idv
     private
 
     def confirm_phone_step_complete
-      redirect_to idv_review_url if idv_session.vendor_phone_confirmation != true
+      redirect_to idv_phone_url if idv_session.vendor_phone_confirmation != true
     end
 
     def confirm_step_needed
@@ -42,23 +43,13 @@ module Idv
       false
     end
 
+    def set_idv_phone
+      @idv_phone = PhoneFormatter.format(idv_session.params[:phone])
+    end
+
     def otp_delivery_selection_params
       params.require(:otp_delivery_selection_form).permit(
         :otp_delivery_preference
-      )
-    end
-
-    def set_otp_delivery_method_presenter
-      @set_otp_delivery_method_presenter = Idv::OtpDeliveryMethodPresenter.new(
-        idv_session.params[:phone]
-      )
-    end
-
-    def set_otp_delivery_selection_form
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(
-        current_user,
-        idv_session.params[:phone],
-        'idv'
       )
     end
 
@@ -89,6 +80,10 @@ module Idv
     def user_locale
       available_locales = PhoneVerification::AVAILABLE_LOCALES
       http_accept_language.language_region_compatible_from(available_locales)
+    end
+
+    def otp_delivery_selection_form
+      @otp_delivery_selection_form ||= Idv::OtpDeliveryMethodForm.new
     end
   end
 end

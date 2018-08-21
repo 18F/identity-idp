@@ -1,6 +1,8 @@
 ---
 fr:
   shared:
+    fake_banner:
+      fake_site: Un site TRUQUÉ du gouvernement des États-Unis
     footer_lite:
       gsa: Administration des services généraux des États-Unis
     usa_banner:

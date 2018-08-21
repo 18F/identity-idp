@@ -152,7 +152,7 @@ en:
       sessions:
         id_information_message: as it appears on your state-issued ID
         id_information_subtitle: ID Information
-        no_pii: Do not use real personal information (demo purposes only)
+        no_pii: FAKE Do not use real personal information (demo purposes only) FAKE
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
         success: Next, we'll need a phone number.

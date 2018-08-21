@@ -29,6 +29,24 @@ describe 'layouts/application.html.slim' do
     end
   end
 
+  context 'when FeatureManagement.fake_banner_mode? is true' do
+    it 'displays the fake banner' do
+      allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(true)
+      render
+
+      expect(rendered).to have_content('FAKE')
+    end
+  end
+
+  context 'when FeatureManagement.fake_banner_mode? is false' do
+    it 'does not display the fake banner' do
+      allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(false)
+      render
+
+      expect(rendered).to_not have_content('FAKE')
+    end
+  end
+
   context 'when i18n mode enabled' do
     before do
       allow(FeatureManagement).to receive(:enable_i18n_mode?).and_return(true)

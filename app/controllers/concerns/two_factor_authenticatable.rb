@@ -54,7 +54,7 @@ module TwoFactorAuthenticatable
   def check_already_authenticated
     return unless initial_authentication_context?
 
-    redirect_to account_url if user_fully_authenticated?
+    redirect_to after_otp_verification_confirmation_url if user_fully_authenticated?
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out

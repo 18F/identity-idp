@@ -174,7 +174,7 @@ it into the "Index pattern" field, then click the "Next step" button.
 10. On `Step 2 of 2: Configure settings`, select `@timestamp` from the
 `Time Filter field name` dropdown, then click "Create index pattern".
 
-11. Create some more events on the IdP app
+11. Create some more events on the IdP app.
 
 12. Refresh the Kibana website. You should now see new events show up in the
 Discover section.
