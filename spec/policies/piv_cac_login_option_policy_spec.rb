@@ -60,56 +60,15 @@ describe PivCacLoginOptionPolicy do
       it { expect(subject.available?).to be_truthy }
     end
 
-    context 'when not enabled and not available for the email and not a supported identity' do
+    context 'when not enabled and not a supported identity' do
       before(:each) do
         identity = double
         allow(identity).to receive(:piv_cac_available?).and_return(false)
         allow(user).to receive(:identities).and_return([identity])
         allow(subject).to receive(:enabled?).and_return(false)
-        allow(subject).to receive(:available_for_email?).and_return(false)
       end
 
       it { expect(subject.available?).to be_falsey }
-    end
-  end
-
-  describe '#available_for_email?' do
-    let(:result) { subject.send(:available_for_email?) }
-
-    context 'with a configured parent domain' do
-      before(:each) do
-        allow(Figaro.env).to receive(:piv_cac_email_domains).and_return('[".example.com"]')
-      end
-
-      context 'and a supported email subdomain' do
-        let(:user) { build(:user, email: 'someone@foo.example.com') }
-
-        it { expect(result).to be_truthy }
-      end
-
-      context 'and a an email at that domain' do
-        let(:user) { build(:user, email: 'someone@example.com') }
-
-        it { expect(result).to be_falsey }
-      end
-    end
-
-    context 'with a configured full domain' do
-      before(:each) do
-        allow(Figaro.env).to receive(:piv_cac_email_domains).and_return('["example.com"]')
-      end
-
-      context 'and an email subdomain' do
-        let(:user) { build(:user, email: 'someone@foo.example.com') }
-
-        it { expect(result).to be_falsey }
-      end
-
-      context 'and a an email at that domain' do
-        let(:user) { build(:user, email: 'someone@example.com') }
-
-        it { expect(result).to be_truthy }
-      end
     end
   end
 end
