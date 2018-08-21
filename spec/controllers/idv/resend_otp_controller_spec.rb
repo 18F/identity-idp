@@ -52,7 +52,7 @@ describe Idv::ResendOtpController do
       }
 
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT,
+        Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT,
         expected_result
       )
     end

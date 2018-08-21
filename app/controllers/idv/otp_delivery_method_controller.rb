@@ -55,8 +55,8 @@ module Idv
 
     def send_phone_confirmation_otp
       save_delivery_preference_in_session
-      send_phone_confirmation_otp_service.call
-      # TODO: analytics
+      result = send_phone_confirmation_otp_service.call
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
       if send_phone_confirmation_otp_service.user_locked_out?
         handle_too_many_otp_sends
       else

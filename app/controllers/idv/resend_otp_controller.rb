@@ -15,7 +15,7 @@ module Idv
 
     def create
       result = send_phone_confirmation_otp_service.call
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT, result.to_h)
       if send_phone_confirmation_otp_service.user_locked_out?
         handle_too_many_otp_sends
       else
