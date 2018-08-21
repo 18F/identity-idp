@@ -1,17 +1,11 @@
 module Idv
   class OtpDeliveryMethodController < ApplicationController
     include IdvSession
-    include TwoFactorAuthenticatable
+    include PhoneOtpRateLimitable
 
-    # Skip TwoFactorAuthenticatable before action that depends on MFA contexts
-    # to redirect to account url for signed in users. This controller does not
-    # use or maintain MFA contexts
-    skip_before_action :check_already_authenticated
-
-    before_action :confirm_two_factor_authenticated
+    # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
     before_action :confirm_phone_step_complete
     before_action :confirm_step_needed
-    before_action :handle_locked_out_user
     before_action :set_idv_phone
 
     def new
@@ -34,13 +28,6 @@ module Idv
     def confirm_step_needed
       redirect_to idv_review_url if idv_session.address_verification_mechanism != 'phone' ||
                                     idv_session.user_phone_confirmation == true
-    end
-
-    def handle_locked_out_user
-      reset_attempt_count_if_user_no_longer_locked_out
-      return unless decorated_user.locked_out?
-      handle_second_factor_locked_user 'generic'
-      false
     end
 
     def set_idv_phone
