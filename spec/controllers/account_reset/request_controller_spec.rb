@@ -3,52 +3,122 @@ require 'rails_helper'
 describe AccountReset::RequestController do
   describe '#show' do
     it 'renders the page' do
-      sign_in_before_2fa
+      user = build(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
 
       get :show
 
       expect(response).to render_template(:show)
     end
 
-    it 'redirects to root without 2fa' do
+    it 'redirects to root if user not signed in' do
       get :show
 
       expect(response).to redirect_to root_url
     end
 
-    it 'redirects to phone setup url if 2fa not setup' do
-      user = create(:user)
-      sign_in_before_2fa(user)
+    it 'redirects to root if feature is not enabled' do
+      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
+      user = build(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
+
       get :show
 
-      expect(response).to redirect_to phone_setup_url
+      expect(response).to redirect_to root_url
+    end
+
+    it 'redirects to 2FA setup url if 2FA not set up' do
+      stub_sign_in_before_2fa
+      get :show
+
+      expect(response).to redirect_to two_factor_options_url
+    end
+
+    it 'logs the visit to analytics' do
+      user = build(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_RESET_VISIT)
+
+      get :show
     end
   end
 
   describe '#create' do
-    it 'logs the request in the analytics' do
-      TwilioService::Utils.telephony_service = FakeSms
-      sign_in_before_2fa
+    it 'logs totp user in the analytics' do
+      user = build(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
 
       stub_analytics
+      attributes = {
+        event: 'request',
+        sms_phone: false,
+        totp: true,
+        piv_cac: false,
+      }
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, event: :request)
+        with(Analytics::ACCOUNT_RESET, attributes)
 
       post :create
     end
 
-    it 'redirects to root without 2fa' do
+    it 'logs sms user in the analytics' do
+      TwilioService::Utils.telephony_service = FakeSms
+      user = build(:user, :signed_up)
+      stub_sign_in_before_2fa(user)
+
+      stub_analytics
+      attributes = {
+        event: 'request',
+        sms_phone: true,
+        totp: false,
+        piv_cac: false,
+      }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET, attributes)
+
+      post :create
+    end
+
+    it 'logs PIV/CAC user in the analytics' do
+      user = build(:user, :with_piv_or_cac)
+      stub_sign_in_before_2fa(user)
+
+      stub_analytics
+      attributes = {
+        event: 'request',
+        sms_phone: false,
+        totp: false,
+        piv_cac: true,
+      }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_RESET, attributes)
+
+      post :create
+    end
+
+    it 'redirects to root if user not signed in' do
       post :create
 
       expect(response).to redirect_to root_url
     end
 
-    it 'redirects to phone setup url if 2fa not setup' do
-      user = create(:user)
-      sign_in_before_2fa(user)
+    it 'redirects to root if feature is not enabled' do
+      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
+      user = build(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
+
       post :create
 
-      expect(response).to redirect_to phone_setup_url
+      expect(response).to redirect_to root_url
+    end
+
+    it 'redirects to 2FA setup url if 2FA not set up' do
+      stub_sign_in_before_2fa
+      post :create
+
+      expect(response).to redirect_to two_factor_options_url
     end
   end
 end

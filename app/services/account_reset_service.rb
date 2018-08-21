@@ -3,15 +3,6 @@ class AccountResetService
     @user_id = user.id
   end
 
-  def create_request
-    account_reset = account_reset_request
-    account_reset.update(request_token: SecureRandom.uuid,
-                         requested_at: Time.zone.now,
-                         cancelled_at: nil,
-                         granted_at: nil,
-                         granted_token: nil)
-  end
-
   def self.report_fraud(token)
     account_reset = token.blank? ? nil : AccountResetRequest.find_by(request_token: token)
     return false unless account_reset
