@@ -18,5 +18,4 @@ class PivCacLoginOptionPolicy
   private
 
   attr_reader :user
-
 end

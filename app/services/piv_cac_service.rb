@@ -35,7 +35,7 @@ module PivCacService
     private
 
     def available_for_agency?(agency)
-      return unless agency.present?
+      return if agency.blank?
       piv_cac_agencies = JSON.parse(Figaro.env.piv_cac_agencies || '[]')
       piv_cac_agencies.include?(agency)
     end
@@ -43,16 +43,15 @@ module PivCacService
     def available_for_email?(agency, email)
       return unless email.present? && agency_scoped_by_email?(agency)
 
-      piv_cac_email_domains = Figaro.env.piv_cac_email_domains
-      return if piv_cac_email_domains.blank?
+      piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
 
-      domain_list = JSON.parse(piv_cac_email_domains)
       (_, email_domain) = email.split(/@/, 2)
-      domain_list.any? { |supported_domain| domain_match?(email_domain, supported_domain) }
+      domains = JSON.parse(piv_cac_email_domains)
+      domains.any? { |supported_domain| domain_match?(email_domain, supported_domain) }
     end
 
     def agency_scoped_by_email?(agency)
-      return unless agency.present?
+      return if agency.blank?
 
       piv_cac_agencies_email_scope =
         JSON.parse(Figaro.env.piv_cac_agencies_scoped_by_email || '[]')

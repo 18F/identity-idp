@@ -231,7 +231,9 @@ describe PivCacService do
 
       context 'but not in the right email domain' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return('["example.com", "baz.example.com"]')
+          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return(
+            '["example.com", "baz.example.com"]'
+          )
         end
 
         it { expect(subject).to be_falsey }
