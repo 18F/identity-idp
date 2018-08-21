@@ -31,7 +31,7 @@ feature 'phone otp rate limiting', :idv_job do
       complete_idv_steps_before_phone_otp_verification_step(user)
 
       (max_attempts - 1).times do
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_on t('links.two_factor_authentication.get_another_code')
       end
 
       expect_max_otp_request_rate_limiting
@@ -53,7 +53,7 @@ feature 'phone otp rate limiting', :idv_job do
       choose_idv_otp_delivery_method_sms
 
       # nth attempt
-      click_link t('links.two_factor_authentication.get_another_code')
+      click_on t('links.two_factor_authentication.get_another_code')
 
       expect_max_otp_request_rate_limiting
     end

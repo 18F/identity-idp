@@ -16,7 +16,8 @@ p == @presenter.phone_number_message
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12'
   br
   br
-  = link_to(t('links.two_factor_authentication.get_another_code'), idv_send_phone_otp_path,
+  = button_to(t('links.two_factor_authentication.get_another_code'), idv_resend_otp_path,
+      method: :post,
       class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
       form_class: 'inline-block')
 

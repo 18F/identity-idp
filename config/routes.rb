@@ -188,7 +188,7 @@ Rails.application.routes.draw do
         put '/phone' => 'phone#create'
         get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
-        get '/phone_confirmation/send' => 'otp_verification#new', as: :send_phone_otp
+        post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
         get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
         put '/phone_confirmation' => 'otp_verification#update', as: :nil
         get '/review' => 'review#new'

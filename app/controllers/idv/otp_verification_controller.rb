@@ -11,20 +11,9 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_step_needed
     before_action :handle_locked_out_user
-    before_action :confirm_otp_delivery_preference_selected
-    before_action :confirm_otp_sent, only: %i[show update]
-    before_action :set_code, only: %i[show update]
-    before_action :set_otp_verification_presenter, only: %i[show update]
-
-    def new
-      result = send_phone_confirmation_otp_service.call
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
-      if send_phone_confirmation_otp_service.user_locked_out?
-        handle_too_many_otp_sends
-      else
-        redirect_to idv_otp_verification_url
-      end
-    end
+    before_action :confirm_otp_sent
+    before_action :set_code
+    before_action :set_otp_verification_presenter
 
     def show
       # memoize the form so the ivar is available to the view
@@ -56,18 +45,11 @@ module Idv
       false
     end
 
-    def confirm_otp_delivery_preference_selected
-      return if idv_session.params[:phone].present? &&
-                idv_session.phone_confirmation_otp_delivery_method.present?
-
-      redirect_to idv_otp_delivery_method_url
-    end
-
     def confirm_otp_sent
       return if idv_session.phone_confirmation_otp.present? &&
                 idv_session.phone_confirmation_otp_sent_at.present?
 
-      redirect_to idv_send_phone_otp_url
+      redirect_to idv_otp_delivery_method_url
     end
 
     def set_code
@@ -88,24 +70,11 @@ module Idv
       end
     end
 
-    def send_phone_confirmation_otp_service
-      @send_phone_confirmation_otp_form ||= SendPhoneConfirmationOtp.new(
-        user: current_user,
-        idv_session: idv_session,
-        locale: user_locale
-      )
-    end
-
     def phone_confirmation_otp_verification_form
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
         idv_session: idv_session
       )
-    end
-
-    def user_locale
-      available_locales = PhoneVerification::AVAILABLE_LOCALES
-      http_accept_language.language_region_compatible_from(available_locales)
     end
   end
 end
