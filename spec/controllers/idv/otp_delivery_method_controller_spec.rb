@@ -39,9 +39,9 @@ describe Idv::OtpDeliveryMethodController do
         subject.idv_session.vendor_phone_confirmation = false
       end
 
-      it 'redirects to the review controller' do
+      it 'redirects to the phone controller' do
         get :new
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_phone_path
       end
     end
 
@@ -50,6 +50,16 @@ describe Idv::OtpDeliveryMethodController do
         get :new
         expect(response).to render_template :new
       end
+    end
+
+    it 'tracks an analytics event' do
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+
+      get :new
+
+      expect(@analytics).to have_received(:track_event).
+        with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
     end
   end
 
@@ -89,9 +99,9 @@ describe Idv::OtpDeliveryMethodController do
         subject.idv_session.vendor_phone_confirmation = false
       end
 
-      it 'redirects to the review controller' do
+      it 'redirects to the phone controller' do
         post :create, params: params
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_phone_path
       end
     end
 
@@ -99,6 +109,22 @@ describe Idv::OtpDeliveryMethodController do
       it 'redirects to the otp send path for sms' do
         post :create, params: params
         expect(response).to redirect_to otp_send_path(params)
+      end
+
+      it 'tracks an analytics event' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        post :create, params: params
+
+        result = {
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
       end
     end
 
@@ -115,6 +141,22 @@ describe Idv::OtpDeliveryMethodController do
         post :create, params: params
         expect(response).to redirect_to otp_send_path(params)
       end
+
+      it 'tracks an analytics event' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        post :create, params: params
+
+        result = {
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'voice',
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
+      end
     end
 
     context 'form is invalid' do
@@ -129,6 +171,22 @@ describe Idv::OtpDeliveryMethodController do
       it 'renders the new template' do
         post :create, params: params
         expect(response).to render_template :new
+      end
+
+      it 'tracks an analytics event' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        post :create, params: params
+
+        result = {
+          success: false,
+          errors: { otp_delivery_preference: ['is not included in the list'] },
+          otp_delivery_preference: '🎷',
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
       end
     end
   end
