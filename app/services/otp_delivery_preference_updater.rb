@@ -16,14 +16,10 @@ class OtpDeliveryPreferenceUpdater
 
   def should_update_user?
     return false unless user
-    otp_delivery_preference_changed? && !idv_context?
+    otp_delivery_preference_changed?
   end
 
   def otp_delivery_preference_changed?
     preference != user.otp_delivery_preference
-  end
-
-  def idv_context?
-    context == 'idv'
   end
 end
