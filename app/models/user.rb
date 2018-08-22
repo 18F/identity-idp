@@ -67,12 +67,8 @@ class User < ApplicationRecord
     two_factor_enabled?
   end
 
-  def phone_enabled?
-    phone_configuration&.mfa_enabled?
-  end
-
   def two_factor_enabled?
-    phone_enabled? || totp_enabled? || piv_cac_enabled?
+    phone_configuration&.mfa_enabled? || totp_enabled? || piv_cac_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
