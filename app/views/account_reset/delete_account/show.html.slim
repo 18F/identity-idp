@@ -7,7 +7,7 @@ br
 h4.my2 = t('account_reset.delete_account.are_you_sure')
 
 = button_to t('account_reset.delete_account.delete_button'), \
-    account_reset_delete_account_path(token: session[:granted_token]), method: :delete, \
+    account_reset_delete_account_path, method: :delete, \
     class: 'btn btn-red col-6 p2 rounded-lg border bw2 bg-lightest-red border-red border-box'
 br
 br
