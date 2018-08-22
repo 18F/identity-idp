@@ -1,12 +1,9 @@
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
-    include UserEagerLoading
 
     before_action :confirm_two_factor_enabled
     before_action :confirm_voice_capability, only: [:show]
-
-    load_current_user with: [:phone_configuration], only: [:create]
 
     def show
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
@@ -49,7 +46,6 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if two_factor_authentication_method == 'sms'
 
-      phone = current_user&.phone || user_session[:unconfirmed_phone]
       capabilities = PhoneNumberCapabilities.new(phone)
 
       return unless capabilities.sms_only?
@@ -59,6 +55,10 @@ module TwoFactorAuthentication
         location: capabilities.unsupported_location
       )
       redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)
+    end
+
+    def phone
+      current_user&.phone_configuration&.phone || user_session[:unconfirmed_phone]
     end
 
     def form_params

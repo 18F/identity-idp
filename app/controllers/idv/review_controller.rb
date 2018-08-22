@@ -2,13 +2,10 @@ module Idv
   class ReviewController < ApplicationController
     include IdvStepConcern
     include PhoneConfirmation
-    include UserEagerLoading
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
-
-    load_current_user with: [:phone_configuration]
 
     def confirm_idv_steps_complete
       return redirect_to(idv_session_url) unless idv_profile_complete?
