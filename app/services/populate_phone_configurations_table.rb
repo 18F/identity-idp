@@ -12,7 +12,7 @@ class PopulatePhoneConfigurationsTable
   def process_batch(relation)
     User.transaction do
       relation.each do |user|
-        next if user.phone_configuration.present? || user.phone.blank?
+        next if user.phone_configuration.present? || user.encrypted_phone.blank?
         user.create_phone_configuration(phone_info_for_user(user))
       end
     end
@@ -20,7 +20,7 @@ class PopulatePhoneConfigurationsTable
 
   def phone_info_for_user(user)
     {
-      phone: user.phone,
+      encrypted_phone: user.encrypted_phone,
       confirmed_at: user.phone_confirmed_at,
       delivery_preference: user.otp_delivery_preference,
     }
