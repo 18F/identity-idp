@@ -177,8 +177,7 @@ module TwoFactorAuthenticatable
       current_user: current_user,
       issuer: sp_session[:issuer]
     )
-    idv_session.user_phone_confirmation = true
-    # idv_session.params['phone_confirmed_at'] = Time.zone.now
+    idv_session.user_phone_confirmation = true # rubocop:disable Lint/UselessSetterCall
   end
 
   def reset_otp_session_data
