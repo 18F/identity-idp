@@ -135,7 +135,6 @@ en:
         rules:
         - in your name, or a family member's name
         - not a virtual phone (such as Google Voice or Skype)
-        - not a pre-paid phone number
         - a U.S. number
       read_about_security_and_privacy:
         link: read about how login.gov keeps your information safe

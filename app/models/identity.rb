@@ -29,6 +29,6 @@ class Identity < ApplicationRecord
   end
 
   def piv_cac_available?
-    PivCacService.piv_cac_available_for_agency?(sp_metadata[:agency])
+    PivCacService.piv_cac_available_for_agency?(sp_metadata[:agency], user.email)
   end
 end

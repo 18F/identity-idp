@@ -4,35 +4,11 @@ describe AccountResetService do
   include AccountResetHelper
 
   let(:user) { create(:user) }
-  let(:subject) { AccountResetService.new(user) }
   let(:user2) { create(:user) }
-  let(:subject2) { AccountResetService.new(user2) }
-
-  describe '#create_request' do
-    it 'creates a new account reset request on the user' do
-      subject.create_request
-      arr = user.account_reset_request
-      expect(arr.request_token).to be_present
-      expect(arr.requested_at).to be_present
-      expect(arr.cancelled_at).to be_nil
-      expect(arr.granted_at).to be_nil
-      expect(arr.granted_token).to be_nil
-    end
-
-    it 'creates a new account reset request in the db' do
-      subject.create_request
-      arr = AccountResetRequest.find_by(user_id: user.id)
-      expect(arr.request_token).to be_present
-      expect(arr.requested_at).to be_present
-      expect(arr.cancelled_at).to be_nil
-      expect(arr.granted_at).to be_nil
-      expect(arr.granted_token).to be_nil
-    end
-  end
 
   describe '#report_fraud' do
     it 'removes tokens from the request' do
-      subject.create_request
+      create_account_reset_request_for(user)
       AccountResetService.report_fraud(user.account_reset_request.request_token)
       arr = AccountResetRequest.find_by(user_id: user.id)
       expect(arr.request_token).to_not be_present
@@ -60,9 +36,8 @@ describe AccountResetService do
 
   describe '#grant_request' do
     it 'adds a notified at timestamp and granted token to the user' do
-      rd = subject
-      rd.create_request
-      rd.grant_request
+      create_account_reset_request_for(user)
+      AccountResetService.new(user).grant_request
       arr = AccountResetRequest.find_by(user_id: user.id)
       expect(arr.granted_at).to be_present
       expect(arr.granted_token).to be_present
@@ -72,7 +47,7 @@ describe AccountResetService do
   describe '.grant_tokens_and_send_notifications' do
     context 'after waiting the full wait period' do
       it 'does not send notifications when the notifications were already sent' do
-        subject.create_request
+        create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
           AccountResetService.grant_tokens_and_send_notifications
@@ -82,7 +57,7 @@ describe AccountResetService do
       end
 
       it 'does not send notifications when the request was cancelled' do
-        subject.create_request
+        create_account_reset_request_for(user)
         cancel_request_for(user)
 
         after_waiting_the_full_wait_period do
@@ -92,7 +67,7 @@ describe AccountResetService do
       end
 
       it 'sends notifications after a request is granted' do
-        subject.create_request
+        create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
           notifications_sent = AccountResetService.grant_tokens_and_send_notifications
@@ -102,8 +77,8 @@ describe AccountResetService do
       end
 
       it 'sends 2 notifications after 2 requests are granted' do
-        subject.create_request
-        subject2.create_request
+        create_account_reset_request_for(user)
+        create_account_reset_request_for(user2)
 
         after_waiting_the_full_wait_period do
           notifications_sent = AccountResetService.grant_tokens_and_send_notifications
@@ -115,14 +90,14 @@ describe AccountResetService do
 
     context 'after not waiting the full wait period' do
       it 'does not send notifications after a request' do
-        subject.create_request
+        create_account_reset_request_for(user)
 
         notifications_sent = AccountResetService.grant_tokens_and_send_notifications
         expect(notifications_sent).to eq(0)
       end
 
       it 'does not send notifications when the request was cancelled' do
-        subject.create_request
+        create_account_reset_request_for(user)
         cancel_request_for(user)
 
         notifications_sent = AccountResetService.grant_tokens_and_send_notifications

@@ -133,10 +133,9 @@ describe Identity do
   describe '#piv_cac_available?' do
     context 'when agency configured to support piv/cac' do
       before(:each) do
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          [service_provider.agency].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow(PivCacService).to receive(:piv_cac_available_for_agency?).with(
+          service_provider.agency, identity_with_sp.user.email
+        ).and_return(true)
       end
 
       it 'returns truthy' do
@@ -146,10 +145,9 @@ describe Identity do
 
     context 'when agency is not configured to support piv/cac' do
       before(:each) do
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          [service_provider.agency + 'X'].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow(PivCacService).to receive(:piv_cac_available_for_agency?).with(
+          service_provider.agency, identity_with_sp.user.email
+        ).and_return(false)
       end
 
       it 'returns falsey' do

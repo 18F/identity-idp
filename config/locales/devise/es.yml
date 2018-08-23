@@ -99,6 +99,7 @@ es:
       max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
         bloqueada temporalmente porque ha ingresado incorrectamente la clave personal
         demasiadas veces.
+      max_piv_cac_login_attempts_reached: NOT TRANSLATED YET
       otp_delivery_preference:
         instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
         phone_unsupported: NOT TRANSLATED YET

@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 describe AccountReset::ReportFraudController do
+  include AccountResetHelper
+
   describe '#update' do
     it 'logs a good token to the analytics' do
       user = create(:user)
-      AccountResetService.new(user).create_request
+      create_account_reset_request_for(user)
 
       stub_analytics
       expect(@analytics).to receive(:track_event).

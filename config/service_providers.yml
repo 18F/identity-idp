@@ -397,6 +397,7 @@ production:
     logo: 'cbp-ttp.png'
     redirect_uris:
       - 'https://ttp.cbp.dhs.gov'
+      - 'https://ttp.cbp.dhs.gov/login'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
   # CBP ROAM (formerly OARS)
