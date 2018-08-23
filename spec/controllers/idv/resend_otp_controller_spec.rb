@@ -24,7 +24,7 @@ describe Idv::ResendOtpController do
     context 'the user has not selected a delivery method' do
       let(:phone_confirmation_otp_delivery_method) { nil }
 
-      it 'redirects to otp deleivery method selection' do
+      it 'redirects to otp delivery method selection' do
         post :create
         expect(response).to redirect_to(idv_otp_delivery_method_path)
       end

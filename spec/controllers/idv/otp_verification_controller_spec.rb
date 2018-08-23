@@ -58,7 +58,7 @@ describe Idv::OtpVerificationController do
       let(:phone_confirmation_otp) { nil }
       let(:phone_confirmation_otp_sent_at) { nil }
 
-      it 'redirects to otp deleivery method selection' do
+      it 'redirects to otp delivery method selection' do
         put :update, params: { code: phone_confirmation_otp }
         expect(response).to redirect_to(idv_otp_delivery_method_path)
       end
