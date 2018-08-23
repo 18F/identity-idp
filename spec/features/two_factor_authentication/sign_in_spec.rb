@@ -350,7 +350,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq account_path
 
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configuration.phone)
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         # let findtime period expire
@@ -387,7 +387,7 @@ feature 'Two Factor Authentication' do
 
         sign_in_before_2fa(second_user)
         click_link t('links.two_factor_authentication.get_another_code')
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone_configuration.phone)
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         expect(current_path).to eq otp_send_path

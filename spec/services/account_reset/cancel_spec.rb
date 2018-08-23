@@ -28,7 +28,7 @@ describe AccountReset::Cancel do
         AccountReset::Cancel.new(token).call
 
         expect(SmsAccountResetCancellationNotifierJob).
-          to have_received(:perform_now).with(phone: user.phone)
+          to have_received(:perform_now).with(phone: user.phone_configuration.phone)
       end
     end
 
@@ -37,6 +37,8 @@ describe AccountReset::Cancel do
         token = create_account_reset_request_for(user)
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
         user.update!(phone: nil)
+        user.phone_configuration.destroy!
+        user.reload
 
         AccountReset::Cancel.new(token).call
 

@@ -134,7 +134,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone,
+          phone: subject.current_user.phone_configuration.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -151,7 +151,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone,
+          phone: subject.current_user.phone_configuration.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -179,8 +179,10 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
-        allow(OtpRateLimiter).to receive(:new).with(phone: @user.phone, user: @user).
-          and_return(otp_rate_limiter)
+        allow(OtpRateLimiter).to receive(:new).with(
+          phone: @user.phone_configuration.phone,
+          user: @user
+        ).and_return(otp_rate_limiter)
 
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
@@ -216,7 +218,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone,
+          phone: subject.current_user.phone_configuration.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           locale: nil
         )

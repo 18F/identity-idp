@@ -10,7 +10,7 @@ module Users
         redirect_to login_two_factor_piv_cac_url
       elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
-      elsif current_user.phone_enabled?
+      elsif phone_enabled?
         validate_otp_delivery_preference_and_send_code
       else
         redirect_to two_factor_options_url
@@ -36,8 +36,16 @@ module Users
 
     private
 
+    def phone_enabled?
+      phone_configuration&.mfa_enabled?
+    end
+
+    def phone_configuration
+      current_user.phone_configuration
+    end
+
     def validate_otp_delivery_preference_and_send_code
-      delivery_preference = current_user.otp_delivery_preference
+      delivery_preference = phone_configuration.delivery_preference
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
@@ -59,7 +67,7 @@ module Users
 
     def handle_invalid_otp_delivery_preference(result)
       flash[:error] = result.errors[:phone].first
-      preference = current_user.otp_delivery_preference
+      preference = current_user.phone_configuration.delivery_preference
       redirect_to login_two_factor_url(otp_delivery_preference: preference)
     end
 
@@ -77,7 +85,8 @@ module Users
     def redirect_to_otp_verification_with_error
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
-        otp_delivery_preference: current_user.otp_delivery_preference, reauthn: reauthn?
+        otp_delivery_preference: current_user.phone_configuration.delivery_preference,
+        reauthn: reauthn?
       )
     end
 
@@ -170,7 +179,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      return current_user.phone if authentication_context?
+      return current_user.phone_configuration.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
     end
