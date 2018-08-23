@@ -1,0 +1,20 @@
+-title t('doc_auth.titles.doc_auth')
+
+= image_tag(asset_url('state-id-confirm@3x.png'),
+        alt: t('idv.titles.session.success'), width: 210)
+
+h1.h3.mb2.mt3.my0 = t('doc_auth.forms.doc_success')
+
+.col-2
+  hr.mt3.mb3.bw4.border-green.rounded
+
+h2.h3.mb6.my0 = t('doc_auth.forms.selfie_next')
+
+= form_for('', url: idv_doc_auth_step_path(step: :doc_success), method: 'PUT',
+        html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  - f.simple_fields_for :doc_auth do
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
+      = t('forms.buttons.continue')
+
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'

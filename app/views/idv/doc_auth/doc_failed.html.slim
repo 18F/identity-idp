@@ -1,0 +1,22 @@
+-title t('doc_auth.titles.doc_auth')
+
+h1.h3.red = t('doc_auth.errors.state_id_fail')
+
+= form_for('', url: idv_doc_auth_step_path(step: :doc_failed), method: 'PUT',
+    html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+
+  - f.simple_fields_for :doc_auth do
+
+    h4 = t('doc_auth.forms.state_id_info')
+    ul
+      li = "#{t('doc_auth.forms.first_name')}: #{flow_session[:matcher_pii_from_doc][:first_name]}"
+      li = "#{t('doc_auth.forms.last_name')}: #{flow_session[:matcher_pii_from_doc][:last_name]}"
+      li = "#{t('doc_auth.forms.dob')}: #{flow_session[:matcher_pii_from_doc][:dob]}"
+    h4 = t('doc_auth.forms.entered_info')
+    ul
+      li = "#{t('doc_auth.forms.ssn')}: #{flow_session[:ssn]}"
+    .mt4
+      button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
+        = t('forms.buttons.continue')
+
+= render 'start_over_or_cancel'

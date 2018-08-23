@@ -1,0 +1,26 @@
+-title t('doc_auth.titles.doc_auth')
+
+= image_tag(asset_url('state-id-none@3x.png'),
+        alt: t('idv.titles.jurisdiction'), width: 210)
+
+h1.h3 = t('doc_auth.headings.ssn')
+
+= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :ssn), method: 'PUT',
+        html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  .clearfix.mxn1
+    .sm-col.sm-col-6.px1
+      / using :tel for mobile numeric keypad
+      = f.input :ssn, as: :tel,
+              label: t('idv.form.ssn_label_html'), required: true,
+              pattern: '^\d{3}-?\d{2}-?\d{4}$',
+              input_html: { class: 'ssn', value: '' }
+
+  p = flow_session[:error_message]
+  p = link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_failure_path(:no_id)
+
+  .mt4
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
+      = t('forms.buttons.continue')
+
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'

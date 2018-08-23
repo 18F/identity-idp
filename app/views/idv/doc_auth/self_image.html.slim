@@ -1,0 +1,24 @@
+-title t('doc_auth.titles.doc_auth')
+
+h1.h3 = t('doc_auth.headings.selfie')
+
+video id='player' controls=true autoplay=true width=460 height=345
+canvas id='canvas' width=460 height=345 style='display: none;'
+button id='capture' = t('doc_auth.buttons.capture')
+
+= form_for('', url: idv_doc_auth_step_path(step: :self_image), method: 'PUT',
+    html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+
+  - f.simple_fields_for :doc_auth do |ff|
+
+    = ff.input :image, label: false, as: :hidden, required: true
+
+    p = flow_session[:error_message]
+
+    .mt4
+      button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
+        = t('forms.buttons.continue')
+
+= render 'start_over_or_cancel'
+
+== javascript_pack_tag 'doc-auth'

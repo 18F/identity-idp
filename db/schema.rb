@@ -55,6 +55,17 @@ ActiveRecord::Schema.define(version: 20180906181420) do
     t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
+  create_table "doc_auths", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "attempted_at"
+    t.integer "attempts", default: 0
+    t.datetime "license_confirmed_at"
+    t.datetime "selfie_confirmed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_doc_auths_on_user_id"
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id"
     t.string "confirmation_token", limit: 255
