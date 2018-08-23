@@ -4,6 +4,8 @@ en:
     error_notification:
       default_message: 'Please review the problems below:'
     'no': 'No'
+    optional:
+      html: '<small class="italic">optional</small>'
     required:
       html: <abbr title="required" class="red display-none">*</abbr>
       mark: "*"
