@@ -72,7 +72,7 @@ feature 'Remembering a 2FA device' do
     end
   end
 
-  context 'identity verification', :idv_job do
+  context 'identity verification' do
     let(:user) { user_with_2fa }
 
     before do

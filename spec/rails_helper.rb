@@ -72,12 +72,6 @@ RSpec.configure do |config|
     FakeVoiceCall.calls = []
   end
 
-  config.before(:each, idv_job: true) do
-    allow(Idv::ProoferJob).to receive(:perform_later) do |*args|
-      Idv::ProoferJob.perform_now(*args)
-    end
-  end
-
   config.around(:each, user_flow: true) do |example|
     Capybara.current_driver = :rack_test
     example.run
