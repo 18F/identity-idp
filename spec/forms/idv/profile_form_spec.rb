@@ -4,7 +4,7 @@ describe Idv::ProfileForm do
   let(:password) { 'a really long sekrit' }
   let(:ssn) { '123-11-1234' }
   let(:user) { create(:user, password: password) }
-  let(:subject) { Idv::ProfileForm.new({}, user) }
+  let(:subject) { Idv::ProfileForm.new(user: user, previous_params: {}) }
   let(:profile_attrs) do
     {
       first_name: 'Some',
@@ -19,6 +19,17 @@ describe Idv::ProfileForm do
       state_id_number: '123456789',
       state_id_type: 'drivers_license',
     }
+  end
+
+  describe '#initialize' do
+    context 'when their are params from a previous submission' do
+      it 'assigns those params to the form' do
+        form = Idv::ProfileForm.new(user: user, previous_params: profile_attrs)
+
+        expect(form.first_name).to eq('Some')
+        expect(form.last_name).to eq('One')
+      end
+    end
   end
 
   describe '#submit' do

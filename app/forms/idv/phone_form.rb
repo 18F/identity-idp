@@ -13,8 +13,7 @@ module Idv
     end
 
     def submit(params)
-      formatted_phone = PhoneFormatter.format(params[:phone])
-      self.phone = formatted_phone
+      self.phone = PhoneFormatter.format(params[:phone])
       success = valid?
 
       FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -26,7 +25,10 @@ module Idv
 
     def initial_phone_value(input_phone)
       return PhoneFormatter.format(input_phone) if input_phone.present?
-      PhoneFormatter.format(user.phone_configuration&.phone)
+
+      user_phone = user.phone_configuration&.phone
+      return unless Phonelib.valid_for_country?(user_phone, 'US')
+      PhoneFormatter.format(user_phone)
     end
 
     def phone_is_a_valid_us_number
