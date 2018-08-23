@@ -26,7 +26,7 @@ module Idv
 
     def initial_phone_value(input_phone)
       return PhoneFormatter.format(input_phone) if input_phone.present?
-      PhoneFormatter.format(user.phone)
+      PhoneFormatter.format(user.phone_configuration&.phone)
     end
 
     def phone_is_a_valid_us_number

@@ -42,7 +42,9 @@ module Idv
     end
 
     def phone_matches_user_phone?
-      user_phone = PhoneFormatter.format(idv_session.current_user.phone)
+      user_phone = PhoneFormatter.format(
+        idv_session.current_user.phone_configuration&.phone
+      )
       applicant_phone = PhoneFormatter.format(applicant[:phone])
       return false unless user_phone.present? && applicant_phone.present?
       user_phone == applicant_phone

@@ -28,18 +28,45 @@ module PivCacService
       Figaro.env.piv_cac_verify_token_url
     end
 
-    def piv_cac_available_for_agency?(agency)
-      return if agency.blank?
+    def piv_cac_available_for_agency?(agency, email = nil)
       return unless FeatureManagement.piv_cac_enabled?
-      @piv_cac_agencies ||= begin
-        piv_cac_agencies = Figaro.env.piv_cac_agencies || '[]'
-        JSON.parse(piv_cac_agencies)
-      end
-
-      @piv_cac_agencies.include?(agency)
+      available_for_agency?(agency) || available_for_email?(agency, email)
     end
 
     private
+
+    def available_for_agency?(agency)
+      return if agency.blank?
+      piv_cac_agencies = JSON.parse(Figaro.env.piv_cac_agencies || '[]')
+      piv_cac_agencies.include?(agency)
+    end
+
+    def available_for_email?(agency, email)
+      return unless email.present? && agency_scoped_by_email?(agency)
+
+      piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
+
+      (_, email_domain) = email.split(/@/, 2)
+      domains = JSON.parse(piv_cac_email_domains)
+      domains.any? { |supported_domain| domain_match?(email_domain, supported_domain) }
+    end
+
+    def agency_scoped_by_email?(agency)
+      return if agency.blank?
+
+      piv_cac_agencies_email_scope =
+        JSON.parse(Figaro.env.piv_cac_agencies_scoped_by_email || '[]')
+
+      piv_cac_agencies_email_scope.include?(agency)
+    end
+
+    def domain_match?(given, matcher)
+      if matcher[0] == '.'
+        given.end_with?(matcher)
+      else
+        given == matcher
+      end
+    end
 
     def randomize_uri(uri)
       # we only support {random}, so we're going for performance here
@@ -49,6 +76,7 @@ module PivCacService
     # Only used in tests
     def reset_piv_cac_avaialable_agencies
       @piv_cac_agencies = nil
+      @piv_cac_agencies_email_scope = nil
     end
 
     def token_present(token)

@@ -35,7 +35,7 @@ module Idv
     def track_final_idv_event
       result = {
         success: true,
-        new_phone_added: idv_session.applicant['phone'] != current_user.phone,
+        new_phone_added: idv_session.applicant['phone'] != current_user.phone_configuration&.phone,
       }
       analytics.track_event(Analytics::IDV_FINAL, result)
     end
