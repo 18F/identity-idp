@@ -33,7 +33,7 @@ module Idv
     end
 
     def idv_phone
-      @idv_phone ||= PhoneFormatter.format(idv_session.params[:phone])
+      @idv_phone ||= PhoneFormatter.format(idv_session.applicant[:phone])
     end
 
     def prompt_to_confirm_idv_phone

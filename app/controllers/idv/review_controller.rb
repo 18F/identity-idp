@@ -17,7 +17,7 @@ module Idv
       return if idv_session.phone_confirmed?
 
       prompt_to_confirm_phone(
-        phone: idv_session.params[:phone],
+        phone: idv_session.applicant[:phone],
         context: 'idv'
       )
     end
@@ -30,7 +30,7 @@ module Idv
     end
 
     def new
-      @idv_params = idv_params
+      @applicant = idv_session.applicant
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
       usps_mail_service = Idv::UspsMail.new(current_user)
@@ -76,10 +76,6 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
       idv_session.cache_encrypted_pii(password)
       idv_session.complete_session
-    end
-
-    def idv_params
-      idv_session.params
     end
 
     def valid_password?

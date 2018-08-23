@@ -5,12 +5,14 @@ module Idv
       async_result_started_at
       address_verification_mechanism
       applicant
-      params
       vendor_phone_confirmation
       user_phone_confirmation
       pii
+      previous_phone_step_params
+      previous_profile_step_params
       profile_confirmation
       profile_id
+      profile_step_params
       personal_key
       resolution_successful
       step_attempts
@@ -58,7 +60,7 @@ module Idv
     end
 
     def vendor_params
-      applicant_params.merge('uuid' => current_user.uuid)
+      applicant.merge('uuid' => current_user.uuid)
     end
 
     def profile
@@ -110,7 +112,7 @@ module Idv
     end
 
     def new_idv_session
-      { params: {}, step_attempts: { phone: 0 } }
+      { step_attempts: { phone: 0 } }
     end
 
     def move_pii_to_user_session
@@ -122,13 +124,9 @@ module Idv
       user_session.fetch(:idv, {})
     end
 
-    def applicant_params
-      params.select { |key, _value| Idv::Agent.proofer_attribute?(key) }
-    end
-
     def build_profile_maker(user_password)
       Idv::ProfileMaker.new(
-        applicant: applicant_params,
+        applicant: applicant,
         user: current_user,
         user_password: user_password
       )

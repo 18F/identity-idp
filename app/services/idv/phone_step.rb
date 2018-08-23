@@ -1,36 +1,55 @@
 module Idv
-  class PhoneStep < Step
-    def submit
-      if complete?
-        update_idv_session
-      else
-        idv_session.vendor_phone_confirmation = false
-      end
+  class PhoneStep
+    def initialize(idv_session:)
+      self.idv_session = idv_session
+    end
 
-      FormResponse.new(success: complete?, errors: errors, extra: extra_analytics_attributes)
+    def submit(step_params)
+      self.step_params = step_params
+      self.idv_result = Idv::Agent.new(applicant).proof(:address)
+      increment_attempts_count
+      success = idv_result[:success]
+      update_idv_session if success
+      FormResponse.new(
+        success: success, errors: idv_result[:errors],
+        extra: extra_analytics_attributes
+      )
+    end
+
+    def failure_reason
+      return :fail if idv_session.step_attempts[:phone] >= Idv::Attempter.idv_max_attempts
+      return :jobfail if idv_result[:exception].present?
+      return :warning if idv_result[:success] != true
     end
 
     private
 
-    def complete?
-      vendor_validation_passed?
+    attr_accessor :idv_session, :step_params, :idv_result
+
+    def applicant
+      @applicant ||= idv_session.applicant.merge(step_params)
+    end
+
+    def increment_attempts_count
+      idv_session.step_attempts[:phone] += 1
     end
 
     def update_idv_session
-      idv_session.vendor_phone_confirmation = true
       idv_session.address_verification_mechanism = :phone
-      idv_session.params = idv_form_params
-      idv_session.user_phone_confirmation = idv_form_params[:phone_confirmed_at].present?
+      idv_session.applicant = applicant
+      idv_session.vendor_phone_confirmation = true
+      idv_session.user_phone_confirmation = phone_matches_user_phone?
+    end
+
+    def phone_matches_user_phone?
+      user_phone = PhoneFormatter.format(idv_session.current_user.phone)
+      applicant_phone = PhoneFormatter.format(applicant[:phone])
+      return false unless user_phone.present? && applicant_phone.present?
+      user_phone == applicant_phone
     end
 
     def extra_analytics_attributes
-      {
-        vendor: {
-          messages: vendor_validator_result.messages,
-          context: vendor_validator_result.context,
-          exception: vendor_validator_result.exception,
-        },
-      }
+      idv_result.except(:errors, :success)
     end
   end
 end

@@ -178,7 +178,7 @@ module TwoFactorAuthenticatable
       issuer: sp_session[:issuer]
     )
     idv_session.user_phone_confirmation = true
-    idv_session.params['phone_confirmed_at'] = Time.zone.now
+    # idv_session.params['phone_confirmed_at'] = Time.zone.now
   end
 
   def reset_otp_session_data
