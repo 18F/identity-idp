@@ -87,7 +87,9 @@ describe ServiceProvider do
       let(:user) { build(:user) }
 
       it 'calls with the user email' do
-        expect(PivCacService).to receive(:piv_cac_available_for_agency?).with(service_provider.agency, user.email)
+        expect(PivCacService).to receive(
+          :piv_cac_available_for_agency?
+        ).with(service_provider.agency, user.email)
 
         service_provider.piv_cac_available?(user)
       end

@@ -43,7 +43,8 @@ class TwoFactorOptionsPresenter
 
   def piv_cac_if_available
     return [] if current_user.piv_cac_enabled?
-    return [] unless current_user.piv_cac_available? || service_provider&.piv_cac_available?(current_user)
+    return [] unless current_user.piv_cac_available? ||
+                     service_provider&.piv_cac_available?(current_user)
     %w[piv_cac]
   end
 end
