@@ -12,6 +12,7 @@ p == presenter.description
 
 - if presenter.message.present?
   h2.h4.mb2.mt3.my0 = presenter.message
+  = render 'idv/shared/failure_to_proof_url', presenter: presenter
 
 - presenter.next_steps.each do |step|
   p == step

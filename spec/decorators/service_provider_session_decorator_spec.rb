@@ -189,4 +189,19 @@ RSpec.describe ServiceProviderSessionDecorator do
         to eq 'https://www.example.com/sign_up/start'
     end
   end
+
+  describe '#failure_to_proof_url' do
+    it 'returns the failure_to_proof_url if present on the sp' do
+      url = 'https://www.example.com/fail'
+      allow_any_instance_of(ServiceProvider).to receive(:failure_to_proof_url).and_return(url)
+      expect(subject.failure_to_proof_url).to eq url
+    end
+
+    it 'returns the return_to_sp_url if the failure_to_proof_url is not present on the sp' do
+      url = 'https://www.example.com/'
+      allow_any_instance_of(ServiceProvider).to receive(:failure_to_proof_url).and_return(nil)
+      allow_any_instance_of(ServiceProvider).to receive(:return_to_sp_url).and_return(url)
+      expect(subject.failure_to_proof_url).to eq url
+    end
+  end
 end
