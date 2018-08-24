@@ -40,7 +40,7 @@ module Idv
 
     def submit_proofing_attempt
       idv_result = step.submit(step_params.to_h)
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, idv_result.to_h)
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, idv_result.to_h)
       redirect_to_next_step and return if idv_result.success?
       handle_proofing_failure
     end

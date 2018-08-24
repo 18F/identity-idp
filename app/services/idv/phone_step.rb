@@ -60,7 +60,9 @@ module Idv
     end
 
     def extra_analytics_attributes
-      idv_result.except(:errors, :success)
+      {
+        vendor: idv_result.except(:errors, :success),
+      }
     end
   end
 end

@@ -158,6 +158,30 @@ describe Idv::PhoneController do
           expect(subject.idv_session.user_phone_confirmation).to eq false
         end
       end
+
+      it 'tracks event with valid phone' do
+        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        stub_verify_steps_one_and_two(user)
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        context = { stages: [{ address: 'AddressMock' }] }
+        result = {
+          success: true,
+          errors: {},
+          vendor: { messages: [], context: context, exception: nil },
+        }
+
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+        )
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+        )
+
+        put :create, params: { idv_phone_form: { phone: good_phone } }
+      end
     end
 
     context 'when verification fails' do
@@ -172,80 +196,32 @@ describe Idv::PhoneController do
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy
       end
-    end
 
-    # context 'when ' do
-    #   let(:result_id) { SecureRandom.uuid }
-    #
-    #   before do
-    #     controller.idv_session.async_result_id = result_id
-    #     VendorValidatorResultStorage.new.store(result_id: result_id, result: result)
-    #   end
-    #
-    #   let(:result) { Idv::VendorResult.new(success: true) }
-    #
-    #   context 'when the phone is verified' do
-    #     let(:result) do
-    #       Idv::VendorResult.new(
-    #         success: false,
-    #         errors: { phone: ['The phone number could not be verified.'] }
-    #       )
-    #     end
-    #
-    #     let(:params) { { phone: bad_phone } }
-    #     let(:user) { build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now) }
-    #
-    #     it 'tracks event with invalid phone' do
-    #       stub_analytics
-    #       allow(@analytics).to receive(:track_event)
-    #
-    #       get :show
-    #
-    #       result = {
-    #         success: false,
-    #         errors: {
-    #           phone: ['The phone number could not be verified.'],
-    #         },
-    #         vendor: { messages: [], context: {}, exception: nil },
-    #       }
-    #
-    #       expect(response).to redirect_to idv_phone_failure_path(:warning)
-    #       expect(@analytics).to have_received(:track_event).with(
-    #         Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
-    #       )
-    #     end
-    #   end
-    #
-    #   context 'attempt window has expired, previous attempts == max-1' do
-    #     let(:two_days_ago) { Time.zone.now - 2.days }
-    #     let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
-    #
-    #     before do
-    #       user.idv_attempts = max_attempts - 1
-    #       user.idv_attempted_at = two_days_ago
-    #       subject.idv_session.user_phone_confirmation = true
-    #     end
-    #
-    #     it 'allows and does not affect attempt counter' do
-    #       get :show
-    #
-    #       expect(response).to redirect_to idv_review_path
-    #       expect(user.idv_attempts).to eq(max_attempts - 1)
-    #       expect(user.idv_attempted_at).to eq two_days_ago
-    #     end
-    #   end
-    #
-    #   it 'passes the normalized phone to the background job' do
-    #     user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
-    #     stub_verify_steps_one_and_two(user)
-    #
-    #     subject.params = { phone: normalized_phone }
-    #     expect(Idv::Job).to receive(:submit).
-    #       with(subject.idv_session, [:address]).
-    #       and_call_original
-    #
-    #     put :create, params: { idv_phone_form: { phone: good_phone } }
-    #   end
-    # end
+      it 'tracks event with invalid phone' do
+        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        stub_verify_steps_one_and_two(user)
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        context = { stages: [{ address: 'AddressMock' }] }
+        result = {
+          success: false,
+          errors: {
+            phone: ['The phone number could not be verified.'],
+          },
+          vendor: { messages: [], context: context, exception: nil },
+        }
+
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+        )
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+        )
+
+        put :create, params: { idv_phone_form: { phone: '7035555555' } }
+      end
+    end
   end
 end
