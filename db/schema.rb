@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180720152009) do
+ActiveRecord::Schema.define(version: 20180824155031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,14 @@ ActiveRecord::Schema.define(version: 20180720152009) do
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "recovery_codes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.text "code", null: false
+    t.integer "used", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "remote_settings", force: :cascade do |t|
