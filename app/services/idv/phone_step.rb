@@ -27,7 +27,16 @@ module Idv
     attr_accessor :idv_session, :step_params, :idv_result
 
     def applicant
-      @applicant ||= idv_session.applicant.merge(step_params)
+      @applicant ||= idv_session.applicant.merge(
+        phone: normalized_phone
+      )
+    end
+
+    def normalized_phone
+      @normalized_phone ||= begin
+        formatted_phone = PhoneFormatter.format(step_params[:phone])
+        formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
+      end
     end
 
     def increment_attempts_count

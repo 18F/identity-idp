@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_idv_attempts_allowed, except: %i[success failure]
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: [:success]
-    before_action :initialize_idv_session, only: [:create]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -85,10 +84,6 @@ module Idv
         user: current_user,
         previous_params: idv_session.previous_profile_step_params
       )
-    end
-
-    def initialize_idv_session
-      idv_session.applicant = {}
     end
 
     def profile_params
