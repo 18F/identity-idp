@@ -48,38 +48,8 @@ describe Idv::IdvFailurePresenter do
   describe '#next_steps' do
     subject { presenter.next_steps }
 
-    it 'includes `help_step`, `sp_step`, and `profile_step`' do
-      expect(subject).to eq(
-        [
-          presenter.send(:help_step),
-          presenter.send(:sp_step),
-          presenter.send(:profile_step),
-        ]
-      )
-    end
-  end
-
-  describe '#help_step' do
-    subject { presenter.send(:help_step) }
-
-    it 'includes help url' do
-      expect(subject).to include(MarketingSite.help_url)
-    end
-  end
-
-  describe '#sp_step' do
-    subject { presenter.send(:sp_step) }
-
-    it 'includes sp url' do
-      expect(subject).to include(decorated_session.sp_return_url)
-    end
-  end
-
-  describe '#profile_step' do
-    subject { presenter.send(:profile_step) }
-
-    it 'includes profile url' do
-      expect(subject).to include(view_context.account_path)
+    it 'is empty' do
+      expect(subject).to eq([])
     end
   end
 

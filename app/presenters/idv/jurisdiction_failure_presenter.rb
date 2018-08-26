@@ -34,29 +34,13 @@ module Idv
     end
 
     def next_steps
-      [try_again_step, sp_step, profile_step].compact
+      []
     end
 
     private
 
     def i18n_args
       jurisdiction ? { state: state_name_for_abbrev(jurisdiction) } : {}
-    end
-
-    def try_again_step
-      link = link_to(t('idv.messages.jurisdiction.try_again_link'), idv_jurisdiction_path)
-      t('idv.messages.jurisdiction.try_again', link: link)
-    end
-
-    def sp_step
-      return unless (sp_name = decorated_session.sp_name)
-      link = link_to(sp_name, decorated_session.sp_return_url)
-      t('idv.messages.jurisdiction.sp_support', link: link)
-    end
-
-    def profile_step
-      link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
-      t('idv.messages.jurisdiction.profile', link: link)
     end
   end
 end
