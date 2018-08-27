@@ -760,7 +760,7 @@ production:
     agency: 'RRB'
     logo: 'rrb.svg'
     failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
-    return_to_sp_url: 'https://rrb.gov'
+    return_to_sp_url: 'https://online.rrb.gov/AA1'
     redirect_uris:
       - 'https://online.rrb.gov/AA1/login/login/RRBHome'
       - 'https://online.rrb.gov/AA1/login/login/SignInCallback'
