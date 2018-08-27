@@ -44,6 +44,8 @@ module Idv
     def redirect_to_next_step
       if phone_confirmation_required?
         redirect_to idv_otp_delivery_method_url
+      elsif current_user.decorate.activate_if_pending_profile_required_verification
+        redirect_to after_sign_in_path_for(current_user)
       else
         redirect_to idv_review_url
       end

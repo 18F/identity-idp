@@ -188,11 +188,19 @@ module TwoFactorAuthenticatable
 
   def after_otp_verification_confirmation_url
     if idv_context?
-      idv_review_url
+      idv_context_url
     elsif after_otp_action_required?
       after_otp_action_url
     else
       after_sign_in_path_for(current_user)
+    end
+  end
+
+  def idv_context_url
+    if current_user.decorate.activate_if_pending_profile_required_verification
+      after_sign_in_path_for(current_user)
+    else
+      idv_review_url
     end
   end
 

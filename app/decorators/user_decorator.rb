@@ -47,6 +47,12 @@ class UserDecorator
     user.active_profile || pending_profile
   end
 
+  def activate_if_pending_profile_required_verification
+    return unless pending_profile_requires_verification?
+    Idv::ProfileActivator.new(user: user).call
+    true
+  end
+
   def pending_profile_requires_verification?
     return false if pending_profile.blank?
     return true if identity_not_verified?
