@@ -44,6 +44,8 @@ en:
       errors:
         link: please contact us
         text: If you keep getting these errors, %{link}, or try again tomorrow.
+      help:
+        get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
         fail: For your security, identity verification for your account is <strong>locked
           for 24 hours</strong>.
@@ -108,14 +110,11 @@ en:
       dupe_ssn2_link: sign out now and sign back in
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
-      help_center_html: Visit our <strong>Help Center</strong> to learn more about
-        verifying your account.
       jurisdiction:
         no_id: I don't have a state-issued ID
         no_id_failure: We're working hard to add more ways to verify your identity.
         profile: To access your account in the future, you can %{link}.
         profile_link: view your account here
-        sp_support: Visit %{link} for more information.
         try_again: Make a mistake? You can %{link}.
         try_again_link: try again
         unsupported_jurisdiction_failure: We're working hard to add more states and
@@ -135,11 +134,7 @@ en:
         rules:
         - in your name, or a family member's name
         - not a virtual phone (such as Google Voice or Skype)
-        - not a pre-paid phone number
         - a U.S. number
-      read_about_security_and_privacy:
-        link: read about how login.gov keeps your information safe
-        text: You can %{link} on our help page.
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -152,7 +147,7 @@ en:
       sessions:
         id_information_message: as it appears on your state-issued ID
         id_information_subtitle: ID Information
-        no_pii: Do not use real personal information (demo purposes only)
+        no_pii: FAKE Do not use real personal information (demo purposes only) FAKE
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
         success: Next, we'll need a phone number.

@@ -6,7 +6,8 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      analytics.track_event(Analytics::IDV_CANCELLATION)
+      properties = ParseControllerFromReferer.new(request.referer).call
+      analytics.track_event(Analytics::IDV_CANCELLATION, properties)
       @presenter = CancellationPresenter.new(view_context: view_context)
     end
 

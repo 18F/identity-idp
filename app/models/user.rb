@@ -1,6 +1,9 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
-  self.ignored_columns = %w[encrypted_password password_salt password_cost]
+  self.ignored_columns = %w[
+    encrypted_password password_salt password_cost encryption_key
+    recovery_code recovery_cost recovery_salt
+  ]
 
   include NonNullUuid
 
@@ -53,23 +56,19 @@ class User < ApplicationRecord
   end
 
   def piv_cac_enabled?
-    FeatureManagement.piv_cac_enabled? && x509_dn_uuid.present?
+    PivCacLoginOptionPolicy.new(self).enabled?
   end
 
   def piv_cac_available?
-    piv_cac_enabled? || identities.any?(&:piv_cac_available?)
+    PivCacLoginOptionPolicy.new(self).available?
   end
 
   def need_two_factor_authentication?(_request)
     two_factor_enabled?
   end
 
-  def phone_enabled?
-    phone.present?
-  end
-
   def two_factor_enabled?
-    phone_enabled? || totp_enabled? || piv_cac_enabled?
+    phone_configuration&.mfa_enabled? || totp_enabled? || piv_cac_enabled?
   end
 
   def send_two_factor_authentication_code(_code)

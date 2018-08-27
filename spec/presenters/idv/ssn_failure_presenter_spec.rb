@@ -23,14 +23,8 @@ describe Idv::SsnFailurePresenter do
   describe '#next_steps' do
     subject { presenter.next_steps }
 
-    it 'includes `try_again_step`, `sign_out_step`, and `profile_step`' do
-      expect(subject).to eq(
-        [
-          presenter.send(:try_again_step),
-          presenter.send(:sign_out_step),
-          presenter.send(:profile_step),
-        ]
-      )
+    it 'is empty' do
+      expect(subject).to eq([])
     end
   end
 

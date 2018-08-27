@@ -320,7 +320,7 @@ feature 'Sign in' do
     it 'falls back to SMS with an error message' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'voice')
+      user = create(:user, :signed_up, phone: '+1 441-295-9644', otp_delivery_preference: 'voice')
       signin(user.email, user.password)
 
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
@@ -329,7 +329,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India'
+        location: 'Bermuda'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end

@@ -1,37 +1,10 @@
-import { PhoneFormatter } from 'field-kit';
-
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
 const I18n = window.LoginGov.I18n;
-const phoneFormatter = new PhoneFormatter();
-
-const getPhoneUnsupportedAreaCodeCountry = (areaCode) => {
-  const form = document.querySelector('[data-international-phone-form]');
-  const phoneUnsupportedAreaCodes = JSON.parse(form.dataset.unsupportedAreaCodes);
-  return phoneUnsupportedAreaCodes[areaCode];
-};
-
-const areaCodeFromUSPhone = (phone) => {
-  const digits = phoneFormatter.digitsWithoutCountryCode(phone);
-  if (digits.length >= 10) {
-    return digits.slice(0, 3);
-  }
-  return null;
-};
 
 const selectedInternationCodeOption = () => {
   const dropdown = document.querySelector('[data-international-phone-form] .international-code');
   return dropdown.item(dropdown.selectedIndex);
-};
-
-const unsupportedUSPhoneOTPDeliveryWarningMessage = (phone) => {
-  const areaCode = areaCodeFromUSPhone(phone);
-  const country = getPhoneUnsupportedAreaCodeCountry(areaCode);
-  if (country) {
-    const messageTemplate = I18n.t('devise.two_factor_authentication.otp_delivery_preference.phone_unsupported');
-    return messageTemplate.replace('%{location}', country);
-  }
-  return null;
 };
 
 const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
@@ -57,14 +30,6 @@ const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint) => {
   deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
 };
 
-const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
-  const internationCodeOption = selectedInternationCodeOption();
-  if (internationCodeOption.dataset.countryCode === '1') {
-    return unsupportedUSPhoneOTPDeliveryWarningMessage(phone);
-  }
-  return unsupportedInternationalPhoneOTPDeliveryWarningMessage();
-};
-
 const updateOTPDeliveryMethods = () => {
   const phoneRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_voice');
   const smsRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_sms');
@@ -73,13 +38,10 @@ const updateOTPDeliveryMethods = () => {
     return;
   }
 
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const phoneLabel = phoneRadio.parentNode.parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
 
-  const phone = phoneInput.value;
-
-  const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
+  const warningMessage = unsupportedInternationalPhoneOTPDeliveryWarningMessage();
   if (warningMessage) {
     disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
       warningMessage);

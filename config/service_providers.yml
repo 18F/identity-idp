@@ -153,6 +153,7 @@ development:
     agency_id: 1
     redirect_uris:
       - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -328,7 +329,7 @@ production:
   # RRB Online Retirement Application
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:RRB:BOS-Pre-Prod':
     agency_id: 4
-    friendly_name: 'Railroad Retirement Board'
+    friendly_name: 'Railroad Retirement Board Preprod'
     agency: 'RRB'
     logo: 'rrb.svg'
     acs_url: 'https://onlinetest.rrb.gov/AA1/login/login/callback'
@@ -396,6 +397,7 @@ production:
     logo: 'cbp-ttp.png'
     redirect_uris:
       - 'https://ttp.cbp.dhs.gov'
+      - 'https://ttp.cbp.dhs.gov/login'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
   # CBP ROAM (formerly OARS)
@@ -407,6 +409,7 @@ production:
     logo: 'cbp.png'
     redirect_uris:
       - 'gov.dhs.cbp.pspd.oars.user.prod://result'
+      - 'gov.dhs.cbp.pspd.oars.user.prod://result/logout'
     restrict_to_deploy_env: 'prod'
 
   # CBP I'm Ready
@@ -633,7 +636,7 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-  
+
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
@@ -748,4 +751,31 @@ production:
       - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # RRB Benefit Online Services (BOS)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:BOS_AA1_Prod':
+    agency_id: 4
+    friendly_name: 'Railroad Retirement Board'
+    agency: 'RRB'
+    logo: 'rrb.svg'
+    failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
+    return_to_sp_url: 'https://online.rrb.gov/AA1'
+    redirect_uris:
+      - 'https://online.rrb.gov/AA1/login/login/RRBHome'
+      - 'https://online.rrb.gov/AA1/login/login/SignInCallback'
+    cert: 'rrb_bos_prod'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - dob
+      - ssn
+      - phone
     restrict_to_deploy_env: 'prod'

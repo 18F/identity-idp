@@ -10,19 +10,6 @@ GIT
       xmldsig
 
 GIT
-  remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: de4258c7608997f72e119b16718eeead4d39db70
-  tag: v1.1.0
-  specs:
-    equifax (1.1.0)
-      activesupport
-      dotenv
-      gyoku
-      hashie
-      logger
-      savon
-
-GIT
   remote: git@github.com:18F/identity-lexisnexis-api-client-gem
   revision: d17049ab1a03d50c0cc8a272d86cf2144192fab5
   tag: v1.1.0
@@ -350,7 +337,6 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    logger (1.2.8)
     lograge (0.10.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -694,7 +680,6 @@ DEPENDENCIES
   devise (~> 4.1)
   dotiw
   email_spec
-  equifax!
   exception_notification
   factory_bot_rails
   fakefs
