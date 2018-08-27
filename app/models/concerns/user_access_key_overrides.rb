@@ -5,6 +5,8 @@
 module UserAccessKeyOverrides
   extend ActiveSupport::Concern
 
+  attr_reader :personal_key
+
   def valid_password?(password)
     result = Encryption::PasswordVerifier.verify(
       password: password,
@@ -25,10 +27,6 @@ module UserAccessKeyOverrides
       password: normalized_personal_key,
       digest: encrypted_recovery_code_digest
     )
-  end
-
-  def personal_key
-    @personal_key
   end
 
   def personal_key=(new_personal_key)
