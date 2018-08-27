@@ -329,7 +329,7 @@ production:
   # RRB Online Retirement Application
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:RRB:BOS-Pre-Prod':
     agency_id: 4
-    friendly_name: 'Railroad Retirement Board'
+    friendly_name: 'Railroad Retirement Board Preprod'
     agency: 'RRB'
     logo: 'rrb.svg'
     acs_url: 'https://onlinetest.rrb.gov/AA1/login/login/callback'
@@ -751,4 +751,31 @@ production:
       - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # RRB Benefit Online Services (BOS)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:BOS_AA1_Prod':
+    agency_id: 4
+    friendly_name: 'Railroad Retirement Board'
+    agency: 'RRB'
+    logo: 'rrb.svg'
+    failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
+    return_to_sp_url: 'https://rrb.gov'
+    redirect_uris:
+      - 'https://online.rrb.gov/AA1/login/login/RRBHome'
+      - 'https://online.rrb.gov/AA1/login/login/SignInCallback'
+    cert: 'rrb_bos_prod'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - dob
+      - ssn
+      - phone
     restrict_to_deploy_env: 'prod'
