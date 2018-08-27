@@ -23,11 +23,17 @@ class RecoveryCodeGenerator
   attr_reader :user
 
   def save_code(code)
-
+    rc = RecoveryCode.new
+    rc.code = code
+    rc.user_id = @user.id
+    rc.used = 0
+    rc.save
   end
 
   def delete_existing_codes
-
+    RecoveryCode.find_each(:user_id => user.id) do |rc|
+      rc.remove
+    end
   end
 
   def generate_new_codes
@@ -37,9 +43,9 @@ class RecoveryCodeGenerator
     end
   end
 
-  def encode_code(code:, length:, split:)
+  def encode_code(code)
     decoded = Base32::Crockford.decode(code)
-    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
+    Base32::Crockford.encode(decoded, length: @length, split: @split).tr('-', ' ')
   end
 
   def normalize(plaintext_code)
