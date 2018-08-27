@@ -61,6 +61,26 @@ describe '2FA options when signing in' do
     end
   end
 
+  context "the user's otp_delivery_preference is voice but number is unsupported" do
+    it 'only displays SMS and Personal key' do
+      user = create(:user, :signed_up, otp_delivery_preference: 'voice', phone: '+12423270143')
+      sign_in_user(user)
+
+      click_link t('two_factor_authentication.login_options_link_text')
+
+      expect(page).
+        to have_content t('two_factor_authentication.login_options.sms')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.voice')
+      expect(page).
+        to have_content t('two_factor_authentication.login_options.personal_key')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.piv_cac')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.auth_app')
+    end
+  end
+
   context 'when the user only has TOTP configured' do
     it 'only displays TOTP and Personal key' do
       user = create(:user, :with_authentication_app)

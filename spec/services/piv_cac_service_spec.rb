@@ -161,4 +161,103 @@ describe PivCacService do
       end
     end
   end
+
+  describe '#piv_cac_available_for_agency?' do
+    let(:subject) { PivCacService.piv_cac_available_for_agency?('foo', 'foo@example.com') }
+
+    context 'with an agency not encouraged to use piv/cac for anyone' do
+      before(:each) do
+        allow(PivCacService).to receive(:available_for_agency?).and_return(false)
+        allow(PivCacService).to receive(:available_for_email?).and_return(false)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'with an agency encouraged to use piv/cac for everyone' do
+      before(:each) do
+        allow(PivCacService).to receive(:available_for_agency?).and_return(true)
+        allow(PivCacService).to receive(:available_for_email?).and_return(false)
+      end
+
+      it { expect(subject).to eq true }
+    end
+
+    context 'with an agency encouraged to use piv/cac for certain email domains' do
+      before(:each) do
+        allow(PivCacService).to receive(:available_for_agency?).and_return(false)
+        allow(PivCacService).to receive(:available_for_email?).and_return(true)
+      end
+
+      it { expect(subject).to eq true }
+    end
+  end
+
+  describe '#available_for_agency?' do
+    let(:subject) { PivCacService.send(:available_for_agency?, 'foo') }
+
+    context 'with the agency not configured to be available' do
+      before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+        allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar"]')
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'with the agency configured to be available' do
+      before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+        allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar","foo"]')
+      end
+
+      it { expect(subject).to eq true }
+    end
+  end
+
+  describe '#available_for_email?' do
+    let(:subject) { PivCacService.send(:available_for_email?, 'foo', 'foo@bar.example.com') }
+
+    context 'with the agency not configured to be available' do
+      before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+        allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar"]')
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'with the agency configured to be available' do
+      before(:each) do
+        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+        allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar","foo"]')
+      end
+
+      context 'but not in the right email domain' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return(
+            '["example.com", "baz.example.com"]'
+          )
+        end
+
+        it { expect(subject).to be_falsey }
+      end
+
+      context 'in the right full domain' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return('["bar.example.com"]')
+        end
+
+        it { expect(subject).to eq true }
+      end
+
+      context 'in the right subdomain' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return('[".example.com"]')
+        end
+
+        it { expect(subject).to eq true }
+      end
+    end
+  end
 end

@@ -1,5 +1,7 @@
 = render 'shared/failure', presenter: presenter
 p == presenter.warning_message
 
-.mt4
-  = link_to presenter.button_text, presenter.button_path, class: 'btn btn-primary'
+= render 'idv/shared/failure_to_proof_url', presenter: presenter
+
+.mt3
+  = link_to presenter.button_text, presenter.button_path, class: 'btn btn-primary btn-link'

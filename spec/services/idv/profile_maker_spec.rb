@@ -5,14 +5,12 @@ describe Idv::ProfileMaker do
     let(:applicant) { { first_name: 'Some', last_name: 'One' } }
     let(:user) { create(:user, :signed_up) }
     let(:user_password) { user.password }
-    let(:phone_confirmed) { false }
 
     subject do
       described_class.new(
         applicant: applicant,
         user: user,
-        user_password: user_password,
-        phone_confirmed: phone_confirmed
+        user_password: user_password
       )
     end
 
@@ -27,16 +25,6 @@ describe Idv::ProfileMaker do
 
       expect(pii).to be_a Pii::Attributes
       expect(pii.first_name).to eq 'Some'
-    end
-
-    context 'when phone_confirmed is true' do
-      let(:phone_confirmed) { true }
-      it { expect(subject.save_profile.phone_confirmed).to eq(true) }
-    end
-
-    context 'when phone_confirmed is false' do
-      let(:phone_confirmed) { false }
-      it { expect(subject.save_profile.phone_confirmed).to eq(false) }
     end
   end
 end

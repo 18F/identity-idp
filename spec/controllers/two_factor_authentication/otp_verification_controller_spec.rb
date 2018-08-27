@@ -264,7 +264,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         sign_in_as_user
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
-        @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
+        @previous_phone_confirmed_at = subject.current_user.phone_configuration&.confirmed_at
         subject.current_user.create_direct_otp
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -272,7 +272,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
         allow(UserMailer).to receive(:phone_changed).with(subject.current_user).
           and_return(@mailer)
-        @previous_phone = subject.current_user.phone
+        @previous_phone = subject.current_user.phone_configuration&.phone
       end
 
       context 'user has an existing phone number' do
@@ -442,7 +442,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         idv_session.params = { 'phone' => '+1 (703) 555-5555' }
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'idv'
-        @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
+        @previous_phone_confirmed_at = subject.current_user.phone_configuration&.confirmed_at
         allow(subject).to receive(:idv_session).and_return(idv_session)
         stub_analytics
         allow(@analytics).to receive(:track_event)

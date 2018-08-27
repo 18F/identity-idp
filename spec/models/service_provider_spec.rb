@@ -70,23 +70,28 @@ describe ServiceProvider do
   describe 'piv_cac_available?' do
     context 'when the service provider is with an enabled agency' do
       it 'is truthy' do
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          [service_provider.agency].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
-
+        allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
         expect(service_provider.piv_cac_available?).to be_truthy
       end
     end
 
     context 'when the service provider agency is not enabled' do
       it 'is falsey' do
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          [service_provider.agency + 'X'].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
 
         expect(service_provider.piv_cac_available?).to be_falsey
+      end
+    end
+
+    context 'when the service provider setting depends on the user email' do
+      let(:user) { build(:user) }
+
+      it 'calls with the user email' do
+        expect(PivCacService).to receive(
+          :piv_cac_available_for_agency?
+        ).with(service_provider.agency, user.email)
+
+        service_provider.piv_cac_available?(user)
       end
     end
   end

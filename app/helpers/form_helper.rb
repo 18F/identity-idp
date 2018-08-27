@@ -83,10 +83,6 @@ module FormHelper
     end
   end
 
-  def unsupported_area_codes
-    PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
-  end
-
   def supported_jurisdictions
     Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS
   end

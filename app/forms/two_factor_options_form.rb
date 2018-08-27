@@ -36,6 +36,7 @@ class TwoFactorOptionsForm
 
   def user_needs_updating?
     return false unless %w[voice sms].include?(selection)
+    return false if selection == user.phone_configuration&.delivery_preference
     selection != user.otp_delivery_preference
   end
 

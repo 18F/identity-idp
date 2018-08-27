@@ -12,7 +12,7 @@ module Idv
       create_user_event(:usps_mail_sent, current_user)
       idv_session.address_verification_mechanism = :usps
 
-      if current_user.decorate.needs_profile_usps_verification?
+      if current_user.decorate.pending_profile_requires_verification?
         resend_letter
         redirect_to idv_come_back_later_url
       else

@@ -1,5 +1,3 @@
-- title @presenter.title
-
 div class='alert alert-error' role='alert'
   = @presenter.title
 
@@ -11,10 +9,9 @@ p.mt-tiny.mb3 = @presenter.description
 
 - cancel = sign_up_or_idv_no_js_link || link
 .mt2.pt1.border-top
-  - if @presenter.may_select_another_certificate?
-    = link_to t('forms.piv_cac_setup.choose_different_certificate'),
-              setup_piv_cac_url, class: 'h5'
-    br
+  = link_to t('forms.piv_cac_setup.choose_different_certificate'),
+            setup_piv_cac_url, class: 'h5'
+  br
   - if user_signing_up? || user_verifying_identity?
     - method = user_signing_up? ? :delete : :get
 
@@ -25,5 +22,3 @@ p.mt-tiny.mb3 = @presenter.description
       user_signing_up: user_signing_up?
   - else
     = link_to cancel_link_text, cancel, class: 'h5'
-
-== javascript_pack_tag 'clipboard'

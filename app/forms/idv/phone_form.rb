@@ -10,7 +10,7 @@ module Idv
     def initialize(idv_params, user)
       @idv_params = idv_params
       @user = user
-      self.phone = initial_phone_value(idv_params[:phone] || user.phone)
+      self.phone = initial_phone_value(idv_params[:phone] || user.phone_configuration&.phone)
       self.international_code = PhoneFormatter::DEFAULT_COUNTRY
     end
 
@@ -20,7 +20,7 @@ module Idv
       success = valid?
       update_idv_params(formatted_phone) if success
 
-      FormResponse.new(success: success, errors: errors.messages)
+      FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end
 
     private
@@ -45,11 +45,22 @@ module Idv
       idv_params[:phone] = normalized_phone
 
       return idv_params[:phone_confirmed_at] = nil unless phone == formatted_user_phone
-      idv_params[:phone_confirmed_at] = user.phone_confirmed_at
+      idv_params[:phone_confirmed_at] = user.phone_configuration&.confirmed_at
     end
 
     def formatted_user_phone
-      Phonelib.parse(user.phone).international
+      Phonelib.parse(user.phone_configuration&.phone).international
+    end
+
+    def parsed_phone
+      @parsed_phone ||= Phonelib.parse(phone)
+    end
+
+    def extra_analytics_attributes
+      {
+        country_code: parsed_phone.country,
+        area_code: parsed_phone.area_code,
+      }
     end
   end
 end

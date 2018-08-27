@@ -10,10 +10,7 @@ class UsersController < ApplicationController
   private
 
   def track_account_deletion_event
-    controller_and_action_from_referer = ParseControllerFromReferer.new(request.referer).call
-    properties = {
-      request_came_from: controller_and_action_from_referer,
-    }
+    properties = ParseControllerFromReferer.new(request.referer).call
     analytics.track_event(Analytics::ACCOUNT_DELETION, properties)
   end
 

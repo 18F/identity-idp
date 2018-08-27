@@ -4,7 +4,6 @@ shared_examples 'usps otp verfication step' do |sp|
     create(
       :profile,
       deactivation_reason: :verification_pending,
-      phone_confirmed: false,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' }
     )
   end

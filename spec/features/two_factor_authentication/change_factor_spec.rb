@@ -60,6 +60,7 @@ feature 'Changing authentication factor' do
 
     scenario 'editing phone number with no voice otp support only allows sms delivery' do
       user.update(otp_delivery_preference: 'voice')
+      user.phone_configuration.update(delivery_preference: 'voice')
       unsupported_phone = '242-327-0143'
 
       visit manage_phone_path
@@ -82,7 +83,7 @@ feature 'Changing authentication factor' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
 
       user = sign_in_and_2fa_user
-      old_phone = user.phone
+      old_phone = user.phone_configuration.phone
       visit manage_phone_path
       update_phone_number
 
@@ -109,7 +110,7 @@ feature 'Changing authentication factor' do
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
         user = sign_in_and_2fa_user
-        old_phone = user.phone
+        old_phone = user.phone_configuration.phone
 
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
           visit manage_phone_path

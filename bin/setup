@@ -37,7 +37,6 @@ Dir.chdir APP_ROOT do
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
-    run 'docker-compose run --rm web bin/generate-example-keys'
     run 'docker-compose run --rm web yarn install'
     run 'docker-compose run --rm web rake db:create'
     run 'docker-compose run --rm web rake db:environment:set'

@@ -20,7 +20,9 @@ class OtpDeliveryPreferenceUpdater
   end
 
   def otp_delivery_preference_changed?
-    preference != user.otp_delivery_preference
+    return true if preference != user.otp_delivery_preference
+    phone_configuration = user.phone_configuration
+    phone_configuration.present? && preference != phone_configuration.delivery_preference
   end
 
   def idv_context?

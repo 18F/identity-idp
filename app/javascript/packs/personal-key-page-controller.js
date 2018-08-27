@@ -1,3 +1,5 @@
+import base32Crockford from 'base32-crockford-browser';
+
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
 
@@ -43,12 +45,31 @@ function resetForm() {
   unsetInvalidHTML();
 }
 
+function formatInput(value) {
+  // Coerce mistaken user input from 'problem' letters:
+  // https://en.wikipedia.org/wiki/Base32#Crockford.27s_Base32
+  value = base32Crockford.decode(value);
+  value = base32Crockford.encode(value);
+
+  // Add back the dashes
+  value = value.toString().match(/.{4}/g).join('-');
+
+  // And uppercase
+  return value.toUpperCase();
+}
+
 function handleSubmit(event) {
   event.preventDefault();
 
-  const value = input.value;
+  // As above, in case browser lacks HTML5 validation (e.g., IE < 11)
+  if (input.value.length < 19) {
+    setInvalidHTML();
+    return;
+  }
 
-  if (value.toUpperCase() === personalKey) {
+  const value = formatInput(input.value);
+
+  if (value === personalKey) {
     unsetInvalidHTML();
     // Recovery code page, without js enabled, has a form submission that posts
     // to the server with no body.

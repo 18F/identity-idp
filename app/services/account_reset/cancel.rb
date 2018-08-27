@@ -54,7 +54,7 @@ module AccountReset
     end
 
     def phone
-      user.phone
+      user.phone_configuration&.phone
     end
 
     def extra_analytics_attributes

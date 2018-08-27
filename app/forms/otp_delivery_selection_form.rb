@@ -46,7 +46,7 @@ class OtpDeliverySelectionForm
     {
       otp_delivery_preference: otp_delivery_preference,
       resend: resend,
-      country_code: parsed_phone.country_code,
+      country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
       context: context,
     }

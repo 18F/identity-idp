@@ -1,0 +1,18 @@
+.spinner.hidden
+  div
+    = image_tag(asset_url('spinner.gif'),
+        srcset: asset_url('spinner@2x.gif'),
+        height: 144,
+        width: 144,
+        alt: '')
+- nonce = content_security_policy_script_nonce
+= nonced_javascript_tag do
+  | var nonce="#{ nonce }";
+  | document.addEventListener('DOMContentLoaded', () => {
+  |   const button = document.querySelector('.no-spinner');
+  |   const info = document.querySelector('.spinner');
+  |   button.addEventListener('click', () => {
+  |     button.classList.add('hidden');
+  |     info.classList.remove('hidden');
+  |   });
+  | });
