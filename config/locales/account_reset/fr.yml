@@ -9,11 +9,12 @@ fr:
       title: Vous avez supprimé votre compte
     confirm_request:
       check_your_email: Vérifiez votre email
+      close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
       instructions: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour commencer
         le compte. Supprimer le processus. Suivez les instructions dans votre e-mail
-        pour terminer le processus.<br> <br>Par mesure de sécurité, nous avons également
-        envoyé un SMS sur votre téléphone enregistré nombre. <br> <br> Vous pouvez
-        fermer cette fenêtre si vous avez terminé.
+        pour terminer le processus.
+      security_note: Par mesure de sécurité, nous avons également envoyé un SMS à
+        votre numéro de téléphone enregistré.
     delete_account:
       are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte?
       cancel: Annuler

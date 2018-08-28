@@ -31,7 +31,7 @@ module Idv
     end
 
     def next_steps
-      [try_again_step, sign_out_step, profile_step]
+      []
     end
 
     private

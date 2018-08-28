@@ -10,7 +10,6 @@ Figaro.require_keys(
   'enable_rate_limiting',
   'enable_test_routes',
   'enable_usps_verification',
-  'equifax_ssh_passphrase',
   'exception_recipients',
   'hmac_fingerprinter_key',
   'issuers_with_email_nameid_format',

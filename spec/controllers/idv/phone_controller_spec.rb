@@ -71,7 +71,7 @@ describe Idv::PhoneController do
       end
 
       it 'renders #new' do
-        put :create, params: { idv_phone_form: { phone: '703', international_code: 'US' } }
+        put :create, params: { idv_phone_form: { phone: '703' } }
 
         expect(flash[:warning]).to be_nil
         expect(subject.idv_session.params).to be_empty
@@ -87,6 +87,8 @@ describe Idv::PhoneController do
           errors: {
             phone: [t('errors.messages.must_have_us_country_code')],
           },
+          country_code: nil,
+          area_code: nil,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -106,9 +108,14 @@ describe Idv::PhoneController do
         user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
         stub_verify_steps_one_and_two(user)
 
-        put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
+        put :create, params: { idv_phone_form: { phone: good_phone } }
 
-        result = { success: true, errors: {} }
+        result = {
+          success: true,
+          errors: {},
+          area_code: '703',
+          country_code: 'US',
+        }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION_FORM, result
@@ -120,13 +127,13 @@ describe Idv::PhoneController do
           user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
+          put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_result_path
 
           expected_params = {
             phone: normalized_phone,
-            phone_confirmed_at: user.phone_confirmed_at,
+            phone_confirmed_at: user.phone_configuration.confirmed_at,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
@@ -137,7 +144,7 @@ describe Idv::PhoneController do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
+          put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_result_path
 

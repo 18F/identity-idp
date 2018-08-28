@@ -36,7 +36,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.phone)
+    masked_number(user.phone_configuration&.phone)
   end
 
   def active_identity_for(service_provider)
@@ -72,14 +72,6 @@ class UserDecorator
 
   def active_profile_newer_than_pending_profile?
     user.active_profile.activated_at >= pending_profile.created_at
-  end
-
-  def needs_profile_phone_verification?
-    pending_profile_requires_verification? && pending_profile.phone_confirmed?
-  end
-
-  def needs_profile_usps_verification?
-    pending_profile_requires_verification? && !pending_profile.phone_confirmed?
   end
 
   # This user's most recently activated profile that has also been deactivated

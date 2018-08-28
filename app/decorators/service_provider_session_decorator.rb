@@ -103,6 +103,10 @@ class ServiceProviderSessionDecorator
     view_context.sign_up_start_url(request_id: sp_session[:request_id])
   end
 
+  def failure_to_proof_url
+    sp.failure_to_proof_url || sp_return_url
+  end
+
   def sp_alert?(path)
     sp_alert.present? && !sp_alert[:exclude_paths]&.include?(path)
   end

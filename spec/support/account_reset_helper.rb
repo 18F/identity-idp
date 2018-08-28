@@ -1,6 +1,6 @@
 module AccountResetHelper
   def create_account_reset_request_for(user)
-    AccountResetService.new(user).create_request
+    AccountReset::CreateRequest.new(user).call
     account_reset_request = AccountResetRequest.find_by(user_id: user.id)
     account_reset_request.request_token
   end

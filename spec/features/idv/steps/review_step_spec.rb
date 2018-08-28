@@ -46,7 +46,6 @@ feature 'idv review step', :idv_job do
       profile = user.profiles.first
 
       expect(profile.active?).to eq true
-      expect(profile.phone_confirmed).to eq true
       expect(UspsConfirmation.count).to eq(0)
     end
   end
@@ -72,7 +71,6 @@ feature 'idv review step', :idv_job do
       profile = user.profiles.first
 
       expect(profile.active?).to eq false
-      expect(profile.phone_confirmed).to eq false
     end
 
     context 'with an sp' do

@@ -6,12 +6,12 @@ module Users
 
     def edit
       @user_phone_form = UserPhoneForm.new(current_user)
-      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(delivery_preference)
     end
 
     def update
       @user_phone_form = UserPhoneForm.new(current_user)
-      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(delivery_preference)
       if @user_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
@@ -24,6 +24,10 @@ module Users
 
     def user_params
       params.require(:user_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
+    end
+
+    def delivery_preference
+      current_user.phone_configuration&.delivery_preference || current_user.otp_delivery_preference
     end
 
     def process_updates

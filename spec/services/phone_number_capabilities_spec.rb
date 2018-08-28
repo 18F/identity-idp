@@ -9,8 +9,13 @@ describe PhoneNumberCapabilities do
       it { expect(subject.sms_only?).to eq(false) }
     end
 
-    context 'voice is not supported for the area code' do
+    context 'Bahamas number' do
       let(:phone) { '+1 (242) 327-0143' }
+      it { expect(subject.sms_only?).to eq(true) }
+    end
+
+    context 'Bermuda number' do
+      let(:phone) { '+1 (441) 295-9644' }
       it { expect(subject.sms_only?).to eq(true) }
     end
 
@@ -20,48 +25,33 @@ describe PhoneNumberCapabilities do
       xit { expect(subject.sms_only?).to eq(false) }
     end
 
-    context 'voice is not supported for the international code' do
-      let(:phone) { '+212 1234 12345' }
+    context 'Morocco number' do
+      let(:phone) { '+212 661-289325' }
+      it { expect(subject.sms_only?).to eq(true) }
+    end
+
+    context "phonelib returns nil or a 2-letter country code that doesn't match our YAML" do
+      let(:phone) { '703-555-1212' }
       it { expect(subject.sms_only?).to eq(true) }
     end
   end
 
   describe '#unsupported_location' do
-    it 'returns the name of the unsupported area code location' do
+    it 'returns the name of the unsupported country (Bahamas)' do
       locality = PhoneNumberCapabilities.new('+1 (242) 327-0143').unsupported_location
       expect(locality).to eq('Bahamas')
     end
 
-    it 'returns the name of the unsupported international code location' do
-      locality = PhoneNumberCapabilities.new('+355 1234 12345').unsupported_location
-      expect(locality).to eq('Albania')
+    it 'returns the name of the unsupported country (Bermuda)' do
+      locality = PhoneNumberCapabilities.new('+1 (441) 295-9644').unsupported_location
+      expect(locality).to eq('Bermuda')
     end
-  end
 
-  describe 'list of unsupported area codes' do
-    it 'is up to date' do
-      unsupported_area_codes = {
-        '264' => 'Anguilla',
-        '268' => 'Antigua and Barbuda',
-        '242' => 'Bahamas',
-        '246' => 'Barbados',
-        '441' => 'Bermuda',
-        '284' => 'British Virgin Islands',
-        '345' => 'Cayman Islands',
-        '767' => 'Dominica',
-        '809' => 'Dominican Republic',
-        '829' => 'Dominican Republic',
-        '849' => 'Dominican Republic',
-        '473' => 'Grenada',
-        '876' => 'Jamaica',
-        '664' => 'Montserrat',
-        '869' => 'Saint Kitts and Nevis',
-        '758' => 'Saint Lucia',
-        '784' => 'Saint Vincent Grenadines',
-        '868' => 'Trinidad and Tobago',
-        '649' => 'Turks and Caicos Islands',
-      }
-      expect(PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES).to eq unsupported_area_codes
+    context 'phonelib returns nil' do
+      it 'returns nil' do
+        locality = PhoneNumberCapabilities.new('703-555-1212').unsupported_location
+        expect(locality).to be_nil
+      end
     end
   end
 end

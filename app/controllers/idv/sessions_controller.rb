@@ -16,10 +16,10 @@ module Idv
     delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
+      analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
       user_session[:context] = 'idv'
       set_idv_form
       @selected_state = user_session[:idv_jurisdiction]
-      analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
     def create

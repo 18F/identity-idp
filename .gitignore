@@ -40,8 +40,8 @@ Vagrantfile
 /keys/*.key.enc
 !/keys/*.key.enc.example
 /keys/equifax_rsa
-/keys/equifax_rsa.pub
 /keys/equifax_gpg.pub.bin
+/keys/equifax_rsa.pub
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
@@ -60,6 +60,7 @@ Vagrantfile
 /vendor/bundle
 
 saml_*.txt
+saml_*.shr
 
 # This is a hack to keep the files that are added to the repo and to prevent git from worrying about
 # new (transient) files that may be created in those dirs.

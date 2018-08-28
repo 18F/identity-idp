@@ -1,6 +1,6 @@
 - title t('idv.titles.phone')
 
-h1.h2.my0 = t('idv.titles.session.phone')
+h1.h3.my0 = t('idv.titles.session.phone')
 
 .mt2
   == t('idv.messages.phone.alert')
@@ -12,7 +12,7 @@ ul.py1.m0
 = simple_form_for(@idv_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
   = f.label :phone, label: t('idv.form.phone'), class: 'bold'
-  = f.input :phone, required: true, input_html: { class: 'us-phone' }, label: false,
+  = f.input :phone, required: true, input_html: { class: 'us-phone sm-col-8' }, label: false,
     wrapper_html: { class: 'mr2' }
 
   - if FeatureManagement.enable_usps_verification?

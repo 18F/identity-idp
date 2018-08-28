@@ -60,12 +60,12 @@ describe Idv::UspsController do
 
     context 'resending a letter' do
       let(:has_pending_profile) { true }
-      let(:pending_profile) { create(:profile, phone_confirmed: false) }
+      let(:pending_profile) { create(:profile) }
 
       before do
         stub_sign_in(user)
         stub_decorated_user_with_pending_profile(user)
-        allow(user.decorate).to receive(:needs_profile_usps_verification?).and_return(true)
+        allow(user.decorate).to receive(:pending_profile_requires_verification?).and_return(true)
       end
 
       it 'calls the UspsConfirmationMaker to send another letter and redirects' do
