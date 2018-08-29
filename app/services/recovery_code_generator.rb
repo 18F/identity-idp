@@ -22,9 +22,7 @@ class RecoveryCodeGenerator
   end
 
   private
-
-  attr_reader :user
-
+  
   def save_code(code)
     rc = RecoveryCode.new
     rc.code = Digest::SHA2.base64digest(code)
