@@ -1,9 +1,11 @@
+require 'digest'
+
 class RecoveryCodeGenerator
   attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
 
-  def initialize(user, length: 6, split: 2)
+  def initialize(user, length: 8, split: 2)
     @length = length
     @split = split
     @user = user
@@ -15,7 +17,8 @@ class RecoveryCodeGenerator
   end
 
   def verify(plaintext_code)
-    user.valid_recovery_code(normalize(plaintext_code))
+    code = Digest::SHA2.base64digest(plaintext_code)
+    RecoveryCode.exists? user_id: user.id, code: code
   end
 
   private
@@ -24,7 +27,7 @@ class RecoveryCodeGenerator
 
   def save_code(code)
     rc = RecoveryCode.new
-    rc.code = code
+    rc.code = Digest::SHA2.base64digest(code)
     rc.user_id = @user.id
     rc.used = 0
     rc.save
