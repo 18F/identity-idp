@@ -11,7 +11,7 @@ module Idv
 
     STAGES = %i[resolution state_id address].freeze
 
-    @vendors = {}
+    @vendors = nil
 
     class << self
       def attribute?(key)
