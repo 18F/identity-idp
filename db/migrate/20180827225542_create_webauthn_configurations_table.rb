@@ -6,8 +6,6 @@ class CreateWebauthnConfigurationsTable < ActiveRecord::Migration[5.1]
       t.text :credential_id, null: false
       t.text :credential_public_key, null: false
       t.timestamps
-
-      t.index ['user_id'], name: "index_webauthn_configurations_on_user_id"
     end
   end
 end
