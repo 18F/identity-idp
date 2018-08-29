@@ -88,6 +88,9 @@ def clone_identity_devops_repo
     run "mkdir login-dot-gov"
     Dir.chdir "#{ENV['HOME']}/login-dot-gov" do
       run "git clone git@github.com:18F/identity-devops.git"
+      Dir.chdir "identity-devops" do
+        run "bundle install"
+      end
     end
   end
 end
