@@ -7,6 +7,10 @@ class AnonymousUser
     nil
   end
 
+  def phone_configuration
+    nil
+  end
+
   def phone
     nil
   end
