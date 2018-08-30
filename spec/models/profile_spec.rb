@@ -30,12 +30,12 @@ describe Profile do
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      initial_personal_key = user.personal_key
+      initial_personal_key = user.encrypted_recovery_code_digest
 
       profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
-      expect(user.personal_key).to_not eq initial_personal_key
+      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
   end
 
@@ -43,13 +43,13 @@ describe Profile do
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      initial_personal_key = user.personal_key
+      initial_personal_key = user.encrypted_recovery_code_digest
 
       profile.encrypt_recovery_pii(pii)
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
-      expect(user.personal_key).to_not eq initial_personal_key
-      expect(profile.personal_key).to_not eq user.personal_key
+      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
+      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
     end
   end
 

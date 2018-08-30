@@ -3,18 +3,16 @@ require 'rails_helper'
 feature 'Signing in via one-time use personal key' do
   it 'destroys old key, displays new one, and redirects to profile after acknowledging' do
     user = create(:user, :signed_up)
+    raw_key = PersonalKeyGenerator.new(user).create
+    old_key = user.reload.encrypted_recovery_code_digest
+
     sign_in_before_2fa(user)
-
-    personal_key = PersonalKeyGenerator.new(user).create
-
     choose_another_security_option('personal_key')
-
-    enter_personal_key(personal_key: personal_key)
-
+    enter_personal_key(personal_key: raw_key)
     click_submit_default
     click_acknowledge_personal_key
 
-    expect(user.reload.personal_key).to_not eq personal_key
+    expect(user.reload.encrypted_recovery_code_digest).to_not eq old_key
     expect(current_path).to eq account_path
   end
 
