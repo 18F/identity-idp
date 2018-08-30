@@ -204,4 +204,12 @@ RSpec.describe ServiceProviderSessionDecorator do
       expect(subject.failure_to_proof_url).to eq url
     end
   end
+
+  describe '#sp_return_url' do
+    it 'does not raise an error if request_url is nil' do
+      allow(subject).to receive(:request_url).and_return(nil)
+      allow(sp).to receive(:redirect_uris).and_return(['foo'])
+      subject.sp_return_url
+    end
+  end
 end
