@@ -4,6 +4,7 @@ class SmsLoginOptionPolicy
   end
 
   def configured?
+    return false unless user
     user.phone_configuration.present?
   end
 
