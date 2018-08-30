@@ -20,6 +20,15 @@ shared_examples 'cancel at idv step' do |step, sp|
   end
 
   it 'shows the user a cancellation message with the option to cancel and reset idv' do
+    failure_to_proof_url = 'https://www.example.com/failure'
+    sp_name = 'Test SP'
+    allow_any_instance_of(SessionDecorator).to receive(:failure_to_proof_url).
+      and_return(failure_to_proof_url)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:failure_to_proof_url).
+      and_return(failure_to_proof_url)
+    allow_any_instance_of(SessionDecorator).to receive(:sp_name).and_return(sp_name)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
+
     click_link t('links.cancel')
 
     expect(page).to have_content(t('idv.cancel.modal_header'))
@@ -29,6 +38,9 @@ shared_examples 'cancel at idv step' do |step, sp|
 
     expect(page).to have_content(t('headings.cancellations.confirmation'))
     expect(current_path).to eq(idv_cancel_path)
+
+    expect(page).to have_link("‹ #{t('links.back_to_sp', sp: sp_name)}",
+                              href: failure_to_proof_url)
 
     # After visiting /verify, expect to redirect to the jurisdiction step,
     # the first step in the IdV flow

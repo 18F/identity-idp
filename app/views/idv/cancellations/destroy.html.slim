@@ -4,4 +4,5 @@ ul class="list-reset #{@presenter.state_color}-dots"
   - @presenter.cancellation_effects.each do |effect|
     li = effect
 
-.mt2 = link_to t('idv.cancel.return_to_account'), account_path
+.mt2 = link_to "‹ #{t('links.back_to_sp', sp: decorated_session.sp_name)}",
+  decorated_session.failure_to_proof_url
