@@ -22,6 +22,11 @@ describe PopulatePhoneConfigurationsTable do
           user.reload
         end
 
+        it 'migrates without decrypting and re-encrypting' do
+          expect(EncryptedAttribute).to_not receive(:new)
+          subject.call
+        end
+
         it 'migrates the phone' do
           subject.call
           configuration = user.reload.phone_configuration

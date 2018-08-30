@@ -11,17 +11,8 @@ module VerifyProfileConcern
 
   def account_or_verify_profile_route
     return 'account' if idv_context? || profile_context?
-    return 'account' unless current_user.decorate.pending_profile_requires_verification?
-    verify_profile_route
-  end
-
-  def verify_profile_route
-    decorated_user = current_user.decorate
-    if decorated_user.needs_profile_phone_verification?
-      flash[:notice] = t('account.index.verification.instructions')
-      return 'verify_profile_phone'
-    end
-    return 'verify_account' if decorated_user.needs_profile_usps_verification?
+    return 'account' unless profile_needs_verification?
+    'verify_account'
   end
 
   def profile_needs_verification?

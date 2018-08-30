@@ -1,26 +1,4 @@
 class PhoneNumberCapabilities
-  VOICE_UNSUPPORTED_US_AREA_CODES = {
-    '264' => 'Anguilla',
-    '268' => 'Antigua and Barbuda',
-    '242' => 'Bahamas',
-    '246' => 'Barbados',
-    '441' => 'Bermuda',
-    '284' => 'British Virgin Islands',
-    '345' => 'Cayman Islands',
-    '767' => 'Dominica',
-    '809' => 'Dominican Republic',
-    '829' => 'Dominican Republic',
-    '849' => 'Dominican Republic',
-    '473' => 'Grenada',
-    '876' => 'Jamaica',
-    '664' => 'Montserrat',
-    '869' => 'Saint Kitts and Nevis',
-    '758' => 'Saint Lucia',
-    '784' => 'Saint Vincent Grenadines',
-    '868' => 'Trinidad and Tobago',
-    '649' => 'Turks and Caicos Islands',
-  }.freeze
-
   INTERNATIONAL_CODES = YAML.load_file(
     Rails.root.join('config', 'country_dialing_codes.yml')
   ).freeze
@@ -32,38 +10,27 @@ class PhoneNumberCapabilities
   end
 
   def sms_only?
-    if international_code == '1'
-      VOICE_UNSUPPORTED_US_AREA_CODES[area_code].present?
-    elsif country_code_data
-      country_code_data['sms_only']
-    end
+    return true if country_code_data.nil?
+    country_code_data['sms_only']
   end
 
   def unsupported_location
-    if international_code == '1'
-      VOICE_UNSUPPORTED_US_AREA_CODES[area_code]
-    elsif country_code_data
-      country_code_data['name']
-    end
+    country_code_data['name'] if country_code_data
   end
 
   private
 
-  def area_code
-    @area_code ||= parsed_phone.area_code
-  end
-
   def country_code_data
-    @country_code_data ||= INTERNATIONAL_CODES.select do |_, value|
-      value['country_code'] == international_code
+    @country_code_data ||= INTERNATIONAL_CODES.select do |key, _|
+      key == two_letter_country_code
     end.values.first
   end
 
-  def international_code
-    @international_code ||= parsed_phone.country_code
+  def two_letter_country_code
+    parsed_phone.country
   end
 
   def parsed_phone
-    @parsed_phone ||= Phonelib.parse(phone)
+    Phonelib.parse(phone)
   end
 end

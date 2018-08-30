@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 describe AccountReset::DeleteAccountController do
+  include AccountResetHelper
+
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user)
-      AccountResetService.new(user).create_request
+      create_account_reset_request_for(user)
       AccountResetService.new(user).grant_request
 
       session[:granted_token] = AccountResetRequest.all[0].granted_token
@@ -33,7 +35,7 @@ describe AccountReset::DeleteAccountController do
   describe '#show' do
     it 'prevents parameter leak' do
       user = create(:user)
-      AccountResetService.new(user).create_request
+      create_account_reset_request_for(user)
       AccountResetService.new(user).grant_request
 
       get :show, params: { token: AccountResetRequest.all[0].granted_token }
@@ -49,7 +51,7 @@ describe AccountReset::DeleteAccountController do
 
     it 'renders the page' do
       user = create(:user)
-      AccountResetService.new(user).create_request
+      create_account_reset_request_for(user)
       AccountResetService.new(user).grant_request
       session[:granted_token] = AccountResetRequest.all[0].granted_token
 
@@ -60,7 +62,7 @@ describe AccountReset::DeleteAccountController do
 
     it 'displays a flash and redirects to root if the token is expired' do
       user = create(:user)
-      AccountResetService.new(user).create_request
+      create_account_reset_request_for(user)
       AccountResetService.new(user).grant_request
 
       stub_analytics

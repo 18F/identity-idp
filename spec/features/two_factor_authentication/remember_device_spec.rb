@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'Remembering a 2FA device' do
   include IdvHelper
+  include SamlAuthHelper
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -22,6 +23,7 @@ feature 'Remembering a 2FA device' do
     end
 
     it_behaves_like 'remember device'
+    it_behaves_like 'remember device after being idle on sign in page'
   end
 
   context 'sign up' do

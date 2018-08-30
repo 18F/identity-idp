@@ -18,7 +18,6 @@ DuplicateMethodCall:
     - UserFlowExporter#self.massage_assets
     - BasicAuthUrl#build
     - fallback_to_english
-    - Idv::Proofer#load_vendors!
     - Upaya::RandomTools#self.random_weighted_sample
     - SmsController#authenticate
 FeatureEnvy:
@@ -46,7 +45,6 @@ FeatureEnvy:
     - UserEncryptedAttributeOverrides#find_with_email
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
-    - Idv::Proofer#validate_vendors
     - TwoFactorAuthenticationController#capture_analytics_for_exception
     - Users::SessionsController#configure_permitted_parameters
     - UspsConfirmationExporter#make_entry_row
@@ -105,7 +103,6 @@ TooManyStatements:
     - UserFlowExporter#self.massage_html
     - UserFlowExporter#self.run
     - Idv::Agent#proof
-    - Idv::Proofer#configure_vendors
     - Idv::VendorResult#initialize
     - SamlIdpController#auth
     - Upaya::QueueConfig#self.choose_queue_adapter

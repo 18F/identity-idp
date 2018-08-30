@@ -15,7 +15,6 @@ describe Idv::ConfirmationsController do
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      phone_confirmed: true,
       user_password: password
     )
     profile = profile_maker.save_profile
@@ -112,7 +111,7 @@ describe Idv::ConfirmationsController do
 
     context 'user used 2FA phone as phone of record' do
       before do
-        subject.idv_session.params['phone'] = user.phone
+        subject.idv_session.params['phone'] = user.phone_configuration.phone
       end
 
       it 'tracks final IdV event' do

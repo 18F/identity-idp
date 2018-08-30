@@ -54,7 +54,7 @@ module TwoFactorAuthenticatable
   def check_already_authenticated
     return unless initial_authentication_context?
 
-    redirect_to account_url if user_fully_authenticated?
+    redirect_to after_otp_verification_confirmation_url if user_fully_authenticated?
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
@@ -140,7 +140,7 @@ module TwoFactorAuthenticatable
   end
 
   def old_phone
-    current_user.phone
+    current_user.phone_configuration&.phone
   end
 
   def phone_changed
@@ -260,7 +260,7 @@ module TwoFactorAuthenticatable
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       remember_device_available: false,
-      phone_enabled: current_user.phone_enabled?,
+      phone_enabled: current_user.phone_configuration&.mfa_enabled?,
     }.merge(generic_data)
   end
 
@@ -282,7 +282,7 @@ module TwoFactorAuthenticatable
 
   def voice_otp_delivery_unsupported?
     phone_number = if authentication_context?
-                     current_user.phone
+                     current_user.phone_configuration&.phone
                    else
                      user_session[:unconfirmed_phone]
                    end
@@ -297,7 +297,7 @@ module TwoFactorAuthenticatable
     locale = LinkLocaleResolver.locale
     if idv_context?
       idv_phone_path(locale: locale)
-    elsif current_user.phone.present?
+    elsif current_user.phone_configuration.present?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -305,7 +305,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && current_user.phone.present?
+    confirmation_context? && current_user.phone_configuration.present?
   end
 
   def presenter_for_two_factor_authentication_method

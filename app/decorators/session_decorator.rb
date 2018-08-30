@@ -31,6 +31,8 @@ class SessionDecorator
     view_context.root_url
   end
 
+  def failure_to_proof_url; end
+
   def sp_name; end
 
   def sp_agency; end
