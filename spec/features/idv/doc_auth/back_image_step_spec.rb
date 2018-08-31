@@ -30,4 +30,13 @@ feature 'doc auth back image step' do
 
     expect(page).to have_current_path(idv_doc_auth_back_image_step)
   end
+
+  it 'does not proceed to the next page with result=2' do
+    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+      and_return([true, assure_id_results_with_result_2])
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_back_image_step)
+  end
 end

@@ -131,4 +131,11 @@ module DocAuthHelper
   def attach_image
     attach_file 'doc_auth_image', 'app/assets/images/logo.png'
   end
+
+  def assure_id_results_with_result_2
+    result = DocAuthHelper::ACUANT_RESULTS.dup
+    result['Result'] = 2
+    result['Alerts'] = [{ 'Actions': 'Check the document' }]
+    result
+  end
 end
