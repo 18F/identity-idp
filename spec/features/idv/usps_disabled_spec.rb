@@ -18,7 +18,7 @@ feature 'disabling USPS address verification', :idv_job do
     end
 
     it 'allows verification without the option to confirm address with usps' do
-      allow(Idv::PhoneConfirmationOtpGenerator).to receive(:generate_otp).and_return('777777')
+      allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).and_return('777777')
 
       user = user_with_2fa
       start_idv_from_sp

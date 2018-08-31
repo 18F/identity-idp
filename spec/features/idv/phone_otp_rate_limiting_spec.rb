@@ -7,7 +7,7 @@ feature 'phone otp rate limiting', :idv_job do
   let(:otp_code) { '777777' }
 
   before do
-    allow(Idv::PhoneConfirmationOtpGenerator).to receive(:generate_otp).and_return(otp_code)
+    allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).and_return(otp_code)
   end
 
   describe 'otp sends' do

@@ -6,7 +6,7 @@ feature 'phone otp verification step spec', :idv_job do
   let(:otp_code) { '777777' }
 
   before do
-    allow(Idv::PhoneConfirmationOtpGenerator).to receive(:generate_otp).and_return(otp_code)
+    allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).and_return(otp_code)
   end
 
   it 'requires the user to enter the correct otp before continuing' do
