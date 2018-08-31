@@ -122,7 +122,6 @@ es:
           del estado?"
         why: Para verificar su identidad, necesitará información de su identificación
           emitida por el estado.
-      loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: NOT TRANSLATED YET

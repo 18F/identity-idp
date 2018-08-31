@@ -186,13 +186,11 @@ Rails.application.routes.draw do
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
-        get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         get '/review' => 'review#new'
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
-        get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
         get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
         delete '/session' => 'sessions#destroy'
