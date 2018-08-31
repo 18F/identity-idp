@@ -1,12 +1,10 @@
 module Idv
   # Ignore instance variable assumption on @user_locked_out :reek:InstanceVariableAssumption
   class SendPhoneConfirmationOtp
-    attr_accessor :user, :idv_session, :locale
-
     def initialize(user:, idv_session:, locale:)
-      self.user = user
-      self.idv_session = idv_session
-      self.locale = locale
+      @user = user
+      @idv_session = idv_session
+      @locale = locale
     end
 
     def call
@@ -25,6 +23,8 @@ module Idv
     end
 
     private
+
+    attr_reader :user, :idv_session, :locale
 
     def too_many_otp_sends_response
       FormResponse.new(
