@@ -3,7 +3,8 @@
 h1.h3 = t('idv.titles.sessions')
 
 p = link_to t('links.access_help'),
-  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
+  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/',
+  target: :_blank
 
 = simple_form_for(@idv_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
