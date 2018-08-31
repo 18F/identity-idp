@@ -46,7 +46,7 @@ describe Idv::ResendOtpController do
         success: true,
         errors: {},
         otp_delivery_preference: :sms,
-        country_code: '1',
+        country_code: 'US',
         area_code: '225',
         rate_limit_exceeded: false,
       }

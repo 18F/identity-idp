@@ -87,7 +87,7 @@ module Idv
       parsed_phone = Phonelib.parse(phone)
       {
         otp_delivery_preference: otp_delivery_preference,
-        country_code: parsed_phone.country_code,
+        country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         rate_limit_exceeded: rate_limit_exceeded?,
       }
