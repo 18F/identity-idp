@@ -217,5 +217,18 @@ describe UserPhoneForm do
 
       expect(subject.phone_changed?).to eq(false)
     end
+
+    context 'when a user has no phone' do
+      it 'returns true' do
+        user.phone_configuration.destroy
+        user.update!(phone: nil)
+        user.reload
+
+        params[:phone] = '+1 504 444 1643'
+        subject.submit(params)
+
+        expect(subject.phone_changed?).to eq(true)
+      end
+    end
   end
 end
