@@ -84,8 +84,8 @@ module Idv
           HasMagneticStripeReader: false,
           SerialNumber: 'xxx',
           Type: {
-            Manufacturer: 'xxx',
-            Model: 'xxx',
+            Manufacturer: 'Login.gov',
+            Model: 'Doc Auth 1.0',
             SensorType: '3' # mobile
           },
         }
