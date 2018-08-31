@@ -19,7 +19,7 @@ feature 'phone otp rate limiting', :idv_job do
 
       (max_attempts - 1).times do
         choose_idv_otp_delivery_method_sms
-        click_on t('two_factor_authentication.choose_another_option')
+        visit idv_otp_delivery_method_path
       end
       choose_idv_otp_delivery_method_sms
 
@@ -46,7 +46,7 @@ feature 'phone otp rate limiting', :idv_job do
       # (n - 2)th attempt
       send_attempts.times do
         choose_idv_otp_delivery_method_sms
-        click_on t('two_factor_authentication.choose_another_option')
+        visit idv_otp_delivery_method_path
       end
 
       # (n - 1)th attempt
