@@ -62,6 +62,36 @@ feature 'IdV phone OTP delivery method selection', :idv_job do
     expect(user.direct_otp).to eq(old_direct_otp)
   end
 
+  it 'redirects back to the step with an error if twilio raises an error' do
+    user = user_with_2fa
+
+    start_idv_from_sp
+    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
+
+    generic_exception = Twilio::REST::RestError.new(
+      '', FakeTwilioErrorResponse.new(123)
+    )
+    allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(generic_exception)
+
+    choose_idv_otp_delivery_method_sms
+
+    expect(page).to have_content(t('errors.messages.otp_failed'))
+    expect(page).to have_current_path(idv_phone_path)
+
+    fill_out_phone_form_ok
+    click_idv_continue
+
+    calling_area_exception = Twilio::REST::RestError.new(
+      '', FakeTwilioErrorResponse.new(21_215)
+    )
+    allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(calling_area_exception)
+
+    choose_idv_otp_delivery_method_sms
+
+    expect(page).to have_content(t('errors.messages.invalid_calling_area'))
+    expect(page).to have_current_path(idv_phone_path)
+  end
+
   context 'cancelling IdV' do
     it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection
     it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :oidc

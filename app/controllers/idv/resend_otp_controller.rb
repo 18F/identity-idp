@@ -15,6 +15,8 @@ module Idv
       else
         redirect_to idv_otp_verification_url
       end
+    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
+      invalid_phone_number(exception)
     end
 
     private
@@ -42,6 +44,12 @@ module Idv
     def user_locale
       available_locales = PhoneVerification::AVAILABLE_LOCALES
       http_accept_language.language_region_compatible_from(available_locales)
+    end
+
+    def invalid_phone_number(exception)
+      twilio_errors = TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
+      flash[:error] = twilio_errors.fetch(exception.code, t('errors.messages.otp_failed'))
+      redirect_to idv_phone_url
     end
   end
 end

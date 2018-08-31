@@ -17,6 +17,8 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
       return render(:new) unless result.success?
       send_phone_confirmation_otp
+    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
+      invalid_phone_number(exception)
     end
 
     private
@@ -71,6 +73,12 @@ module Idv
 
     def otp_delivery_selection_form
       @otp_delivery_selection_form ||= Idv::OtpDeliveryMethodForm.new
+    end
+
+    def invalid_phone_number(exception)
+      twilio_errors = TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
+      flash[:error] = twilio_errors.fetch(exception.code, t('errors.messages.otp_failed'))
+      redirect_to idv_phone_url
     end
   end
 end
