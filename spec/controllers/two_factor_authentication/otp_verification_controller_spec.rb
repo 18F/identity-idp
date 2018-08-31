@@ -439,7 +439,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         idv_session = Idv::Session.new(
           user_session: subject.user_session, current_user: user, issuer: nil
         )
-        idv_session.params = { 'phone' => '+1 (703) 555-5555' }
+        idv_session.applicant = { 'phone' => '+1 (703) 555-5555' }
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'idv'
         @previous_phone_confirmed_at = subject.current_user.phone_configuration&.confirmed_at
@@ -486,10 +486,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(subject).to_not have_received(:create_user_event).with(:phone_changed)
         end
 
-        it 'updates idv session phone_confirmed_at attribute' do
-          expect(subject.user_session[:idv][:params]['phone_confirmed_at']).to_not be_nil
-        end
-
         it 'updates idv session user_phone_confirmation attributes' do
           expect(subject.user_session[:idv][:user_phone_confirmation]).to eq(true)
         end
@@ -531,7 +527,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(configuration.phone).to eq '+1 202-555-1212'
           expect(configuration.confirmed_at).to eq @previous_phone_confirmed_at
 
-          expect(subject.idv_session.params['phone_confirmed_at']).to be_nil
+          expect(subject.idv_session.user_phone_confirmation).to be_falsy
         end
 
         it 'renders :show' do
