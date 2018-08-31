@@ -8,7 +8,9 @@ module Idv
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
-      return redirect_to(idv_session_url) unless idv_profile_complete?
+      unless idv_profile_complete? || current_user.decorate.pending_profile_requires_verification?
+        return redirect_to(idv_session_url)
+      end
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
