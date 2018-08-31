@@ -1,5 +1,6 @@
 module Idv
   class OtpVerificationPresenter
+    include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
 
@@ -13,6 +14,12 @@ module Idv
       t("instructions.mfa.#{otp_delivery_preference}.number_message",
         number: content_tag(:strong, phone_number),
         expiration: Figaro.env.otp_valid_for)
+    end
+
+    def update_phone_link
+      phone_path = Rails.application.routes.url_helpers.idv_phone_path
+      link = link_to(t('forms.two_factor.try_again'), phone_path)
+      t('instructions.mfa.wrong_number_html', link: link)
     end
 
     private

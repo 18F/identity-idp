@@ -21,10 +21,7 @@ p == @presenter.phone_number_message
     class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
     form_class: 'inline-block')
 
-br
-
-p = link_to t('forms.two_factor.try_again'), idv_phone_path
-p = link_to t('two_factor_authentication.choose_another_option'), idv_otp_delivery_method_url
+p.mt4 = @presenter.update_phone_link
 
 .mt3.border-top
   .mt1
