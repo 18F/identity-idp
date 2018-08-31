@@ -68,6 +68,6 @@ class UserPhoneForm
   end
 
   def formatted_user_phone
-    Phonelib.parse(user.phone_configuration.phone).international
+    user.phone_configuration&.formatted_phone
   end
 end
