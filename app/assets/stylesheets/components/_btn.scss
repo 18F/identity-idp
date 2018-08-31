@@ -65,11 +65,9 @@
   display: inline-block;
   padding: $space-1 $space-2;
 
-  // &.is-focused {
-  //   border-color: $field-focus-color;
-  //   box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
-  //   outline: none;
-  // }
+  &.is-focused {
+    border-color: $field-focus-color;
+  }
 }
 
 .btn-disabled {
