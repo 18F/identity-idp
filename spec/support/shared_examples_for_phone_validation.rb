@@ -13,10 +13,10 @@ shared_examples 'a phone form' do
   describe 'phone uniqueness' do
     context 'when phone is already taken' do
       it 'is valid' do
-        second_user = build_stubbed(:user, :signed_up, phone: '+1 (202) 555-1213')
+        second_user = build_stubbed(:user, :signed_up, with: { phone: '+1 (202) 555-1213' })
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(
-          phone: second_user.phone_configuration.phone
+          phone_configuration: { phone: second_user.phone_configuration.phone }
         ).and_return(true)
 
         params[:phone] = second_user.phone_configuration.phone
@@ -37,7 +37,6 @@ shared_examples 'a phone form' do
 
     context 'when phone is same as current user' do
       it 'is valid' do
-        user.phone = '+1 (703) 500-5000'
         user.phone_configuration.phone = '+1 (703) 500-5000'
         params[:phone] = user.phone_configuration.phone
         result = subject.submit(params)

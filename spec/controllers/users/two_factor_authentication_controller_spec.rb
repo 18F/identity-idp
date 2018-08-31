@@ -101,7 +101,7 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when the user has already set up 2FA' do
       it 'sends OTP via otp_delivery_preference and prompts for OTP' do
-        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
 
         get :show
 

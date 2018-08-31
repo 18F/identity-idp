@@ -17,8 +17,8 @@ describe UserPhoneForm do
 
   it 'loads initial values from the user object' do
     user = build_stubbed(
-      :user,
-      phone: '+1 (703) 500-5000',
+      :user, :with_phone,
+      with: { phone: '+1 (703) 500-5000' },
       otp_delivery_preference: 'voice'
     )
     subject = UserPhoneForm.new(user)
@@ -29,7 +29,7 @@ describe UserPhoneForm do
   end
 
   it 'infers the international code from the user phone number' do
-    user = build_stubbed(:user, phone: '+81 744 21 1234')
+    user = build_stubbed(:user, :with_phone, with: { phone: '+81 744 21 1234' })
     subject = UserPhoneForm.new(user)
 
     expect(subject.international_code).to eq('JP')
@@ -78,7 +78,6 @@ describe UserPhoneForm do
         subject.submit(params)
 
         user.reload
-        expect(user.phone).to_not eq('+1 504 444 1643')
         expect(user.phone_configuration).to be_nil
       end
 
@@ -221,7 +220,6 @@ describe UserPhoneForm do
     context 'when a user has no phone' do
       it 'returns true' do
         user.phone_configuration.destroy
-        user.update!(phone: nil)
         user.reload
 
         params[:phone] = '+1 504 444 1643'

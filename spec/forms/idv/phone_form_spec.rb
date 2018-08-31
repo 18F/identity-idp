@@ -52,14 +52,14 @@ describe Idv::PhoneForm do
     end
 
     it 'uses the user phone number as the initial phone value' do
-      user = build_stubbed(:user, :signed_up, phone: '7035551234')
+      user = build_stubbed(:user, :signed_up, with: { phone: '7035551234' })
       subject = Idv::PhoneForm.new({}, user)
 
       expect(subject.phone).to eq('+1 703-555-1234')
     end
 
     it 'does not use an international number as the initial phone value' do
-      user = build_stubbed(:user, :signed_up, phone: '+81 54 354 3643')
+      user = build_stubbed(:user, :signed_up, with: { phone: '+81 54 354 3643' })
       subject = Idv::PhoneForm.new({}, user)
 
       expect(subject.phone).to eq(nil)
