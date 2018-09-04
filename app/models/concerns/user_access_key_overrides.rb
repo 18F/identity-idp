@@ -30,9 +30,8 @@ module UserAccessKeyOverrides
   end
 
   def personal_key=(new_personal_key)
-    @personal_key = new_personal_key
-    return if @personal_key.blank?
-    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.digest(@personal_key)
+    return if new_personal_key.blank?
+    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.digest(new_personal_key)
   end
 
   # This is a devise method, which we are overriding. This should not be removed
