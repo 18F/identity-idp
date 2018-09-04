@@ -9,9 +9,14 @@ class UserPhoneForm
 
   def initialize(user)
     self.user = user
-    self.phone = user.phone
-    self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
-    self.otp_delivery_preference = user.otp_delivery_preference
+    phone_configuration = user.phone_configuration
+    if phone_configuration.nil?
+      self.otp_delivery_preference = user.otp_delivery_preference
+    else
+      self.phone = phone_configuration.phone
+      self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
+      self.otp_delivery_preference = phone_configuration.delivery_preference
+    end
   end
 
   def submit(params)
@@ -54,7 +59,7 @@ class UserPhoneForm
   end
 
   def otp_delivery_preference_changed?
-    otp_delivery_preference != user.otp_delivery_preference
+    otp_delivery_preference != user.phone_configuration&.delivery_preference
   end
 
   def update_otp_delivery_preference_for_user
@@ -63,6 +68,6 @@ class UserPhoneForm
   end
 
   def formatted_user_phone
-    Phonelib.parse(user.phone).international
+    user.phone_configuration&.formatted_phone
   end
 end

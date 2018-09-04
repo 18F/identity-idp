@@ -23,7 +23,7 @@ describe UserPhoneForm do
     )
     subject = UserPhoneForm.new(user)
 
-    expect(subject.phone).to eq(user.phone)
+    expect(subject.phone).to eq(user.phone_configuration.phone)
     expect(subject.international_code).to eq('US')
     expect(subject.otp_delivery_preference).to eq(user.otp_delivery_preference)
   end
@@ -212,10 +212,23 @@ describe UserPhoneForm do
     end
 
     it 'returns false if the user phone has not changed' do
-      params[:phone] = user.phone
+      params[:phone] = user.phone_configuration.phone
       subject.submit(params)
 
       expect(subject.phone_changed?).to eq(false)
+    end
+
+    context 'when a user has no phone' do
+      it 'returns true' do
+        user.phone_configuration.destroy
+        user.update!(phone: nil)
+        user.reload
+
+        params[:phone] = '+1 504 444 1643'
+        subject.submit(params)
+
+        expect(subject.phone_changed?).to eq(true)
+      end
     end
   end
 end

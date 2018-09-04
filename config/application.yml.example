@@ -255,6 +255,7 @@ production:
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
   piv_cac_agencies: '["DOD","NGA","EOP"]'
+  piv_cac_agencies_scoped_by_email: '["GSA"]'
   piv_cac_email_domains: '[".mil"]'
   piv_cac_enabled: 'false'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'

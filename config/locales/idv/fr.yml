@@ -48,6 +48,8 @@ fr:
       errors:
         link: contactez-nous
         text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
+      help:
+        get_help_html: Obtenir de l'aide à <strong>%{sp_name}</strong>
       phone:
         fail: Pour votre sécurité, la vérification d'identité de votre compte est
           <strong>verrouillée pendant 24 heures</strong>.
@@ -111,15 +113,12 @@ fr:
         originalement.
       dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
       hardfail: NOT TRANSLATED YET
-      help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
-        davantage sur la façon dont nous vérifions votre compte.
       jurisdiction:
         no_id: Je n'ai pas de carte d'identité officielle
         no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
           votre identité.
         profile: Pour accéder à votre compte dans le futur, vous pouvez %{link}.
         profile_link: voir votre compte ici
-        sp_support: Visitez %{link} pour plus d'informations.
         try_again: Faire une erreur? Vous pouvez %{link}.
         try_again_link: réessayer
         unsupported_jurisdiction_failure: Nous travaillons dur pour ajouter plus d'états
@@ -143,9 +142,6 @@ fr:
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain
-      read_about_security_and_privacy:
-        link: lire comment login.gov protège vos informations
-        text: Vous pouvez %{link} sur notre page d'aide.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:

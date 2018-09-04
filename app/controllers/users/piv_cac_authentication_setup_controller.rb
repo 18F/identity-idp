@@ -79,7 +79,7 @@ module Users
     end
 
     def next_step
-      return account_url if current_user.phone_enabled?
+      return account_url if current_user.phone_configuration&.mfa_enabled?
       account_recovery_setup_url
     end
 

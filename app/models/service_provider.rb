@@ -42,8 +42,8 @@ class ServiceProvider < ApplicationRecord
     active? && approved?
   end
 
-  def piv_cac_available?
-    PivCacService.piv_cac_available_for_agency?(agency)
+  def piv_cac_available?(user = nil)
+    PivCacService.piv_cac_available_for_agency?(agency, user&.email)
   end
 
   private

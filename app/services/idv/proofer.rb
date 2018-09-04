@@ -11,80 +11,68 @@ module Idv
 
     STAGES = %i[resolution state_id address].freeze
 
-    @vendors = {}
+    @vendors = nil
 
     class << self
       def attribute?(key)
         ATTRIBUTES.include?(key&.to_sym)
       end
 
-      def init
-        @vendors = configure_vendors(STAGES, configuration)
-      end
-
       def get_vendor(stage)
-        @vendors[stage]
+        stage = stage.to_sym
+        vendor = vendors[stage]
+        return vendor if vendor.present?
+        return unless mock_fallback_enabled?
+        mock_vendors[stage]
       end
 
-      def configure
-        yield(configuration)
-      end
-
-      def configuration
-        @configuration ||= Configuration.new
-      end
-
-      class Configuration
-        attr_accessor :mock_fallback, :raise_on_missing_proofers, :vendors
-        def initialize
-          @mock_fallback = false
-          @raise_on_missing_proofers = true
-          @vendors = []
-        end
-      end
-
-      def configure_vendors(stages, config)
-        external_vendors = loaded_vendors
-        available_external_vendors = available_vendors(config.vendors, external_vendors)
-        require_mock_vendors if config.mock_fallback
-        mock_vendors = loaded_vendors - external_vendors
-
-        vendors = assign_vendors(stages, available_external_vendors, mock_vendors)
-
-        validate_vendors(stages, vendors) if config.raise_on_missing_proofers
-
-        vendors
+      def validate_vendors!
+        return if mock_fallback_enabled?
+        missing_stages = STAGES - vendors.keys
+        return if missing_stages.empty?
+        raise "No proofer vendor configured for stage(s): #{missing_stages.join(', ')}"
       end
 
       private
 
-      def loaded_vendors
-        ::Proofer::Base.descendants
-      end
-
-      def available_vendors(configured_vendors, vendors)
-        vendors.select { |vendor| configured_vendors.include?(vendor.vendor_name) }
-      end
-
-      def require_mock_vendors
-        Dir[Rails.root.join('lib', 'proofer_mocks', '*')].each { |file| require file }
-      end
-
-      def assign_vendors(stages, external_vendors, mock_vendors)
-        stages.each_with_object({}) do |stage, vendors|
-          vendor = stage_vendor(stage, external_vendors) || stage_vendor(stage, mock_vendors)
-          vendors[stage] = vendor if vendor
+      def vendors
+        @vendors ||= begin
+          require_mock_vendors_if_enabled
+          available_vendors.each_with_object({}) do |vendor, result|
+            vendor_stage = vendor.stage&.downcase&.to_sym
+            next unless STAGES.include?(vendor_stage)
+            result[vendor_stage] = vendor
+          end
         end
       end
 
-      def stage_vendor(stage, vendors)
-        vendors.find { |vendor| stage == vendor.stage&.to_sym }
+      def available_vendors
+        external_vendors = ::Proofer::Base.descendants - mock_vendors.values
+        external_vendors.select do |vendor|
+          configured_vendor_names.include?(vendor.vendor_name)
+        end
       end
 
-      def validate_vendors(stages, vendors)
-        missing_stages = stages - vendors.keys
-        return if missing_stages.empty?
-        raise "No proofer vendor configured for stage(s): #{missing_stages.join(', ')}"
+      def configured_vendor_names
+        JSON.parse(Figaro.env.proofer_vendors || '[]')
+      end
+
+      def mock_vendors
+        return {} unless mock_fallback_enabled?
+        {
+          resolution: ResolutionMock,
+          state_id: StateIdMock,
+          address: AddressMock,
+        }
+      end
+
+      def require_mock_vendors_if_enabled
+        return unless mock_fallback_enabled?
+        Dir[Rails.root.join('lib', 'proofer_mocks', '*')].each { |file| require file }
+      end
+
+      def mock_fallback_enabled?
+        Figaro.env.proofer_mock_fallback == 'true'
       end
     end
   end

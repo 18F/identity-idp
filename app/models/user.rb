@@ -42,6 +42,7 @@ class User < ApplicationRecord
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_one :phone_configuration, dependent: :destroy, inverse_of: :user
+  has_many :webauthn_configurations, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
@@ -67,12 +68,8 @@ class User < ApplicationRecord
     two_factor_enabled?
   end
 
-  def phone_enabled?
-    phone.present?
-  end
-
   def two_factor_enabled?
-    phone_enabled? || totp_enabled? || piv_cac_enabled?
+    phone_configuration&.mfa_enabled? || totp_enabled? || piv_cac_enabled?
   end
 
   def send_two_factor_authentication_code(_code)

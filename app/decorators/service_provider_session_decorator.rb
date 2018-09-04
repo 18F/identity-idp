@@ -92,7 +92,7 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uris.present? && openid_connect_redirector.valid?
+    if sp.redirect_uris.present? && request_url.is_a?(String) && openid_connect_redirector.valid?
       openid_connect_redirector.decline_redirect_uri
     else
       sp.return_to_sp_url
@@ -101,6 +101,10 @@ class ServiceProviderSessionDecorator
 
   def cancel_link_url
     view_context.sign_up_start_url(request_id: sp_session[:request_id])
+  end
+
+  def failure_to_proof_url
+    sp.failure_to_proof_url || sp_return_url
   end
 
   def sp_alert?(path)

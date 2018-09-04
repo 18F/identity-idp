@@ -75,8 +75,6 @@ es:
       account_reset:
         cancel_link: Cancelar su solicitud
         link: eliminando su cuenta
-        link_expired: El enlace para eliminar su cuenta de login.gov ha caducado.
-          Crea otra solicitud para eliminar tu cuenta.
         pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
           Se necesitan 24 horas desde el momento en que realizó la solicitud para
           completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
