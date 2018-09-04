@@ -12,18 +12,27 @@ FactoryBot.define do
 
     trait :with_phone do
       after(:build) do |user, evaluator|
-        if user.phone_configuration.nil?
-          user.phone_configuration = build(
-            :phone_configuration,
-            { user: user, delivery_preference: user.otp_delivery_preference }.merge(
-              evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+        if user.phone_configurations.empty?
+          user.save!
+          if user.id.present?
+            create(:phone_configuration,
+                   { user: user, delivery_preference: user.otp_delivery_preference }.merge(
+                     evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+                   ))
+            user.reload
+          else
+            user.phone_configurations << build(
+              :phone_configuration,
+              { delivery_preference: user.otp_delivery_preference }.merge(
+                evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+              )
             )
-          )
+          end
         end
       end
 
       after(:create) do |user, evaluator|
-        if user.phone_configuration.nil?
+        if user.phone_configurations.empty?
           create(:phone_configuration,
                  { user: user, delivery_preference: user.otp_delivery_preference }.merge(
                    evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
@@ -33,10 +42,10 @@ FactoryBot.define do
       end
 
       after(:stub) do |user, evaluator|
-        if user.phone_configuration.nil?
-          user.phone_configuration = build_stubbed(
+        if user.phone_configurations.empty?
+          user.phone_configurations << build(
             :phone_configuration,
-            { user: user, delivery_preference: user.otp_delivery_preference }.merge(
+            { delivery_preference: user.otp_delivery_preference }.merge(
               evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
             )
           )
