@@ -5,7 +5,7 @@ class RecoveryCodeGenerator
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
 
-  def initialize(user, length: 8, split: 2)
+  def initialize(user, length: 2, split: 4)
     @length = length
     @split = split
     @user = user
@@ -17,43 +17,48 @@ class RecoveryCodeGenerator
   end
 
   def verify(plaintext_code)
-    code = Digest::SHA2.base64digest(plaintext_code)
-    RecoveryCode.exists? user_id: user.id, code: code
+    code = encrypt( plaintext_code )
+    RecoveryCode.exists? user_id: @user.id, code: code
   end
 
   private
-  
+
+  def encrypt(plaintext)
+    plaintext
+  end
+
   def save_code(code)
     rc = RecoveryCode.new
-    rc.code = Digest::SHA2.base64digest(code)
+    rc.code = code
     rc.user_id = @user.id
     rc.used = 0
     rc.save
   end
 
   def delete_existing_codes
-    RecoveryCode.find_each(:user_id => user.id) do |rc|
-      rc.remove
-    end
+    RecoveryCode.where(:user_id => @user.id).destroy_all
   end
 
   def generate_new_codes
+    result = []
     (0..9).each do
       code = recovery_code
+      result.push code
       save_code(code)
     end
+    result
   end
 
-  def encode_code(code)
+  def encode_code(code:, length:, split:)
     decoded = Base32::Crockford.decode(code)
-    Base32::Crockford.encode(decoded, length: @length, split: @split).tr('-', ' ')
+    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
   end
 
   def normalize(plaintext_code)
     normed = plaintext_code.gsub(/\W/, '')
-    split_length = @split || RandomPhrase::WORD_LENGTH
+    split_length = @split
     normed_length = normed.length
-    return INVALID_CODE unless normed_length == personal_key_length * split_length
+    return INVALID_CODE unless normed_length == @length * split_length
     encode_code(code: normed, length: normed_length, split: split_length)
   rescue ArgumentError, RegexpError
     INVALID_CODE
@@ -63,9 +68,5 @@ class RecoveryCodeGenerator
     c = SecureRandom.hex
     raw = c[1, @split * @length]
     normalize(raw)
-  end
-
-  def personal_key_length
-    Figaro.env.recovery_code_length.to_i || length
   end
 end

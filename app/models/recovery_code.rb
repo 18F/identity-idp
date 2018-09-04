@@ -1,11 +1,10 @@
 class RecoveryCode < ApplicationRecord
+  self.ignored_columns = %w(encrypted_code)
+
   belongs_to :user
 
-  #     create_table :recovery_codes do |t|
-  #       t.integer :user_id, null: false
-  #       t.text :code, null: false
-  #       t.integer :used, default: 0, null: false
-  #       t.timestamps
-  #     end
-  #
+  include EncryptableAttribute
+  encrypted_attribute(name: :code)
+
+  include RecoveryCodeEncryptedAttributeOverrides
 end
