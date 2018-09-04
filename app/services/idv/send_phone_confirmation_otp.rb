@@ -22,6 +22,10 @@ module Idv
       @user_locked_out
     end
 
+    def phone
+      @phone ||= PhoneFormatter.format(idv_session.params[:phone])
+    end
+
     private
 
     attr_reader :user, :idv_session, :locale
@@ -73,10 +77,6 @@ module Idv
         otp_created_at: idv_session.phone_confirmation_otp_sent_at,
         locale: locale
       )
-    end
-
-    def phone
-      @phone ||= PhoneFormatter.format(idv_session.params[:phone])
     end
 
     def otp_delivery_preference

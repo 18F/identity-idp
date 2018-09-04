@@ -2,15 +2,16 @@ module Idv
   class ResendOtpController < ApplicationController
     include IdvSession
     include PhoneOtpRateLimitable
+    include PhoneOtpSendable
 
     # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
     before_action :confirm_user_phone_confirmation_needed
     before_action :confirm_otp_delivery_preference_selected
 
     def create
-      result = send_phone_confirmation_otp_service.call
+      result = send_phone_confirmation_otp
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT, result.to_h)
-      if send_phone_confirmation_otp_service.user_locked_out?
+      if send_phone_confirmation_otp_rate_limited?
         handle_too_many_otp_sends
       else
         redirect_to idv_otp_verification_url
@@ -31,25 +32,6 @@ module Idv
                 idv_session.phone_confirmation_otp_delivery_method.present?
 
       redirect_to idv_otp_delivery_method_url
-    end
-
-    def send_phone_confirmation_otp_service
-      @send_phone_confirmation_otp_form ||= SendPhoneConfirmationOtp.new(
-        user: current_user,
-        idv_session: idv_session,
-        locale: user_locale
-      )
-    end
-
-    def user_locale
-      available_locales = PhoneVerification::AVAILABLE_LOCALES
-      http_accept_language.language_region_compatible_from(available_locales)
-    end
-
-    def invalid_phone_number(exception)
-      twilio_errors = TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
-      flash[:error] = twilio_errors.fetch(exception.code, t('errors.messages.otp_failed'))
-      redirect_to idv_phone_url
     end
   end
 end
