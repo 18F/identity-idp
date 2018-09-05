@@ -85,10 +85,6 @@ RSpec.describe ServiceProviderSeeder do
           expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp')).
             to eq(nil)
 
-          # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:cert')).
-            to be_present
-
           # restrict_to_deploy_env: nil
           expect(ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra')).
             to be_present

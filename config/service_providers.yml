@@ -284,27 +284,6 @@ production:
       - 'http://localhost:8080/'
       - 'http://localhost:8080/auth/login-gov/callback'
 
-  # CBP Jobs
-  'urn:gov:dhs.cbp.jobs:openidconnect:cert':
-    agency_id: 1
-    uuid_priority: 30
-    redirect_uris:
-      - 'https://careers-cert.cbp.dhs.gov/hrm/app'
-    friendly_name: 'CBP Jobs'
-    agency: 'DHS'
-    logo: 'cbp.png'
-    restrict_to_deploy_env: 'staging'
-
-  'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
-    agency_id: 1
-    uuid_priority: 30
-    redirect_uris:
-      - 'gov.dhs.cbp.jobs.applicant.cert://result'
-    friendly_name: 'CBP Jobs'
-    agency: 'DHS'
-    logo: 'cbp.png'
-    restrict_to_deploy_env: 'staging'
-
   'urn:gov:dhs.cbp.jobs:openidconnect:prod':
     agency_id: 1
     uuid_priority: 30
@@ -351,29 +330,6 @@ production:
       - dob
       - ssn
       - phone
-
-  # RRB Benefit Connect
-  'urn:gov:rrb:OIDC:V0.1:BenefitConnnect:app-stg':
-    agency_id: 4
-    friendly_name: 'U.S. Railroad Retirement Board Benefit Connect'
-    agency: 'RRB'
-    logo: 'rrb.svg'
-    cert: 'rrb_benefit_connect_staging'
-    redirect_uris:
-      - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices/Account/SignInCallback'
-    attribute_bundle:
-      - email
-      - first_name
-      - last_name
-      - address1
-      - address2
-      - city
-      - state
-      - zipcode
-      - phone
-      - dob
-      - ssn
-    restrict_to_deploy_env: 'staging'
 
   # CBP GOES
   'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
@@ -422,29 +378,6 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.pspd.imready.user.prod://result'
     restrict_to_deploy_env: 'prod'
-
-  # USAJOBS
-  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
-    agency_id: 2
-    friendly_name: 'USAJOBS'
-    agency: 'OPM'
-    logo: 'usajobs.svg'
-    redirect_uris:
-      - 'https://login.test.usajobs.gov/openid'
-      - 'https://login.test.usajobs.gov/externalloggedout'
-    return_to_sp_url: 'https://www.test.usajobs.gov/'
-    restrict_to_deploy_env: 'staging'
-
-  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
-    agency_id: 2
-    friendly_name: 'USAJOBS'
-    agency: 'OPM'
-    logo: 'usajobs.svg'
-    redirect_uris:
-      - 'https://login.uat.usajobs.gov/openid'
-      - 'https://login.uat.usajobs.gov/externalloggedout'
-    return_to_sp_url: 'https://www.uat.usajobs.gov/'
-    restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
     agency_id: 2
