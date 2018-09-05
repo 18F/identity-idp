@@ -779,3 +779,15 @@ production:
       - ssn
       - phone
     restrict_to_deploy_env: 'prod'
+
+  # CBP I-94
+  'urn:gov:dhs.cbp.pspd.i94:openidconnect:prod:app':
+    agency_id: 1
+    uuid_priority: 30
+    friendly_name: 'CBP I-94'
+    agency: 'DHS'
+    logo: 'cbp.png'
+    redirect_uris:
+      - 'gov.dhs.cbp.pspd.i94.user.prod://result'
+      - 'gov.dhs.cbp.pspd.i94.user.prod://result/logout'
+    restrict_to_deploy_env: 'prod'

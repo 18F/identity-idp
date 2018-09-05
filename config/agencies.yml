@@ -1,6 +1,6 @@
 test:
   1:
-    name: 'CBP'
+    name: 'DHS'
   2:
     name: 'OPM'
   3:
@@ -12,7 +12,7 @@ test:
   6:
     name: 'DOT'
   7:
-    name: 'DHS'
+    name: 'USSS'
   8:
     name: 'DOD'
   9:
@@ -24,7 +24,7 @@ test:
 
 development:
   1:
-    name: 'CBP'
+    name: 'DHS'
   2:
     name: 'OPM'
   3:
@@ -48,7 +48,7 @@ development:
 
 production:
   1:
-    name: 'CBP'
+    name: 'DHS'
   2:
     name: 'OPM'
   3:
