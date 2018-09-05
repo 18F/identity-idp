@@ -72,7 +72,7 @@ module TwoFactorAuthenticatable
   def handle_valid_otp
     if authentication_context?
       handle_valid_otp_for_authentication_context
-    elsif idv_or_confirmation_context? || profile_context?
+    elsif confirmation_context?
       handle_valid_otp_for_confirmation_context
     end
     save_remember_device_preference
@@ -128,7 +128,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = old_phone.present? && !profile_context?
+    @updating_existing_number = old_phone.present?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
@@ -153,32 +153,10 @@ module TwoFactorAuthenticatable
   end
 
   def update_phone_attributes
-    if idv_or_profile_context?
-      update_idv_state
-    else
-      UpdateUser.new(
-        user: current_user,
-        attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: Time.zone.now }
-      ).call
-    end
-  end
-
-  def update_idv_state
-    if idv_context?
-      confirm_idv_session_phone
-    elsif profile_context?
-      Idv::ProfileActivator.new(user: current_user).call
-    end
-  end
-
-  def confirm_idv_session_phone
-    idv_session = Idv::Session.new(
-      user_session: user_session,
-      current_user: current_user,
-      issuer: sp_session[:issuer]
-    )
-    idv_session.user_phone_confirmation = true
-    idv_session.params['phone_confirmed_at'] = Time.zone.now
+    UpdateUser.new(
+      user: current_user,
+      attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: Time.zone.now }
+    ).call
   end
 
   def reset_otp_session_data
@@ -187,9 +165,7 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_verification_confirmation_url
-    if idv_context?
-      idv_review_url
-    elsif after_otp_action_required?
+    if after_otp_action_required?
       after_otp_action_url
     else
       after_sign_in_path_for(current_user)
@@ -224,20 +200,17 @@ module TwoFactorAuthenticatable
   end
 
   def personal_key_unavailable?
-    idv_or_confirmation_context? ||
-      profile_context? ||
-      current_user.encrypted_recovery_code_digest.blank?
+    current_user.encrypted_recovery_code_digest.blank?
   end
 
   def unconfirmed_phone?
-    user_session[:unconfirmed_phone] && idv_or_confirmation_context?
+    user_session[:unconfirmed_phone] && confirmation_context?
   end
 
   # rubocop:disable MethodLength
   def phone_view_data
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
-      confirmation_for_idv: idv_context?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
@@ -245,7 +218,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
-      remember_device_available: !idv_context?,
+      remember_device_available: true,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
   end
@@ -295,9 +268,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if idv_context?
-      idv_phone_path(locale: locale)
-    elsif current_user.phone_configuration.present?
+    if current_user.phone_configuration.present?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)

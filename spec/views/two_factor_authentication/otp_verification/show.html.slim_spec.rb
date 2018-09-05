@@ -7,7 +7,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       phone_number: '***-***-1212',
       code_value: '12777',
       unconfirmed_user: false,
-      reenter_phone_number_path: idv_phone_path,
+      reenter_phone_number_path: manage_phone_path,
     }
   end
 
@@ -255,7 +255,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         render
 
-        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: idv_phone_path)
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: manage_phone_path)
       end
     end
 
@@ -270,7 +270,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         render
 
-        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: idv_phone_path)
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: manage_phone_path)
       end
     end
   end

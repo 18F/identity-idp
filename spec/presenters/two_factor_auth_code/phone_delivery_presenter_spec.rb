@@ -7,11 +7,10 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   let(:data) do
     {
       confirmation_for_phone_change: false,
-      confirmation_for_idv: false,
       phone_number: '5555559876',
       code_value: '999999',
       otp_delivery_preference: 'sms',
-      reenter_phone_number_path: '/idv/phone',
+      reenter_phone_number_path: '/manage/phone',
       unconfirmed_phone: true,
       totp_enabled: false,
       personal_key_unavailable: true,
@@ -45,11 +44,6 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       data[:confirmation_for_phone_change] = true
       expect(presenter.cancel_link).to eq account_path
     end
-
-    it 'returns the verification cancel path during identity verification' do
-      data[:confirmation_for_idv] = true
-      expect(presenter.cancel_link).to eq idv_cancel_path
-    end
   end
 
   describe '#phone_number_message' do
@@ -61,14 +55,6 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       )
       expect(presenter.phone_number_message).to eq text
     end
-  end
-
-  def presenter_with_locale(locale)
-    TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-      data: data.clone.merge(reenter_phone_number_path:
-                               "#{locale == :en ? nil : '/' + locale.to_s}/idv/phone"),
-      view: view
-    )
   end
 
   def account_reset_cancel_link(account_reset_token)
