@@ -65,13 +65,14 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     it 'generates a new personal key after the user signs in with their old one' do
       user = create(:user)
-      old_key = PersonalKeyGenerator.new(user).create
+      raw_key = PersonalKeyGenerator.new(user).create
+      old_key = user.reload.encrypted_recovery_code_digest
       stub_sign_in_before_2fa(user)
-      post :create, params: { personal_key_form: { personal_key: old_key } }
+      post :create, params: { personal_key_form: { personal_key: raw_key } }
       user.reload
 
-      expect(user.personal_key).to_not be_nil
-      expect(user.personal_key).to_not eq old_key
+      expect(user.encrypted_recovery_code_digest).to_not be_nil
+      expect(user.encrypted_recovery_code_digest).to_not eq old_key
     end
 
     context 'when the personal key field is empty' do
@@ -140,12 +141,13 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     it 'does not generate a new personal key if the user enters an invalid key' do
-      user = create(:user, personal_key: 'ABCD-EFGH-IJKL-MNOP')
+      user = create(:user, :with_personal_key)
+      old_key = user.reload.encrypted_recovery_code_digest
       stub_sign_in_before_2fa(user)
       post :create, params: payload
       user.reload
 
-      expect(user.personal_key).to eq 'ABCD-EFGH-IJKL-MNOP'
+      expect(user.encrypted_recovery_code_digest).to eq old_key
     end
   end
 end

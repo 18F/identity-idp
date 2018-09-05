@@ -4,6 +4,12 @@ en:
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing
+      granted_token_expired: The link to delete your login.gov account has expired.
+        Please create another request to delete your account.
+      granted_token_invalid: The link to delete your login.gov account is invalid.
+        Please try clicking the link in your email again.
+      granted_token_missing: The link to delete your login.gov account is invalid.
+        Please try clicking the link in your email again.
     confirm_password_incorrect: Incorrect password.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.

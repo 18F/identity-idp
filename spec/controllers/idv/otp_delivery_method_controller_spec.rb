@@ -6,7 +6,7 @@ describe Idv::OtpDeliveryMethodController do
   before do
     stub_verify_steps_one_and_two(user)
     subject.idv_session.address_verification_mechanism = 'phone'
-    subject.idv_session.applicant[:phone] = '5555555000'
+    subject.idv_session.applicant[:phone] = '2255555000'
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = false
   end
@@ -108,7 +108,8 @@ describe Idv::OtpDeliveryMethodController do
     context 'user has selected sms' do
       it 'redirects to the otp send path for sms' do
         post :create, params: params
-        expect(response).to redirect_to otp_send_path(params)
+        expect(subject.idv_session.phone_confirmation_otp_delivery_method).to eq('sms')
+        expect(response).to redirect_to idv_otp_verification_path
       end
 
       it 'tracks an analytics event' do
@@ -139,7 +140,8 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'redirects to the otp send path for voice' do
         post :create, params: params
-        expect(response).to redirect_to otp_send_path(params)
+        expect(subject.idv_session.phone_confirmation_otp_delivery_method).to eq('voice')
+        expect(response).to redirect_to idv_otp_verification_path
       end
 
       it 'tracks an analytics event' do
@@ -187,6 +189,69 @@ describe Idv::OtpDeliveryMethodController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
+      end
+    end
+
+    context 'twilio raises an exception' do
+      let(:twilio_error_analytics_hash) do
+        {
+          error: "[HTTP 400]  : error message\n\n",
+          code: '',
+          context: 'idv',
+          country: 'US',
+        }
+      end
+      let(:twilio_error) do
+        Twilio::REST::RestError.new('error message', FakeTwilioErrorResponse.new)
+      end
+
+      before do
+        stub_analytics
+        allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(twilio_error)
+      end
+
+      context 'twilio rest error' do
+        it 'tracks an analytics events' do
+          expect(@analytics).to receive(:track_event).ordered.with(
+            Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, hash_including(success: true)
+          )
+          expect(@analytics).to receive(:track_event).ordered.with(
+            Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_analytics_hash
+          )
+
+          post :create, params: params
+        end
+      end
+
+      context 'phone verification verify error' do
+        let(:twilio_error_analytics_hash) do
+          analytics_hash = super()
+          analytics_hash.merge(
+            error: 'error',
+            code: 60_033,
+            status: 400,
+            response: '{"error_code":"60004"}'
+          )
+        end
+        let(:twilio_error) do
+          PhoneVerification::VerifyError.new(
+            code: 60_033,
+            message: 'error',
+            status: 400,
+            response:  '{"error_code":"60004"}'
+          )
+        end
+
+        it 'tracks an analytics event' do
+          expect(@analytics).to receive(:track_event).ordered.with(
+            Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, hash_including(success: true)
+          )
+          expect(@analytics).to receive(:track_event).ordered.with(
+            Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_analytics_hash
+          )
+
+          post :create, params: params
+        end
       end
     end
   end

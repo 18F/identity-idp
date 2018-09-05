@@ -44,6 +44,8 @@ es:
       errors:
         link: contáctanos
         text: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
+      help:
+        get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
         fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
           durante 24 horas</strong>.
@@ -105,15 +107,12 @@ es:
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
       dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
       hardfail: NOT TRANSLATED YET
-      help_center_html: Visite nuestro <strong>Centro de Ayuda</strong> para obtener
-        más información sobre la verificación de su cuenta.
       jurisdiction:
         no_id: No tengo una identificación emitida por el estado
         no_id_failure: Estamos trabajando arduamente para agregar más formas de verificar
           su identidad.
         profile: Para acceder a su cuenta en el futuro, puede %{link}.
         profile_link: mira tu cuenta aquí
-        sp_support: Visita %{link} para obtener más información.
         try_again: "¿Cometer un error? Puedes %{link}."
         try_again_link: intentarlo de nuevo
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
@@ -135,9 +134,6 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
-      read_about_security_and_privacy:
-        link: leer sobre cómo login.gov mantiene su información segura
-        text: Puede %{link} en nuestra página de ayuda.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:

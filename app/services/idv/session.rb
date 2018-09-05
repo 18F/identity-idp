@@ -7,6 +7,9 @@ module Idv
       applicant
       vendor_phone_confirmation
       user_phone_confirmation
+      phone_confirmation_otp_delivery_method
+      phone_confirmation_otp_sent_at
+      phone_confirmation_otp
       pii
       previous_phone_step_params
       previous_profile_step_params

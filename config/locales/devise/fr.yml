@@ -81,8 +81,6 @@ fr:
       account_reset:
         cancel_link: Annuler votre demande
         link: supprimer votre compte
-        link_expired: Le lien pour supprimer votre compte login.gov a expiré. Veuillez
-          créer une autre demande pour supprimer votre compte.
         pending_html: Vous avez actuellement une demande en attente pour supprimer
           votre compte.  Il faut compter 24 heures à partir du moment où vous avez
           fait la demande pour terminer le processus.  Veuillez vérifier plus tard.

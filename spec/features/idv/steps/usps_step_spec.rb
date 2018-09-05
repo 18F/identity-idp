@@ -43,6 +43,7 @@ feature 'idv usps step' do
       click_continue
       click_acknowledge_personal_key
       visit root_path
+      click_on t('idv.buttons.cancel')
       first(:link, t('links.sign_out')).click
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.usps.resend')
