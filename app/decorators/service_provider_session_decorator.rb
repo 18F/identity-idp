@@ -11,14 +11,6 @@ class ServiceProviderSessionDecorator
       i18n_name: 'usa_jobs',
       learn_more: 'https://login.gov/help/',
     },
-    'Railroad Retirement Board' => {
-      i18n_name: 'railroad_retirement_board',
-      learn_more: 'https://login.gov/help/',
-    },
-    'U.S. Railroad Retirement Board Benefit Connect' => {
-      i18n_name: 'railroad_retirement_board',
-      learn_more: 'https://login.gov/help/',
-    },
     'SAM' => {
       i18n_name: 'sam',
       learn_more: 'https://login.gov/help/',
