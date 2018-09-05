@@ -47,7 +47,7 @@ module TwoFactorAuthCode
       :unconfirmed_phone,
       :account_reset_token,
       :confirmation_for_phone_change,
-      :voice_otp_delivery_unsupported,
+      :voice_otp_delivery_unsupported
     )
 
     def account_reset_link
