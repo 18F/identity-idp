@@ -212,11 +212,7 @@ ActiveRecord::Schema.define(version: 20180827225542) do
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
     t.integer "idv_attempts", default: 0
-    t.string "recovery_code"
-    t.string "encryption_key"
     t.string "unique_session_id"
-    t.string "recovery_salt"
-    t.string "recovery_cost"
     t.string "email_fingerprint", default: "", null: false
     t.text "encrypted_email", default: "", null: false
     t.string "attribute_cost"
