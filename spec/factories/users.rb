@@ -43,7 +43,7 @@ FactoryBot.define do
 
     trait :with_authentication_app do
       with_personal_key
-      otp_secret_key 'abc123'
+      otp_secret_key ROTP::Base32.random_base32
     end
 
     trait :admin do

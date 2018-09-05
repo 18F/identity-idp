@@ -9,6 +9,11 @@ namespace :dev do
       end
     end
 
+    ee = EncryptedAttribute.new_from_decrypted('totp@test.com')
+    User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
+      setup_totp_user(user, ee: ee, pw: pw)
+    end
+
     loa3_user = User.find_by(email_fingerprint: fingerprint('test2@test.com'))
     profile = Profile.new(user: loa3_user)
     pii = Pii::Attributes.new_from_hash(
@@ -86,6 +91,14 @@ namespace :dev do
     user.phone = format('+1 (415) 555-%04d', args[:num])
     user.phone_confirmed_at = Time.zone.now
     create_phone_configuration_for(user)
+    Event.create(user_id: user.id, event_type: :account_created)
+  end
+
+  def setup_totp_user(user, args)
+    user.encrypted_email = args[:ee].encrypted
+    user.skip_confirmation!
+    user.reset_password(args[:pw], args[:pw])
+    user.otp_secret_key = ROTP::Base32.random_base32
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
