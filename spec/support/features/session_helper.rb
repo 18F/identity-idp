@@ -394,7 +394,7 @@ module Features
 
     def confirm_email_and_password(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      click_link t('sign_up.registrations.create_account')
+      find_link(t('sign_up.registrations.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password

@@ -173,13 +173,17 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_action_required?
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      decorated_user.should_acknowledge_personal_key?(session)
+      policy.show_personal_key_after_initial_2fa_setup?
   end
 
   def after_otp_action_url
-    if decorated_user.should_acknowledge_personal_key?(user_session)
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+    if policy.show_personal_key_after_initial_2fa_setup?
       sign_up_personal_key_url
     elsif @updating_existing_number
       account_url
