@@ -123,6 +123,11 @@ Rails.application.routes.draw do
       get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
     end
 
+    if FeatureManagement.webauthn_enabled?
+      get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
+      patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+    end
+
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'

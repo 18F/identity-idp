@@ -179,6 +179,7 @@ GEM
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
+    cbor (0.5.9.3)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
@@ -627,6 +628,8 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
+    webauthn (0.2.0)
+      cbor (~> 0.5.9.2)
     webmock (3.4.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -751,6 +754,7 @@ DEPENDENCIES
   typhoeus
   uglifier (~> 3.2)
   valid_email
+  webauthn
   webmock
   webpacker (~> 3.4)
   xml-simple

@@ -91,6 +91,7 @@ TooManyInstanceVariables:
     - Idv::VendorResult
     - CloudhsmKeyGenerator
     - CloudhsmKeySharer
+    - WebauthnSetupForm
 TooManyStatements:
   max_statements: 6
   exclude:
