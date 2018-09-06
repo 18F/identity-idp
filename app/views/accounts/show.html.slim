@@ -45,6 +45,12 @@ h1.hide = t('titles.account')
     content: content_tag(:em, @view_model.totp_content),
     action: @view_model.totp_partial
 
+  - if FeatureManagement.webauthn_enabled?
+    = render 'account_item',
+      name: t('account.index.webauthn'),
+      content: content_tag(:em, @view_model.totp_content),
+      action: @view_model.webauthn_partial
+
   - if current_user.piv_cac_available?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),

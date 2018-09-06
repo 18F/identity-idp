@@ -45,5 +45,6 @@ es:
     use_diff_email:
       link: use un email diferente
       text_html: O %{link}
+    webauthn_added: Agregaste una clave de seguridad de hardware.
   session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra su
     sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.

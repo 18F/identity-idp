@@ -188,6 +188,7 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
+  webauthn_enabled: true
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -299,6 +300,7 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
+  webauthn_enabled: false
 
 test:
   aamva_cert_enabled: 'true'
@@ -414,3 +416,4 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
+  webauthn_enabled: true

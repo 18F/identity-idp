@@ -45,3 +45,7 @@ es:
       unauthorized_service_provider: Proveedor de servicio no autorizado
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
+    webauthn_setup:
+      general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
+        de nuevo.
+      unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

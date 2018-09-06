@@ -50,3 +50,7 @@ en:
       usps_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
+    webauthn_setup:
+      general_error: There was an error adding your hardward security key.  Please
+        try again.
+      unique_name: That name is already taken.  Please choose a different name.

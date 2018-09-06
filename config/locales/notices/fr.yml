@@ -47,6 +47,7 @@ fr:
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Or, %{link}
+    webauthn_added: Vous avez ajouté une clé de sécurité matérielle.
   session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app} désactive
     votre session lorsque vous demeurez sur une page sans vous déplacer pendant %{minutes}
     minutes.
