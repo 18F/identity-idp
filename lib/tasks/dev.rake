@@ -100,6 +100,10 @@ namespace :dev do
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
+  def fingerprint(email)
+    Pii::Fingerprinter.fingerprint(email)
+  end
+
   def phone_configuration_data(user, args)
     {
       delivery_preference: user.otp_delivery_preference,
