@@ -44,6 +44,7 @@ en:
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
       twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
+      twilio_timeout: The server took too long to respond. Please try again.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider

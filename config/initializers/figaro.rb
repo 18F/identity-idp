@@ -49,6 +49,7 @@ Figaro.require_keys(
   'twilio_auth_token',
   'twilio_record_voice',
   'twilio_messaging_service_sid',
+  'twilio_timeout',
   'use_kms',
   'valid_authn_contexts'
 )
