@@ -9,9 +9,9 @@ p.mt-tiny.mb3 = @presenter.info
         url: login_two_factor_options_path) do |f|
   .mb3
     fieldset.m0.p0.border-none.
-      legend.mb1.h4.serif.bold = @presenter.label
+      legend.mb2.serif.bold = @presenter.label
       - @presenter.options.each do |option|
-        label.btn-border.col-12.mb1 for="two_factor_options_form_selection_#{option.type}"
+        label.btn-border.col-12.mb2 for="two_factor_options_form_selection_#{option.type}"
           .radio
             = radio_button_tag('two_factor_options_form[selection]',
                     option.type,
