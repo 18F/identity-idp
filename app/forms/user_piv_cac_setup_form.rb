@@ -69,7 +69,7 @@ class UserPivCacSetupForm
   end
 
   def user_has_no_piv_cac
-    if user.piv_cac_enabled?
+    if user.mfa.piv_cac_configuration.mfa_enabled?
       self.error_type = 'user.piv_cac_associated'
       false
     else

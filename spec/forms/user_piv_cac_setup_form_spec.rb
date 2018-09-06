@@ -32,7 +32,7 @@ describe UserPivCacSetupForm do
           with(user_id: user.id, event_type: :piv_cac_enabled)
         expect(form.submit).to eq result
         user.reload
-        expect(user.piv_cac_enabled?).to eq true
+        expect(user.mfa.piv_cac_configuration.mfa_enabled?).to eq true
         expect(user.x509_dn_uuid).to eq x509_dn_uuid
       end
 
@@ -46,7 +46,7 @@ describe UserPivCacSetupForm do
             with(success: false, errors: {}).and_return(result)
           expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
-          expect(user.reload.piv_cac_enabled?).to eq true
+          expect(user.reload.mfa.piv_cac_configuration.mfa_enabled?).to eq true
           expect(form.error_type).to eq 'user.piv_cac_associated'
         end
       end
@@ -62,7 +62,7 @@ describe UserPivCacSetupForm do
             with(success: false, errors: {}).and_return(result)
           expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
-          expect(user.reload.piv_cac_enabled?).to eq false
+          expect(user.reload.mfa.piv_cac_configuration.mfa_enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
         end
 
@@ -78,7 +78,7 @@ describe UserPivCacSetupForm do
               with(success: false, errors: {}).and_return(result)
             expect(Event).to_not receive(:create)
             expect(form.submit).to eq result
-            expect(user.reload.piv_cac_enabled?).to eq false
+            expect(user.reload.mfa.piv_cac_configuration.mfa_enabled?).to eq false
             expect(form.error_type).to eq 'piv_cac.already_associated'
           end
         end
@@ -98,7 +98,7 @@ describe UserPivCacSetupForm do
           with(success: false, errors: {}).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
-        expect(user.reload.piv_cac_enabled?).to eq false
+        expect(user.reload.mfa.piv_cac_configuration.mfa_enabled?).to eq false
         expect(form.error_type).to eq 'token.bad'
       end
     end
@@ -131,7 +131,7 @@ describe UserPivCacSetupForm do
           with(success: false, errors: {}).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
-        expect(user.reload.piv_cac_enabled?).to eq false
+        expect(user.reload.mfa.piv_cac_configuration.mfa_enabled?).to eq false
       end
     end
   end

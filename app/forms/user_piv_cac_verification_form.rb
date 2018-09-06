@@ -24,7 +24,7 @@ class UserPivCacVerificationForm
   end
 
   def x509_cert_matches
-    if user.confirm_piv_cac?(x509_dn_uuid)
+    if user.mfa.piv_cac_configuration.mfa_confirmed?(x509_dn_uuid)
       true
     else
       self.error_type = 'user.piv_cac_mismatch'
@@ -59,7 +59,7 @@ class UserPivCacVerificationForm
   end
 
   def user_has_piv_cac
-    if user.piv_cac_enabled?
+    if user.mfa.piv_cac_configuration.mfa_enabled?
       true
     else
       self.error_type = 'user.no_piv_cac_associated'

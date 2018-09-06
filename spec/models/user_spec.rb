@@ -117,17 +117,17 @@ describe User do
     it 'is true when the user has a confirmed piv/cac associated' do
       user = create(:user, :with_piv_or_cac)
 
-      expect(user.piv_cac_enabled?).to eq true
+      expect(user.mfa.piv_cac_configuration.mfa_enabled?).to eq true
     end
 
     it 'is false when the user has no piv/cac associated' do
       user = create(:user)
 
-      expect(user.piv_cac_enabled?).to eq false
+      expect(user.mfa.piv_cac_configuration.mfa_enabled?).to eq false
     end
   end
 
-  describe '#piv_cac_available?' do
+  describe '#piv_cac_configuration.mfa_available?' do
     before(:each) do
       allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
     end
@@ -136,7 +136,7 @@ describe User do
       let(:user) { create(:user) }
 
       it 'does not allow piv/cac' do
-        expect(user.piv_cac_available?).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_available?).to be_falsey
       end
     end
 
@@ -160,7 +160,7 @@ describe User do
 
       context 'not allowing it' do
         it 'does not allow piv/cac' do
-          expect(user.piv_cac_available?).to be_falsey
+          expect(user.mfa.piv_cac_configuration.mfa_available?).to be_falsey
         end
       end
 
@@ -173,7 +173,7 @@ describe User do
         end
 
         it 'does allows piv/cac' do
-          expect(user.piv_cac_available?).to be_truthy
+          expect(user.mfa.piv_cac_configuration.mfa_available?).to be_truthy
         end
 
         context 'but piv/cac feature is not enabled' do
@@ -182,7 +182,7 @@ describe User do
           end
 
           it 'does not allow piv/cac' do
-            expect(user.piv_cac_available?).to be_falsey
+            expect(user.mfa.piv_cac_configuration.mfa_available?).to be_falsey
           end
         end
       end
@@ -192,7 +192,7 @@ describe User do
       let(:user) { create(:user, :with_piv_or_cac) }
 
       it 'allows piv/cac' do
-        expect(user.piv_cac_available?).to be_truthy
+        expect(user.mfa.piv_cac_configuration.mfa_available?).to be_truthy
       end
 
       context 'but the piv/cac feature is disabled' do
@@ -201,7 +201,7 @@ describe User do
         end
 
         it 'does not allow piv/cac' do
-          expect(user.piv_cac_available?).to be_falsey
+          expect(user.mfa.piv_cac_configuration.mfa_available?).to be_falsey
         end
       end
     end
@@ -212,15 +212,15 @@ describe User do
       let(:user) { create(:user, :with_piv_or_cac) }
 
       it 'is false when a blank is provided' do
-        expect(user.confirm_piv_cac?('')).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?('')).to be_falsey
       end
 
       it 'is false when a nil is provided' do
-        expect(user.confirm_piv_cac?(nil)).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
       end
 
       it 'is true when the correct valud is provided' do
-        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_truthy
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)).to be_truthy
       end
     end
 
@@ -228,15 +228,15 @@ describe User do
       let(:user) { create(:user) }
 
       it 'is false when a blank is provided' do
-        expect(user.confirm_piv_cac?('')).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?('')).to be_falsey
       end
 
       it 'is false when a nil is provided' do
-        expect(user.confirm_piv_cac?(nil)).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
       end
 
       it 'is false when the user x509_dn_uuid value is provided' do
-        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_falsey
+        expect(user.mfa.piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)).to be_falsey
       end
     end
   end
@@ -245,13 +245,13 @@ describe User do
     it 'is true when user has a confirmed phone' do
       user = create(:user, :with_phone)
 
-      expect(user.two_factor_enabled?).to eq true
+      expect(user.mfa.two_factor_enabled?).to eq true
     end
 
     it 'is false when user does not have a phone' do
       user = create(:user)
 
-      expect(user.two_factor_enabled?).to eq false
+      expect(user.mfa.two_factor_enabled?).to eq false
     end
   end
 
@@ -261,7 +261,9 @@ describe User do
     it 'is true when two_factor_enabled' do
       user = build_stubbed(:user)
 
-      allow(user).to receive(:two_factor_enabled?).and_return true
+      mock_mfa = user.mfa
+      allow(mock_mfa).to receive(:two_factor_enabled?).and_return true
+      allow(user).to receive(:mfa).and_return mock_mfa
 
       expect(user.need_two_factor_authentication?(nil)).to be_truthy
     end

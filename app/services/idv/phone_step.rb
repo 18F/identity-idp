@@ -58,7 +58,7 @@ module Idv
     end
 
     def user_phones
-      idv_session.current_user.phone_configurations.map do |phone_configuration|
+      idv_session.current_user.mfa.phone_configurations.map do |phone_configuration|
         PhoneFormatter.format(phone_configuration.phone)
       end.compact
     end

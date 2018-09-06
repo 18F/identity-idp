@@ -27,9 +27,13 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: Use your PIV/CAC card instead of a security code.
       sms: Text message
-      sms_info: Get security code via text message.
+      sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
+      sms_setup_info: Get security code via text message.
       voice: Automated phone call
-      voice_info: Get security code via phone call (North America phone numbers only).
+      voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
+        (North America phone numbers only).
+      voice_setup_info: Get security code via phone call (North America phone numbers
+        only).
       webauthn: Hardware security key
       webauthn_info: Use your hardware security key instead of a security code.
     login_options_link_text: Choose another security option

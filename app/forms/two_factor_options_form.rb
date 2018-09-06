@@ -2,6 +2,7 @@ class TwoFactorOptionsForm
   include ActiveModel::Model
 
   attr_reader :selection
+  attr_reader :configuration_id
 
   validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac webauthn] }
 
@@ -20,7 +21,7 @@ class TwoFactorOptionsForm
   end
 
   def selected?(type)
-    type == (selection || 'sms')
+    type.to_s == (selection || 'sms')
   end
 
   private
@@ -36,7 +37,7 @@ class TwoFactorOptionsForm
 
   def user_needs_updating?
     return false unless %w[voice sms].include?(selection)
-    return false if selection == user.phone_configurations.first&.delivery_preference
+    return false if selection == user.mfa.phone_configurations.first&.delivery_preference
     selection != user.otp_delivery_preference
   end
 

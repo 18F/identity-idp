@@ -1,11 +1,11 @@
 class SmsLoginOptionPolicy
   def initialize(user)
-    @user = user
+    @user = user&.mfa
   end
 
   def configured?
     return false unless user
-    user.phone_configurations.any?
+    user.phone_configurations.any?(&:mfa_enabled?)
   end
 
   private

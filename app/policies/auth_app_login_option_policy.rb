@@ -4,7 +4,7 @@ class AuthAppLoginOptionPolicy
   end
 
   def configured?
-    !user.otp_secret_key.nil?
+    user.otp_secret_key.present?
   end
 
   private

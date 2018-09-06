@@ -2,6 +2,24 @@ module TwoFactorAuthentication
   class OptionsController < ApplicationController
     include TwoFactorAuthenticatable
 
+    FACTOR_TO_URL_METHOD = {
+      'voice' => :otp_send_url,
+      'sms' => :otp_send_url,
+      'auth_app' => :login_two_factor_authenticator_url,
+      'piv_cac' => :login_two_factor_piv_cac_url,
+      'webauthn' => :login_two_factor_webauthn_url,
+      'personal_key' => :login_two_factor_personal_key_url,
+    }.freeze
+
+    EXTRA_URL_OPTIONS = {
+      'voice' => {
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+      },
+      'sms' => {
+        otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+      },
+    }.freeze
+
     def index
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
@@ -28,16 +46,19 @@ module TwoFactorAuthentication
     end
 
     def process_valid_form
-      factor_to_url = {
-        'voice' =>  otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: 'voice' }),
-        'personal_key' => login_two_factor_personal_key_url,
-        'sms' => otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: 'sms' }),
-        'auth_app' => login_two_factor_authenticator_url,
-        'piv_cac' => FeatureManagement.piv_cac_enabled? ? login_two_factor_piv_cac_url : nil,
-        'webauthn' => FeatureManagement.webauthn_enabled? ? login_two_factor_webauthn_url : nil,
-      }
-      url = factor_to_url[@two_factor_options_form.selection]
-      redirect_to url if url
+      url = mfa_redirect_url
+      redirect_to url if url.present?
+    end
+
+    def mfa_redirect_url
+      selection = @two_factor_options_form.selection
+      options = EXTRA_URL_OPTIONS[selection] || {}
+
+      configuration_id = @two_factor_options_form.configuration_id
+      options[:id] = configuration_id if configuration_id.present?
+
+      method = FACTOR_TO_URL_METHOD[selection]
+      public_send(method, options) if method.present?
     end
 
     def two_factor_options_form_params

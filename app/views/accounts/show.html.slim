@@ -34,11 +34,7 @@ h1.hide = t('titles.account')
     = t('headings.account.two_factor')
     = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1'
 
-  = render 'account_item',
-    name: t('account.index.phone'),
-    content: current_user.phone_configurations.first&.phone,
-    path: manage_phone_path,
-    action: @view_model.edit_action_partial
+  = render 'phone'
 
   = render 'account_item',
     name: t('account.index.authentication_app'),
@@ -48,7 +44,7 @@ h1.hide = t('titles.account')
   - if FeatureManagement.webauthn_enabled?
     = render 'webauthn'
 
-  - if current_user.piv_cac_available?
+  - if current_user.mfa.piv_cac_configuration.mfa_available?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),
       content: content_tag(:em, @view_model.piv_cac_content),

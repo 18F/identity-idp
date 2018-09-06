@@ -8,8 +8,7 @@ class UserDecorator
     @user = user
   end
 
-  delegate :email, to: :user
-  delegate :totp_enabled?, :piv_cac_enabled?, :piv_cac_available?, to: :user
+  delegate :email, :mfa, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
@@ -36,7 +35,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.phone_configurations.first&.phone)
+    masked_number(mfa.phone_configurations.first&.phone)
   end
 
   def active_identity_for(service_provider)

@@ -35,7 +35,7 @@ module Idv
     def track_final_idv_event
       result = {
         success: true,
-        new_phone_added: !current_user.phone_configurations.map(&:phone).include?(
+        new_phone_added: !current_user.mfa.phone_configurations.map(&:phone).include?(
           idv_session.applicant['phone']
         ),
       }

@@ -31,7 +31,7 @@ module Users
     end
 
     def phone_configuration
-      current_user.phone_configurations.first
+      current_user.mfa.phone_configurations.first
     end
 
     def validate_otp_delivery_preference_and_send_code
@@ -195,14 +195,20 @@ module Users
       true
     end
 
-    def redirect_on_non_phone
-      if current_user.piv_cac_enabled?
-        redirect_to login_two_factor_piv_cac_url
-      elsif current_user.webauthn_enabled?
-        redirect_to login_two_factor_webauthn_url
-      elsif current_user.totp_enabled?
-        redirect_to login_two_factor_authenticator_url
+    def redirect_url
+      mfa = current_user.mfa
+      if mfa.piv_cac_configuration.mfa_enabled?
+        login_two_factor_piv_cac_url
+      elsif mfa.webauthn_configurations.any?(&:mfa_enabled?)
+        login_two_factor_webauthn_url
+      elsif mfa.auth_app_configuration.mfa_enabled?
+        login_two_factor_authenticator_url
       end
+    end
+
+    def redirect_on_non_phone
+      url = redirect_url
+      redirect_to url if url.present?
     end
   end
 end

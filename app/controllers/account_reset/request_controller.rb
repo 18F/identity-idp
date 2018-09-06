@@ -24,7 +24,7 @@ module AccountReset
     end
 
     def confirm_two_factor_enabled
-      return if current_user.two_factor_enabled?
+      return if current_user.mfa.two_factor_enabled?
 
       redirect_to two_factor_options_url
     end

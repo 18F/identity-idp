@@ -71,8 +71,14 @@ describe Users::TwoFactorAuthenticationController do
   describe '#show' do
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
-        stub_sign_in_before_2fa(build(:user))
-        allow(subject.current_user).to receive(:piv_cac_enabled?).and_return(true)
+        user = build(:user)
+        stub_sign_in_before_2fa(user)
+        mock_mfa = user.mfa
+        mock_piv_cac_configuration = mock_mfa.piv_cac_configuration
+        allow(mock_piv_cac_configuration).to receive(:mfa_enabled?).and_return(true)
+        allow(mock_mfa).to receive(:piv_cac_configuration).and_return(mock_piv_cac_configuration)
+        allow(subject.current_user).to receive(:mfa).and_return(mock_mfa)
+
         get :show
 
         expect(response).to redirect_to login_two_factor_piv_cac_path
@@ -81,8 +87,16 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when user is TOTP enabled' do
       it 'renders the :confirm_totp view' do
-        stub_sign_in_before_2fa(build(:user))
-        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
+        user = build(:user)
+        stub_sign_in_before_2fa(user)
+        mock_mfa = user.mfa
+        mock_auth_app_configuration = mock_mfa.auth_app_configuration
+        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
+        allow(mock_mfa).to receive(:auth_app_configuration).and_return(
+          mock_auth_app_configuration
+        )
+        allow(subject.current_user).to receive(:mfa).and_return(mock_mfa)
+
         get :show
 
         expect(response).to redirect_to login_two_factor_authenticator_path
@@ -91,7 +105,8 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when user is webauthn enabled' do
       it 'renders the :webauthn view' do
-        stub_sign_in_before_2fa(build(:user))
+        stub_sign_in_before_2fa(build(:user, :with_webauthn))
+
         allow(subject.current_user).to receive(:webauthn_enabled?).and_return(true)
         get :show
 
@@ -144,7 +159,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone_configurations.first.phone,
+          phone: subject.current_user.mfa.phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -161,7 +176,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone_configurations.first.phone,
+          phone: subject.current_user.mfa.phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -190,7 +205,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).with(
-          phone: @user.phone_configurations.first.phone,
+          phone: @user.mfa.phone_configurations.first.phone,
           user: @user
         ).and_return(otp_rate_limiter)
 
@@ -228,7 +243,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.phone_configurations.first.phone,
+          phone: subject.current_user.mfa.phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           locale: nil
         )

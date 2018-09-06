@@ -26,7 +26,7 @@ module Idv
     def initial_phone_value(input_phone)
       return PhoneFormatter.format(input_phone) if input_phone.present?
 
-      user_phone = user.phone_configurations.first&.phone
+      user_phone = user.mfa.phone_configurations.first&.phone
       return unless Phonelib.valid_for_country?(user_phone, 'US')
       PhoneFormatter.format(user_phone)
     end

@@ -15,7 +15,7 @@ class UpdateUser
   attr_reader :user, :attributes
 
   def manage_phone_configuration
-    if user.phone_configurations.any?
+    if user.mfa.phone_configurations.any?
       update_phone_configuration
     else
       create_phone_configuration
@@ -23,12 +23,12 @@ class UpdateUser
   end
 
   def update_phone_configuration
-    user.phone_configurations.first.update!(phone_attributes)
+    user.mfa.phone_configurations.first.update!(phone_attributes)
   end
 
   def create_phone_configuration
     return if phone_attributes[:phone].blank?
-    user.phone_configurations.create(phone_attributes)
+    user.mfa.phone_configurations.create(phone_attributes)
   end
 
   def phone_attributes

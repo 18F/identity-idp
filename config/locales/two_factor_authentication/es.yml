@@ -28,9 +28,14 @@ es:
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
-      sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+      sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
+        / SMS a <strong>%{phone}</strong>.
+      sms_setup_info: Obtenga su código de seguridad a través de mensajes de texto
+        / SMS.
       voice: Llamada telefónica automatizada
-      voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
+      voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
+        a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
+      voice_setup_info: Obtenga su código de seguridad a través de una llamada telefónica.
         (Solo números de teléfono de América del Norte).
       webauthn: Clave de seguridad de hardware
       webauthn_info: Use su clave de seguridad de hardware en lugar de un código de

@@ -123,7 +123,12 @@ describe AccountShow do
     context 'user has enabled an authenticator app' do
       it 'returns the disable_totp partial' do
         user = User.new
-        allow(user).to receive(:totp_enabled?).and_return(true)
+        mock_mfa = user.mfa
+        mock_auth_app_configuration = mock_mfa.auth_app_configuration
+        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
+        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
+        allow(user).to receive(:mfa).and_return(mock_mfa)
+
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/disable_totp'
@@ -133,7 +138,12 @@ describe AccountShow do
     context 'user does not have an authenticator app enabled' do
       it 'returns the enable_totp partial' do
         user = User.new
-        allow(user).to receive(:totp_enabled?).and_return(false)
+        mock_mfa = user.mfa
+        mock_auth_app_configuration = mock_mfa.auth_app_configuration
+        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(false)
+        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
+        allow(user).to receive(:mfa).and_return(mock_mfa)
+
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/enable_totp'
@@ -170,7 +180,12 @@ describe AccountShow do
     context 'user has enabled an authenticator app' do
       it 'returns localization for auth_app_enabled' do
         user = User.new
-        allow(user).to receive(:totp_enabled?).and_return(true)
+        mock_mfa = user.mfa
+        mock_auth_app_configuration = mock_mfa.auth_app_configuration
+        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
+        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
+        allow(user).to receive(:mfa).and_return(mock_mfa)
+
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')

@@ -5,7 +5,7 @@ class WebauthnLoginOptionPolicy
   end
 
   def configured?
-    FeatureManagement.webauthn_enabled? && user.webauthn_configurations.any?
+    FeatureManagement.webauthn_enabled? && user.mfa.webauthn_configurations.any?
   end
 
   private
