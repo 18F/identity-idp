@@ -3,6 +3,12 @@ require 'rails_helper'
 feature 'Webauthn Management' do
   include WebauthnHelper
 
+<<<<<<< HEAD
+=======
+  let(:user) { create(:user, :signed_up, phone: '+1 202-555-1212') }
+  let(:no_phone_user) { build_stubbed(:user, :signed_up, otp_secret_key: '6pcrpu334cx7zyf7') }
+
+>>>>>>> Prevented deleting last mfa.  Changed text from delete to remove
   context 'with no webauthn associated yet' do
     let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
 
@@ -110,6 +116,21 @@ feature 'Webauthn Management' do
 
       expect(page).to_not have_content 'key1'
       expect(page).to have_content t('notices.webauthn_deleted')
+    end
+
+    it 'prevents a user from deleting the last key' do
+      create_webauthn_configuration(user, 'key1', '1', 'foo1')
+
+      sign_in_and_2fa_user(user)
+      PhoneConfiguration.first.update(mfa_enabled: false)
+      visit account_path
+
+      expect(page).to have_content 'key1'
+
+      click_button t('account.index.webauthn_delete')
+
+      expect(page).to have_content 'key1'
+      expect(page).to have_content t('errors.webauthn_setup.delete_last')
     end
   end
 

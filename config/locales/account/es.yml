@@ -27,7 +27,7 @@ es:
         success: Su cuenta ha sido verificada.
       webauthn: Clave de seguridad de hardware
       webauthn_add: "+ Agregar clave de seguridad de hardware"
-      webauthn_delete: Borrar
+      webauthn_delete: Retirar
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal
