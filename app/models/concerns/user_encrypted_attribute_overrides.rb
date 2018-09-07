@@ -15,8 +15,7 @@ module UserEncryptedAttributeOverrides
 
       email = email.downcase.strip
       email_fingerprint = create_fingerprint(email)
-      resource = find_by(email_fingerprint: email_fingerprint)
-      resource if resource&.email == email
+      find_by(email_fingerprint: email_fingerprint)
     end
 
     def create_fingerprint(email)
