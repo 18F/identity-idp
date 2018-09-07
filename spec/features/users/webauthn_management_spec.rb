@@ -3,15 +3,9 @@ require 'rails_helper'
 feature 'Webauthn Management' do
   include WebauthnHelper
 
-<<<<<<< HEAD
-=======
-  let(:user) { create(:user, :signed_up, phone: '+1 202-555-1212') }
-  let(:no_phone_user) { build_stubbed(:user, :signed_up, otp_secret_key: '6pcrpu334cx7zyf7') }
+  let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
 
->>>>>>> Prevented deleting last mfa.  Changed text from delete to remove
   context 'with no webauthn associated yet' do
-    let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
-
     it 'allows user to add a webauthn configuration' do
       mock_challenge
       sign_in_and_2fa_user(user)
