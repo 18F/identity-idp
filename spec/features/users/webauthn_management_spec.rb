@@ -4,7 +4,7 @@ feature 'Webauthn Management' do
   include WebauthnHelper
 
   context 'with no webauthn associated yet' do
-    let(:user) { create(:user, :signed_up, phone: '+1 202-555-1212') }
+    let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
 
     it 'allows user to add a webauthn configuration' do
       mock_challenge
