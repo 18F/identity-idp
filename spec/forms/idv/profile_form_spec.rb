@@ -22,7 +22,7 @@ describe Idv::ProfileForm do
   end
 
   describe '#initialize' do
-    context 'when their are params from a previous submission' do
+    context 'when there are params from a previous submission' do
       it 'assigns those params to the form' do
         form = Idv::ProfileForm.new(user: user, previous_params: profile_attrs)
 

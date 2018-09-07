@@ -39,12 +39,12 @@ describe Idv::PhoneForm do
 
     it 'does not use an international number as the initial phone value' do
       user = build_stubbed(:user, :signed_up, with: { phone: '+81 54 354 3643' })
-        subject = Idv::PhoneForm.new(previous_params: {}, user: user)
+      subject = Idv::PhoneForm.new(previous_params: {}, user: user)
 
       expect(subject.phone).to eq(nil)
     end
 
-    it 'users the previously submitted value as the initial phone value' do
+    it 'uses the previously submitted value as the initial phone value' do
       user = build_stubbed(:user, :signed_up, with: { phone: '7035551234' })
       subject = Idv::PhoneForm.new(previous_params: { phone: '2255555000' }, user: user)
 

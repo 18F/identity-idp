@@ -66,7 +66,7 @@ describe Idv::ProfileStep do
     end
   end
 
-  describe '#failure_reason?' do
+  describe '#failure_reason' do
     context 'when there are idv attempts remaining' do
       it 'returns :warning' do
         subject.submit(user_attrs.merge(first_name: 'Bad'))
@@ -86,7 +86,7 @@ describe Idv::ProfileStep do
     end
 
     context 'when the vendor raises an exception' do
-      it 'return :jobfail' do
+      it 'returns :jobfail' do
         subject.submit(user_attrs.merge(first_name: 'Fail'))
 
         expect(subject.failure_reason).to eq(:jobfail)

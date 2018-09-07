@@ -74,31 +74,29 @@ describe Idv::PhoneStep do
   end
 
   describe '#failure_reason' do
-    describe '#failure_reason?' do
-      context 'when there are idv attempts remaining' do
-        it 'returns :warning' do
-          subject.submit(phone: bad_phone)
+    context 'when there are idv attempts remaining' do
+      it 'returns :warning' do
+        subject.submit(phone: bad_phone)
 
-          expect(subject.failure_reason).to eq(:warning)
-        end
+        expect(subject.failure_reason).to eq(:warning)
       end
+    end
 
-      context 'when there are not idv attempts remaining' do
-        it 'returns :fail' do
-          idv_session.step_attempts[:phone] = Idv::Attempter.idv_max_attempts - 1
+    context 'when there are not idv attempts remaining' do
+      it 'returns :fail' do
+        idv_session.step_attempts[:phone] = Idv::Attempter.idv_max_attempts - 1
 
-          subject.submit(phone: bad_phone)
+        subject.submit(phone: bad_phone)
 
-          expect(subject.failure_reason).to eq(:fail)
-        end
+        expect(subject.failure_reason).to eq(:fail)
       end
+    end
 
-      context 'when the vendor raises an exception' do
-        it 'return :jobfail' do
-          subject.submit(phone: fail_phone)
+    context 'when the vendor raises an exception' do
+      it 'returns :jobfail' do
+        subject.submit(phone: fail_phone)
 
-          expect(subject.failure_reason).to eq(:jobfail)
-        end
+        expect(subject.failure_reason).to eq(:jobfail)
       end
     end
   end
