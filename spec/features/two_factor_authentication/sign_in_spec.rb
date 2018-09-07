@@ -34,7 +34,7 @@ feature 'Two Factor Authentication' do
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.reload.phone_configuration).to be_nil
+      expect(user.phone_configurations).to be_empty
       expect(user.sms?).to eq true
     end
 
@@ -349,7 +349,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq account_path
 
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configuration.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configurations.first.phone)
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         # let findtime period expire
@@ -386,7 +386,9 @@ feature 'Two Factor Authentication' do
 
         sign_in_before_2fa(second_user)
         click_link t('links.two_factor_authentication.get_another_code')
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone_configuration.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(
+          first_user.phone_configurations.first.phone
+        )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         expect(current_path).to eq otp_send_path

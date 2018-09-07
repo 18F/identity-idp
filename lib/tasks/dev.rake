@@ -88,11 +88,7 @@ namespace :dev do
     user.encrypted_email = args[:ee].encrypted
     user.skip_confirmation!
     user.reset_password(args[:pw], args[:pw])
-    user.create_phone_configuration(
-      delivery_preference: user.otp_delivery_preference,
-      phone: format('+1 (415) 555-%04d', args[:num]),
-      confirmed_at: Time.zone.now
-    )
+    user.phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
@@ -106,5 +102,13 @@ namespace :dev do
 
   def fingerprint(email)
     Pii::Fingerprinter.fingerprint(email)
+  end
+
+  def phone_configuration_data(user, args)
+    {
+      delivery_preference: user.otp_delivery_preference,
+      phone: format('+1 (415) 555-%04d', args[:num]),
+      confirmed_at: Time.zone.now,
+    }
   end
 end

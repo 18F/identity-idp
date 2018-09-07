@@ -140,7 +140,7 @@ module TwoFactorAuthenticatable
   end
 
   def old_phone
-    current_user.phone_configuration&.phone
+    current_user.phone_configurations.first&.phone
   end
 
   def phone_changed
@@ -233,7 +233,7 @@ module TwoFactorAuthenticatable
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       remember_device_available: false,
-      phone_enabled: current_user.phone_configuration&.mfa_enabled?,
+      phone_enabled: current_user.phone_configurations.any?(&:mfa_enabled?),
     }.merge(generic_data)
   end
 
@@ -255,7 +255,7 @@ module TwoFactorAuthenticatable
 
   def voice_otp_delivery_unsupported?
     phone_number = if authentication_context?
-                     current_user.phone_configuration&.phone
+                     current_user.phone_configurations.first&.phone
                    else
                      user_session[:unconfirmed_phone]
                    end
@@ -268,7 +268,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if current_user.phone_configuration.present?
+    if current_user.phone_configurations.any?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -276,7 +276,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && current_user.phone_configuration.present?
+    confirmation_context? && current_user.phone_configurations.any?
   end
 
   def presenter_for_two_factor_authentication_method

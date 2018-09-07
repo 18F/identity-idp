@@ -138,7 +138,7 @@ describe Idv::PhoneController do
 
           expected_params = {
             phone: normalized_phone,
-            phone_confirmed_at: user.phone_configuration.confirmed_at,
+            phone_confirmed_at: user.phone_configurations.first.confirmed_at,
           }
           expect(subject.idv_session.params).to eq expected_params
         end

@@ -3,10 +3,12 @@ require 'rails_helper'
 RSpec.describe OtpRateLimiter do
   let(:current_user) { build(:user, :with_phone) }
   subject(:otp_rate_limiter) do
-    OtpRateLimiter.new(phone: current_user.phone_configuration.phone, user: current_user)
+    OtpRateLimiter.new(phone: current_user.phone_configurations.first.phone, user: current_user)
   end
 
-  let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(current_user.phone_configuration.phone) }
+  let(:phone_fingerprint) do
+    Pii::Fingerprinter.fingerprint(current_user.phone_configurations.first.phone)
+  end
   let(:rate_limited_phone) { OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint) }
 
   describe '#exceeded_otp_send_limit?' do
@@ -27,7 +29,9 @@ RSpec.describe OtpRateLimiter do
 
   describe '#increment' do
     it 'updates otp_last_sent_at' do
-      tracker = OtpRequestsTracker.find_or_create_with_phone(current_user.phone_configuration.phone)
+      tracker = OtpRequestsTracker.find_or_create_with_phone(
+        current_user.phone_configurations.first.phone
+      )
       old_otp_last_sent_at = tracker.reload.otp_last_sent_at
       otp_rate_limiter.increment
       new_otp_last_sent_at = tracker.reload.otp_last_sent_at

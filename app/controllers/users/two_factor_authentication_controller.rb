@@ -41,7 +41,7 @@ module Users
     end
 
     def phone_configuration
-      current_user.phone_configuration
+      current_user.phone_configurations.first
     end
 
     def validate_otp_delivery_preference_and_send_code
@@ -87,7 +87,7 @@ module Users
     def redirect_to_otp_verification_with_error
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
-        otp_delivery_preference: current_user.phone_configuration.delivery_preference,
+        otp_delivery_preference: phone_configuration.delivery_preference,
         reauthn: reauthn?
       )
     end

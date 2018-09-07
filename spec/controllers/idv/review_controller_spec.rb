@@ -20,7 +20,7 @@ describe Idv::ReviewController do
       city: 'Somewhere',
       state: 'KS',
       zipcode: zipcode,
-      phone: user.phone_configuration&.phone,
+      phone: user.phone_configurations.first&.phone,
       ssn: '12345678',
     }
   end

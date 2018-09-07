@@ -5,6 +5,6 @@ FactoryBot.define do
     confirmed_at { Time.zone.now }
     phone { '+1 202-555-1212' }
     mfa_enabled { true }
-    association :user
+    user { association :user }
   end
 end
