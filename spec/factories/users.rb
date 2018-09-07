@@ -6,9 +6,9 @@ FactoryBot.define do
       with { {} }
     end
 
-    confirmed_at Time.zone.now
+    confirmed_at { Time.zone.now }
     email { Faker::Internet.safe_email }
-    password '!1a Z@6s' * 16 # Maximum length password.
+    password { '!1a Z@6s' * 16 } # Maximum length password.
 
     trait :with_phone do
       after(:build) do |user, evaluator|
@@ -56,15 +56,15 @@ FactoryBot.define do
 
     trait :with_authentication_app do
       with_personal_key
-      otp_secret_key ROTP::Base32.random_base32
+      otp_secret_key { ROTP::Base32.random_base32 }
     end
 
     trait :admin do
-      role :admin
+      role { :admin }
     end
 
     trait :tech_support do
-      role :tech
+      role { :tech }
     end
 
     trait :signed_up do
@@ -73,8 +73,8 @@ FactoryBot.define do
     end
 
     trait :unconfirmed do
-      confirmed_at nil
-      password nil
+      confirmed_at { nil }
+      password { nil }
     end
   end
 end
