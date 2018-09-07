@@ -21,6 +21,8 @@ test:
     name: 'DOE'
   11:
     name: 'USFS'
+  12:
+    name: 'HUD'
 
 development:
   1:
@@ -45,6 +47,8 @@ development:
     name: 'DOE'
   11:
     name: 'USFS'
+  12:
+    name: 'HUD'
 
 production:
   1:
@@ -69,3 +73,5 @@ production:
     name: 'DOE'
   11:
     name: 'USFS'
+  12:
+    name: 'HUD'
