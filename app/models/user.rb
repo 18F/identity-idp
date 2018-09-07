@@ -167,7 +167,7 @@ class User < ApplicationRecord
   end
 
   def phone_mfa_enabled?
-    phone_configuration&.mfa_enabled?
+    phone_configuration&.mfa_enabled
   end
 end
 # rubocop:enable Rails/HasManyOrHasOneDependent
