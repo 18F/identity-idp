@@ -791,3 +791,18 @@ production:
       - 'gov.dhs.cbp.pspd.i94.user.prod://result'
       - 'gov.dhs.cbp.pspd.i94.user.prod://result/logout'
     restrict_to_deploy_env: 'prod'
+
+  # HUD Section 3 Opportunity Portal
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:HUD_FHEO:Section3OpportunityPortal':
+    agency_id: 12
+    friendly_name: 'HUD Section 3 Opportunity Portal'
+    agency: 'HUD'
+    logo: 'hud.png'
+    return_to_sp_url: 'https://hudapps.hud.gov/OpportunityPortal'
+    redirect_uris:
+      - 'https://hudapps.hud.gov/OpportunityPortal/openid_connect_login'
+      - 'https://hudapps.hud.gov/OpportunityPortal/signedOut.action'
+    cert: 'hud_prod'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
