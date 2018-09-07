@@ -42,6 +42,7 @@ fr:
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
+      twilio_timeout: NOT TRANSLATED YET
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Fournisseur de service non autorisé
