@@ -19,6 +19,13 @@ module Users
       end
     end
 
+    def delete
+      analytics.track_event(Analytics::WEBAUTHN_DELETED)
+      WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
+      flash[:success] = t('notices.webauthn_deleted')
+      redirect_to account_url
+    end
+
     private
 
     def save_challenge_in_session

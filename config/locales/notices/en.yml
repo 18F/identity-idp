@@ -46,5 +46,6 @@ en:
       link: use a different email address
       text_html: Or, %{link}
     webauthn_added: You added a hardware security key.
+    webauthn_deleted: You deleted a hardware security key.
   session_timedout: We signed you out. For your security, %{app} ends your session
     when you haven’t moved to a new page for %{minutes} minutes.

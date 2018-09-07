@@ -26,6 +26,8 @@ en:
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
       webauthn: Hardware security key
+      webauthn_add: "+ Add hardware security key"
+      webauthn_delete: Delete
     items:
       delete_your_account: Delete your account
       personal_key: Personal key
