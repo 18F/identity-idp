@@ -38,7 +38,7 @@ describe Pii::Cacher do
       old_ssn_signature = profile.ssn_signature
       old_email_fingerprint = user.email_fingerprint
       old_encrypted_email = user.encrypted_email
-      old_encrypted_phone = user.encrypted_phone
+      old_encrypted_phone = user.phone_configuration.encrypted_phone
       old_encrypted_otp_secret_key = user.encrypted_otp_secret_key
 
       rotate_all_keys
@@ -55,7 +55,7 @@ describe Pii::Cacher do
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(profile.ssn_signature).to_not eq old_ssn_signature
-      expect(user.encrypted_phone).to_not eq old_encrypted_phone
+      expect(user.phone_configuration.encrypted_phone).to_not eq old_encrypted_phone
       expect(user.encrypted_otp_secret_key).to_not eq old_encrypted_otp_secret_key
     end
 

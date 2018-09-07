@@ -3,6 +3,7 @@ class User < ApplicationRecord
   self.ignored_columns = %w[
     encrypted_password password_salt password_cost encryption_key
     recovery_code recovery_cost recovery_salt
+    encrypted_phone phone_confirmed_at
   ]
 
   include NonNullUuid
@@ -22,7 +23,6 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute(name: :phone)
   encrypted_attribute(name: :otp_secret_key)
   encrypted_attribute_without_setter(name: :email)
 

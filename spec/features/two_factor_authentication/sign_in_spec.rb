@@ -34,7 +34,6 @@ feature 'Two Factor Authentication' do
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
       expect(user.reload.phone_configuration).to be_nil
       expect(user.sms?).to eq true
     end
@@ -242,7 +241,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
       unsupported_phone = '+1 (242) 327-0143'
-      user = create(:user, :signed_up, phone: unsupported_phone)
+      user = create(:user, :signed_up, with: { phone: unsupported_phone })
       sign_in_before_2fa(user)
 
       expect(page).to_not have_link t('links.two_factor_authentication.voice')
@@ -374,8 +373,8 @@ feature 'Two Factor Authentication' do
     context '2 users with same phone number request OTP too many times within findtime' do
       it 'locks both users out' do
         allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('3')
-        first_user = create(:user, :signed_up, phone: '+1 703-555-1212')
-        second_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        first_user = create(:user, :signed_up, with: { phone: '+1 703-555-1212' })
+        second_user = create(:user, :signed_up, with: { phone: '+1 703-555-1212' })
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
 
         sign_in_before_2fa(first_user)
@@ -410,7 +409,7 @@ feature 'Two Factor Authentication' do
 
     context 'When setting up 2FA for the first time' do
       it 'enforces rate limiting only for current phone' do
-        second_user = create(:user, :signed_up, phone: '202-555-1212')
+        second_user = create(:user, :signed_up, with: { phone: '202-555-1212' })
 
         sign_in_before_2fa
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
@@ -552,7 +551,7 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
-        user = create(:user, :signed_up, phone: '+212 661-289324')
+        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
         sign_in_user(user)
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
@@ -574,7 +573,7 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
 
-        user = create(:user, :signed_up, phone: '+212 661-289324')
+        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
         sign_in_user(user)
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -593,7 +592,9 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
 
-        user = create(:user, :signed_up, phone: '+17035551212', otp_delivery_preference: 'voice')
+        user = create(:user, :signed_up,
+                      otp_delivery_preference: 'voice',
+                      with: { phone: '+17035551212', delivery_preference: 'voice' })
         sign_in_user(user)
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')

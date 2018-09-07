@@ -53,7 +53,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     describe 'SMS' do
       scenario 'enter 2fa phone OTP code page' do
-        user = create(:user, phone: '+1 (202) 555-1212')
+        user = create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' })
         sign_in_before_2fa(user)
         visit login_two_factor_path(otp_delivery_preference: 'sms')
 
@@ -64,7 +64,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     describe 'Voice' do
       scenario 'enter 2fa phone OTP code page' do
-        user = create(:user, phone: '+1 (202) 555-1212')
+        user = create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' })
         sign_in_before_2fa(user)
         visit login_two_factor_path(otp_delivery_preference: 'voice')
 

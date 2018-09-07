@@ -33,7 +33,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     end
 
     it 'tracks the page visit and context' do
-      user = build_stubbed(:user, phone: '+1 (703) 555-0100')
+      user = build_stubbed(:user, :with_phone, with: { phone: '+1 (703) 555-0100' })
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -322,8 +322,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'does not update user phone or phone_confirmed_at attributes' do
-            expect(subject.current_user.phone).to eq('+1 202-555-1212')
-            expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
             expect(subject.current_user.phone_configuration.phone).to eq('+1 202-555-1212')
             expect(
               subject.current_user.phone_configuration.confirmed_at
@@ -355,8 +353,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'when user does not have an existing phone number' do
         before do
-          subject.current_user.phone = nil
-          subject.current_user.phone_confirmed_at = nil
           subject.current_user.phone_configuration.destroy
           subject.current_user.phone_configuration = nil
           subject.current_user.create_direct_otp

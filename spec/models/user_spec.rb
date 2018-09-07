@@ -376,20 +376,11 @@ describe User do
 
         expect(user.email).to eq 'foo@example.org'
       end
-
-      it 'normalizes phone' do
-        user = create(:user, phone: '  555 555 5555    ')
-
-        expect(user.phone).to eq '555 555 5555'
-        expect(user.phone_configuration.phone).to eq '555 555 5555'
-      end
     end
 
-    it 'decrypts phone and otp_secret_key' do
-      user = create(:user, phone: '+1 (202) 555-1212', otp_secret_key: 'abc123')
+    it 'decrypts otp_secret_key' do
+      user = create(:user, otp_secret_key: 'abc123')
 
-      expect(user.phone).to eq '+1 (202) 555-1212'
-      expect(user.phone_configuration.phone).to eq '+1 (202) 555-1212'
       expect(user.otp_secret_key).to eq 'abc123'
     end
   end

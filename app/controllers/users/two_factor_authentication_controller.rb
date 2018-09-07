@@ -45,7 +45,6 @@ module Users
     end
 
     def validate_otp_delivery_preference_and_send_code
-      delivery_preference = phone_configuration.delivery_preference
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
@@ -55,6 +54,10 @@ module Users
         handle_valid_otp_delivery_preference('sms')
         flash[:error] = result.errors[:phone].first
       end
+    end
+
+    def delivery_preference
+      phone_configuration&.delivery_preference || current_user.otp_delivery_preference
     end
 
     def update_otp_delivery_preference_if_needed
@@ -67,8 +70,7 @@ module Users
 
     def handle_invalid_otp_delivery_preference(result)
       flash[:error] = result.errors[:phone].first
-      preference = current_user.phone_configuration.delivery_preference
-      redirect_to login_two_factor_url(otp_delivery_preference: preference)
+      redirect_to login_two_factor_url(otp_delivery_preference: delivery_preference)
     end
 
     def invalid_phone_number(exception, action:)
@@ -179,7 +181,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      return current_user.phone_configuration.phone if authentication_context?
+      return phone_configuration&.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
     end
