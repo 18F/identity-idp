@@ -70,7 +70,7 @@ class User < ApplicationRecord
 
   def two_factor_enabled?
     phone_configurations.any?(&:mfa_enabled?) || totp_enabled? || piv_cac_enabled? ||
-      !webauthn_configurations.empty?
+      webauthn_configurations.any?
   end
 
   def send_two_factor_authentication_code(_code)
@@ -162,9 +162,12 @@ class User < ApplicationRecord
   end
 
   def total_mfa_options_enabled
-    total = [phone_configuration&.mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
-    total += webauthn_configurations.size
-    total
+    total = [phone_mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
+    total + webauthn_configurations.size
+  end
+
+  def phone_mfa_enabled?
+    phone_configuration&.mfa_enabled?
   end
 end
 # rubocop:enable Rails/HasManyOrHasOneDependent
