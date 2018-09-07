@@ -21,7 +21,7 @@ table.hr
   tr
     th
       | &nbsp;
-p= t('mailer.confirmation_instructions.footer', confirmation_period: '24 hours')
-p== t('user_mailer.account_reset_granted.help',
+p = t('mailer.confirmation_instructions.footer', confirmation_period: '24 hours')
+p == t('user_mailer.account_reset_granted.help',
         cancel_account_reset: link_to(t('user_mailer.account_reset_granted.cancel_link_text'),
                 account_reset_cancel_url(token: @token)))

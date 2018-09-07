@@ -46,7 +46,6 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - TwoFactorAuthenticationController#capture_analytics_for_exception
-    - Users::SessionsController#configure_permitted_parameters
     - UspsConfirmationExporter#make_entry_row
 InstanceVariableAssumption:
   exclude:
@@ -58,7 +57,6 @@ ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
     - CloudhsmKeyGenerator#initialize_settings
-    - Users::SessionsController#configure_permitted_parameters
 NestedIterators:
   exclude:
     - UserFlowExporter#self.massage_html

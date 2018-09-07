@@ -3,6 +3,6 @@ FactoryBot.define do
 
   factory :usps_confirmation_code do
     profile
-    otp_fingerprint Pii::Fingerprinter.fingerprint('ABCDE12345')
+    otp_fingerprint { Pii::Fingerprinter.fingerprint('ABCDE12345') }
   end
 end
