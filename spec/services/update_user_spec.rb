@@ -31,11 +31,11 @@ describe UpdateUser do
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
       end
 
-      it 'deletes the phone configuration' do
+      it 'does not delete the phone configuration' do
         attributes = { phone: nil }
         updater = UpdateUser.new(user: user, attributes: attributes)
         updater.call
-        expect(user.reload.phone_configuration).to be_nil
+        expect(user.reload.phone_configuration).to_not be_nil
       end
     end
 

@@ -129,10 +129,10 @@ en:
       two_factor_choice_options:
         auth_app: Authentication application
         auth_app_info: Set up an authentication application to get your security code
-          without providing a phone number.
+          without providing a phone number
         piv_cac: Government employees
-        piv_cac_info: Use your PIV/CAC card to secure your account.
+        piv_cac_info: Use your PIV/CAC card to secure your account
         sms: Text message / SMS
-        sms_info: Get your security code via text message / SMS.
+        sms_info: Get your security code via text message / SMS
         voice: Phone call
-        voice_info: Get your security code via phone call.
+        voice_info: Get your security code via phone call

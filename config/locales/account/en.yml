@@ -25,6 +25,7 @@ en:
         instructions: Your account requires a secret code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
+      webauthn: Hardware security key
     items:
       delete_your_account: Delete your account
       personal_key: Personal key

@@ -2,33 +2,46 @@ FactoryBot.define do
   Faker::Config.locale = :en
 
   factory :user do
+    transient do
+      with { {} }
+    end
+
     confirmed_at Time.zone.now
     email { Faker::Internet.safe_email }
     password '!1a Z@6s' * 16 # Maximum length password.
 
-    after :build do |user|
-      if user.phone
-        user.build_phone_configuration(
-          phone: user.phone,
-          confirmed_at: user.phone_confirmed_at,
-          delivery_preference: user.otp_delivery_preference
-        )
-      end
-    end
-
-    after :stub do |user|
-      if user.phone
-        user.phone_configuration = build_stubbed(:phone_configuration,
-                                                 user: user,
-                                                 phone: user.phone,
-                                                 confirmed_at: user.phone_confirmed_at,
-                                                 delivery_preference: user.otp_delivery_preference)
-      end
-    end
-
     trait :with_phone do
-      phone '+1 202-555-1212'
-      phone_confirmed_at Time.zone.now
+      after(:build) do |user, evaluator|
+        if user.phone_configuration.nil?
+          user.phone_configuration = build(
+            :phone_configuration,
+            { user: user, delivery_preference: user.otp_delivery_preference }.merge(
+              evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+            )
+          )
+        end
+      end
+
+      after(:create) do |user, evaluator|
+        if user.phone_configuration.nil?
+          create(:phone_configuration,
+                 { user: user, delivery_preference: user.otp_delivery_preference }.merge(
+                   evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+                 ))
+          user.reload
+        end
+      end
+
+      after(:stub) do |user, evaluator|
+        if user.phone_configuration.nil?
+          user.phone_configuration = build_stubbed(
+            :phone_configuration,
+            { user: user, delivery_preference: user.otp_delivery_preference }.merge(
+              evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+            )
+          )
+        end
+      end
     end
 
     trait :with_piv_or_cac do

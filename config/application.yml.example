@@ -48,7 +48,10 @@ queue_adapter_weights: '{"inline": 1}'
 recovery_code_length: '4'
 
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
-service_timeout: '15'
+# Note that the key name must be capitalized because the gem looks for
+# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
+# available to ENV as uppercase keys.
+RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
@@ -148,6 +151,7 @@ development:
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
+  RACK_TIMEOUT_SERVICE_TIMEOUT: '30'
   reauthn_window: '120'
   recaptcha_enabled_percent: '0'
   recaptcha_site_key: 'key1'
@@ -167,7 +171,6 @@ development:
   saml_secret_rotation_secret_key_password:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
-  service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   telephony_disabled: 'true'
@@ -188,6 +191,7 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
+  webauthn_enabled: true
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -299,6 +303,7 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
+  webauthn_enabled: false
 
 test:
   aamva_cert_enabled: 'true'
@@ -414,3 +419,4 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
+  webauthn_enabled: true

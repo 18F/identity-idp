@@ -84,3 +84,11 @@ es:
       name: Código de confirmación
       submit: Confirmar cuenta
       title: Confirme su cuenta
+    webauthn_setup:
+      intro_html: Cuando inicie sesión, puede usar su clave de seguridad de hardware.
+        %{link}
+      step_1: Inserte su clave de seguridad en el puerto USB de su computadora o conéctelo
+        con un cable USB.
+      step_2: Una vez conectado, toca el botón o el disco de oro si tu llave tiene
+        uno de ellos.
+      step_3: Ingrese un nombre para su clave de seguridad

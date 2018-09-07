@@ -20,7 +20,10 @@ describe Idv::PhoneController do
   end
 
   describe '#new' do
-    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+    let(:user) do
+      build(:user, :with_phone,
+            with: { phone: good_phone, confirmed_at: Time.zone.now })
+    end
 
     before do
       stub_verify_steps_one_and_two(user)
@@ -64,7 +67,7 @@ describe Idv::PhoneController do
   describe '#create' do
     context 'when form is invalid' do
       before do
-        user = build(:user, phone: '+1 (415) 555-0130')
+        user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -105,7 +108,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with valid phone' do
-        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -121,12 +124,12 @@ describe Idv::PhoneController do
           Analytics::IDV_PHONE_CONFIRMATION_FORM, result
         )
       end
-    end
 
-    context 'when verification succeeds' do
-      context 'with same phone as user phone' do
-        it 'redirects to review page and sets phone confirmation' do
-          user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+      context 'when same as user phone' do
+        it 'redirects to review page and sets phone_confirmed_at' do
+          user = build(:user, :with_phone, with: {
+                         phone: good_phone, confirmed_at: Time.zone.now
+                       })
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -145,9 +148,11 @@ describe Idv::PhoneController do
         end
       end
 
-      context 'with different phone from user phone' do
-        it 'redirects to otp page and does not set phone confirmation' do
-          user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+      context 'when different phone from user phone' do
+        it 'redirects to otp page and does not set phone_confirmed_at' do
+          user = build(:user, :with_phone, with: {
+                         phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
+                       })
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -160,7 +165,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with valid phone' do
-        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         stub_analytics
@@ -186,7 +191,7 @@ describe Idv::PhoneController do
 
     context 'when verification fails' do
       it 'renders failure page and does not set phone confirmation' do
-        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         put :create, params: { idv_phone_form: { phone: '7035555555' } }
@@ -198,7 +203,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
-        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         stub_analytics

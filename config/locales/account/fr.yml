@@ -27,6 +27,7 @@ fr:
         instructions: Votre compte requiert la vérification d'un code secret.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
+      webauthn: Clé de sécurité matérielle
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle
