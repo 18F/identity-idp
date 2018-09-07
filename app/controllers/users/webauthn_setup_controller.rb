@@ -45,7 +45,7 @@ module Users
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
-        mfa_options: current_user.total_mfa_options_enabled
+        mfa_options_enabled: current_user.total_mfa_options_enabled
       )
     end
 
