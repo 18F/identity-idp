@@ -10,7 +10,6 @@ module Users
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new]
-    before_action :configure_permitted_parameters, only: [:new]
 
     def new
       analytics.track_event(
@@ -50,12 +49,6 @@ module Users
     end
 
     private
-
-    def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_in) do |user_params|
-        user_params.permit(:email) if user_params.respond_to?(:permit)
-      end
-    end
 
     def redirect_to_signin
       controller_info = 'users/sessions#create'
