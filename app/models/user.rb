@@ -162,7 +162,7 @@ class User < ApplicationRecord
   end
 
   def total_mfa_options_enabled
-    total = [phone_configuration.mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
+    total = [phone_configuration&.mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
     total += webauthn_configurations.size
     total
   end

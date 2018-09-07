@@ -96,7 +96,8 @@ describe Users::WebauthnSetupController do
       it 'tracks the delete' do
         cfg = create_webauthn_configuration(controller.current_user, 'key1', 'id1', 'foo1')
 
-        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED)
+        result = { success: true, mfa_options: 0 }
+        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
 
         delete :delete, params: { id: cfg.id }
       end

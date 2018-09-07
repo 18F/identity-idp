@@ -31,7 +31,7 @@ ul.list-reset
             = hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key'
             = hidden_field_tag :attestation_object, '', id: 'attestation_object'
             = hidden_field_tag :client_data_json, '', id: 'client_data_json'
-            = text_field_tag :name, '', required: true, pattern: '[A-Za-z0-9]*', id: 'name',
+            = text_field_tag :name, '', required: true, id: 'name',
               class: 'block col-12 field monospace', size: 16, maxlength: 20,
                 'aria-labelledby': 'totp-label'
           .col.col-6.sm-col-5.px1
