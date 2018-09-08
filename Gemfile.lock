@@ -168,7 +168,7 @@ GEM
     bummr (0.3.2)
       rainbow
       thor
-    byebug (10.0.0)
+    byebug (10.0.2)
     capybara (2.17.0)
       addressable
       mini_mime (>= 0.1.3)
