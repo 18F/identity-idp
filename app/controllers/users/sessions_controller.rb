@@ -123,8 +123,10 @@ module Users
       begin
         cacher.save(auth_params[:password], profile)
       rescue Encryption::EncryptionError => err
-        profile.deactivate(:encryption_error)
-        analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
+        if profile
+          profile.deactivate(:encryption_error)
+          analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
+        end
       end
     end
 
