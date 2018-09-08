@@ -326,6 +326,7 @@ GEM
     jwt (2.1.0)
     knapsack (1.16.0)
       rake
+    kwalify (0.7.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (3.1.5)
@@ -452,9 +453,10 @@ GEM
     recaptcha (4.12.0)
       json
     redis (3.3.5)
-    reek (4.8.1)
+    reek (5.0.2)
       codeclimate-engine-rb (~> 0.4.0)
-      parser (>= 2.5.0.0, < 2.6)
+      kwalify (~> 0.7.0)
+      parser (>= 2.5.0.0, < 2.6, != 2.5.1.1)
       rainbow (>= 2.0, < 4.0)
     referer-parser (0.3.0)
     request_store (1.4.1)
