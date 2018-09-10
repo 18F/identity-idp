@@ -91,6 +91,7 @@ detectors:
       - CloudhsmKeyGenerator
       - CloudhsmKeySharer
       - WebauthnSetupForm
+      - WebauthnVerificationForm
   TooManyStatements:
     max_statements: 6
     exclude:

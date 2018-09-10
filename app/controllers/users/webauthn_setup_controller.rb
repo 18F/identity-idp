@@ -59,9 +59,14 @@ module Users
     end
 
     def process_valid_webauthn(attestation_response)
+      mark_user_as_fully_authenticated
       create_webauthn_configuration(attestation_response)
-      flash[:success] = t('notices.webauthn_added')
-      redirect_to account_url
+      if current_user.decorate.should_acknowledge_personal_key?(user_session)
+        redirect_to sign_up_personal_key_url
+      else
+        flash[:success] = t('notices.webauthn_added')
+        redirect_to account_url
+      end
     end
 
     def process_invalid_webauthn(form)
@@ -76,12 +81,17 @@ module Users
 
     def create_webauthn_configuration(attestation_response)
       credential = attestation_response.credential
-      public_key = Base64.encode64(credential.public_key)
-      id = Base64.encode64(credential.id)
+      public_key = Base64.strict_encode64(credential.public_key)
+      id = Base64.strict_encode64(credential.id)
       WebauthnConfiguration.create(user_id: current_user.id,
                                    credential_public_key: public_key,
                                    credential_id: id,
                                    name: params[:name])
+    end
+
+    def mark_user_as_fully_authenticated
+      user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+      user_session[:authn_at] = Time.zone.now
     end
   end
 end

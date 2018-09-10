@@ -34,6 +34,7 @@ module TwoFactorAuthentication
         'sms' => otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: 'sms' }),
         'auth_app' => login_two_factor_authenticator_url,
         'piv_cac' => login_two_factor_piv_cac_url,
+        'webauthn' => login_two_factor_webauthn_url,
       }
       url = factor_to_url[@two_factor_options_form.selection]
       redirect_to url if url

@@ -34,7 +34,8 @@ describe Users::WebauthnSetupController do
   describe 'when signed in' do
     before do
       stub_analytics
-      stub_sign_in
+      user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
+      stub_sign_in(user)
     end
 
     describe 'GET new' do
