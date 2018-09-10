@@ -10,8 +10,6 @@ module Idv
     before_action :confirm_idv_attempts_allowed, except: %i[success failure]
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: [:success]
-    before_action :initialize_idv_session, only: [:create]
-    before_action :refresh_if_not_ready, only: [:show]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -23,23 +21,10 @@ module Idv
 
     def create
       set_idv_form
-      result = idv_form.submit(profile_params)
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
-
-      if result.success?
-        Idv::Job.submit(idv_session, %i[resolution state_id])
-        redirect_to idv_session_result_url
-      else
-        process_form_failure
-      end
-    end
-
-    def show
-      result = step.submit
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result.to_h)
-
-      redirect_to idv_session_success_url and return if result.success?
-      redirect_to idv_session_failure_url(idv_step_failure_reason)
+      form_result = idv_form.submit(profile_params)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, form_result.to_h)
+      return process_form_failure unless form_result.success?
+      submit_proofing_attempt
     end
 
     def failure
@@ -57,11 +42,7 @@ module Idv
     end
 
     def step
-      @_step ||= Idv::ProfileStep.new(
-        idv_form_params: idv_session.params,
-        idv_session: idv_session,
-        vendor_validator_result: vendor_validator_result
-      )
+      @_step ||= Idv::ProfileStep.new(idv_session: idv_session)
     end
 
     def process_form_failure
@@ -77,6 +58,18 @@ module Idv
       render_failure('shared/_failure', presenter)
     end
 
+    def submit_proofing_attempt
+      idv_result = step.submit(profile_params.to_h)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, idv_result.to_h)
+      redirect_to idv_session_success_url and return if idv_result.success?
+      handle_proofing_failure
+    end
+
+    def handle_proofing_failure
+      idv_session.previous_profile_step_params = profile_params.to_h
+      redirect_to idv_session_failure_url(step.failure_reason)
+    end
+
     def step_name
       :sessions
     end
@@ -86,13 +79,10 @@ module Idv
     end
 
     def set_idv_form
-      @idv_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
-    end
-
-    def initialize_idv_session
-      idv_session.params = profile_params.to_h
-      idv_session.params[:state_id_jurisdiction] = profile_params[:state]
-      idv_session.applicant = idv_session.vendor_params
+      @idv_form ||= Idv::ProfileForm.new(
+        user: current_user,
+        previous_params: idv_session.previous_profile_step_params
+      )
     end
 
     def profile_params

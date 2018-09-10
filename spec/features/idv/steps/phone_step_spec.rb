@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv phone step', :idv_job do
+feature 'idv phone step' do
   include IdvStepHelper
   include IdvHelper
 

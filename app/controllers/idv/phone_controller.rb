@@ -7,7 +7,6 @@ module Idv
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed, except: [:failure]
-    before_action :refresh_if_not_ready, only: [:show]
     before_action :set_idv_form, except: [:failure]
 
     def new
@@ -17,22 +16,8 @@ module Idv
     def create
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
-
-      if result.success?
-        Idv::Job.submit(idv_session, [:address])
-        redirect_to idv_phone_result_url
-      else
-        render :new
-      end
-    end
-
-    def show
-      result = step.submit
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result.to_h)
-      increment_step_attempts
-
-      redirect_to_next_step and return if result.success?
-      redirect_to idv_phone_failure_url(idv_step_failure_reason)
+      return render(:new) unless result.success?
+      submit_proofing_attempt
     end
 
     def failure
@@ -53,16 +38,24 @@ module Idv
       idv_session.user_phone_confirmation != true
     end
 
+    def submit_proofing_attempt
+      idv_result = step.submit(step_params.to_h)
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, idv_result.to_h)
+      redirect_to_next_step and return if idv_result.success?
+      handle_proofing_failure
+    end
+
+    def handle_proofing_failure
+      idv_session.previous_phone_step_params = step_params.to_h
+      redirect_to failure_url(step.failure_reason)
+    end
+
     def step_name
       :phone
     end
 
     def step
-      @_step ||= Idv::PhoneStep.new(
-        idv_session: idv_session,
-        idv_form_params: idv_form.idv_params,
-        vendor_validator_result: vendor_validator_result
-      )
+      @_step ||= Idv::PhoneStep.new(idv_session: idv_session)
     end
 
     def step_params
@@ -74,7 +67,10 @@ module Idv
     end
 
     def set_idv_form
-      @idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+      @idv_form ||= Idv::PhoneForm.new(
+        user: current_user,
+        previous_params: idv_session.previous_phone_step_params
+      )
     end
 
     def failure_url(reason)

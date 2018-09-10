@@ -127,7 +127,6 @@ fr:
           ou votre carte d'identité?
         why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
           de votre carte d'identité officielle.
-      loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
         phone_number_html: NOT TRANSLATED YET

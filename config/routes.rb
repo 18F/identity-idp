@@ -192,7 +192,6 @@ Rails.application.routes.draw do
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
-        get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
         get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
@@ -201,7 +200,6 @@ Rails.application.routes.draw do
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
-        get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
         get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
         delete '/session' => 'sessions#destroy'

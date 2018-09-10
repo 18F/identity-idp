@@ -36,7 +36,7 @@ module Idv
       result = {
         success: true,
         new_phone_added: !current_user.phone_configurations.map(&:phone).include?(
-          idv_session.params['phone']
+          idv_session.applicant['phone']
         ),
       }
       analytics.track_event(Analytics::IDV_FINAL, result)

@@ -9,87 +9,93 @@ describe Idv::PhoneStep do
     idvs.applicant = { first_name: 'Some' }
     idvs
   end
-  let(:idv_form_params) { { phone: '703-555-0000', phone_confirmed_at: nil } }
-  let(:idv_phone_form) { Idv::PhoneForm.new(idv_session.params, user) }
+  let(:good_phone) { '2255555000' }
+  let(:bad_phone) { '7035555555' }
+  let(:fail_phone) { '7035555999' }
 
-  def build_step(vendor_validator_result)
-    described_class.new(
-      idv_session: idv_session,
-      idv_form_params: idv_form_params,
-      vendor_validator_result: vendor_validator_result
-    )
-  end
+  subject { described_class.new(idv_session: idv_session) }
 
   describe '#submit' do
-    let(:context) { 'some context' }
+    it 'succeeds with good params' do
+      context = { stages: [{ address: 'AddressMock' }] }
+      extra = { vendor: { messages: [], context: context, exception: nil } }
 
-    it 'returns true for mock-happy phone' do
-      step = build_step(
-        Idv::VendorResult.new(
-          success: true,
-          errors: {},
-          context: context
-        )
-      )
-
-      result = step.submit
+      result = subject.submit(phone: good_phone)
 
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
+      expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
-      expect(idv_session.params).to eq idv_phone_form.idv_params
-      expect(result.extra).to include(
-        vendor: {
-          messages: [],
-          context: context,
-          exception: nil,
-        }
-      )
+      expect(idv_session.applicant).to eq(first_name: 'Some', phone: good_phone)
     end
 
-    it 'returns false for mock-sad phone' do
-      idv_form_params[:phone] = '703-555-5555'
-      errors = { phone: ['The phone number could not be verified.'] }
+    it 'fails with bad params' do
+      context = { stages: [{ address: 'AddressMock' }] }
+      extra = { vendor: { messages: [], context: context, exception: nil } }
 
-      step = build_step(
-        Idv::VendorResult.new(
-          success: false,
-          errors: errors
-        )
-      )
-
-      result = step.submit
+      result = subject.submit(phone: bad_phone)
 
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(false)
-      expect(result.errors).to eq(errors)
-      expect(idv_session.vendor_phone_confirmation).to eq false
+      expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
+      expect(result.extra).to eq(extra)
+      expect(idv_session.vendor_phone_confirmation).to be_falsy
+      expect(idv_session.user_phone_confirmation).to be_falsy
+      expect(idv_session.applicant).to eq(first_name: 'Some')
     end
 
-    it 'marks the phone number as confirmed by user if it matches 2FA phone' do
-      idv_form_params[:phone_confirmed_at] = Time.zone.now
-      step = build_step(
-        Idv::VendorResult.new(
-          success: true,
-          errors: {}
-        )
-      )
-      step.submit
+    it 'increments step attempts' do
+      original_step_attempts = idv_session.step_attempts[:phone]
 
+      subject.submit(phone: bad_phone)
+
+      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts + 1)
+    end
+
+    it 'marks the phone as confirmed if it matches 2FA phone' do
+      user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
+
+      result = subject.submit(phone: good_phone)
+      expect(result.success?).to eq(true)
+      expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to eq(true)
     end
 
-    it 'does not mark the phone number as confirmed by user if it does not match 2FA phone' do
-      step = build_step(
-        Idv::VendorResult.new(
-          success: true,
-          errors: {}
-        )
-      )
-      step.submit
+    it 'does not mark the phone as confirmed if it does not match 2FA phone' do
+      result = subject.submit(phone: good_phone)
 
-      expect(idv_session.user_phone_confirmation).to eq(false)
+      expect(result.success?).to eq(true)
+      expect(idv_session.vendor_phone_confirmation).to eq(true)
+      expect(idv_session.user_phone_confirmation).to be_falsy
+    end
+  end
+
+  describe '#failure_reason' do
+    context 'when there are idv attempts remaining' do
+      it 'returns :warning' do
+        subject.submit(phone: bad_phone)
+
+        expect(subject.failure_reason).to eq(:warning)
+      end
+    end
+
+    context 'when there are not idv attempts remaining' do
+      it 'returns :fail' do
+        idv_session.step_attempts[:phone] = Idv::Attempter.idv_max_attempts - 1
+
+        subject.submit(phone: bad_phone)
+
+        expect(subject.failure_reason).to eq(:fail)
+      end
+    end
+
+    context 'when the vendor raises an exception' do
+      it 'returns :jobfail' do
+        subject.submit(phone: fail_phone)
+
+        expect(subject.failure_reason).to eq(:jobfail)
+      end
     end
   end
 end
