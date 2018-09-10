@@ -29,6 +29,7 @@ class User < ApplicationRecord
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
+  include EmailAddressCallback
 
   enum role: { user: 0, tech: 1, admin: 2 }
   enum otp_delivery_preference: { sms: 0, voice: 1 }
@@ -42,6 +43,7 @@ class User < ApplicationRecord
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
+  has_one :email_address, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true

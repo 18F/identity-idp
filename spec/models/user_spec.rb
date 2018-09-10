@@ -21,6 +21,32 @@ describe User do
     end.to change(ActionMailer::Base.deliveries, :count).by(0)
   end
 
+  describe 'email_address' do
+    it 'creates an entry for the user when created' do
+      expect do
+        User.create(email: 'nobody@nobody.com')
+      end.to change(EmailAddress, :count).by(1)
+    end
+
+    it 'mirrors the info from the user object on creation' do
+      user = create(:user)
+      email_address = user.email_address
+      expect(email_address).to be_present
+      expect(email_address.encrypted_email).to eq user.encrypted_email
+      expect(email_address.email).to eq user.email
+      expect(email_address.confirmed_at).to eq user.confirmed_at
+    end
+
+    it 'mirrors the info from an unconfirmed user object' do
+      user = create(:user, :unconfirmed)
+      email_address = user.email_address
+      expect(email_address).to be_present
+      expect(email_address.encrypted_email).to eq user.encrypted_email
+      expect(email_address.email).to eq user.email
+      expect(email_address.confirmed_at).to be_nil
+    end
+  end
+
   describe 'password validations' do
     it 'allows long phrases that contain common words' do
       user = create(:user)
