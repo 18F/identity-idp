@@ -19,7 +19,35 @@ module Users
       end
     end
 
+    def delete
+      if current_user.total_mfa_options_enabled > 1
+        handle_successful_delete
+      else
+        handle_failed_delete
+      end
+      redirect_to account_url
+    end
+
     private
+
+    def handle_successful_delete
+      WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
+      flash[:success] = t('notices.webauthn_deleted')
+      track_delete(true)
+    end
+
+    def handle_failed_delete
+      flash[:error] = t('errors.webauthn_setup.delete_last')
+      track_delete(false)
+    end
+
+    def track_delete(success)
+      analytics.track_event(
+        Analytics::WEBAUTHN_DELETED,
+        success: success,
+        mfa_options_enabled: current_user.total_mfa_options_enabled
+      )
+    end
 
     def save_challenge_in_session
       credential_creation_options = ::WebAuthn.credential_creation_options

@@ -82,5 +82,36 @@ describe Users::WebauthnSetupController do
         patch :confirm, params: params
       end
     end
+
+    describe 'delete' do
+      before do
+        allow(controller.current_user).to receive(:total_mfa_options_enabled).and_return(2)
+      end
+
+      it 'deletes a webauthn configuration' do
+        cfg = create_webauthn_configuration(controller.current_user, 'key1', 'id1', 'foo1')
+        delete :delete, params: { id: cfg.id }
+
+        expect(response).to redirect_to(account_url)
+        expect(flash.now[:success]).to eq t('notices.webauthn_deleted')
+        expect(WebauthnConfiguration.count).to eq(0)
+      end
+
+      it 'tracks the delete' do
+        cfg = create_webauthn_configuration(controller.current_user, 'key1', 'id1', 'foo1')
+
+        result = { success: true, mfa_options_enabled: 2 }
+        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
+
+        delete :delete, params: { id: cfg.id }
+      end
+    end
+  end
+
+  def create_webauthn_configuration(user, name, id, key)
+    WebauthnConfiguration.create(user_id: user.id,
+                                 credential_public_key: key,
+                                 credential_id: id,
+                                 name: name)
   end
 end

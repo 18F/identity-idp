@@ -47,6 +47,7 @@ es:
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     webauthn_setup:
+      delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
