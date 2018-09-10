@@ -204,42 +204,6 @@ describe UserDecorator do
     end
   end
 
-  describe '#should_acknowledge_personal_key?' do
-    context 'user has no personal key' do
-      context 'service provider with loa1' do
-        it 'returns true' do
-          user_decorator = UserDecorator.new(User.new)
-          session = { sp: { loa3: false } }
-
-          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
-        end
-      end
-
-      context 'no service provider' do
-        it 'returns true' do
-          user_decorator = UserDecorator.new(User.new)
-          session = {}
-
-          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
-        end
-      end
-
-      it 'returns false when the user has a personal key' do
-        user_decorator = UserDecorator.new(User.new(personal_key: 'foo'))
-        session = {}
-
-        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
-      end
-
-      it 'returns false if the user is loa3' do
-        user_decorator = UserDecorator.new(User.new)
-        session = { sp: { loa3: true } }
-
-        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
-      end
-    end
-  end
-
   describe '#recent_events' do
     let!(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
     let(:decorated_user) { user.decorate }
