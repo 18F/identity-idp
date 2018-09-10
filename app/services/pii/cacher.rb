@@ -38,9 +38,9 @@ module Pii
 
     def rotate_encrypted_attributes
       KeyRotator::AttributeEncryption.new(user).rotate
-      phone_configuration = user.phone_configuration
-      return if phone_configuration.blank?
-      KeyRotator::AttributeEncryption.new(phone_configuration).rotate
+      user.phone_configurations.each do |phone_configuration|
+        KeyRotator::AttributeEncryption.new(phone_configuration).rotate
+      end
     end
 
     def stale_fingerprints?(profile)
@@ -52,7 +52,7 @@ module Pii
     end
 
     def stale_attributes?
-      user.phone_configuration&.stale_encrypted_phone? || user.stale_encrypted_email? ||
+      user.phone_configurations.any?(&:stale_encrypted_phone?) || user.stale_encrypted_email? ||
         user.stale_encrypted_otp_secret_key?
     end
 

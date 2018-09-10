@@ -68,10 +68,6 @@ class AccountShow
     end
   end
 
-  def webauthn_partial
-    'accounts/actions/add_webauthn'
-  end
-
   def manage_personal_key_partial
     yield if decorated_user.password_reset_profile.blank?
   end

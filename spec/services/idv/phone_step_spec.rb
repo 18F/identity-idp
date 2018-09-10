@@ -54,9 +54,7 @@ describe Idv::PhoneStep do
     end
 
     it 'marks the phone as confirmed if it matches 2FA phone' do
-      user.build_phone_configuration(
-        phone: good_phone
-      )
+      user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
       result = subject.submit(phone: good_phone)
       expect(result.success?).to eq(true)

@@ -18,8 +18,8 @@ Session: <%= session %>
 
 <% user = @kontroller.analytics_user || AnonymousUser.new %>
 User UUID: <%= user.uuid %>
-<% if user.phone_configuration %>
-  User's Country (based on phone): <%= Phonelib.parse(user.phone_configuration.phone).country %>
+<% if user.phone_configurations.any? %>
+  User's Country (based on first phone): <%= Phonelib.parse(user.phone_configurations.first.phone).country %>
 <% end %>
 
 Visitor ID: <%= @request.cookies['ahoy_visitor'] %>

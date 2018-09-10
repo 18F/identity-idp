@@ -75,3 +75,19 @@
   border-color: $gray;
   color: $gray;
 }
+
+.btn-account-action {
+  border: 0;
+  color: $blue;
+  font-size: .8125rem;
+  font-weight: normal;
+  margin-bottom: -3px;
+  margin-top: -3px;
+  padding: .5rem;
+  padding-bottom: .125rem;
+  padding-top: .125rem;
+
+  a {
+    text-decoration: none;
+  }
+}

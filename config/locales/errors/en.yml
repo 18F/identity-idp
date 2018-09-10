@@ -44,6 +44,7 @@ en:
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
       twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
+      twilio_timeout: The server took too long to respond. Please try again.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
@@ -51,6 +52,7 @@ en:
         letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
     webauthn_setup:
+      delete_last: Sorry, you can not remove your last MFA option.
       general_error: There was an error adding your hardward security key.  Please
         try again.
       unique_name: That name is already taken.  Please choose a different name.

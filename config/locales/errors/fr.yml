@@ -42,12 +42,14 @@ fr:
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
+      twilio_timeout: NOT TRANSLATED YET
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Fournisseur de service non autorisé
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
     webauthn_setup:
+      delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         matérielle. Veuillez réessayer.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

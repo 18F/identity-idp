@@ -5,7 +5,7 @@ class FakeSms
   cattr_accessor :messages
   self.messages = []
 
-  def initialize(_account_sid, _auth_token); end
+  def initialize(_username, _password, _account_sid, _region, _http_client); end
 
   def messages
     self

@@ -126,6 +126,7 @@ Rails.application.routes.draw do
     if FeatureManagement.webauthn_enabled?
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
       patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+      delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp

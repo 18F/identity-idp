@@ -6,7 +6,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     attributes_for(:generic_otp_presenter).merge(
       two_factor_authentication_method: 'authenticator',
       user_email: view.current_user.email,
-      phone_enabled: user.phone_configuration&.mfa_enabled?
+      phone_enabled: user.phone_configurations.any?(&:mfa_enabled?)
     )
   end
 

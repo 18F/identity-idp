@@ -7,6 +7,7 @@ module TwilioService
     end
 
     def initialize
+      @http_client = Twilio::HTTP::Client.new(timeout: Figaro.env.twilio_timeout.to_i)
       @client = if FeatureManagement.telephony_disabled?
                   NullTwilioClient.new
                 else
@@ -41,13 +42,10 @@ module TwilioService
 
     private
 
-    attr_reader :client
+    attr_reader :client, :http_client
 
     def twilio_client
-      telephony_service.new(
-        TWILIO_SID,
-        TWILIO_AUTH_TOKEN
-      )
+      telephony_service.new(TWILIO_SID, TWILIO_AUTH_TOKEN, nil, nil, @http_client)
     end
 
     def random_phone_number
@@ -59,6 +57,8 @@ module TwilioService
     rescue Twilio::REST::RestError => error
       sanitize_phone_number(error.message)
       raise
+    rescue Faraday::TimeoutError
+      raise Twilio::REST::RestError.new('timeout', TwilioTimeoutResponse.new)
     end
 
     DIGITS_TO_PRESERVE = 5
@@ -70,6 +70,16 @@ module TwilioService
         match.gsub(/\d/) do |chr|
           (digits_preserved += 1) <= DIGITS_TO_PRESERVE ? chr : '#'
         end
+      end
+    end
+
+    class TwilioTimeoutResponse
+      def status_code
+        4_815_162_342
+      end
+
+      def body
+        {}
       end
     end
   end

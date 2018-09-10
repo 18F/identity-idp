@@ -51,12 +51,15 @@ module Idv
     end
 
     def phone_matches_user_phone?
-      user_phone = PhoneFormatter.format(
-        idv_session.current_user.phone_configuration&.phone
-      )
       applicant_phone = PhoneFormatter.format(applicant[:phone])
-      return false unless user_phone.present? && applicant_phone.present?
-      user_phone == applicant_phone
+      return false if applicant_phone.blank?
+      user_phones.include?(applicant_phone)
+    end
+
+    def user_phones
+      idv_session.current_user.phone_configurations.map do |phone_configuration|
+        PhoneFormatter.format(phone_configuration.phone)
+      end.compact
     end
 
     def extra_analytics_attributes
