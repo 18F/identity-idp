@@ -15,11 +15,7 @@ module Idv
     def confirm_idv_phone_confirmed
       return unless idv_session.address_verification_mechanism == 'phone'
       return if idv_session.phone_confirmed?
-
-      prompt_to_confirm_phone(
-        phone: idv_session.params[:phone],
-        context: 'idv'
-      )
+      redirect_to idv_otp_verification_path
     end
 
     def confirm_current_password

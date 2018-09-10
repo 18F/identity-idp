@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe RememberDeviceCookie do
   let(:phone_confirmed_at) { 90.days.ago }
-  let(:user) { create(:user, :with_phone, phone_confirmed_at: phone_confirmed_at) }
+  let(:user) { create(:user, :with_phone, with: { confirmed_at: phone_confirmed_at }) }
   let(:created_at) { Time.zone.now }
 
   subject { described_class.new(user_id: user.id, created_at: created_at) }
@@ -74,7 +74,7 @@ describe RememberDeviceCookie do
 
     context 'when the token does not refer to the current user' do
       it 'returns false' do
-        other_user = create(:user, phone_confirmed_at: 90.days.ago)
+        other_user = create(:user, :with_phone, with: { confirmed_at: 90.days.ago })
 
         expect(subject.valid_for_user?(other_user)).to eq(false)
       end

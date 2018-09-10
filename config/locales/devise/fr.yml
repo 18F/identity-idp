@@ -81,8 +81,6 @@ fr:
       account_reset:
         cancel_link: Annuler votre demande
         link: supprimer votre compte
-        link_expired: Le lien pour supprimer votre compte login.gov a expiré. Veuillez
-          créer une autre demande pour supprimer votre compte.
         pending_html: Vous avez actuellement une demande en attente pour supprimer
           votre compte.  Il faut compter 24 heures à partir du moment où vous avez
           fait la demande pour terminer le processus.  Veuillez vérifier plus tard.
@@ -139,10 +137,10 @@ fr:
       two_factor_choice_options:
         auth_app: Application d'authentification
         auth_app_info: Configurez une application d'authentification pour obtenir
-          votre code de sécurité sans fournir de numéro de téléphone.
+          votre code de sécurité sans fournir de numéro de téléphone
         piv_cac: Employés du gouvernement
-        piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
+        piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte
         sms: SMS
         sms_info: Obtenez votre code de sécurité par SMS
         voice: Appel téléphonique
-        voice_info: Obtenez votre code de sécurité par appel téléphonique.
+        voice_info: Obtenez votre code de sécurité par appel téléphonique

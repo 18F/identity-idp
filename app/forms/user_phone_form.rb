@@ -5,11 +5,11 @@ class UserPhoneForm
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference
+  attr_accessor :phone, :international_code, :otp_delivery_preference, :phone_configuration
 
   def initialize(user)
     self.user = user
-    phone_configuration = user.phone_configuration
+    self.phone_configuration = user.phone_configurations.first
     if phone_configuration.nil?
       self.otp_delivery_preference = user.otp_delivery_preference
     else
@@ -59,7 +59,7 @@ class UserPhoneForm
   end
 
   def otp_delivery_preference_changed?
-    otp_delivery_preference != user.phone_configuration&.delivery_preference
+    otp_delivery_preference != phone_configuration&.delivery_preference
   end
 
   def update_otp_delivery_preference_for_user
@@ -68,6 +68,6 @@ class UserPhoneForm
   end
 
   def formatted_user_phone
-    Phonelib.parse(user.phone_configuration.phone).international
+    phone_configuration&.formatted_phone
   end
 end

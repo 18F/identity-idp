@@ -6,7 +6,7 @@ describe PersonalKeyForm do
       it 'returns FormResponse with success: true' do
         user = create(:user)
         raw_code = PersonalKeyGenerator.new(user).create
-        old_key = user.reload.personal_key
+        old_code = user.reload.encrypted_recovery_code_digest
 
         form = PersonalKeyForm.new(user, raw_code)
         result = instance_double(FormResponse)
@@ -15,7 +15,7 @@ describe PersonalKeyForm do
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.reload.personal_key).to eq old_key
+        expect(user.reload.encrypted_recovery_code_digest).to eq old_code
       end
     end
 
@@ -31,7 +31,7 @@ describe PersonalKeyForm do
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.personal_key).to_not be_nil
+        expect(user.encrypted_recovery_code_digest).to_not be_nil
         expect(form.personal_key).to be_nil
       end
     end

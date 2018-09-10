@@ -1,7 +1,7 @@
 ---
 fr:
   links:
-    access_help: Protégez vos données.
+    access_help: Comment login.gov protège vos données.
     account:
       reactivate:
         with_key: J'ai ma clé
@@ -26,3 +26,4 @@ fr:
       app_option: Utilisez une application d'authentification à la place.
       get_another_code: Obtenir un autre code
     what_is_totp: Qu'est-ce qu'une application d'authentification?
+    what_is_webauthn: Qu'est-ce qu'une clé de sécurité matérielle?

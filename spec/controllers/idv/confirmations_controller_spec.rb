@@ -22,7 +22,6 @@ describe Idv::ConfirmationsController do
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
-    allow(subject).to receive(:user_session).and_return(context: 'idv')
   end
 
   let(:password) { 'sekrit phrase' }
@@ -111,7 +110,7 @@ describe Idv::ConfirmationsController do
 
     context 'user used 2FA phone as phone of record' do
       before do
-        subject.idv_session.params['phone'] = user.phone_configuration.phone
+        subject.idv_session.params['phone'] = user.phone_configurations.first.phone
       end
 
       it 'tracks final IdV event' do
