@@ -6,6 +6,8 @@ module TwoFactorAuthentication
 
     def show
       @presenter = presenter_for_two_factor_authentication_method
+      return unless FeatureManagement.prefill_otp_codes?
+      @code = ROTP::TOTP.new(current_user.otp_secret_key).now
     end
 
     def create

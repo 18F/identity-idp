@@ -123,6 +123,12 @@ Rails.application.routes.draw do
       get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
     end
 
+    if FeatureManagement.webauthn_enabled?
+      get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
+      patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+      delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+    end
+
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
@@ -188,6 +194,9 @@ Rails.application.routes.draw do
         put '/phone' => 'phone#create'
         get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
+        post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
+        get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
+        put '/phone_confirmation' => 'otp_verification#update', as: :nil
         get '/review' => 'review#new'
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'

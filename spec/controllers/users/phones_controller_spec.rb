@@ -5,8 +5,8 @@ describe Users::PhonesController do
   include Features::LocalizationHelper
 
   describe '#phone' do
-    let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1234') }
-    let(:second_user) { create(:user, :signed_up, phone: '+1 (202) 555-5678') }
+    let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1234' }) }
+    let(:second_user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-5678' }) }
     let(:new_phone) { '202-555-4321' }
 
     context 'user changes phone' do
@@ -25,8 +25,7 @@ describe Users::PhonesController do
 
       it 'lets user know they need to confirm their new phone' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-        expect(user.reload.phone).to_not eq '+1 202-555-4321'
-        expect(user.reload.phone_configuration.phone).to_not eq '+1 202-555-4321'
+        expect(user.phone_configurations.reload.first.phone).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
@@ -48,8 +47,7 @@ describe Users::PhonesController do
                              otp_delivery_preference: 'sms' },
         }
 
-        expect(user.reload.phone).to be_present
-        expect(user.reload.phone_configuration.phone).to be_present
+        expect(user.phone_configurations.reload.first).to be_present
         expect(response).to render_template(:edit)
       end
     end
@@ -62,7 +60,7 @@ describe Users::PhonesController do
         allow(@analytics).to receive(:track_event)
 
         put :update, params: {
-          user_phone_form: { phone: second_user.phone,
+          user_phone_form: { phone: second_user.phone_configurations.first.phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }
@@ -70,8 +68,9 @@ describe Users::PhonesController do
 
       it 'processes successfully and informs user' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-        expect(user.reload.phone).to_not eq second_user.phone
-        expect(user.reload.phone_configuration.phone).to_not eq second_user.phone
+        expect(user.phone_configurations.reload.first.phone).to_not eq(
+          second_user.phone_configurations.first.phone
+        )
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
@@ -86,7 +85,7 @@ describe Users::PhonesController do
     context 'user updates with invalid phone' do
       it 'does not change the user phone number' do
         invalid_phone = '123'
-        user = build(:user, phone: '123-123-1234')
+        user = build(:user, :with_phone, with: { phone: '123-123-1234' })
         stub_sign_in(user)
 
         put :update, params: {
@@ -95,8 +94,7 @@ describe Users::PhonesController do
                              otp_delivery_preference: 'sms' },
         }
 
-        expect(user.phone).not_to eq invalid_phone
-        expect(user.phone_configuration.phone).not_to eq invalid_phone
+        expect(user.phone_configurations.first.phone).not_to eq invalid_phone
         expect(response).to render_template(:edit)
       end
     end
@@ -106,7 +104,7 @@ describe Users::PhonesController do
         stub_sign_in(user)
 
         put :update, params: {
-          user_phone_form: { phone: user.phone,
+          user_phone_form: { phone: user.phone_configurations.first.phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }

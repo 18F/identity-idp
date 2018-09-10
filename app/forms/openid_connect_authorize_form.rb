@@ -2,6 +2,7 @@
 class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
+  include RedirectUriValidator
 
   SIMPLE_ATTRS = %i[
     client_id
@@ -33,7 +34,6 @@ class OpenidConnectAuthorizeForm
 
   validate :validate_acr_values
   validate :validate_client_id
-  validate :validate_redirect_uri
   validate :validate_scope
 
   def initialize(params)
@@ -43,10 +43,6 @@ class OpenidConnectAuthorizeForm
       instance_variable_set(:"@#{key}", params[key])
     end
     @prompt ||= 'select_account'
-
-    @openid_connect_redirector = OpenidConnectRedirector.new(
-      redirect_uri: redirect_uri, service_provider: service_provider, state: state, errors: errors
-    )
   end
 
   def submit
@@ -57,10 +53,6 @@ class OpenidConnectAuthorizeForm
 
   def loa3_requested?
     loa == 3
-  end
-
-  def sp_redirect_uri
-    openid_connect_redirector.validated_input_redirect_uri
   end
 
   def service_provider
@@ -79,13 +71,15 @@ class OpenidConnectAuthorizeForm
   end
 
   def success_redirect_uri
+    uri = redirect_uri unless errors.include?(:redirect_uri)
     code = identity&.session_uuid
-    openid_connect_redirector.success_redirect_uri(code: code) if code
+
+    URIService.add_params(uri, code: code, state: state) if code
   end
 
   private
 
-  attr_reader :identity, :success, :openid_connect_redirector, :already_linked
+  attr_reader :identity, :success, :already_linked
 
   def requested_attributes
     @requested_attributes ||=
@@ -105,10 +99,6 @@ class OpenidConnectAuthorizeForm
   def validate_client_id
     return if service_provider.active?
     errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
-  end
-
-  def validate_redirect_uri
-    openid_connect_redirector.validate
   end
 
   def validate_scope
@@ -141,7 +131,14 @@ class OpenidConnectAuthorizeForm
   end
 
   def error_redirect_uri
-    openid_connect_redirector.error_redirect_uri
+    uri = redirect_uri unless errors.include?(:redirect_uri)
+
+    URIService.add_params(
+      uri,
+      error: 'invalid_request',
+      error_description: errors.full_messages.join(' '),
+      state: state
+    )
   end
 end
 # rubocop:enable Metrics/ClassLength

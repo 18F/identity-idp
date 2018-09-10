@@ -20,7 +20,10 @@ describe Idv::PhoneController do
   end
 
   describe '#new' do
-    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+    let(:user) do
+      build(:user, :with_phone,
+            with: { phone: good_phone, confirmed_at: Time.zone.now })
+    end
 
     before do
       stub_verify_steps_one_and_two(user)
@@ -64,7 +67,7 @@ describe Idv::PhoneController do
   describe '#create' do
     context 'when form is invalid' do
       before do
-        user = build(:user, phone: '+1 (415) 555-0130')
+        user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -105,7 +108,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks event with valid phone' do
-        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -124,7 +127,9 @@ describe Idv::PhoneController do
 
       context 'when same as user phone' do
         it 'redirects to result page and sets phone_confirmed_at' do
-          user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+          user = build(:user, :with_phone, with: {
+                         phone: good_phone, confirmed_at: Time.zone.now
+                       })
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -133,7 +138,7 @@ describe Idv::PhoneController do
 
           expected_params = {
             phone: normalized_phone,
-            phone_confirmed_at: user.phone_configuration.confirmed_at,
+            phone_confirmed_at: user.phone_configurations.first.confirmed_at,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
@@ -141,7 +146,9 @@ describe Idv::PhoneController do
 
       context 'when different from user phone' do
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+          user = build(:user, :with_phone, with: {
+                         phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
+                       })
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -159,7 +166,9 @@ describe Idv::PhoneController do
   end
 
   describe '#show' do
-    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+    let(:user) do
+      build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+    end
     let(:params) { { phone: good_phone } }
 
     before do
@@ -232,7 +241,9 @@ describe Idv::PhoneController do
         end
 
         let(:params) { { phone: bad_phone } }
-        let(:user) { build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now) }
+        let(:user) do
+          build(:user, :with_phone, with: { phone: bad_phone, confirmed_at: Time.zone.now })
+        end
 
         it 'tracks event with invalid phone' do
           stub_analytics
@@ -257,7 +268,9 @@ describe Idv::PhoneController do
 
       context 'attempt window has expired, previous attempts == max-1' do
         let(:two_days_ago) { Time.zone.now - 2.days }
-        let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+        let(:user) do
+          build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+        end
 
         before do
           user.idv_attempts = max_attempts - 1
@@ -275,7 +288,8 @@ describe Idv::PhoneController do
       end
 
       it 'passes the normalized phone to the background job' do
-        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+
         stub_verify_steps_one_and_two(user)
 
         subject.params = { phone: normalized_phone }

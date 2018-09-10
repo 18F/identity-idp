@@ -20,7 +20,7 @@ describe Idv::ReviewController do
       city: 'Somewhere',
       state: 'KS',
       zipcode: zipcode,
-      phone: user.phone_configuration&.phone,
+      phone: user.phone_configurations.first&.phone,
       ssn: '12345678',
     }
   end
@@ -130,9 +130,7 @@ describe Idv::ReviewController do
       it 'redirects to phone confirmation' do
         get :show
 
-        expect(response).to redirect_to otp_send_path(
-          otp_delivery_selection_form: { otp_delivery_preference: :sms }
-        )
+        expect(response).to redirect_to idv_otp_verification_path
       end
     end
   end

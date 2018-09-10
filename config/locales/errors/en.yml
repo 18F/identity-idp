@@ -4,6 +4,12 @@ en:
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing
+      granted_token_expired: The link to delete your login.gov account has expired.
+        Please create another request to delete your account.
+      granted_token_invalid: The link to delete your login.gov account is invalid.
+        Please try clicking the link in your email again.
+      granted_token_missing: The link to delete your login.gov account is invalid.
+        Please try clicking the link in your email again.
     confirm_password_incorrect: Incorrect password.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
@@ -38,9 +44,15 @@ en:
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
       twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
+      twilio_timeout: The server took too long to respond. Please try again.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
       usps_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
+    webauthn_setup:
+      delete_last: Sorry, you can not remove your last MFA option.
+      general_error: There was an error adding your hardward security key.  Please
+        try again.
+      unique_name: That name is already taken.  Please choose a different name.

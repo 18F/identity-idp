@@ -44,6 +44,11 @@ describe 'Account Reset Request: Delete Account', email: true do
         )
         expect(page).to have_current_path(account_reset_confirm_delete_account_path)
         expect(User.where(id: user.id)).to be_empty
+        expect(last_email.subject).to eq t('user_mailer.account_reset_complete.subject')
+
+        click_link t('account_reset.confirm_delete_account.link_text')
+
+        expect(page).to have_current_path(sign_up_email_path)
       end
     end
   end

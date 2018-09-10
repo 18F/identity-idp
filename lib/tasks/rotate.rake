@@ -13,8 +13,7 @@ namespace :rotate do
         users.each do |user|
           rotator = KeyRotator::AttributeEncryption.new(user)
           rotator.rotate
-          phone_configuration = user.phone_configuration
-          if phone_configuration.present?
+          user.phone_configurations.each do |phone_configuration|
             rotator = KeyRotator::AttributeEncryption.new(phone_configuration)
             rotator.rotate
           end

@@ -19,7 +19,7 @@ feature 'idv phone step', :idv_job do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(user.phone_configuration.phone)
+      fill_out_phone_form_ok(user.phone_configurations.first.phone)
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.session.review'))
@@ -71,6 +71,8 @@ feature 'idv phone step', :idv_job do
     end
 
     it 'is not re-entrant after confirming OTP' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
       user = user_with_2fa
 
       start_idv_from_sp
@@ -78,7 +80,7 @@ feature 'idv phone step', :idv_job do
       fill_out_phone_form_ok
       click_idv_continue
       choose_idv_otp_delivery_method_sms
-      enter_correct_otp_code_for_user(user)
+      click_submit_default
 
       visit idv_phone_path
       expect(page).to have_content(t('idv.titles.session.review'))

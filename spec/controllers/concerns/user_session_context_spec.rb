@@ -17,7 +17,6 @@ end
 describe UserSessionContext do
   let(:controller) { DummyController.new }
   let(:confirmation) { { context: 'confirmation' } }
-  let(:idv) { { context: 'idv' } }
 
   after { controller.set({}) }
 
@@ -35,31 +34,16 @@ describe UserSessionContext do
       it 'returns true when context is authentication, false otherwise' do
         expect(controller.authentication_context?).to be(true)
         expect(controller.confirmation_context?).to be(false)
-        expect(controller.idv_or_confirmation_context?).to be(false)
       end
     end
 
     describe '#confirmation_context?' do
       it 'returns true if context matches, false otherwise' do
         expect(controller.confirmation_context?).to be(false)
-        expect(controller.idv_or_confirmation_context?).to be(false)
 
         controller.set(confirmation)
 
         expect(controller.confirmation_context?).to be(true)
-        expect(controller.idv_or_confirmation_context?).to be(true)
-      end
-    end
-
-    describe '#idv_context?' do
-      it 'returns true if context matches, false otherwise' do
-        expect(controller.idv_context?).to be(false)
-        expect(controller.idv_or_confirmation_context?).to be(false)
-
-        controller.set(idv)
-
-        expect(controller.idv_context?).to be(true)
-        expect(controller.idv_or_confirmation_context?).to be(true)
       end
     end
   end

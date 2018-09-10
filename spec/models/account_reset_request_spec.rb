@@ -50,25 +50,4 @@ describe AccountResetRequest do
       expect(subject.granted_token_expired?).to eq(false)
     end
   end
-
-  describe '.from_valid_granted_token' do
-    it 'returns nil if the token does not exist' do
-      expect(AccountResetRequest.from_valid_granted_token('123')).to eq(nil)
-    end
-
-    it 'returns nil if the token is expired' do
-      granted_at = Time.zone.now - 7.days
-      AccountResetRequest.create(id: 1, user_id: 2, granted_token: '123', granted_at: granted_at)
-
-      expect(AccountResetRequest.from_valid_granted_token('123')).to eq(nil)
-    end
-
-    it 'returns the record if the token is valid' do
-      arr = AccountResetRequest.create(
-        id: 1, user_id: 2, granted_token: '123', granted_at: Time.zone.now
-      )
-
-      expect(AccountResetRequest.from_valid_granted_token('123')).to eq(arr)
-    end
-  end
 end

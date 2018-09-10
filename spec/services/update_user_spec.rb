@@ -25,17 +25,17 @@ describe UpdateUser do
         }
         updater = UpdateUser.new(user: user, attributes: attributes)
         updater.call
-        phone_configuration = user.reload.phone_configuration
+        phone_configuration = user.phone_configurations.reload.first
         expect(phone_configuration.delivery_preference).to eq 'voice'
         expect(phone_configuration.confirmed_at).to eq confirmed_at
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
       end
 
-      it 'deletes the phone configuration' do
+      it 'does not delete the phone configuration' do
         attributes = { phone: nil }
         updater = UpdateUser.new(user: user, attributes: attributes)
         updater.call
-        expect(user.reload.phone_configuration).to be_nil
+        expect(user.phone_configurations.reload).to_not be_empty
       end
     end
 
@@ -50,7 +50,7 @@ describe UpdateUser do
         }
         updater = UpdateUser.new(user: user, attributes: attributes)
         updater.call
-        phone_configuration = user.reload.phone_configuration
+        phone_configuration = user.phone_configurations.reload.first
         expect(phone_configuration.delivery_preference).to eq 'voice'
         expect(phone_configuration.confirmed_at).to eq confirmed_at
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
