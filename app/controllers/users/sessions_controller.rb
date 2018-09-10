@@ -140,7 +140,7 @@ module Users
     end
 
     def store_sp_metadata_in_session
-      return if sp_session[:issuer] || request_id.empty?
+      return if sp_session[:issuer] || request_id.blank?
       StoreSpMetadataInSession.new(session: session, request_id: request_id).call
     end
 
