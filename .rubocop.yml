@@ -61,6 +61,7 @@ Metrics/ClassLength:
   - app/controllers/users/two_factor_authentication_controller.rb
   - app/decorators/service_provider_session_decorator.rb
   - app/decorators/user_decorator.rb
+  - app/models/user.rb
   - app/services/analytics.rb
   - app/services/idv/session.rb
   - app/presenters/two_factor_auth_code/phone_delivery_presenter.rb

@@ -89,6 +89,16 @@ describe Users::TwoFactorAuthenticationController do
       end
     end
 
+    context 'when user is webauthn enabled' do
+      it 'renders the :webauthn view' do
+        stub_sign_in_before_2fa(build(:user))
+        allow(subject.current_user).to receive(:webauthn_enabled?).and_return(true)
+        get :show
+
+        expect(response).to redirect_to login_two_factor_webauthn_path
+      end
+    end
+
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
         expect(controller.user_session).to be_nil

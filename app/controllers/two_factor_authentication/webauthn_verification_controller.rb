@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def confirm_webauthn_enabled
-      return if current_user.webauthn_configurations.any?
+      return if current_user.webauthn_enabled?
 
       redirect_to user_two_factor_authentication_url
     end

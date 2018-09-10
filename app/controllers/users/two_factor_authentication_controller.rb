@@ -5,9 +5,7 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      return if redirect_on_non_phone_enabled
-      return if redirect_on_phone_enabled
-      redirect_to two_factor_options_url
+      redirect_on_non_phone || redirect_on_phone || redirect_on_nothing_enabled
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception, action: 'show')
     end
@@ -187,16 +185,20 @@ module Users
       @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
     end
 
-    def redirect_on_phone_enabled
+    def redirect_on_nothing_enabled
+      redirect_to two_factor_options_url
+    end
+
+    def redirect_on_phone
       return unless phone_enabled?
       validate_otp_delivery_preference_and_send_code
       true
     end
 
-    def redirect_on_non_phone_enabled
+    def redirect_on_non_phone
       if current_user.piv_cac_enabled?
         redirect_to login_two_factor_piv_cac_url
-      elsif current_user.webauthn_configurations.any?
+      elsif current_user.webauthn_enabled?
         redirect_to login_two_factor_webauthn_url
       elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
