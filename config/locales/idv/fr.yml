@@ -135,9 +135,11 @@ fr:
         de passe.
       phone:
         alert: Ce numéro de téléphone <strong>doit être</strong>
+        description: Nous vérifions les dossiers pour vous assurer que vous êtes ce
+          que vous dites et que vous êtes propriétaire de votre compte.
         phone_of_record: numéro de téléphone enregistré
         rules:
-        - en votre nom ou celui d'un membre de votre famille
+        - sur un plan de téléphone avec votre nom dessus
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain

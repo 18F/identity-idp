@@ -129,9 +129,11 @@ en:
         safe place. You will need it if you ever lose your password.
       phone:
         alert: This phone number <strong>must be</strong>
+        description: We're checking records to make sure you are who you say you are,
+          and that you have ownership of your account.
         phone_of_record: Phone of record
         rules:
-        - in your name, or a family member's name
+        - on a phone plan with your name on it
         - not a virtual phone (such as Google Voice or Skype)
         - a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"

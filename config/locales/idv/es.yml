@@ -128,9 +128,11 @@ es:
         seguro. La necesitará si pierde su contraseña.
       phone:
         alert: Este número de teléfono <strong>debe ser</strong>
+        description: Estamos verificando los registros para asegurarnos de que eres
+          quien eres, y de que eres el propietario de tu cuenta.
         phone_of_record: Teléfono del registro
         rules:
-        - a su nombre o el nombre de un miembro de familia
+        - en su teléfono con su nombre en él
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
