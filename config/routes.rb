@@ -76,6 +76,10 @@ Rails.application.routes.draw do
       if FeatureManagement.piv_cac_enabled?
         get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       end
+      if FeatureManagement.webauthn_enabled?
+        get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+        patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
+      end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',

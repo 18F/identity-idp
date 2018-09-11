@@ -17,6 +17,9 @@ es:
       voice: Llamada telefónica automatizada
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
         (Solo números de teléfono de América del Norte).
+      webauthn: Clave de seguridad de hardware
+      webauthn_info: Use su clave de seguridad de hardware en lugar de un código de
+        seguridad.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     personal_key_fallback:
@@ -27,3 +30,5 @@ es:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     totp_fallback:
       question: "¿No tiene su aplicación de autenticación?"
+    webauthn_fallback:
+      question: "¿No tienes tu clave de seguridad de hardware disponible?"

@@ -135,3 +135,6 @@ es:
         sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS
         voice: Llamada telefónica
         voice_info: Obtenga su código de seguridad a través de una llamada telefónica
+        webauthn: Clave de seguridad de hardware
+        webauthn_info: Use una clave de seguridad de hardware para proteger su cuenta
+      webauthn_header_text: Presente su clave de seguridad de hardware

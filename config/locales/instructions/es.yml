@@ -37,6 +37,9 @@ es:
       voice:
         confirm_code_html: "¿Desea que le llamemos de nuevo? %{resend_code_link}"
         number_message: Acabamos de llamarte en %{number}.
+      webauthn:
+        confirm_webauthn_html: Presente la clave de seguridad de hardware que ha asociado
+          con su cuenta.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:
       forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."

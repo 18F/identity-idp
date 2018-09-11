@@ -4,21 +4,11 @@ module Users
 
     before_action :check_remember_device_preference
 
-    # rubocop:disable Metrics/MethodLength
     def show
-      if current_user.piv_cac_enabled?
-        redirect_to login_two_factor_piv_cac_url
-      elsif current_user.totp_enabled?
-        redirect_to login_two_factor_authenticator_url
-      elsif phone_enabled?
-        validate_otp_delivery_preference_and_send_code
-      else
-        redirect_to two_factor_options_url
-      end
+      redirect_on_non_phone || redirect_on_phone || redirect_on_nothing_enabled
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception, action: 'show')
     end
-    # rubocop:enable Metrics/MethodLength
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
@@ -193,6 +183,26 @@ module Users
 
     def otp_rate_limiter
       @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
+    end
+
+    def redirect_on_nothing_enabled
+      redirect_to two_factor_options_url
+    end
+
+    def redirect_on_phone
+      return unless phone_enabled?
+      validate_otp_delivery_preference_and_send_code
+      true
+    end
+
+    def redirect_on_non_phone
+      if current_user.piv_cac_enabled?
+        redirect_to login_two_factor_piv_cac_url
+      elsif current_user.webauthn_enabled?
+        redirect_to login_two_factor_webauthn_url
+      elsif current_user.totp_enabled?
+        redirect_to login_two_factor_authenticator_url
+      end
     end
   end
 end
