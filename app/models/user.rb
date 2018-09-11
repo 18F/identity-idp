@@ -29,6 +29,7 @@ class User < ApplicationRecord
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
+  include EmailAddressCallback
 
   enum role: { user: 0, tech: 1, admin: 2 }
   enum otp_delivery_preference: { sms: 0, voice: 1 }
@@ -42,6 +43,7 @@ class User < ApplicationRecord
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
+  has_one :email_address, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
@@ -162,12 +164,8 @@ class User < ApplicationRecord
   end
 
   def total_mfa_options_enabled
-    total = [phone_mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
-    total + webauthn_configurations.size
-  end
-
-  def phone_mfa_enabled?
-    phone_configurations.any?(&:mfa_enabled?)
+    phone_configurations.count(&:mfa_enabled?) + webauthn_configurations.size +
+      [piv_cac_enabled?, totp_enabled?].count { |tf| tf }
   end
 
   def webauthn_enabled?
