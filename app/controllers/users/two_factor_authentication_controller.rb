@@ -202,8 +202,6 @@ module Users
         redirect_to login_two_factor_webauthn_url
       elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
-      else
-        false
       end
     end
   end
