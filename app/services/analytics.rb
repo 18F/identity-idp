@@ -73,6 +73,13 @@ class Analytics
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'.freeze
   IDV_PHONE_CONFIRMATION_VENDOR = 'IdV: phone confirmation vendor'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_ATTEMPTS = 'Idv: Phone OTP attempts rate limited'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_LOCKED_OUT = 'Idv: Phone OTP rate limited user'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'.freeze
+  IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
@@ -127,5 +134,8 @@ class Analytics
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze
   USER_REGISTRATION_PIV_CAC_ENABLED = 'User Registration: piv cac enabled'.freeze
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
+  WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
+  WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
+  WEBAUTHN_SETUP_SUBMITTED = 'WebAuthn Setup Submitted'.freeze
   # rubocop:enable Metrics/LineLength
 end

@@ -75,8 +75,6 @@ es:
       account_reset:
         cancel_link: Cancelar su solicitud
         link: eliminando su cuenta
-        link_expired: El enlace para eliminar su cuenta de login.gov ha caducado.
-          Crea otra solicitud para eliminar tu cuenta.
         pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
           Se necesitan 24 horas desde el momento en que realizó la solicitud para
           completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
@@ -130,10 +128,10 @@ es:
       two_factor_choice_options:
         auth_app: Aplicación de autenticación
         auth_app_info: Configure una aplicación de autenticación para obtener su código
-          de seguridad sin proporcionar un número de teléfono.
+          de seguridad sin proporcionar un número de teléfono
         piv_cac: Empleados del Gobierno
-        piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
+        piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta
         sms: Mensaje de texto / SMS
-        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS
         voice: Llamada telefónica
-        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
+        voice_info: Obtenga su código de seguridad a través de una llamada telefónica

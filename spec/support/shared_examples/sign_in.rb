@@ -174,7 +174,8 @@ shared_examples 'signing with while PIV/CAC enabled but not phone enabled' do |s
   it 'does not allow bypassing setting up backup phone' do
     stub_piv_cac_service
 
-    user = create(:user, :signed_up, :with_piv_or_cac, phone: nil)
+    user = create(:user, :signed_up, :with_piv_or_cac)
+    user.phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)

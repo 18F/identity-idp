@@ -30,7 +30,8 @@ module Users
     private
 
     def delivery_preference
-      current_user.phone_configuration&.delivery_preference || current_user.otp_delivery_preference
+      current_user.phone_configurations.first&.delivery_preference ||
+        current_user.otp_delivery_preference
     end
 
     def two_factor_enabled?

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'user signs in partially and visits openid_connect/authorize' do
-  let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1213') }
+  let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1213' }) }
 
   it 'prompts the user to 2FA' do
     openid_test('select_account')

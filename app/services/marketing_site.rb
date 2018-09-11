@@ -26,6 +26,10 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-an-authentication-app/').to_s
   end
 
+  def self.help_hardware_security_key_url
+    URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-a-hardware-security-key/').to_s
+  end
+
   def self.help_privacy_and_security_url
     URI.join(
       BASE_URL,

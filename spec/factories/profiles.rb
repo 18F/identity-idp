@@ -2,16 +2,16 @@ FactoryBot.define do
   factory :profile do
     association :user, factory: %i[user signed_up]
     transient do
-      pii false
+      pii { false }
     end
 
     trait :active do
-      active true
-      activated_at Time.zone.now
+      active { true }
+      activated_at { Time.zone.now }
     end
 
     trait :verified do
-      verified_at Time.zone.now
+      verified_at { Time.zone.now }
     end
 
     after(:build) do |profile, evaluator|
