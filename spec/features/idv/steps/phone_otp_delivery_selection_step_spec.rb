@@ -31,6 +31,20 @@ feature 'IdV phone OTP deleivery method selection' do
     end
   end
 
+  context 'the user does not make a selection' do
+    it 'does not send a voice call or sms and renders an error' do
+      expect(VoiceOtpSenderJob).to_not receive(:perform_later)
+      expect(SmsOtpSenderJob).to_not receive(:perform_later)
+
+      start_idv_from_sp
+      complete_idv_steps_before_phone_otp_delivery_selection_step
+      click_on t('idv.buttons.send_confirmation_code')
+
+      expect(page).to have_content(t('idv.errors.unsupported_otp_delivery_method'))
+      expect(current_path).to eq(idv_otp_delivery_method_url)
+    end
+  end
+
   context 'with a non-US number' do
     let(:bahamas_phone) { '+12423270143' }
 

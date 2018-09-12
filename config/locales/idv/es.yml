@@ -32,6 +32,7 @@ es:
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
+      unsupported_otp_delivery_method: NOT TRANSLATED YET
     failure:
       attempts:
         one: Tiene usted <strong> 1 intento restante.</ strong>

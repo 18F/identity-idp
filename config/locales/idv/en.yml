@@ -32,6 +32,7 @@ en:
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
+      unsupported_otp_delivery_method: Please select a valid delivery method.
     failure:
       attempts:
         one: You have <strong>1 attempt remaining.</strong>

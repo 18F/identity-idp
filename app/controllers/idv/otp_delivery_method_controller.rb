@@ -16,7 +16,7 @@ module Idv
     def create
       result = otp_delivery_selection_form.submit(otp_delivery_selection_params)
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
-      return render(:new) unless result.success?
+      return render_new_with_error_message unless result.success?
       send_phone_confirmation_otp_and_handle_result
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception)
@@ -38,9 +38,14 @@ module Idv
     end
 
     def otp_delivery_selection_params
-      params.require(:otp_delivery_selection_form).permit(
+      params.permit(:otp_delivery_selection_form).permit(
         :otp_delivery_preference
       )
+    end
+
+    def render_new_with_error_message
+      flash[:error] = t('idv.errors.unsupported_otp_delivery_method')
+      render :new
     end
 
     def send_phone_confirmation_otp_and_handle_result
