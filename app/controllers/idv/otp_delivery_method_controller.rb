@@ -38,9 +38,7 @@ module Idv
     end
 
     def otp_delivery_selection_params
-      params.permit(:otp_delivery_selection_form).permit(
-        :otp_delivery_preference
-      )
+      params.permit(:otp_delivery_preference)
     end
 
     def render_new_with_error_message

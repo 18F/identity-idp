@@ -41,7 +41,7 @@ feature 'IdV phone OTP deleivery method selection' do
       click_on t('idv.buttons.send_confirmation_code')
 
       expect(page).to have_content(t('idv.errors.unsupported_otp_delivery_method'))
-      expect(current_path).to eq(idv_otp_delivery_method_url)
+      expect(current_path).to eq(idv_otp_delivery_method_path)
     end
   end
 
