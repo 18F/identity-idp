@@ -23,7 +23,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   it_behaves_like 'an otp form'
 
   it 'shows the correct header' do
-    expect(rendered).to have_content t('devise.two_factor_authentication.totp_header_text')
+    expect(rendered).to have_content t('two_factor_authentication.totp_header_text')
   end
 
   it 'shows the correct help text' do

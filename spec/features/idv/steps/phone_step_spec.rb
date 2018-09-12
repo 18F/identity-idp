@@ -39,8 +39,8 @@ feature 'idv phone step' do
 
       choose_idv_otp_delivery_method_sms
 
-      expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
-      expect(page).to_not have_content(t('devise.two_factor_authentication.totp_header_text'))
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
+      expect(page).to_not have_content(t('two_factor_authentication.totp_header_text'))
       expect(page).to_not have_content(t('two_factor_authentication.login_options_link_text'))
     end
   end

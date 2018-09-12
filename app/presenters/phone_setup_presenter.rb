@@ -12,11 +12,11 @@ class PhoneSetupPresenter
   end
 
   def label
-    t("devise.two_factor_authentication.phone_#{otp_delivery_preference}_label")
+    t("two_factor_authentication.phone_#{otp_delivery_preference}_label")
   end
 
   def info
-    t("devise.two_factor_authentication.phone_#{otp_delivery_preference}_info_html")
+    t("two_factor_authentication.phone_#{otp_delivery_preference}_info_html")
   end
 
   def image

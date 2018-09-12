@@ -7,14 +7,14 @@ describe 'Account Reset Request: Cancellation' do
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
-      click_link t('devise.two_factor_authentication.account_reset.link')
+      click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
       open_last_email
       click_email_link_matching(/cancel\?token/)
 
       expect(page).to have_current_path new_user_session_path
       expect(page).
-        to have_content t('devise.two_factor_authentication.account_reset.successful_cancel')
+        to have_content t('two_factor_authentication.account_reset.successful_cancel')
 
       signin(user.email, user.password)
 
@@ -29,7 +29,7 @@ describe 'Account Reset Request: Cancellation' do
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
-      click_link t('devise.two_factor_authentication.account_reset.link')
+      click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
       reset_email
 
@@ -40,7 +40,7 @@ describe 'Account Reset Request: Cancellation' do
 
         expect(page).to have_current_path new_user_session_path
         expect(page).
-          to have_content t('devise.two_factor_authentication.account_reset.successful_cancel')
+          to have_content t('two_factor_authentication.account_reset.successful_cancel')
 
         signin(user.email, user.password)
 

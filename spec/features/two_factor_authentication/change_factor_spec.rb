@@ -33,12 +33,12 @@ feature 'Changing authentication factor' do
       expect(page).to have_link t('links.cancel'), href: account_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
-        t('devise.two_factor_authentication.personal_key_fallback.text_html')
+        t('two_factor_authentication.personal_key_fallback.text_html')
       )
 
       enter_incorrect_otp_code
 
-      expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
+      expect(page).to have_content t('two_factor_authentication.invalid_otp')
       expect(user.phone_configurations.reload.first.phone).to_not eq new_phone
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 

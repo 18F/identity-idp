@@ -13,11 +13,11 @@ class TwoFactorOptionsPresenter
   end
 
   def heading
-    t('devise.two_factor_authentication.two_factor_choice')
+    t('two_factor_authentication.two_factor_choice')
   end
 
   def info
-    t('devise.two_factor_authentication.two_factor_choice_intro')
+    t('two_factor_authentication.two_factor_choice_intro')
   end
 
   def label
@@ -28,8 +28,8 @@ class TwoFactorOptionsPresenter
     available_2fa_types.map do |type|
       OpenStruct.new(
         type: type,
-        label: t("devise.two_factor_authentication.two_factor_choice_options.#{type}"),
-        info: t("devise.two_factor_authentication.two_factor_choice_options.#{type}_info"),
+        label: t("two_factor_authentication.two_factor_choice_options.#{type}"),
+        info: t("two_factor_authentication.two_factor_choice_options.#{type}_info"),
         selected: type == :sms
       )
     end
