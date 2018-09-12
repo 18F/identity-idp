@@ -96,7 +96,6 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_doc_failed_step(user = user_with_2fa)
     complete_doc_auth_steps_before_back_image_step(user)
     attach_image
-    allow_any_instance_of(Idv::VendorResult).to receive(:success?).and_return(false)
     click_idv_continue
   end
 

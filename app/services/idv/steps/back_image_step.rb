@@ -19,7 +19,7 @@ module Idv
 
       def extract_pii_from_doc_and_perform_resolution(data)
         pii_from_doc = Idv::Utils::PiiFromDoc.new(data).
-                       call(flow_session[:ssn], current_user.phone)
+                       call(flow_session[:ssn], current_user.phone_configurations.first.phone)
         result = perform_resolution(pii_from_doc)
         if result.success?
           step_successful(pii_from_doc)
