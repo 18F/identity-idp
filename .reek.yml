@@ -40,6 +40,7 @@ detectors:
       - ServiceProviderSeeder#run
       - OtpDeliverySelectionForm#unsupported_phone?
       - fallback_to_english
+      - TwilioService::Utils#request_data
       - UserEncryptedAttributeOverrides#find_with_email
       - Utf8Sanitizer#event_attributes
       - Utf8Sanitizer#remote_ip
@@ -102,6 +103,7 @@ detectors:
       - Idv::Agent#proof
       - Idv::VendorResult#initialize
       - SamlIdpController#auth
+      - TwilioService::Utils#sanitize_errors
       - Upaya::QueueConfig#self.choose_queue_adapter
       - Upaya::RandomTools#self.random_weighted_sample
       - UserFlowFormatter#stop
