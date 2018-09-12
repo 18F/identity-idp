@@ -97,7 +97,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_back_image_step(user)
     attach_image
     allow_any_instance_of(Idv::Agent).to receive(:proof).
-      and_return(FormResponse.new(success: false, errors: {}))
+      and_return(success: false, errors: {})
     click_idv_continue
   end
 
