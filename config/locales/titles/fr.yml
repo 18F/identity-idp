@@ -36,7 +36,7 @@ fr:
         invalid: NOT TRANSLATED YET
         missing: NOT TRANSLATED YET
     present_piv_cac: NOT TRANSLATED YET
-    present_webauthn: Présentez votre clé de sécurité matérielle
+    present_webauthn: Présentez votre clé de sécurité physique
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte

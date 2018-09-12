@@ -17,8 +17,8 @@ fr:
       voice: Appel téléphonique
       voice_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
         les numéros de téléphone en Amerique du Nord)
-      webauthn: Clé de sécurité matérielle
-      webauthn_info: Utilisez votre clé de sécurité matérielle au lieu d'un code de
+      webauthn: Clé de sécurité physique
+      webauthn_info: Utilisez votre clé de sécurité physique au lieu d'un code de
         sécurité.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
@@ -31,4 +31,4 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     webauthn_fallback:
-      question: Votre clé de sécurité matérielle n'est pas disponible?
+      question: Votre clé de sécurité physique n'est pas disponible?
