@@ -15,13 +15,8 @@ RSpec.describe Upaya::QueueConfig do
       end.to raise_error(ArgumentError, /Unknown queue adapter/)
     end
 
-    it 'handles sidekiq' do
-      expect(Figaro.env).to receive(:queue_adapter_weights).and_return('{"sidekiq": 1}')
-      expect(Upaya::QueueConfig.choose_queue_adapter).to eq :sidekiq
-    end
-
     it 'handles async' do
-      expect(Figaro.env).to receive(:queue_adapter_weights).and_return('{"async": 1, "sidekiq": 0}')
+      expect(Figaro.env).to receive(:queue_adapter_weights).and_return('{"async": 1, "inline": 0}')
       expect(Upaya::QueueConfig.choose_queue_adapter).to eq :async
     end
 
