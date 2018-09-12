@@ -73,7 +73,7 @@ describe Idv::JurisdictionController do
     let(:reason) { 'unsupported_jurisdiction' }
 
     before do
-      controller.user_session[:idv][:selected_jurisdiction] = supported_jurisdiction
+      controller.user_session[:idv] = { selected_jurisdiction: supported_jurisdiction }
     end
 
     it 'renders the `_failure` template' do
