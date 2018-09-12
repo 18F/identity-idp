@@ -23,7 +23,6 @@ shared_examples 'cancel at idv step' do |step, sp|
     it 'shows the user a cancellation message with the option to cancel and reset idv' do
       failure_to_proof_url = 'https://www.example.com/failure'
       sp_name = 'Test SP'
-        and_return(failure_to_proof_url)
       allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:failure_to_proof_url).
         and_return(failure_to_proof_url)
       allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).
