@@ -18,6 +18,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      selected_jurisdiction
       step_attempts
     ].freeze
 
