@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv review step', :idv_job do
+feature 'idv review step' do
   include IdvStepHelper
 
   it 'requires the user to enter the correct password to redirect to confirmation step' do

@@ -3,7 +3,7 @@ class TwoFactorLoginOptionsForm
 
   attr_reader :selection
 
-  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac personal_key] }
+  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac personal_key webauthn] }
 
   def initialize(user)
     self.user = user

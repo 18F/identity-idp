@@ -80,7 +80,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       let(:payload) { { personal_key_form: personal_key } }
 
       before do
-        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
@@ -100,7 +100,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     context 'when the user enters an invalid personal key' do
       before do
-        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }

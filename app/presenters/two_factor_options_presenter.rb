@@ -38,7 +38,7 @@ class TwoFactorOptionsPresenter
   private
 
   def available_2fa_types
-    %w[sms voice auth_app] + piv_cac_if_available
+    %w[sms voice auth_app webauthn] + piv_cac_if_available
   end
 
   def piv_cac_if_available

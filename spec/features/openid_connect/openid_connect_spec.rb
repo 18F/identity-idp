@@ -437,7 +437,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
-      redirect_uri: 'gov.gsa.openidconnect.test://result/auth',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
       nonce: nonce,

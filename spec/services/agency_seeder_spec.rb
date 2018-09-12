@@ -16,7 +16,7 @@ RSpec.describe AgencySeeder do
 
     it 'inserts agencies in the proper order from agencies.yml' do
       run
-      expect(Agency.find_by(id: 1).name).to eq('CBP')
+      expect(Agency.find_by(id: 1).name).to eq('DHS')
       expect(Agency.find_by(id: 2).name).to eq('OPM')
       expect(Agency.find_by(id: 3).name).to eq('EOP')
     end
@@ -29,7 +29,7 @@ RSpec.describe AgencySeeder do
       it 'updates the attributes based on the current value of the yml file' do
         expect(Agency.find_by(id: 1).name).to eq('FOO')
         run
-        expect(Agency.find_by(id: 1).name).to eq('CBP')
+        expect(Agency.find_by(id: 1).name).to eq('DHS')
       end
     end
 

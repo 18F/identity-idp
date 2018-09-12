@@ -3,6 +3,7 @@ class User < ApplicationRecord
   self.ignored_columns = %w[
     encrypted_password password_salt password_cost encryption_key
     recovery_code recovery_cost recovery_salt
+    encrypted_phone phone_confirmed_at
   ]
 
   include NonNullUuid
@@ -22,13 +23,13 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute(name: :phone)
   encrypted_attribute(name: :otp_secret_key)
   encrypted_attribute_without_setter(name: :email)
 
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
+  include EmailAddressCallback
 
   enum role: { user: 0, tech: 1, admin: 2 }
   enum otp_delivery_preference: { sms: 0, voice: 1 }
@@ -41,7 +42,8 @@ class User < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
-  has_one :phone_configuration, dependent: :destroy, inverse_of: :user
+  has_many :phone_configurations, dependent: :destroy, inverse_of: :user
+  has_one :email_address, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
@@ -69,7 +71,8 @@ class User < ApplicationRecord
   end
 
   def two_factor_enabled?
-    phone_configuration&.mfa_enabled? || totp_enabled? || piv_cac_enabled?
+    phone_configurations.any?(&:mfa_enabled?) || totp_enabled? || piv_cac_enabled? ||
+      webauthn_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
@@ -158,6 +161,15 @@ class User < ApplicationRecord
     opts[:first_sentence] = instructions if instructions
     send_devise_notification(:confirmation_instructions,
                              @raw_confirmation_token, opts)
+  end
+
+  def total_mfa_options_enabled
+    phone_configurations.count(&:mfa_enabled?) + webauthn_configurations.size +
+      [piv_cac_enabled?, totp_enabled?].count { |tf| tf }
+  end
+
+  def webauthn_enabled?
+    WebauthnLoginOptionPolicy.new(self).configured?
   end
 end
 # rubocop:enable Rails/HasManyOrHasOneDependent

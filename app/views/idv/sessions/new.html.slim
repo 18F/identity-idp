@@ -3,7 +3,8 @@
 h1.h3 = t('idv.titles.sessions')
 
 p = link_to t('links.access_help'),
-  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
+  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/',
+  target: :_blank
 
 = simple_form_for(@idv_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
@@ -33,19 +34,22 @@ p = link_to t('links.access_help'),
   p = t('idv.messages.sessions.id_information_message')
 
   fieldset.m0.p0.border-none
-    = f.label :state_id_type, label: t('idv.form.state_id_type_label'), class: 'bold',
-        id: 'profile_state_id_type_label', required: true
-    - state_id_types.each do |state_id_type|
-      = f.label 'profile[state_id_type]', class: 'block mb1',
-          for: "profile_state_id_type_#{state_id_type[1]}"
-        .radio
-          = radio_button_tag 'profile[state_id_type]', state_id_type[1],
-            state_id_type[1] == 'drivers_license',
-            'aria-labelledby': 'profile_state_id_type_label'
-          span.indicator
-          .block = state_id_type[0]
-    = f.input :state_id_number, label: t('idv.form.state_id'), required: true
-    = f.input :address1, label: t('idv.form.address1'), required: true
+    .mb1
+      = f.label :state_id_type, label: t('idv.form.state_id_type_label'), class: 'bold',
+          id: 'profile_state_id_type_label', required: true
+      - state_id_types.each do |state_id_type|
+        = f.label 'profile[state_id_type]', class: 'block mb1',
+            for: "profile_state_id_type_#{state_id_type[1]}"
+          .radio
+            = radio_button_tag 'profile[state_id_type]', state_id_type[1],
+              state_id_type[1] == 'drivers_license',
+              'aria-labelledby': 'profile_state_id_type_label'
+            span.indicator
+            .block = state_id_type[0]
+    = f.input :state_id_number, label: t('idv.form.state_id'), input_html: { class: 'sm-col-8' },
+        required: true
+    = f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'mb1' },
+        required: true
     = f.input :address2, label: t('idv.form.address2')
     = f.input :city, label: t('idv.form.city'), required: true
 

@@ -5,7 +5,7 @@ class UpdateUser
   end
 
   def call
-    result = user.update!(attributes)
+    result = user.update!(attributes.except(:phone, :phone_confirmed_at))
     manage_phone_configuration
     result
   end
@@ -15,7 +15,7 @@ class UpdateUser
   attr_reader :user, :attributes
 
   def manage_phone_configuration
-    if user.phone_configuration.present?
+    if user.phone_configurations.any?
       update_phone_configuration
     else
       create_phone_configuration
@@ -23,26 +23,20 @@ class UpdateUser
   end
 
   def update_phone_configuration
-    configuration = user.phone_configuration
-    if phone_attributes[:phone].present?
-      configuration.update!(phone_attributes)
-    else
-      configuration.destroy
-      user.reload
-    end
+    user.phone_configurations.first.update!(phone_attributes)
   end
 
   def create_phone_configuration
     return if phone_attributes[:phone].blank?
-    user.create_phone_configuration(phone_attributes)
+    user.phone_configurations.create(phone_attributes)
   end
 
   def phone_attributes
     @phone_attributes ||= {
-      phone: attribute(:phone),
-      confirmed_at: attribute(:phone_confirmed_at),
+      phone: attributes[:phone],
+      confirmed_at: attributes[:phone_confirmed_at],
       delivery_preference: attribute(:otp_delivery_preference),
-    }
+    }.delete_if { |_, value| value.nil? }
   end
 
   # This returns the named attribute if it's included in the changes, even if

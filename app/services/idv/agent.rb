@@ -7,7 +7,7 @@ module Idv
     end
 
     def initialize(applicant)
-      @applicant = applicant.symbolize_keys!
+      @applicant = applicant.symbolize_keys
     end
 
     def proof(*stages)

@@ -14,7 +14,7 @@ describe Idv::SendPhoneConfirmationOtp do
 
   before do
     # Setup Idv::Session
-    idv_session.params[:phone] = phone
+    idv_session.applicant = { phone: phone }
     idv_session.phone_confirmation_otp_delivery_method = otp_delivery_preference
 
     # Mock Idv::GeneratePhoneConfirmationOtp

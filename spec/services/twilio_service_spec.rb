@@ -40,10 +40,15 @@ describe TwilioService::Utils do
       TwilioService::Utils.telephony_service = Twilio::REST::Client
     end
 
-    it 'uses a real Twilio client' do
+    it 'uses a real Twilio client with timeout' do
+      allow(Figaro.env).to receive(:twilio_timeout).and_return('1')
       client = instance_double(Twilio::REST::Client)
+      twilio_http_client = instance_double(Twilio::HTTP::Client)
+      expect(Twilio::HTTP::Client).to receive(:new).with(timeout: 1).and_return(twilio_http_client)
       expect(Twilio::REST::Client).
-        to receive(:new).with(/sid(1|2)/, /token(1|2)/).and_return(client)
+        to receive(:new).
+        with(/sid(1|2)/, /token(1|2)/, nil, nil, twilio_http_client).
+        and_return(client)
       http_client = Struct.new(:adapter)
       expect(client).to receive(:http_client).and_return(http_client)
       expect(http_client).to receive(:adapter=).with(:typhoeus)
@@ -95,6 +100,21 @@ describe TwilioService::Utils do
       expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
         to raise_error(Twilio::REST::RestError, sanitized_message)
     end
+
+    it 'rescues timeout errors and raises a custom Twilio error' do
+      TwilioService::Utils.telephony_service = FakeVoiceCall
+      error_code = 4_815_162_342
+      status_code = 4_815_162_342
+
+      message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
+      service = TwilioService::Utils.new
+
+      expect(service.send(:client).calls).to receive(:create).
+        and_raise(Faraday::TimeoutError)
+
+      expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
+        to raise_error(Twilio::REST::RestError, message)
+    end
   end
 
   describe '#send_sms' do
@@ -136,6 +156,21 @@ describe TwilioService::Utils do
 
       expect { service.send_sms(to: '+1 (888) 555-5555', body: 'test') }.
         to raise_error(Twilio::REST::RestError, sanitized_message)
+    end
+
+    it 'rescues timeout errors and raises a custom Twilio error' do
+      TwilioService::Utils.telephony_service = FakeSms
+      error_code = 4_815_162_342
+      status_code = 4_815_162_342
+
+      message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
+      service = TwilioService::Utils.new
+
+      expect(service.send(:client).messages).to receive(:create).
+        and_raise(Faraday::TimeoutError)
+
+      expect { service.send_sms(to: '+123456789012', body: 'test') }.
+        to raise_error(Twilio::REST::RestError, message)
     end
   end
 end

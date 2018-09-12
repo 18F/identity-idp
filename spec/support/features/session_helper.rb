@@ -81,7 +81,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       login_as(user, scope: :user, run_callbacks: false)
 
-      if user.phone_configuration.present?
+      if user.phone_configurations.any?
         Warden.on_next_request do |proxy|
           session = proxy.env['rack.session']
           session['warden.user.user.session'] = {}
@@ -110,12 +110,12 @@ module Features
     end
 
     def user_with_2fa
-      create(:user, :signed_up, phone: '+1 202-555-1212', password: VALID_PASSWORD)
+      create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
     def user_with_piv_cac
       create(:user, :signed_up, :with_piv_or_cac,
-             phone: '+1 (703) 555-0000',
+             with: { phone: '+1 (703) 555-0000' },
              password: VALID_PASSWORD)
     end
 
@@ -394,7 +394,7 @@ module Features
 
     def confirm_email_and_password(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      click_link t('sign_up.registrations.create_account')
+      find_link(t('sign_up.registrations.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password

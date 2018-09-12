@@ -65,12 +65,16 @@ feature 'User profile' do
     end
 
     it 'allows credentials to be reused for sign up' do
+      expect(User.count).to eq 0
       pii = { ssn: '1234', dob: '1920-01-01' }
       profile = create(:profile, :active, :verified, pii: pii)
+      expect(User.count).to eq 1
       sign_in_live_with_2fa(profile.user)
       visit account_path
       click_link(t('account.links.delete_account'))
       click_button t('users.delete.actions.delete')
+
+      expect(User.count).to eq 0
 
       profile = create(:profile, :active, :verified, pii: pii)
       sign_in_live_with_2fa(profile.user)
@@ -113,7 +117,7 @@ feature 'User profile' do
         expect(page).to have_content(t('idv.messages.personal_key'))
       end
 
-      it 'allows the user reactivate their profile by reverifying', idv_job: true do
+      it 'allows the user reactivate their profile by reverifying' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 

@@ -31,6 +31,7 @@ Figaro.require_keys(
   'password_strength_enabled',
   'programmable_sms_countries',
   'queue_health_check_dead_interval_seconds',
+  'RACK_TIMEOUT_SERVICE_TIMEOUT',
   'reauthn_window',
   'recovery_code_length',
   'redis_url',
@@ -41,7 +42,6 @@ Figaro.require_keys(
   'saml_passphrase',
   'scrypt_cost',
   'secret_key_base',
-  'service_timeout',
   'session_encryption_key',
   'session_timeout_in_minutes',
   'twilio_numbers',
@@ -49,6 +49,7 @@ Figaro.require_keys(
   'twilio_auth_token',
   'twilio_record_voice',
   'twilio_messaging_service_sid',
+  'twilio_timeout',
   'use_kms',
   'valid_authn_contexts'
 )

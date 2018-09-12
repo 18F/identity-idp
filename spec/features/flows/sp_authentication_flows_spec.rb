@@ -7,7 +7,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
   I18n.available_locales.each do |locale|
     context "with locale=#{locale}" do
       context 'with a valid SP' do
-        context 'when LOA3', :idv_job do
+        context 'when LOA3' do
           before do
             visit "#{loa3_authnrequest}&locale=#{locale}"
           end

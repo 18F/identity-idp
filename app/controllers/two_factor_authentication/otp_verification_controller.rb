@@ -36,7 +36,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      current_user.phone_configuration&.mfa_enabled?
+      current_user.phone_configurations.any?(&:mfa_enabled?)
     end
 
     def confirm_voice_capability
@@ -54,7 +54,7 @@ module TwoFactorAuthentication
     end
 
     def phone
-      current_user&.phone_configuration&.phone || user_session[:unconfirmed_phone]
+      current_user&.phone_configurations&.first&.phone || user_session[:unconfirmed_phone]
     end
 
     def form_params

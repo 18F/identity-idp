@@ -76,6 +76,10 @@ Rails.application.routes.draw do
       if FeatureManagement.piv_cac_enabled?
         get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       end
+      if FeatureManagement.webauthn_enabled?
+        get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+        patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
+      end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
@@ -121,6 +125,12 @@ Rails.application.routes.draw do
       get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
       delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
       get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
+    end
+
+    if FeatureManagement.webauthn_enabled?
+      get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
+      patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+      delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
@@ -186,7 +196,6 @@ Rails.application.routes.draw do
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
-        get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
         get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
@@ -195,7 +204,6 @@ Rails.application.routes.draw do
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
-        get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
         get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
         delete '/session' => 'sessions#destroy'

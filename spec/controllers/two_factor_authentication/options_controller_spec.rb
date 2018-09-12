@@ -52,6 +52,12 @@ describe TwoFactorAuthentication::OptionsController do
       expect(response).to redirect_to login_two_factor_authenticator_url
     end
 
+    it 'redirects to login_two_factor_webauthn_url if user selects webauthn' do
+      post :create, params: { two_factor_options_form: { selection: 'webauthn' } }
+
+      expect(response).to redirect_to login_two_factor_webauthn_url
+    end
+
     it 'rerenders the page with errors on failure' do
       post :create, params: { two_factor_options_form: { selection: 'foo' } }
 

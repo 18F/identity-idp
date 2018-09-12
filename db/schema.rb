@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180827225542) do
+ActiveRecord::Schema.define(version: 20180906181420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,19 @@ ActiveRecord::Schema.define(version: 20180827225542) do
     t.datetime "authorized_at"
     t.index ["provider", "uid"], name: "index_authorizations_on_provider_and_uid"
     t.index ["user_id"], name: "index_authorizations_on_user_id"
+  end
+
+  create_table "email_addresses", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "confirmation_token", limit: 255
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "email_fingerprint", default: "", null: false
+    t.string "encrypted_email", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
+    t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
