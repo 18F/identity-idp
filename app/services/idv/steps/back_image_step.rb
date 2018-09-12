@@ -49,13 +49,10 @@ module Idv
       end
 
       def perform_resolution(pii_from_doc)
-        result_id = SecureRandom.uuid
-        Idv::ProoferJob.perform_now(
-          result_id: result_id,
-          applicant_json: pii_from_doc.to_json,
-          stages: %i[resolution].to_json
+        idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
+        FormResponse.new(
+          success: idv_result[:success], errors: idv_result[:errors]
         )
-        VendorValidatorResultStorage.new.load(result_id)
       end
 
       def verify_back_image
