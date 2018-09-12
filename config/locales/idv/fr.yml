@@ -11,7 +11,6 @@ fr:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
-      return_to_account: NOT TRANSLATED YET
       warning_header: Si vous annulez maintenant
       warnings:
         warning_1: NOT TRANSLATED YET

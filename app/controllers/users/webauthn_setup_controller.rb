@@ -61,11 +61,19 @@ module Users
     def process_valid_webauthn(attestation_response)
       mark_user_as_fully_authenticated
       create_webauthn_configuration(attestation_response)
-      if current_user.decorate.should_acknowledge_personal_key?(user_session)
-        redirect_to sign_up_personal_key_url
+      flash[:success] = t('notices.webauthn_added')
+      redirect_to url_after_successful_webauthn_setup
+    end
+
+    def url_after_successful_webauthn_setup
+      return account_url if user_already_has_a_personal_key?
+
+      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+      if policy.show_personal_key_after_initial_2fa_setup?
+        sign_up_personal_key_url
       else
-        flash[:success] = t('notices.webauthn_added')
-        redirect_to account_url
+        idv_jurisdiction_url
       end
     end
 
@@ -79,6 +87,11 @@ module Users
       end
     end
 
+    def mark_user_as_fully_authenticated
+      user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+      user_session[:authn_at] = Time.zone.now
+    end
+
     def create_webauthn_configuration(attestation_response)
       credential = attestation_response.credential
       public_key = Base64.strict_encode64(credential.public_key)
@@ -89,9 +102,8 @@ module Users
                                    name: params[:name])
     end
 
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
+    def user_already_has_a_personal_key?
+      PersonalKeyLoginOptionPolicy.new(current_user).configured?
     end
   end
 end

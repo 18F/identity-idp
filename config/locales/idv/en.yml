@@ -11,7 +11,6 @@ en:
       send_confirmation_code: Continue
     cancel:
       modal_header: Are you sure you want to cancel?
-      return_to_account: Return to account
       warning_header: If you cancel now
       warnings:
         warning_1: We won't be able to verify your identity
