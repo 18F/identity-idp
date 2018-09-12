@@ -19,15 +19,13 @@ shared_examples 'cancel at idv step' do |step, sp|
     expect(current_path).to eq(original_path)
   end
 
-  context 'with an sp' do
+  context 'with an sp', if: sp do
     it 'shows the user a cancellation message with the option to cancel and reset idv' do
       failure_to_proof_url = 'https://www.example.com/failure'
       sp_name = 'Test SP'
-      allow_any_instance_of(SessionDecorator).to receive(:failure_to_proof_url).
         and_return(failure_to_proof_url)
       allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:failure_to_proof_url).
         and_return(failure_to_proof_url)
-      allow_any_instance_of(SessionDecorator).to receive(:sp_name).and_return(sp_name)
       allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).
         and_return(sp_name)
 
@@ -52,7 +50,7 @@ shared_examples 'cancel at idv step' do |step, sp|
   end
 
   context 'without an sp' do
-    it 'shows the user a cancellation message with the option to cancel and reset idv' do
+    it 'shows a cancellation message with option to cancel and reset idv', if: sp.nil? do
       click_link t('links.cancel')
 
       expect(page).to have_content(t('idv.cancel.modal_header'))
