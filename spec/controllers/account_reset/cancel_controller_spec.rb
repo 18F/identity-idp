@@ -67,7 +67,7 @@ describe AccountReset::CancelController do
       post :create, params: { token: token }
 
       expect(flash[:success]).
-        to eq t('devise.two_factor_authentication.account_reset.successful_cancel')
+        to eq t('two_factor_authentication.account_reset.successful_cancel')
       expect(response).to redirect_to root_url
     end
 

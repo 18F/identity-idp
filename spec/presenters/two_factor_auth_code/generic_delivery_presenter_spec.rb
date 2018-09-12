@@ -25,7 +25,7 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
 
       it 'returns a link to the piv/cac option' do
         expect(presenter.send(:piv_cac_option)).to eq t(
-          'devise.two_factor_authentication.piv_cac_fallback.text_html',
+          'two_factor_authentication.piv_cac_fallback.text_html',
           link: presenter.send(:piv_cac_link)
         )
       end
@@ -46,7 +46,7 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
 
       it 'returns a link to the piv/cac option' do
         expect(presenter.send(:piv_cac_link)).to eq ActionController::Base.new.view_context.link_to(
-          t('devise.two_factor_authentication.piv_cac_fallback.link'),
+          t('two_factor_authentication.piv_cac_fallback.link'),
           login_two_factor_piv_cac_path(locale: LinkLocaleResolver.locale)
         )
       end

@@ -51,7 +51,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content t('titles.account_locked')
         expect(page).
-          to have_content t('devise.two_factor_authentication.max_otp_login_attempts_reached')
+          to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
       end
     end
 
@@ -67,7 +67,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          'two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
         )
 
@@ -181,7 +181,7 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).
-        to have_content t('devise.two_factor_authentication.header_text')
+        to have_content t('two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
@@ -293,7 +293,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content t('titles.account_locked')
         expect(page).to have_content(five_minute_countdown_regex)
-        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+        expect(page).to have_content t('two_factor_authentication.max_otp_requests_reached')
 
         visit root_path
         signin(user.email, user.password)
@@ -301,7 +301,7 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content t('titles.account_locked')
         expect(page).to have_content(five_minute_countdown_regex)
         expect(page).
-          to have_content t('devise.two_factor_authentication.max_generic_login_attempts_reached')
+          to have_content t('two_factor_authentication.max_generic_login_attempts_reached')
 
         # let lockout period expire
         Timecop.travel(lockout_period) do
@@ -402,7 +402,7 @@ feature 'Two Factor Authentication' do
 
         signin(first_user.email, first_user.password)
 
-        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+        expect(page).to have_content t('two_factor_authentication.max_otp_requests_reached')
 
         visit account_path
         expect(current_path).to eq root_path
@@ -438,7 +438,7 @@ feature 'Two Factor Authentication' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         signin(user.email, user.password)
 
-        expect(page).to have_content t('devise.two_factor_authentication.' \
+        expect(page).to have_content t('two_factor_authentication.' \
                                        'max_generic_login_attempts_reached')
 
         visit account_path
@@ -472,7 +472,7 @@ feature 'Two Factor Authentication' do
         click_button t('forms.buttons.submit.default')
 
         expect(page).
-          to_not have_content t('devise.two_factor_authentication.invalid_otp')
+          to_not have_content t('two_factor_authentication.invalid_otp')
       end
     end
   end
@@ -544,7 +544,7 @@ feature 'Two Factor Authentication' do
                             dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
-      expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end
 
     context 'with SMS, international number, and locale header' do
@@ -614,7 +614,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(page).not_to have_link(t('devise.two_factor_authentication.piv_cac_fallback.link'))
+      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.link'))
     end
   end
 
@@ -660,7 +660,7 @@ feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+        expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
         expect(current_path).to eq login_two_factor_authenticator_path
       end
     end
