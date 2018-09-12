@@ -180,9 +180,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
         end
       end
 
-      context 'with a redirect_uri that adds on to the registered redirect_uri' do
+      context 'with a redirect_uri that only partially matches any registered redirect_uri' do
         let(:redirect_uri) { 'gov.gsa.openidconnect.test://result/more/extra' }
-        it { expect(valid?).to eq(true) }
+        it { expect(valid?).to eq(false) }
       end
     end
 

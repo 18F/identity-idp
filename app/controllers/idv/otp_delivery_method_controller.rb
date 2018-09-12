@@ -34,7 +34,7 @@ module Idv
     end
 
     def set_idv_phone
-      @idv_phone = PhoneFormatter.format(idv_session.params[:phone])
+      @idv_phone = PhoneFormatter.format(idv_session.applicant[:phone])
     end
 
     def otp_delivery_selection_params

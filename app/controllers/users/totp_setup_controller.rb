@@ -63,11 +63,19 @@ module Users
     end
 
     def url_after_entering_valid_code
-      if current_user.decorate.should_acknowledge_personal_key?(user_session)
+      return account_url if user_already_has_a_personal_key?
+
+      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+      if policy.show_personal_key_after_initial_2fa_setup?
         sign_up_personal_key_url
       else
-        account_url
+        idv_jurisdiction_url
       end
+    end
+
+    def user_already_has_a_personal_key?
+      PersonalKeyLoginOptionPolicy.new(current_user).configured?
     end
 
     def process_invalid_code

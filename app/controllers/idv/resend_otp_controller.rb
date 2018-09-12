@@ -28,7 +28,7 @@ module Idv
     end
 
     def confirm_otp_delivery_preference_selected
-      return if idv_session.params[:phone].present? &&
+      return if idv_session.applicant[:phone].present? &&
                 idv_session.phone_confirmation_otp_delivery_method.present?
 
       redirect_to idv_otp_delivery_method_url

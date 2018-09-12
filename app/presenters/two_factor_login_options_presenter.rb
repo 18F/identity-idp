@@ -1,13 +1,14 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  POSSIBLE_OPTIONS = %i[sms voice auth_app piv_cac personal_key].freeze
+  POSSIBLE_OPTIONS = %i[sms voice auth_app piv_cac personal_key webauthn].freeze
   POLICIES = {
     sms: SmsLoginOptionPolicy,
     voice: VoiceLoginOptionPolicy,
     auth_app: AuthAppLoginOptionPolicy,
     piv_cac: PivCacLoginOptionPolicy,
     personal_key: PersonalKeyLoginOptionPolicy,
+    webauthn: WebauthnLoginOptionPolicy,
   }.freeze
 
   attr_reader :current_user

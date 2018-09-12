@@ -23,7 +23,7 @@ module Idv
     end
 
     def phone
-      @phone ||= PhoneFormatter.format(idv_session.params[:phone])
+      @phone ||= PhoneFormatter.format(idv_session.applicant[:phone])
     end
 
     private

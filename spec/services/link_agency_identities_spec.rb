@@ -45,7 +45,7 @@ describe LinkAgencyIdentities do
       create_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
       LinkAgencyIdentities.new.link
       report = LinkAgencyIdentities.report
-      expect(report[0]['name']).to eq('CBP')
+      expect(report[0]['name']).to eq('DHS')
       expect(report[0]['old_uuid']).to eq('UUID2')
       expect(report[0]['new_uuid']).to eq('UUID1')
       expect(report.cmd_tuples).to eq(1)
@@ -56,7 +56,7 @@ describe LinkAgencyIdentities do
       create_identity(user, 'http://localhost:3000', 'UUID1')
       LinkAgencyIdentities.new.link
       report = LinkAgencyIdentities.report
-      expect(report[0]['name']).to eq('CBP')
+      expect(report[0]['name']).to eq('DHS')
       expect(report[0]['old_uuid']).to eq('UUID2')
       expect(report[0]['new_uuid']).to eq('UUID1')
       expect(report.cmd_tuples).to eq(1)

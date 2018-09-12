@@ -1,7 +1,7 @@
 ---
 es:
   links:
-    access_help: Protege tus datos.
+    access_help: Cómo login.gov protege sus datos.
     account:
       reactivate:
         with_key: Tengo mi clave
@@ -14,6 +14,7 @@ es:
     create_account: Crear cuenta
     go_back: Regresa
     help: Ayuda
+    my_account: mi cuenta
     next: Siguiente
     passwords:
       forgot: "¿Olvidó su contraseña?"
@@ -26,3 +27,4 @@ es:
       app_option: Use una aplicación de autenticación en su lugar.
       get_another_code: Obtener otro código
     what_is_totp: "¿Qué es una app de autenticación?"
+    what_is_webauthn: "¿Qué es una clave de seguridad de hardware?"

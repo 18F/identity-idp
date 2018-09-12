@@ -54,3 +54,5 @@ en:
     totp_setup:
       new: Enable an authentication app
     verify_email: Check your email
+    webauthn_setup:
+      new: Register your Hardware Security Key

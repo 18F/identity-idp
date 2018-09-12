@@ -51,7 +51,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as LOA3 with personal key' do |sp|
-  it 'redirects to the SP after acknowledging new personal key', :email, :idv_job do
+  it 'redirects to the SP after acknowledging new personal key', :email do
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
@@ -105,7 +105,7 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
 end
 
 shared_examples 'signing in as LOA3 with personal key after resetting password' do |sp|
-  xit 'redirects to SP after reactivating account', :email, :idv_job do
+  xit 'redirects to SP after reactivating account', :email do
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
     visit_idp_from_sp_with_loa3(sp)
     trigger_reset_password_and_click_email_link(user.email)
@@ -174,7 +174,8 @@ shared_examples 'signing with while PIV/CAC enabled but not phone enabled' do |s
   it 'does not allow bypassing setting up backup phone' do
     stub_piv_cac_service
 
-    user = create(:user, :signed_up, :with_piv_or_cac, phone: nil)
+    user = create(:user, :signed_up, :with_piv_or_cac)
+    user.phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)

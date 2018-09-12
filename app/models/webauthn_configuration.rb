@@ -1,5 +1,5 @@
 class WebauthnConfiguration < ApplicationRecord
-  belongs_to :user, inverse_of: :webauthn_configuration
+  belongs_to :user
   validates :user_id, presence: true
   validates :name, presence: true
   validates :credential_id, presence: true

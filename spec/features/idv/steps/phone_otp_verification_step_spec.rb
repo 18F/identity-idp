@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp verification step spec', :idv_job do
+feature 'phone otp verification step spec' do
   include IdvStepHelper
 
   let(:otp_code) { '777777' }

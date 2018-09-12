@@ -40,8 +40,14 @@ es:
       phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe
         la opción de llamada telefónica a continuación o use su clave personal.
       twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
+      twilio_timeout: NOT TRANSLATED YET
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Proveedor de servicio no autorizado
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
+    webauthn_setup:
+      delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
+      general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
+        de nuevo.
+      unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

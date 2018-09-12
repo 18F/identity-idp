@@ -4,21 +4,11 @@ module Users
 
     before_action :check_remember_device_preference
 
-    # rubocop:disable Metrics/MethodLength
     def show
-      if current_user.piv_cac_enabled?
-        redirect_to login_two_factor_piv_cac_url
-      elsif current_user.totp_enabled?
-        redirect_to login_two_factor_authenticator_url
-      elsif phone_enabled?
-        validate_otp_delivery_preference_and_send_code
-      else
-        redirect_to two_factor_options_url
-      end
+      redirect_on_non_phone || redirect_on_phone || redirect_on_nothing_enabled
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception, action: 'show')
     end
-    # rubocop:enable Metrics/MethodLength
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
@@ -41,11 +31,10 @@ module Users
     end
 
     def phone_configuration
-      current_user.phone_configuration
+      current_user.phone_configurations.first
     end
 
     def validate_otp_delivery_preference_and_send_code
-      delivery_preference = phone_configuration.delivery_preference
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
@@ -55,6 +44,10 @@ module Users
         handle_valid_otp_delivery_preference('sms')
         flash[:error] = result.errors[:phone].first
       end
+    end
+
+    def delivery_preference
+      phone_configuration&.delivery_preference || current_user.otp_delivery_preference
     end
 
     def update_otp_delivery_preference_if_needed
@@ -67,8 +60,7 @@ module Users
 
     def handle_invalid_otp_delivery_preference(result)
       flash[:error] = result.errors[:phone].first
-      preference = current_user.phone_configuration.delivery_preference
-      redirect_to login_two_factor_url(otp_delivery_preference: preference)
+      redirect_to login_two_factor_url(otp_delivery_preference: delivery_preference)
     end
 
     def invalid_phone_number(exception, action:)
@@ -85,7 +77,7 @@ module Users
     def redirect_to_otp_verification_with_error
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
-        otp_delivery_preference: current_user.phone_configuration.delivery_preference,
+        otp_delivery_preference: phone_configuration.delivery_preference,
         reauthn: reauthn?
       )
     end
@@ -179,7 +171,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      return current_user.phone_configuration.phone if authentication_context?
+      return phone_configuration&.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
     end
@@ -191,6 +183,26 @@ module Users
 
     def otp_rate_limiter
       @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
+    end
+
+    def redirect_on_nothing_enabled
+      redirect_to two_factor_options_url
+    end
+
+    def redirect_on_phone
+      return unless phone_enabled?
+      validate_otp_delivery_preference_and_send_code
+      true
+    end
+
+    def redirect_on_non_phone
+      if current_user.piv_cac_enabled?
+        redirect_to login_two_factor_piv_cac_url
+      elsif current_user.webauthn_enabled?
+        redirect_to login_two_factor_webauthn_url
+      elsif current_user.totp_enabled?
+        redirect_to login_two_factor_authenticator_url
+      end
     end
   end
 end

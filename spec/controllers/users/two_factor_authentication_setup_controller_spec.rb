@@ -138,6 +138,20 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
+    context 'when the selection is webauthn' do
+      it 'redirects to webauthn setup page' do
+        stub_sign_in_before_2fa
+
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'webauthn',
+          },
+        }
+
+        expect(response).to redirect_to webauthn_setup_url
+      end
+    end
+
     context 'when the selection is piv_cac' do
       it 'redirects to piv/cac setup page' do
         stub_sign_in_before_2fa
