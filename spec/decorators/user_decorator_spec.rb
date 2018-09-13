@@ -47,6 +47,14 @@ describe UserDecorator do
     end
   end
 
+  describe '#masked_number' do
+    it 'returns blank for a nil number' do
+      user = build_stubbed(:user)
+      user_decorator = UserDecorator.new(user)
+      expect(user_decorator.send(:masked_number, nil)).to eq ''
+    end
+  end
+
   describe '#active_identity_for' do
     it 'returns Identity matching ServiceProvider' do
       sp = create(:service_provider, issuer: 'http://sp.example.com')
