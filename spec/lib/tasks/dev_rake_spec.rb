@@ -12,7 +12,7 @@ describe 'dev rake tasks' do
     it 'runs successfully' do
       Rake::Task['dev:prime'].invoke
 
-      expect(User.count).to eq 2
+      expect(User.count).to eq 3
     end
   end
 

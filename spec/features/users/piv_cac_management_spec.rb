@@ -13,7 +13,7 @@ feature 'PIV/CAC Management' do
 
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
-    let(:user) { create(:user, :signed_up, phone: '+1 202-555-1212') }
+    let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
 
     context 'with a service provider allowed to use piv/cac' do
       let(:identity_with_sp) do
@@ -106,9 +106,9 @@ feature 'PIV/CAC Management' do
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
           stub_piv_cac_service
 
-          user.update(phone: nil, otp_secret_key: 'secret')
-          user.phone_configuration.destroy
-          user.phone_configuration = nil
+          user.update(otp_secret_key: 'secret')
+          user.phone_configurations.clear
+          expect(user.phone_configurations).to be_empty
           sign_in_and_2fa_user(user)
           visit account_path
           click_link t('forms.buttons.enable'), href: setup_piv_cac_url
@@ -156,7 +156,7 @@ feature 'PIV/CAC Management' do
       scenario "doesn't allow unassociation of a piv/cac" do
         stub_piv_cac_service
 
-        user = create(:user, :signed_up, phone: '+1 202-555-1212')
+        user = create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' })
         sign_in_and_2fa_user(user)
         visit account_path
         form = find_form(page, action: disable_piv_cac_url)
@@ -167,7 +167,7 @@ feature 'PIV/CAC Management' do
 
   context 'with a piv/cac associated and no identities allowing piv/cac' do
     let(:user) do
-      create(:user, :signed_up, :with_piv_or_cac, phone: '+1 202-555-1212')
+      create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
     end
 
     scenario "doesn't allow association of another piv/cac with the account" do

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(:user, :signed_up, :with_piv_or_cac,
-           phone: '+1 (703) 555-0000')
+           with: { phone: '+1 (703) 555-0000' })
   end
 
   let(:nonce) { 'once' }

@@ -36,7 +36,7 @@ h1.hide = t('titles.account')
 
   = render 'account_item',
     name: t('account.index.phone'),
-    content: current_user.phone_configuration&.phone,
+    content: current_user.phone_configurations.first&.phone,
     path: manage_phone_path,
     action: @view_model.edit_action_partial
 
@@ -44,6 +44,9 @@ h1.hide = t('titles.account')
     name: t('account.index.authentication_app'),
     content: content_tag(:em, @view_model.totp_content),
     action: @view_model.totp_partial
+
+  - if FeatureManagement.webauthn_enabled?
+    = render 'webauthn'
 
   - if current_user.piv_cac_available?
     = render 'account_item',

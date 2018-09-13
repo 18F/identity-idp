@@ -65,15 +65,29 @@
   display: inline-block;
   padding: $space-1 $space-2;
 
-  // &.is-focused {
-  //   border-color: $field-focus-color;
-  //   box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
-  //   outline: none;
-  // }
+  &.is-focused {
+    border-color: $field-focus-color;
+  }
 }
 
 .btn-disabled {
   background-color: $gray-light;
   border-color: $gray;
   color: $gray;
+}
+
+.btn-account-action {
+  border: 0;
+  color: $blue;
+  font-size: .8125rem;
+  font-weight: normal;
+  margin-bottom: -3px;
+  margin-top: -3px;
+  padding: .5rem;
+  padding-bottom: .125rem;
+  padding-top: .125rem;
+
+  a {
+    text-decoration: none;
+  }
 }

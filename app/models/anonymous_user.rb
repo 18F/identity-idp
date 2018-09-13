@@ -14,4 +14,6 @@ class AnonymousUser
   def phone
     nil
   end
+
+  def email; end
 end

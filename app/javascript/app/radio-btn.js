@@ -4,7 +4,7 @@ function clearHighlight(name) {
   const radioGroup = document.querySelectorAll(`input[name='${name}']`);
 
   Array.prototype.forEach.call(radioGroup, (radio) => {
-    radio.parentNode.parentNode.classList.remove('bg-light-blue');
+    radio.parentNode.parentNode.classList.remove('bg-lightest-blue');
   });
 }
 
@@ -16,11 +16,11 @@ function highlightRadioBtn() {
       const label = radio.parentNode.parentNode;
       const name = radio.getAttribute('name');
 
-      if (radio.checked) label.classList.add('bg-light-blue');
+      if (radio.checked) label.classList.add('bg-lightest-blue');
 
       radio.addEventListener('change', function() {
         clearHighlight(name);
-        if (radio.checked) label.classList.add('bg-light-blue');
+        if (radio.checked) label.classList.add('bg-lightest-blue');
       });
 
       radio.addEventListener('focus', function() {

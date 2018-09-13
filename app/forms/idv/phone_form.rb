@@ -10,7 +10,7 @@ module Idv
     def initialize(idv_params, user)
       @idv_params = idv_params
       @user = user
-      self.phone = initial_phone_value(idv_params[:phone] || user.phone_configuration&.phone)
+      self.phone = initial_phone_value(idv_params[:phone] || user.phone_configurations.first&.phone)
       self.international_code = PhoneFormatter::DEFAULT_COUNTRY
     end
 
@@ -45,11 +45,11 @@ module Idv
       idv_params[:phone] = normalized_phone
 
       return idv_params[:phone_confirmed_at] = nil unless phone == formatted_user_phone
-      idv_params[:phone_confirmed_at] = user.phone_configuration&.confirmed_at
+      idv_params[:phone_confirmed_at] = user.phone_configurations.first&.confirmed_at
     end
 
     def formatted_user_phone
-      Phonelib.parse(user.phone_configuration&.phone).international
+      Phonelib.parse(user.phone_configurations.first&.phone).international
     end
 
     def parsed_phone

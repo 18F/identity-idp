@@ -15,12 +15,10 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
   user = User.create!(email: email)
   user.skip_confirmation!
   user.reset_password(password, password)
-  user.phone = mfa_phone || phone
-  user.phone_confirmed_at = Time.zone.now
   user.save!
-  user.create_phone_configuration(
+  user.phone_configurations.create(
     phone: mfa_phone || phone,
-    confirmed_at: user.phone_confirmed_at,
+    confirmed_at: Time.zone.now,
     delivery_preference: user.otp_delivery_preference
   )
   Event.create(user_id: user.id, event_type: :account_created)

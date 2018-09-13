@@ -39,9 +39,11 @@ module TwoFactorAuthentication
     end
 
     def next_step
-      return account_recovery_setup_url unless current_user.phone_configuration&.mfa_enabled?
-
-      after_otp_verification_confirmation_url
+      if current_user.phone_configurations.any?(&:mfa_enabled?)
+        after_otp_verification_confirmation_url
+      else
+        account_recovery_setup_url
+      end
     end
 
     def handle_invalid_piv_cac
@@ -64,7 +66,7 @@ module TwoFactorAuthentication
         user_email: current_user.email,
         remember_device_available: false,
         totp_enabled: current_user.totp_enabled?,
-        phone_enabled: current_user.phone_configuration&.mfa_enabled?,
+        phone_enabled: current_user.phone_configurations.any?(&:mfa_enabled?),
         piv_cac_nonce: piv_cac_nonce,
       }.merge(generic_data)
     end

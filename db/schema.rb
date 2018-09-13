@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180728122856) do
+ActiveRecord::Schema.define(version: 20180827225542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,11 +212,7 @@ ActiveRecord::Schema.define(version: 20180728122856) do
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
     t.integer "idv_attempts", default: 0
-    t.string "recovery_code"
-    t.string "encryption_key"
     t.string "unique_session_id"
-    t.string "recovery_salt"
-    t.string "recovery_cost"
     t.string "email_fingerprint", default: "", null: false
     t.text "encrypted_email", default: "", null: false
     t.string "attribute_cost"
@@ -252,6 +248,16 @@ ActiveRecord::Schema.define(version: 20180728122856) do
     t.text "entry", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "webauthn_configurations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.text "credential_id", null: false
+    t.text "credential_public_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
   add_foreign_key "events", "users"
