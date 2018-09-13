@@ -22,6 +22,16 @@ feature 'doc auth back image step' do
     expect(page).to have_current_path(idv_doc_auth_doc_success_step)
   end
 
+  it 'does not proceed to the next page if resolution fails' do
+    allow_any_instance_of(Idv::Agent).to receive(:proof).
+      and_return(success: false, errors: {})
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_back_image_step)
+    expect(page).to have_content I18n.t('idv.failure.sessions.heading')
+  end
+
   it 'does not proceed to the next page with invalid info' do
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
       and_return([false, ''])
