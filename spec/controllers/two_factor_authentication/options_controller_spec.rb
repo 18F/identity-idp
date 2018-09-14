@@ -25,14 +25,15 @@ describe TwoFactorAuthentication::OptionsController do
     before { sign_in_before_2fa }
 
     it 'redirects to login_two_factor_url if sms and piv/cac and webauthn disabled' do
-      set_piv_cac_webauthn_enabled('false')
+      piv_cac_webauthn_enabled('false')
 
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
 
       expect(response).to redirect_to otp_send_url( \
-        otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
+        otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+      )
 
-      set_piv_cac_webauthn_enabled('true')
+      piv_cac_webauthn_enabled('true')
     end
 
     it 'redirects to login_two_factor_url if user selects sms' do
@@ -92,7 +93,7 @@ describe TwoFactorAuthentication::OptionsController do
     end
   end
 
-  def set_piv_cac_webauthn_enabled(bool)
+  def piv_cac_webauthn_enabled(bool)
     allow(Figaro.env).to receive(:piv_cac_enabled) { bool }
     allow(Figaro.env).to receive(:webauthn_enabled) { bool }
     Rails.application.reload_routes!
