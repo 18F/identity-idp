@@ -24,7 +24,7 @@ module Idv
         if result.success?
           step_successful(pii_from_doc)
         else
-          failure(I18n.t('idv.failure.sessions.heading'))
+          flow_session[:matcher_pii_from_doc] = pii_from_doc
         end
       end
 
