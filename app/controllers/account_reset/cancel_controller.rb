@@ -3,7 +3,7 @@ module AccountReset
     before_action :check_feature_enabled
 
     def show
-      render :show and return unless token
+      return render :show unless token
 
       result = AccountReset::ValidateCancelToken.new(token).call
       track_event(result)
