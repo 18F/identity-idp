@@ -67,7 +67,7 @@ module IdvHelper
   def choose_idv_otp_delivery_method_sms
     page.find(
       'label',
-      text: t('devise.two_factor_authentication.otp_delivery_preference.sms')
+      text: t('two_factor_authentication.otp_delivery_preference.sms')
     ).click
     click_on t('idv.buttons.send_confirmation_code')
   end
