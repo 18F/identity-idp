@@ -1,9 +1,7 @@
 module AccountReset
   class ValidateCancelToken
     include ActiveModel::Model
-
-    validates :token, presence: { message: I18n.t('errors.account_reset.cancel_token_missing') }
-    validate :valid_token
+    include CancelTokenValidator
 
     def initialize(token)
       @token = token
@@ -17,17 +15,7 @@ module AccountReset
 
     private
 
-    attr_reader :success, :token, :validate_and_cancel
-
-    def valid_token
-      return if account_reset_request
-
-      errors.add(:token, I18n.t('errors.account_reset.cancel_token_invalid')) if token
-    end
-
-    def account_reset_request
-      @account_reset_request ||= AccountResetRequest.find_by(request_token: token)
-    end
+    attr_reader :success, :token
 
     def user
       account_reset_request&.user || AnonymousUser.new
