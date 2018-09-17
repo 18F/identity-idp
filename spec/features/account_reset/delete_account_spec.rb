@@ -11,7 +11,7 @@ describe 'Account Reset Request: Delete Account', email: true do
     it 'allows the user to delete their account after 24 hours' do
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
-      click_link t('devise.two_factor_authentication.account_reset.link')
+      click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -58,7 +58,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       user = create(:user, :with_authentication_app)
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
-      click_link t('devise.two_factor_authentication.account_reset.link')
+      click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
@@ -90,7 +90,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       click_link t('two_factor_authentication.login_options_link_text')
 
       # Account reset link should not be present
-      expect(page).to_not have_content(t('devise.two_factor_authentication.account_reset.link'))
+      expect(page).to_not have_content(t('two_factor_authentication.account_reset.link'))
 
       # Visiting account reset directly should redirect to 2FA
       visit account_reset_request_path

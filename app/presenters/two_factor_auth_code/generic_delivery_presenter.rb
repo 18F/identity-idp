@@ -46,7 +46,7 @@ module TwoFactorAuthCode
       return unless FeatureManagement.piv_cac_enabled?
       return unless has_piv_cac_configured
       view.link_to(
-        t('devise.two_factor_authentication.piv_cac_fallback.link'),
+        t('two_factor_authentication.piv_cac_fallback.link'),
         login_two_factor_piv_cac_path(locale: LinkLocaleResolver.locale)
       )
     end
@@ -55,7 +55,7 @@ module TwoFactorAuthCode
       return unless FeatureManagement.piv_cac_enabled?
       return unless has_piv_cac_configured
       t(
-        'devise.two_factor_authentication.piv_cac_fallback.text_html',
+        'two_factor_authentication.piv_cac_fallback.text_html',
         link: piv_cac_link
       )
     end

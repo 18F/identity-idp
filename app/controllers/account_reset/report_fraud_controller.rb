@@ -14,7 +14,7 @@ module AccountReset
     def handle_success
       analytics.track_event(Analytics::ACCOUNT_RESET, event: :fraud, token_valid: true)
       sign_out if current_user
-      flash[:success] = t('devise.two_factor_authentication.account_reset.successful_cancel')
+      flash[:success] = t('two_factor_authentication.account_reset.successful_cancel')
     end
 
     def handle_failure

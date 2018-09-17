@@ -10,9 +10,9 @@ p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
             class: :otp_delivery_preference_sms
           span.indicator.mt-tiny
           span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.otp_delivery_preference.sms')
+            = t('two_factor_authentication.otp_delivery_preference.sms')
           .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.sms_info')
+            = t('two_factor_authentication.two_factor_choice_options.sms_info')
       label.btn-border.col-12.mb0
         .radio
           = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]',
@@ -20,9 +20,9 @@ p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
             class: :otp_delivery_preference_voice
           span.indicator.mt-tiny
           span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.otp_delivery_preference.voice')
+            = t('two_factor_authentication.otp_delivery_preference.voice')
           .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.voice_info')
+            = t('two_factor_authentication.two_factor_choice_options.voice_info')
       - if FeatureManagement.enable_usps_verification?
         .mt3
           = t('idv.form.no_alternate_phone_html',

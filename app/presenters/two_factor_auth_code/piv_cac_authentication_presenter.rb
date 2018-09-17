@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
 
     def header
-      t('devise.two_factor_authentication.piv_cac_header_text')
+      t('two_factor_authentication.piv_cac_header_text')
     end
 
     def help_text

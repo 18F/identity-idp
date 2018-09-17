@@ -107,7 +107,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'displays flash error message' do
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
       end
 
       it 'resets the piv/cac session information' do
@@ -131,7 +131,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'displays flash error message' do
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
       end
 
       it 'resets the piv/cac session information' do
