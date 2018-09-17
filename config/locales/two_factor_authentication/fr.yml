@@ -1,7 +1,22 @@
 ---
 fr:
   two_factor_authentication:
+    account_reset:
+      cancel_link: Annuler votre demande
+      link: supprimer votre compte
+      pending_html: Vous avez actuellement une demande en attente pour supprimer votre
+        compte.  Il faut compter 24 heures à partir du moment où vous avez fait la
+        demande pour terminer le processus.  Veuillez vérifier plus tard. %{cancel_link}
+      successful_cancel: Je vous remercie. Votre demande de suppression de votre compte
+        login.gov a été annulée.
+      text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité ci-dessus,
+        vous pouvez réinitialiser vos préférences par %{link}.
     choose_another_option: "‹ Choisissez une autre option"
+    header_text: Entrez votre code de sécurité
+    invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
+      de nouveau ou demander un nouveau code de sécurité à utilisation unique.
+    invalid_personal_key: Cette clé personnelle est non valide.
+    invalid_piv_cac: NOT TRANSLATED YET
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
       auth_app: Application d'authentification
@@ -22,13 +37,64 @@ fr:
         sécurité.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
+    max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
+      verrouillé.
+    max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
+      verrouillé, car vous avez entré le code de sécurité à utilisation unique de
+      façon erronée à de trop nombreuses reprises.
+    max_otp_requests_reached: Pour votre sécurité, votre compte est temporairement
+      verrouillé car vous avez demandé un code de sécurité à trop de reprises.
+    max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
+      temporairement verrouillé, car vous avez entré le code de sécurité à utilisation
+      unique de façon erronée à de trop nombreuses reprises.
+    max_piv_cac_login_attempts_reached: NOT TRANSLATED YET
+    otp_delivery_preference:
+      instruction: Vous pouvez changer cette sélection la prochaine fois que vous
+        vous connectez.
+      phone_unsupported: NOT TRANSLATED YET
+      sms: Message texte (SMS)
+      title: Comment devrions-nous vous envoyer un code?
+      voice: Appel téléphonique
     personal_key_fallback:
       question: Vous n'avez pas votre clé personnelle?
+    personal_key_header_text: Entrez votre clé personnelle
+    personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
+      Une fois que vous l'entrez, vous recevrez une nouvelle clé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
+    phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
+      que vous vous connectez</strong>.
+    phone_sms_label: Numéro de téléphone portable
+    phone_voice_info_html: Nous vous appellerons avec un code de sécurité <strong>chaque
+      fois que vous vous connectez</strong>.
+    phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
+      link: Utilisez plutôt votre PIV/CAC
+      text_html: Avez-vous votre PIV/CAC? %{link}
       question: Vous n'avez pas accès à votre carte PIV/CAC?
+    piv_cac_header_text: NOT TRANSLATED YET
+    please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
+    read_about_two_factor_authentication:
+      link: lire sur l'authentification à deux facteurs
+      text_html: Vous pouvez %{link} et pourquoi nous l'utilisons sur notre page d'aide.
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
+    totp_header_text: Entrez votre code d'application d'authentification
+    two_factor_choice: Sécurise ton compte
+    two_factor_choice_intro: login.gov s'assure que vous pouvez accéder à votre compte
+      en ajoutant une deuxième couche de sécurité.
+    two_factor_choice_options:
+      auth_app: Application d'authentification
+      auth_app_info: Configurez une application d'authentification pour obtenir votre
+        code de sécurité sans fournir de numéro de téléphone
+      piv_cac: Employés du gouvernement
+      piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte
+      sms: SMS
+      sms_info: Obtenez votre code de sécurité par SMS
+      voice: Appel téléphonique
+      voice_info: Obtenez votre code de sécurité par appel téléphonique
+      webauthn: Clé de sécurité physique
+      webauthn_info: Utilisez une clé de sécurité physique pour sécuriser votre compte
     webauthn_fallback:
       question: Votre clé de sécurité physique n'est pas disponible?
+    webauthn_header_text: Présentez votre clé de sécurité physique

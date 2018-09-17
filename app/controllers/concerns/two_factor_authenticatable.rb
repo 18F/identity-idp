@@ -87,11 +87,11 @@ module TwoFactorAuthenticatable
 
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
-  # devise.two_factor_authentication.invalid_#{type}
+  # two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type: 'otp')
     update_invalid_user
 
-    flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
+    flash.now[:error] = t("two_factor_authentication.invalid_#{type}")
 
     if decorated_user.locked_out?
       handle_second_factor_locked_user(type)

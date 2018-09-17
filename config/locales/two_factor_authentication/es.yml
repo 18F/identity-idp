@@ -1,7 +1,22 @@
 ---
 es:
   two_factor_authentication:
+    account_reset:
+      cancel_link: Cancelar su solicitud
+      link: eliminando su cuenta
+      pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
+        Se necesitan 24 horas desde el momento en que realizó la solicitud para completar
+        el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+      successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
+        ha sido cancelada.
+      text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
+        puede restablecer tus preferencias por %{link}.
     choose_another_option: "‹ Elige otra opción"
+    header_text: Ingrese su código de seguridad
+    invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
+      nuevo o solicitar un nuevo código de seguridad de sólo un uso.
+    invalid_personal_key: Esa clave personal no es válida.
+    invalid_piv_cac: NOT TRANSLATED YET
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
       auth_app: Aplicación de autenticación
@@ -22,13 +37,63 @@ es:
         seguridad.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
+    max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
+      temporalmente.
+    max_otp_login_attempts_reached: Para su seguridad, su cuenta ha sido bloqueada
+      temporalmente porque ha ingresado incorrectamente el código de seguridad de
+      sólo un uso demasiadas veces.
+    max_otp_requests_reached: Para su seguridad, su cuenta ha sido bloqueada temporalmente
+      porque ha solicitado un código de seguridad demasiadas veces más de lo permitido.
+    max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
+      bloqueada temporalmente porque ha ingresado incorrectamente la clave personal
+      demasiadas veces.
+    max_piv_cac_login_attempts_reached: NOT TRANSLATED YET
+    otp_delivery_preference:
+      instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
+      phone_unsupported: NOT TRANSLATED YET
+      sms: Mensaje de texto (SMS, sigla en inglés)
+      title: "¿Cómo deberíamos enviarle un código?"
+      voice: Llamada telefónica
     personal_key_fallback:
       question: "¿No tiene su clave personal?"
+    personal_key_header_text: Ingrese su clave personal
+    personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
+      se le dará una nueva clave.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
+    phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
+      <strong>cada vez que inicie sesión</strong>.
+    phone_sms_label: Número de teléfono móvil
+    phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada vez
+      que inicies sesión</strong>.
+    phone_voice_label: Número de teléfono
     piv_cac_fallback:
+      link: Use su PIV/CAC en su lugar
+      text_html: "¿Tiene usted PIV/CAC? %{link}"
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
+    piv_cac_header_text: NOT TRANSLATED YET
+    please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
+    read_about_two_factor_authentication:
+      link: leer acerca de la autenticación de dos factores
+      text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
     totp_fallback:
       question: "¿No tiene su aplicación de autenticación?"
+    totp_header_text: Ingrese su código de la app de autenticación
+    two_factor_choice: Asegure su cuenta
+    two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
+      agregando una segunda capa de seguridad.
+    two_factor_choice_options:
+      auth_app: Aplicación de autenticación
+      auth_app_info: Configure una aplicación de autenticación para obtener su código
+        de seguridad sin proporcionar un número de teléfono
+      piv_cac: Empleados del Gobierno
+      piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta
+      sms: Mensaje de texto / SMS
+      sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS
+      voice: Llamada telefónica
+      voice_info: Obtenga su código de seguridad a través de una llamada telefónica
+      webauthn: Clave de seguridad de hardware
+      webauthn_info: Use una clave de seguridad de hardware para proteger su cuenta
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad de hardware disponible?"
+    webauthn_header_text: Presente su clave de seguridad de hardware

@@ -49,7 +49,6 @@ gem 'sass-rails', '~> 5.0'
 gem 'savon'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.0'
-gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'

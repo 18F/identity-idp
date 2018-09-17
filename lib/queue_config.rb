@@ -5,7 +5,7 @@ module Upaya
     # rubocop:disable Metrics/MethodLength
 
     # Known acceptable values for config.active_job.queue_adapter
-    KNOWN_QUEUE_ADAPTERS = %i[sidekiq inline async].freeze
+    KNOWN_QUEUE_ADAPTERS = %i[inline async].freeze
 
     # Select a queue adapter for use, including possible random weights as
     # defined by Figaro.env.queue_adapter_weights (a JSON mapping from queue
@@ -13,8 +13,8 @@ module Upaya
     def self.choose_queue_adapter
       adapter_config = Figaro.env.queue_adapter_weights
 
-      # default to Sidekiq if no config present
-      return :sidekiq unless adapter_config
+      # default to async if no config present
+      return :async unless adapter_config
 
       options = JSON.parse(adapter_config, symbolize_names: true)
 

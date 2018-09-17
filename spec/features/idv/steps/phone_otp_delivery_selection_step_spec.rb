@@ -12,7 +12,7 @@ feature 'IdV phone OTP deleivery method selection' do
       complete_idv_steps_before_phone_otp_delivery_selection_step
       choose_idv_otp_delivery_method_sms
 
-      expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
       expect(current_path).to eq(idv_otp_verification_path)
     end
   end
@@ -26,7 +26,7 @@ feature 'IdV phone OTP deleivery method selection' do
       complete_idv_steps_before_phone_otp_delivery_selection_step
       choose_idv_otp_delivery_method_voice
 
-      expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
       expect(current_path).to eq(idv_otp_verification_path)
     end
   end

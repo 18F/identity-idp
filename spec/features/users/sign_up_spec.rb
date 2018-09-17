@@ -173,7 +173,7 @@ feature 'Sign Up' do
 
     expect(page).to have_current_path two_factor_options_path
     expect(page).not_to have_content(
-      t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+      t('two_factor_authentication.two_factor_choice_options.piv_cac')
     )
   end
 

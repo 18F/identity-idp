@@ -63,7 +63,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with SMS delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.sms')
+                        choose t('two_factor_authentication.otp_delivery_preference.sms')
                         click_send_security_code
                       end
 
@@ -241,7 +241,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with SMS delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.sms')
+                        choose t('two_factor_authentication.otp_delivery_preference.sms')
                         click_send_security_code
                       end
 
@@ -252,7 +252,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with Voice delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.voice')
+                        choose t('two_factor_authentication.otp_delivery_preference.voice')
                         click_send_security_code
                       end
 

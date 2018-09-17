@@ -5,7 +5,7 @@ module TwoFactorAuthCode
     )
 
     def header
-      t('devise.two_factor_authentication.header_text')
+      t('two_factor_authentication.header_text')
     end
 
     def phone_number_message
