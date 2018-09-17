@@ -117,26 +117,6 @@ describe ProductionDatabaseConfiguration do
       end
     end
 
-    context 'when the app is running on a worker host' do
-      before { stub_role_config('worker') }
-
-      it 'returns the worker pool size' do
-        allow(Figaro.env).to receive(:database_pool_worker).and_return(8)
-
-        expect(ProductionDatabaseConfiguration.pool).to eq(8)
-      end
-
-      it 'defaults to 26' do
-        allow(Figaro.env).to receive(:database_pool_worker).and_return(nil)
-
-        expect(ProductionDatabaseConfiguration.pool).to eq(26)
-
-        allow(Figaro.env).to receive(:database_pool_worker).and_return('')
-
-        expect(ProductionDatabaseConfiguration.pool).to eq(26)
-      end
-    end
-
     context 'when the app is running on an host with an ambigous role' do
       before { stub_role_config('fake') }
 
