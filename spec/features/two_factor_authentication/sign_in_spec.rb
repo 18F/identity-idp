@@ -34,8 +34,7 @@ feature 'Two Factor Authentication' do
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
-      expect(user.reload.phone_configuration).to be_nil
+      expect(user.phone_configurations).to be_empty
       expect(user.sms?).to eq true
     end
 
@@ -52,7 +51,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content t('titles.account_locked')
         expect(page).
-          to have_content t('devise.two_factor_authentication.max_otp_login_attempts_reached')
+          to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
       end
     end
 
@@ -68,7 +67,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          'two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
         )
 
@@ -182,7 +181,7 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).
-        to have_content t('devise.two_factor_authentication.header_text')
+        to have_content t('two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
@@ -242,7 +241,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
       unsupported_phone = '+1 (242) 327-0143'
-      user = create(:user, :signed_up, phone: unsupported_phone)
+      user = create(:user, :signed_up, with: { phone: unsupported_phone })
       sign_in_before_2fa(user)
 
       expect(page).to_not have_link t('links.two_factor_authentication.voice')
@@ -294,7 +293,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content t('titles.account_locked')
         expect(page).to have_content(five_minute_countdown_regex)
-        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+        expect(page).to have_content t('two_factor_authentication.max_otp_requests_reached')
 
         visit root_path
         signin(user.email, user.password)
@@ -302,7 +301,7 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content t('titles.account_locked')
         expect(page).to have_content(five_minute_countdown_regex)
         expect(page).
-          to have_content t('devise.two_factor_authentication.max_generic_login_attempts_reached')
+          to have_content t('two_factor_authentication.max_generic_login_attempts_reached')
 
         # let lockout period expire
         Timecop.travel(lockout_period) do
@@ -350,7 +349,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq account_path
 
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configuration.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configurations.first.phone)
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         # let findtime period expire
@@ -374,8 +373,8 @@ feature 'Two Factor Authentication' do
     context '2 users with same phone number request OTP too many times within findtime' do
       it 'locks both users out' do
         allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('3')
-        first_user = create(:user, :signed_up, phone: '+1 703-555-1212')
-        second_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        first_user = create(:user, :signed_up, with: { phone: '+1 703-555-1212' })
+        second_user = create(:user, :signed_up, with: { phone: '+1 703-555-1212' })
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
 
         sign_in_before_2fa(first_user)
@@ -387,7 +386,9 @@ feature 'Two Factor Authentication' do
 
         sign_in_before_2fa(second_user)
         click_link t('links.two_factor_authentication.get_another_code')
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone_configuration.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(
+          first_user.phone_configurations.first.phone
+        )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         expect(current_path).to eq otp_send_path
@@ -401,7 +402,7 @@ feature 'Two Factor Authentication' do
 
         signin(first_user.email, first_user.password)
 
-        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+        expect(page).to have_content t('two_factor_authentication.max_otp_requests_reached')
 
         visit account_path
         expect(current_path).to eq root_path
@@ -410,7 +411,7 @@ feature 'Two Factor Authentication' do
 
     context 'When setting up 2FA for the first time' do
       it 'enforces rate limiting only for current phone' do
-        second_user = create(:user, :signed_up, phone: '202-555-1212')
+        second_user = create(:user, :signed_up, with: { phone: '202-555-1212' })
 
         sign_in_before_2fa
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
@@ -437,7 +438,7 @@ feature 'Two Factor Authentication' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         signin(user.email, user.password)
 
-        expect(page).to have_content t('devise.two_factor_authentication.' \
+        expect(page).to have_content t('two_factor_authentication.' \
                                        'max_generic_login_attempts_reached')
 
         visit account_path
@@ -471,7 +472,7 @@ feature 'Two Factor Authentication' do
         click_button t('forms.buttons.submit.default')
 
         expect(page).
-          to_not have_content t('devise.two_factor_authentication.invalid_otp')
+          to_not have_content t('two_factor_authentication.invalid_otp')
       end
     end
   end
@@ -543,7 +544,7 @@ feature 'Two Factor Authentication' do
                             dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
-      expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end
 
     context 'with SMS, international number, and locale header' do
@@ -552,7 +553,7 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
-        user = create(:user, :signed_up, phone: '+212 661-289324')
+        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
         sign_in_user(user)
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
@@ -574,7 +575,7 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
 
-        user = create(:user, :signed_up, phone: '+212 661-289324')
+        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
         sign_in_user(user)
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -593,7 +594,9 @@ feature 'Two Factor Authentication' do
         PhoneVerification.adapter = FakeAdapter
         allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
 
-        user = create(:user, :signed_up, phone: '+17035551212', otp_delivery_preference: 'voice')
+        user = create(:user, :signed_up,
+                      otp_delivery_preference: 'voice',
+                      with: { phone: '+17035551212', delivery_preference: 'voice' })
         sign_in_user(user)
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
@@ -611,7 +614,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(page).not_to have_link(t('devise.two_factor_authentication.piv_cac_fallback.link'))
+      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.link'))
     end
   end
 
@@ -657,7 +660,7 @@ feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+        expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
         expect(current_path).to eq login_two_factor_authenticator_path
       end
     end

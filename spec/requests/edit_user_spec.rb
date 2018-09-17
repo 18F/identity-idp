@@ -4,7 +4,7 @@ describe 'user edits their account', email: true do
   include Features::MailerHelper
   include Features::ActiveJobHelper
 
-  let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1213') }
+  let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1213' }) }
 
   def user_session
     session['warden.user.user.session']

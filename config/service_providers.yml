@@ -48,6 +48,7 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/logout'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
@@ -58,7 +59,7 @@ test:
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
     redirect_uris:
-      - 'http://localhost:7654/'
+      - 'http://localhost:7654/auth/result'
       - 'https://example.com'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
@@ -263,7 +264,7 @@ production:
     redirect_uris:
       - 'http://localhost:9292/auth/result'
       <% if LoginGov::Hostdata.in_datacenter? %>
-      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
+      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/result'
       <% end %>
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
@@ -778,4 +779,31 @@ production:
       - dob
       - ssn
       - phone
+    restrict_to_deploy_env: 'prod'
+
+  # CBP I-94
+  'urn:gov:dhs.cbp.pspd.i94:openidconnect:prod:app':
+    agency_id: 1
+    uuid_priority: 30
+    friendly_name: 'CBP I-94'
+    agency: 'DHS'
+    logo: 'cbp.png'
+    redirect_uris:
+      - 'gov.dhs.cbp.pspd.i94.user.prod://result'
+      - 'gov.dhs.cbp.pspd.i94.user.prod://result/logout'
+    restrict_to_deploy_env: 'prod'
+
+  # HUD Section 3 Opportunity Portal
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:HUD_FHEO:Section3OpportunityPortal':
+    agency_id: 12
+    friendly_name: 'HUD Section 3 Opportunity Portal'
+    agency: 'HUD'
+    logo: 'hud.png'
+    return_to_sp_url: 'https://hudapps.hud.gov/OpportunityPortal'
+    redirect_uris:
+      - 'https://hudapps.hud.gov/OpportunityPortal/openid_connect_login'
+      - 'https://hudapps.hud.gov/OpportunityPortal/signedOut.action'
+    cert: 'hud_prod'
+    attribute_bundle:
+      - email
     restrict_to_deploy_env: 'prod'

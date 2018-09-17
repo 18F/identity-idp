@@ -1,5 +1,4 @@
 require 'exception_notification/rails'
-require 'exception_notification/sidekiq'
 
 EXCEPTION_RECIPIENTS = Figaro.env.exception_recipients.split(',').freeze
 

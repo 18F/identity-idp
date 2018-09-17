@@ -54,3 +54,5 @@ fr:
     totp_setup:
       new: Activer une application d'authentification
     verify_email: Consultez vos courriels
+    webauthn_setup:
+      new: Enregistrez votre clé de sécurité physique

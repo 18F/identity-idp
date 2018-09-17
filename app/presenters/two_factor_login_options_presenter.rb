@@ -1,13 +1,14 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  POSSIBLE_OPTIONS = %i[sms voice auth_app piv_cac personal_key].freeze
+  POSSIBLE_OPTIONS = %i[sms voice auth_app piv_cac personal_key webauthn].freeze
   POLICIES = {
     sms: SmsLoginOptionPolicy,
     voice: VoiceLoginOptionPolicy,
     auth_app: AuthAppLoginOptionPolicy,
     piv_cac: PivCacLoginOptionPolicy,
     personal_key: PersonalKeyLoginOptionPolicy,
+    webauthn: WebauthnLoginOptionPolicy,
   }.freeze
 
   attr_reader :current_user
@@ -57,17 +58,17 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   private
 
   def account_reset_link
-    t('devise.two_factor_authentication.account_reset.text_html',
+    t('two_factor_authentication.account_reset.text_html',
       link: @view.link_to(
-        t('devise.two_factor_authentication.account_reset.link'),
+        t('two_factor_authentication.account_reset.link'),
         account_reset_request_path(locale: LinkLocaleResolver.locale)
       ))
   end
 
   def account_reset_cancel_link
-    t('devise.two_factor_authentication.account_reset.pending_html',
+    t('two_factor_authentication.account_reset.pending_html',
       cancel_link: @view.link_to(
-        t('devise.two_factor_authentication.account_reset.cancel_link'),
+        t('two_factor_authentication.account_reset.cancel_link'),
         account_reset_cancel_url(token: account_reset_token)
       ))
   end

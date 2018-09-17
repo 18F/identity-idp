@@ -35,7 +35,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'has a localized heading' do
         render
 
-        expect(rendered).to have_content t('devise.two_factor_authentication.header_text')
+        expect(rendered).to have_content t('two_factor_authentication.header_text')
       end
     end
 
@@ -138,7 +138,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).not_to have_link(
-          t('devise.two_factor_authentication.personal_key_fallback.link'),
+          t('two_factor_authentication.personal_key_fallback.link'),
           href: login_two_factor_personal_key_path
         )
       end

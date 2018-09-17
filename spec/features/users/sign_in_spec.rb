@@ -255,19 +255,20 @@ feature 'Sign in' do
       expect { signin(email, password) }.
         to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
-      user = User.find_with_email(email)
+      user = user.reload
       expect(user.encrypted_email).to eq encrypted_email
     end
   end
 
   context 'KMS is on and user enters incorrect password' do
     it 'redirects to root_path with user-friendly error message, not a 500 error' do
+      user = create(:user)
+      email = user.email
       allow(FeatureManagement).to receive(:use_kms?).and_return(true)
       stub_aws_kms_client_invalid_ciphertext
       allow(SessionEncryptorErrorHandler).to receive(:call)
 
-      user = create(:user)
-      signin(user.email, 'invalid')
+      signin(email, 'invalid')
 
       link_url = new_user_password_url
 
@@ -320,7 +321,8 @@ feature 'Sign in' do
     it 'falls back to SMS with an error message' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      user = create(:user, :signed_up, phone: '+1 441-295-9644', otp_delivery_preference: 'voice')
+      user = create(:user, :signed_up,
+                    otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
       signin(user.email, user.password)
 
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
@@ -328,7 +330,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'Bermuda'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -339,7 +341,8 @@ feature 'Sign in' do
     it 'displays an error message but does not send an SMS' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'sms')
+      user = create(:user, :signed_up,
+                    otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
 
@@ -348,7 +351,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -359,7 +362,8 @@ feature 'Sign in' do
     it 'displays an error message but does not send an SMS' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'sms')
+      user = create(:user, :signed_up,
+                    otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
@@ -370,7 +374,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -381,7 +385,8 @@ feature 'Sign in' do
     it 'displays an error message but does not send an SMS' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'voice')
+      user = create(:user, :signed_up,
+                    otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
@@ -392,7 +397,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -436,7 +441,7 @@ feature 'Sign in' do
       click_submit_default
 
       expect(page).to have_current_path(login_two_factor_personal_key_path)
-      expect(page).to have_content t('devise.two_factor_authentication.invalid_personal_key')
+      expect(page).to have_content t('two_factor_authentication.invalid_personal_key')
     end
   end
 
@@ -473,7 +478,7 @@ feature 'Sign in' do
 
     it 'does not display OTP Fallback text and links' do
       expect(page).
-        to_not have_content t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+        to_not have_content t('two_factor_authentication.totp_fallback.sms_link_text')
     end
   end
 end

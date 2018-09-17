@@ -119,7 +119,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
-      expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
       click_submit_default
@@ -437,7 +437,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
-      redirect_uri: 'gov.gsa.openidconnect.test://result/auth',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
       nonce: nonce,

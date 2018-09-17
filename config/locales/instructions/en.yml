@@ -36,6 +36,9 @@ en:
       voice:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         number_message: We just called you at %{number}.
+      webauthn:
+        confirm_webauthn_html: Present the hardware security key that you associated
+          with your account.
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.

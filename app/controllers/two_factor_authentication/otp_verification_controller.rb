@@ -36,7 +36,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      current_user.phone_configuration&.mfa_enabled?
+      current_user.phone_configurations.any?(&:mfa_enabled?)
     end
 
     def confirm_voice_capability
@@ -47,14 +47,14 @@ module TwoFactorAuthentication
       return unless capabilities.sms_only?
 
       flash[:error] = t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: capabilities.unsupported_location
       )
       redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)
     end
 
     def phone
-      current_user&.phone_configuration&.phone || user_session[:unconfirmed_phone]
+      current_user&.phone_configurations&.first&.phone || user_session[:unconfirmed_phone]
     end
 
     def form_params

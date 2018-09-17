@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(:user, :signed_up, :with_piv_or_cac,
-           phone: '+1 (703) 555-0000')
+           with: { phone: '+1 (703) 555-0000' })
   end
 
   let(:nonce) { 'once' }
@@ -107,7 +107,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'displays flash error message' do
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
       end
 
       it 'resets the piv/cac session information' do
@@ -131,7 +131,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'displays flash error message' do
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
       end
 
       it 'resets the piv/cac session information' do

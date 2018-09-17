@@ -11,7 +11,6 @@ es:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
-      return_to_account: NOT TRANSLATED YET
       warning_header: Si usted cancela ahora
       warnings:
         warning_1: NOT TRANSLATED YET
@@ -32,6 +31,7 @@ es:
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
+      unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
       attempts:
         one: Tiene usted <strong> 1 intento restante.</ strong>
@@ -121,7 +121,6 @@ es:
           del estado?"
         why: Para verificar su identidad, necesitará información de su identificación
           emitida por el estado.
-      loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: NOT TRANSLATED YET
@@ -129,9 +128,11 @@ es:
         seguro. La necesitará si pierde su contraseña.
       phone:
         alert: Este número de teléfono <strong>debe ser</strong>
+        description: Verificamos los registros para asegurarnos de que eres quien
+          eres, y de que eres el propietario de tu cuenta.
         phone_of_record: Teléfono del registro
         rules:
-        - a su nombre o el nombre de un miembro de familia
+        - en un plan de teléfono con su nombre en él
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.

@@ -88,3 +88,11 @@ fr:
       name: Code de confirmation
       submit: Confirmer le compte
       title: Confirmez votre compte
+    webauthn_setup:
+      intro_html: Lorsque vous vous connectez, vous pouvez utiliser votre clé de sécurité
+        physique. %{link}
+      step_1: Insérez votre clé de sécurité dans le port USB de votre ordinateur ou
+        connectez-le avec un câble USB.
+      step_2: Une fois connecté, appuyez sur le bouton ou le disque d'or si votre
+        clé en possède un.
+      step_3: Entrez un nom pour votre clé de sécurité

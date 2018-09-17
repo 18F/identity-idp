@@ -3,7 +3,7 @@ class TwoFactorOptionsForm
 
   attr_reader :selection
 
-  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac] }
+  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac webauthn] }
 
   def initialize(user)
     self.user = user
@@ -36,7 +36,7 @@ class TwoFactorOptionsForm
 
   def user_needs_updating?
     return false unless %w[voice sms].include?(selection)
-    return false if selection == user.phone_configuration&.delivery_preference
+    return false if selection == user.phone_configurations.first&.delivery_preference
     selection != user.otp_delivery_preference
   end
 

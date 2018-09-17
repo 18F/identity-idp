@@ -11,7 +11,6 @@ en:
       send_confirmation_code: Continue
     cancel:
       modal_header: Are you sure you want to cancel?
-      return_to_account: Return to account
       warning_header: If you cancel now
       warnings:
         warning_1: We won't be able to verify your identity
@@ -32,6 +31,7 @@ en:
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
+      unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
         one: You have <strong>1 attempt remaining.</strong>
@@ -122,7 +122,6 @@ en:
         where: Where was your driver's license, driver's permit, or state ID issued?
         why: To verify your identity, you'll need information from your state-issued
           ID.
-      loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We'll send a code to <strong>%{phone}</strong>
@@ -130,9 +129,11 @@ en:
         safe place. You will need it if you ever lose your password.
       phone:
         alert: This phone number <strong>must be</strong>
+        description: We're checking records to make sure you are who you say you are,
+          and that you have ownership of your account.
         phone_of_record: Phone of record
         rules:
-        - in your name, or a family member's name
+        - on a phone plan with your name on it
         - not a virtual phone (such as Google Voice or Skype)
         - a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"

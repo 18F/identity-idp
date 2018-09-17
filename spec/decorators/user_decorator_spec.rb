@@ -47,6 +47,14 @@ describe UserDecorator do
     end
   end
 
+  describe '#masked_number' do
+    it 'returns blank for a nil number' do
+      user = build_stubbed(:user)
+      user_decorator = UserDecorator.new(user)
+      expect(user_decorator.send(:masked_number, nil)).to eq ''
+    end
+  end
+
   describe '#active_identity_for' do
     it 'returns Identity matching ServiceProvider' do
       sp = create(:service_provider, issuer: 'http://sp.example.com')
@@ -201,42 +209,6 @@ describe UserDecorator do
         and_return(Profile.new(created_at: Time.zone.now))
 
       expect(user_decorator.active_profile_newer_than_pending_profile?).to eq false
-    end
-  end
-
-  describe '#should_acknowledge_personal_key?' do
-    context 'user has no personal key' do
-      context 'service provider with loa1' do
-        it 'returns true' do
-          user_decorator = UserDecorator.new(User.new)
-          session = { sp: { loa3: false } }
-
-          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
-        end
-      end
-
-      context 'no service provider' do
-        it 'returns true' do
-          user_decorator = UserDecorator.new(User.new)
-          session = {}
-
-          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
-        end
-      end
-
-      it 'returns false when the user has a personal key' do
-        user_decorator = UserDecorator.new(User.new(personal_key: 'foo'))
-        session = {}
-
-        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
-      end
-
-      it 'returns false if the user is loa3' do
-        user_decorator = UserDecorator.new(User.new)
-        session = { sp: { loa3: true } }
-
-        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
-      end
     end
   end
 

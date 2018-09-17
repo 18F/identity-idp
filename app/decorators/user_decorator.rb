@@ -36,7 +36,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.phone_configuration&.phone)
+    masked_number(user.phone_configurations.first&.phone)
   end
 
   def active_identity_for(service_provider)
@@ -99,14 +99,6 @@ class UserDecorator
     user.second_factor_locked_at.present? && lockout_period_expired?
   end
 
-  def should_acknowledge_personal_key?(session)
-    return true if session[:personal_key]
-
-    sp_session = session[:sp]
-
-    user.encrypted_recovery_code_digest.blank? && (sp_session.blank? || sp_session[:loa3] == false)
-  end
-
   def recent_events
     events = user.events.order('created_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
     identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
@@ -138,6 +130,7 @@ class UserDecorator
   attr_reader :user
 
   def masked_number(number)
+    return '' if number.blank?
     "***-***-#{number[-4..-1]}"
   end
 

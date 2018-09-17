@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv confirmation step', :idv_job do
+feature 'idv confirmation step' do
   include IdvStepHelper
 
   it_behaves_like 'idv confirmation step'

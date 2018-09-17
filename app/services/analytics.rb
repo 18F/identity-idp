@@ -134,5 +134,8 @@ class Analytics
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze
   USER_REGISTRATION_PIV_CAC_ENABLED = 'User Registration: piv cac enabled'.freeze
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
+  WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
+  WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
+  WEBAUTHN_SETUP_SUBMITTED = 'WebAuthn Setup Submitted'.freeze
   # rubocop:enable Metrics/LineLength
 end

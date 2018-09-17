@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv phone step', :idv_job do
+feature 'idv phone step' do
   include IdvStepHelper
   include IdvHelper
 
@@ -19,7 +19,7 @@ feature 'idv phone step', :idv_job do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(user.phone_configuration.phone)
+      fill_out_phone_form_ok(user.phone_configurations.first.phone)
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.session.review'))
@@ -39,8 +39,8 @@ feature 'idv phone step', :idv_job do
 
       choose_idv_otp_delivery_method_sms
 
-      expect(page).to have_content(t('devise.two_factor_authentication.header_text'))
-      expect(page).to_not have_content(t('devise.two_factor_authentication.totp_header_text'))
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
+      expect(page).to_not have_content(t('two_factor_authentication.totp_header_text'))
       expect(page).to_not have_content(t('two_factor_authentication.login_options_link_text'))
     end
   end
