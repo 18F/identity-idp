@@ -130,6 +130,7 @@ class UserDecorator
   attr_reader :user
 
   def masked_number(number)
+    return '' if number.blank?
     "***-***-#{number[-4..-1]}"
   end
 

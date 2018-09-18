@@ -3,10 +3,10 @@
   p
     = button_to t('forms.buttons.continue'), sign_up_completed_path, \
               class: 'btn btn-primary btn-wide'
-p.mr5.ml5.mt3.mb3
+p.sm-mr5.sm-ml5.mt3.mb3
   = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
     sp: content_tag(:strong, decorated_session.sp_agency))
 
-<div class='ml5 mr5' >
+<div class='sm-ml5 sm-mr5' >
   = render @view_model.requested_attributes_partial, view_model: @view_model
 </div>

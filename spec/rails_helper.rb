@@ -17,7 +17,6 @@ require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'
 require 'factory_bot'
-require 'sidekiq/testing'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -77,10 +76,4 @@ RSpec.configure do |config|
     example.run
     Capybara.use_default_driver
   end
-end
-
-Sidekiq::Testing.inline!
-
-Sidekiq::Testing.server_middleware do |chain|
-  chain.add WorkerHealthChecker::Middleware
 end
