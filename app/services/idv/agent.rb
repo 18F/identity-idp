@@ -18,7 +18,7 @@ module Idv
         log_vendor(vendor, results, stage)
         proofer_result = vendor.proof(@applicant)
         results = merge_results(results, proofer_result)
-        results[:timed_out] = true if proofer_result.timed_out?
+        results[:timed_out] = proofer_result.timed_out?
         break unless proofer_result.success?
       end
 
