@@ -6,34 +6,6 @@ describe AccountResetService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
 
-  describe '#report_fraud' do
-    it 'removes tokens from the request' do
-      create_account_reset_request_for(user)
-      AccountResetService.report_fraud(user.account_reset_request.request_token)
-      arr = AccountResetRequest.find_by(user_id: user.id)
-      expect(arr.request_token).to_not be_present
-      expect(arr.granted_token).to_not be_present
-      expect(arr.requested_at).to be_present
-      expect(arr.cancelled_at).to be_present
-      expect(arr.reported_fraud_at).to be_present
-    end
-
-    it 'does not raise an error for a fraud request with a blank token' do
-      token_found = AccountResetService.report_fraud('')
-      expect(token_found).to be(false)
-    end
-
-    it 'does not raise an error for a cancel request with a nil token' do
-      token_found = AccountResetService.report_fraud('')
-      expect(token_found).to be(false)
-    end
-
-    it 'does not raise an error for a cancel request with a bad token' do
-      token_found = AccountResetService.report_fraud('ABC')
-      expect(token_found).to be(false)
-    end
-  end
-
   describe '#grant_request' do
     it 'adds a notified at timestamp and granted token to the user' do
       create_account_reset_request_for(user)
