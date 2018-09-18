@@ -35,7 +35,7 @@ fr:
         de cet état.
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
-      unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code
+      unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
       attempts:
         one: Il ne vous reste qu' strongune tentative./strong
