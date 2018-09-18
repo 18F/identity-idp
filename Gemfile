@@ -112,6 +112,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.1.0'
-  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.1.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.1'
+  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end
