@@ -6,7 +6,8 @@ p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
     fieldset.mb3.p0.border-none
       label.btn-border.col-12.mb1
         .radio
-          = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :sms, true,
+          = radio_button_tag 'otp_delivery_preference',
+            :sms, false,
             class: :otp_delivery_preference_sms
           span.indicator.mt-tiny
           span.blue.bold.fs-20p
@@ -15,7 +16,7 @@ p.mt1 = t('idv.messages.otp_delivery_method.phone_number_html',
             = t('two_factor_authentication.two_factor_choice_options.sms_info')
       label.btn-border.col-12.mb0
         .radio
-          = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]',
+          = radio_button_tag 'otp_delivery_preference',
             :voice, false,
             class: :otp_delivery_preference_voice
           span.indicator.mt-tiny

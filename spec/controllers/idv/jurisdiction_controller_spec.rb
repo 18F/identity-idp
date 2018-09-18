@@ -49,7 +49,7 @@ describe Idv::JurisdictionController do
     it 'puts the jurisdiction into the user session' do
       post :create, params: { jurisdiction: { state: supported_jurisdiction } }
 
-      expect(controller.user_session[:idv_jurisdiction]).to eq(supported_jurisdiction)
+      expect(controller.user_session[:idv][:selected_jurisdiction]).to eq(supported_jurisdiction)
     end
 
     context 'with an unsupported jurisdiction' do
@@ -73,7 +73,7 @@ describe Idv::JurisdictionController do
     let(:reason) { 'unsupported_jurisdiction' }
 
     before do
-      controller.user_session[:idv_jurisdiction] = supported_jurisdiction
+      controller.user_session[:idv] = { selected_jurisdiction: supported_jurisdiction }
     end
 
     it 'renders the `_failure` template' do

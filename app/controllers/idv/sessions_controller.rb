@@ -16,7 +16,7 @@ module Idv
     def new
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
       set_idv_form
-      @selected_state = user_session[:idv_jurisdiction]
+      @selected_state = idv_session.selected_jurisdiction
     end
 
     def create
