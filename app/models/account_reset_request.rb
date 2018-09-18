@@ -1,4 +1,6 @@
 class AccountResetRequest < ApplicationRecord
+  self.ignored_columns = %w[reported_fraud_at]
+
   belongs_to :user
 
   def granted_token_valid?
