@@ -28,6 +28,7 @@ en:
         dob: Your date of birth must be entered in as mm/dd/yyyy
         personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
+        state_id_number: Your state id number must be less than 25 characters
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.

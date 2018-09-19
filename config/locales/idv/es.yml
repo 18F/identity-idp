@@ -27,6 +27,7 @@ es:
         dob: Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        state_id_number: NOT TRANSLATED YET
         zipcode: 'Su código postal debe ser ingresado como #####-####'
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
