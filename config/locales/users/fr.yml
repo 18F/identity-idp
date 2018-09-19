@@ -19,14 +19,7 @@ fr:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.
       generated_on_html: Générée le %{date}
-      get_another: Obtenir une autre clé
       header: Votre clé personnelle
-      help_text_header: Pourquoi dois-je conserver ma nouvelle clé sur papier?
-      help_text_html: |-
-        <p>Pour protéger votre compte, vous devez avoir un mot de passe et l'accès à votre téléphone ou application d'authentification au moment de la connexion. Si vous ne pouvez utiliser votre téléphone ou application, vous pouvez vous connecter avec votre clé personnelle.</p>
-        <p>Pour votre confidentialité et votre sécurité, login.gov ne conserve pas votre mot de passe ni votre clé personnelle. Seul(e) vous les connaissez. Seul(e) vous pouvez accéder à votre information personnelle et la partager.</p>
-        <p>Nous vous demandons de conserver votre clé personnelle à l'extérieur de votre ordinateur ou appareil mobile afin qu'elle soit en sûreté même si vos appareils sont volés ou si vos comptes en ligne sont piratés.</p>
-        <p>Si vous n'avez pas votre clé personnelle et que vous oubliez votre mot de passe, la seule façon de garder votre compte en sécurité est de vérifier que vous en êtes le(la) propriétaire légal(e).</p>
       print: Imprimer cette page
     totp_setup:
       new:

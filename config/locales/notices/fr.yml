@@ -19,8 +19,6 @@ fr:
     piv_cac_disabled: Carte PIV/CAC dissociée avec succès.
     resend_confirmation_email:
       success: Nous avons envoyé un autre courriel de confirmation.
-    send_code:
-      personal_key: Vous avez une nouvelle clé personnelle.
     session_cleared: Pour votre sécurité, nous effacerons l'information que vous avez
       entrée si vous ne vous déplacez pas vers une nouvelle page dans les %{minutes}
       prochaines minutes.
