@@ -53,7 +53,7 @@ class AccountShow
   end
 
   def totp_partial
-    if decorated_user.mfa.auth_app_configuration.mfa_enabled?
+    if decorated_user.mfa_context.auth_app_enabled?
       'accounts/actions/disable_totp'
     else
       'accounts/actions/enable_totp'
@@ -61,7 +61,7 @@ class AccountShow
   end
 
   def piv_cac_partial
-    if decorated_user.mfa.piv_cac_configuration.mfa_enabled?
+    if decorated_user.mfa_context.piv_cac_enabled?
       'accounts/actions/disable_piv_cac'
     else
       'accounts/actions/enable_piv_cac'
@@ -91,7 +91,7 @@ class AccountShow
   end
 
   def totp_content
-    if decorated_user.mfa.auth_app_configuration.mfa_enabled?
+    if decorated_user.mfa_context.auth_app_enabled?
       I18n.t('account.index.auth_app_enabled')
     else
       I18n.t('account.index.auth_app_disabled')
@@ -99,7 +99,7 @@ class AccountShow
   end
 
   def piv_cac_content
-    if decorated_user.mfa.piv_cac_configuration.mfa_enabled?
+    if decorated_user.mfa_context.piv_cac_enabled?
       I18n.t('account.index.piv_cac_enabled')
     else
       I18n.t('account.index.piv_cac_disabled')

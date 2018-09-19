@@ -6,7 +6,7 @@ describe TwoFactorAuthentication::SmsSelectionPresenter do
   describe '#type' do
     context 'when a user has only one phone configuration' do
       let(:user) { create(:user, :with_phone) }
-      let(:phone) { user.mfa.phone_configurations.first }
+      let(:phone) { MfaContext.new(user).phone_configurations.first }
 
       it 'returns sms' do
         expect(subject.type).to eq 'sms'

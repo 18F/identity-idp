@@ -38,11 +38,11 @@ module Users
     private
 
     def two_factor_enabled?
-      current_user.mfa.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def track_event
-      properties = { user_signed_up: current_user.mfa.two_factor_enabled? }
+      properties = { user_signed_up: MfaPolicy.new(current_user).two_factor_enabled? }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
     end
 
@@ -75,7 +75,7 @@ module Users
     end
 
     def user_already_has_a_personal_key?
-      PersonalKeyLoginOptionPolicy.new(current_user).configured?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
 
     def process_invalid_code

@@ -16,7 +16,7 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
   user.skip_confirmation!
   user.reset_password(password, password)
   user.save!
-  user.mfa.phone_configurations.create(
+  MfaContext.new(user).phone_configurations.create(
     phone: mfa_phone || phone,
     confirmed_at: Time.zone.now,
     delivery_preference: user.otp_delivery_preference

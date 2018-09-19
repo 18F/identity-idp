@@ -21,7 +21,7 @@ class Identity < ApplicationRecord
   end
 
   def piv_cac_enabled?
-    user&.mfa&.piv_cac_configuration&.mfa_enabled?
+    MfaContext.new(user).piv_cac_enabled?
   end
 
   def decorate

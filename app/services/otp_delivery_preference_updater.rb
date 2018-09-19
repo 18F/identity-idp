@@ -21,7 +21,7 @@ class OtpDeliveryPreferenceUpdater
 
   def otp_delivery_preference_changed?
     return true if preference != user.otp_delivery_preference
-    phone_configuration = user.mfa.phone_configurations.first
+    phone_configuration = MfaContext.new(user).phone_configurations.first
     phone_configuration.present? && preference != phone_configuration.delivery_preference
   end
 end

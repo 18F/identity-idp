@@ -31,7 +31,7 @@ module Users
     end
 
     def phone_configuration
-      current_user.mfa.phone_configurations.first
+      MfaContext.new(current_user).phone_configurations.first
     end
 
     def validate_otp_delivery_preference_and_send_code
@@ -155,7 +155,7 @@ module Users
     end
 
     def sms_message
-      if SmsLoginOptionPolicy.new(current_user).configured?
+      if TwoFactorAuthentication::PhonePolicy.new(current_user).configured?
         'jobs.sms_otp_sender_job.login_message'
       else
         'jobs.sms_otp_sender_job.verify_message'
@@ -196,12 +196,12 @@ module Users
     end
 
     def redirect_url
-      mfa = current_user.mfa
-      if mfa.piv_cac_configuration.mfa_enabled?
+      mfa = MfaContext.new(current_user)
+      if mfa.piv_cac_enabled?
         login_two_factor_piv_cac_url
-      elsif mfa.webauthn_configurations.any?(&:mfa_enabled?)
+      elsif mfa.webauthn_enabled?
         login_two_factor_webauthn_url
-      elsif mfa.auth_app_configuration.mfa_enabled?
+      elsif mfa.auth_app_enabled?
         login_two_factor_authenticator_url
       end
     end

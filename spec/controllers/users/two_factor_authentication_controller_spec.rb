@@ -73,11 +73,11 @@ describe Users::TwoFactorAuthenticationController do
       it 'renders the piv/cac entry screen' do
         user = build(:user)
         stub_sign_in_before_2fa(user)
-        mock_mfa = user.mfa
+        mock_mfa = MfaContext.new(user)
         mock_piv_cac_configuration = mock_mfa.piv_cac_configuration
         allow(mock_piv_cac_configuration).to receive(:mfa_enabled?).and_return(true)
         allow(mock_mfa).to receive(:piv_cac_configuration).and_return(mock_piv_cac_configuration)
-        allow(subject.current_user).to receive(:mfa).and_return(mock_mfa)
+        allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
 
         get :show
 
@@ -89,13 +89,13 @@ describe Users::TwoFactorAuthenticationController do
       it 'renders the :confirm_totp view' do
         user = build(:user)
         stub_sign_in_before_2fa(user)
-        mock_mfa = user.mfa
+        mock_mfa = MfaContext.new(user)
         mock_auth_app_configuration = mock_mfa.auth_app_configuration
         allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
         allow(mock_mfa).to receive(:auth_app_configuration).and_return(
           mock_auth_app_configuration
         )
-        allow(subject.current_user).to receive(:mfa).and_return(mock_mfa)
+        allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
 
         get :show
 
@@ -159,7 +159,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.mfa.phone_configurations.first.phone,
+          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -176,7 +176,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.mfa.phone_configurations.first.phone,
+          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
           locale: nil
@@ -205,7 +205,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).with(
-          phone: @user.mfa.phone_configurations.first.phone,
+          phone: MfaContext.new(@user).phone_configurations.first.phone,
           user: @user
         ).and_return(otp_rate_limiter)
 
@@ -243,7 +243,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
-          phone: subject.current_user.mfa.phone_configurations.first.phone,
+          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           locale: nil
         )

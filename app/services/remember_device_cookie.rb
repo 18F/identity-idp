@@ -46,7 +46,7 @@ class RememberDeviceCookie
   end
 
   def user_has_changed_phone?(user)
-    user.mfa.phone_configurations.any? do |phone_configuration|
+    MfaContext.new(user).phone_configurations.any? do |phone_configuration|
       phone_configuration.confirmed_at.to_i > created_at.to_i
     end
   end

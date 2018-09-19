@@ -31,8 +31,10 @@ describe TwoFactorOptionsPresenter do
     context 'with a user with a phone configured' do
       let(:user) { build(:user, :with_phone) }
 
-      it 'supplies all the options but the phone' do
+      it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SmsSelectionPresenter,
+          TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
@@ -42,7 +44,7 @@ describe TwoFactorOptionsPresenter do
     context 'with a user with totp configured' do
       let(:user) { build(:user, :with_authentication_app) }
 
-      it 'supplies all the options but the phone' do
+      it 'supplies all the options but the auth app' do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
@@ -54,11 +56,12 @@ describe TwoFactorOptionsPresenter do
     context 'with a user with webauthn configured' do
       let(:user) { build(:user, :with_webauthn) }
 
-      it 'supplies all the options but the phone' do
+      it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
       end
     end

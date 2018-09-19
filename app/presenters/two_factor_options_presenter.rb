@@ -25,43 +25,42 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    phone_options + totp_option + webauthn_option + piv_cac_option_if_available
+    phone_options + totp_option + webauthn_option + piv_cac_option
   end
 
   private
 
   def phone_options
-    if current_user.mfa.phone_configurations.any?(&:mfa_enabled?)
-      []
-    else
+    if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
       [
         TwoFactorAuthentication::SmsSelectionPresenter.new,
         TwoFactorAuthentication::VoiceSelectionPresenter.new,
       ]
+    else
+      []
     end
   end
 
   def webauthn_option
-    if current_user.mfa.webauthn_configurations.any?(&:mfa_enabled?)
-      []
-    elsif FeatureManagement.webauthn_enabled?
+    if TwoFactorAuthentication::WebauthnPolicy.new(current_user).available?
       [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
+    else
+      []
     end
   end
 
   def totp_option
-    if current_user.mfa.auth_app_configuration.mfa_enabled?
-      []
-    else
+    if TwoFactorAuthentication::AuthAppPolicy.new(current_user).available?
       [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
+    else
+      []
     end
   end
 
-  def piv_cac_option_if_available
-    configuration = current_user.mfa.piv_cac_configuration
-    return [] if configuration.mfa_enabled?
-    return [] unless configuration.mfa_available? ||
-                     service_provider&.piv_cac_available?(current_user)
+  def piv_cac_option
+    policy = TwoFactorAuthentication::PivCacPolicy.new(current_user)
+    return [] if policy.enabled?
+    return [] unless policy.available? || service_provider&.piv_cac_available?(current_user)
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 end

@@ -8,7 +8,11 @@ class UserDecorator
     @user = user
   end
 
-  delegate :email, :mfa, to: :user
+  delegate :email, to: :user
+
+  def mfa_context
+    MfaContext.new(user)
+  end
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
@@ -35,7 +39,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(mfa.phone_configurations.first&.phone)
+    masked_number(mfa_context.phone_configurations.first&.phone)
   end
 
   def active_identity_for(service_provider)

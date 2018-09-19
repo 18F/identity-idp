@@ -56,7 +56,7 @@ class User < ApplicationRecord
   end
 
   def need_two_factor_authentication?(_request)
-    mfa.two_factor_enabled?
+    MfaPolicy.new(self).two_factor_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
@@ -101,10 +101,6 @@ class User < ApplicationRecord
 
   def decorate
     UserDecorator.new(self)
-  end
-
-  def mfa
-    UserMfaDecorator.new(self)
   end
 
   # Devise automatically downcases and strips any attribute defined in

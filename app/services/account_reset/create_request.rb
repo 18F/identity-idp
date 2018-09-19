@@ -30,7 +30,7 @@ module AccountReset
     end
 
     def notify_user_by_sms_if_applicable
-      phone = user.mfa.phone_configurations.first&.phone
+      phone = MfaContext.new(user).phone_configurations.first&.phone
       return unless phone
       SmsAccountResetNotifierJob.perform_now(
         phone: phone,

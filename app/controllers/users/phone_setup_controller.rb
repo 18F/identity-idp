@@ -30,12 +30,12 @@ module Users
     private
 
     def delivery_preference
-      current_user.mfa.phone_configurations.first&.delivery_preference ||
+      MfaContext.new(current_user).phone_configurations.first&.delivery_preference ||
         current_user.otp_delivery_preference
     end
 
     def two_factor_enabled?
-      current_user.mfa.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def user_phone_form_params

@@ -86,9 +86,14 @@ describe Users::WebauthnSetupController do
 
     describe 'delete' do
       before do
-        mock_mfa = controller.current_user.mfa
-        allow(mock_mfa).to receive(:total_mfa_options_enabled).and_return(2)
-        allow(controller.current_user).to receive(:mfa).and_return(mock_mfa)
+        mock_mfa = MfaContext.new(controller.current_user)
+        allow(mock_mfa).to receive(:enabled_two_factor_configurations_count).and_return(2)
+        allow(MfaContext).to receive(:new).with(controller.current_user).and_return(mock_mfa)
+        mock_mfa_policy = MfaPolicy.new(controller.current_user)
+        allow(mock_mfa_policy).to receive(:multiple_factors_enabled?).and_return(true)
+        allow(MfaPolicy).to receive(:new).with(
+          controller.current_user
+        ).and_return(mock_mfa_policy)
       end
 
       it 'deletes a webauthn configuration' do

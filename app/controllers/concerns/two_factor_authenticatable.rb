@@ -140,7 +140,7 @@ module TwoFactorAuthenticatable
   end
 
   def old_phone
-    current_user.mfa.phone_configurations.first&.phone
+    MfaContext.new(current_user).phone_configurations.first&.phone
   end
 
   def phone_changed
@@ -221,7 +221,6 @@ module TwoFactorAuthenticatable
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      totp_enabled: current_user.totp_enabled?,
       remember_device_available: true,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
@@ -237,14 +236,12 @@ module TwoFactorAuthenticatable
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       remember_device_available: false,
-      phone_enabled: current_user.mfa.phone_configurations.any?(&:mfa_enabled?),
     }.merge(generic_data)
   end
 
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
-      has_piv_cac_configured: current_user.mfa.piv_cac_configuration.mfa_enabled?,
       reauthn: reauthn?,
     }
   end
@@ -259,7 +256,7 @@ module TwoFactorAuthenticatable
 
   def voice_otp_delivery_unsupported?
     phone_number = if authentication_context?
-                     current_user.mfa.phone_configurations.first&.phone
+                     MfaContext.new(current_user).phone_configurations.first&.phone
                    else
                      user_session[:unconfirmed_phone]
                    end
@@ -272,7 +269,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if current_user.mfa.phone_configurations.any?
+    if MfaContext.new(current_user).phone_configurations.any?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -280,7 +277,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && current_user.mfa.phone_configurations.any?
+    confirmation_context? && MfaContext.new(current_user).phone_configurations.any?
   end
 
   def presenter_for_two_factor_authentication_method

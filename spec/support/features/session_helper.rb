@@ -81,7 +81,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       login_as(user, scope: :user, run_callbacks: false)
 
-      if user.mfa.phone_configurations.any?(&:mfa_enabled?)
+      if MfaContext.new(user).phone_enabled?
         Warden.on_next_request do |proxy|
           session = proxy.env['rack.session']
           session['warden.user.user.session'] = {}

@@ -20,7 +20,7 @@ module Users
     end
 
     def delete
-      if current_user.mfa.total_mfa_options_enabled > 1
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
       else
         handle_failed_delete
@@ -45,7 +45,7 @@ module Users
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
-        mfa_options_enabled: current_user.mfa.total_mfa_options_enabled
+        mfa_options_enabled: MfaContext.new(current_user).enabled_two_factor_configurations_count
       )
     end
 
@@ -55,7 +55,7 @@ module Users
     end
 
     def two_factor_enabled?
-      current_user.mfa.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def process_valid_webauthn(attestation_response)
@@ -103,7 +103,7 @@ module Users
     end
 
     def user_already_has_a_personal_key?
-      PersonalKeyLoginOptionPolicy.new(current_user).configured?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
 end

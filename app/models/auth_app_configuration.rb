@@ -8,7 +8,7 @@ class AuthAppConfiguration
   end
 
   def mfa_enabled?
-    AuthAppLoginOptionPolicy.new(user).configured?
+    user&.otp_secret_key.present?
   end
 
   def selection_presenters

@@ -48,7 +48,7 @@ module Users
     end
 
     def two_factor_enabled?
-      current_user.mfa.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def process_piv_cac_setup
@@ -79,8 +79,15 @@ module Users
     end
 
     def next_step
-      return account_url if current_user.mfa.phone_configurations.any?(&:mfa_enabled?)
-      account_recovery_setup_url
+      if MfaContext.new(current_user).phone_enabled?
+        account_url
+      else
+        account_recovery_setup_url
+      end
+    end
+
+    def piv_cac_enabled?
+      MfaContext.new(current_user).piv_cac_enabled?
     end
 
     def process_invalid_submission
@@ -90,11 +97,11 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      redirect_to account_url unless current_user.mfa.piv_cac_configuration.mfa_enabled?
+      redirect_to account_url unless piv_cac_enabled?
     end
 
     def authorize_piv_cac_setup
-      redirect_to account_url if current_user.mfa.piv_cac_configuration.mfa_enabled?
+      redirect_to account_url if piv_cac_enabled?
     end
   end
 end

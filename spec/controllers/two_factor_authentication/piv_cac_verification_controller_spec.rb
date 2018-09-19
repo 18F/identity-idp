@@ -54,13 +54,13 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'redirects to the profile' do
-        mock_mfa = subject.current_user.mfa
+        mock_mfa = MfaContext.new(subject.current_user)
         mock_piv_cac_configuration = mock_mfa.piv_cac_configuration
         allow(mock_piv_cac_configuration).to receive(:mfa_confirmed?).and_return(true)
         allow(mock_mfa).to receive(:piv_cac_configuration).and_return(
           mock_piv_cac_configuration
         )
-        allow(subject.current_user).to receive(:mfa).and_return(mock_mfa)
+        allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         get :show, params: { token: 'good-token' }

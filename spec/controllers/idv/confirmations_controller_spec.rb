@@ -110,7 +110,8 @@ describe Idv::ConfirmationsController do
 
     context 'user used 2FA phone as phone of record' do
       before do
-        subject.idv_session.applicant['phone'] = user.mfa.phone_configurations.first.phone
+        subject.idv_session.applicant['phone'] =
+          MfaContext.new(user).phone_configurations.first.phone
       end
 
       it 'tracks final IdV event' do

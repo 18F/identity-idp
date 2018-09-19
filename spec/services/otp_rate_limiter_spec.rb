@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe OtpRateLimiter do
   let(:current_user) { build(:user, :with_phone) }
-  let(:phone) { current_user.mfa.phone_configurations.first.phone }
+  let(:phone) { MfaContext.new(current_user).phone_configurations.first.phone }
 
   subject(:otp_rate_limiter) do
     OtpRateLimiter.new(phone: phone, user: current_user)

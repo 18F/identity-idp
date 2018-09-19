@@ -54,7 +54,7 @@ module AccountReset
     end
 
     def phone
-      user.mfa.phone_configurations.first&.phone
+      MfaContext.new(user).phone_configurations.first&.phone
     end
 
     def extra_analytics_attributes

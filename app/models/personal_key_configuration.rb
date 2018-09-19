@@ -8,7 +8,7 @@ class PersonalKeyConfiguration
   end
 
   def mfa_enabled?
-    PersonalKeyLoginOptionPolicy.new(user).configured?
+    TwoFactorAuthentication::PersonalKeyPolicy.new(user).configured?
   end
 
   def selection_presenters

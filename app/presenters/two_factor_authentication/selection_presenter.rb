@@ -9,10 +9,6 @@ module TwoFactorAuthentication
       @configuration = configuration
     end
 
-    def method
-      raise NotImplemented
-    end
-
     def type
       method.to_s
     end

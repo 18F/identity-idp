@@ -3,10 +3,10 @@
     .col.col-6.bold
       = t('account.index.phone')
     .right-align.col.col-6
-      - if current_user.mfa.phone_configurations.empty?
+      - if MfaContext.new(current_user).phone_configurations.empty?
         .btn.btn-account-action.rounded-lg.bg-light-blue
           = link_to t('account.index.phone_add'), path: manage_phone_url
-  - current_user.mfa.phone_configurations.each do |phone_configuration|
+  - MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
     .p2.col.col-12.border-top.border-blue-light
       .col.col-8.sm-6.truncate
         = phone_configuration.phone

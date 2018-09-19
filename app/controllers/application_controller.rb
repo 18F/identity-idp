@@ -149,7 +149,8 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? && current_user.mfa.two_factor_enabled? && is_fully_authenticated?
+    !reauthn? && user_signed_in? &&
+      MfaPolicy.new(current_user).two_factor_enabled? && is_fully_authenticated?
   end
 
   def reauthn?
@@ -162,7 +163,7 @@ class ApplicationController < ActionController::Base
 
     return if user_fully_authenticated?
 
-    return prompt_to_set_up_2fa unless current_user.mfa.two_factor_enabled?
+    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
 
     prompt_to_enter_otp
   end

@@ -26,7 +26,7 @@ module Users
     # doing away with this controller. Once we move to multiple phones, we'll allow
     # adding and deleting, but not editing.
     def phone_configuration
-      current_user.mfa.phone_configurations.first
+      MfaContext.new(current_user).phone_configurations.first
     end
 
     def user_params

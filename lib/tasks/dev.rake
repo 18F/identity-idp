@@ -88,7 +88,7 @@ namespace :dev do
     user.encrypted_email = args[:ee].encrypted
     user.skip_confirmation!
     user.reset_password(args[:pw], args[:pw])
-    user.mfa.phone_configurations.create(phone_configuration_data(user, args))
+    MfaContext.new(user).phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
