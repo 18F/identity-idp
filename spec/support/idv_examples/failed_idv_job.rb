@@ -13,10 +13,8 @@ shared_examples 'failed idv job' do |step|
 
   context 'the proofer raises an error' do
     before do
-      stub_idv_proofers_to_raise_error_in_background
-
-      fill_out_idv_form_ok if step == :profile
-      fill_out_phone_form_ok if step == :phone
+      fill_out_idv_form_error if step == :profile
+      fill_out_phone_form_error if step == :phone
       click_idv_continue
     end
 
@@ -28,14 +26,37 @@ shared_examples 'failed idv job' do |step|
     end
   end
 
-  def stub_idv_proofers_to_raise_error_in_background
-    proofer = instance_double(ResolutionMock)
-    allow(ResolutionMock).to receive(:new).and_return(proofer)
-    allow(AddressMock).to receive(:new).and_return(proofer)
-    allow(proofer).to receive(:class).and_return(ResolutionMock)
+  context 'the proofer times out' do
+    before do
+      fill_out_idv_form_timeout if step == :profile
+      fill_out_phone_form_timeout if step == :phone
+      click_idv_continue
+    end
 
-    result = Proofer::Result.new(exception: RuntimeError.new('this is a test error'))
-    allow(proofer).to receive(:proof).and_return(result)
+    it 'renders a timeout failure screen' do
+      expect(page).to have_current_path(session_failure_path(:timeout)) if step == :profile
+      expect(page).to have_current_path(phone_failure_path(:timeout)) if step == :phone
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
+    end
+  end
+
+  def fill_out_idv_form_error
+    fill_out_idv_form_ok
+    fill_in 'profile_first_name', with: 'Fail'
+  end
+
+  def fill_out_phone_form_error
+    fill_in :idv_phone_form_phone, with: '7035555999'
+  end
+
+  def fill_out_idv_form_timeout
+    fill_out_idv_form_ok
+    fill_in 'profile_first_name', with: 'Time'
+  end
+
+  def fill_out_phone_form_timeout
+    fill_in :idv_phone_form_phone, with: '7035555888'
   end
 
   def session_failure_path(reason)

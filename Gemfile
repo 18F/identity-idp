@@ -32,7 +32,7 @@ gem 'pg'
 gem 'phonelib'
 gem 'pkcs11'
 gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.6.1'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
 gem 'rack-attack'
 gem 'rack-cors', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -112,6 +112,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.1.0'
-  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.1.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.1'
+  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end

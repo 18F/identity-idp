@@ -18,6 +18,7 @@ module Idv
 
     def failure_reason
       return :fail if attempter.exceeded?
+      return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
     end

@@ -132,7 +132,7 @@ describe Idv::SessionsController do
         errors: {
           first_name: ['Unverified first name.'],
         },
-        vendor: { messages: [], context: context, exception: nil },
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
       expect(@analytics).to receive(:track_event).ordered.
@@ -154,7 +154,7 @@ describe Idv::SessionsController do
         success: true,
         idv_attempts_exceeded: false,
         errors: {},
-        vendor: { messages: [], context: context, exception: nil },
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
       expect(@analytics).to receive(:track_event).ordered.

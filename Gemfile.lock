@@ -1,20 +1,20 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: f69b0295933809057292736ed173a5a5e11b668c
-  tag: v3.1.0
+  revision: 03fc2f8c9bfb3218da2a7cb7c309b0650a5bebe5
+  tag: v3.2.1
   specs:
-    aamva (3.1.0)
+    aamva (3.2.1)
       dotenv
       hashie
-      httpi
+      typhoeus
       xmldsig
 
 GIT
   remote: git@github.com:18F/identity-lexisnexis-api-client-gem
-  revision: d17049ab1a03d50c0cc8a272d86cf2144192fab5
-  tag: v1.1.0
+  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
+  tag: v1.2.0
   specs:
-    lexisnexis (1.1.0)
+    lexisnexis (1.2.0)
       dotenv
       typhoeus
 
@@ -28,10 +28,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 875246d603bbd9b29cbc82493513f948d4e8689b
-  tag: v2.6.1
+  revision: f48ecd14ef602d574119022c0fc15350cbd7baa0
+  tag: v2.7.0
   specs:
-    proofer (2.6.1)
+    proofer (2.7.0)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
@@ -226,7 +226,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.4.0)
+    dotenv (2.5.0)
     dotiw (4.0.1)
       actionpack (>= 4)
       i18n
@@ -756,4 +756,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.16.5

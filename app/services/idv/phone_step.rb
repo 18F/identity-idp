@@ -18,6 +18,7 @@ module Idv
 
     def failure_reason
       return :fail if idv_session.step_attempts[:phone] >= Idv::Attempter.idv_max_attempts
+      return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
     end
