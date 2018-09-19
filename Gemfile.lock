@@ -55,14 +55,6 @@ GIT
       pkcs11
       uuid
 
-GIT
-  remote: https://github.com/mattheworiordan/capybara-screenshot.git
-  revision: fe47a6816677d573fd5428dae60a31bc8898f623
-  specs:
-    capybara-screenshot (1.0.14)
-      capybara (>= 1.0, < 3)
-      launchy
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -169,13 +161,16 @@ GEM
       rainbow
       thor
     byebug (10.0.2)
-    capybara (2.17.0)
+    capybara (3.7.2)
       addressable
       mini_mime (>= 0.1.3)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (>= 2.0, < 4.0)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      xpath (~> 3.1)
+    capybara-screenshot (1.0.21)
+      capybara (>= 1.0, < 4)
+      launchy
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
@@ -348,7 +343,7 @@ GEM
       mini_mime (>= 0.1.1)
     memory_profiler (0.9.11)
     method_source (0.9.0)
-    mini_mime (1.0.0)
+    mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multi_xml (0.6.0)
@@ -390,7 +385,8 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
-    public_suffix (3.0.2)
+    public_suffix (3.0.3)
+    puma (3.12.0)
     rack (2.0.5)
     rack-attack (5.4.0)
       rack (>= 1.0, < 3)
@@ -642,7 +638,7 @@ GEM
       xmlmapper (>= 0.7.3)
     xmlmapper (0.7.3)
       nokogiri (~> 1.5)
-    xpath (3.0.0)
+    xpath (3.1.0)
       nokogiri (~> 1.8)
     zonebie (0.6.1)
     zxcvbn-js (4.4.3)
@@ -664,7 +660,7 @@ DEPENDENCIES
   brakeman
   bullet
   bummr
-  capybara-screenshot!
+  capybara-screenshot
   capybara-selenium
   chromedriver-helper
   codeclimate-test-reporter
@@ -705,6 +701,7 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
+  puma
   rack-attack
   rack-cors
   rack-headers_filter

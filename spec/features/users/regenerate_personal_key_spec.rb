@@ -153,7 +153,7 @@ end
 
 def expect_accordion_content_to_be_hidden_by_default
   expect(page).to have_xpath("//#{accordion_control_selector}")
-  expect(page).not_to have_content(t('users.personal_key.help_text'))
+  expect(page).not_to have_content strip_tags(t('users.personal_key.help_text_html'))
   expect(page).to have_xpath(
     "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
   )
@@ -165,7 +165,7 @@ end
 
 def expect_accordion_content_to_become_visible
   expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
-  expect(page).to have_content(t('users.personal_key.help_text'))
+  expect(page).to have_content strip_tags(t('users.personal_key.help_text_html'))
 end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus

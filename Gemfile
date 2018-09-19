@@ -86,6 +86,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'knapsack'
   gem 'pry-byebug'
+  gem 'puma'
   gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
   gem 'thin'
@@ -93,7 +94,7 @@ end
 
 group :test do
   gem 'axe-matchers', '~> 1.3.4'
-  gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'capybara-screenshot'
   gem 'capybara-selenium'
   gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', require: false
