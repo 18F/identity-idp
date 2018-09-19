@@ -7,7 +7,7 @@ describe AccountReset::DeleteAccountController do
     it 'logs a good token to the analytics' do
       user = create(:user)
       create_account_reset_request_for(user)
-      AccountResetService.new(user).grant_request
+      grant_request(user)
 
       session[:granted_token] = AccountResetRequest.all[0].granted_token
       stub_analytics
@@ -63,7 +63,7 @@ describe AccountReset::DeleteAccountController do
     it 'displays a flash and redirects to root if the token is expired' do
       user = create(:user)
       create_account_reset_request_for(user)
-      AccountResetService.new(user).grant_request
+      grant_request(user)
 
       stub_analytics
       properties = {
@@ -114,7 +114,7 @@ describe AccountReset::DeleteAccountController do
     it 'displays a flash and redirects to root if the token is expired' do
       user = create(:user)
       create_account_reset_request_for(user)
-      AccountResetService.new(user).grant_request
+      grant_request(user)
 
       stub_analytics
       properties = {
