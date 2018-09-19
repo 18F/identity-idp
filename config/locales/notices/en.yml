@@ -18,8 +18,6 @@ en:
     piv_cac_disabled: PIV/CAC card unlinked successfully.
     resend_confirmation_email:
       success: We sent another confirmation email.
-    send_code:
-      personal_key: You have a new personal key.
     session_cleared: For your security, we clear what you entered if you don't move
       to a new page within %{minutes} minutes.
     signed_up_but_unconfirmed:

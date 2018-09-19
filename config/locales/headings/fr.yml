@@ -30,7 +30,7 @@ fr:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
       forgot: Vous avez oublié votre mot de passe?
-    personal_key: Voici votre clé personnelle
+    personal_key: Ayez toujours accès à votre compte avec votre clé personnelle
     piv_cac_setup:
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.

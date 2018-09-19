@@ -1,17 +1,11 @@
-#personal-key(class="col-12 border-box mt4 mb3 py2 px2 sm-px4 fs-20p sans-serif\
-                      border border-dashed border-red rounded-xl relative clearfix")
-  = image_tag asset_url('scissors.svg'), width: 24,
-    class: 'absolute ico-scissors'
-  p.bold.center.mt1
-    = image_tag(asset_url('p-key.svg'), width: 36, class: 'align-middle mr1')
+.bg-light-blue.bg-personal-key.pl4.pr4
+  p.bold.center.mt1.pt1.pb1.fs-20p
     = t('users.personal_key.header')
-  .my4.px0.sm-px1.py2.center.border-box.border.border-teal.bw2.rounded-md.separator-text
+  .my4.px0.sm-px1.py2.center.bg-white.bw2.separator-text.bg-pk-box
     - code.split('-').each do |word|
       .inline.h3.bold.navy.monospace(data-personal-key='word')
         = word
 
-  .left.h5.mt2
+  .center.h5.mt2.pb2.fs-13p
     = t('users.personal_key.generated_on_html',
         date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))
-  .right.mt1
-    = image_tag asset_url('logo.svg'), width: 96, class: 'align-middle mt-tiny'

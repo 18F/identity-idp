@@ -18,8 +18,6 @@ es:
     piv_cac_disabled: Tarjeta PIV/CAC desvinculada con éxito.
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
-    send_code:
-      personal_key: Tiene una nueva clave personal.
     session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
       nueva dentro de %{minutes} minutos.
     signed_up_but_unconfirmed:
