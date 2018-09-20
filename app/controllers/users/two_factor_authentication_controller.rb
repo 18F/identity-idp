@@ -196,12 +196,11 @@ module Users
     end
 
     def redirect_url
-      mfa = MfaContext.new(current_user)
-      if mfa.piv_cac_enabled?
+      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url
-      elsif mfa.webauthn_enabled?
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
         login_two_factor_webauthn_url
-      elsif mfa.auth_app_enabled?
+      elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
       end
     end

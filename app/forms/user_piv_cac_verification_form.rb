@@ -59,7 +59,7 @@ class UserPivCacVerificationForm
   end
 
   def user_has_piv_cac
-    if MfaContext.new(user).piv_cac_enabled?
+    if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
       true
     else
       self.error_type = 'user.no_piv_cac_associated'

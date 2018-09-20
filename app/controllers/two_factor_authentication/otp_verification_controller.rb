@@ -40,7 +40,7 @@ module TwoFactorAuthentication
     end
 
     def phone_enabled?
-      MfaContext.new(current_user).phone_enabled?
+      TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
     end
 
     def confirm_voice_capability

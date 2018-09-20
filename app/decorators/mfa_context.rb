@@ -21,10 +21,6 @@ class MfaContext
     end
   end
 
-  def phone_enabled?
-    phone_configurations.any?(&:mfa_enabled?)
-  end
-
   def webauthn_configurations
     if user.present?
       user.webauthn_configurations.extending WebauthnConfigurationsExtension
@@ -33,24 +29,12 @@ class MfaContext
     end
   end
 
-  def webauthn_enabled?
-    webauthn_configurations.any?(&:mfa_enabled?)
-  end
-
   def piv_cac_configuration
     PivCacConfiguration.new(user)
   end
 
-  def piv_cac_enabled?
-    piv_cac_configuration.mfa_enabled?
-  end
-
   def auth_app_configuration
     AuthAppConfiguration.new(user)
-  end
-
-  def auth_app_enabled?
-    auth_app_configuration.mfa_enabled?
   end
 
   def personal_key_configuration

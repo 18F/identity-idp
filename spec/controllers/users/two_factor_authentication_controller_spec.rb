@@ -73,11 +73,9 @@ describe Users::TwoFactorAuthenticationController do
       it 'renders the piv/cac entry screen' do
         user = build(:user)
         stub_sign_in_before_2fa(user)
-        mock_mfa = MfaContext.new(user)
-        mock_piv_cac_configuration = mock_mfa.piv_cac_configuration
-        allow(mock_piv_cac_configuration).to receive(:mfa_enabled?).and_return(true)
-        allow(mock_mfa).to receive(:piv_cac_configuration).and_return(mock_piv_cac_configuration)
-        allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
+        allow_any_instance_of(
+          TwoFactorAuthentication::PivCacPolicy
+        ).to receive(:enabled?).and_return(true)
 
         get :show
 
@@ -89,13 +87,9 @@ describe Users::TwoFactorAuthenticationController do
       it 'renders the :confirm_totp view' do
         user = build(:user)
         stub_sign_in_before_2fa(user)
-        mock_mfa = MfaContext.new(user)
-        mock_auth_app_configuration = mock_mfa.auth_app_configuration
-        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
-        allow(mock_mfa).to receive(:auth_app_configuration).and_return(
-          mock_auth_app_configuration
-        )
-        allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
+        allow_any_instance_of(
+          TwoFactorAuthentication::AuthAppPolicy
+        ).to receive(:enabled?).and_return(true)
 
         get :show
 
@@ -107,7 +101,10 @@ describe Users::TwoFactorAuthenticationController do
       it 'renders the :webauthn view' do
         stub_sign_in_before_2fa(build(:user, :with_webauthn))
 
-        allow(subject.current_user).to receive(:webauthn_enabled?).and_return(true)
+        allow_any_instance_of(
+          TwoFactorAuthentication::WebauthnPolicy
+        ).to receive(:enabled?).and_return(true)
+
         get :show
 
         expect(response).to redirect_to login_two_factor_webauthn_path

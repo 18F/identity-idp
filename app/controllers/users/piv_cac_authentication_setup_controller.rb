@@ -79,7 +79,7 @@ module Users
     end
 
     def next_step
-      if MfaContext.new(current_user).phone_enabled?
+      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
         account_url
       else
         account_recovery_setup_url
@@ -87,7 +87,7 @@ module Users
     end
 
     def piv_cac_enabled?
-      MfaContext.new(current_user).piv_cac_enabled?
+      TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
     end
 
     def process_invalid_submission

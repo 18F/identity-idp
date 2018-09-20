@@ -123,11 +123,9 @@ describe AccountShow do
     context 'user has enabled an authenticator app' do
       it 'returns the disable_totp partial' do
         user = User.new
-        mock_mfa = MfaContext.new(user)
-        mock_auth_app_configuration = mock_mfa.auth_app_configuration
-        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
-        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
-        allow(MfaContext).to receive(:new).with(user).and_return(mock_mfa)
+        allow_any_instance_of(
+          TwoFactorAuthentication::AuthAppPolicy
+        ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
@@ -140,11 +138,9 @@ describe AccountShow do
     context 'user does not have an authenticator app enabled' do
       it 'returns the enable_totp partial' do
         user = User.new
-        mock_mfa = MfaContext.new(user)
-        mock_auth_app_configuration = mock_mfa.auth_app_configuration
-        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(false)
-        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
-        allow(MfaContext).to receive(:new).with(user).and_return(mock_mfa)
+        allow_any_instance_of(
+          TwoFactorAuthentication::AuthAppPolicy
+        ).to receive(:enabled?).and_return(false)
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
@@ -184,11 +180,9 @@ describe AccountShow do
     context 'user has enabled an authenticator app' do
       it 'returns localization for auth_app_enabled' do
         user = User.new
-        mock_mfa = MfaContext.new(user)
-        mock_auth_app_configuration = mock_mfa.auth_app_configuration
-        allow(mock_auth_app_configuration).to receive(:mfa_enabled?).and_return(true)
-        allow(mock_mfa).to receive(:auth_app_configuration).and_return(mock_auth_app_configuration)
-        allow(MfaContext).to receive(:new).with(user).and_return(mock_mfa)
+        allow_any_instance_of(
+          TwoFactorAuthentication::AuthAppPolicy
+        ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
@@ -201,7 +195,9 @@ describe AccountShow do
     context 'user does not have an authenticator app enabled' do
       it 'returns localization for auth_app_disabled' do
         user = User.new.decorate
-        allow(user).to receive(:totp_enabled?).and_return(false)
+        allow_any_instance_of(
+          TwoFactorAuthentication::AuthAppPolicy
+        ).to receive(:enabled?).and_return(false)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')

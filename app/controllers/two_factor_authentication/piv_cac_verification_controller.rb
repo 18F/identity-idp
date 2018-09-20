@@ -39,7 +39,7 @@ module TwoFactorAuthentication
     end
 
     def next_step
-      if MfaContext.new(current_user).phone_enabled?
+      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
         after_otp_verification_confirmation_url
       else
         account_recovery_setup_url
@@ -77,7 +77,7 @@ module TwoFactorAuthentication
     end
 
     def confirm_piv_cac_enabled
-      return if MfaContext.new(current_user).piv_cac_enabled?
+      return if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
 
       redirect_to user_two_factor_authentication_url
     end

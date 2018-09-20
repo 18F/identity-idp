@@ -1,6 +1,6 @@
 module Authorizable
   def authorize_user
-    return unless MfaContext.new(current_user).phone_enabled?
+    return unless TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
 
     if user_fully_authenticated?
       redirect_to account_url
