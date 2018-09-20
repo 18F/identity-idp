@@ -1,6 +1,17 @@
 ---
 en:
   service_providers:
+    homes_mil:
+      account_page:
+        body: Your old HOMES.mil username and password won’t work. Please create a
+          login.gov account using the same email address you use for HOMES.mil.
+      body_html: Your old HOMES.mil username and password won’t work. Please %{link}
+        using the same email address you use for HOMES.mil.
+      create_account_link: create a login.gov account
+      create_account_page:
+        body: Please create a login.gov account using the same email address you use
+          for HOMES.mil
+      header: First time here from HOMES.mil?
     learn_more: Learn more.
     sam:
       account_page:
