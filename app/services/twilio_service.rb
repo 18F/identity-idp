@@ -58,7 +58,7 @@ module TwilioService
     rescue Twilio::REST::RestError => error
       sanitize_phone_number(error.message)
       raise
-    rescue Faraday::TimeoutError
+    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
       retry unless (tries -= 1).zero?
       raise_custom_timeout_error
     end
