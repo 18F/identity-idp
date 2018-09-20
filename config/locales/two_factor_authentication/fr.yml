@@ -72,9 +72,7 @@ fr:
       fois que vous vous connectez</strong>.
     phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
-      link: Utilisez plutôt votre PIV/CAC
       question: Vous n'avez pas accès à votre carte PIV/CAC?
-      text_html: Avez-vous votre PIV/CAC? %{link}
     piv_cac_header_text: NOT TRANSLATED YET
     please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
