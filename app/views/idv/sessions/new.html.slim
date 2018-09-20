@@ -34,7 +34,7 @@ p = link_to t('links.access_help'),
   p = t('idv.messages.sessions.id_information_message')
 
   fieldset.m0.p0.border-none
-    .mb1
+    .mb2
       = f.label :state_id_type, label: t('idv.form.state_id_type_label'), class: 'bold',
           id: 'profile_state_id_type_label', required: true
       - state_id_types.each do |state_id_type|
@@ -46,8 +46,9 @@ p = link_to t('links.access_help'),
               'aria-labelledby': 'profile_state_id_type_label'
             span.indicator
             .block = state_id_type[0]
-    = f.input :state_id_number, label: t('idv.form.state_id'), input_html: { class: 'sm-col-8' },
-        required: true
+    = f.input :state_id_number, label: t('idv.form.state_id'),
+        hint: t('idv.form.state_id_tip'), hint_html: { class: 'inline pl1'},
+        input_html: { class: 'sm-col-8' }, required: true
     = f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'mb1' },
         required: true
     = f.input :address2, label: t('idv.form.address2')

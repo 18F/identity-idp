@@ -78,6 +78,7 @@ en:
       ssn_label_html: Social Security Number
       state: State
       state_id: ID number
+      state_id_tip: do not include spaces or dashes
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
