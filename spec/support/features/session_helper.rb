@@ -144,8 +144,7 @@ module Features
 
     def sign_in_live_with_piv_cac(user = user_with_piv_cac)
       sign_in_user(user)
-      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
-      allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?).and_return(true)
+      allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(true)
       visit login_two_factor_piv_cac_path
       stub_piv_cac_service
       visit_piv_cac_service(
@@ -417,7 +416,6 @@ module Features
 
     def register_user_with_piv_cac(email = 'test@test.com')
       allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
-      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
       confirm_email_and_password(email)
 
       expect(page).to have_current_path two_factor_options_path
@@ -458,7 +456,6 @@ module Features
 
     def stub_piv_cac_service
       allow(Figaro.env).to receive(:identity_pki_disabled).and_return('false')
-      allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
       allow(Figaro.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
       allow(Figaro.env).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
       stub_request(:post, 'piv.example.com').to_return do |request|

@@ -8,7 +8,7 @@ class PivCacConfiguration
   end
 
   def mfa_enabled?
-    FeatureManagement.piv_cac_enabled? && user&.x509_dn_uuid.present?
+    user&.x509_dn_uuid.present?
   end
 
   def mfa_confirmed?(proposed_uuid)
