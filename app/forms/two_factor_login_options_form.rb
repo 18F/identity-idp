@@ -2,6 +2,7 @@ class TwoFactorLoginOptionsForm
   include ActiveModel::Model
 
   attr_reader :selection
+  attr_reader :configuration_id
 
   validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac personal_key webauthn] }
 
@@ -10,7 +11,11 @@ class TwoFactorLoginOptionsForm
   end
 
   def submit(params)
-    self.selection = params[:selection]
+    selection = params[:selection]
+    (selection, configuration_id) = selection.split(':', 2) if selection.present?
+
+    self.selection = selection
+    self.configuration_id = configuration_id
 
     success = valid?
 
@@ -21,6 +26,7 @@ class TwoFactorLoginOptionsForm
 
   attr_accessor :user
   attr_writer :selection
+  attr_writer :configuration_id
 
   def extra_analytics_attributes
     {

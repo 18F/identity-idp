@@ -1,16 +1,6 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  POSSIBLE_OPTIONS = %i[sms voice auth_app piv_cac personal_key webauthn].freeze
-  POLICIES = {
-    sms: SmsLoginOptionPolicy,
-    voice: VoiceLoginOptionPolicy,
-    auth_app: AuthAppLoginOptionPolicy,
-    piv_cac: PivCacLoginOptionPolicy,
-    personal_key: PersonalKeyLoginOptionPolicy,
-    webauthn: WebauthnLoginOptionPolicy,
-  }.freeze
-
   attr_reader :current_user
 
   def initialize(current_user, view, service_provider)
@@ -35,15 +25,18 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     ''
   end
 
+  # :reek:FeatureEnvy
   def options
-    configured_2fa_types.map do |type|
-      OpenStruct.new(
-        type: type,
-        label: t("two_factor_authentication.login_options.#{type}"),
-        info: t("two_factor_authentication.login_options.#{type}_info"),
-        selected: type == configured_2fa_types[0]
-      )
+    mfa = MfaContext.new(current_user)
+    # for now, we include the personal key since that's our current behavior,
+    # but there are designs to remove personal key from the option list and
+    # make it a link with some additional text to call it out as a special
+    # case.
+    options = mfa.two_factor_configurations
+    if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+      options << mfa.personal_key_configuration
     end
+    options.flat_map(&:selection_presenters)
   end
 
   def should_display_account_reset_or_cancel_link?
@@ -79,11 +72,5 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_token_valid?
     current_user&.account_reset_request&.granted_token_valid?
-  end
-
-  def configured_2fa_types
-    POSSIBLE_OPTIONS.each_with_object([]) do |option, result|
-      result << option if POLICIES[option].new(@current_user).configured?
-    end
   end
 end

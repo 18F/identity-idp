@@ -28,9 +28,12 @@ fr:
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
-      sms_info: Obtenez votre code de sécurité par SMS.
+      sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
+      sms_setup_info: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
-      voice_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
+      voice_info_html: Obtenez votre code de sécurité par appel téléphonique à <strong>%{phone}</strong>.
+        (Seulement les numéros de téléphone en Amerique du Nord)
+      voice_setup_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
         les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité physique
       webauthn_info: Utilisez votre clé de sécurité physique au lieu d'un code de
@@ -69,9 +72,7 @@ fr:
       fois que vous vous connectez</strong>.
     phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
-      link: Utilisez plutôt votre PIV/CAC
       question: Vous n'avez pas accès à votre carte PIV/CAC?
-      text_html: Avez-vous votre PIV/CAC? %{link}
     piv_cac_header_text: NOT TRANSLATED YET
     please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:

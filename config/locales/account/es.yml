@@ -14,6 +14,7 @@ es:
       login: Información para iniciar sesión
       password: Contraseña
       phone: Teléfono
+      phone_add: "+ Añadir teléfono"
       piv_cac_card: Tarjeta PIV/CAC
       piv_cac_disabled: desactivada
       piv_cac_enabled: activada

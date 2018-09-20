@@ -41,7 +41,6 @@ module TwoFactorAuthCode
     private
 
     attr_reader(
-      :totp_enabled,
       :reenter_phone_number_path,
       :phone_number,
       :unconfirmed_phone,

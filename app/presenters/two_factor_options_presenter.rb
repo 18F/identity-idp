@@ -25,30 +25,42 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    available_2fa_types.map do |type|
-      OpenStruct.new(
-        type: type,
-        label: t("two_factor_authentication.two_factor_choice_options.#{type}"),
-        info: t("two_factor_authentication.two_factor_choice_options.#{type}_info"),
-        selected: type == :sms
-      )
-    end
+    phone_options + totp_option + webauthn_option + piv_cac_option
   end
 
   private
 
-  def available_2fa_types
-    %w[sms voice auth_app] + webauthn_if_available + piv_cac_if_available
+  def phone_options
+    if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
+      [
+        TwoFactorAuthentication::SmsSelectionPresenter.new,
+        TwoFactorAuthentication::VoiceSelectionPresenter.new,
+      ]
+    else
+      []
+    end
   end
 
-  def webauthn_if_available
-    FeatureManagement.webauthn_enabled? ? %w[webauthn] : []
+  def webauthn_option
+    if TwoFactorAuthentication::WebauthnPolicy.new(current_user).available?
+      [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
+    else
+      []
+    end
   end
 
-  def piv_cac_if_available
-    return [] if current_user.piv_cac_enabled?
-    return [] unless current_user.piv_cac_available? ||
-                     service_provider&.piv_cac_available?(current_user)
-    %w[piv_cac]
+  def totp_option
+    if TwoFactorAuthentication::AuthAppPolicy.new(current_user).available?
+      [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
+    else
+      []
+    end
+  end
+
+  def piv_cac_option
+    policy = TwoFactorAuthentication::PivCacPolicy.new(current_user)
+    return [] if policy.enabled?
+    return [] unless policy.available? || service_provider&.piv_cac_available?(current_user)
+    [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 end
