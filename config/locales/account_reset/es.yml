@@ -1,6 +1,11 @@
 ---
 es:
   account_reset:
+    cancel_request:
+      are_you_sure: "¿Seguro que quieres cancelar tu solicitud de eliminación de cuenta?"
+      cancel: Salida
+      cancel_button: Cancelar la cuenta eliminada
+      title: Cancelar la cuenta eliminada
     confirm_delete_account:
       cta: Puede %{link} o cierra esta ventana si ya terminaste.
       info: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros enviamos
