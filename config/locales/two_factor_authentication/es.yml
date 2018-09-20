@@ -69,8 +69,8 @@ es:
     phone_voice_label: Número de teléfono
     piv_cac_fallback:
       link: Use su PIV/CAC en su lugar
-      text_html: "¿Tiene usted PIV/CAC? %{link}"
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
+      text_html: "¿Tiene usted PIV/CAC? %{link}"
     piv_cac_header_text: NOT TRANSLATED YET
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:

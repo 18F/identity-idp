@@ -68,8 +68,8 @@ en:
     phone_voice_label: Phone number
     piv_cac_fallback:
       link: Use your PIV/CAC instead
-      text_html: Do you have your PIV/CAC? %{link}
       question: Don't have your piv/cac card available?
+      text_html: Do you have your PIV/CAC? %{link}
     piv_cac_header_text: Present your PIV/CAC
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:

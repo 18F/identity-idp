@@ -2,9 +2,9 @@
 en:
   account_reset:
     confirm_delete_account:
+      cta: You may %{link} or close this window if you're done.
       info: The account for <strong>%{email}</strong> has been deleted. We sent an
-        email confirmation of the account deletion. <br><br> You may %{link} or close
-        this window if you're done.
+        email confirmation of the account deletion.
       link_text: create a new account
       title: You have deleted your account
     confirm_request:
@@ -20,7 +20,7 @@ en:
       delete_button: Delete account
       info: Deleting your account should be your last resort if you are locked out
         of your account. You will not be able to recover any information linked to
-        your account.  Once your account is deleted, you can create a new one using
+        your account. Once your account is deleted, you can create a new one using
         the same email address.
       title: Deleting your account should be your last resort
     request:

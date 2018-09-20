@@ -24,7 +24,7 @@ shared_examples_for 'personal key page' do
       scenario 'content is visible by default' do
         expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
         expect(page).to have_xpath("//#{content_selector}")
-        expect(page).to have_content(t('users.personal_key.help_text'))
+        expect(page).to have_content strip_tags(t('users.personal_key.help_text_html'))
       end
     end
 
