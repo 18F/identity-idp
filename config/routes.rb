@@ -213,6 +213,7 @@ Rails.application.routes.draw do
     if FeatureManagement.enable_usps_verification?
       get '/account/verify' => 'users/verify_account#index', as: :verify_account
       post '/account/verify' => 'users/verify_account#create'
+      delete '/account/verify' => 'users/verify_account#destroy'
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'

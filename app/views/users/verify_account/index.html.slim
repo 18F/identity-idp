@@ -12,6 +12,8 @@ p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
 - unless @mail_spammed
   = link_to t('idv.messages.usps.resend'), idv_usps_path,
     class: 'block mb2'
-= link_to t('idv.messages.usps.bad_address'), idv_phone_path
+= button_to t('idv.messages.reset_and_restart_verification'), account_verify_path, method: :delete,
+  class: 'btn btn-link'
+
 .mt2.pt1.border-top
   = link_to t('idv.buttons.cancel'), account_path

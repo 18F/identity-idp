@@ -77,4 +77,19 @@ RSpec.describe Users::VerifyAccountController do
       end
     end
   end
+
+  describe '#destroy' do
+    subject(:action) do
+      delete :destroy
+    end
+
+    it 'tracks an analytics event' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
+
+      action
+    end
+  end
 end

@@ -1,5 +1,7 @@
 module Users
   class VerifyAccountController < ApplicationController
+    include IdvSession
+
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
 
@@ -20,6 +22,13 @@ module Users
       else
         render :index
       end
+    end
+
+    def destroy
+      analytics.track_event(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
+      Idv::CancelVerificationAttempt.new(user: current_user).call
+      idv_session.clear
+      redirect_to idv_url
     end
 
     private

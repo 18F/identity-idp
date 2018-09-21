@@ -144,6 +144,7 @@ fr:
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain
+      reset_and_restart_verification: NOT TRANSLATED YET
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:

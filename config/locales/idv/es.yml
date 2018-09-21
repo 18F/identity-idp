@@ -137,6 +137,7 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
+      reset_and_restart_verification: NOT TRANSLATED YET
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
