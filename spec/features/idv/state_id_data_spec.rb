@@ -39,6 +39,16 @@ feature 'idv state id data entry' do
     expect(current_path).to eq(idv_session_path)
   end
 
+  it 'renders an error for a state id that is too long and does not submit a job', :email do
+    expect(Idv::Proofer).to_not receive(:get_vendor)
+
+    fill_in 'profile_state_id_number', with: '8' * 26
+    click_idv_continue
+
+    expect(page).to have_content t('idv.errors.pattern_mismatch.state_id_number')
+    expect(current_path).to eq(idv_session_path)
+  end
+
   it 'allows selection of different state id types', :email do
     choose 'profile_state_id_type_drivers_permit'
     click_idv_continue
