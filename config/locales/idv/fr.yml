@@ -30,6 +30,7 @@ fr:
           exemple : ABC1-DEF2-G3HI-J456'
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
+        state_id_number: Votre numéro d'identification ne peut excéder 25 caractères
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
       unsupported_jurisdiction: Désolé, nous ne pouvons pas vérifier les personnes
         de cet état.

@@ -48,7 +48,9 @@ p = link_to t('links.access_help'),
             .block = state_id_type[0]
     = f.input :state_id_number, label: t('idv.form.state_id'),
         hint: t('idv.form.state_id_tip'), hint_html: { class: 'inline pl1'},
-        input_html: { class: 'sm-col-8' }, required: true
+        input_html: { class: 'sm-col-8' }, required: true,
+        pattern: '^.{0,25}$',
+        input_html: { class: 'sm-col-8 state_id_number', value: @idv_form.state_id_number }
     = f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'mb1' },
         required: true
     = f.input :address2, label: t('idv.form.address2')
