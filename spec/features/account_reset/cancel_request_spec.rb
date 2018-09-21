@@ -11,6 +11,7 @@ describe 'Account Reset Request: Cancellation' do
       click_button t('account_reset.request.yes_continue')
       open_last_email
       click_email_link_matching(/cancel\?token/)
+      click_button t('account_reset.cancel_request.cancel_button')
 
       expect(page).to have_current_path new_user_session_path
       expect(page).
@@ -37,6 +38,7 @@ describe 'Account Reset Request: Cancellation' do
         AccountResetService.grant_tokens_and_send_notifications
         open_last_email
         click_email_link_matching(/cancel\?token/)
+        click_button t('account_reset.cancel_request.cancel_button')
 
         expect(page).to have_current_path new_user_session_path
         expect(page).

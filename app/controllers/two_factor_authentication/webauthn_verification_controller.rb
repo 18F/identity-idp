@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def confirm_webauthn_enabled
-      return if current_user.webauthn_enabled?
+      return if TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
 
       redirect_to user_two_factor_authentication_url
     end
@@ -52,7 +52,7 @@ module TwoFactorAuthentication
     end
 
     def credential_ids
-      current_user.webauthn_configurations.map(&:credential_id).join(',')
+      MfaContext.new(current_user).webauthn_configurations.map(&:credential_id).join(',')
     end
 
     def analytics_properties

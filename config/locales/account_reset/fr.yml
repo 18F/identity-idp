@@ -1,6 +1,12 @@
 ---
 fr:
   account_reset:
+    cancel_request:
+      are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression
+        de compte?
+      cancel: Sortie
+      cancel_button: Annuler supprimer un compte
+      title: Annuler supprimer un compte
     confirm_delete_account:
       cta: Vous pouvez %{link} ou fermer cette fenêtre si vous avez terminé.
       info: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé

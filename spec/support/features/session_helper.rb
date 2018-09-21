@@ -81,7 +81,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       login_as(user, scope: :user, run_callbacks: false)
 
-      if user.phone_configurations.any?
+      if TwoFactorAuthentication::PhonePolicy.new(user).enabled?
         Warden.on_next_request do |proxy|
           session = proxy.env['rack.session']
           session['warden.user.user.session'] = {}
@@ -422,7 +422,7 @@ module Features
 
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
-        t('two_factor_authentication.two_factor_choice_options.piv_cac')
+        t('two_factor_authentication.login_options.piv_cac')
       )
 
       set_up_2fa_with_piv_cac

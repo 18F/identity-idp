@@ -34,30 +34,29 @@ h1.hide = t('titles.account')
     = t('headings.account.two_factor')
     = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1'
 
-  = render 'account_item',
-    name: t('account.index.phone'),
-    content: current_user.phone_configurations.first&.phone,
-    path: manage_phone_path,
-    action: @view_model.edit_action_partial
+  - if TwoFactorAuthentication::PhonePolicy.new(current_user).visible?
+    = render 'phone'
 
-  = render 'account_item',
-    name: t('account.index.authentication_app'),
-    content: content_tag(:em, @view_model.totp_content),
-    action: @view_model.totp_partial
+  - if TwoFactorAuthentication::AuthAppPolicy.new(current_user).visible?
+    = render 'account_item',
+      name: t('account.index.authentication_app'),
+      content: content_tag(:em, @view_model.totp_content),
+      action: @view_model.totp_partial
 
-  - if FeatureManagement.webauthn_enabled?
+  - if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible?
     = render 'webauthn'
 
-  - if current_user.piv_cac_available?
+  - if TwoFactorAuthentication::PivCacPolicy.new(current_user).visible?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),
       content: content_tag(:em, @view_model.piv_cac_content),
       action: @view_model.piv_cac_partial
 
-  - @view_model.manage_personal_key_partial do
-    = render 'account_item',
-      name: render(@view_model.personal_key_item_partial),
-      action: @view_model.personal_key_action_partial
+  - if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).visible?
+    - @view_model.manage_personal_key_partial do
+      = render 'account_item',
+        name: render(@view_model.personal_key_item_partial),
+        action: @view_model.personal_key_action_partial
 
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
