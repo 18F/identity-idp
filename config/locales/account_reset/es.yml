@@ -2,9 +2,9 @@
 es:
   account_reset:
     confirm_delete_account:
+      cta: Puede %{link} o cierra esta ventana si ya terminaste.
       info: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros enviamos
-        una confirmación por correo electrónico de la eliminación de la cuenta. <br><br>
-        Puede %{link} o cierra esta ventana si ya terminaste.
+        una confirmación por correo electrónico de la eliminación de la cuenta.
       link_text: crea una cuenta nueva
       title: Has eliminado tu cuenta
     confirm_request:

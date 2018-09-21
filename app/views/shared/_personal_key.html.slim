@@ -17,7 +17,7 @@ p.mt-tiny.mb0
     class: 'ml2 btn-border ico ico-print text-decoration-none'
 
 = accordion('personal-key-info', t('users.personal_key.help_text_header')) do
-  = simple_format(t('users.personal_key.help_text'))
+  = t('users.personal_key.help_text_html')
 
 div
   = button_to t('forms.buttons.continue'), update_path,

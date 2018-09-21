@@ -175,7 +175,7 @@ describe Idv::PhoneController do
         result = {
           success: true,
           errors: {},
-          vendor: { messages: [], context: context, exception: nil },
+          vendor: { messages: [], context: context, exception: nil, timed_out: false },
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
@@ -215,7 +215,7 @@ describe Idv::PhoneController do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
-          vendor: { messages: [], context: context, exception: nil },
+          vendor: { messages: [], context: context, exception: nil, timed_out: false },
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(

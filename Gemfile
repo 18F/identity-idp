@@ -32,7 +32,7 @@ gem 'pg'
 gem 'phonelib'
 gem 'pkcs11'
 gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.6.1'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
 gem 'rack-attack'
 gem 'rack-cors', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -86,6 +86,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'knapsack'
   gem 'pry-byebug'
+  gem 'puma'
   gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
   gem 'thin'
@@ -93,7 +94,7 @@ end
 
 group :test do
   gem 'axe-matchers', '~> 1.3.4'
-  gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'capybara-screenshot'
   gem 'capybara-selenium'
   gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', require: false
@@ -112,6 +113,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.1.0'
-  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.1.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.1'
+  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end
