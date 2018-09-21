@@ -80,7 +80,7 @@ module Idv
 
     def ensure_profile_verification_not_pending
       verification_pending_profiles.each do |profile|
-        profile.update!(deactivation_reason: nil)
+        profile.update!(deactivation_reason: :verification_cancelled)
       end
     end
 

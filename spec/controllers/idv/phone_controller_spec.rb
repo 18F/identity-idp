@@ -74,7 +74,7 @@ describe Idv::PhoneController do
 
         get :new
 
-        expect(Profile.all.first.deactivation_reason).to eq(nil)
+        expect(Profile.all.first.deactivation_reason).to eq('verification_cancelled')
       end
     end
   end
