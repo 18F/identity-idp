@@ -4,10 +4,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
   let(:subject) { described_class.new(user) }
 
   describe '#available?' do
-    before(:each) do
-      allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
-    end
-
     context 'when a user has no identities' do
       let(:user) { create(:user) }
 
@@ -51,16 +47,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
         it 'does allows piv/cac' do
           expect(subject.available?).to be_truthy
         end
-
-        context 'but piv/cac feature is not enabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
-          end
-
-          it 'does not allow piv/cac' do
-            expect(subject.available?).to be_falsey
-          end
-        end
       end
     end
 
@@ -73,17 +59,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
       it 'allow piv/cac visibility' do
         expect(subject.visible?).to be_truthy
-      end
-
-      context 'but the piv/cac feature is disabled' do
-        before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
-        end
-
-        it 'does not allow piv/cac' do
-          expect(subject.available?).to be_falsey
-          expect(subject.visible?).to be_falsey
-        end
       end
     end
   end

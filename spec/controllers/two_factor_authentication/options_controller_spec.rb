@@ -94,7 +94,6 @@ describe TwoFactorAuthentication::OptionsController do
   end
 
   def piv_cac_webauthn_enabled(bool)
-    allow(Figaro.env).to receive(:piv_cac_enabled) { bool }
     allow(Figaro.env).to receive(:webauthn_enabled) { bool }
     Rails.application.reload_routes!
   end

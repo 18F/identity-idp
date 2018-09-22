@@ -69,9 +69,7 @@ Rails.application.routes.draw do
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
-      if FeatureManagement.piv_cac_enabled?
-        get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
-      end
+      get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       if FeatureManagement.webauthn_enabled?
         get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
         patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
@@ -93,10 +91,8 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
-        if FeatureManagement.piv_cac_enabled?
-          get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
-          post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
-        end
+        get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
+        post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
       end
     end
 
@@ -117,11 +113,9 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
-    if FeatureManagement.piv_cac_enabled?
-      get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
-      delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-      get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
-    end
+    get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
+    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
 
     if FeatureManagement.webauthn_enabled?
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
