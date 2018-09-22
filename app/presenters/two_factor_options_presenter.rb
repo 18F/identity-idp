@@ -42,7 +42,7 @@ class TwoFactorOptionsPresenter
   end
 
   def webauthn_option
-    if TwoFactorAuthentication::WebauthnPolicy.new(current_user).available?
+    if TwoFactorAuthentication::WebauthnPolicy.new(current_user, service_provider).available?
       [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
     else
       []
