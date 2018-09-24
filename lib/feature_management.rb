@@ -105,4 +105,12 @@ class FeatureManagement
   def self.webauthn_enabled?
     Figaro.env.webauthn_enabled == 'true'
   end
+
+  def self.doc_auth_enabled?
+    Figaro.env.doc_auth_enabled == 'true'
+  end
+
+  def self.doc_auth_exclusive?
+    Figaro.env.doc_auth_exclusive == 'true'
+  end
 end

@@ -13,6 +13,7 @@ describe User do
     it { is_expected.to have_one(:account_reset_request) }
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
+    it { is_expected.to have_one(:doc_auth) }
   end
 
   it 'does not send an email when #create is called' do
