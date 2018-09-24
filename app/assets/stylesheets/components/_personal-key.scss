@@ -45,10 +45,10 @@
 
 .bg-personal-key {
   background-color: $blue-lightest;
-  background-image: image-url('personal-key/shield.svg');
-  background-position: center 4rem;
+  background: image-url('personal-key/shield.svg');
+  background-position: center 3.3rem;
   background-repeat: no-repeat;
-  background-size: 244px 136px;
+  background-size: 115px;
   border-bottom: 1px solid $border-color;
 }
 
