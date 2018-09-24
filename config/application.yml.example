@@ -317,7 +317,7 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
-  webauthn_enabled: 'false'
+  webauthn_enabled: 'true'
 
 test:
   aamva_cert_enabled: 'true'
