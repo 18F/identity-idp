@@ -3,8 +3,8 @@ module Idv
     extend ActiveSupport::Concern
 
     SUPPORTED_JURISDICTIONS = %w[
-      AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MS MT ND NE NJ NM PA SD TX
-      VA VT WA WI WY SC MO RI
+      AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM PA RI SC
+      SD TX VA VT WA WI WY
     ].freeze
 
     included do
