@@ -4,7 +4,7 @@ module Idv
 
     SUPPORTED_JURISDICTIONS = %w[
       AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MS MT ND NE NJ NM PA SD TX
-      VA VT WA WI WY
+      VA VT WA WI WY SC MO RI
     ].freeze
 
     included do
