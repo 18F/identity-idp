@@ -43,7 +43,7 @@ h1.hide = t('titles.account')
       content: content_tag(:em, @view_model.totp_content),
       action: @view_model.totp_partial
 
-  - if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible?
+  - if TwoFactorAuthentication::WebauthnPolicy.new(current_user, @view_model.sp).visible?
     = render 'webauthn'
 
   - if TwoFactorAuthentication::PivCacPolicy.new(current_user).visible?

@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def confirm_webauthn_enabled
-      return if TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+      return if TwoFactorAuthentication::WebauthnPolicy.new(current_user, current_sp).enabled?
 
       redirect_to user_two_factor_authentication_url
     end

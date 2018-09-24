@@ -3,23 +3,46 @@ require 'rails_helper'
 describe TwoFactorAuthentication::WebauthnPolicy do
   include WebauthnVerificationHelper
 
-  let(:subject) { described_class.new(user) }
-
   describe '#configured?' do
-    context 'without a webauthn configured' do
-      let(:user) { build(:user) }
+    context 'with no sp' do
+      let(:subject) { described_class.new(user, nil) }
 
-      it { expect(subject.configured?).to be_falsey }
-    end
+      context 'without a webauthn configured' do
+        let(:user) { build(:user) }
 
-    context 'with a webauthn configured' do
-      let(:user) { create(:user) }
-      before do
-        create_webauthn_configuration(user)
+        it { expect(subject.configured?).to be_falsey }
       end
 
-      it 'returns a truthy value' do
-        expect(subject.configured?).to be_truthy
+      context 'with a webauthn configured' do
+        let(:user) { create(:user) }
+        before do
+          create_webauthn_configuration(user)
+        end
+
+        it 'returns a truthy value' do
+          expect(subject.configured?).to be_truthy
+        end
+      end
+    end
+
+    context 'with an sp' do
+      let(:subject) { described_class.new(user, 'foo') }
+
+      context 'without a webauthn configured' do
+        let(:user) { build(:user) }
+
+        it { expect(subject.configured?).to be_falsey }
+      end
+
+      context 'with a webauthn configured' do
+        let(:user) { create(:user) }
+        before do
+          create_webauthn_configuration(user)
+        end
+
+        it 'returns a truthy value' do
+          expect(subject.configured?).to be_falsey
+        end
       end
     end
   end

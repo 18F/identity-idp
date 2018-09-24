@@ -136,7 +136,15 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 end
 
 shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
-  it 'does not prompt for recovery code before IdV flow', email: true do
+  it 'does not have webauthn as an option', email: true do
+    mock_challenge
+    visit_idp_from_sp_with_loa3(sp)
+    confirm_email_and_password('test@test.com')
+    expect(page).to_not have_css("label[for='two_factor_options_form_selection_webauthn']")
+  end
+
+  # Remove the above test and enable this one when we enable webauthn for the SPs
+  xit 'does not prompt for recovery code before IdV flow', email: true do
     mock_challenge
     visit_idp_from_sp_with_loa3(sp)
     confirm_email_and_password('test@test.com')

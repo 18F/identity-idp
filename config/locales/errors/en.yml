@@ -53,6 +53,6 @@ en:
       weak_password: Your password is not strong enough. %{feedback}
     webauthn_setup:
       delete_last: Sorry, you can not remove your last MFA option.
-      general_error: There was an error adding your hardward security key. Please
+      general_error: There was an error adding your hardware security key. Please
         try again.
       unique_name: That name is already taken. Please choose a different name.

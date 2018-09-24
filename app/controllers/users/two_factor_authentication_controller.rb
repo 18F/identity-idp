@@ -198,7 +198,7 @@ module Users
     def redirect_url
       if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url
-      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user, current_sp).enabled?
         login_two_factor_webauthn_url
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
