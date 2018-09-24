@@ -36,6 +36,7 @@ es:
         invalid: NOT TRANSLATED YET
         missing: NOT TRANSLATED YET
     present_piv_cac: NOT TRANSLATED YET
+    present_webauthn: Presente su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta

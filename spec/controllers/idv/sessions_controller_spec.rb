@@ -21,7 +21,6 @@ describe Idv::SessionsController do
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
-  let(:applicant) { user_attrs }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -35,306 +34,175 @@ describe Idv::SessionsController do
     end
   end
 
-  context 'user has created account' do
-    before do
-      stub_sign_in(user)
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-      stub_analytics
-      allow(@analytics).to receive(:track_event)
+  before do
+    stub_sign_in(user)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+    stub_analytics
+    allow(@analytics).to receive(:track_event)
+  end
+
+  describe '#new' do
+    it 'starts a new proofing session' do
+      get :new
+
+      expect(response.status).to eq 200
     end
 
-    describe '#new' do
-      it 'starts new proofing session' do
-        get :new
-
-        expect(response.status).to eq 200
-      end
-
-      it 'redirects if step is complete' do
+    context 'the user has already completed the step' do
+      it 'redirects to the success step' do
         idv_session.profile_confirmation = true
+        idv_session.resolution_successful = true
 
         get :new
 
         expect(response).to redirect_to idv_session_success_path
       end
-
-      context 'max attempts exceeded' do
-        before do
-          user.idv_attempts = max_attempts
-          user.idv_attempted_at = Time.zone.now
-        end
-
-        it 'redirects to fail' do
-          get :new
-
-          result = {
-            request_path: idv_session_path,
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-          expect(response).to redirect_to idv_session_failure_url(:fail)
-        end
-      end
     end
 
-    describe '#create' do
-      before do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-      end
+    context 'max attempts exceeded' do
+      it 'redirects to fail' do
+        user.idv_attempts = max_attempts
+        user.idv_attempted_at = Time.zone.now
 
-      context 'UUID' do
-        it 'assigned user UUID to applicant' do
-          post :create, params: { profile: user_attrs }
+        get :new
 
-          expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
-        end
-      end
+        result = {
+          request_path: idv_session_path,
+        }
 
-      context 'existing SSN' do
-        it 'redirects to custom error' do
-          create(:profile, pii: { ssn: '666-66-1234' })
-
-          result = {
-            success: false,
-            errors: { ssn: [t('idv.errors.duplicate_ssn')] },
-          }
-
-          expect(@analytics).to receive(:track_event).
-            with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
-
-          post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
-
-          expect(response).to redirect_to(idv_session_failure_url(:dupe_ssn))
-        end
-      end
-
-      context 'empty SSN' do
-        it 'renders the form' do
-          post :create, params: { profile: user_attrs.merge(ssn: '') }
-
-          expect(response).to_not redirect_to(idv_session_failure_url(:dupe_ssn))
-          expect(response).to render_template(:new)
-        end
-      end
-
-      context 'missing fields' do
-        let(:partial_attrs) do
-          user_attrs.tap { |attrs| attrs.delete :first_name }
-        end
-
-        it 'checks for required fields' do
-          post :create, params: { profile: partial_attrs }
-
-          expect(response).to render_template(:new)
-          expect(flash[:warning]).to be_nil
-        end
-
-        it 'does not increment attempts count' do
-          expect { post :create, params: { profile: partial_attrs } }.
-            to_not change(user, :idv_attempts)
-        end
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
+        expect(response).to redirect_to idv_session_failure_url(:fail)
       end
     end
+  end
 
-    describe '#show' do
-      before do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-      end
+  describe '#create' do
+    it 'assigns a UUID to the applicant' do
+      post :create, params: { profile: user_attrs }
 
-      context 'when the background job is not complete yet' do
-        render_views
-
-        it 'renders a spinner and has the page refresh' do
-          get :show
-
-          expect(response).to render_template('shared/refresh')
-
-          dom = Nokogiri::HTML(response.body)
-          expect(dom.css('meta[http-equiv="refresh"]')).to be_present
-        end
-      end
-
-      context 'when the background job has timed out' do
-        let(:expired_started_at) do
-          Time.zone.now.to_i - Figaro.env.async_job_refresh_max_wait_seconds.to_i
-        end
-
-        before do
-          controller.idv_session.async_result_started_at = expired_started_at
-          controller.idv_session.params = user_attrs
-        end
-
-        it 'displays an error' do
-          get :show
-
-          expect(response).to redirect_to(idv_session_failure_url(:timeout))
-        end
-
-        it 'tracks the failure as a timeout' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
-
-          get :show
-
-          result = {
-            success: false,
-            errors: { timed_out: ['Timed out waiting for vendor response'] },
-            idv_attempts_exceeded: false,
-            vendor: { messages: [], context: {}, exception: nil },
-          }
-
-          expect(@analytics).to have_received(:track_event).with(
-            Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result
-          )
-        end
-      end
-
-      context 'when the background job has completed' do
-        let(:result_id) { SecureRandom.uuid }
-        let(:params) { user_attrs }
-
-        before do
-          controller.idv_session.async_result_id = result_id
-          VendorValidatorResultStorage.new.store(result_id: result_id, result: result)
-
-          controller.idv_session.params = params
-        end
-
-        context 'un-resolvable attributes' do
-          let(:params) { user_attrs.dup.merge(first_name: 'Bad') }
-
-          let(:result) do
-            Idv::VendorResult.new(
-              success: false,
-              errors: { first_name: ['Unverified first name.'] },
-              messages: ['The name was suspicious']
-            )
-          end
-
-          it 'redirects to the failure page' do
-            get :show
-
-            expect(response).to redirect_to(idv_session_failure_url(:warning))
-          end
-
-          it 'creates analytics event' do
-            get :show
-
-            result = {
-              success: false,
-              idv_attempts_exceeded: false,
-              errors: {
-                first_name: ['Unverified first name.'],
-              },
-              vendor: { messages: ['The name was suspicious'], context: {}, exception: nil },
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-          end
-        end
-
-        context 'vendor agent throws exception' do
-          let(:params) { user_attrs.dup.merge(first_name: 'Fail') }
-          let(:exception_msg) { 'Failed to contact proofing vendor' }
-          let(:result) do
-            Idv::VendorResult.new(
-              success: false,
-              errors: { agent: [exception_msg] },
-              messages: [exception_msg]
-            )
-          end
-
-          it 'logs failure and redirects to the failure page' do
-            get :show
-
-            result = {
-              success: false,
-              idv_attempts_exceeded: false,
-              errors: {
-                agent: [exception_msg],
-              },
-              vendor: { messages: [exception_msg], context: {}, exception: nil },
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-            expect(response).to redirect_to(idv_session_failure_url(:warning))
-          end
-        end
-
-        context 'success' do
-          let(:result) do
-            Idv::VendorResult.new(
-              success: true,
-              messages: ['Everything looks good'],
-              applicant: applicant
-            )
-          end
-
-          it 'creates analytics event' do
-            get :show
-
-            result = {
-              success: true,
-              idv_attempts_exceeded: false,
-              errors: {},
-              vendor: { messages: ['Everything looks good'], context: {}, exception: nil },
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-          end
-
-          it 'increments attempts count' do
-            expect { get :show }.to change(user, :idv_attempts).by(1)
-          end
-        end
-
-        context 'max attempts exceeded' do
-          let(:result) { Idv::VendorResult.new(success: true) }
-
-          before do
-            user.idv_attempts = max_attempts
-            user.idv_attempted_at = Time.zone.now
-          end
-
-          it 'redirects to fail' do
-            get :show
-
-            result = {
-              request_path: idv_session_result_path,
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-            expect(response).to redirect_to idv_session_failure_url(:fail)
-          end
-        end
-
-        context 'attempt window has expired, previous attempts == max-1' do
-          let(:result) do
-            Idv::VendorResult.new(success: true, applicant: applicant)
-          end
-
-          before do
-            user.idv_attempts = max_attempts - 1
-            user.idv_attempted_at = Time.zone.now - 2.days
-          end
-
-          it 'allows and resets attempt counter' do
-            get :show
-
-            expect(response).to redirect_to idv_session_success_path
-            expect(user.idv_attempts).to eq 1
-          end
-        end
-      end
+      expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
     end
 
+    it 'redirects to the SSN error if the SSN exists' do
+      create(:profile, pii: { ssn: '666-66-1234' })
+
+      result = {
+        success: false,
+        errors: { ssn: [t('idv.errors.duplicate_ssn')] },
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
+
+      post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
+
+      expect(response).to redirect_to(idv_session_failure_url(:dupe_ssn))
+      expect(idv_session.profile_confirmation).to be_falsy
+      expect(idv_session.resolution_successful).to be_falsy
+    end
+
+    it 'renders the forms if there are missing fields' do
+      partial_attrs = user_attrs.tap { |attrs| attrs.delete :first_name }
+
+      result = {
+        success: false,
+        errors: { first_name: [t('errors.messages.blank')] },
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
+
+      expect { post :create, params: { profile: partial_attrs } }.
+        to_not change(user, :idv_attempts)
+
+      expect(response).to render_template(:new)
+      expect(flash[:warning]).to be_nil
+      expect(idv_session.profile_confirmation).to be_falsy
+      expect(idv_session.resolution_successful).to be_falsy
+    end
+
+    it 'redirects to the warning page and increments attempts when verification fails' do
+      user_attrs[:first_name] = 'Bad'
+
+      context = { stages: [{ resolution: 'ResolutionMock' }] }
+      result = {
+        success: false,
+        idv_attempts_exceeded: false,
+        errors: {
+          first_name: ['Unverified first name.'],
+        },
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
+      }
+
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, hash_including(success: true))
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
+
+      expect { post :create, params: { profile: user_attrs } }.
+        to change(user, :idv_attempts).by(1)
+
+      expect(response).to redirect_to(idv_session_failure_url(:warning))
+      expect(idv_session.profile_confirmation).to be_falsy
+      expect(idv_session.resolution_successful).to be_falsy
+    end
+
+    it 'redirects to the success page when verification succeeds' do
+      context = { stages: [{ resolution: 'ResolutionMock' }, { state_id: 'StateIdMock' }] }
+      result = {
+        success: true,
+        idv_attempts_exceeded: false,
+        errors: {},
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
+      }
+
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, hash_including(success: true))
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
+
+      expect { post :create, params: { profile: user_attrs } }.
+        to change(user, :idv_attempts).by(1)
+
+      expect(response).to redirect_to(idv_session_success_url)
+      expect(idv_session.profile_confirmation).to eq(true)
+      expect(idv_session.resolution_successful).to eq(true)
+    end
+
+    it 'redirects to the fail page when max attempts are exceeded' do
+      user.idv_attempts = max_attempts
+      user.idv_attempted_at = Time.zone.now
+
+      post :create, params: { profile: user_attrs }
+
+      result = {
+        request_path: idv_session_path,
+      }
+
+      expect(@analytics).to have_received(:track_event).
+        with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
+      expect(response).to redirect_to idv_session_failure_url(:fail)
+      expect(idv_session.profile_confirmation).to be_falsy
+      expect(idv_session.resolution_successful).to be_falsy
+    end
+  end
+
+  describe '#failure' do
+    it 'renders the dup ssn error if the failure reason is dupe ssn' do
+      get :failure, params: { reason: :dupe_ssn }
+
+      expect(response).to render_template('shared/_failure')
+    end
+
+    it 'renders the error for the the given error case if the failure reason is not dupe ssn' do
+      expect(controller).to receive(:render_idv_step_failure).with(:sessions, :fail)
+
+      get :failure, params: { reason: :fail }
+    end
+  end
+
+  context 'user has created account' do
     describe '#failure' do
       context 'reason == :dupe_ssn' do
         it 'renders the dupe_ssn failure screen' do

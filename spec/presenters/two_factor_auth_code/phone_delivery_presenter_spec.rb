@@ -58,14 +58,14 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   end
 
   def account_reset_cancel_link(account_reset_token)
-    I18n.t('devise.two_factor_authentication.account_reset.pending_html', cancel_link:
-      view.link_to(t('devise.two_factor_authentication.account_reset.cancel_link'),
+    I18n.t('two_factor_authentication.account_reset.pending_html', cancel_link:
+      view.link_to(t('two_factor_authentication.account_reset.cancel_link'),
                    account_reset_cancel_url(token: account_reset_token)))
   end
 
   def account_reset_delete_account_link
-    I18n.t('devise.two_factor_authentication.account_reset.text_html', link:
-      view.link_to(t('devise.two_factor_authentication.account_reset.link'),
+    I18n.t('two_factor_authentication.account_reset.text_html', link:
+      view.link_to(t('two_factor_authentication.account_reset.link'),
                    account_reset_request_path(locale: LinkLocaleResolver.locale)))
   end
 end

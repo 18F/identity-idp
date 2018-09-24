@@ -30,7 +30,31 @@
 @media #{$breakpoint-sm} {
   .separator-text > div {
     &::after {
+      color: #000;
       padding: 0 .5rem;
     }
   }
+}
+
+.bg-pk-box {
+  background-color: $blue-lightest;
+  background-image: image-url('personal-key/pkey-block.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-personal-key {
+  background-color: $blue-lightest;
+  background-image: image-url('personal-key/shield.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 244px 136px;
+  border-bottom: 1px solid $border-color;
+}
+
+.full-width-box {
+  background-color: $blue-lightest;
+  border-top: 1px solid $border-color;
+  margin-left: -80px;
+  width: 135%;
 }

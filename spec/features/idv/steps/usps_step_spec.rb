@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv usps step', :idv_job do
+feature 'idv usps step' do
   include IdvStepHelper
 
   it 'redirects to the review step when the user chooses to verify by letter' do

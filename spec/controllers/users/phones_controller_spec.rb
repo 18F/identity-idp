@@ -25,7 +25,9 @@ describe Users::PhonesController do
 
       it 'lets user know they need to confirm their new phone' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-        expect(user.phone_configurations.reload.first.phone).to_not eq '+1 202-555-4321'
+        expect(
+          MfaContext.new(user).phone_configurations.reload.first.phone
+        ).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
@@ -47,7 +49,7 @@ describe Users::PhonesController do
                              otp_delivery_preference: 'sms' },
         }
 
-        expect(user.phone_configurations.reload.first).to be_present
+        expect(MfaContext.new(user).phone_configurations.reload.first).to be_present
         expect(response).to render_template(:edit)
       end
     end
@@ -60,7 +62,7 @@ describe Users::PhonesController do
         allow(@analytics).to receive(:track_event)
 
         put :update, params: {
-          user_phone_form: { phone: second_user.phone_configurations.first.phone,
+          user_phone_form: { phone: MfaContext.new(second_user).phone_configurations.first.phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }
@@ -68,8 +70,8 @@ describe Users::PhonesController do
 
       it 'processes successfully and informs user' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-        expect(user.phone_configurations.reload.first.phone).to_not eq(
-          second_user.phone_configurations.first.phone
+        expect(MfaContext.new(user).phone_configurations.reload.first.phone).to_not eq(
+          MfaContext.new(second_user).phone_configurations.first.phone
         )
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
@@ -94,7 +96,7 @@ describe Users::PhonesController do
                              otp_delivery_preference: 'sms' },
         }
 
-        expect(user.phone_configurations.first.phone).not_to eq invalid_phone
+        expect(MfaContext.new(user).phone_configurations.first.phone).not_to eq invalid_phone
         expect(response).to render_template(:edit)
       end
     end
@@ -104,7 +106,7 @@ describe Users::PhonesController do
         stub_sign_in(user)
 
         put :update, params: {
-          user_phone_form: { phone: user.phone_configurations.first.phone,
+          user_phone_form: { phone: MfaContext.new(user).phone_configurations.first.phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }

@@ -70,6 +70,8 @@ describe Idv::Agent do
                     proc { |_, r| r.add_message('reason 2') }
                   when :failed
                     proc { |_, r| r.add_message('bah humbug').add_error(:bad, 'stuff') }
+                  when :timed_out
+                    proc { |_, r| r.instance_variable_set(:@exception, Proofer::TimeoutError.new) }
                   end
           Class.new(Proofer::Base) do
             required_attributes(:foo)
@@ -86,7 +88,8 @@ describe Idv::Agent do
             errors: {},
             messages: [resolution_message, state_id_message],
             success: true,
-            exception: nil
+            exception: nil,
+            timed_out: false
           )
         end
       end
@@ -99,7 +102,19 @@ describe Idv::Agent do
             errors: { bad: ['stuff'] },
             messages: [failed_message],
             success: false,
-            exception: nil
+            exception: nil,
+            timed_out: false
+          )
+        end
+      end
+
+      context 'when the first stage times out' do
+        let(:stages) { %i[timed_out state_id] }
+
+        it 'returns a result where timed out is true' do
+          expect(subject.to_h).to include(
+            success: false,
+            timed_out: true
           )
         end
       end

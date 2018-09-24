@@ -7,9 +7,9 @@ class UserPhoneForm
 
   attr_accessor :phone, :international_code, :otp_delivery_preference, :phone_configuration
 
-  def initialize(user)
+  def initialize(user, phone_configuration)
     self.user = user
-    self.phone_configuration = user.phone_configurations.first
+    self.phone_configuration = phone_configuration
     if phone_configuration.nil?
       self.otp_delivery_preference = user.otp_delivery_preference
     else

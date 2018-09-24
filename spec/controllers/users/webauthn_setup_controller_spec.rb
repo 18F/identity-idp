@@ -31,10 +31,11 @@ describe Users::WebauthnSetupController do
     end
   end
 
-  describe 'when signed in' do
+  describe 'when signed in and not account creation' do
     before do
       stub_analytics
-      stub_sign_in
+      user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
+      stub_sign_in(user)
     end
 
     describe 'GET new' do
@@ -67,7 +68,7 @@ describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = challenge
       end
 
-      it 'processes a valid webauthn' do
+      it 'processes a valid webauthn and redirects to account page' do
         patch :confirm, params: params
 
         expect(response).to redirect_to(account_url)
@@ -85,7 +86,14 @@ describe Users::WebauthnSetupController do
 
     describe 'delete' do
       before do
-        allow(controller.current_user).to receive(:total_mfa_options_enabled).and_return(2)
+        mock_mfa = MfaContext.new(controller.current_user)
+        allow(mock_mfa).to receive(:enabled_two_factor_configurations_count).and_return(2)
+        allow(MfaContext).to receive(:new).with(controller.current_user).and_return(mock_mfa)
+        mock_mfa_policy = MfaPolicy.new(controller.current_user)
+        allow(mock_mfa_policy).to receive(:multiple_factors_enabled?).and_return(true)
+        allow(MfaPolicy).to receive(:new).with(
+          controller.current_user
+        ).and_return(mock_mfa_policy)
       end
 
       it 'deletes a webauthn configuration' do
@@ -104,6 +112,33 @@ describe Users::WebauthnSetupController do
         expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
 
         delete :delete, params: { id: cfg.id }
+      end
+    end
+  end
+
+  describe 'when signed in and account creation' do
+    before do
+      user = build(:user)
+      stub_sign_in(user)
+    end
+
+    describe 'patch confirm' do
+      let(:params) do
+        {
+          attestation_object: attestation_object,
+          client_data_json: client_data_json,
+          name: 'mykey',
+        }
+      end
+      before do
+        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
+        controller.user_session[:webauthn_challenge] = challenge
+      end
+
+      it 'processes a valid webauthn and redirects to personal key page' do
+        patch :confirm, params: params
+
+        expect(response).to redirect_to(sign_up_personal_key_url)
       end
     end
   end

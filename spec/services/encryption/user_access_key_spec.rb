@@ -21,6 +21,11 @@ describe Encryption::UserAccessKey do
 
   before do
     allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+    # The newrelic_rpm gem added a call to `SecureRandom.hex(8)` in
+    # abstract_segment.rb on 6/13/18. Our New Relic tracers in
+    # config/initializers/new_relic_tracers.rb trigger this call, which
+    # is why we stub with a default value first.
+    allow(SecureRandom).to receive(:random_bytes) { random_r }
     allow(SecureRandom).to receive(:random_bytes).with(32).and_return(random_r)
     stub_aws_kms_client(random_r, encrypted_random_r)
   end
@@ -78,7 +83,7 @@ describe Encryption::UserAccessKey do
     it 'assigns random_r and calculates the cek, encryption_key, and encrypted_password' do
       subject.build
 
-      expect(SecureRandom).to have_received(:random_bytes).once
+      expect(SecureRandom).to have_received(:random_bytes).with(32).once
       expect(subject.random_r).to eq(random_r)
       expect(subject.encryption_key).to eq(encryption_key)
       expect(subject.cek).to eq(cek)
@@ -90,7 +95,7 @@ describe Encryption::UserAccessKey do
     it 'derives random_r from the encryption key and sets the cek and encrypted password' do
       subject.unlock(encryption_key)
 
-      expect(SecureRandom).to_not have_received(:random_bytes)
+      expect(SecureRandom).to_not have_received(:random_bytes).with(32)
       expect(subject.random_r).to eq(random_r)
       expect(subject.encryption_key).to eq(encryption_key)
       expect(subject.cek).to eq(cek)

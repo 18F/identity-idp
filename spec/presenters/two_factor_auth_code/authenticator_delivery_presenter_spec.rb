@@ -9,7 +9,7 @@ describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
 
   describe '#header' do
     it 'supplies a header' do
-      expect(presenter.header).to eq(t('devise.two_factor_authentication.totp_header_text'))
+      expect(presenter.header).to eq(t('two_factor_authentication.totp_header_text'))
     end
   end
 

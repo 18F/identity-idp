@@ -4,6 +4,11 @@ describe Encryption::PasswordVerifier do
   describe '.digest' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters
+      # The newrelic_rpm gem added a call to `SecureRandom.hex(8)` in
+      # abstract_segment.rb on 6/13/18. Our New Relic tracers in
+      # config/initializers/new_relic_tracers.rb trigger this call, which
+      # is why we stub with a default value first.
+      allow(SecureRandom).to receive(:hex) { salt }
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
       digest = described_class.digest('saltypickles')

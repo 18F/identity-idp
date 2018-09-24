@@ -15,5 +15,7 @@ module TwilioErrors
     60_082 => I18n.t('errors.messages.invalid_sms_number'),
     # phone number not provisioned with any carrier
     60_083 => I18n.t('errors.messages.invalid_phone_number'),
+    # Request timed out or connection failed
+    4_815_162_342 => I18n.t('errors.messages.twilio_timeout'),
   }.freeze
 end

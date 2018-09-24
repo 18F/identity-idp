@@ -264,7 +264,7 @@ production:
     redirect_uris:
       - 'http://localhost:9292/auth/result'
       <% if LoginGov::Hostdata.in_datacenter? %>
-      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
+      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/result'
       <% end %>
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
@@ -399,6 +399,7 @@ production:
     redirect_uris:
       - 'https://ttp.cbp.dhs.gov'
       - 'https://ttp.cbp.dhs.gov/login'
+      - 'https://ttp.cbp.dhs.gov/login?logout=logout&undefined'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
   # CBP ROAM (formerly OARS)

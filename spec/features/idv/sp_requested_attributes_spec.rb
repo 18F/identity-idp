@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'sp requested IdV attributes', :idv_job, :email do
+feature 'sp requested IdV attributes', :email do
   context 'oidc' do
     it_behaves_like 'sp requesting attributes', :oidc
   end

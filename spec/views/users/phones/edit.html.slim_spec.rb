@@ -5,7 +5,7 @@ describe 'users/phones/edit.html.slim' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      @user_phone_form = UserPhoneForm.new(user)
+      @user_phone_form = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
       @presenter = PhoneSetupPresenter.new('voice')
     end
 

@@ -6,7 +6,8 @@ module AccountReset
         redirect_to root_url
       else
         render :show, locals: {
-          email: email, sms_phone: SmsLoginOptionPolicy.new(current_user).configured?
+          email: email,
+          sms_phone: TwoFactorAuthentication::PhonePolicy.new(current_user).configured?,
         }
         sign_out
       end

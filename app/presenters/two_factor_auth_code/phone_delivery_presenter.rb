@@ -5,7 +5,7 @@ module TwoFactorAuthCode
     )
 
     def header
-      t('devise.two_factor_authentication.header_text')
+      t('two_factor_authentication.header_text')
     end
 
     def phone_number_message
@@ -41,7 +41,6 @@ module TwoFactorAuthCode
     private
 
     attr_reader(
-      :totp_enabled,
       :reenter_phone_number_path,
       :phone_number,
       :unconfirmed_phone,

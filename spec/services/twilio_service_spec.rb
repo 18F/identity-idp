@@ -101,7 +101,7 @@ describe TwilioService::Utils do
         to raise_error(Twilio::REST::RestError, sanitized_message)
     end
 
-    it 'rescues timeout errors and raises a custom Twilio error' do
+    it 'rescues timeout errors, retries, then raises a custom Twilio error' do
       TwilioService::Utils.telephony_service = FakeVoiceCall
       error_code = 4_815_162_342
       status_code = 4_815_162_342
@@ -109,8 +109,23 @@ describe TwilioService::Utils do
       message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
       service = TwilioService::Utils.new
 
-      expect(service.send(:client).calls).to receive(:create).
+      expect(service.send(:client).calls).to receive(:create).twice.
         and_raise(Faraday::TimeoutError)
+
+      expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
+        to raise_error(Twilio::REST::RestError, message)
+    end
+
+    it 'rescues failed connection errors, retries, then raises a custom Twilio error' do
+      TwilioService::Utils.telephony_service = FakeVoiceCall
+      error_code = 4_815_162_342
+      status_code = 4_815_162_342
+
+      message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
+      service = TwilioService::Utils.new
+
+      expect(service.send(:client).calls).to receive(:create).twice.
+        and_raise(Faraday::ConnectionFailed.new('error'))
 
       expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
         to raise_error(Twilio::REST::RestError, message)
@@ -158,7 +173,7 @@ describe TwilioService::Utils do
         to raise_error(Twilio::REST::RestError, sanitized_message)
     end
 
-    it 'rescues timeout errors and raises a custom Twilio error' do
+    it 'rescues timeout errors, retries, then raises a custom Twilio error' do
       TwilioService::Utils.telephony_service = FakeSms
       error_code = 4_815_162_342
       status_code = 4_815_162_342
@@ -166,8 +181,33 @@ describe TwilioService::Utils do
       message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
       service = TwilioService::Utils.new
 
-      expect(service.send(:client).messages).to receive(:create).
+      request_data = {
+        event: 'Twilio Request Timeout',
+        url: 'foo',
+        method: 'get',
+        params: {},
+        headers: {},
+      }.to_json
+
+      expect(Rails.logger).to receive(:info).with(request_data)
+
+      expect(service.send(:client).messages).to receive(:create).twice.
         and_raise(Faraday::TimeoutError)
+
+      expect { service.send_sms(to: '+123456789012', body: 'test') }.
+        to raise_error(Twilio::REST::RestError, message)
+    end
+
+    it 'rescues failed connection errors, retries, then raises a custom Twilio error' do
+      TwilioService::Utils.telephony_service = FakeSms
+      error_code = 4_815_162_342
+      status_code = 4_815_162_342
+
+      message = "[HTTP #{status_code}] #{error_code} : timeout\n\n"
+      service = TwilioService::Utils.new
+
+      expect(service.send(:client).messages).to receive(:create).twice.
+        and_raise(Faraday::ConnectionFailed.new('error'))
 
       expect { service.send_sms(to: '+123456789012', body: 'test') }.
         to raise_error(Twilio::REST::RestError, message)

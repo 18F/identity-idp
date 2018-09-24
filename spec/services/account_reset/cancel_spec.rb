@@ -22,7 +22,7 @@ describe AccountReset::Cancel do
   context 'when the token is valid' do
     context 'when the user has a phone enabled for SMS' do
       before(:each) do
-        user.phone_configurations.first.update!(delivery_preference: :sms)
+        MfaContext.new(user).phone_configurations.first.update!(delivery_preference: :sms)
       end
 
       it 'notifies the user via SMS of the account reset cancellation' do
@@ -31,8 +31,11 @@ describe AccountReset::Cancel do
 
         AccountReset::Cancel.new(token).call
 
-        expect(SmsAccountResetCancellationNotifierJob).
-          to have_received(:perform_now).with(phone: user.phone_configurations.first.phone)
+        expect(
+          SmsAccountResetCancellationNotifierJob
+        ).to have_received(:perform_now).with(
+          phone: MfaContext.new(user).phone_configurations.first.phone
+        )
       end
     end
 
@@ -40,7 +43,7 @@ describe AccountReset::Cancel do
       it 'does not notify the user via SMS' do
         token = create_account_reset_request_for(user)
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
-        user.phone_configurations.clear
+        MfaContext.new(user).phone_configurations.clear
 
         AccountReset::Cancel.new(token).call
 
@@ -86,7 +89,7 @@ describe AccountReset::Cancel do
     context 'when the user does not have a phone enabled for SMS' do
       it 'does not notify the user via SMS' do
         allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
-        user.phone_configurations.first.update!(mfa_enabled: false)
+        MfaContext.new(user).phone_configurations.first.update!(mfa_enabled: false)
 
         AccountReset::Cancel.new('foo').call
 

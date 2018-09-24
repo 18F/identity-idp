@@ -6,7 +6,7 @@ describe 'users/phone_setup/index.html.slim' do
 
     allow(view).to receive(:current_user).and_return(user)
 
-    @user_phone_form = UserPhoneForm.new(user)
+    @user_phone_form = UserPhoneForm.new(user, nil)
     @presenter = PhoneSetupPresenter.new('voice')
     render
   end

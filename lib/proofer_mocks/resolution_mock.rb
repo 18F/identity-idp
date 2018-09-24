@@ -12,7 +12,7 @@ class ResolutionMock < Proofer::Base
       result.add_error(:first_name, 'Unverified first name.')
 
     elsif first_name.match?(/Time/i)
-      sleep((Figaro.env.async_job_refresh_max_wait_seconds.to_i + 5).seconds)
+      raise Proofer::TimeoutError, 'resolution mock timeout'
 
     elsif applicant[:ssn].match?(/6666/)
       result.add_error(:ssn, 'Unverified SSN.')

@@ -24,7 +24,7 @@ module AccountReset
     end
 
     def confirm_two_factor_enabled
-      return if current_user.two_factor_enabled?
+      return if MfaPolicy.new(current_user).two_factor_enabled?
 
       redirect_to two_factor_options_url
     end
@@ -37,9 +37,9 @@ module AccountReset
     def analytics_attributes
       {
         event: 'request',
-        sms_phone: SmsLoginOptionPolicy.new(current_user).configured?,
-        totp: AuthAppLoginOptionPolicy.new(current_user).configured?,
-        piv_cac: PivCacLoginOptionPolicy.new(current_user).configured?,
+        sms_phone: TwoFactorAuthentication::PhonePolicy.new(current_user).configured?,
+        totp: TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured?,
+        piv_cac: TwoFactorAuthentication::PivCacPolicy.new(current_user).configured?,
       }
     end
   end

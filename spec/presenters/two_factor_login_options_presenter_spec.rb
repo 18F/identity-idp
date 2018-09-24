@@ -27,9 +27,9 @@ describe TwoFactorLoginOptionsPresenter do
       receive(:account_reset_token).and_return('foo')
 
     expect(presenter.account_reset_or_cancel_link).to eq \
-      t('devise.two_factor_authentication.account_reset.pending_html',
+      t('two_factor_authentication.account_reset.pending_html',
         cancel_link: view.link_to(
-          t('devise.two_factor_authentication.account_reset.cancel_link'),
+          t('two_factor_authentication.account_reset.cancel_link'),
           account_reset_cancel_url(token: 'foo')
         ))
   end
@@ -39,9 +39,9 @@ describe TwoFactorLoginOptionsPresenter do
       receive(:account_reset_token_valid?).and_return(false)
 
     expect(presenter.account_reset_or_cancel_link).to eq \
-      t('devise.two_factor_authentication.account_reset.text_html',
+      t('two_factor_authentication.account_reset.text_html',
         link: view.link_to(
-          t('devise.two_factor_authentication.account_reset.link'),
+          t('two_factor_authentication.account_reset.link'),
           account_reset_request_path(locale: LinkLocaleResolver.locale)
         ))
   end

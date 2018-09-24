@@ -11,6 +11,7 @@ describe AccountReset::CancelController do
   describe '#create' do
     it 'logs a good token to the analytics' do
       token = create_account_reset_request_for(user)
+      session[:cancel_token] = token
 
       stub_analytics
       analytics_hash = {
@@ -23,7 +24,7 @@ describe AccountReset::CancelController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, analytics_hash)
 
-      post :create, params: { token: token }
+      post :create
     end
 
     it 'logs a bad token to the analytics' do
@@ -37,8 +38,9 @@ describe AccountReset::CancelController do
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, analytics_hash)
+      session[:cancel_token] = 'FOO'
 
-      post :create, params: { token: 'FOO' }
+      post :create
     end
 
     it 'logs a missing token to the analytics' do
@@ -63,11 +65,12 @@ describe AccountReset::CancelController do
 
     it 'redirects to the root with a flash message when the token is valid' do
       token = create_account_reset_request_for(user)
+      session[:cancel_token] = token
 
-      post :create, params: { token: token }
+      post :create
 
       expect(flash[:success]).
-        to eq t('devise.two_factor_authentication.account_reset.successful_cancel')
+        to eq t('two_factor_authentication.account_reset.successful_cancel')
       expect(response).to redirect_to root_url
     end
 
@@ -75,10 +78,44 @@ describe AccountReset::CancelController do
       stub_sign_in(user)
 
       token = create_account_reset_request_for(user)
+      session[:cancel_token] = token
 
       expect(controller).to receive(:sign_out)
 
-      post :create, params: { token: token }
+      post :create
+    end
+  end
+
+  describe '#show' do
+    it 'redirects to root if the token does not match one in the DB' do
+      stub_analytics
+      properties = {
+        user_id: 'anonymous-uuid',
+        event: 'visit',
+        success: false,
+        errors: { token: [t('errors.account_reset.cancel_token_invalid')] },
+      }
+      expect(@analytics).
+        to receive(:track_event).with(Analytics::ACCOUNT_RESET, properties)
+
+      get :show, params: { token: 'FOO' }
+
+      expect(response).to redirect_to(root_url)
+      expect(flash[:error]).to eq t('errors.account_reset.cancel_token_invalid')
+    end
+
+    it 'renders the show view if the token is missing' do
+      get :show
+
+      expect(response).to render_template(:show)
+    end
+
+    it 'redirects to root if feature is not enabled' do
+      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
+
+      get :show
+
+      expect(response).to redirect_to root_url
     end
   end
 end

@@ -14,14 +14,14 @@ module FakeAdapter
       false
     end
 
-    def response_body
+    def body
       {
         error_code: '60033',
         message: 'Invalid number',
       }.to_json
     end
 
-    def response_code
+    def status
       400
     end
   end
@@ -31,11 +31,11 @@ module FakeAdapter
       false
     end
 
-    def response_body
+    def body
       ''
     end
 
-    def response_code
+    def status
       400
     end
   end
