@@ -147,4 +147,47 @@ describe 'accounts/show.html.slim' do
 
     expect(view).to render_template(partial: '_delete_account_item_heading')
   end
+
+  context 'phone listing and adding' do
+    it 'renders the phone section' do
+      render
+
+      expect(view).to render_template(partial: '_phone')
+    end
+
+    context 'user has no phone' do
+      let(:user) do
+        record = build_stubbed(:user, :signed_up, :with_piv_or_cac)
+        record.phone_configurations = []
+        record
+      end
+
+      it 'shows the add phone link' do
+        render
+
+        expect(rendered).to have_link(
+          t('account.index.phone_add'), href: manage_phone_path
+        )
+      end
+    end
+
+    context 'user has a phone' do
+      it 'shows no add phone link' do
+        render
+
+        expect(rendered).to_not have_content t('account.index.phone_add')
+        expect(rendered).to_not have_link(
+          t('account.index.phone_add'), href: manage_phone_path
+        )
+      end
+
+      it 'shows an edit link' do
+        render
+
+        expect(rendered).to have_link(
+          t('account.index.phone'), href: manage_phone_url
+        )
+      end
+    end
+  end
 end

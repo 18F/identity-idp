@@ -40,8 +40,8 @@ describe 'sign_up/personal_keys/show.html.slim' do
   it 'informs the user of importance of keeping the personal key in a safe place' do
     render
     expect(rendered).to have_content(
-      t('instructions.personal_key_html',
-        accent: t('instructions.personal_key_accent'))
+      t('instructions.personal_key.info_html',
+        accent: t('instructions.personal_key.accent'))
     )
   end
 
@@ -61,7 +61,6 @@ describe 'sign_up/personal_keys/show.html.slim' do
 
   it 'displays a button to get a new personal key' do
     render
-    expect(rendered).to have_xpath("//input[@value='#{t('users.personal_key.get_another')}']")
     expect(rendered).to have_xpath("//form[@action='#{sign_up_personal_key_path}']")
   end
 end

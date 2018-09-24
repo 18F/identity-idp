@@ -22,7 +22,7 @@ function getStrength(z) {
 }
 
 function getFeedback(z) {
-  if (!z || z.score > 2) return '';
+  if (!z || z.score > 2) return '&nbsp;';
 
   const { warning, suggestions } = z.feedback;
 
@@ -30,10 +30,10 @@ function getFeedback(z) {
     return I18n.t(`zxcvbn.feedback.${I18n.key(str)}`);
   }
 
-  if (!warning && !suggestions.length) return '';
+  if (!warning && !suggestions.length) return '&nbsp;';
   if (warning) return lookup(warning);
 
-  return `${suggestions.map(s => lookup(s)).join('. ')}`;
+  return `${suggestions.map(s => lookup(s)).join('')}`;
 }
 
 function disableSubmit(submitEl, score = 0) {

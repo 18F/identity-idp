@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'LOA3 Single Sign On', idv_job: true do
+feature 'LOA3 Single Sign On' do
   include SamlAuthHelper
   include IdvHelper
 

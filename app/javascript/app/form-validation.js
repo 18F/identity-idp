@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (inputs.length !== 0) {
         [].forEach.call(inputs, function(input) {
-          const types = ['dob', 'personal-key', 'ssn', 'zipcode'];
+          const types = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode'];
 
           addListenerMulti(input, 'input invalid', (e) => {
             e.target.setCustomValidity('');

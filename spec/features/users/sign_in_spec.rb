@@ -330,7 +330,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'Bermuda'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -351,7 +351,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -374,7 +374,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -397,7 +397,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
-        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -441,7 +441,7 @@ feature 'Sign in' do
       click_submit_default
 
       expect(page).to have_current_path(login_two_factor_personal_key_path)
-      expect(page).to have_content t('devise.two_factor_authentication.invalid_personal_key')
+      expect(page).to have_content t('two_factor_authentication.invalid_personal_key')
     end
   end
 
@@ -478,7 +478,7 @@ feature 'Sign in' do
 
     it 'does not display OTP Fallback text and links' do
       expect(page).
-        to_not have_content t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+        to_not have_content t('two_factor_authentication.totp_fallback.sms_link_text')
     end
   end
 end

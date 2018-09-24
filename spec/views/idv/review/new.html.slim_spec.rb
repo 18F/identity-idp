@@ -7,7 +7,7 @@ describe 'idv/review/new.html.slim' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      @idv_params = {
+      @applicant = {
         first_name: 'Some',
         last_name: 'One',
         ssn: '666-66-1234',

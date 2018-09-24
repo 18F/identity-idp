@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv state id data entry', :idv_job do
+feature 'idv state id data entry' do
   include IdvStepHelper
 
   let(:locale) { LinkLocaleResolver.locale }
@@ -19,9 +19,8 @@ feature 'idv state id data entry', :idv_job do
     expect(current_path).to eq(idv_session_failure_path(:warning, locale: locale))
   end
 
-  it 'renders an error for blank state id number and does not submit a job', :email do
-    expect(Idv::ProoferJob).to_not receive(:perform_now)
-    expect(Idv::ProoferJob).to_not receive(:perform_later)
+  it 'renders an error for blank state id number and does not attempt to proof', :email do
+    expect(Idv::Proofer).to_not receive(:get_vendor)
 
     fill_in :profile_state_id_number, with: ''
     click_idv_continue
@@ -31,13 +30,22 @@ feature 'idv state id data entry', :idv_job do
   end
 
   it 'renders an error for unsupported jurisdiction and does not submit a job', :email do
-    expect(Idv::ProoferJob).to_not receive(:perform_now)
-    expect(Idv::ProoferJob).to_not receive(:perform_later)
+    expect(Idv::Proofer).to_not receive(:get_vendor)
 
     select 'Alabama', from: 'profile_state'
     click_idv_continue
 
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
+    expect(current_path).to eq(idv_session_path)
+  end
+
+  it 'renders an error for a state id that is too long and does not submit a job', :email do
+    expect(Idv::Proofer).to_not receive(:get_vendor)
+
+    fill_in 'profile_state_id_number', with: '8' * 26
+    click_idv_continue
+
+    expect(page).to have_content t('idv.errors.pattern_mismatch.state_id_number')
     expect(current_path).to eq(idv_session_path)
   end
 

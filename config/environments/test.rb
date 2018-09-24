@@ -37,6 +37,9 @@ Rails.application.configure do
     Bullet.add_whitelist(
       type: :n_plus_one_query, class_name: 'User', association: :phone_configurations
     )
+    Bullet.add_whitelist(
+      type: :n_plus_one_query, class_name: 'User', association: :email_address
+    )
   end
 
   config.active_support.test_order = :random

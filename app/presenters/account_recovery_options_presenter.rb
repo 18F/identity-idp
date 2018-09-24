@@ -23,8 +23,8 @@ class AccountRecoveryOptionsPresenter
     AVAILABLE_2FA_TYPES.map do |type|
       OpenStruct.new(
         type: type,
-        label: t("devise.two_factor_authentication.two_factor_choice_options.#{type}"),
-        info: t("devise.two_factor_authentication.two_factor_choice_options.#{type}_info"),
+        label: t("two_factor_authentication.two_factor_choice_options.#{type}"),
+        info: t("two_factor_authentication.two_factor_choice_options.#{type}_info"),
         selected: type == :sms
       )
     end

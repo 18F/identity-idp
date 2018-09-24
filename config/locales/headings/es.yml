@@ -30,7 +30,7 @@ es:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
       forgot: "¿Olvidó su contraseña?"
-    personal_key: Aquí está su clave personal
+    personal_key: Siempre tenga acceso a su cuenta con su clave personal
     piv_cac_setup:
       certificate:
         bad: El certificado que seleccionaste no es válido.

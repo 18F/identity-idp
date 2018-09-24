@@ -4,13 +4,11 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
 
     def header
-      t('devise.two_factor_authentication.piv_cac_header_text')
+      t('two_factor_authentication.piv_cac_header_text')
     end
 
     def help_text
-      t('instructions.mfa.piv_cac.confirm_piv_cac_html',
-        email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME))
+      t('instructions.mfa.piv_cac.confirm_piv_cac_html')
     end
 
     def piv_cac_capture_text
@@ -36,6 +34,6 @@ module TwoFactorAuthCode
 
     private
 
-    attr_reader :user_email, :two_factor_authentication_method, :totp_enabled, :phone_enabled
+    attr_reader :two_factor_authentication_method
   end
 end

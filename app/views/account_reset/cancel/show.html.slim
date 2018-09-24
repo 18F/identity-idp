@@ -1,0 +1,13 @@
+- title t('account_reset.cancel_request.title')
+
+h1.h3.my0 = t('account_reset.cancel_request.title')
+br
+h4.my2 = t('account_reset.cancel_request.are_you_sure')
+
+= button_to t('account_reset.cancel_request.cancel_button'), \
+    account_reset_cancel_path, method: :post, \
+    class: 'btn btn-primary btn-wide'
+br
+br
+hr
+= link_to t('account_reset.cancel_request.cancel'), root_url

@@ -32,7 +32,7 @@ module Test
     end
 
     def must_be_in_development
-      redirect_to root_url unless FeatureManagement.development_and_piv_cac_entry_enabled?
+      redirect_to root_url unless FeatureManagement.development_and_identity_pki_disabled?
     end
 
     def token_from_params

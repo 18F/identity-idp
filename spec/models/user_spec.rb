@@ -13,12 +13,39 @@ describe User do
     it { is_expected.to have_one(:account_reset_request) }
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
+    it { is_expected.to have_one(:doc_auth) }
   end
 
   it 'does not send an email when #create is called' do
     expect do
       User.create(email: 'nobody@nobody.com')
     end.to change(ActionMailer::Base.deliveries, :count).by(0)
+  end
+
+  describe 'email_address' do
+    it 'creates an entry for the user when created' do
+      expect do
+        User.create(email: 'nobody@nobody.com')
+      end.to change(EmailAddress, :count).by(1)
+    end
+
+    it 'mirrors the info from the user object on creation' do
+      user = create(:user)
+      email_address = user.email_address
+      expect(email_address).to be_present
+      expect(email_address.encrypted_email).to eq user.encrypted_email
+      expect(email_address.email).to eq user.email
+      expect(email_address.confirmed_at).to eq user.confirmed_at
+    end
+
+    it 'mirrors the info from an unconfirmed user object' do
+      user = create(:user, :unconfirmed)
+      email_address = user.email_address
+      expect(email_address).to be_present
+      expect(email_address.encrypted_email).to eq user.encrypted_email
+      expect(email_address.email).to eq user.email
+      expect(email_address.confirmed_at).to be_nil
+    end
   end
 
   describe 'password validations' do
@@ -87,114 +114,22 @@ describe User do
     end
   end
 
-  describe '#piv_cac_enabled?' do
-    it 'is true when the user has a confirmed piv/cac associated' do
-      user = create(:user, :with_piv_or_cac)
-
-      expect(user.piv_cac_enabled?).to eq true
-    end
-
-    it 'is false when the user has no piv/cac associated' do
-      user = create(:user)
-
-      expect(user.piv_cac_enabled?).to eq false
-    end
-  end
-
-  describe '#piv_cac_available?' do
-    before(:each) do
-      allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
-    end
-
-    context 'when a user has no identities' do
-      let(:user) { create(:user) }
-
-      it 'does not allow piv/cac' do
-        expect(user.piv_cac_available?).to be_falsey
-      end
-    end
-
-    context 'when a user has an identity' do
-      let(:user) { create(:user) }
-
-      let(:service_provider) do
-        create(:service_provider)
-      end
-
-      let(:identity_with_sp) do
-        Identity.create(
-          user_id: user.id,
-          service_provider: service_provider.issuer
-        )
-      end
-
-      before(:each) do
-        user.identities << [identity_with_sp]
-      end
-
-      context 'not allowing it' do
-        it 'does not allow piv/cac' do
-          expect(user.piv_cac_available?).to be_falsey
-        end
-      end
-
-      context 'allowing it' do
-        before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-            [service_provider.agency].to_json
-          )
-          PivCacService.send(:reset_piv_cac_avaialable_agencies)
-        end
-
-        it 'does allows piv/cac' do
-          expect(user.piv_cac_available?).to be_truthy
-        end
-
-        context 'but piv/cac feature is not enabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
-          end
-
-          it 'does not allow piv/cac' do
-            expect(user.piv_cac_available?).to be_falsey
-          end
-        end
-      end
-    end
-
-    context 'when a user has a piv/cac associated' do
-      let(:user) { create(:user, :with_piv_or_cac) }
-
-      it 'allows piv/cac' do
-        expect(user.piv_cac_available?).to be_truthy
-      end
-
-      context 'but the piv/cac feature is disabled' do
-        before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
-        end
-
-        it 'does not allow piv/cac' do
-          expect(user.piv_cac_available?).to be_falsey
-        end
-      end
-    end
-  end
-
   describe '#confirm_piv_cac?' do
     context 'when the user has a piv/cac associated' do
       let(:user) { create(:user, :with_piv_or_cac) }
 
       it 'is false when a blank is provided' do
-        expect(user.confirm_piv_cac?('')).to be_falsey
+        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?('')).to be_falsey
       end
 
       it 'is false when a nil is provided' do
-        expect(user.confirm_piv_cac?(nil)).to be_falsey
+        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
       end
 
       it 'is true when the correct valud is provided' do
-        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_truthy
+        expect(
+          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)
+        ).to be_truthy
       end
     end
 
@@ -202,15 +137,17 @@ describe User do
       let(:user) { create(:user) }
 
       it 'is false when a blank is provided' do
-        expect(user.confirm_piv_cac?('')).to be_falsey
+        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?('')).to be_falsey
       end
 
       it 'is false when a nil is provided' do
-        expect(user.confirm_piv_cac?(nil)).to be_falsey
+        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
       end
 
       it 'is false when the user x509_dn_uuid value is provided' do
-        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_falsey
+        expect(
+          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)
+        ).to be_falsey
       end
     end
   end
@@ -219,13 +156,13 @@ describe User do
     it 'is true when user has a confirmed phone' do
       user = create(:user, :with_phone)
 
-      expect(user.two_factor_enabled?).to eq true
+      expect(MfaPolicy.new(user).two_factor_enabled?).to eq true
     end
 
     it 'is false when user does not have a phone' do
       user = create(:user)
 
-      expect(user.two_factor_enabled?).to eq false
+      expect(MfaPolicy.new(user).two_factor_enabled?).to eq false
     end
   end
 
@@ -235,7 +172,9 @@ describe User do
     it 'is true when two_factor_enabled' do
       user = build_stubbed(:user)
 
-      allow(user).to receive(:two_factor_enabled?).and_return true
+      mock_mfa = MfaPolicy.new(user)
+      allow(mock_mfa).to receive(:two_factor_enabled?).and_return true
+      allow(MfaPolicy).to receive(:new).with(user).and_return mock_mfa
 
       expect(user.need_two_factor_authentication?(nil)).to be_truthy
     end
@@ -243,7 +182,9 @@ describe User do
     it 'is false when not two_factor_enabled' do
       user = build_stubbed(:user)
 
-      allow(user).to receive(:two_factor_enabled?).and_return false
+      mock_mfa = MfaPolicy.new(user)
+      allow(mock_mfa).to receive(:two_factor_enabled?).and_return false
+      allow(MfaPolicy).to receive(:new).with(user).and_return(mock_mfa)
 
       expect(user.need_two_factor_authentication?(nil)).to be_falsey
     end

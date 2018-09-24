@@ -14,7 +14,7 @@ module PivCacService
     end
 
     def piv_cac_service_link(nonce)
-      if FeatureManagement.development_and_piv_cac_entry_enabled?
+      if FeatureManagement.development_and_identity_pki_disabled?
         test_piv_cac_entry_url
       else
         uri = URI(randomize_uri(Figaro.env.piv_cac_service_url))
@@ -29,7 +29,6 @@ module PivCacService
     end
 
     def piv_cac_available_for_agency?(agency, email = nil)
-      return unless FeatureManagement.piv_cac_enabled?
       available_for_agency?(agency) || available_for_email?(agency, email)
     end
 
@@ -120,7 +119,7 @@ module PivCacService
     end
 
     def decode_test_token(token)
-      if FeatureManagement.development_and_piv_cac_entry_enabled?
+      if FeatureManagement.development_and_identity_pki_disabled?
         JSON.parse(token[5..-1])
       else
         { 'error' => 'token.bad' }
