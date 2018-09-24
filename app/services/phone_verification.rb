@@ -1,15 +1,16 @@
 class PhoneVerification
-  AUTHY_START_ENDPOINT = 'https://api.authy.com/protected/json/phones/verification/start'.freeze
+  AUTHY_HOST = 'https://api.authy.com'.freeze
+  AUTHY_VERIFY_ENDPOINT = '/protected/json/phones/verification/start'.freeze
 
-  HEADERS = { 'X-Authy-API-Key' => Figaro.env.twilio_verify_api_key }.freeze
-  OPEN_TIMEOUT = 5
-  READ_TIMEOUT = 5
+  TIMEOUT = Figaro.env.twilio_timeout.to_i
 
   AVAILABLE_LOCALES = %w[af ar ca zh zh-CN zh-HK hr cs da nl en fi fr de el he hi hu id it ja ko ms
                          nb pl pt-BR pt ro ru es sv tl th tr vi].freeze
 
   cattr_accessor :adapter do
-    Typhoeus
+    Faraday.new(url: AUTHY_HOST, request: { open_timeout: TIMEOUT, timeout: TIMEOUT }) do |faraday|
+      faraday.adapter :typhoeus
+    end
   end
 
   def initialize(phone:, code:, locale: nil)
@@ -18,22 +19,68 @@ class PhoneVerification
     @locale = locale
   end
 
-  # rubocop:disable Style/GuardClause
   def send_sms
-    unless start_request.success?
-      raise VerifyError.new(
-        code: error_code,
-        message: error_message,
-        status: start_request.response_code,
-        response: start_request.response_body
-      )
-    end
+    tries ||= 2
+    raise_bad_request_error unless response.success?
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
+    retry unless (tries -= 1).zero?
+    raise_connection_timed_out_or_failed_error(exception)
   end
-  # rubocop:enable Style/GuardClause
 
   private
 
-  attr_reader :phone, :code, :locale
+  attr_reader :phone, :code, :locale, :connection
+
+  def response
+    @response ||= begin
+      adapter.post do |request|
+        request.url AUTHY_VERIFY_ENDPOINT
+        request.headers['X-Authy-API-Key'] = Figaro.env.twilio_verify_api_key
+        request.body = request_body
+      end
+    end
+  end
+
+  def request_body
+    {
+      code_length: 6,
+      country_code: country_code,
+      custom_code: code,
+      locale: locale,
+      phone_number: number_without_country_code,
+      via: 'sms',
+    }
+  end
+
+  def country_code
+    parsed_phone.country_code
+  end
+
+  def number_without_country_code
+    parsed_phone.raw_national
+  end
+
+  def parsed_phone
+    @parsed_phone ||= Phonelib.parse(phone)
+  end
+
+  def raise_bad_request_error
+    raise VerifyError.new(
+      code: error_code,
+      message: error_message,
+      status: response.status,
+      response: response.body
+    )
+  end
+
+  def raise_connection_timed_out_or_failed_error(exception)
+    raise VerifyError.new(
+      code: 4_815_162_342,
+      message: "Twilio Verify: #{exception.class}",
+      status: 0,
+      response: ''
+    )
+  end
 
   def error_code
     response_body.fetch('error_code', nil).to_i
@@ -44,43 +91,9 @@ class PhoneVerification
   end
 
   def response_body
-    @response_body ||= JSON.parse(start_request.response_body)
+    @response_body ||= JSON.parse(response.body)
   rescue JSON::ParserError
     {}
-  end
-
-  def start_request
-    @start_request ||= adapter.post(AUTHY_START_ENDPOINT, start_params)
-  end
-
-  # rubocop:disable Metrics/MethodLength
-  def start_params
-    {
-      headers: HEADERS,
-      body: {
-        code_length: 6,
-        country_code: country_code,
-        custom_code: code,
-        locale: locale,
-        phone_number: number_without_country_code,
-        via: 'sms',
-      },
-      connecttimeout: OPEN_TIMEOUT,
-      timeout: READ_TIMEOUT,
-    }
-  end
-  # rubocop:enable Metrics/MethodLength
-
-  def number_without_country_code
-    parsed_phone.raw_national
-  end
-
-  def parsed_phone
-    @parsed_phone ||= Phonelib.parse(phone)
-  end
-
-  def country_code
-    parsed_phone.country_code
   end
 
   class VerifyError < StandardError

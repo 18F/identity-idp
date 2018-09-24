@@ -82,6 +82,7 @@ detectors:
       - Analytics
   TooManyInstanceVariables:
     exclude:
+      - BaseFlow
       - OpenidConnectAuthorizeForm
       - OpenidConnectRedirector
       - Idv::VendorResult

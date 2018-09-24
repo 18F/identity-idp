@@ -427,4 +427,32 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#doc_auth_enabled?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:doc_auth_enabled) { 'true' }
+
+      expect(FeatureManagement.doc_auth_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:doc_auth_enabled) { 'false' }
+
+      expect(FeatureManagement.doc_auth_enabled?).to eq(false)
+    end
+  end
+
+  describe '#doc_auth_exclusive?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'true' }
+
+      expect(FeatureManagement.doc_auth_exclusive?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'false' }
+
+      expect(FeatureManagement.doc_auth_exclusive?).to eq(false)
+    end
+  end
 end
