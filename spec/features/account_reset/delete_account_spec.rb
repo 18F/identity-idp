@@ -24,7 +24,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       Timecop.travel(Time.zone.now + 2.days) do
-        AccountResetService.grant_tokens_and_send_notifications
+        AccountReset::GrantRequestsAndSendEmails.new.call
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 

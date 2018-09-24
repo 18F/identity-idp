@@ -1,29 +1,19 @@
 require 'rails_helper'
 
-describe AccountResetService do
+describe AccountReset::GrantRequestsAndSendEmails do
   include AccountResetHelper
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
 
-  describe '#grant_request' do
-    it 'adds a notified at timestamp and granted token to the user' do
-      create_account_reset_request_for(user)
-      AccountResetService.new(user).grant_request
-      arr = AccountResetRequest.find_by(user_id: user.id)
-      expect(arr.granted_at).to be_present
-      expect(arr.granted_token).to be_present
-    end
-  end
-
-  describe '.grant_tokens_and_send_notifications' do
+  describe '#call' do
     context 'after waiting the full wait period' do
       it 'does not send notifications when the notifications were already sent' do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          AccountResetService.grant_tokens_and_send_notifications
-          notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+          AccountReset::GrantRequestsAndSendEmails.new.call
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
           expect(notifications_sent).to eq(0)
         end
       end
@@ -33,7 +23,7 @@ describe AccountResetService do
         cancel_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
           expect(notifications_sent).to eq(0)
         end
       end
@@ -42,7 +32,7 @@ describe AccountResetService do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
 
           expect(notifications_sent).to eq(1)
         end
@@ -53,7 +43,7 @@ describe AccountResetService do
         create_account_reset_request_for(user2)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
 
           expect(notifications_sent).to eq(2)
         end
@@ -64,7 +54,7 @@ describe AccountResetService do
       it 'does not send notifications after a request' do
         create_account_reset_request_for(user)
 
-        notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
         expect(notifications_sent).to eq(0)
       end
 
@@ -72,7 +62,7 @@ describe AccountResetService do
         create_account_reset_request_for(user)
         cancel_request_for(user)
 
-        notifications_sent = AccountResetService.grant_tokens_and_send_notifications
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
         expect(notifications_sent).to eq(0)
       end
     end

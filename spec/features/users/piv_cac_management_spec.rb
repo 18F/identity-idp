@@ -7,10 +7,6 @@ feature 'PIV/CAC Management' do
     end
   end
 
-  before(:each) do
-    allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
-  end
-
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }

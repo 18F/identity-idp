@@ -13,10 +13,6 @@ class FeatureManagement
     Figaro.env.telephony_disabled == 'true'
   end
 
-  def self.piv_cac_enabled?
-    Figaro.env.piv_cac_enabled == 'true'
-  end
-
   def self.identity_pki_disabled?
     env = Figaro.env
     env.identity_pki_disabled == 'true' ||
@@ -24,10 +20,10 @@ class FeatureManagement
       !env.piv_cac_verify_token_url
   end
 
-  def self.development_and_piv_cac_entry_enabled?
+  def self.development_and_identity_pki_disabled?
     # This controls if we try to hop over to identity-pki or just throw up
     # a screen asking for a Subject or one of a list of error conditions.
-    Rails.env.development? && piv_cac_enabled? && identity_pki_disabled?
+    Rails.env.development? && identity_pki_disabled?
   end
 
   def self.prefill_otp_codes?
