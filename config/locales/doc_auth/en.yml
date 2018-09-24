@@ -1,0 +1,27 @@
+---
+en:
+  doc_auth:
+    buttons:
+      capture: Capture
+      start_over: Start over
+    errors:
+      selfie: Sorry, we are unable to match your picture, please try again.
+      state_id_fail: Sorry. Information from your uploaded state-issued ID does not
+        match information for your social security number.
+    forms:
+      dob: Date of Birth
+      doc_success: We've verified your social security number and state-issued ID.
+      entered_info: 'Information you entered:'
+      first_name: First Name
+      last_name: Last Name
+      selfie_next: Next, we'll need to take your picture.
+      ssn: Social Security Number
+      state_id_info: 'Information from your uploaded state-issued ID:'
+    headings:
+      selfie: Take a selfie!
+      ssn: To verify your identity, you'll need your social security number and state-issued
+        ID.
+      upload_back: Please upload a photo of the back of your state-issued ID.
+      upload_front: Please upload a photo of the front of your state-issued ID.
+    titles:
+      doc_auth: Document Authentication
