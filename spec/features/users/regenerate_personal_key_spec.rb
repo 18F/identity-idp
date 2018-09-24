@@ -76,18 +76,11 @@ feature 'View personal key' do
 
   context 'with javascript enabled', js: true do
     let(:invisible_selector) { generate_class_selector('invisible') }
-    let(:accordion_control_selector) { generate_class_selector('accordion-header-controls') }
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       Capybara.current_session.current_window.resize_to(2560, 1600)
       sign_in_and_2fa_user
       click_button t('account.links.regenerate_personal_key')
-
-      expect_accordion_content_to_be_hidden_by_default
-
-      expand_accordion
-
-      expect_accordion_content_to_become_visible
 
       click_acknowledge_personal_key
 
@@ -137,9 +130,6 @@ feature 'View personal key' do
       expect(current_path).to eq account_path
     end
   end
-
-  it_behaves_like 'csrf error when asking for new personal key', :saml
-  it_behaves_like 'csrf error when asking for new personal key', :oidc
 end
 
 def sign_up_and_view_personal_key
@@ -149,23 +139,6 @@ def sign_up_and_view_personal_key
   fill_in 'user_phone_form_phone', with: '202-555-1212'
   click_send_security_code
   click_submit_default
-end
-
-def expect_accordion_content_to_be_hidden_by_default
-  expect(page).to have_xpath("//#{accordion_control_selector}")
-  expect(page).not_to have_content strip_tags(t('users.personal_key.help_text_html'))
-  expect(page).to have_xpath(
-    "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
-  )
-end
-
-def expand_accordion
-  page.find('.accordion-header-controls').click
-end
-
-def expect_accordion_content_to_become_visible
-  expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
-  expect(page).to have_content strip_tags(t('users.personal_key.help_text_html'))
 end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus

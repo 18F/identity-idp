@@ -17,14 +17,7 @@ es:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
       generated_on_html: Generado el %{date}
-      get_another: Obtener otra clave
       header: Su clave personal
-      help_text_header: "¿Por qué necesito guardar mi nueva clave en papel?"
-      help_text_html: |-
-        <p>Para proteger su cuenta, necesita una contraseña y acceso a su teléfono o app de autenticación al iniciar una sesión. Si no puede utilizar su teléfono o app, puede iniciar una sesión con su clave personal.</p>
-        <p>Para su privacidad y seguridad, login.gov no guarda su contraseña y clave personal. Sólo usted las conoce. Sólo usted puede acceder o compartir su información personal.</p>
-        <p>Le pedimos que guarde su clave personal afuera de su computadora o dispositivo móvil para que mantenerla segura en caso de que le roben sus aparatos o sus cuentas en línea sean hackeadas.</p>
-        <p>Si no tiene su clave personal y olvida su contraseña, la única manera de mantener su cuenta segura es verificando que usted es el propietario legal.</p>
       print: Imprima esta página
     totp_setup:
       new:
