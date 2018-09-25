@@ -10,6 +10,45 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { '!1a Z@6s' * 16 } # Maximum length password.
 
+    trait :with_webauthn do
+      after(:build) do |user, evaluator|
+        if user.webauthn_configurations.empty?
+          user.save!
+          if user.id.present?
+            create(:webauthn_configuration,
+                   { user: user }.merge(
+                     evaluator.with.slice(:name, :credential_id, :credential_public_key)
+                   ))
+            user.webauthn_configurations.reload
+          else
+            user.webauthn_configurations << build(
+              :webauthn_configuration,
+              evaluator.with.slice(:name, :credential_id, :credential_public_key)
+            )
+          end
+        end
+      end
+
+      after(:create) do |user, evaluator|
+        if user.webauthn_configurations.empty?
+          create(:webauthn_configuration,
+                 { user: user }.merge(
+                   evaluator.with.slice(:name, :credential_id, :credential_public_key)
+                 ))
+          user.webauthn_configurations.reload
+        end
+      end
+
+      after(:stub) do |user, evaluator|
+        if user.webauthn_configurations.empty?
+          user.webauthn_configurations << build(
+            :webauthn_configuration,
+            evaluator.with.slice(:name, :credential_id, :credential_public_key)
+          )
+        end
+      end
+    end
+
     trait :with_phone do
       after(:build) do |user, evaluator|
         if user.phone_configurations.empty?
@@ -19,7 +58,7 @@ FactoryBot.define do
                    { user: user, delivery_preference: user.otp_delivery_preference }.merge(
                      evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
                    ))
-            user.reload
+            user.phone_configurations.reload
           else
             user.phone_configurations << build(
               :phone_configuration,
@@ -37,7 +76,7 @@ FactoryBot.define do
                  { user: user, delivery_preference: user.otp_delivery_preference }.merge(
                    evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
                  ))
-          user.reload
+          user.phone_configurations.reload
         end
       end
 

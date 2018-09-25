@@ -1,11 +1,12 @@
 # :reek:TooManyMethods
 class AccountShow
-  attr_reader :decorated_user, :decrypted_pii, :personal_key
+  attr_reader :decorated_user, :decrypted_pii, :personal_key, :sp
 
-  def initialize(decrypted_pii:, personal_key:, decorated_user:)
+  def initialize(decrypted_pii:, personal_key:, decorated_user:, sp: '')
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
+    @sp = sp
   end
 
   def header_partial
@@ -53,7 +54,7 @@ class AccountShow
   end
 
   def totp_partial
-    if decorated_user.totp_enabled?
+    if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
       'accounts/actions/disable_totp'
     else
       'accounts/actions/enable_totp'
@@ -61,7 +62,7 @@ class AccountShow
   end
 
   def piv_cac_partial
-    if decorated_user.piv_cac_enabled?
+    if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
       'accounts/actions/disable_piv_cac'
     else
       'accounts/actions/enable_piv_cac'
@@ -91,15 +92,19 @@ class AccountShow
   end
 
   def totp_content
-    return I18n.t('account.index.auth_app_enabled') if decorated_user.totp_enabled?
-
-    I18n.t('account.index.auth_app_disabled')
+    if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
+      I18n.t('account.index.auth_app_enabled')
+    else
+      I18n.t('account.index.auth_app_disabled')
+    end
   end
 
   def piv_cac_content
-    return I18n.t('account.index.piv_cac_enabled') if decorated_user.piv_cac_enabled?
-
-    I18n.t('account.index.piv_cac_disabled')
+    if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
+      I18n.t('account.index.piv_cac_enabled')
+    else
+      I18n.t('account.index.piv_cac_disabled')
+    end
   end
 
   delegate :recent_events, :connected_apps, to: :decorated_user

@@ -21,14 +21,14 @@ describe 'two_factor_authentication/personal_key_verification/show.html.slim' do
     render
 
     expect(rendered).
-      to have_content t('devise.two_factor_authentication.personal_key_header_text')
+      to have_content t('two_factor_authentication.personal_key_header_text')
   end
 
   it 'prompts the user to enter their personal key' do
     render
 
     expect(rendered).
-      to have_content t('devise.two_factor_authentication.personal_key_prompt')
+      to have_content t('two_factor_authentication.personal_key_prompt')
   end
 
   it 'contains a form to submit the personal key' do

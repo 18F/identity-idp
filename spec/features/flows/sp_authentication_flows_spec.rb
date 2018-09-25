@@ -7,7 +7,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
   I18n.available_locales.each do |locale|
     context "with locale=#{locale}" do
       context 'with a valid SP' do
-        context 'when LOA3', :idv_job do
+        context 'when LOA3' do
           before do
             visit "#{loa3_authnrequest}&locale=#{locale}"
           end
@@ -63,7 +63,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with SMS delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.sms')
+                        choose t('two_factor_authentication.otp_delivery_preference.sms')
                         click_send_security_code
                       end
 
@@ -241,7 +241,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with SMS delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.sms')
+                        choose t('two_factor_authentication.otp_delivery_preference.sms')
                         click_send_security_code
                       end
 
@@ -252,7 +252,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                     context 'with Voice delivery' do
                       before do
-                        choose t('devise.two_factor_authentication.otp_delivery_preference.voice')
+                        choose t('two_factor_authentication.otp_delivery_preference.voice')
                         click_send_security_code
                       end
 

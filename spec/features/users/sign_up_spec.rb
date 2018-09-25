@@ -168,12 +168,11 @@ feature 'Sign Up' do
 
   it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
     allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
-    allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
     begin_sign_up_with_sp_and_loa(loa3: false)
 
     expect(page).to have_current_path two_factor_options_path
     expect(page).not_to have_content(
-      t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+      t('two_factor_authentication.two_factor_choice_options.piv_cac')
     )
   end
 

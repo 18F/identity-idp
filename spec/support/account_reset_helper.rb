@@ -9,4 +9,8 @@ module AccountResetHelper
     account_reset_request = AccountResetRequest.find_by(user_id: user.id)
     account_reset_request.update(cancelled_at: Time.zone.now)
   end
+
+  def grant_request(user)
+    AccountReset::GrantRequest.new(user).call
+  end
 end

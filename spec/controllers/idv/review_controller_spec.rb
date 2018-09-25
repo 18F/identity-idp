@@ -20,7 +20,7 @@ describe Idv::ReviewController do
       city: 'Somewhere',
       state: 'KS',
       zipcode: zipcode,
-      phone: user.phone_configurations.first&.phone,
+      phone: MfaContext.new(user).phone_configurations.first&.phone,
       ssn: '12345678',
     }
   end
@@ -32,7 +32,7 @@ describe Idv::ReviewController do
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
-    idv_session.params = user_attrs
+    idv_session.applicant = user_attrs
     idv_session
   end
 
@@ -61,7 +61,7 @@ describe Idv::ReviewController do
       routes.draw do
         get 'show' => 'idv/review#show'
       end
-      idv_session.params = user_attrs
+      idv_session.applicant = user_attrs
       allow(subject).to receive(:idv_session).and_return(idv_session)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
@@ -151,7 +151,7 @@ describe Idv::ReviewController do
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+      idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
@@ -191,7 +191,7 @@ describe Idv::ReviewController do
 
     context 'user has completed all steps' do
       before do
-        idv_session.params = user_attrs
+        idv_session.applicant = user_attrs
       end
 
       it 'shows completed session' do
@@ -266,7 +266,7 @@ describe Idv::ReviewController do
 
     context 'user fails to supply correct password' do
       before do
-        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       end
 
       it 'redirects to original path' do
@@ -278,7 +278,7 @@ describe Idv::ReviewController do
 
     context 'user has completed all steps' do
       before do
-        idv_session.params = user_attrs
+        idv_session.applicant = user_attrs
         idv_session.applicant = idv_session.vendor_params
         stub_analytics
         allow(@analytics).to receive(:track_event)

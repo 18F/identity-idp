@@ -53,15 +53,34 @@ module TwilioService
     end
 
     def sanitize_errors
+      tries ||= 2
       yield
     rescue Twilio::REST::RestError => error
       sanitize_phone_number(error.message)
       raise
-    rescue Faraday::TimeoutError
-      raise Twilio::REST::RestError.new('timeout', TwilioTimeoutResponse.new)
+    rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+      retry unless (tries -= 1).zero?
+      raise_custom_timeout_error
     end
 
     DIGITS_TO_PRESERVE = 5
+
+    def raise_custom_timeout_error
+      Rails.logger.info(request_data.to_json)
+      raise Twilio::REST::RestError.new('timeout', TwilioTimeoutResponse.new)
+    end
+
+    def request_data
+      last_request = @client.http_client.last_request
+
+      {
+        event: 'Twilio Request Timeout',
+        url: last_request.url,
+        method: last_request.method,
+        params: last_request.params,
+        headers: last_request.headers,
+      }
+    end
 
     def sanitize_phone_number(str)
       str.gsub!(/\+[\d\(\)\- ]+/) do |match|

@@ -10,7 +10,7 @@ describe Idv::ConfirmationsController do
       current_user: user,
       issuer: nil
     )
-    idv_session.applicant = idv_session.vendor_params
+    idv_session.applicant = applicant
     idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
@@ -110,7 +110,8 @@ describe Idv::ConfirmationsController do
 
     context 'user used 2FA phone as phone of record' do
       before do
-        subject.idv_session.params['phone'] = user.phone_configurations.first.phone
+        subject.idv_session.applicant['phone'] =
+          MfaContext.new(user).phone_configurations.first.phone
       end
 
       it 'tracks final IdV event' do
@@ -130,7 +131,7 @@ describe Idv::ConfirmationsController do
 
     context 'user confirmed a new phone' do
       before do
-        subject.idv_session.params['phone'] = '+1 (202) 555-9876'
+        subject.idv_session.applicant['phone'] = '+1 (202) 555-9876'
       end
 
       it 'tracks final IdV event' do

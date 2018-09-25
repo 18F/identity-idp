@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp verification step spec', :idv_job do
+feature 'phone otp verification step spec' do
   include IdvStepHelper
 
   let(:otp_code) { '777777' }
@@ -23,7 +23,7 @@ feature 'phone otp verification step spec', :idv_job do
     fill_in 'code', with: '000000'
     click_submit_default
 
-    expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+    expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
     expect(current_path).to eq(idv_otp_verification_path)
 
     # Enter the correct code
@@ -44,7 +44,7 @@ feature 'phone otp verification step spec', :idv_job do
       fill_in(:code, with: otp_code)
       click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page).to have_current_path(idv_otp_verification_path)
     end
   end

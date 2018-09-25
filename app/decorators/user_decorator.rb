@@ -1,6 +1,8 @@
 class UserDecorator
   include ActionView::Helpers::DateHelper
 
+  attr_reader :user
+
   MAX_RECENT_EVENTS = 5
   DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
@@ -9,7 +11,6 @@ class UserDecorator
   end
 
   delegate :email, to: :user
-  delegate :totp_enabled?, :piv_cac_enabled?, :piv_cac_available?, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
@@ -36,7 +37,7 @@ class UserDecorator
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.phone_configurations.first&.phone)
+    masked_number(MfaContext.new(user).phone_configurations.first&.phone)
   end
 
   def active_identity_for(service_provider)
@@ -126,8 +127,6 @@ class UserDecorator
   end
 
   private
-
-  attr_reader :user
 
   def masked_number(number)
     return '' if number.blank?

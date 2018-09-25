@@ -7,8 +7,8 @@ class AnonymousUser
     nil
   end
 
-  def phone_configuration
-    nil
+  def phone_configurations
+    []
   end
 
   def phone

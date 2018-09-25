@@ -13,7 +13,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
   describe '#header' do
-    let(:expected_header) { t('devise.two_factor_authentication.piv_cac_header_text') }
+    let(:expected_header) { t('two_factor_authentication.piv_cac_header_text') }
 
     it { expect(presenter.header).to eq expected_header }
   end

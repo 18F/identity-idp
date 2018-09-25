@@ -119,7 +119,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
-      expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
       click_submit_default

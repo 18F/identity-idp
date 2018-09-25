@@ -15,7 +15,6 @@ detectors:
       - ServiceProviderSessionDecorator#registration_heading
       - MfaConfirmationController#handle_invalid_password
       - needs_to_confirm_email_change?
-      - WorkerHealthChecker#status
       - UserFlowExporter#self.massage_assets
       - BasicAuthUrl#build
       - fallback_to_english
@@ -33,8 +32,6 @@ detectors:
       - generate_slo_request
       - reauthn?
       - mark_profile_inactive
-      - EncryptedSidekiqRedis#zrem
-      - UserDecorator#should_acknowledge_personal_key?
       - Pii::Attributes#[]=
       - OpenidConnectLogoutForm#load_identity
       - Idv::ProfileMaker#pii_from_applicant
@@ -43,6 +40,7 @@ detectors:
       - ServiceProviderSeeder#run
       - OtpDeliverySelectionForm#unsupported_phone?
       - fallback_to_english
+      - TwilioService::Utils#request_data
       - UserEncryptedAttributeOverrides#find_with_email
       - Utf8Sanitizer#event_attributes
       - Utf8Sanitizer#remote_ip
@@ -56,7 +54,6 @@ detectors:
     enabled: false
   ManualDispatch:
     exclude:
-      - EncryptedSidekiqRedis#respond_to_missing?
       - CloudhsmKeyGenerator#initialize_settings
   NestedIterators:
     exclude:
@@ -85,12 +82,14 @@ detectors:
       - Analytics
   TooManyInstanceVariables:
     exclude:
+      - BaseFlow
       - OpenidConnectAuthorizeForm
       - OpenidConnectRedirector
       - Idv::VendorResult
       - CloudhsmKeyGenerator
       - CloudhsmKeySharer
       - WebauthnSetupForm
+      - WebauthnVerificationForm
   TooManyStatements:
     max_statements: 6
     exclude:
@@ -105,6 +104,7 @@ detectors:
       - Idv::Agent#proof
       - Idv::VendorResult#initialize
       - SamlIdpController#auth
+      - TwilioService::Utils#sanitize_errors
       - Upaya::QueueConfig#self.choose_queue_adapter
       - Upaya::RandomTools#self.random_weighted_sample
       - UserFlowFormatter#stop
@@ -159,7 +159,6 @@ detectors:
       - SessionTimeoutWarningHelper#start
       - SessionTimeoutWarningHelper#warning
       - SessionDecorator
-      - WorkerHealthChecker::Middleware#call
       - UserEncryptedAttributeOverrides#create_fingerprint
       - LocaleHelper#locale_url_param
       - IdvSession#timed_out_vendor_error
@@ -187,7 +186,6 @@ directories:
       exclude:
         - complete_idv_questions_fail
         - complete_idv_questions_ok
-        - create_sidekiq_queues
     NilCheck:
       exclude:
         - complete_idv_questions_fail

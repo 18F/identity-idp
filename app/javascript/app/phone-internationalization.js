@@ -10,7 +10,7 @@ const selectedInternationCodeOption = () => {
 const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
   const selectedOption = selectedInternationCodeOption();
   if (selectedOption.dataset.smsOnly === 'true') {
-    const messageTemplate = I18n.t('devise.two_factor_authentication.otp_delivery_preference.phone_unsupported');
+    const messageTemplate = I18n.t('two_factor_authentication.otp_delivery_preference.phone_unsupported');
     return messageTemplate.replace('%{location}', selectedOption.dataset.countryName);
   }
   return null;
@@ -27,7 +27,7 @@ const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
 const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint) => {
   phoneRadio.disabled = false;
   phoneLabel.classList.remove('btn-disabled');
-  deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
+  deliveryMethodHint.innerText = I18n.t('two_factor_authentication.otp_delivery_preference.instruction');
 };
 
 const updateOTPDeliveryMethods = () => {

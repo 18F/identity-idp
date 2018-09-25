@@ -61,7 +61,7 @@ feature 'phone otp rate limiting', :idv_job do
     def expect_max_otp_request_rate_limiting
       expect(page).to have_content t('titles.account_locked')
       expect(page).to have_content t(
-        'devise.two_factor_authentication.max_otp_requests_reached'
+        'two_factor_authentication.max_otp_requests_reached'
       )
 
       expect_rate_limit_circumvention_to_be_disallowed(user)
@@ -83,7 +83,7 @@ feature 'phone otp rate limiting', :idv_job do
 
       expect(page).to have_content t('titles.account_locked')
       expect(page).
-        to have_content t('devise.two_factor_authentication.max_otp_login_attempts_reached')
+        to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
 
       expect_rate_limit_circumvention_to_be_disallowed(user)
       expect_rate_limit_to_expire(user)

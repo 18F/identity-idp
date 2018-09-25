@@ -7,10 +7,6 @@ feature 'PIV/CAC Management' do
     end
   end
 
-  before(:each) do
-    allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
-  end
-
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
@@ -107,8 +103,7 @@ feature 'PIV/CAC Management' do
           stub_piv_cac_service
 
           user.update(otp_secret_key: 'secret')
-          user.phone_configurations.clear
-          expect(user.phone_configurations).to be_empty
+          MfaContext.new(user).phone_configurations.clear
           sign_in_and_2fa_user(user)
           visit account_path
           click_link t('forms.buttons.enable'), href: setup_piv_cac_url

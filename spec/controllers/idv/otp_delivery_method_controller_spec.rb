@@ -6,7 +6,7 @@ describe Idv::OtpDeliveryMethodController do
   before do
     stub_verify_steps_one_and_two(user)
     subject.idv_session.address_verification_mechanism = 'phone'
-    subject.idv_session.params[:phone] = '2255555000'
+    subject.idv_session.applicant[:phone] = '2255555000'
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = false
   end
@@ -64,13 +64,7 @@ describe Idv::OtpDeliveryMethodController do
   end
 
   describe '#create' do
-    let(:params) do
-      {
-        otp_delivery_selection_form: {
-          otp_delivery_preference: :sms,
-        },
-      }
-    end
+    let(:params) { { otp_delivery_preference: :sms } }
 
     context 'user has not selected phone verification method' do
       before do
@@ -130,13 +124,7 @@ describe Idv::OtpDeliveryMethodController do
     end
 
     context 'user has selected voice' do
-      let(:params) do
-        {
-          otp_delivery_selection_form: {
-            otp_delivery_preference: :voice,
-          },
-        }
-      end
+      let(:params) { { otp_delivery_preference: :voice } }
 
       it 'redirects to the otp send path for voice' do
         post :create, params: params
@@ -162,13 +150,7 @@ describe Idv::OtpDeliveryMethodController do
     end
 
     context 'form is invalid' do
-      let(:params) do
-        {
-          otp_delivery_selection_form: {
-            otp_delivery_preference: :🎷,
-          },
-        }
-      end
+      let(:params) { { otp_delivery_preference: :🎷 } }
 
       it 'renders the new template' do
         post :create, params: params

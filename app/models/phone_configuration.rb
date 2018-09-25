@@ -12,4 +12,12 @@ class PhoneConfiguration < ApplicationRecord
   def formatted_phone
     Phonelib.parse(phone).international
   end
+
+  def selection_presenters
+    options = [TwoFactorAuthentication::SmsSelectionPresenter.new(self)]
+    unless PhoneNumberCapabilities.new(phone).sms_only?
+      options << TwoFactorAuthentication::VoiceSelectionPresenter.new(self)
+    end
+    options
+  end
 end

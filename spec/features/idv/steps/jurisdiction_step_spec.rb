@@ -45,6 +45,23 @@ feature 'idv jurisdiction step' do
     end
   end
 
+  it 'is not re-entrant' do
+    start_idv_from_sp
+    complete_idv_steps_before_jurisdiction_step
+
+    select 'Virginia', from: 'jurisdiction_state'
+    click_idv_continue
+    visit idv_jurisdiction_path
+
+    expect(page).to have_current_path(idv_session_path)
+
+    fill_out_idv_form_ok
+    click_idv_continue
+    visit idv_jurisdiction_path
+
+    expect(page).to have_current_path(idv_session_success_path)
+  end
+
   context 'cancelling idv' do
     it_behaves_like 'cancel at idv step', :jurisdiction
     it_behaves_like 'cancel at idv step', :jurisdiction, :oidc

@@ -1,11 +1,7 @@
 Rails.application.routes.draw do
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
-
   # Non i18n routes. Alphabetically sorted.
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
-  get '/api/health/workers' => 'health/workers#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
@@ -58,8 +54,8 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#create'
-      get '/account_reset/report_fraud' => 'account_reset/report_fraud#update'
+      get '/account_reset/cancel' => 'account_reset/cancel#show'
+      post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
@@ -73,8 +69,10 @@ Rails.application.routes.draw do
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
-      if FeatureManagement.piv_cac_enabled?
-        get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
+      get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
+      if FeatureManagement.webauthn_enabled?
+        get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+        patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
@@ -93,10 +91,8 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
-        if FeatureManagement.piv_cac_enabled?
-          get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
-          post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
-        end
+        get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
+        post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
       end
     end
 
@@ -117,11 +113,9 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
-    if FeatureManagement.piv_cac_enabled?
-      get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
-      delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-      get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
-    end
+    get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
+    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
 
     if FeatureManagement.webauthn_enabled?
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
@@ -192,7 +186,6 @@ Rails.application.routes.draw do
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
         put '/phone' => 'phone#create'
-        get '/phone/result' => 'phone#show'
         get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
         post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
         get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
@@ -201,7 +194,6 @@ Rails.application.routes.draw do
         put '/review' => 'review#create'
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
-        get '/session/result' => 'sessions#show'
         get '/session/success' => 'sessions#success'
         get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
         delete '/session' => 'sessions#destroy'
@@ -210,6 +202,11 @@ Rails.application.routes.draw do
         get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
         get '/cancel/' => 'cancellations#new', as: :cancel
         delete '/cancel' => 'cancellations#destroy'
+        if FeatureManagement.doc_auth_enabled?
+          get '/doc_auth' => 'doc_auth#index'
+          get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+          put '/doc_auth/:step' => 'doc_auth#update'
+        end
       end
     end
 
