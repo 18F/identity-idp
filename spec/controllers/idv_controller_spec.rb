@@ -2,6 +2,10 @@ require 'rails_helper'
 
 describe IdvController do
   describe '#index' do
+    before do
+      allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(false)
+    end
+
     it 'tracks page visit' do
       stub_sign_in
       stub_analytics
@@ -43,6 +47,16 @@ describe IdvController do
       get :index
 
       expect(response).to redirect_to reactivate_account_url
+    end
+
+    it 'redirects to doc auth if doc auth is enabled and exclusive' do
+      stub_sign_in
+      allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(true)
+      allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
+
+      get :index
+
+      expect(response).to redirect_to idv_doc_auth_path
     end
   end
 

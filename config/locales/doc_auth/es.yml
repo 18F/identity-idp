@@ -1,0 +1,29 @@
+---
+es:
+  doc_auth:
+    buttons:
+      capture: Capturar
+      start_over: Comenzar de nuevo
+    errors:
+      selfie: Lo sentimos, no podemos hacer coincidir su imagen, intente de nuevo.
+      state_id_fail: Lo siento. La información de su ID emitida por el estado no coincide
+        con la información de su número de seguro social.
+    forms:
+      dob: Fecha de nacimiento
+      doc_success: Verificamos su número de seguro social y su identificación emitida
+        por el estado.
+      entered_info: 'Información que ingresó:'
+      first_name: Nombre de pila
+      last_name: Apellido
+      selfie_next: A continuación, necesitaremos tomar su foto.
+      ssn: Número de seguridad social
+      state_id_info: 'Información de su ID emitida por el estado:'
+    headings:
+      selfie: "¡Toma una selfie!"
+      ssn: Para verificar su identidad, necesitará su número de seguro social y su
+        identificación emitida por el estado.
+      upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
+      upload_front: Cargue una foto del frente de su identificación emitida por el
+        estado.
+    titles:
+      doc_auth: Autenticación de documentos

@@ -129,14 +129,6 @@ describe Users::PersonalKeysController do
       expect(response).to redirect_to manage_personal_key_path
     end
 
-    it 'populates the flash when resending code' do
-      stub_sign_in
-      expect(flash[:success]).to be_nil
-
-      post :create, params: { resend: true }
-      expect(flash[:success]).to eq t('notices.send_code.personal_key')
-    end
-
     it 'tracks CSRF errors' do
       stub_sign_in
       stub_analytics
