@@ -36,7 +36,7 @@ function webauthn() {
         },
       ],
       timeout: 800000,
-      attestation: 'direct',
+      attestation: 'none',
       excludeList: [],
     },
   };

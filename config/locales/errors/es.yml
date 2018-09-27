@@ -47,6 +47,9 @@ es:
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     webauthn_setup:
+      attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
+        clave de seguridad U2F. Asegúrese de que su dispositivo esté en https://fidoalliance.org/certification/fido-certified-products/
+        y si cree que el error es nuestro, contáctenos en hello@login.gov.
       delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
