@@ -23,8 +23,8 @@ fr:
       entrée si vous ne vous déplacez pas vers une nouvelle page dans les %{minutes}
       prochaines minutes.
     session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app} désactive
-      votre session lorsque vous demeurez sur une page sans vous déplacer pendant %{minutes}
-      minutes.
+      votre session lorsque vous demeurez sur une page sans vous déplacer pendant
+      %{minutes} minutes.
     signed_up_but_unconfirmed:
       first_paragraph_end: avec un lien pour confirmer votre adresse courriel. Suivez
         le lien pour continuer à créer votre compte.
