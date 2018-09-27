@@ -22,8 +22,6 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
-        active_profile: false,
-        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -56,8 +54,6 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
-        active_profile: false,
-        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -90,8 +86,6 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
-        active_profile: false,
-        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -124,8 +118,6 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
-        active_profile: false,
-        confirmed: true,
       }
     end
     result = instance_double(FormResponse)

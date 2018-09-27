@@ -23,7 +23,11 @@ module Aws
       end
 
       def ses_client_options
-        opts = {}
+        opts = {
+          # https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/timeout-duration.html
+          retry_limit: 3,
+          retry_backoff: ->(_context) { sleep(2) },
+        }
         opts[:region] = pick_region_from_pool if Figaro.env.aws_ses_region_pool.present?
         opts
       end
