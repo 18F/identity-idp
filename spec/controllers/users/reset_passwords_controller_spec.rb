@@ -103,8 +103,6 @@ describe Users::ResetPasswordsController, devise: true do
             reset_password_token: ['token_expired'],
           },
           user_id: user.uuid,
-          active_profile: false,
-          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -132,8 +130,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: { password: ['is too short (minimum is 9 characters)'] },
           user_id: user.uuid,
-          active_profile: false,
-          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -164,7 +160,7 @@ describe Users::ResetPasswordsController, devise: true do
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
 
-          stub_email_notifier(user)
+          stub_user_mailer(user)
 
           password = 'a really long passw0rd'
           params = { password: password }
@@ -176,8 +172,6 @@ describe Users::ResetPasswordsController, devise: true do
             success: true,
             errors: {},
             user_id: user.uuid,
-            active_profile: false,
-            confirmed: true,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -206,7 +200,7 @@ describe Users::ResetPasswordsController, devise: true do
         )
         _profile = create(:profile, :active, :verified, user: user)
 
-        stub_email_notifier(user)
+        stub_user_mailer(user)
 
         get :edit, params: { reset_password_token: raw_reset_token }
         password = 'a really long passw0rd'
@@ -218,8 +212,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
-          active_profile: true,
-          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -246,7 +238,7 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_sent_at: Time.zone.now
         )
 
-        stub_email_notifier(user)
+        stub_user_mailer(user)
 
         password = 'a really long passw0rd'
         params = { password: password }
@@ -258,8 +250,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
-          active_profile: false,
-          confirmed: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -282,7 +272,7 @@ describe Users::ResetPasswordsController, devise: true do
         reset_password_sent_at: Time.zone.now
       )
 
-      stub_email_notifier(user)
+      stub_user_mailer(user)
 
       password = 'saltypickles'
       params = { password: password }
@@ -316,6 +306,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(analytics).to have_received(:track_event).
@@ -349,6 +340,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: tech_user.uuid,
           role: 'tech',
           confirmed: true,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
@@ -377,6 +369,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: admin.uuid,
           role: 'admin',
           confirmed: true,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
@@ -404,6 +397,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: user.uuid,
           role: 'user',
           confirmed: true,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
@@ -431,6 +425,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: user.uuid,
           role: 'user',
           confirmed: false,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
@@ -448,6 +443,32 @@ describe Users::ResetPasswordsController, devise: true do
       end
     end
 
+    context 'user is verified' do
+      it 'captures in analytics that the user was verified' do
+        stub_analytics
+
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user)
+
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
+        analytics_hash = {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          role: 'user',
+          confirmed: true,
+          active_profile: true,
+        }.merge(captcha_h)
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+
+        params = { password_reset_email_form: { email: user.email },
+                   'g-recaptcha-response': 'foo' }
+        put :create, params: params
+      end
+    end
+
     context 'email is invalid' do
       it 'displays an error and tracks event' do
         stub_analytics
@@ -459,6 +480,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
+          active_profile: false,
         }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
@@ -488,16 +510,23 @@ describe Users::ResetPasswordsController, devise: true do
     end
   end
 
-  def stub_email_notifier(user)
-    notifier = instance_double(EmailNotifier)
-    allow(EmailNotifier).to receive(:new).with(user).and_return(notifier)
-    expect(notifier).to receive(:send_password_changed_email)
+  describe '#new' do
+    it 'logs visit to analytics' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).with(Analytics::PASSWORD_RESET_VISIT)
+
+      get :new
+    end
+  end
+
+  def stub_user_mailer(user)
+    mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+    allow(UserMailer).to receive(:password_changed).with(user).and_return(mailer)
   end
 
   def mock_captcha(enabled:, present:, valid:)
     allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(enabled)
-    allow_any_instance_of(SignUp::RegistrationsController).to receive(:verify_recaptcha).
-      and_return(valid)
     {
       recaptcha_valid: valid,
       recaptcha_present: present,

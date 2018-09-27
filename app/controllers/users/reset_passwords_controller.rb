@@ -5,6 +5,7 @@ module Users
     before_action :prevent_token_leakage, only: %i[edit]
 
     def new
+      analytics.track_event(Analytics::PASSWORD_RESET_VISIT)
       @password_reset_email_form = PasswordResetEmailForm.new('')
     end
 
@@ -111,15 +112,10 @@ module Users
     end
 
     def handle_successful_password_reset
-      create_user_event(:password_changed, resource)
-      update_user
+      session.delete(:reset_password_token)
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
-
       redirect_to new_user_session_url
-
-      EmailNotifier.new(resource).send_password_changed_email
-      session.delete(:reset_password_token)
     end
 
     def handle_unsuccessful_password_reset(result)
@@ -131,23 +127,6 @@ module Users
       end
 
       render :edit
-    end
-
-    def update_user
-      attributes = { password: user_params[:password] }
-      attributes[:confirmed_at] = Time.zone.now unless resource.confirmed?
-      UpdateUser.new(user: resource, attributes: attributes).call
-      increment_password_metrics
-
-      mark_profile_inactive
-    end
-
-    def increment_password_metrics
-      PasswordMetricsIncrementer.new(user_params[:password]).increment_password_metrics
-    end
-
-    def mark_profile_inactive
-      resource.active_profile&.deactivate(:password_reset)
     end
 
     def user_params
