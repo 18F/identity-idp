@@ -751,6 +751,8 @@ production:
     return_to_sp_url: 'https://openforest.fs.usda.gov/'
     redirect_uris:
       - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/'
+      - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/callback'
+      - 'https://fs-intake-api.app.cloud.gov/auth/login-gov/openid/logout'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
