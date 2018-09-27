@@ -11,7 +11,6 @@ fr:
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
-      return_to_account: NOT TRANSLATED YET
       warning_header: Si vous annulez maintenant
       warnings:
         warning_1: NOT TRANSLATED YET
@@ -31,11 +30,13 @@ fr:
           exemple : ABC1-DEF2-G3HI-J456'
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
+        state_id_number: Votre numéro d'identification ne peut excéder 25 caractères
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
       unsupported_jurisdiction: Désolé, nous ne pouvons pas vérifier les personnes
         de cet état.
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
+      unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
       attempts:
         one: Il ne vous reste qu' strongune tentative./strong
@@ -127,7 +128,6 @@ fr:
           ou votre carte d'identité?
         why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
           de votre carte d'identité officielle.
-      loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
         phone_number_html: NOT TRANSLATED YET
@@ -136,9 +136,11 @@ fr:
         de passe.
       phone:
         alert: Ce numéro de téléphone <strong>doit être</strong>
+        description: Nous vérifions les dossiers pour vous assurer que vous êtes ce
+          que vous dites et que vous êtes propriétaire de votre compte.
         phone_of_record: numéro de téléphone enregistré
         rules:
-        - en votre nom ou celui d'un membre de votre famille
+        - sur un plan de téléphone avec votre nom dessus
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain

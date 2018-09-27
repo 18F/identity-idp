@@ -1,4 +1,3 @@
-# rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
   self.ignored_columns = %w[
     encrypted_password password_salt password_cost encryption_key
@@ -29,6 +28,7 @@ class User < ApplicationRecord
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
+  include EmailAddressCallback
 
   enum role: { user: 0, tech: 1, admin: 2 }
   enum otp_delivery_preference: { sms: 0, voice: 1 }
@@ -36,13 +36,17 @@ class User < ApplicationRecord
   has_one_time_password
 
   has_many :authorizations, dependent: :destroy
+  # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :identities # identities need to be orphaned to prevent UUID reuse
+  # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
-  has_many :webauthn_configurations, dependent: :destroy
+  has_one :email_address, dependent: :destroy, inverse_of: :user
+  has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
+  has_one :doc_auth, dependent: :destroy, inverse_of: :user
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
@@ -52,25 +56,8 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
-  def confirm_piv_cac?(proposed_uuid)
-    x509_dn_uuid == proposed_uuid if proposed_uuid
-  end
-
-  def piv_cac_enabled?
-    PivCacLoginOptionPolicy.new(self).enabled?
-  end
-
-  def piv_cac_available?
-    PivCacLoginOptionPolicy.new(self).available?
-  end
-
   def need_two_factor_authentication?(_request)
-    two_factor_enabled?
-  end
-
-  def two_factor_enabled?
-    phone_configurations.any?(&:mfa_enabled?) || totp_enabled? || piv_cac_enabled? ||
-      webauthn_configurations.any?
+    MfaPolicy.new(self).two_factor_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
@@ -160,14 +147,4 @@ class User < ApplicationRecord
     send_devise_notification(:confirmation_instructions,
                              @raw_confirmation_token, opts)
   end
-
-  def total_mfa_options_enabled
-    total = [phone_mfa_enabled?, piv_cac_enabled?, totp_enabled?].count { |tf| tf }
-    total + webauthn_configurations.size
-  end
-
-  def phone_mfa_enabled?
-    phone_configurations.any?(&:mfa_enabled?)
-  end
 end
-# rubocop:enable Rails/HasManyOrHasOneDependent

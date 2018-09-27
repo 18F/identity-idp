@@ -17,7 +17,6 @@ require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'
 require 'factory_bot'
-require 'sidekiq/testing'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -72,21 +71,9 @@ RSpec.configure do |config|
     FakeVoiceCall.calls = []
   end
 
-  config.before(:each, idv_job: true) do
-    allow(Idv::ProoferJob).to receive(:perform_later) do |*args|
-      Idv::ProoferJob.perform_now(*args)
-    end
-  end
-
   config.around(:each, user_flow: true) do |example|
     Capybara.current_driver = :rack_test
     example.run
     Capybara.use_default_driver
   end
-end
-
-Sidekiq::Testing.inline!
-
-Sidekiq::Testing.server_middleware do |chain|
-  chain.add WorkerHealthChecker::Middleware
 end

@@ -15,7 +15,7 @@ feature 'Webauthn Management' do
       click_link t('account.index.webauthn_add'), href: webauthn_setup_url
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key
+      mock_press_button_on_hardware_key_and_fill_in_name_field
       click_submit_default
 
       expect(current_path).to eq account_path
@@ -30,7 +30,7 @@ feature 'Webauthn Management' do
       click_link t('account.index.webauthn_add'), href: webauthn_setup_url
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key
+      mock_press_button_on_hardware_key_and_fill_in_name_field
       click_submit_default
 
       expect(current_path).to eq account_path
@@ -62,7 +62,7 @@ feature 'Webauthn Management' do
       click_link t('account.index.webauthn_add'), href: webauthn_setup_url
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key
+      mock_press_button_on_hardware_key_and_fill_in_name_field
       click_submit_default
 
       expect(current_path).to eq account_path
@@ -71,7 +71,7 @@ feature 'Webauthn Management' do
       click_link t('account.index.webauthn_add'), href: webauthn_setup_url
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key
+      mock_press_button_on_hardware_key_and_fill_in_name_field
       click_submit_default
 
       expect(current_path).to eq webauthn_setup_path
@@ -126,25 +126,6 @@ feature 'Webauthn Management' do
       expect(page).to have_content 'key1'
       expect(page).to have_content t('errors.webauthn_setup.delete_last')
     end
-  end
-
-  def mock_challenge
-    allow(WebAuthn).to receive(:credential_creation_options).and_return(
-      challenge: challenge.pack('c*')
-    )
-  end
-
-  def mock_press_button_on_hardware_key
-    # this is required because the domain is embedded in the supplied attestation object
-    allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
-
-    set_hidden_field('attestation_object', attestation_object)
-    set_hidden_field('client_data_json', client_data_json)
-    set_hidden_field('name', 'mykey')
-  end
-
-  def set_hidden_field(id, value)
-    first("input##{id}", visible: false).set(value)
   end
 
   def create_webauthn_configuration(user, name, id, key)

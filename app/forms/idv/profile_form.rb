@@ -18,9 +18,9 @@ module Idv
       ActiveModel::Name.new(self, nil, 'Profile')
     end
 
-    def initialize(params, user)
+    def initialize(user:, previous_params:)
       @user = user
-      consume_params(params)
+      consume_params(previous_params) if previous_params.present?
     end
 
     def submit(params)

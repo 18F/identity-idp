@@ -106,7 +106,7 @@ describe 'IdvStepConcern' do
 
     context 'user has started IdV session' do
       before do
-        idv_session.params = { first_name: 'Jane' }
+        idv_session.applicant = { first_name: 'Jane' }
         allow(subject).to receive(:idv_session).and_return(idv_session)
       end
 

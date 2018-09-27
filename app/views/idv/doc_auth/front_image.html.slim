@@ -1,0 +1,17 @@
+-title t('doc_auth.titles.doc_auth')
+
+h1.h3 = t('doc_auth.headings.upload_front')
+
+= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :front_image), method: 'PUT',
+    html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  .clearfix.mxn1
+    .sm-col.sm-col-8.px1
+      = f.input :image, label: false, as: 'file', required: true
+
+  p = flow_session[:error_message]
+
+  .mt0
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'
+      = t('forms.buttons.continue')
+
+= render 'start_over_or_cancel'

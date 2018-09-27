@@ -11,10 +11,6 @@ module IdvStepConcern
 
   private
 
-  def increment_step_attempts
-    idv_session.step_attempts[step_name] += 1
-  end
-
   def remaining_step_attempts
     Idv::Attempter.idv_max_attempts - idv_session.step_attempts[step_name]
   end

@@ -30,7 +30,7 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    personal_key: Store your personal key
+    personal_key: Always have access to your account with your personal key
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.

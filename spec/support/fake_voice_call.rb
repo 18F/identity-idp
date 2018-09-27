@@ -1,5 +1,6 @@
 class FakeVoiceCall
-  HttpClient = Struct.new(:adapter)
+  HttpClient = Struct.new(:adapter, :last_request)
+  LastRequest = Struct.new(:url, :params, :headers, :method)
 
   cattr_accessor :calls
   self.calls = []
@@ -15,6 +16,6 @@ class FakeVoiceCall
   end
 
   def http_client
-    HttpClient.new(adapter: 'foo')
+    HttpClient.new('foo', LastRequest.new('foo', {}, {}, 'get'))
   end
 end

@@ -1,7 +1,7 @@
 module TwoFactorAuthCode
   class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     def header
-      t('devise.two_factor_authentication.totp_header_text')
+      t('two_factor_authentication.totp_header_text')
     end
 
     def help_text

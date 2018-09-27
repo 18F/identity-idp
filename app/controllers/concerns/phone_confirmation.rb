@@ -15,7 +15,7 @@ module PhoneConfirmation
   def otp_delivery_method(phone, selected_delivery_method)
     return :sms if PhoneNumberCapabilities.new(phone).sms_only?
     return selected_delivery_method if selected_delivery_method.present?
-    current_user.phone_configurations.first&.delivery_preference ||
+    MfaContext.new(current_user).phone_configurations.first&.delivery_preference ||
       current_user.otp_delivery_preference
   end
 end

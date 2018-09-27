@@ -15,7 +15,9 @@ describe AccountReset::SendNotificationsController do
       end
 
       it 'logs the number of notifications sent in the analytics' do
-        allow(AccountResetService).to receive(:grant_tokens_and_send_notifications).and_return(7)
+        service = instance_double(AccountReset::GrantRequestsAndSendEmails)
+        allow(AccountReset::GrantRequestsAndSendEmails).to receive(:new).and_return(service)
+        allow(service).to receive(:call).and_return(7)
 
         stub_analytics
         expect(@analytics).to receive(:track_event).

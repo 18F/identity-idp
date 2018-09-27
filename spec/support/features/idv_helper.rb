@@ -65,15 +65,17 @@ module IdvHelper
   end
 
   def choose_idv_otp_delivery_method_sms
-    using_wait_time(5) do
-      click_on t('idv.buttons.send_confirmation_code')
-    end
+    page.find(
+      'label',
+      text: t('two_factor_authentication.otp_delivery_preference.sms')
+    ).click
+    click_on t('idv.buttons.send_confirmation_code')
   end
 
   def choose_idv_otp_delivery_method_voice
     page.find(
       'label',
-      text: t('devise.two_factor_authentication.otp_delivery_preference.voice')
+      text: t('two_factor_authentication.otp_delivery_preference.voice')
     ).click
     click_on t('idv.buttons.send_confirmation_code')
   end

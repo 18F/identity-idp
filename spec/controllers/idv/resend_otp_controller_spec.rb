@@ -13,7 +13,7 @@ describe Idv::ResendOtpController do
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
-    subject.idv_session.params[:phone] = phone
+    subject.idv_session.applicant[:phone] = phone
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
     subject.idv_session.phone_confirmation_otp_delivery_method =

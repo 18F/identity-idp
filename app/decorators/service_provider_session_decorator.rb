@@ -15,6 +15,14 @@ class ServiceProviderSessionDecorator
       i18n_name: 'sam',
       learn_more: 'https://login.gov/help/',
     },
+    'HOMES.mil - test' => {
+      i18n_name: 'homes_mil',
+      learn_more: 'https://login.gov/help/',
+    },
+    'HOMES.mil' => {
+      i18n_name: 'homes_mil',
+      learn_more: 'https://login.gov/help/',
+    },
   }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)

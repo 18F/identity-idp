@@ -22,7 +22,7 @@ feature 'Phone confirmation during sign up' do
     it 'updates phone_confirmed_at and redirects to acknowledge personal key' do
       click_button t('forms.buttons.submit.default')
 
-      expect(@user.phone_configurations.reload.first.confirmed_at).to be_present
+      expect(MfaContext.new(@user).phone_configurations.reload.first.confirmed_at).to be_present
       expect(current_path).to eq sign_up_personal_key_path
 
       click_acknowledge_personal_key
@@ -40,7 +40,7 @@ feature 'Phone confirmation during sign up' do
       fill_in 'code', with: '12345678'
       click_button t('forms.buttons.submit.default')
 
-      expect(@user.reload.two_factor_enabled?).to be false
+      expect(MfaPolicy.new(@user.reload).two_factor_enabled?).to be false
     end
 
     it 'provides user with link to type in a phone number so they are not locked out' do
@@ -61,7 +61,7 @@ feature 'Phone confirmation during sign up' do
       @user = sign_in_before_2fa
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone',
-              with: @existing_user.phone_configurations.detect(&:mfa_enabled?).phone
+              with: MfaContext.new(@existing_user).phone_configurations.detect(&:mfa_enabled?).phone
       click_send_security_code
     end
 
@@ -76,8 +76,8 @@ feature 'Phone confirmation during sign up' do
       fill_in 'code', with: 'foobar'
       click_submit_default
 
-      expect(@user.phone_configurations.reload).to be_empty
-      expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
+      expect(MfaContext.new(@user).phone_configurations.reload).to be_empty
+      expect(page).to have_content t('two_factor_authentication.invalid_otp')
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end

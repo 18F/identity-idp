@@ -11,6 +11,8 @@ class IdvController < ApplicationController
       redirect_to idv_activated_url
     elsif idv_attempter.exceeded?
       redirect_to idv_fail_url
+    elsif doc_auth_enabled_and_exclusive?
+      redirect_to idv_doc_auth_url
     else
       analytics.track_event(Analytics::IDV_INTRO_VISIT)
       redirect_to idv_jurisdiction_url
@@ -41,5 +43,12 @@ class IdvController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
+  end
+
+  def doc_auth_enabled_and_exclusive?
+    # exclusive mode replaces the existing LOA3 flow with the doc auth flow
+    # non-exclusive mode allows both flows to co-exist
+    # in non-exclusive mode you enter the /verify/doc_auth path in the browser
+    FeatureManagement.doc_auth_enabled? && FeatureManagement.doc_auth_exclusive?
   end
 end

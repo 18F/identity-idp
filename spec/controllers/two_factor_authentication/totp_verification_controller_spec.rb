@@ -59,7 +59,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'displays flash error message' do
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_otp')
+        expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
     end
 

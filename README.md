@@ -239,23 +239,37 @@ To run a subset of tests excluding slow tests (such as accessibility specs):
 $ make fast_test
 ```
 
+#### Speeding up local development and testing
+To automatically run the test that corresponds to the file you are editing,
+run `bundle exec guard` with the env var `GUARD_RSPEC_CMD` set to your preferred
+command for running `rspec`. For example, if you use [Zeus](https://github.com/burke/zeus),
+you would set the env var to `zeus rspec`:
+```console
+GUARD_RSPEC_CMD="zeus rspec" bundle exec guard
+```
+
+If you don't specify the `GUARD_RSPEC_CMD` env var, it will default to
+`bundle exec rspec`.
+
+We recommend setting up a shell alias for running this command, such as:
+```console
+alias idpguard='GUARD_RSPEC_CMD="zeus rspec" bundle exec guard'
+```
+
+#### Troubleshooting
 If you are on a mac, if you receive the following prompt the first time you run the test suite, enter `sekret` as the passphrase:
 
 ![alt text][mac-test-passphrase-prompt]
 
-See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
-more information.
+#### Documentation for the testing tools we use
+[RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
+
+[Guard](https://github.com/guard/guard-rspec)
 
 JavaScript unit tests run using the mocha test runner. Check out the
 [mocha documentation](https://mochajs.org/) for more details.
 
-Run security scanner
-
-```
-$ make brakeman
-```
-
-#### User flows
+### User flows
 
 We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
 

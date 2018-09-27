@@ -7,7 +7,7 @@ module TwoFactorAuthCode
 
     COUNTDOWN_ID = 'countdown'.freeze
 
-    T_SCOPE = 'devise.two_factor_authentication'.freeze
+    T_SCOPE = 'two_factor_authentication'.freeze
 
     def initialize(type, decorated_user)
       super(:locked)

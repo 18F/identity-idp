@@ -25,7 +25,7 @@ module Idv
     private
 
     def phone_number
-      PhoneFormatter.format(idv_session.params[:phone])
+      PhoneFormatter.format(idv_session.applicant[:phone])
     end
 
     def otp_delivery_preference

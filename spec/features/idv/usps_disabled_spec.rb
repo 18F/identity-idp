@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'disabling USPS address verification', :idv_job do
+feature 'disabling USPS address verification' do
   include IdvStepHelper
 
   context 'with USPS address verification disabled' do

@@ -16,10 +16,12 @@ shared_examples 'a phone form' do
         second_user = build_stubbed(:user, :signed_up, with: { phone: '+1 (202) 555-1213' })
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(
-          phone_configuration: { phone: second_user.phone_configurations.first.phone }
+          phone_configuration: {
+            phone: MfaContext.new(second_user).phone_configurations.first.phone,
+          }
         ).and_return(true)
 
-        params[:phone] = second_user.phone_configurations.first.phone
+        params[:phone] = MfaContext.new(second_user).phone_configurations.first.phone
 
         result = subject.submit(params)
         expect(result).to be_kind_of(FormResponse)
@@ -37,8 +39,8 @@ shared_examples 'a phone form' do
 
     context 'when phone is same as current user' do
       it 'is valid' do
-        user.phone_configurations.first.phone = '+1 (703) 500-5000'
-        params[:phone] = user.phone_configurations.first.phone
+        MfaContext.new(user).phone_configurations.first.phone = '+1 (703) 500-5000'
+        params[:phone] = MfaContext.new(user).phone_configurations.first.phone
         result = subject.submit(params)
 
         expect(result).to be_kind_of(FormResponse)

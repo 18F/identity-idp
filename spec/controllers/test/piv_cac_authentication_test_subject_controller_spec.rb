@@ -5,12 +5,11 @@ describe Test::PivCacAuthenticationTestSubjectController do
     before(:each) do
       allow(Rails.env).to receive(:development?) { false }
       allow(Figaro.env).to receive(:enable_test_routes) { 'true' }
-      allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
     end
 
-    describe 'FeatureManagement#development_and_piv_cac_entry_enabled?' do
+    describe 'FeatureManagement#development_and_identity_pki_disabled?' do
       it 'is disabled' do
-        expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+        expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
       end
     end
 
@@ -39,12 +38,11 @@ describe Test::PivCacAuthenticationTestSubjectController do
     before(:each) do
       allow(Rails.env).to receive(:development?) { true }
       allow(Figaro.env).to receive(:enable_test_routes) { 'true' }
-      allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
     end
 
-    describe 'FeatureManagement#development_and_piv_cac_entry_enabled?' do
+    describe 'FeatureManagement#development_and_identity_pki_disabled?' do
       it 'is enabled' do
-        expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_truthy
+        expect(FeatureManagement.development_and_identity_pki_disabled?).to be_truthy
       end
     end
 
