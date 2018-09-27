@@ -124,7 +124,7 @@ describe Users::SessionsController, devise: true do
       get :timeout
 
       expect(flash[:notice]).to eq t(
-        'session_timedout',
+        'notices.session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes
       )
