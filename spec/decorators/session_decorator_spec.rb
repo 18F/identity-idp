@@ -3,14 +3,6 @@ require 'rails_helper'
 RSpec.describe SessionDecorator do
   subject { SessionDecorator.new }
 
-  it 'has the same public API as ServiceProviderSessionDecorator' do
-    ServiceProviderSessionDecorator.public_instance_methods.each do |method|
-      expect(
-        described_class.public_method_defined?(method)
-      ).to be(true), "expected #{described_class} to have ##{method}"
-    end
-  end
-
   describe '#return_to_service_provider_partial' do
     it 'returns the correct partial' do
       expect(subject.return_to_service_provider_partial).to eq 'shared/null'
