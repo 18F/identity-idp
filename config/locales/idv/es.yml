@@ -64,6 +64,16 @@ es:
         timeout: NOT TRANSLATED YET
         warning: Compruebe la información que ingresó. Los errores comunes son números
           incorrectos de Seguro Social, código postal o fecha de nacimiento.
+    forgot_password:
+      link_html: "¿Se te olvidó tu contraseña? %{link}"
+      link_text: Siga estas instrucciones
+      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      reset_password: Restablecer la contraseña
+      try_again: Inténtalo de nuevo
+      warnings:
+        warning_1: Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
+        warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
+          número de identificación del estado, etc.
     form:
       activate_by_mail: obtener un código por correo electrónico en su lugar ›
       address1: Dirección
@@ -153,9 +163,8 @@ es:
         id_information_subtitle: Información de identificación
         no_pii: FALSO No utilice información personal real (sólo para propósitos de
           demostración) FALSO
-        review_message: Cuando ingrese su contraseña, login.gov protegerá su información
-          personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
-          su información.
+        review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
+          sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
       usps:
         bad_address: No puedo recibir correo en esta dirección
@@ -190,7 +199,7 @@ es:
       select_verification: Active su cuenta
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
-        review: Encripte sus datos verificados ingresando su contraseña.
+        review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
         success: Hemos verificado la información en su identificación emitida por
           el estado.
       sessions: Información acerca de ti

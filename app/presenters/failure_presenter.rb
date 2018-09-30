@@ -17,6 +17,11 @@ class FailurePresenter
       alt_text: 'warning',
       color: 'yellow',
     },
+    are_you_sure: {
+      icon: 'alert/notice.svg',
+      alt_text: 'warning',
+      color: 'teal',
+    },
   }.freeze
 
   def initialize(state)

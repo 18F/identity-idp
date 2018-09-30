@@ -69,6 +69,18 @@ fr:
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
           de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
           des erreurs communes.
+    forgot_password:
+      link_html: Mot de passe oublié? %{link}
+      link_text: Suivez ces instructions
+      modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de
+        passe?
+      reset_password: Réinitialiser le mot de passe
+      try_again: Réessayer
+      warnings:
+        warning_1: Si vous avez oublié votre mot de passe, vous devrez le réinitialiser
+          et remplir à nouveau le formulaire.
+        warning_2: Vous devrez ressaisir vos informations personnelles, comme votre
+          nom, votre numéro d’identification, etc.
     form:
       activate_by_mail: obtenir un code par courrier à la place ›
       address1: Adresse
@@ -162,9 +174,8 @@ fr:
         id_information_subtitle: Informations d'identification
         no_pii: TRUQUÉ N'utilisez pas de véritables données personnelles (il s'agit
           d'une démonstration seulement) TRUQUÉ
-        review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
-          vos informations personnelles. Nous faisons cela pour nous assurer que personne
-          d'autre ne puisse accéder à vos informations.
+        review_message: Lorsque vous entrez à nouveau votre mot de passe, login.gov
+          crypte vos données pour vous assurer que personne ne peut y accéder.
         success: Ensuite, nous aurons besoin d'un numéro de téléphone.
       usps:
         bad_address: Je ne peux pas recevoir de courrier à cette adresse
@@ -199,7 +210,7 @@ fr:
       select_verification: Activer votre compte
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
-        review: Encryptez vos données personnelles en entrant votre mot de passe
+        review: Entrez à nouveau votre mot de passe login.gov pour crypter vos données
         success: Nous avons vérifié les informations sur votre ID d'état.
       sessions: Informations sur vous
       unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités
