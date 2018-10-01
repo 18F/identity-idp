@@ -18,7 +18,7 @@ class FailurePresenter
       color: 'yellow',
     },
     are_you_sure: {
-      icon: 'alert/notice.svg',
+      icon: 'alert/forgot.svg',
       alt_text: 'warning',
       color: 'teal',
     },
