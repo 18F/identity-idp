@@ -25,7 +25,7 @@ class StoreSpMetadataInSession
   end
 
   def sp_request
-    @sp_request ||= ServiceProviderRequest.from_uuid(request_id)
+    @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
   def update_session

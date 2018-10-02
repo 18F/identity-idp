@@ -102,7 +102,7 @@ module OpenidConnect
       client_id = @authorize_form.client_id
 
       @request_id = SecureRandom.uuid
-      ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
+      ServiceProviderRequestProxy.find_or_create_by(uuid: @request_id) do |sp_request|
         sp_request.issuer = client_id
         sp_request.loa = @authorize_form.acr_values.sort.max
         sp_request.url = request.original_url

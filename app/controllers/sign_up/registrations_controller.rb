@@ -61,7 +61,7 @@ module SignUp
     def sp_request_id
       request_id = permitted_params.fetch(:request_id, '')
 
-      ServiceProviderRequest.from_uuid(request_id).uuid
+      ServiceProviderRequestProxy.from_uuid(request_id).uuid
     end
   end
 end

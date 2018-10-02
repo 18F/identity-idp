@@ -96,7 +96,7 @@ shared_examples 'remember device after being idle on sign in page' do
     ).link_identity(verified_attributes: %w[email])
 
     visit_idp_from_sp_with_loa1(:oidc)
-    request_id = ServiceProviderRequest.last.uuid
+    request_id = ServiceProviderRequestProxy.last.uuid
     click_link t('links.sign_in')
 
     Timecop.travel(Devise.timeout_in + 1.minute) do

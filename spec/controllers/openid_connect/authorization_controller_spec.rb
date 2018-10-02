@@ -180,14 +180,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       it 'redirects to SP landing page with the request_id in the params' do
         action
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(response).to redirect_to sign_up_start_url(request_id: sp_request_id)
       end
 
       it 'sets sp information in the session' do
         action
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
           loa3: false,

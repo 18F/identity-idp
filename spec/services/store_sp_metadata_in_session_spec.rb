@@ -24,7 +24,7 @@ describe StoreSpMetadataInSession do
 
         app_session = {}
         request_id = SecureRandom.uuid
-        ServiceProviderRequest.find_or_create_by(uuid: request_id) do |sp_request|
+        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.loa = 'loa1'
           sp_request.url = 'http://issuer.gov'

@@ -178,6 +178,7 @@ development:
   saml_secret_rotation_secret_key_password:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
+  service_provider_request_ttl_hours: '24'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   telephony_disabled: 'true'
@@ -298,6 +299,7 @@ production:
   saml_secret_rotation_secret_key_password:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
+  service_provider_request_ttl_hours: '24'
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
   twilio_numbers: # Add JSON encoded array of phone numbers
@@ -420,6 +422,7 @@ test:
   saml_secret_rotation_secret_key_password: 'asdf1234'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
+  service_provider_request_ttl_hours: '24'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   twilio_numbers: '["9999999999","2222222222"]'

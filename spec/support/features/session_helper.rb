@@ -247,7 +247,7 @@ module Features
 
     def sign_up_user_from_sp_without_confirming_email(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
 

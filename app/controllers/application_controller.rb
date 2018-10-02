@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_request
-    @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
+    @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
   def after_sign_in_path_for(_user)

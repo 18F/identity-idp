@@ -8,18 +8,21 @@ describe ServiceProviderRequest do
           uuid: '123', issuer: 'foo', url: 'http://bar.com', loa: '1'
         )
 
-        expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
+        expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
       end
     end
 
     context 'when the record does not exists' do
+      before do
+        ServiceProviderRequestProxy.delete('123')
+      end
       it 'returns an instance of NullServiceProviderRequest' do
-        expect(ServiceProviderRequest.from_uuid('123')).
+        expect(ServiceProviderRequestProxy.from_uuid('123')).
           to be_an_instance_of NullServiceProviderRequest
       end
 
       it 'returns an instance of NullServiceProviderRequest when the uuid contains a null byte' do
-        expect(ServiceProviderRequest.from_uuid("\0")).
+        expect(ServiceProviderRequestProxy.from_uuid("\0")).
           to be_an_instance_of NullServiceProviderRequest
       end
     end

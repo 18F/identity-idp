@@ -121,7 +121,7 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
 
       visit timeout_path
       expect(current_url).to eq root_url(request_id: sp_request_id)
@@ -225,7 +225,7 @@ feature 'LOA1 Single Sign On' do
       visit authn_request
       click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.from_issuer('http://localhost:3000')
       click_link t('links.cancel')
 

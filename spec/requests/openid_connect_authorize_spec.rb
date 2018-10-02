@@ -12,7 +12,7 @@ describe 'user signs in partially and visits openid_connect/authorize' do
 
   it 'prompts the user to 2FA if prompt is login' do
     openid_test('login')
-    sp_request_id = ServiceProviderRequest.last.uuid
+    sp_request_id = ServiceProviderRequestProxy.last.uuid
     expect(response).to redirect_to sign_up_start_path(request_id: sp_request_id)
   end
 
