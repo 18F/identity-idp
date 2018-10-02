@@ -14,8 +14,8 @@ class ServiceProviderRequestProxy
     NullServiceProviderRequest.new
   end
 
-  def self.delete(uuid)
-    cache.delete(key(uuid)) if uuid
+  def self.delete(guid)
+    cache.delete(key(guid)) if guid
   end
 
   def self.find_by(uuid:)
