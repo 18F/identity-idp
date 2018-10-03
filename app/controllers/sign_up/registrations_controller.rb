@@ -51,7 +51,7 @@ module SignUp
       create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
 
       resend_confirmation = params[:user][:resend]
-      session[:email] = user.email
+      session[:email] = @register_user_email_form.email
 
       redirect_to sign_up_verify_email_url(
         resend: resend_confirmation, request_id: permitted_params[:request_id]

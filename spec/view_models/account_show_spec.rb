@@ -168,7 +168,7 @@ describe AccountShow do
     context 'AccountShow instance does not have decrypted_pii' do
       it "returns the user's email" do
         email = 'john@smith.com'
-        user = User.new(email: email).decorate
+        user = build(:user, email: email).decorate
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.header_personalization).to eq email
