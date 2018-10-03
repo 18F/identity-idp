@@ -52,6 +52,9 @@ en:
         letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
     webauthn_setup:
+      attestation_error: Sorry, but your security key doesn't appear to be a FIDO
+        security key.  Please make sure your device is listed at https://fidoalliance.org/certification/fido-certified-products/
+        and if you believe the error is ours, please contact us at hello@login.gov.
       delete_last: Sorry, you can not remove your last MFA option.
       general_error: There was an error adding your hardware security key. Please
         try again.

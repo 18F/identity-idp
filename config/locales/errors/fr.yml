@@ -49,6 +49,11 @@ fr:
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
     webauthn_setup:
+      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé
+        de sécurité FIDO. Veuillez vous assurer que votre appareil est répertorié
+        sur https://fidoalliance.org/certification/fido-certified-products/ et si
+        vous pensez que l'erreur est la nôtre, veuillez nous contacter à l'adresse
+        hello@login.gov.
       delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.

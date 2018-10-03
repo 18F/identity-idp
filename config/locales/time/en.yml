@@ -18,6 +18,6 @@ en:
   time:
     am: AM
     formats:
-      event_timestamp: "%B %e, %Y at %-l:%M %p"
-      event_timestamp_utc: "%B %e, %Y at %-l:%M %p UTC"
+      event_timestamp: "%B %-d, %Y at %-l:%M %p"
+      event_timestamp_utc: "%B %-d, %Y at %-l:%M %p UTC"
     pm: PM

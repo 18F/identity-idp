@@ -107,6 +107,7 @@ class Analytics
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
+  PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze

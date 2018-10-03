@@ -84,6 +84,7 @@ fr:
       ssn_label_html: Numéro de sécurité sociale
       state: État
       state_id: Numéro d'identification
+      state_id_tip: sans espaces ou tirets
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
