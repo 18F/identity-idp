@@ -7,9 +7,9 @@ class ServiceProviderRequestHandler
   end
 
   def call
-    return if current_sp == sp_from_session
+    return if current_sp == sp_stored_in_session
 
-    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
+    delete_sp_request_if_session_has_matching_request_id
     ServiceProviderRequest.create!(attributes)
 
     StoreSpMetadataInSession.new(session: session, request_id: request_id).call
@@ -23,8 +23,14 @@ class ServiceProviderRequestHandler
     protocol.issuer
   end
 
-  def sp_from_session
+  def sp_stored_in_session
+    return if sp_request_id.blank?
     ServiceProviderRequest.from_uuid(sp_session[:request_id]).issuer
+  end
+
+  def delete_sp_request_if_session_has_matching_request_id
+    return if sp_request_id.blank?
+    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
   end
 
   def attributes
@@ -39,6 +45,10 @@ class ServiceProviderRequestHandler
 
   def request_id
     @request_id ||= SecureRandom.uuid
+  end
+
+  def sp_request_id
+    sp_session[:request_id]
   end
 
   def sp_session
