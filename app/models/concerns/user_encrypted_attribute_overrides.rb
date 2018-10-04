@@ -12,8 +12,8 @@ module UserEncryptedAttributeOverrides
 
     # :reek:UtilityFunction
     def find_with_email(email)
-      email = EmailAddress.where.not(confirmed_at: nil).find_by(email: email) ||
-              EmailAddress.where(confirmed_at: nil).find_by(email: email)
+      email = EmailAddress.where.not(confirmed_at: nil).find_by_email(email) ||
+              EmailAddress.where(confirmed_at: nil).find_by_email(email)
       email&.user
     end
   end
