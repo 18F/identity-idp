@@ -22,7 +22,7 @@ class EmailAddress < ApplicationRecord
   end
 
   class << self
-    def find_by_email(email)
+    def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?
 
       email = email.downcase.strip
