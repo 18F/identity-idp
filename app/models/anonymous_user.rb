@@ -1,5 +1,5 @@
 class AnonymousUser
-  EMPTY_EMAIL_ADDRESS = Openstruct.new(
+  EMPTY_EMAIL_ADDRESS = OpenStruct.new(
     email: nil,
     confirmed?: false,
     confirmed_at: nil
