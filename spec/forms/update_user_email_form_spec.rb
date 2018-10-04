@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UpdateUserEmailForm do
-  subject { UpdateUserEmailForm.new(User.new(email: ' OLD@example.com ')) }
+  subject { UpdateUserEmailForm.new(build(:user, email: ' OLD@example.com ')) }
 
   it_behaves_like 'email validation'
   it_behaves_like 'email normalization', ' OLD@example.com '
