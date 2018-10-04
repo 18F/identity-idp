@@ -1,14 +1,6 @@
 class MfaContext
   attr_reader :user
 
-  EMPTY_WEBAUTHN_ARRAY = begin
-    array = []
-    def array.selection_presenters
-      []
-    end
-    array.freeze
-  end
-
   def initialize(user)
     @user = user
   end
@@ -23,9 +15,9 @@ class MfaContext
 
   def webauthn_configurations
     if user.present?
-      user.webauthn_configurations.extending WebauthnConfigurationsExtension
+      user.webauthn_configurations
     else
-      EMPTY_WEBAUTHN_ARRAY
+      []
     end
   end
 

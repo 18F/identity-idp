@@ -125,6 +125,7 @@ detectors:
       - HolidayService
       - PhoneDeliveryPresenter
       - CloudhsmKeyGenerator
+      - TwoFactorLoginOptionsPresenter
   UncommunicativeMethodName:
     exclude:
       - PhoneConfirmationFlow
