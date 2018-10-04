@@ -64,6 +64,17 @@ en:
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
+    forgot_password:
+      link_html: Forgot password? %{link}
+      link_text: Follow these instructions
+      modal_header: Are you sure you can't remember your password?
+      reset_password: Reset password
+      try_again: Try again
+      warnings:
+        warning_1: If you forgot your password, you'll need to reset it and fill out
+          the form again.
+        warning_2: You'll have to re-enter your personal information, like your name,
+          state ID number, etc.
     form:
       activate_by_mail: get a code via mail instead ›
       address1: Address
@@ -151,8 +162,8 @@ en:
         id_information_message: as it appears on your state-issued ID
         id_information_subtitle: ID Information
         no_pii: FAKE Do not use real personal information (demo purposes only) FAKE
-        review_message: When you enter your password, login.gov will secure your personal
-          information. We do this to make sure no one else can access your information.
+        review_message: When you re-enter your password, login.gov will encrypt your
+          data to make sure no one else can access it.
         success: Next, we'll need a phone number.
       usps:
         bad_address: I can't get mail at this address
@@ -186,7 +197,7 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Enter a phone number to help verify your identity
-        review: Enter your login.gov password
+        review: Re-enter your login.gov password to encrypt your data
         success: We've verified the information on your state-issued ID.
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

@@ -182,6 +182,8 @@ Rails.application.routes.draw do
         get '/come_back_later' => 'come_back_later#show'
         get '/confirmations' => 'confirmations#show'
         post '/confirmations' => 'confirmations#update'
+        get '/forgot_password' => 'forgot_password#new'
+        post '/forgot_password' => 'forgot_password#update'
         get '/otp_delivery_method' => 'otp_delivery_method#new'
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
