@@ -149,7 +149,7 @@ en:
         - on a phone plan with your name on it
         - not a virtual phone (such as Google Voice or Skype)
         - a U.S. number
-      reset_and_restart_verification: Reset and restart identity verification
+      clear_and_start_over: Clear my information and start over
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:

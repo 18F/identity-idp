@@ -1,8 +1,8 @@
-shared_examples 'cancelling and restarting idv' do
+shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone' do
     expect(user.reload.decorate.pending_profile?).to eq(true)
 
-    click_on t('idv.messages.reset_and_restart_verification')
+    click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
 
@@ -24,7 +24,7 @@ shared_examples 'cancelling and restarting idv' do
   it 'allows the user to retry verification with usps' do
     expect(user.reload.decorate.pending_profile?).to eq(true)
 
-    click_on t('idv.messages.reset_and_restart_verification')
+    click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
 
