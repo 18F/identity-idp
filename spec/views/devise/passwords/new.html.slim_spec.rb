@@ -46,7 +46,7 @@ describe 'devise/passwords/new.html.slim' do
   end
 
   it 'has sp alert for certain service providers' do
-    @sp.friendly_name = ServiceProviderSessionDecorator::SP_ALERTS.keys.first
+    @sp.friendly_name = ServiceProviderSessionDecorator::DEFAULT_ALERT_SP_NAMES.sample
 
     render
 

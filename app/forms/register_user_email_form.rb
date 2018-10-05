@@ -71,7 +71,7 @@ class RegisterUserEmailForm
   end
 
   def user_unconfirmed?
-    !existing_user.confirmed?
+    !existing_user.email_address&.confirmed?
   end
 
   def existing_user

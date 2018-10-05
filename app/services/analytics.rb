@@ -69,6 +69,8 @@ class Analytics
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
+  IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
+  IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'.freeze
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
