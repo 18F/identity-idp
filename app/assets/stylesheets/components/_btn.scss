@@ -32,6 +32,17 @@
   }
 }
 
+.btn-danger {
+  border: 1px solid $red;
+  border-radius: $border-radius-lg;
+  background-color: $red;
+  color: white;
+
+  &:hover {
+    background-color: $red;
+  }
+}
+
 .btn-wide {
   box-sizing: border-box;
   min-width: 220px;

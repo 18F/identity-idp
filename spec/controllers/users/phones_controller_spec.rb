@@ -116,4 +116,71 @@ describe Users::PhonesController do
       end
     end
   end
+
+  describe '#delete' do
+    before(:each) do
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+    end
+
+    context 'user has no phone' do
+      let(:user) { create(:user) }
+
+      it 'redirects without an error' do
+        stub_sign_in(user)
+
+        delete :delete
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::PHONE_DELETION_REQUESTED)
+        expect(response).to redirect_to(account_url)
+      end
+    end
+
+    context 'user has only a phone' do
+      let(:user) { create(:user, :signed_up) }
+
+      it 'redirects without an error' do
+        stub_sign_in(user)
+
+        delete :delete
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::PHONE_DELETION_REQUESTED)
+        expect(response).to redirect_to(account_url)
+      end
+
+      it 'leaves the phone' do
+        stub_sign_in(user)
+
+        delete :delete
+
+        user.phone_configurations.reload
+        expect(user.phone_configurations.count).to eq 1
+      end
+    end
+
+    context 'user has more than one mfa option' do
+      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+
+      it 'redirects without an error' do
+        stub_sign_in(user)
+
+        delete :delete
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::PHONE_DELETION_REQUESTED)
+        expect(response).to redirect_to(account_url)
+      end
+
+      it 'removes the phone' do
+        stub_sign_in(user)
+
+        delete :delete
+
+        user.phone_configurations.reload
+        expect(user.phone_configurations).to be_empty
+      end
+    end
+  end
 end

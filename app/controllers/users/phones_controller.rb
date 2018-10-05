@@ -20,6 +20,20 @@ module Users
       end
     end
 
+    def delete
+      analytics.track_event(Analytics::PHONE_DELETION_REQUESTED)
+      result = TwoFactorAuthentication::PhoneDeletionForm.new(
+        current_user, phone_configuration
+      ).submit
+      if result.success?
+        flash[:success] = t('two_factor_authentication.phone.delete.success')
+      else
+        flash[:error] = t('two_factor_authentication.phone.delete.failure')
+      end
+
+      redirect_to account_url
+    end
+
     private
 
     # we only allow editing of the first configuration since we'll eventually be

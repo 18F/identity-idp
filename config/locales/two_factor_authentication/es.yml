@@ -66,6 +66,10 @@ es:
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
+    phone:
+      delete:
+        success: NOT TRANSLATED YET
+        failure: NOT TRANSLATED YET
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
     phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad

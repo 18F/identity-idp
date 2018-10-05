@@ -67,6 +67,32 @@ feature 'User edit' do
     end
   end
 
+  context 'deleting 2FA phone number' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit manage_phone_path
+    end
+
+    scenario 'delete not an option if no other mfa configured' do
+      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+
+      expect(page).to_not have_button(t('forms.buttons.delete'))
+    end
+
+    context 'with multiple mfa configured' do
+      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+
+      scenario 'delete is an option that works' do
+        expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq true
+
+        expect(page).to have_button(t('forms.buttons.delete'))
+        click_button t('forms.buttons.delete')
+        expect(page).to have_current_path(account_path)
+        expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
+      end
+    end
+  end
+
   context "user A accesses create password page with user B's email change token" do
     it "redirects to user A's account page", email: true do
       sign_in_and_2fa_user(user)

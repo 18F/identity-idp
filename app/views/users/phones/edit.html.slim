@@ -16,7 +16,13 @@ h1.h3.my0 = t('headings.edit_info.phone')
     = f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' }
   = render 'users/shared/otp_delivery_preference_selection'
-  = f.button :submit, t('forms.buttons.submit.confirm_change')
+  = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'btn-wide'
+- if MfaPolicy.new(current_user).multiple_factors_enabled? && @user_phone_form.phone.present?
+  br
+  .sm-col-8.mb3
+    = button_to t('forms.buttons.delete'), manage_phone_url, \
+        class: 'btn btn-danger btn-wide', \
+        method: :delete
 = render 'shared/cancel', link: account_path
 
 = stylesheet_link_tag 'intl-tel-number/intlTelInput'
