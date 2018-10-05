@@ -2,7 +2,7 @@
 fr:
   forms:
     account_recovery_setup:
-      legend: NOT TRANSLATED YET
+      legend: Sélectionnez une option d'authentification secondaire
     buttons:
       back: Retour
       cancel: Oui, annuler
@@ -35,7 +35,7 @@ fr:
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
     piv_cac_mfa:
-      submit: NOT TRANSLATED YET
+      submit: Veuillez présenter une carte PIV/CAC
     piv_cac_setup:
       certificate:
         bad_html: Veuillez choisir un certificat différent de votre PIV/CAC ou contactez
@@ -56,16 +56,20 @@ fr:
           est à jour.
       choose_different_certificate: Choisissez un certificat différent
       piv_cac:
-        already_associated_html: NOT TRANSLATED YET
+        already_associated_html: Veuillez choisir un certificat associé à une autre
+          carte PIV/CAC ou contactez votre administrateur afin de vérifier que votre
+          carte PIV/CAC est bien à jour.
       piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC chaque
         <strong>fois que vous vous connecterez</strong> dans le cadre de l'authentification
         à deux facteurs.<br><br>Après avoir cliqué sur "Ajouter PIV/CAC", votre navigateur
         vous demandera votre code PIN PIV/CAC et vous choisirez un certificat.
       submit: Ajouter une carte PIV/CAC
       token:
-        bad_html: NOT TRANSLATED YET
-        invalid_html: NOT TRANSLATED YET
-        missing_html: NOT TRANSLATED YET
+        bad_html: Veuillez sélectionner un autre certificat associé à votre carte
+          PIV/CAC.
+        invalid_html: Veuillez choisir un autre certificat associé à votre carte PIV/CAC.
+        missing_html: Veuillez choisir une autre méthode pour votre second facteur
+          d'authentification.
     registration:
       labels:
         email: Adresse courriel

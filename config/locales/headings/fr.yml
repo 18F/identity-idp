@@ -11,7 +11,7 @@ fr:
       two_factor: Authentification à deux facteurs
       verified_account: Compte vérifié
     account_recovery_setup:
-      piv_cac_linked: NOT TRANSLATED YET
+      piv_cac_linked: Votre carte PIV/CAC est liée à votre compte
     cancellations:
       confirmation: Vous avez annulé la vérification de votre identité avec login.gov
       prompt: Es-tu sûre de vouloir annuler?
@@ -41,11 +41,12 @@ fr:
         unverified: Le certificat que vous avez sélectionné n'est pas valide.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
-        already_associated: NOT TRANSLATED YET
+        already_associated: La carte PIV/CAC que vous avez présentée est associée
+          à un autre utilisateur.
       token:
-        bad: NOT TRANSLATED YET
-        invalid: NOT TRANSLATED YET
-        missing: NOT TRANSLATED YET
+        bad: Erreur interne.
+        invalid: Le certificat sélectionné n'est pas valide.
+        missing: Erreur interne.
     registrations:
       enter_email: Entrez votre adresse email
     session_timeout_warning: Vous avez besoin de plus de temps?
