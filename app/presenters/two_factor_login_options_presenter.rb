@@ -25,18 +25,15 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     ''
   end
 
-  # :reek:FeatureEnvy
   def options
     mfa = MfaContext.new(current_user)
     # for now, we include the personal key since that's our current behavior,
     # but there are designs to remove personal key from the option list and
     # make it a link with some additional text to call it out as a special
     # case.
-    options = mfa.two_factor_configurations
-    if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
-      options << mfa.personal_key_configuration
-    end
-    options.flat_map(&:selection_presenters)
+    options_for_multi_configurations +
+      options_for_singular_configurations +
+      mfa.personal_key_configuration.selection_presenters
   end
 
   def should_display_account_reset_or_cancel_link?
@@ -49,6 +46,20 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   private
+
+  # :reek:FeatureEnvy
+  def options_for_multi_configurations
+    mfa = MfaContext.new(current_user)
+    mfa.phone_configurations.flat_map(&:selection_presenters) +
+      mfa.webauthn_configurations.selection_presenters
+  end
+
+  # :reek:FeatureEnvy
+  def options_for_singular_configurations
+    mfa = MfaContext.new(current_user)
+    mfa.piv_cac_configuration.selection_presenters +
+      mfa.auth_app_configuration.selection_presenters
+  end
 
   def account_reset_link
     t('two_factor_authentication.account_reset.text_html',
