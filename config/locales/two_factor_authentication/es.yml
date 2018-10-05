@@ -68,8 +68,8 @@ es:
       se le dará una nueva clave.
     phone:
       delete:
-        success: NOT TRANSLATED YET
-        failure: NOT TRANSLATED YET
+        success: Su teléfono ha sido eliminado.
+        failure: No se puede eliminar el teléfono.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
     phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
