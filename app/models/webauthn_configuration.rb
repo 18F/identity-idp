@@ -13,4 +13,8 @@ class WebauthnConfiguration < ApplicationRecord
   def selection_presenters
     [TwoFactorAuthentication::WebauthnSelectionPresenter.new(self)]
   end
+
+  def name
+    :webauthn if mfa_enabled?
+  end
 end

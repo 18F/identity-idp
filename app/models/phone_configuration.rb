@@ -20,4 +20,8 @@ class PhoneConfiguration < ApplicationRecord
     end
     options
   end
+
+  def name
+    :phone if mfa_enabled?
+  end
 end

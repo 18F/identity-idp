@@ -22,4 +22,8 @@ class PivCacConfiguration
       []
     end
   end
+
+  def name
+    :piv_cac if mfa_enabled?
+  end
 end

@@ -18,4 +18,8 @@ class AuthAppConfiguration
       []
     end
   end
+
+  def name
+    :auth_app if mfa_enabled?
+  end
 end
