@@ -815,7 +815,7 @@ production:
   'urn:gov:gsa:openidconnect:profiles:sp:sso:cnic:HOMES':
     agency_id: 8
     friendly_name: 'HOMES.mil'
-    agency: 'HUD'
+    agency: 'DOD'
     logo: 'homes_mil.png'
     return_to_sp_url: 'https://www.homes.mil/homes/DispatchServlet/HomesLogin'
     redirect_uris:
