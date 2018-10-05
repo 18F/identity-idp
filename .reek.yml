@@ -77,6 +77,7 @@ detectors:
       - IdvController
       - Idv::Base
       - Rack::Attack
+      - ServiceProviderSessionDecorator
   TooManyConstants:
     exclude:
       - Analytics

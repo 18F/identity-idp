@@ -1,27 +1,16 @@
 class ServiceProviderSessionDecorator
-  DEFAULT_LOGO = 'generic.svg'.freeze
+  include ActionView::Helpers::TranslationHelper
 
-  SP_ALERTS = {
+  DEFAULT_LOGO = 'generic.svg'.freeze
+  CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs'].freeze
+  DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
+
+  # These are SPs that are migrating users and require special help messages
+  CUSTOM_SP_ALERTS = {
     'CBP Trusted Traveler Programs' => {
       i18n_name: 'trusted_traveler',
       learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
       exclude_paths: ['/sign_up/enter_email'],
-    },
-    'USAJOBS' => {
-      i18n_name: 'usa_jobs',
-      learn_more: 'https://login.gov/help/',
-    },
-    'SAM' => {
-      i18n_name: 'sam',
-      learn_more: 'https://login.gov/help/',
-    },
-    'HOMES.mil - test' => {
-      i18n_name: 'homes_mil',
-      learn_more: 'https://login.gov/help/',
-    },
-    'HOMES.mil' => {
-      i18n_name: 'homes_mil',
-      learn_more: 'https://login.gov/help/',
     },
   }.freeze
 
@@ -33,6 +22,13 @@ class ServiceProviderSessionDecorator
   end
 
   delegate :redirect_uris, to: :sp, prefix: true
+
+  def sp_msg(section, args = {})
+    args = args.merge(sp_name: sp_name)
+    return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
+
+    t("service_providers.default.#{section}", args)
+  end
 
   def sp_logo
     sp.logo || DEFAULT_LOGO
@@ -112,23 +108,31 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_alert?(path)
-    sp_alert.present? && !sp_alert[:exclude_paths]&.include?(path)
+    custom_alert? ? alert_not_excluded_for_path?(path) : default_alert?
   end
 
   def sp_alert_name
-    SP_ALERTS.dig(sp_name, :i18n_name)
+    CUSTOM_SP_ALERTS.dig(sp_name, :i18n_name)
   end
 
   def sp_alert_learn_more
-    SP_ALERTS.dig(sp_name, :learn_more)
+    custom_alert? ? CUSTOM_SP_ALERTS.dig(sp_name, :learn_more) : 'https://login.gov/help/'
   end
 
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
-  def sp_alert
-    @sp_alert ||= SP_ALERTS[sp_name]
+  def custom_alert?
+    CUSTOM_ALERT_SP_NAMES.include?(sp_name)
+  end
+
+  def default_alert?
+    DEFAULT_ALERT_SP_NAMES.include?(sp_name)
+  end
+
+  def alert_not_excluded_for_path?(path)
+    !CUSTOM_SP_ALERTS[sp_name][:exclude_paths]&.include?(path)
   end
 
   def request_url
