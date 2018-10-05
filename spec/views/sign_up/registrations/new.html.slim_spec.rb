@@ -79,7 +79,7 @@ describe 'sign_up/registrations/new.html.slim' do
       render
 
       expect(rendered).to \
-        have_content(t('service_providers.sam.create_account_page.body'))
+        have_content(@decorated_session.sp_msg('create_account_page.body'))
     end
 
     it 'has sp alert for the SAM service provider' do
@@ -92,6 +92,13 @@ describe 'sign_up/registrations/new.html.slim' do
 
     it 'does not have an sp alert for the other service providers' do
       @sp.friendly_name = 'other'
+      render
+
+      expect(rendered).to_not have_selector('.alert')
+    end
+
+    it 'does not have an sp alert when the path is excluded' do
+      @sp.friendly_name = 'CBP Trusted Traveler Programs'
       render
 
       expect(rendered).to_not have_selector('.alert')
