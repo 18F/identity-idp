@@ -40,14 +40,18 @@ function webauthn() {
       excludeList: [],
     },
   };
-  const p = navigator.credentials.create(createOptions);
-  p.then((newCred) => {
-    document.getElementById('webauthn_id').value = arrayBufferToBase64(newCred.rawId);
-    document.getElementById('webauthn_public_key').value = newCred.id;
-    document.getElementById('attestation_object').value = arrayBufferToBase64(newCred.response.attestationObject);
-    document.getElementById('client_data_json').value = arrayBufferToBase64(newCred.response.clientDataJSON);
-    document.getElementById('spinner').className += ' hidden';
-    document.getElementById('webauthn_name').classList.remove('hidden');
+  const continueButton = document.getElementById('continue-button');
+  continueButton.addEventListener('click', () => {
+    document.getElementById('spinner').className = '';
+    document.getElementById('continue-button').className = 'hidden';
+    const p = navigator.credentials.create(createOptions);
+    p.then((newCred) => {
+      document.getElementById('webauthn_id').value = arrayBufferToBase64(newCred.rawId);
+      document.getElementById('webauthn_public_key').value = newCred.id;
+      document.getElementById('attestation_object').value = arrayBufferToBase64(newCred.response.attestationObject);
+      document.getElementById('client_data_json').value = arrayBufferToBase64(newCred.response.clientDataJSON);
+      document.getElementById('webauthn_form').submit();
+    });
   });
 }
 document.addEventListener('DOMContentLoaded', webauthn);

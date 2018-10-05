@@ -21,7 +21,7 @@ class TwoFactorOptionsForm
   end
 
   def selected?(type)
-    type.to_s == (selection || 'sms')
+    type.to_s == (selection || 'webauthn')
   end
 
   private

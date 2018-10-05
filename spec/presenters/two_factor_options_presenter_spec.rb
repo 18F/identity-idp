@@ -21,10 +21,10 @@ describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user with no mfa configured' do
       expect(presenter.options.map(&:class)).to eq [
+        TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::SmsSelectionPresenter,
         TwoFactorAuthentication::VoiceSelectionPresenter,
-        TwoFactorAuthentication::AuthAppSelectionPresenter,
-        TwoFactorAuthentication::WebauthnSelectionPresenter,
       ]
     end
 
@@ -33,10 +33,10 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
       end
     end
@@ -46,9 +46,9 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options but the auth app' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
       end
     end
@@ -58,10 +58,10 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
       end
     end

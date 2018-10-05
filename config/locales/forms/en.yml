@@ -85,8 +85,16 @@ en:
       submit: Confirm account
       title: Confirm your account
     webauthn_setup:
-      intro_html: When you sign in, you can use your hardware security key. %{link}
-      step_1: Insert your Security Key in your computer's USB port or connect it with
-        a USB cable.
-      step_2: Once connected, tap the button or gold disk if your key has one of them.
-      step_3: Enter a name for your security key
+      continue: Continue
+      instructions_text: Press the button on your security key to register it with
+        login.gov
+      instructions_title: Connect your security key
+      intro_html: Add a security key as an authentication method to your account.  Your
+        security key must support the FIDO standard.  You can add as many security
+        keys as you want, and we recommend at least two for easier account recovery.
+      login_text: Press the button on your security key to sign in with login.gov
+      nickname: Security key nickname
+      success_text: Each time you sign in to login.gov, we will ask you to use your
+        security key.  If you do not have your security key, you can use any other
+        autentication methods you have enabled.
+      success_title: You have added a security key as your authentication method
