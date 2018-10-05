@@ -33,10 +33,10 @@
 }
 
 .btn-danger {
+  background-color: $red;
   border: 1px solid $red;
   border-radius: $border-radius-lg;
-  background-color: $red;
-  color: white;
+  color: $white;
 
   &:hover {
     background-color: $red;
