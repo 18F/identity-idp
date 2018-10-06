@@ -96,5 +96,5 @@ en:
       nickname: Security key nickname
       success_text: Each time you sign in to login.gov, we will ask you to use your
         security key.  If you do not have your security key, you can use any other
-        autentication methods you have enabled.
+        authentication methods you have enabled.
       success_title: You have added a security key as your authentication method
