@@ -1,0 +1,47 @@
+# A comprehensive list of fields that we collect with data formats and lengths
+
+field_formats:
+  address1:
+    format:
+    max_length: # unlimited
+  address2:
+    format:
+    max_length: # unlimited
+  city:
+    format:
+    max_length: # unlimited
+  dob:
+    format: 'YYYY-MM-DD'
+    max_length: 10
+  docauth_doc:
+    format: 'bmp,png,tiff,jpeg,jpeg-xr,jpeg 2000'
+    min_size: '500k'
+    min_dpi: '300'
+    max_length: 10485760 # 10 MB
+  email:
+    format: 'email'
+    max_length: 254
+  first_name:
+    format:
+    max_length: # unlimited
+  last_name:
+    format:
+    max_length: # unlimited
+  phone:
+    format: '###############'
+    max_length: 15
+  ssn:
+    format: '###-##-####'
+    max_length: 11
+  state:
+    format: 'XX'
+    max_length: 2
+  state_id:
+    format: 'drivers_license,drivers_permit,state_id_card'
+    max_length: 25
+  uuid:
+    format: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+    max_length: 36
+  zipcode:
+    format: '#####-####'
+    max_length: 10
