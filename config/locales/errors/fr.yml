@@ -57,6 +57,8 @@ fr:
         autre lettre afin d'obtenir un nouveau code.
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
     webauthn_setup:
+      already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
+        de sécurité différente.
       attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé
         de sécurité FIDO. Veuillez vous assurer que votre appareil est répertorié
         sur https://fidoalliance.org/certification/fido-certified-products/ et si
@@ -65,4 +67,5 @@ fr:
       delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.
+      not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité FIDO.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

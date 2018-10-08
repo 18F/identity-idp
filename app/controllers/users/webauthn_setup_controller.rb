@@ -4,8 +4,11 @@ module Users
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT)
+      result = WebauthnVisitForm.new.submit(params)
+      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
+      @exclude_credentials = exclude_credentials
+      flash_error(result.errors) unless result.success?
     end
 
     def confirm
@@ -33,6 +36,14 @@ module Users
     end
 
     private
+
+    def flash_error(errors)
+      flash.now[:error] = errors.values.first.first
+    end
+
+    def exclude_credentials
+      WebauthnConfiguration.where(user_id: current_user.id).map(&:credential_id)
+    end
 
     def handle_successful_delete
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
@@ -72,12 +83,9 @@ module Users
       return account_url if user_already_has_a_personal_key?
 
       policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
 
-      if policy.show_personal_key_after_initial_2fa_setup?
-        sign_up_personal_key_url
-      else
-        idv_jurisdiction_url
-      end
+      idv_jurisdiction_url
     end
 
     def process_invalid_webauthn(form)

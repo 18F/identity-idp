@@ -1,4 +1,13 @@
 function webauthn() {
+  const base64ToArrayBuffer = function(base64) {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i += 1) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
   const arrayBufferToBase64 = function(buffer) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
@@ -20,6 +29,17 @@ function webauthn() {
   const userId = document.getElementById('user_id').value;
   const userEmail = document.getElementById('user_email').value;
   const challengeBytes = new Uint8Array(JSON.parse(document.getElementById('user_challenge').value));
+  const excludeCredentialsString = document.getElementById('exclude_credentials').value;
+  const excludeCredentialsArray = [];
+  if (excludeCredentialsString) {
+    const arr = excludeCredentialsString.split(',');
+    for (let i = 0; i < arr.length; i += 1) {
+      excludeCredentialsArray.push({
+        type: 'public-key',
+        id: base64ToArrayBuffer(arr[i]),
+      });
+    }
+  }
   const createOptions = {
     publicKey: {
       challenge: challengeBytes,
@@ -46,8 +66,12 @@ function webauthn() {
       timeout: 800000,
       attestation: 'none',
       excludeList: [],
+      excludeCredentials: excludeCredentialsArray,
     },
   };
+  if (!(navigator && navigator.credentials && navigator.credentials.create)) {
+    window.location.href = '/webauthn_setup?error=NotSupportedError';
+  }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
     document.getElementById('spinner').className = '';
@@ -59,6 +83,8 @@ function webauthn() {
       document.getElementById('attestation_object').value = arrayBufferToBase64(newCred.response.attestationObject);
       document.getElementById('client_data_json').value = arrayBufferToBase64(newCred.response.clientDataJSON);
       document.getElementById('webauthn_form').submit();
+    }).catch(function (err) {
+      window.location.href = `/webauthn_setup?error=${err.name}`;
     });
   });
 }
