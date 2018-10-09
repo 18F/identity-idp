@@ -174,7 +174,6 @@ es:
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
       usps:
-        bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
           verificada en el archivo.
         resend: Envíeme otra carta.

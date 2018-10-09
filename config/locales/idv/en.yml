@@ -167,7 +167,6 @@ en:
           data to make sure no one else can access it.
         success: Next, we'll need a phone number.
       usps:
-        bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
           on file.
         resend: Send me another letter.
