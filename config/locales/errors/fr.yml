@@ -42,7 +42,7 @@ fr:
       must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
         de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
-      otp_failed: Échec de l'envoi de votre mot de passe à usage unique.
+      otp_failed: Échec de l'envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour

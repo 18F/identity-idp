@@ -38,7 +38,7 @@ en:
       must_have_us_country_code: Invalid phone number. Please make sure you enter
         a phone number with a U.S. country code.
       no_pending_profile: No profile is waiting for verification
-      otp_failed: Your one time password failed to send.
+      otp_failed: Your your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
