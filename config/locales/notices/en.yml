@@ -45,5 +45,4 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-    webauthn_added: You added a hardware security key.
     webauthn_deleted: You deleted a hardware security key.

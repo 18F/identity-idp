@@ -1,0 +1,16 @@
+- title t('doc_auth.titles.doc_auth')
+
+= image_tag(asset_url('alert/success'),
+        alt: t('idv.titles.session.success'), width: 60)
+
+h1.h3.mb2.mt3.my0 = t('forms.webauthn_setup.success_title')
+
+.col-2
+  hr.mt3.mb3.bw4.border-green.rounded
+
+p = t('forms.webauthn_setup.success_text')
+
+= button_to(t('forms.buttons.continue'), @next_url, method: :get,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12')
+
+= render 'shared/cancel', link: destroy_user_session_path
