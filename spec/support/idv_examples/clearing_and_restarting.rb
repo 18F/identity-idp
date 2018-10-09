@@ -1,7 +1,5 @@
 shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone' do
-    expect(user.reload.decorate.pending_profile?).to eq(true)
-
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
@@ -22,8 +20,6 @@ shared_examples 'clearing and restarting idv' do
   end
 
   it 'allows the user to retry verification with usps' do
-    expect(user.reload.decorate.pending_profile?).to eq(true)
-
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
@@ -35,7 +31,11 @@ shared_examples 'clearing and restarting idv' do
     click_idv_continue
     click_idv_continue
     click_on t('idv.form.activate_by_mail')
-    click_on t('idv.buttons.mail.resend')
+    if page.has_button?(t('idv.buttons.mail.send'))
+      click_on t('idv.buttons.mail.send')
+    else
+      click_on t('idv.buttons.mail.resend')
+    end
     fill_in 'Password', with: user.password
     click_idv_continue
     click_acknowledge_personal_key

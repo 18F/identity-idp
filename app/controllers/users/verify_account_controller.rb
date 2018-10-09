@@ -24,13 +24,6 @@ module Users
       end
     end
 
-    def destroy
-      analytics.track_event(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
-      Idv::CancelVerificationAttempt.new(user: current_user).call
-      idv_session.clear
-      redirect_to idv_url
-    end
-
     private
 
     def build_verify_account_form
