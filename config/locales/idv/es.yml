@@ -154,7 +154,7 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
-      clear_and_start_over: NOT TRANSLATED YET
+      clear_and_start_over: Borrar mi información y empezar de nuevo
       return_to_profile: "‹ Volver a tu perfil de login.gov"
       return_to_sp_html: Ahora puedes iniciar sesión en <strong>%{sp}</strong>.
       review:
