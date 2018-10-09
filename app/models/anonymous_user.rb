@@ -21,9 +21,21 @@ class AnonymousUser
     nil
   end
 
+  def webauthn_configurations
+    []
+  end
+
+  def x509_dn_uuid; end
+
+  def otp_secret_key; end
+
   def email; end
 
   def email_address
     EMPTY_EMAIL_ADDRESS
+  end
+
+  def confirmed_at
+    Time.zone.now
   end
 end

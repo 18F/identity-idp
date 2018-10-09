@@ -153,6 +153,7 @@ detectors:
     public_methods_only: true
     exclude:
       - AnalyticsEventJob#perform
+      - AnonymousUser#confirmed_at
       - ApplicationController#default_url_options
       - ApplicationHelper#step_class
       - NullTwilioClient#http_client
