@@ -273,7 +273,7 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
-  piv_cac_agencies: '["DOD","NGA","EOP"]'
+  piv_cac_agencies: '["DOD","NGA","USDS"]'
   piv_cac_agencies_scoped_by_email: '["GSA"]'
   piv_cac_email_domains: '[".mil","state.gov"]'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
