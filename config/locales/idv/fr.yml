@@ -8,16 +8,18 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
-      send_confirmation_code: NOT TRANSLATED YET
+      send_confirmation_code: Continuer
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
       warning_header: Si vous annulez maintenant
       warnings:
-        warning_1: NOT TRANSLATED YET
-        warning_2: NOT TRANSLATED YET
-        warning_3: NOT TRANSLATED YET
-        warning_4: NOT TRANSLATED YET
-        warning_5: NOT TRANSLATED YET
+        warning_1: Nous ne serons pas en mesure de vérifier votre identité
+        warning_2: Nous ne conserverons aucune information relative à votre nom, votre
+          adresse, votre date de naissance, ou votre numéro de sécurité sociale américain.
+        warning_3: Vous ne pourrez pas accéder de façon sécurisée à vos renseignements
+          en utilisant %{app}
+        warning_4: Votre adresse e-mail sera encore associée à un compte login.gov
+        warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
     errors:
       bad_dob: Votre date de naissance doit être une date valide.
       duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
@@ -56,16 +58,18 @@ fr:
           <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
+        jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
+          pour le moment. Veuillez réessayer demain.
+        timeout: Notre demande de vérification de vos renseignements a expiré.
         warning: Veuillez vérifier l'information que vous avez fournie.
       sessions:
         fail: Pour votre sécurité, la vérification d'identité de votre compte est
           <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
+        jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
+          pour le moment. Veuillez réessayer demain.
+        timeout: Notre demande de vérification de vos renseignements a expiré.
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
           de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
           des erreurs communes.
@@ -98,8 +102,8 @@ fr:
       state_id: Numéro d'identification
       state_id_tip: sans espaces ou tirets
       state_id_type:
-        drivers_license: NOT TRANSLATED YET
-        drivers_permit: NOT TRANSLATED YET
+        drivers_license: Permis de conduire
+        drivers_permit: Permis d'apprenti
         state_id_card: Identification d'état
       state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
@@ -111,22 +115,27 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
+      agencies_login: Vous pouvez maintenant accéder et vous connecter à ces agences.
+      agency_login_html: Vous pouvez maintenant accéder et vous connecter à <br><strong>%{sp}</strong>.
       cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons recueillir
         quelques informations personnelles de base ainsi que certaines informations
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
-      come_back_later: NOT TRANSLATED YET
-      come_back_later_no_sp_html: NOT TRANSLATED YET
-      come_back_later_sp_html: NOT TRANSLATED YET
+      come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
+        connecter à %{app}, puis saisissez votre code de vérification lorsque vous
+        y serez invité.
+      come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte %{app}</strong>
+        pour le moment.
+      come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le
+        moment.
       confirm: Vous avez crypté vos données vérifiées
       dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez
         déjà créé et vérifié un compte, mais avec une adresse courriel différente.
       dupe_ssn2_html: Veuillez %{link} avec l'adresse courriel que vous avez utilisée
         originalement.
       dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
-      hardfail: NOT TRANSLATED YET
+      hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
+        retenter d'effectuer la vérification de votre identité dans %{hours} heures.
       jurisdiction:
         no_id: Je n'ai pas de carte d'identité officielle
         no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
@@ -143,7 +152,7 @@ fr:
           de votre carte d'identité officielle.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
-        phone_number_html: NOT TRANSLATED YET
+        phone_number_html: Nous enverrons un code au <strong>%{phone}</strong>
       personal_key: Il s'agit de votre nouvelle clé personnelle. Notez-la et conservez-la
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
         de passe.
@@ -157,8 +166,8 @@ fr:
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain
-      return_to_profile: NOT TRANSLATED YET
-      return_to_sp_html: NOT TRANSLATED YET
+      return_to_profile: "‹ Revenir à votre profil login.gov"
+      return_to_sp_html: Vous pouvez maintenant vous connecter à <strong>%{sp}</strong>.
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
@@ -191,7 +200,7 @@ fr:
     titles:
       activated: Votre identité a déjà été vérifiée
       cancel: Nous ne pouvons pas vérifier votre identité
-      come_back_later: NOT TRANSLATED YET
+      come_back_later: Revenez vite.
       complete: Vérification de votre identité complétée
       dupe: 'Erreur: un compte existe déjà'
       expectations: Ensuite, aidez-vous à vous identifier
@@ -204,7 +213,7 @@ fr:
         verify: Vous voulez une lettre?
       no_id: Nous ne sommes pas en mesure de vérifier votre identité sans une pièce
         d'identité officielle
-      otp_delivery_method: NOT TRANSLATED YET
+      otp_delivery_method: Comment souhaitez-vous recevoir le code ?
       phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
       select_verification: Activer votre compte
