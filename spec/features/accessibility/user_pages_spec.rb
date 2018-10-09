@@ -37,7 +37,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     scenario 'phone setup page' do
       sign_up_and_set_password
-      select_2fa_option('sms')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
       expect(page).to be_accessible
