@@ -31,9 +31,15 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     # but there are designs to remove personal key from the option list and
     # make it a link with some additional text to call it out as a special
     # case.
-    options_for_multi_configurations +
-      options_for_singular_configurations +
-      mfa.personal_key_configuration.selection_presenters
+    configurations = mfa.two_factor_configurations
+    if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+      configurations << mfa.personal_key_configuration
+    end
+    # A user can have multiples of certain types of MFA methods, such as
+    # webauthn keys and phones. However, we only want to show one of each option
+    # during login, except for phones, where we want to allow the user to choose
+    # which MFA-enabled phone they want to use.
+    all_sms_and_voice_options_plus_one_of_each_remaining_option(configurations)
   end
 
   def should_display_account_reset_or_cancel_link?
@@ -47,18 +53,25 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   private
 
-  # :reek:FeatureEnvy
-  def options_for_multi_configurations
-    mfa = MfaContext.new(current_user)
-    mfa.phone_configurations.flat_map(&:selection_presenters) +
-      mfa.webauthn_configurations.selection_presenters
+  def all_sms_and_voice_options_plus_one_of_each_remaining_option(configurations)
+    presenters = configurations.flat_map(&:selection_presenters)
+    presenters_for_options_that_are_not_phone(presenters) + presenters_for_phone_options(presenters)
   end
 
-  # :reek:FeatureEnvy
-  def options_for_singular_configurations
-    mfa = MfaContext.new(current_user)
-    mfa.piv_cac_configuration.selection_presenters +
-      mfa.auth_app_configuration.selection_presenters
+  def presenters_for_options_that_are_not_phone(presenters)
+    presenters.select { |presenter| !phone_presenter_class?(presenter.class) }.uniq(&:class)
+  end
+
+  def presenters_for_phone_options(presenters)
+    presenters.select { |presenter| phone_presenter_class?(presenter.class) }
+  end
+
+  def phone_presenter_class?(class_name)
+    phone_classes = [
+      TwoFactorAuthentication::SmsSelectionPresenter,
+      TwoFactorAuthentication::VoiceSelectionPresenter,
+    ]
+    phone_classes.include?(class_name)
   end
 
   def account_reset_link

@@ -1,8 +1,15 @@
 module AccountResetHelper
   def create_account_reset_request_for(user)
-    AccountReset::CreateRequest.new(user).call
-    account_reset_request = AccountResetRequest.find_by(user_id: user.id)
-    account_reset_request.request_token
+    request = AccountResetRequest.find_or_create_by(user: user)
+    request_token = SecureRandom.uuid
+    request.update!(
+      request_token: request_token,
+      requested_at: Time.zone.now,
+      cancelled_at: nil,
+      granted_at: nil,
+      granted_token: nil
+    )
+    request_token
   end
 
   def cancel_request_for(user)
