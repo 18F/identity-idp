@@ -23,7 +23,7 @@ class PivCacConfiguration
     end
   end
 
-  def name
-    :piv_cac if mfa_enabled?
+  def friendly_name
+    :piv_cac
   end
 end

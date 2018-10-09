@@ -30,15 +30,7 @@ module AccountReset
     end
 
     def track_mfa_method_counts
-      @mfa_method_counts = mfa_methods.empty? ? {} : mfa_method_counts_hash
-    end
-
-    def mfa_method_counts_hash
-      mfa_methods.each_with_object(Hash.new(0)) { |name, count| count[name] += 1 }
-    end
-
-    def mfa_methods
-      @mfa_methods ||= MfaContext.new(user).two_factor_configurations.map(&:name).compact
+      @mfa_method_counts = MfaContext.new(user).enabled_two_factor_configuration_counts_hash
     end
 
     def destroy_user

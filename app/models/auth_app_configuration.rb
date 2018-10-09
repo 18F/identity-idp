@@ -19,7 +19,7 @@ class AuthAppConfiguration
     end
   end
 
-  def name
-    :auth_app if mfa_enabled?
+  def friendly_name
+    :auth_app
   end
 end

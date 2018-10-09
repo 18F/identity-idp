@@ -21,7 +21,7 @@ class PhoneConfiguration < ApplicationRecord
     options
   end
 
-  def name
-    :phone if mfa_enabled?
+  def friendly_name
+    :phone
   end
 end
