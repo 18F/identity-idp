@@ -93,10 +93,19 @@ fr:
       submit: Confirmer le compte
       title: Confirmez votre compte
     webauthn_setup:
-      intro_html: Lorsque vous vous connectez, vous pouvez utiliser votre clé de sécurité
-        physique. %{link}
-      step_1: Insérez votre clé de sécurité dans le port USB de votre ordinateur ou
-        connectez-le avec un câble USB.
-      step_2: Une fois connecté, appuyez sur le bouton ou le disque d'or si votre
-        clé en possède un.
-      step_3: Entrez un nom pour votre clé de sécurité
+      continue: Continuer
+      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour l’enregistrer
+        avec login.gov
+      instructions_title: Connectez votre clé de sécurité
+      intro_html: Ajoutez une clé de sécurité en tant que méthode d'authentification
+        à votre compte. Votre clé de sécurité doit prendre en charge le standard FIDO.
+        Vous pouvez ajouter autant de clés de sécurité que vous le souhaitez et nous
+        en recommandons au moins deux pour faciliter la récupération du compte.
+      login_text: Appuyez sur le bouton de votre clé de sécurité pour vous connecter
+        avec login.gov
+      nickname: Pseudo clé de sécurité
+      success_text: Chaque fois que vous vous connecterez à login.gov, nous vous demanderons
+        d'utiliser votre clé de sécurité. Si vous ne possédez pas votre clé de sécurité,
+        vous pouvez utiliser toute autre méthode d'authentification que vous avez
+        activée.
+      success_title: Vous avez ajouté une clé de sécurité comme méthode d'authentification.
