@@ -36,7 +36,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = { user_signed_up: true }
+        properties = { user_signed_up: true, totp_secret_present: true }
 
         expect(@analytics).
           to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
@@ -78,7 +78,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = { user_signed_up: false }
+        properties = { user_signed_up: false, totp_secret_present: true }
 
         expect(@analytics).
           to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
@@ -107,6 +107,7 @@ describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            totp_secret_present: true,
           }
           expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
         end
@@ -166,6 +167,7 @@ describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            totp_secret_present: true,
           }
           expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
         end
@@ -199,6 +201,29 @@ describe Users::TotpSetupController, devise: true do
           result = {
             success: true,
             errors: {},
+          }
+          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+        end
+      end
+
+      context 'when totp secret is no longer in user_session' do
+        before do
+          stub_sign_in_before_2fa
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+
+          patch :confirm, params: { code: 123 }
+        end
+
+        it 'redirects with an error message' do
+          expect(response).to redirect_to(authenticator_setup_path)
+          expect(flash[:error]).to eq t('errors.invalid_totp')
+          expect(subject.current_user.totp_enabled?).to be(false)
+
+          result = {
+            success: false,
+            errors: {},
+            totp_secret_present: false,
           }
           expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
         end

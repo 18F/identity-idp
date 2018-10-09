@@ -33,6 +33,8 @@ class SessionDecorator
 
   def failure_to_proof_url; end
 
+  def sp_msg; end
+
   def sp_name; end
 
   def sp_agency; end
@@ -48,8 +50,6 @@ class SessionDecorator
   def requested_attributes; end
 
   def sp_alert?(_path); end
-
-  def sp_alert_name; end
 
   def sp_alert_learn_more; end
 

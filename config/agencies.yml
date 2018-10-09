@@ -4,7 +4,7 @@ test:
   2:
     name: 'OPM'
   3:
-    name: 'EOP'
+    name: 'USDS'
   4:
     name: 'RRB'
   5:
@@ -30,7 +30,7 @@ development:
   2:
     name: 'OPM'
   3:
-    name: 'EOP'
+    name: 'USDS'
   4:
     name: 'RRB'
   5:
@@ -56,7 +56,7 @@ production:
   2:
     name: 'OPM'
   3:
-    name: 'EOP'
+    name: 'USDS'
   4:
     name: 'RRB'
   5:

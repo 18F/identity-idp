@@ -17,11 +17,7 @@ describe ResetPasswordForm, type: :model do
 
         errors = { reset_password_token: ['token_expired'] }
 
-        extra = {
-          user_id: '123',
-          active_profile: false,
-          confirmed: true,
-        }
+        extra = { user_id: '123' }
 
         result = instance_double(FormResponse)
 
@@ -40,13 +36,11 @@ describe ResetPasswordForm, type: :model do
 
         password = 'invalid'
 
-        errors = { password: ['is too short (minimum is 9 characters)'] }
-
-        extra = {
-          user_id: '123',
-          active_profile: false,
-          confirmed: true,
+        errors = {
+          password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
         }
+
+        extra = { user_id: '123' }
 
         result = instance_double(FormResponse)
 
@@ -60,19 +54,17 @@ describe ResetPasswordForm, type: :model do
       it 'sets the user password to the submitted password' do
         user = build_stubbed(:user, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
+        expect(Event).to receive(:create).with(user_id: user.id, event_type: :password_changed)
 
         form = ResetPasswordForm.new(user)
-
         password = 'valid password'
-
-        extra = {
-          user_id: '123',
-          active_profile: false,
-          confirmed: true,
-        }
-
+        extra = { user_id: '123' }
         result = instance_double(FormResponse)
+        user_updater = instance_double(UpdateUser)
+        allow(UpdateUser).to receive(:new).
+          with(user: user, attributes: { password: password }).and_return(user_updater)
 
+        expect(user_updater).to receive(:call)
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(password: password)).to eq result
@@ -89,15 +81,11 @@ describe ResetPasswordForm, type: :model do
         password = 'short'
 
         errors = {
-          password: ['is too short (minimum is 9 characters)'],
+          password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
           reset_password_token: ['token_expired'],
         }
 
-        extra = {
-          user_id: '123',
-          active_profile: false,
-          confirmed: true,
-        }
+        extra = { user_id: '123' }
 
         result = instance_double(FormResponse)
 

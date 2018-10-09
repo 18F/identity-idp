@@ -33,7 +33,7 @@ class UpdateUserPasswordForm
   end
 
   def email_user_about_password_change
-    EmailNotifier.new(user).send_password_changed_email
+    UserMailer.password_changed(user).deliver_later
   end
 
   def encrypt_user_profile_if_active

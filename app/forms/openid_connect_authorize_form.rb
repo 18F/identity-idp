@@ -81,11 +81,6 @@ class OpenidConnectAuthorizeForm
 
   attr_reader :identity, :success, :already_linked
 
-  def requested_attributes
-    @requested_attributes ||=
-      OpenidConnectAuthorizeDecorator.new(scopes: scope).requested_attributes
-  end
-
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
