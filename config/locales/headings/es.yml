@@ -55,4 +55,4 @@ es:
       new: Permita una app de autenticación
     verify_email: Revise su email
     webauthn_setup:
-      new: Registre su clave de seguridad de hardware
+      new: Añade tu clave de seguridad

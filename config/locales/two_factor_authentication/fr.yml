@@ -35,9 +35,8 @@ fr:
         (Seulement les numéros de téléphone en Amerique du Nord)
       voice_setup_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
         les numéros de téléphone en Amerique du Nord)
-      webauthn: Clé de sécurité physique
-      webauthn_info: Utilisez votre clé de sécurité physique au lieu d'un code de
-        sécurité.
+      webauthn: Clef de sécurité
+      webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
@@ -95,7 +94,7 @@ fr:
       voice: Appel téléphonique
       voice_info: Obtenez votre code de sécurité par appel téléphonique
       webauthn: Clé de sécurité physique
-      webauthn_info: Utilisez une clé de sécurité physique pour sécuriser votre compte
+      webauthn_info: Utilisez une clé de sécurité pour sécuriser votre compte
     webauthn_fallback:
       question: Votre clé de sécurité physique n'est pas disponible?
-    webauthn_header_text: Présentez votre clé de sécurité physique
+    webauthn_header_text: Présentez votre clé de sécurité

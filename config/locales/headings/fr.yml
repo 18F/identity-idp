@@ -55,4 +55,4 @@ fr:
       new: Activer une application d'authentification
     verify_email: Consultez vos courriels
     webauthn_setup:
-      new: Enregistrez votre clé de sécurité physique
+      new: Ajoutez votre clé de sécurité
