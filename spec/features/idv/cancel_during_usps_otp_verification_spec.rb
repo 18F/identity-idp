@@ -16,7 +16,7 @@ describe 'cancelling IdV during USPS otp verification' do
       sign_in_live_with_2fa(user)
     end
 
-    it_behaves_like 'cancelling and restarting idv'
+    it_behaves_like 'clearing and restarting idv'
   end
 
   context 'clicking the cancel button before signing out' do
@@ -27,6 +27,6 @@ describe 'cancelling IdV during USPS otp verification' do
       visit verify_account_path
     end
 
-    it_behaves_like 'cancelling and restarting idv'
+    it_behaves_like 'clearing and restarting idv'
   end
 end
