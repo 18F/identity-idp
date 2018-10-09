@@ -19,6 +19,7 @@ div
     = text_field_tag :name, '', required: true, id: 'name',
           class: 'block col-12 field monospace', size: 16, maxlength: 20,
           'aria-labelledby': 'totp-label'
+    = submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden'
   br
   = link_to t('forms.webauthn_setup.continue'), '#', method: :get,
           class: 'btn btn-primary btn-wide align-top', id: 'continue-button'

@@ -7,11 +7,10 @@ module WebauthnHelper
 
   def fill_in_nickname_and_click_continue
     fill_in 'name', with: 'mykey'
-    find('#continue-button').click
   end
 
   def mock_submit_without_pressing_button_on_hardware_key
-    page.execute_script("document.getElementById('webauthn_form').submit();")
+    first('#submit-button', visible: false).click
   end
 
   def mock_press_button_on_hardware_key
@@ -23,15 +22,11 @@ module WebauthnHelper
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', client_data_json)
 
-    page.execute_script("document.getElementById('webauthn_form').submit();")
+    first('#submit-button', visible: false).click
   end
 
   def set_hidden_field(id, value)
-    # hidden fields populated by the webauthn api callback.
-    # first("input##{id}", visible: false).set(value) will not work with selenium
-    # make them visible so selenium can test.
-    page.execute_script("document.getElementById('" + id + "').setAttribute('type','text');")
-    find("input##{id}").set(value)
+    first("input##{id}", visible: false).set(value)
   end
 
   def protocol
