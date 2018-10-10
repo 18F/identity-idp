@@ -20,6 +20,8 @@ en:
       success: We sent another confirmation email.
     session_cleared: For your security, we clear what you entered if you don't move
       to a new page within %{minutes} minutes.
+    session_timedout: We signed you out. For your security, %{app} ends your session
+      when you haven’t moved to a new page for %{minutes} minutes.
     signed_up_but_unconfirmed:
       first_paragraph_end: with a link to confirm your email address. Follow the link
         to continue creating your account.
@@ -43,7 +45,4 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-    webauthn_added: You added a hardware security key.
     webauthn_deleted: You deleted a hardware security key.
-  session_timedout: We signed you out. For your security, %{app} ends your session
-    when you haven’t moved to a new page for %{minutes} minutes.

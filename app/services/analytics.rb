@@ -69,6 +69,8 @@ class Analytics
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
+  IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
+  IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'.freeze
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
@@ -106,6 +108,7 @@ class Analytics
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
+  PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze

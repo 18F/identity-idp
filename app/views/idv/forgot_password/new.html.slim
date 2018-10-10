@@ -1,0 +1,10 @@
+= render 'shared/failure', presenter: @presenter
+
+ul class="list-reset #{@presenter.state_color}-dots"
+  - @presenter.cancellation_warnings.each do |warning|
+    li = warning
+
+.mt3 = link_to t('idv.forgot_password.try_again'), @presenter.go_back_path,
+        class: 'btn btn-primary sm-col-6 col-12 btn-wide'
+.mt2 = button_to t('idv.forgot_password.reset_password'), idv_forgot_password_path,
+        method: :post, class: 'btn btn-secondary sm-col-6 col-12 btn-wide'

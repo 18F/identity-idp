@@ -1,29 +1,18 @@
 ---
 en:
   service_providers:
-    homes_mil:
+    default:
       account_page:
-        body: Your old HOMES.mil username and password won’t work. Please create a
-          login.gov account using the same email address you use for HOMES.mil.
-      body_html: Your old HOMES.mil username and password won’t work. Please %{link}
-        using the same email address you use for HOMES.mil.
+        body: Your old %{sp_name} username and password won’t work. Please create
+          a login.gov account using the same email address you use for %{sp_name}.
+      body_html: Your old %{sp_name} username and password won’t work. Please %{link}
+        using the same email address you use for %{sp_name}.
       create_account_link: create a login.gov account
       create_account_page:
         body: Please create a login.gov account using the same email address you use
-          for HOMES.mil
-      header: First time here from HOMES.mil?
+          for %{sp_name}
+      header: First time here from %{sp_name}?
     learn_more: Learn more.
-    sam:
-      account_page:
-        body: Your old SAM username and password won’t work. Please create a login.gov
-          account using the same email address you use for SAM.
-      body_html: Your old SAM username and password won’t work. Please %{link} using
-        the same email address you use for SAM.
-      create_account_link: create a login.gov account
-      create_account_page:
-        body: Please create a login.gov account using the same email address you use
-          for SAM.
-      header: First time here from SAM?
     trusted_traveler:
       account_page:
         body: Your old GOES userID and password won’t work. Please create a login.gov
@@ -33,14 +22,3 @@ en:
       create_account_page:
         body: ''
       header: Coming from Trusted Traveler Programs?
-    usa_jobs:
-      account_page:
-        body: Your old USAJOBS username and password won’t work. Please create a login.gov
-          account using the same email address you use for USAJOBS.
-      body_html: Your old USAJOBS username and password won’t work. Please %{link}
-        using the same email address you use for USAJOBS.
-      create_account_link: create a login.gov account
-      create_account_page:
-        body: Please create a login.gov account using the same email address you use
-          for USAJOBS
-      header: First time here from USAJOBS?

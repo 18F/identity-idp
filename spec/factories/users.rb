@@ -10,6 +10,18 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { '!1a Z@6s' * 16 } # Maximum length password.
 
+    after(:build) do |user, _evaluator|
+      if user.email.present? && user.email_address.nil?
+        user.email_address = build(:email_address, email: user.email, user: user)
+      end
+    end
+
+    after(:stub) do |user, _evaluator|
+      if user.email.present? && user.email_address.nil?
+        user.email_address = build_stubbed(:email_address, email: user.email, user: user)
+      end
+    end
+
     trait :with_webauthn do
       after(:build) do |user, evaluator|
         if user.webauthn_configurations.empty?

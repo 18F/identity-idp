@@ -16,7 +16,7 @@ es:
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
       nuevo o solicitar un nuevo código de seguridad de sólo un uso.
     invalid_personal_key: Esa clave personal no es válida.
-    invalid_piv_cac: NOT TRANSLATED YET
+    invalid_piv_cac: Esa PIV/CAC no es correcta.
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
       auth_app: Aplicación de autenticación
@@ -37,9 +37,8 @@ es:
         a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
       voice_setup_info: Obtenga su código de seguridad a través de una llamada telefónica.
         (Solo números de teléfono de América del Norte).
-      webauthn: Clave de seguridad de hardware
-      webauthn_info: Use su clave de seguridad de hardware en lugar de un código de
-        seguridad.
+      webauthn: Clave de seguridad
+      webauthn_info: Use su clave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
@@ -52,10 +51,13 @@ es:
     max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
       bloqueada temporalmente porque ha ingresado incorrectamente la clave personal
       demasiadas veces.
-    max_piv_cac_login_attempts_reached: NOT TRANSLATED YET
+    max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
+      temporalmente dado que has presentado las credenciales de tu piv/cac de forma
+      incorrecta demasiadas veces.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
-      phone_unsupported: NOT TRANSLATED YET
+      phone_unsupported: En este momento no podemos realizar llamadas a personas en
+        %{location}.
       sms: Mensaje de texto (SMS, sigla en inglés)
       title: "¿Cómo deberíamos enviarle un código?"
       voice: Llamada telefónica
@@ -74,7 +76,7 @@ es:
     phone_voice_label: Número de teléfono
     piv_cac_fallback:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
-    piv_cac_header_text: NOT TRANSLATED YET
+    piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
@@ -96,7 +98,7 @@ es:
       voice: Llamada telefónica
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad de hardware
-      webauthn_info: Use una clave de seguridad de hardware para proteger su cuenta
+      webauthn_info: Use una clave de seguridad para proteger su cuenta
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad de hardware disponible?"
-    webauthn_header_text: Presente su clave de seguridad de hardware
+    webauthn_header_text: Presenta tu clave de seguridad
