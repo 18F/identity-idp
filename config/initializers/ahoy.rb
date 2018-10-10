@@ -5,6 +5,7 @@ Ahoy.api = false
 Ahoy.visit_duration = Figaro.env.session_timeout_in_minutes.to_i.minutes
 Ahoy.server_side_visits = false
 Ahoy.geocode = false
+Ahoy.user_agent_parser = :device_detector
 
 module Ahoy
   class Store < Ahoy::BaseStore

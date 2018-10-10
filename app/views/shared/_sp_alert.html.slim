@@ -1,16 +1,14 @@
 - if decorated_session.sp_alert?(request.path)
-  - sp_alert_name = decorated_session.sp_alert_name
   .alert.alert-notice.sm-left-align
-    .bold = t("service_providers.#{sp_alert_name}.header")
+    .bold = decorated_session.sp_msg('header')
     p.mb1
       - if current_page?(sign_up_start_path)
-        = t("service_providers.#{sp_alert_name}.account_page.body")
+        = decorated_session.sp_msg('account_page.body')
       - elsif current_page?(sign_up_email_path)
-        = t("service_providers.#{sp_alert_name}.create_account_page.body")
+        = decorated_session.sp_msg('create_account_page.body')
       - else
-        - account_link = link_to t("service_providers.#{sp_alert_name}.create_account_link"),
+        - account_link = link_to decorated_session.sp_msg('create_account_link'),
           sign_up_email_url(request_id: params[:request_id])
-        = t("service_providers.#{sp_alert_name}.body_html",
-          link: account_link)
+        = decorated_session.sp_msg('body_html', link: account_link)
     p.mb0
       = link_to t('service_providers.learn_more'), decorated_session.sp_alert_learn_more

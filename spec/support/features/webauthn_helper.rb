@@ -5,13 +5,24 @@ module WebauthnHelper
     )
   end
 
-  def mock_press_button_on_hardware_key_and_fill_in_name_field
+  def fill_in_nickname_and_click_continue
+    fill_in 'name', with: 'mykey'
+  end
+
+  def mock_submit_without_pressing_button_on_hardware_key
+    first('#submit-button', visible: false).click
+  end
+
+  def mock_press_button_on_hardware_key
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 
+    # simulate javascript that is triggered when the hardware key button is pressed
+
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', client_data_json)
-    fill_in 'name', with: 'mykey'
+
+    first('#submit-button', visible: false).click
   end
 
   def set_hidden_field(id, value)

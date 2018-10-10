@@ -18,7 +18,7 @@ RSpec.describe AgencySeeder do
       run
       expect(Agency.find_by(id: 1).name).to eq('DHS')
       expect(Agency.find_by(id: 2).name).to eq('OPM')
-      expect(Agency.find_by(id: 3).name).to eq('EOP')
+      expect(Agency.find_by(id: 3).name).to eq('USDS')
     end
 
     context 'when an agency already exists in the database' do

@@ -9,7 +9,6 @@ module OpenidConnect
     before_action :validate_authorize_form, only: [:index]
     before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
     before_action :store_request, only: [:index]
-    before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
 
     def index
@@ -64,10 +63,6 @@ module OpenidConnect
 
     def build_authorize_form_from_params
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
-
-      @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
-        scopes: @authorize_form.scope
-      )
     end
 
     def authorization_params
@@ -99,23 +94,12 @@ module OpenidConnect
     end
 
     def store_request
-      client_id = @authorize_form.client_id
-
-      @request_id = SecureRandom.uuid
-      ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
-        sp_request.issuer = client_id
-        sp_request.loa = @authorize_form.acr_values.sort.max
-        sp_request.url = request.original_url
-        sp_request.requested_attributes = requested_attributes
-      end
-    end
-
-    def add_sp_metadata_to_session
-      StoreSpMetadataInSession.new(session: session, request_id: @request_id).call
-    end
-
-    def requested_attributes
-      @_attributes ||= @authorize_decorator.requested_attributes
+      ServiceProviderRequestHandler.new(
+        url: request.original_url,
+        session: session,
+        protocol_request: @authorize_form,
+        protocol: FederatedProtocols::Oidc
+      ).call
     end
   end
 end

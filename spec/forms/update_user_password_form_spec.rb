@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UpdateUserPasswordForm, type: :model do
-  let(:user) { User.new(password: 'old strong password') }
+  let(:user) { build(:user, password: 'old strong password') }
   let(:user_session) { {} }
   let(:password) { 'salty new password' }
   let(:params) { { password: password } }

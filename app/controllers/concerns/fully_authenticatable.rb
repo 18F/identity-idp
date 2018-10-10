@@ -8,7 +8,7 @@ module FullyAuthenticatable
   end
 
   def delete_branded_experience
-    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
+    ServiceProviderRequest.from_uuid(request_id).delete
   end
 
   def request_id

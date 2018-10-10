@@ -68,11 +68,10 @@ describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = challenge
       end
 
-      it 'processes a valid webauthn and redirects to account page' do
+      it 'processes a valid webauthn and redirects to success page' do
         patch :confirm, params: params
 
-        expect(response).to redirect_to(account_url)
-        expect(flash.now[:success]).to eq t('notices.webauthn_added')
+        expect(response).to redirect_to(webauthn_setup_success_url)
       end
 
       it 'tracks the submission' do
@@ -135,10 +134,10 @@ describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = challenge
       end
 
-      it 'processes a valid webauthn and redirects to personal key page' do
+      it 'processes a valid webauthn and redirects to success page' do
         patch :confirm, params: params
 
-        expect(response).to redirect_to(sign_up_personal_key_url)
+        expect(response).to redirect_to(webauthn_setup_success_url)
       end
     end
   end
