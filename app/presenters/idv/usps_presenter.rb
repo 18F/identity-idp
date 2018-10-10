@@ -17,7 +17,7 @@ module Idv
     end
 
     def cancel_path
-      return verify_account_path if user_completed_idv?
+      return verify_account_path if user_needs_address_otp_verification?
 
       idv_cancel_path
     end
@@ -32,7 +32,7 @@ module Idv
       usps_mail_service.any_mail_sent?
     end
 
-    def user_completed_idv?
+    def user_needs_address_otp_verification?
       current_user.decorate.pending_profile?
     end
   end
