@@ -55,7 +55,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def all_sms_and_voice_options_plus_one_of_each_remaining_option(configurations)
     presenters = configurations.flat_map(&:selection_presenters)
-    presenters_for_options_that_are_not_phone(presenters) + presenters_for_phone_options(presenters)
+    presenters_for_phone_options(presenters) + presenters_for_options_that_are_not_phone(presenters)
   end
 
   def presenters_for_options_that_are_not_phone(presenters)
