@@ -15,11 +15,11 @@ class UserMailer < ActionMailer::Base
   end
 
   def password_changed(user)
-    mail(to: user.email, subject: t('devise.mailer.password_updated.subject'))
+    mail(to: user.email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
   def phone_changed(user)
-    mail(to: user.email, subject: t('user_mailer.phone_changed.subject'))
+    mail(to: user.email_address.email, subject: t('user_mailer.phone_changed.subject'))
   end
 
   def account_does_not_exist(email, request_id)
@@ -30,13 +30,13 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(user)
     account_reset = user.account_reset_request
     @token = account_reset&.request_token
-    mail(to: user.email, subject: t('user_mailer.account_reset_request.subject'))
+    mail(to: user.email_address.email, subject: t('user_mailer.account_reset_request.subject'))
   end
 
   def account_reset_granted(user, account_reset)
     @token = account_reset&.request_token
     @granted_token = account_reset&.granted_token
-    mail(to: user.email, subject: t('user_mailer.account_reset_granted.subject'))
+    mail(to: user.email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
   end
 
   def account_reset_complete(email)

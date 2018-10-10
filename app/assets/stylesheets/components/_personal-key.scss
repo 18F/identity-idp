@@ -44,17 +44,26 @@
 }
 
 .bg-personal-key {
+  background: image-url('personal-key/shield.svg');
   background-color: $blue-lightest;
-  background-image: image-url('personal-key/shield.svg');
-  background-position: center;
+  background-position: center 3.3rem;
   background-repeat: no-repeat;
-  background-size: 244px 136px;
+  background-size: 115px;
   border-bottom: 1px solid $border-color;
 }
 
 .full-width-box {
   background-color: $blue-lightest;
   border-top: 1px solid $border-color;
-  margin-left: -80px;
-  width: 135%;
+  margin-left: -1rem;
+  width: 110%;
+}
+
+@media #{$breakpoint-sm} {
+  .full-width-box {
+    background-color: $blue-lightest;
+    border-top: 1px solid $border-color;
+    margin-left: -5rem;
+    width: 135%;
+  }
 }

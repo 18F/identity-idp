@@ -45,4 +45,19 @@ describe TwoFactorLoginOptionsPresenter do
           account_reset_request_path(locale: LinkLocaleResolver.locale)
         ))
   end
+
+  context 'with multiple webauthn configurations' do
+    let(:user) { create(:user) }
+    before(:each) do
+      create_list(:webauthn_configuration, 2, user: user)
+      user.webauthn_configurations.reload
+    end
+
+    it 'has only one webauthn selection presenter' do
+      webauthn_selection_presenters = presenter.options.map(&:class).select do |klass|
+        klass == TwoFactorAuthentication::WebauthnSelectionPresenter
+      end
+      expect(webauthn_selection_presenters.count).to eq 1
+    end
+  end
 end
