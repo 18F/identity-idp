@@ -7,10 +7,10 @@ en:
       back: Back
       cancel: Yes, cancel
       continue: Continue
-      delete: Delete
       disable: Disable
       edit: Edit
       enable: Enable
+      manage: Manage
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send code
       submit:
@@ -35,6 +35,9 @@ en:
       instructions: Please confirm you have a copy of your personal key by entering
         it below.
       title: Enter your personal key
+    phone:
+      buttons:
+        delete: Remove Phone
     piv_cac_mfa:
       submit: Present PIV/CAC card
     piv_cac_setup:

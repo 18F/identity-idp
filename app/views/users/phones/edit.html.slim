@@ -20,7 +20,7 @@ h1.h3.my0 = t('headings.edit_info.phone')
 - if MfaPolicy.new(current_user).multiple_factors_enabled? && @user_phone_form.phone.present?
   br
   .sm-col-8.mb3
-    = button_to t('forms.buttons.delete'), manage_phone_url, \
+    = button_to t('forms.phone.buttons.delete'), manage_phone_url, \
         class: 'btn btn-danger btn-wide', \
         method: :delete
 = render 'shared/cancel', link: account_path

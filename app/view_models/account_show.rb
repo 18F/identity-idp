@@ -45,6 +45,10 @@ class AccountShow
     'accounts/actions/edit_action_button'
   end
 
+  def manage_action_partial
+    'accounts/actions/manage_action_button'
+  end
+
   def pii_partial
     if decrypted_pii.present?
       'accounts/pii'
