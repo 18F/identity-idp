@@ -35,7 +35,7 @@ fr:
         (Seulement les numéros de téléphone en Amerique du Nord)
       voice_setup_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
         les numéros de téléphone en Amerique du Nord)
-      webauthn: Clef de sécurité
+      webauthn: Clé de sécurité
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
