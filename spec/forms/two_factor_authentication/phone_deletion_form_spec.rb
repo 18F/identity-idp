@@ -15,12 +15,12 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
       end
 
       it 'returns analytics' do
-        expect(result.extra).to eq({
+        expect(result.extra).to eq(
           user_id: user.uuid,
           configuration_present: true,
           configuration_id: configuration.id,
-          configuration_owner: user.uuid,
-        })
+          configuration_owner: user.uuid
+        )
       end
 
       it 'leaves the phone alone' do
@@ -36,12 +36,12 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
       end
 
       it 'returns analytics' do
-        expect(result.extra).to eq({
+        expect(result.extra).to eq(
           user_id: user.uuid,
           configuration_present: true,
           configuration_id: configuration.id,
-          configuration_owner: user.uuid,
-        })
+          configuration_owner: user.uuid
+        )
       end
 
       it 'removes the phone' do
@@ -58,12 +58,12 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
       end
 
       it 'returns analytics' do
-        expect(result.extra).to eq({
+        expect(result.extra).to eq(
           user_id: user.uuid,
           configuration_present: false,
           configuration_id: nil,
-          configuration_owner: nil,
-        })
+          configuration_owner: nil
+        )
       end
 
       it 'leaves the phone alone' do
@@ -81,12 +81,12 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
       end
 
       it 'returns analytics' do
-        expect(result.extra).to eq({
+        expect(result.extra).to eq(
           user_id: user.uuid,
           configuration_present: true,
           configuration_id: configuration.id,
-          configuration_owner: other_user.uuid,
-        })
+          configuration_owner: other_user.uuid
+        )
       end
 
       it 'leaves the phone alone' do

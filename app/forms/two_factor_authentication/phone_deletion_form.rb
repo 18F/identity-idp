@@ -11,7 +11,7 @@ module TwoFactorAuthentication
 
     def submit
       success = configuration_absent? ||
-        configuration_owned_by_user? && multiple_factors_enabled? && configuration_destroyed
+                configuration_owned_by_user? && multiple_factors_enabled? && configuration_destroyed
 
       FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end

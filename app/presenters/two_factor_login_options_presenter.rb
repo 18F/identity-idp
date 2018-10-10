@@ -59,7 +59,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def presenters_for_options_that_are_not_phone(presenters)
-    presenters.select { |presenter| !phone_presenter_class?(presenter.class) }.uniq(&:class)
+    presenters.reject { |presenter| phone_presenter_class?(presenter.class) }.uniq(&:class)
   end
 
   def presenters_for_phone_options(presenters)
