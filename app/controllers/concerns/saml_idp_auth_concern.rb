@@ -5,6 +5,7 @@ module SamlIdpAuthConcern
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :store_saml_request, only: :auth
+    before_action :add_sp_metadata_to_session, only: :auth
   end
 
   private
@@ -25,12 +26,17 @@ module SamlIdpAuthConcern
   end
 
   def store_saml_request
-    ServiceProviderRequestHandler.new(
-      url: request.original_url,
-      session: session,
-      protocol_request: saml_request,
-      protocol: FederatedProtocols::Saml
-    ).call
+    @request_id = SecureRandom.uuid
+    ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
+      sp_request.issuer = current_issuer
+      sp_request.loa = requested_authn_context
+      sp_request.url = request.original_url
+      sp_request.requested_attributes = requested_attributes
+    end
+  end
+
+  def add_sp_metadata_to_session
+    StoreSpMetadataInSession.new(session: session, request_id: @request_id).call
   end
 
   def requested_authn_context
@@ -109,5 +115,11 @@ module SamlIdpAuthConcern
 
   def current_issuer
     @_issuer ||= saml_request.service_provider.identifier
+  end
+
+  def requested_attributes
+    @_attributes ||= SamlRequestPresenter.new(
+      request: saml_request, service_provider: current_service_provider
+    ).requested_attributes
   end
 end

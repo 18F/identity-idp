@@ -34,8 +34,8 @@ en:
         (North America phone numbers only).
       voice_setup_info: Get security code via phone call (North America phone numbers
         only).
-      webauthn: Security key
-      webauthn_info: Use your security key to access your account.
+      webauthn: Hardware security key
+      webauthn_info: Use your hardware security key instead of a security code.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
     max_generic_login_attempts_reached: For your security, your account is temporarily
@@ -94,7 +94,7 @@ en:
       voice: Phone call
       voice_info: Get your security code via phone call
       webauthn: Hardware security key
-      webauthn_info: Use a security key to secure your account
+      webauthn_info: Use a hardware security key to secure your account
     webauthn_fallback:
       question: Don't have your hardware security key available?
-    webauthn_header_text: Present your security key
+    webauthn_header_text: Present your hardware security key

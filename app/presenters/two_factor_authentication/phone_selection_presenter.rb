@@ -2,7 +2,7 @@ module TwoFactorAuthentication
   class PhoneSelectionPresenter < SelectionPresenter
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
+        "#{super}:#{configuration.id}"
       else
         super
       end
@@ -10,20 +10,10 @@ module TwoFactorAuthentication
 
     def info
       if configuration.present?
-        t(
-          "two_factor_authentication.login_options.#{method}_info_html",
-          phone: masked_number(configuration.phone)
-        )
+        t("two_factor_authentication.login_options.#{method}_info_html", phone: configuration.phone)
       else
         t("two_factor_authentication.login_options.#{method}_setup_info")
       end
-    end
-
-    private
-
-    def masked_number(number)
-      return '' if number.blank?
-      "***-***-#{number[-4..-1]}"
     end
   end
 end

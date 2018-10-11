@@ -985,7 +985,8 @@ describe SamlIdpController do
         :disable_caching,
         :validate_saml_request,
         :validate_service_provider_and_authn_context,
-        :store_saml_request
+        :store_saml_request,
+        :add_sp_metadata_to_session
       )
     end
   end

@@ -234,6 +234,40 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
+  context 'creating two accounts during the same session' do
+    it 'allows the second account creation process to complete fully', email: true do
+      first_email = 'test1@test.com'
+      second_email = 'test2@test.com'
+      authn_request = auth_request.create(saml_settings)
+
+      perform_in_browser(:one) do
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(first_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(first_email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq authn_request
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+
+      perform_in_browser(:one) do
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(second_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(second_email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq authn_request
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+    end
+  end
+
   def sign_in_and_require_viewing_personal_key(user)
     login_as(user, scope: :user, run_callbacks: false)
     Warden.on_next_request do |proxy|

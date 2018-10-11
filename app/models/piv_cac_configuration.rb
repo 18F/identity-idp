@@ -22,8 +22,4 @@ class PivCacConfiguration
       []
     end
   end
-
-  def friendly_name
-    :piv_cac
-  end
 end

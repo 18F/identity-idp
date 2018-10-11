@@ -7,15 +7,17 @@ p.mt-tiny.mb4
 .full-width-box
   = render 'partials/personal_key/key', code: code
 
-.pkey-info.mt4.mb2
-  .sm-col.sm-col-6.sm-pr1.mb1
-    .pkey-info-image.mb1
+p.mt3
+  .sm-col.sm-col-6
+    .pr2.left-align.pl2
       = image_tag(asset_url('personal-key/warning.svg'), size: '60')
-    p = t('instructions.personal_key.once_html')
-  .sm-col.sm-col-6.sm-pl1.mb1
-    .pkey-info-image.mb1
+      br
+      = t('instructions.personal_key.once_html')
+  .sm-col.sm-col-6
+    .pl2
       = image_tag(asset_url('personal-key/lock-check.svg'), size: '60')
-    p = t('instructions.personal_key.safety_html')
+      br
+      = t('instructions.personal_key.safety_html')
 
 .clearfix
 br

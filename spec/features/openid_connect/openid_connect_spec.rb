@@ -334,6 +334,41 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
     end
   end
 
+  context 'creating two accounts during the same session' do
+    it 'allows the second account creation process to complete fully', email: true do
+      first_email = 'test1@test.com'
+      second_email = 'test2@test.com'
+
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_loa1
+        sign_up_user_from_sp_without_confirming_email(first_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(first_email)
+        click_button t('forms.buttons.continue')
+        redirect_uri = URI(current_url)
+
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_loa1
+        sign_up_user_from_sp_without_confirming_email(second_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(second_email)
+        click_button t('forms.buttons.continue')
+        redirect_uri = URI(current_url)
+
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+    end
+  end
+
   context 'starting account creation on mobile and finishing on desktop' do
     it 'prompts the user to go back to the mobile app', email: true do
       email = 'test@test.com'

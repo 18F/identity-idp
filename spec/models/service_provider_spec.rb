@@ -84,7 +84,7 @@ describe ServiceProvider do
     end
 
     context 'when the service provider setting depends on the user email' do
-      let(:user) { create(:user) }
+      let(:user) { build(:user) }
 
       it 'calls with the user email' do
         expect(PivCacService).to receive(

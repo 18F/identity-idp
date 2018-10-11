@@ -481,24 +481,4 @@ feature 'Sign in' do
         to_not have_content t('two_factor_authentication.totp_fallback.sms_link_text')
     end
   end
-
-  context 'visiting via SP1, then via SP2, then signing in' do
-    it 'redirects to SP2' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
-      user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1(:saml)
-      click_link t('links.sign_in')
-      visit_idp_from_sp_with_loa1(:oidc)
-      click_link t('links.sign_in')
-      fill_in_credentials_and_submit(user.email, user.password)
-      click_submit_default
-      click_continue
-
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.count).to eq 0
-    end
-  end
 end

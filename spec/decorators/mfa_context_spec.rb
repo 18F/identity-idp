@@ -28,6 +28,14 @@ describe MfaContext do
       it 'is empty' do
         expect(mfa.webauthn_configurations).to be_empty
       end
+
+      it 'has #selection_presenters defined' do
+        expect(mfa.webauthn_configurations).to respond_to(:selection_presenters)
+      end
+
+      it 'has no selection presenters' do
+        expect(mfa.webauthn_configurations.selection_presenters).to be_empty
+      end
     end
   end
 
@@ -59,113 +67,53 @@ describe MfaContext do
         it 'is empty' do
           expect(mfa.webauthn_configurations).to be_empty
         end
+
+        it 'has #selection_presenters defined' do
+          expect(mfa.webauthn_configurations).to respond_to(:selection_presenters)
+        end
+
+        it 'has no selection presenters' do
+          expect(mfa.webauthn_configurations.selection_presenters).to be_empty
+        end
       end
-    end
-  end
 
-  describe '#enabled_two_factor_configuration_counts_hash' do
-    let(:count_hash) { MfaContext.new(user).enabled_two_factor_configuration_counts_hash }
+      describe '#selection_presenters' do
+        it 'is defined' do
+          expect(mfa.webauthn_configurations).to respond_to(:selection_presenters)
+        end
 
-    context 'no 2FA configurations' do
-      let(:user) { build(:user) }
+        context 'with no webauthn_configurations' do
+          it 'is empty' do
+            expect(mfa.webauthn_configurations.selection_presenters).to be_empty
+          end
+        end
 
-      it 'returns an empty hash' do
-        hash = {}
+        context 'with webauthn enabled' do
+          before(:each) do
+            allow(FeatureManagement).to receive(:webauthn_enabled?).and_return(true)
+          end
 
-        expect(count_hash).to eq hash
-      end
-    end
+          context 'with one webauthn_configuration' do
+            let(:user) { create(:user, :with_webauthn) }
 
-    context 'with phone configuration' do
-      let(:user) { build(:user, :signed_up) }
+            it 'has one element' do
+              expect(mfa.webauthn_configurations.selection_presenters.count).to eq 1
+            end
+          end
 
-      it 'returns 1 for phone' do
-        hash = { phone: 1 }
+          context 'with more than one webauthn_configuration' do
+            let(:user) do
+              record = create(:user)
+              create_list(:webauthn_configuration, 3, user: record)
+              record.webauthn_configurations.reload
+              record
+            end
 
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with PIV/CAC configuration' do
-      let(:user) { build(:user, :with_piv_or_cac) }
-
-      it 'returns 1 for piv_cac' do
-        hash = { piv_cac: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with authentication app configuration' do
-      let(:user) { build(:user, :with_authentication_app) }
-
-      it 'returns 1 for auth_app' do
-        hash = { auth_app: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with webauthn configuration' do
-      let(:user) { build(:user, :with_webauthn) }
-
-      it 'returns 1 for webauthn' do
-        hash = { webauthn: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with authentication app and webauthn configurations' do
-      let(:user) { build(:user, :with_authentication_app, :with_webauthn) }
-
-      it 'returns 1 for each' do
-        hash = { auth_app: 1, webauthn: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with authentication app and phone configurations' do
-      let(:user) { build(:user, :with_authentication_app, :signed_up) }
-
-      it 'returns 1 for each' do
-        hash = { phone: 1, auth_app: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with PIV/CAC and phone configurations' do
-      let(:user) { build(:user, :with_piv_or_cac, :signed_up) }
-
-      it 'returns 1 for each' do
-        hash = { phone: 1, piv_cac: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with 1 phone and 2 webauthn configurations' do
-      let(:user) { build(:user, :signed_up) }
-
-      it 'returns 1 for phone and 2 for webauthn' do
-        create_list(:webauthn_configuration, 2, user: user)
-        hash = { phone: 1, webauthn: 2 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with 2 phones and 2 webauthn configurations' do
-      it 'returns 2 for each' do
-        user = create(:user, :signed_up)
-        create(:phone_configuration, user: user, phone: '+1 703-555-1213')
-        create_list(:webauthn_configuration, 2, user: user)
-        count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
-        hash = { phone: 2, webauthn: 2 }
-
-        expect(count_hash).to eq hash
+            it 'has one element' do
+              expect(mfa.webauthn_configurations.selection_presenters.count).to eq 1
+            end
+          end
+        end
       end
     end
   end

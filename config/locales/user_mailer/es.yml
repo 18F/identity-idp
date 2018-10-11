@@ -2,13 +2,9 @@
 es:
   user_mailer:
     account_does_not_exist:
-      intro: Esta dirección de correo electrónico aún no está asociada con una cuenta
-        %{app}. Si quieres crear una cuenta login.gov usando esta dirección de correo
-        electrónico, haz clic en el siguiente enlace o copia y pega el enlace completo
-        en tu navegador. Si no has solicitado restablecer tu contraseña puedes ignorar
-        este mensaje.
-      link_text: Crea tu cuenta
-      subject: Tu solicitud para restablecer tu contraseña de login.gov
+      intro: NOT TRANSLATED YET
+      link_text: NOT TRANSLATED YET
+      subject: NOT TRANSLATED YET
     account_reset_cancel:
       help: ''
       intro: Este correo electrónico confirma que ha cancelado su solicitud para eliminar
@@ -49,13 +45,9 @@ es:
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
     please_reset_password:
-      call_to_action: Para seguir usando tu cuenta de login.gov, restablece tu contraseña
-        usando el siguiente enlace.
-      intro: Encontramos un problema con tu contraseña tras realizar una revisión
-        de seguridad de login.gov. Aunque no vimos ninguna actividad sospechosa en
-        tu cuenta de login.gov, hemos desactivado tu contraseña antigua. Restablece
-        tu contraseña para seguir usando login.gov.
-      subject: Restablece tu contraseña
+      call_to_action: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+      subject: NOT TRANSLATED YET
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.

@@ -308,7 +308,7 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(payload[:nonce]).to eq(nonce)
 
-        expect(response[:expires_in]).to be_within(1).of(payload[:exp] - Time.zone.now.to_i)
+        expect(response[:expires_in]).to eq(payload[:exp] - Time.zone.now.to_i)
       end
 
       it 'has an access_token' do

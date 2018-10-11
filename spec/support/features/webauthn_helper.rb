@@ -5,33 +5,17 @@ module WebauthnHelper
     )
   end
 
-  def fill_in_nickname_and_click_continue
-    fill_in 'name', with: 'mykey'
-    find('#continue-button').click
-  end
-
-  def mock_submit_without_pressing_button_on_hardware_key
-    page.execute_script("document.getElementById('webauthn_form').submit();")
-  end
-
-  def mock_press_button_on_hardware_key
+  def mock_press_button_on_hardware_key_and_fill_in_name_field
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 
-    # simulate javascript that is triggered when the hardware key button is pressed
-
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', client_data_json)
-
-    page.execute_script("document.getElementById('webauthn_form').submit();")
+    fill_in 'name', with: 'mykey'
   end
 
   def set_hidden_field(id, value)
-    # hidden fields populated by the webauthn api callback.
-    # first("input##{id}", visible: false).set(value) will not work with selenium
-    # make them visible so selenium can test.
-    page.execute_script("document.getElementById('" + id + "').setAttribute('type','text');")
-    find("input##{id}").set(value)
+    first("input##{id}", visible: false).set(value)
   end
 
   def protocol

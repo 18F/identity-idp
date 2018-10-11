@@ -16,8 +16,8 @@ fr:
     - novembre
     - décembre
   time:
-    am: A.M.
+    am: NOT TRANSLATED YET
     formats:
       event_timestamp: "%e %B %Y à %H:%M"
       event_timestamp_utc: "%e %B %Y à %H:%M UTC"
-    pm: P.M.
+    pm: NOT TRANSLATED YET

@@ -26,9 +26,8 @@ module FormEmailValidator
   end
 
   def email_is_unique
-    email_owner = EmailAddress.find_with_email(email)&.user
-    return if persisted? && email_owner == @user
+    return if persisted? && email == @user.email
 
-    @email_taken = true if email_owner
+    @email_taken = true if User.find_with_email(email)
   end
 end

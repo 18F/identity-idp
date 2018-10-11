@@ -13,10 +13,10 @@ fr:
         modal:
           copy: Si vous n'avez pas votre clé personnelle, vous devrez vérifier votre
             identité de nouveau.
-          heading: Ne disposez-vous pas de votre clé personnelle ?
+          heading: Vous n'avez pas votre clé personnelle?
         with_key: Vous n'avez pas votre clé personnelle?
     account_recovery_setup:
-      piv_cac_next_step: Nous devons ensuite vous permettre de récupérer votre compte.
+      piv_cac_next_step: NOT TRANSLATED YET
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.
@@ -30,8 +30,7 @@ fr:
           le code correspondant à %{email} à %{app}.%{tooltip}
         or: or
       piv_cac:
-        confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
-          à votre compte.
+        confirm_piv_cac_html: NOT TRANSLATED YET
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.
           Les frais liés aux messages texte peuvent s'appliquer.

@@ -3,7 +3,7 @@ fr:
   titles:
     account: Compte
     account_locked: Compte temporairement verrouillé
-    account_recovery_setup: Configuration de la récupération du compte
+    account_recovery_setup: NOT TRANSLATED YET
     confirmations:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
@@ -30,12 +30,12 @@ fr:
         unverified: Erreur de certificat PIV/CAC
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
-        already_associated: Carte PIV/CAC en cours d'utilisation sur un autre compte
+        already_associated: NOT TRANSLATED YET
       token:
-        bad: Erreur interne
-        invalid: Erreur de certificat PIV/CAC
-        missing: Erreur interne
-    present_piv_cac: Veuillez présenter votre carte PIV/CAC
+        bad: NOT TRANSLATED YET
+        invalid: NOT TRANSLATED YET
+        missing: NOT TRANSLATED YET
+    present_piv_cac: NOT TRANSLATED YET
     present_webauthn: Présentez votre clé de sécurité physique
     reactivate_account: Réactiver le profil
     registrations:
@@ -44,7 +44,7 @@ fr:
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé votre compte
-      new_sp: Vous vous connectez pour la première fois
+      new_sp: NOT TRANSLATED YET
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
       new: Configurer l'authentification à deux facteurs

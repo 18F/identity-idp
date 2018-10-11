@@ -22,7 +22,7 @@ describe TwoFactorAuthentication::VoiceSelectionPresenter do
       end
 
       it 'returns voice:id' do
-        expect(subject.type).to eq "voice_#{phone.id}"
+        expect(subject.type).to eq "voice:#{phone.id}"
       end
     end
   end
