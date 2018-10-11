@@ -49,7 +49,8 @@ describe Users::WebauthnSetupController do
         stub_sign_in
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_SETUP_VISIT)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::WEBAUTHN_SETUP_VISIT, errors: {}, success: true)
 
         get :new
       end
