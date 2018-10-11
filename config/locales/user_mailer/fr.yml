@@ -2,9 +2,13 @@
 fr:
   user_mailer:
     account_does_not_exist:
-      intro: NOT TRANSLATED YET
-      link_text: NOT TRANSLATED YET
-      subject: NOT TRANSLATED YET
+      intro: Cette adresse e-mail n'est pas encore associée à un compte %{app}. Si
+        vous souhaitez créer un compte login.gov avec cette adresse e-mail, veuillez
+        cliquer sur le lien ci-dessous ou faites un copier-coller de l'intégralité
+        du lien sur votre navigateur. Si vous n'avez pas sollicité une réinitialisation
+        de votre mot de passe, nous vous prions de bien vouloir ignorer ce message.
+      link_text: Créer votre compte
+      subject: Votre demande de réinitialisation de votre mot de passe login.gov
     account_reset_cancel:
       help: ''
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression
@@ -47,9 +51,14 @@ fr:
       intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
       subject: Nouveau numéro de téléphone
     please_reset_password:
-      call_to_action: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
-      subject: NOT TRANSLATED YET
+      call_to_action: Pour continuer à utiliser votre compte login.gov, veuillez réinitialiser
+        votre mot de passe en utilisant le lien ci-dessous.
+      intro: Au cours d'un examen de sécurité login.gov, nous avons identifié un problème
+        concernant votre mot de passe. Bien que nous n'ayons découvert aucune activité
+        suspecte sur votre compte login.gov, nous avons désactivé votre ancien mot
+        de passe et vous prions de bien vouloir en établir un nouveau pour continuer
+        à utiliser login.gov.
+      subject: Veuillez réinitialiser votre mot de passe
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
         erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.

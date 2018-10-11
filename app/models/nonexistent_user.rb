@@ -22,4 +22,8 @@ class NonexistentUser
   def tech?
     false
   end
+
+  def active_profile
+    nil
+  end
 end

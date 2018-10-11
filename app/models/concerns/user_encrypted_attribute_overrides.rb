@@ -10,16 +10,11 @@ module UserEncryptedAttributeOverrides
       find_by(tainted_conditions)
     end
 
+    # :reek:UtilityFunction
     def find_with_email(email)
-      return nil if !email.is_a?(String) || email.empty?
-
-      email = email.downcase.strip
-      email_fingerprint = create_fingerprint(email)
-      find_by(email_fingerprint: email_fingerprint)
-    end
-
-    def create_fingerprint(email)
-      Pii::Fingerprinter.fingerprint(email)
+      email = EmailAddress.where.not(confirmed_at: nil).find_with_email(email) ||
+              EmailAddress.where(confirmed_at: nil).find_with_email(email)
+      email&.user
     end
   end
 
@@ -39,5 +34,7 @@ module UserEncryptedAttributeOverrides
   def email=(email)
     set_encrypted_attribute(name: :email, value: email)
     self.email_fingerprint = email.present? ? encrypted_attributes[:email].fingerprint : ''
+    return if email_address.blank?
+    email_address.email = email
   end
 end

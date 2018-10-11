@@ -121,6 +121,7 @@ Rails.application.routes.draw do
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
       patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
       delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+      get '/webauthn_setup_success' => 'users/webauthn_setup#success'
     end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
@@ -182,6 +183,8 @@ Rails.application.routes.draw do
         get '/come_back_later' => 'come_back_later#show'
         get '/confirmations' => 'confirmations#show'
         post '/confirmations' => 'confirmations#update'
+        get '/forgot_password' => 'forgot_password#new'
+        post '/forgot_password' => 'forgot_password#update'
         get '/otp_delivery_method' => 'otp_delivery_method#new'
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'

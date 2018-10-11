@@ -49,6 +49,41 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
+  describe '#sp_msg' do
+    context 'sp_name is included in list of SPs that see the default alert' do
+      it 'uses the default template' do
+        random_sp_name = ServiceProviderSessionDecorator::DEFAULT_ALERT_SP_NAMES.sample
+        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+
+        expect(subject.sp_msg('create_account_link')).
+          to eq I18n.t('service_providers.default.create_account_link')
+      end
+
+      it 'interpolates the sp_name' do
+        sp_msg = subject.sp_msg('account_page.body')
+        expect(sp_msg).to include(sp_name)
+      end
+
+      it 'interpolates the link parameter' do
+        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
+      end
+    end
+
+    context 'sp_name is included in list of SPs that see the custom alert' do
+      it 'uses the custom template' do
+        random_sp_name = ServiceProviderSessionDecorator::CUSTOM_ALERT_SP_NAMES.sample
+        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+
+        expect(subject.sp_msg('create_account_link')).
+          to eq I18n.t("service_providers.#{subject.sp_alert_name}.create_account_link")
+      end
+
+      it 'interpolates the link parameter' do
+        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
+      end
+    end
+  end
+
   describe '#sp_name' do
     it 'returns the SP friendly name if present' do
       expect(subject.sp_name).to eq sp.friendly_name
