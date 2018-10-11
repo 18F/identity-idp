@@ -67,5 +67,6 @@ fr:
       delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.
-      not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité FIDO.
+      not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
+        FIDO.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
