@@ -42,7 +42,7 @@ describe Users::WebauthnSetupController do
       it 'saves challenge in session' do
         get :new
 
-        expect(subject.user_session[:webauthn_challenge].length).to eq(16)
+        expect(subject.user_session[:webauthn_challenge].length).to eq(32)
       end
 
       it 'tracks page visit' do
