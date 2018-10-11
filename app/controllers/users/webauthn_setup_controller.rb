@@ -42,7 +42,7 @@ module Users
     end
 
     def exclude_credentials
-      WebauthnConfiguration.where(user_id: current_user.id).map(&:credential_id)
+      current_user.webauthn_configurations.map(&:credential_id)
     end
 
     def handle_successful_delete
