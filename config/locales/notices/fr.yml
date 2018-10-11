@@ -22,9 +22,6 @@ fr:
     session_cleared: Pour votre sécurité, nous effacerons l'information que vous avez
       entrée si vous ne vous déplacez pas vers une nouvelle page dans les %{minutes}
       prochaines minutes.
-    session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app} désactive
-      votre session lorsque vous demeurez sur une page sans vous déplacer pendant
-      %{minutes} minutes.
     signed_up_but_unconfirmed:
       first_paragraph_end: avec un lien pour confirmer votre adresse courriel. Suivez
         le lien pour continuer à créer votre compte.
@@ -48,4 +45,8 @@ fr:
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Or, %{link}
+    webauthn_added: Vous avez ajouté une clé de sécurité physique.
     webauthn_deleted: Vous avez supprimé une clé de sécurité physique.
+  session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app} désactive
+    votre session lorsque vous demeurez sur une page sans vous déplacer pendant %{minutes}
+    minutes.

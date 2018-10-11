@@ -7,7 +7,7 @@ shared_examples 'strong password' do |form_class|
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
-    password = 'password foo'
+    password = 'custom!@Z'
     errors = {
       password: ['Your password is not strong enough.' \
         ' This is similar to a commonly used password.' \
@@ -22,6 +22,8 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
+        active_profile: false,
+        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -40,7 +42,7 @@ shared_examples 'strong password' do |form_class|
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
-    password = 'benevolentman'
+    password = 'benevolent'
     errors = {
       password: ['Your password is not strong enough.' \
         ' Add another word or two.' \
@@ -54,6 +56,8 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
+        active_profile: false,
+        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -68,13 +72,11 @@ shared_examples 'strong password' do |form_class|
     expect(form.submit(password: password)).to eq result
   end
 
-  # This test is disabled for now because zxcvbn doesn't support this
-  # feature yet. See: https://github.com/dropbox/zxcvbn/issues/227
-  xit 'does not allow a password containing words from the user email' do
-    user = build_stubbed(:user, email: 'janedoe@gmail.com', uuid: '123')
+  it 'does not allow a password containing words from the user email' do
+    user = build_stubbed(:user, email: 'joe@gmail.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
-    password = 'janedoe gmail'
+    password = 'joe gmail'
     errors = {
       password: ['Your password is not strong enough.' \
         ' Add another word or two.' \
@@ -88,6 +90,8 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
+        active_profile: false,
+        confirmed: true,
       }
     end
     result = instance_double(FormResponse)
@@ -120,6 +124,8 @@ shared_examples 'strong password' do |form_class|
     elsif form_class == 'ResetPasswordForm'
       extra = {
         user_id: '123',
+        active_profile: false,
+        confirmed: true,
       }
     end
     result = instance_double(FormResponse)

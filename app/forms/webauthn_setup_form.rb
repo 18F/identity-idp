@@ -52,13 +52,7 @@ class WebauthnSetupForm
       attestation_object: Base64.decode64(@attestation_object),
       client_data_json: Base64.decode64(@client_data_json)
     )
-    safe_response("#{protocol}#{self.class.domain_name}")
-  end
-
-  def safe_response(original_origin)
+    original_origin = "#{protocol}#{self.class.domain_name}"
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
-  rescue StandardError
-    errors.add :name, I18n.t('errors.webauthn_setup.attestation_error')
-    false
   end
 end

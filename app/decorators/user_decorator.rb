@@ -10,9 +10,7 @@ class UserDecorator
     @user = user
   end
 
-  def email
-    user.email_address&.email
-  end
+  delegate :email, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now

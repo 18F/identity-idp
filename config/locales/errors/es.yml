@@ -2,14 +2,12 @@
 es:
   errors:
     account_reset:
-      cancel_token_invalid: el token de cancelación no es válido
-      cancel_token_missing: falta el token de cancelación
+      cancel_token_invalid: NOT TRANSLATED YET
+      cancel_token_missing: NOT TRANSLATED YET
       granted_token_expired: El enlace para eliminar su cuenta de login.gov ha caducado.
         Crea otra solicitud para eliminar tu cuenta.
-      granted_token_invalid: El enlace para eliminar tu cuenta de login.gov no es
-        válido. Haz clic de nuevo en el enlace en tu correo electrónico.
-      granted_token_missing: El enlace para eliminar tu cuenta de login.gov no es
-        válido. Haz clic de nuevo en el enlace en tu correo electrónico.
+      granted_token_invalid: NOT TRANSLATED YET
+      granted_token_missing: NOT TRANSLATED YET
     confirm_password_incorrect: La contraseña es incorrecta.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
@@ -25,10 +23,8 @@ es:
         en "Reenviar instrucciones de confirmación" para obtener otro.
       expired: ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, use el formato solicitado.
-      improbable_phone: Número de teléfono no válido. Asegúrate de introducir un número
-        de teléfono válido.
-      invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
-        enviar un SMS si tienes un teléfono que permita enviar SMS.
+      improbable_phone: NOT TRANSLATED YET
+      invalid_calling_area: NOT TRANSLATED YET
       invalid_phone_number: El número de teléfono ingresado no está en el formato
         correcto.
       invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto.
@@ -36,26 +32,21 @@ es:
       invalid_voice_number: Numero de telefono invalido. Verifique que haya ingresado
         el código de país o de área correcto.
       missing_field: Por favor, rellene este campo.
-      must_have_us_country_code: Número de teléfono no válido. Asegúrate de introducir
-        un número de teléfono con un código país de EE. UU.
+      must_have_us_country_code: NOT TRANSLATED YET
       no_pending_profile: Ningún perfil está esperando verificación
-      otp_failed: Se produjo un error al enviar el código de seguridad.
+      otp_failed: NOT TRANSLATED YET
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
       phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe
         la opción de llamada telefónica a continuación o use su clave personal.
       twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
-      twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.
+      twilio_timeout: NOT TRANSLATED YET
       unauthorized_authn_context: Contexto de autenticación no autorizado
-      unauthorized_nameid_format: Formato de ID de nombre no autorizado
+      unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Proveedor de servicio no autorizado
-      usps_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
-        otra carta para recibir un nuevo código.
+      usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     webauthn_setup:
-      attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
-        clave de seguridad FIDO. Asegúrese de que su dispositivo esté en https://fidoalliance.org/certification/fido-certified-products/
-        y si cree que el error es nuestro, contáctenos en hello@login.gov.
       delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.

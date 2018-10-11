@@ -38,16 +38,6 @@ describe Aws::SES::Base do
       expect(mail.message_id).to eq('123abc@email.amazonses.com')
     end
 
-    it 'retries timed out requests' do
-      allow(Figaro.env).to receive(:aws_ses_region_pool).and_return(nil)
-      Aws::SES::Base.new.deliver!(mail)
-
-      expect(Aws::SES::Client).to have_received(:new) do |options|
-        expect(options[:retry_limit]).to eq 3
-        expect(options.key?(:retry_backoff)).to eq true
-      end
-    end
-
     context 'with an ses region pool in the configuration' do
       before do
         allow(Figaro.env).to receive(:aws_ses_region_pool).
@@ -76,9 +66,12 @@ describe Aws::SES::Base do
         allow(described_class.region_pool).to receive(:sample).and_return('us-fake-1')
         described_class.new.deliver!(mail)
 
-        expect(Aws::SES::Client).to have_received(:new) do |options|
-          expect(options[:region]).to eq 'us-fake-1'
-        end
+        expect(Aws::SES::Client).to have_received(:new).with(region: 'us-fake-1')
+
+        allow(described_class.region_pool).to receive(:sample).and_return('us-phony-2')
+        described_class.new.deliver!(mail)
+
+        expect(Aws::SES::Client).to have_received(:new).with(region: 'us-phony-2')
       end
     end
 

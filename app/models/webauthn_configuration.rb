@@ -13,8 +13,4 @@ class WebauthnConfiguration < ApplicationRecord
   def selection_presenters
     [TwoFactorAuthentication::WebauthnSelectionPresenter.new(self)]
   end
-
-  def friendly_name
-    :webauthn
-  end
 end

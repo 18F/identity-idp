@@ -41,7 +41,7 @@ module Users
       request_id = sp_session[:request_id]
       sign_out
       flash[:notice] = t(
-        'notices.session_timedout',
+        'session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes
       )

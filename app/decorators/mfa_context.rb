@@ -1,6 +1,14 @@
 class MfaContext
   attr_reader :user
 
+  EMPTY_WEBAUTHN_ARRAY = begin
+    array = []
+    def array.selection_presenters
+      []
+    end
+    array.freeze
+  end
+
   def initialize(user)
     @user = user
   end
@@ -15,9 +23,9 @@ class MfaContext
 
   def webauthn_configurations
     if user.present?
-      user.webauthn_configurations
+      user.webauthn_configurations.extending WebauthnConfigurationsExtension
     else
-      []
+      EMPTY_WEBAUTHN_ARRAY
     end
   end
 
@@ -39,18 +47,5 @@ class MfaContext
 
   def enabled_two_factor_configurations_count
     two_factor_configurations.count(&:mfa_enabled?)
-  end
-
-  # returns a hash showing the count for each enabled 2FA configuration,
-  # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.
-  def enabled_two_factor_configuration_counts_hash
-    names = enabled_two_factor_configuration_names
-    names.each_with_object(Hash.new(0)) { |name, count| count[name] += 1 }
-  end
-
-  private
-
-  def enabled_two_factor_configuration_names
-    two_factor_configurations.select(&:mfa_enabled?).map(&:friendly_name)
   end
 end

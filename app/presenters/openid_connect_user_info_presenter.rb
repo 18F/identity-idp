@@ -11,7 +11,7 @@ class OpenidConnectUserInfoPresenter
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
-      email: identity.email,
+      email: identity.user.email,
       email_verified: true,
     }.
            merge(x509_attributes).

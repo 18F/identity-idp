@@ -88,11 +88,11 @@ feature 'Visitor sets password during signup' do
 
       create(:user, :unconfirmed)
       confirm_last_user
-      fill_in 'password_form_password', with: '1234567891011'
+      fill_in 'password_form_password', with: '123456789'
 
       click_button t('forms.buttons.continue')
 
-      expect(page).to have_content t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
+      expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
     end
   end
 end

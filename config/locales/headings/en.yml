@@ -55,4 +55,4 @@ en:
       new: Enable an authentication app
     verify_email: Check your email
     webauthn_setup:
-      new: Add your security key
+      new: Register your Hardware Security Key

@@ -11,10 +11,10 @@ es:
           adicional.
         modal:
           copy: Si no tiene su clave personal, verifique su identidad nuevamente.
-          heading: "¿No tienes tu clave personal?"
+          heading: NOT TRANSLATED YET
         with_key: "¿Tiene su clave personal?"
     account_recovery_setup:
-      piv_cac_next_step: Luego te proporcionaremos una forma de recuperar tu cuenta.
+      piv_cac_next_step: NOT TRANSLATED YET
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador después que haya restablecido
         su contraseña.
@@ -28,7 +28,7 @@ es:
           a %{email} en %{app}.%{tooltip}
         or: o
       piv_cac:
-        confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
+        confirm_piv_cac_html: NOT TRANSLATED YET
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."

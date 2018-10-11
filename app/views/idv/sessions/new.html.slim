@@ -34,7 +34,7 @@ p = link_to t('links.access_help'),
   p = t('idv.messages.sessions.id_information_message')
 
   fieldset.m0.p0.border-none
-    .mb2
+    .mb1
       = f.label :state_id_type, label: t('idv.form.state_id_type_label'), class: 'bold',
           id: 'profile_state_id_type_label', required: true
       - state_id_types.each do |state_id_type|
@@ -47,7 +47,6 @@ p = link_to t('links.access_help'),
             span.indicator
             .block = state_id_type[0]
     = f.input :state_id_number, label: t('idv.form.state_id'),
-        hint: t('idv.form.state_id_tip'), hint_html: { class: 'inline pl1' },
         required: true,
         pattern: '^.{0,25}$',
         input_html: { class: 'sm-col-8 state_id_number', value: @idv_form.state_id_number }

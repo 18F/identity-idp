@@ -53,7 +53,7 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(timeout.to_i)
+        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(timeout.to_i)
       end
 
       it 'includes the remaining key' do
@@ -80,7 +80,7 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
+        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(Time.zone.now.to_i - 1)
       end
 
       it 'includes the remaining time' do
@@ -124,7 +124,7 @@ describe Users::SessionsController, devise: true do
       get :timeout
 
       expect(flash[:notice]).to eq t(
-        'notices.session_timedout',
+        'session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes
       )

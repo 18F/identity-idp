@@ -19,10 +19,6 @@ module Users
       end
     end
 
-    def success
-      @next_url = url_after_successful_webauthn_setup
-    end
-
     def delete
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
@@ -65,7 +61,8 @@ module Users
     def process_valid_webauthn(attestation_response)
       mark_user_as_fully_authenticated
       create_webauthn_configuration(attestation_response)
-      redirect_to webauthn_setup_success_url
+      flash[:success] = t('notices.webauthn_added')
+      redirect_to url_after_successful_webauthn_setup
     end
 
     def url_after_successful_webauthn_setup

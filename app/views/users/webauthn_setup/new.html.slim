@@ -4,35 +4,46 @@
 
 h1.h3.my0 = t('headings.webauthn_setup.new')
 p.mt-tiny.mb3 = t('forms.webauthn_setup.intro_html', link: help_link)
-div
-  = form_tag(webauthn_setup_path, method: :patch, role: 'form', class: 'mb1',
-          id: 'webauthn_form') do
-    = hidden_field_tag :user_id, current_user.id, id: 'user_id'
-    = hidden_field_tag :user_email, current_user.email, id: 'user_email'
-    = hidden_field_tag :user_challenge,
-          '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge'
-    = hidden_field_tag :webauthn_id, '', id: 'webauthn_id'
-    = hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key'
-    = hidden_field_tag :attestation_object, '', id: 'attestation_object'
-    = hidden_field_tag :client_data_json, '', id: 'client_data_json'
-    = label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold'
-    = text_field_tag :name, '', required: true, id: 'name',
-          class: 'block col-12 field monospace', size: 16, maxlength: 20,
-          'aria-labelledby': 'totp-label'
-  br
-  = link_to t('forms.webauthn_setup.continue'), '#', method: :get,
-          class: 'btn btn-primary btn-wide align-top', id: 'continue-button'
-.spinner[id='spinner', class='hidden']
-  br
-  .center
+ul.list-reset
+  li.py2.border-top
+    .mr1.inline-block.circle.circle-number.bg-blue.white
+      | 1
+    .inline.bold = t('forms.webauthn_setup.step_1')
+  li.py2.border-top
+    .mb2
+      .mr1.inline-block.circle.circle-number.bg-blue.white
+        | 2
+      .inline.bold = t('forms.webauthn_setup.step_2')
+  li.py2.border-top.hidden[id='webauthn_name']
+    .mb2
+      .mr1.inline-block.circle.circle-number.bg-blue.white
+        | 3
+      #totp-label.inline-block.bold = t('forms.webauthn_setup.step_3')
+    .sm-col-9.sm-ml-28p
+      = form_tag(webauthn_setup_path, method: :patch, role: 'form', class: 'mb1') do
+        .clearfix.mxn1
+          .col.col-6.sm-col-7.px1
+            = hidden_field_tag :user_id, current_user.id, id: 'user_id'
+            = hidden_field_tag :user_email, current_user.email, id: 'user_email'
+            = hidden_field_tag :user_challenge,
+              '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge'
+            = hidden_field_tag :webauthn_id, '', id: 'webauthn_id'
+            = hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key'
+            = hidden_field_tag :attestation_object, '', id: 'attestation_object'
+            = hidden_field_tag :client_data_json, '', id: 'client_data_json'
+            = text_field_tag :name, '', required: true, id: 'name',
+              class: 'block col-12 field monospace', size: 16, maxlength: 20,
+                'aria-labelledby': 'totp-label'
+          .col.col-6.sm-col-5.px1
+            = submit_tag t('forms.buttons.submit.default'),
+              class: 'col-12 btn btn-primary align-top'
+.spinner[id='spinner']
+  div
     = image_tag(asset_url('spinner.gif'),
             srcset: asset_url('spinner@2x.gif'),
             height: 144,
             width: 144,
             alt: '')
-  h2.h4.half-center = t('forms.webauthn_setup.instructions_title')
-  p.half-center = t('forms.webauthn_setup.instructions_text')
-br
 = render 'shared/cancel_or_back_to_options'
 
 == javascript_pack_tag 'clipboard'
