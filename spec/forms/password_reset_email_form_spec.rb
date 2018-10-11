@@ -16,6 +16,7 @@ describe PasswordResetEmailForm do
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
+          active_profile: false,
         }
 
         result = instance_double(FormResponse)
@@ -33,6 +34,7 @@ describe PasswordResetEmailForm do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
+          active_profile: false,
         }
 
         result = instance_double(FormResponse)
@@ -53,6 +55,7 @@ describe PasswordResetEmailForm do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
+          active_profile: false,
         }
 
         result = instance_double(FormResponse)
@@ -74,6 +77,7 @@ describe PasswordResetEmailForm do
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
+          active_profile: false,
           recaptcha_valid: true,
           recaptcha_present: true,
           recaptcha_enabled: true,
@@ -99,6 +103,7 @@ describe PasswordResetEmailForm do
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
+          active_profile: false,
           recaptcha_valid: false,
           recaptcha_present: true,
           recaptcha_enabled: true,

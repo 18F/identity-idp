@@ -1,32 +1,20 @@
 ---
 fr:
   service_providers:
-    homes_mil:
+    default:
       account_page:
-        body: Si vous avez déjà un profil HOMES.mil, veuillez utiliser l'adresse e-mail
-          principale ou secondaire que vous avez utilisée pour HOMES.mil pour créer
-          votre nouveau compte login.gov.
-      body_html: Si vous avez déjà un profil HOMES.mil, veuillez utiliser l'adresse
-        e-mail principale ou secondaire que vous avez utilisée pour HOMES.mil pour
+        body: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
+          e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
+          créer votre nouveau compte login.gov.
+      body_html: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
+        e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
         %{link}.
       create_account_link: créer votre nouveau compte login.gov
       create_account_page:
         body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
-          avez utilisée pour HOMES.mil.
-      header: Êtes-vous venu(e) de HOMES.mil?
+          avez utilisée pour %{sp_name}.
+      header: Êtes-vous venu(e) de %{sp_name}?
     learn_more: En savoir plus.
-    sam:
-      account_page:
-        body: Votre ancien nom d'utilisateur et mot de passe SAM ne marchera pas.
-          Veuillez créer un nouveau compte login.gov avec la même adresse e-mail que
-          vous avez utilisée pour SAM.
-      body_html: Si vous avez déjà un profil SAM, veuillez utiliser l'adresse e-mail
-        principale ou secondaire que vous avez utilisée pour SAM pour %{link}.
-      create_account_link: créer votre nouveau compte login.gov
-      create_account_page:
-        body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
-          avez utilisée pour SAM.
-      header: Êtes-vous venu(e) de SAM?
     trusted_traveler:
       account_page:
         body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
@@ -37,15 +25,3 @@ fr:
       create_account_page:
         body: ''
       header: Êtes-vous venu(e) de Trusted Traveler Programs?
-    usa_jobs:
-      account_page:
-        body: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse e-mail
-          principale ou secondaire que vous avez utilisée pour USAJOBS pour créer
-          votre nouveau compte login.gov.
-      body_html: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse
-        e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
-      create_account_link: créer votre nouveau compte login.gov
-      create_account_page:
-        body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
-          avez utilisée pour USAJOBS.
-      header: Êtes-vous venu(e) de USAJOBS?
