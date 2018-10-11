@@ -20,4 +20,8 @@ class PhoneConfiguration < ApplicationRecord
     end
     options
   end
+
+  def friendly_name
+    :phone
+  end
 end

@@ -2,7 +2,7 @@
 es:
   forms:
     account_recovery_setup:
-      legend: NOT TRANSLATED YET
+      legend: Selecciona una opción de autenticación secundaria
     buttons:
       back: Atrás
       cancel: Sí, cancelar
@@ -35,7 +35,7 @@ es:
         a continuación.
       title: Ingrese su clave personal
     piv_cac_mfa:
-      submit: NOT TRANSLATED YET
+      submit: Presentar tarjeta PIV/CAC
     piv_cac_setup:
       certificate:
         bad_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto
@@ -53,16 +53,17 @@ es:
           actualizado.
       choose_different_certificate: Elija un certificado diferente
       piv_cac:
-        already_associated_html: NOT TRANSLATED YET
+        already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte
+          en contacto con el administrador para confirmar que tu PIV/CAC está al día.
       piv_cac_intro_html: Le pediremos que presente su tarjeta PIV/CAC <strong>cada
         vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después
         de hacer clic en "Agregar PIV/CAC", su navegador le solicitará su PIN PIV/CAC
         y le pedirá que seleccione un certificado.
       submit: Agregar tarjeta PIV/CAC
       token:
-        bad_html: NOT TRANSLATED YET
-        invalid_html: NOT TRANSLATED YET
-        missing_html: NOT TRANSLATED YET
+        bad_html: Elige un certificado distinto desde tu PIV/CAC.
+        invalid_html: Elige un certificado distinto desde tu PIV/CAC.
+        missing_html: Elige un método diferente como tu segundo factor.
     registration:
       labels:
         email: Email
@@ -85,10 +86,18 @@ es:
       submit: Confirmar cuenta
       title: Confirme su cuenta
     webauthn_setup:
-      intro_html: Cuando inicie sesión, puede usar su clave de seguridad de hardware.
-        %{link}
-      step_1: Inserte su clave de seguridad en el puerto USB de su computadora o conéctelo
-        con un cable USB.
-      step_2: Una vez conectado, toca el botón o el disco de oro si tu llave tiene
-        uno de ellos.
-      step_3: Ingrese un nombre para su clave de seguridad
+      continue: Continuar
+      instructions_text: Presione el botón en su clave de seguridad para registrarlo
+        con login.gov
+      instructions_title: Conecte su clave de seguridad
+      intro_html: Agregue una clave de seguridad como método de autenticación a su
+        cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO. Puede
+        agregar tantas claves de seguridad como desee, y le recomendamos al menos
+        dos para que la recuperación de la cuenta sea más fácil.
+      login_text: Presione el botón en su clave de seguridad para iniciar sesión con
+        login.gov
+      nickname: Apodo clave de seguridad
+      success_text: Cada vez que inicie sesión en login.gov, le pediremos que utilice
+        su clave de seguridad. Si no tiene su clave de seguridad, puede usar cualquier
+        otro método de autenticación que haya habilitado.
+      success_title: Has añadido una clave de seguridad como tu método de autenticación.

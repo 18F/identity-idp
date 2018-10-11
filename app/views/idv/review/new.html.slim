@@ -2,13 +2,19 @@
 
 h1.h3 = t('idv.titles.session.review')
 
-= render 'shared/user_verify_password', update_path: idv_review_path
+p = t('idv.messages.sessions.review_message')
 
-.mt4
+= simple_form_for(current_user, url: idv_review_path,
+  html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.input :password, label: t('idv.form.password'), required: true
+  .right-align.mtn2.mb4 = t('idv.forgot_password.link_html',
+     link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
+     class: 'btn btn-link ml1', form_class: 'inline-block'))
   = accordion('review-verified-info', t('idv.messages.review.intro')) do
     - phone = @applicant[:phone]
     - formatted_phone = PhoneFormatter.format(phone)
     = render 'shared/pii_review', pii: @applicant, phone: formatted_phone
+  = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12'
 
-  .mt2.pt1.border-top
+.mt4.mt2.pt1.border-top
     = link_to t('links.cancel'), idv_cancel_path, class: 'h5'

@@ -10,7 +10,7 @@ class UpdateUserEmailForm
 
   def initialize(user)
     @user = user
-    self.email = @user.email
+    self.email = @user.email_address.email
   end
 
   def submit(params)
@@ -31,7 +31,7 @@ class UpdateUserEmailForm
   end
 
   def email_changed?
-    valid? && email != @user.email
+    valid? && email != @user.email_address.email
   end
 
   private

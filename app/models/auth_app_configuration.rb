@@ -18,4 +18,8 @@ class AuthAppConfiguration
       []
     end
   end
+
+  def friendly_name
+    :auth_app
+  end
 end

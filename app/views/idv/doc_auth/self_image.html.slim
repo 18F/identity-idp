@@ -3,7 +3,7 @@
 h1.h3 = t('doc_auth.headings.selfie')
 
 video id='player' controls=true autoplay=true width=460 height=345
-canvas id='canvas' width=460 height=345 style='display: none;'
+canvas id='canvas' width=460 height=345 class='hidden'
 button id='capture' = t('doc_auth.buttons.capture')
 
 = form_for('', url: idv_doc_auth_step_path(step: :self_image), method: 'PUT',
