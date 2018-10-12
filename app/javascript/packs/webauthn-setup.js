@@ -61,5 +61,18 @@ function webauthn() {
       document.getElementById('webauthn_form').submit();
     });
   });
+  const input = document.getElementById('nickname');
+  input.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {
+      // prevent form submit
+      event.preventDefault();
+    }
+  });
+  input.addEventListener('keyup', function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13 && input.value) {
+      continueButton.click();
+    }
+  });
 }
 document.addEventListener('DOMContentLoaded', webauthn);
