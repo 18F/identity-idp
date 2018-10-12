@@ -16,7 +16,7 @@ div
     = hidden_field_tag :attestation_object, '', id: 'attestation_object'
     = hidden_field_tag :client_data_json, '', id: 'client_data_json'
     = label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold'
-    = text_field_tag :name, '', required: true, id: 'name',
+    = text_field_tag :name, '', required: true, id: 'nickname',
           class: 'block col-12 field monospace', size: 16, maxlength: 20,
           'aria-labelledby': 'totp-label'
     = submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden'
