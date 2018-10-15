@@ -49,9 +49,22 @@ describe Users::WebauthnSetupController do
         stub_sign_in
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_SETUP_VISIT)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::WEBAUTHN_SETUP_VISIT, errors: {}, success: true)
 
         get :new
+      end
+
+      it 'flashes an error when the key is already registered' do
+        get :new, params: { error: 'InvalidStateError' }
+
+        expect(flash[:error]).to eq t('errors.webauthn_setup.already_registered')
+      end
+
+      it 'flashes a general error if the api throws an error' do
+        get :new, params: { error: 'AnError' }
+
+        expect(flash[:error]).to eq t('errors.webauthn_setup.general_error')
       end
     end
 
