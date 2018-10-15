@@ -34,7 +34,7 @@ class RememberDeviceCookie
 
   def valid_for_user?(user)
     return false if user.id != user_id
-    return false if user_has_changed_phone?(user)
+    return false if revoked_for_user?(user)
     return false if expired?
     true
   end
@@ -45,9 +45,11 @@ class RememberDeviceCookie
     created_at < Figaro.env.remember_device_expiration_days.to_i.days.ago
   end
 
-  def user_has_changed_phone?(user)
-    MfaContext.new(user).phone_configurations.any? do |phone_configuration|
-      phone_configuration.confirmed_at.to_i > created_at.to_i
-    end
+  # :reek:FeatureEnvy
+  def revoked_for_user?(user)
+    remember_device_revoked_at = user.remember_device_revoked_at
+    return false if remember_device_revoked_at.nil?
+
+    remember_device_revoked_at.to_i > created_at.to_i
   end
 end
