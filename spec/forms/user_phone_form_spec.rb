@@ -167,7 +167,7 @@ describe UserPhoneForm do
           to receive(:new).
           with(
             user: user,
-            attributes: { otp_delivery_preference: 'voice' }
+            attributes: hash_including(otp_delivery_preference: 'voice')
           ).
           and_return(user_updater)
         expect(user_updater).to receive(:call)
@@ -184,7 +184,15 @@ describe UserPhoneForm do
 
     context "when the submitted otp_delivery_preference is the same as the user's" do
       it "does not update the user's otp_delivery_preference" do
-        expect(UpdateUser).to_not receive(:new)
+        user_updater = instance_double(UpdateUser)
+        allow(UpdateUser).
+          to receive(:new).
+          with(
+            user: user,
+            attributes: hash_excluding(otp_delivery_preference: 'voice')
+          ).
+          and_return(user_updater)
+        expect(user_updater).to receive(:call)
 
         subject.submit(params)
       end
@@ -199,6 +207,12 @@ describe UserPhoneForm do
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
+    end
+
+    it 'revokes the users rememder device sessions' do
+      subject.submit(params)
+
+      expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
     end
   end
 
