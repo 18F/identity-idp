@@ -8,7 +8,6 @@ module Idv
     before_action :confirm_step_needed
     before_action :confirm_step_allowed, except: [:failure]
     before_action :set_idv_form, except: [:failure]
-    before_action :ensure_profile_verification_not_pending, only: :new
 
     def new
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
@@ -76,19 +75,6 @@ module Idv
 
     def failure_url(reason)
       idv_phone_failure_url(reason)
-    end
-
-    def ensure_profile_verification_not_pending
-      verification_pending_profiles.each do |profile|
-        profile.update!(deactivation_reason: :verification_cancelled)
-      end
-    end
-
-    def verification_pending_profiles
-      Profile.where(
-        user_id: current_user.id,
-        deactivation_reason: :verification_pending
-      )
     end
   end
 end

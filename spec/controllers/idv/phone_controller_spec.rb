@@ -62,21 +62,6 @@ describe Idv::PhoneController do
 
       expect(response).to redirect_to idv_phone_failure_url(:fail)
     end
-
-    context 'when there is a pending verification' do
-      let(:pending_profile) do
-        create(:profile, user_id: user.id, deactivation_reason: :verification_pending)
-      end
-
-      it 'clears the pending verification' do
-        pending_profile
-        expect(Profile.all.first.deactivation_reason).to eq('verification_pending')
-
-        get :new
-
-        expect(Profile.all.first.deactivation_reason).to eq('verification_cancelled')
-      end
-    end
   end
 
   describe '#create' do

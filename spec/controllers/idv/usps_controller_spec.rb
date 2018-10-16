@@ -8,7 +8,7 @@ describe Idv::UspsController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started,
+        :confirm_idv_needed,
         :confirm_mail_not_spammed
       )
     end

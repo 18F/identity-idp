@@ -7,9 +7,9 @@ module Idv
     attr_reader :idv_form
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_attempts_allowed, except: %i[success failure]
-    before_action :confirm_idv_needed
-    before_action :confirm_step_needed, except: [:success]
+    before_action :confirm_idv_attempts_allowed, except: %i[success failure destroy]
+    before_action :confirm_idv_needed, except: [:destroy]
+    before_action :confirm_step_needed, except: %i[success destroy]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -31,6 +31,14 @@ module Idv
       reason = params[:reason].to_sym
       render_dupe_ssn_failure and return if reason == :dupe_ssn
       render_idv_step_failure(:sessions, reason)
+    end
+
+    def destroy
+      analytics.track_event(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
+      Idv::CancelVerificationAttempt.new(user: current_user).call
+      idv_session.clear
+      user_session.delete(:decrypted_pii)
+      redirect_to idv_url
     end
 
     def success; end
