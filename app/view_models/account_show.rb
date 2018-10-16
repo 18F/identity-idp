@@ -1,12 +1,11 @@
 # :reek:TooManyMethods
 class AccountShow
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :sp
+  attr_reader :decorated_user, :decrypted_pii, :personal_key
 
-  def initialize(decrypted_pii:, personal_key:, decorated_user:, sp: '')
+  def initialize(decrypted_pii:, personal_key:, decorated_user:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
-    @sp = sp
   end
 
   def header_partial
