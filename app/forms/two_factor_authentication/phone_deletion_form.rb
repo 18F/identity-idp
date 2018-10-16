@@ -20,10 +20,10 @@ module TwoFactorAuthentication
 
     def extra_analytics_attributes
       {
-        user_id: user.uuid,
         configuration_present: configuration.present?,
         configuration_id: configuration&.id,
         configuration_owner: configuration&.user&.uuid,
+        mfa_method_counts: MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash,
       }
     end
 
@@ -43,6 +43,7 @@ module TwoFactorAuthentication
       false
     end
 
+    # Just in case the controller drops the restriction on current_user
     def configuration_owned_by_user?
       return true if configuration.user_id == user.id
       errors.add(:configuration, :owner, message: "cannot delete someone else's phone")

@@ -26,4 +26,8 @@ class PivCacConfiguration
   def friendly_name
     :piv_cac
   end
+
+  def self.selection_presenters(set)
+    set.flat_map(&:selection_presenters)
+  end
 end
