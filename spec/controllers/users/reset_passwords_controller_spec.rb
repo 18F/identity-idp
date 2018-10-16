@@ -33,7 +33,6 @@ describe Users::ResetPasswordsController, devise: true do
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
         get :edit, params: { reset_password_token: 'foo' }
-        get :edit
 
         analytics_hash = {
           success: false,
@@ -68,9 +67,6 @@ describe Users::ResetPasswordsController, devise: true do
 
         get :edit, params: { reset_password_token: 'foo' }
 
-        expect(response).to redirect_to edit_user_password_url
-
-        get :edit
         expect(response).to render_template :edit
         expect(flash.keys).to be_empty
         expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
@@ -93,7 +89,7 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token
         )
 
-        params = { password: 'short' }
+        params = { password: 'short', reset_password_token: raw_reset_token }
 
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
@@ -127,7 +123,7 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now
         )
-        form_params = { password: 'short' }
+        form_params = { password: 'short', reset_password_token: raw_reset_token }
         analytics_hash = {
           success: false,
           errors: {
@@ -139,7 +135,6 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
 
-        get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: form_params }
 
         expect(response).to render_template(:edit)
@@ -167,7 +162,7 @@ describe Users::ResetPasswordsController, devise: true do
           stub_user_mailer(user)
 
           password = 'a really long passw0rd'
-          params = { password: password }
+          params = { password: password, reset_password_token: raw_reset_token }
 
           get :edit, params: { reset_password_token: raw_reset_token }
           put :update, params: { reset_password_form: params }
@@ -208,7 +203,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         get :edit, params: { reset_password_token: raw_reset_token }
         password = 'a really long passw0rd'
-        params = { password: password }
+        params = { password: password, reset_password_token: raw_reset_token }
 
         put :update, params: { reset_password_form: params }
 
@@ -245,7 +240,7 @@ describe Users::ResetPasswordsController, devise: true do
         stub_user_mailer(user)
 
         password = 'a really long passw0rd'
-        params = { password: password }
+        params = { password: password, reset_password_token: raw_reset_token }
 
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
@@ -279,7 +274,7 @@ describe Users::ResetPasswordsController, devise: true do
       stub_user_mailer(user)
 
       password = 'saltypickles'
-      params = { password: password }
+      params = { password: password, reset_password_token: raw_reset_token }
 
       get :edit, params: { reset_password_token: raw_reset_token }
       put :update, params: { reset_password_form: params }
