@@ -53,10 +53,13 @@ es:
         otra carta para recibir un nuevo código.
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     webauthn_setup:
+      already_registered: Clave de seguridad ya registrada. Por favor, intente una
+        clave de seguridad diferente.
       attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
         clave de seguridad FIDO. Asegúrese de que su dispositivo esté en https://fidoalliance.org/certification/fido-certified-products/
         y si cree que el error es nuestro, contáctenos en hello@login.gov.
       delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
+      not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
