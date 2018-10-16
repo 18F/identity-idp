@@ -48,4 +48,16 @@ shared_examples 'clearing and restarting idv' do
     expect(user.decorate.pending_profile?).to eq(true)
     expect(usps_confirmation.entry[:address1]).to eq('8484 Peachtree St')
   end
+
+  it 'deletes decrypted PII from the session and does not display it on the account page' do
+    click_on t('idv.messages.clear_and_start_over')
+
+    visit account_path
+
+    expect(page).to_not have_content(t('heading.account.profile_info'))
+    expect(page).to_not have_content(t('account.index.address'))
+    expect(page).to_not have_content(t('account.index.dob'))
+    expect(page).to_not have_content(t('account.index.full_name'))
+    expect(page).to_not have_content(t('account.index.ssn'))
+  end
 end
