@@ -48,7 +48,7 @@ class WebauthnVerificationForm
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
     assertion_response.valid?(@challenge.pack('c*'), original_origin,
-                              allowed_credential: allowed_credential)
+                              allowed_credentials: [allowed_credential])
   end
 
   def allowed_credential
