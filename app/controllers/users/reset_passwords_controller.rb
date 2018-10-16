@@ -103,13 +103,6 @@ module Users
       @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 
-    def validated_token_from_url
-      reset_password_token = params[:reset_password_token]
-      return if reset_password_token.blank?
-      user = User.with_reset_password_token(reset_password_token)
-      user ? reset_password_token :  nil
-    end
-
     def build_user
       User.new(reset_password_token: params[:reset_password_token])
     end
