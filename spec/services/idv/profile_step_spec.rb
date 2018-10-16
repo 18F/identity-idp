@@ -64,6 +64,16 @@ describe Idv::ProfileStep do
     it 'increments attempts count' do
       expect { subject.submit(user_attrs) }.to change(user, :idv_attempts).by(1)
     end
+
+    it 'does not increment attempts count when the vendor request times out' do
+      expect { subject.submit(user_attrs.merge(first_name: 'Time')) }.
+        to_not change(user, :idv_attempts)
+    end
+
+    it 'does not increment attempts count when the vendor raises an exception' do
+      expect { subject.submit(user_attrs.merge(first_name: 'Fail')) }.
+        to_not change(user, :idv_attempts)
+    end
   end
 
   describe '#failure_reason' do

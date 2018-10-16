@@ -7,7 +7,7 @@ module Idv
     def submit(step_params)
       consume_step_params(step_params)
       self.idv_result = Idv::Agent.new(applicant).proof(:resolution, :state_id)
-      increment_attempts_count
+      increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       update_idv_session if success
       FormResponse.new(
@@ -37,6 +37,10 @@ module Idv
 
     def increment_attempts_count
       attempter.increment
+    end
+
+    def failed_due_to_timeout_or_exception?
+      idv_result[:timed_out] || idv_result[:exception]
     end
 
     def attempter
