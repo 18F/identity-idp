@@ -43,7 +43,7 @@ html lang="#{I18n.locale}" class='no-js'
       = javascript_include_tag 'respond.min'
     <![endif]-->
 
-    - if Figaro.env.google_analytics_key.present?
+    - if Figaro.env.google_analytics_key.present? && !page_with_trust?
       = render 'shared/google_analytics/page_tracking'
     - if Figaro.env.newrelic_browser_key.present? && Figaro.env.newrelic_browser_app_id.present?
       = render 'shared/newrelic/browser_instrumentation'
