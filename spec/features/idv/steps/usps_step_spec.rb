@@ -35,6 +35,15 @@ feature 'idv usps step' do
       expect(page).to have_current_path(idv_come_back_later_path)
     end
 
+    it 'allows the user to cancel and return to usps otp confirmation' do
+      complete_idv_and_return_to_usps_step
+      click_link t('links.cancel')
+
+      expect(page).to have_content(t('forms.verify_profile.title'))
+      expect(page).to have_current_path(verify_account_path)
+      expect_user_to_be_unverified(user)
+    end
+
     def complete_idv_and_return_to_usps_step
       start_idv_from_sp
       complete_idv_steps_before_usps_step(user)

@@ -8,7 +8,7 @@ module Idv
     before_action :confirm_mail_not_spammed
 
     def index
-      @decorated_usps = UspsDecorator.new(usps_mail_service)
+      @presenter = UspsPresenter.new(current_user)
     end
 
     def create
