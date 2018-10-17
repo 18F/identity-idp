@@ -58,6 +58,8 @@ en:
         v: Great!
     personal_key:
       accent: Write it down or print it out.
+      email_body: Only use it when you cannot use normal sign-in methods.
+      email_title: We never ask for your personal key in email
       info_html: This is the only way to regain access to your account if you lose
         your phone or security options. %{accent}
       once_html: "<strong>Personal keys are one-time use.</strong> If you need to
