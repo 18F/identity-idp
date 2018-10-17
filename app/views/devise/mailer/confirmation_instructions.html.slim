@@ -1,4 +1,5 @@
 p.lead == t('mailer.confirmation_instructions.header', intro: @first_sentence)
+p = t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
 
 table.button.expanded.large.radius
   tbody
@@ -31,4 +32,4 @@ table.hr
     th
       | &nbsp;
 
-p = t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
+
