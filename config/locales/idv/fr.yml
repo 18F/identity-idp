@@ -167,6 +167,7 @@ fr:
         - pas un numéro de téléphone prépayé
         - un numéro américain
       return_to_profile: "‹ Revenir à votre profil login.gov"
+      clear_and_start_over: Supprimer mes données et recommencer
       return_to_sp_html: Vous pouvez maintenant vous connecter à <strong>%{sp}</strong>.
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
@@ -187,7 +188,6 @@ fr:
           crypte vos données pour vous assurer que personne ne peut y accéder.
         success: Ensuite, nous aurons besoin d'un numéro de téléphone.
       usps:
-        bad_address: Je ne peux pas recevoir de courrier à cette adresse
         byline: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
           Celle-ci contient un code de confirmation.
         resend: Envoyez-moi une autre lettre.

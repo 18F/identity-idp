@@ -160,44 +160,6 @@ describe UserPhoneForm do
       end
     end
 
-    context "when the submitted otp_delivery_preference is different from the user's" do
-      it "updates the user's otp_delivery_preference" do
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).
-          to receive(:new).
-          with(
-            user: user,
-            attributes: hash_including(otp_delivery_preference: 'voice')
-          ).
-          and_return(user_updater)
-        expect(user_updater).to receive(:call)
-
-        params = {
-          phone: '703-555-5000',
-          international_code: 'US',
-          otp_delivery_preference: 'voice',
-        }
-
-        subject.submit(params)
-      end
-    end
-
-    context "when the submitted otp_delivery_preference is the same as the user's" do
-      it "does not update the user's otp_delivery_preference" do
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).
-          to receive(:new).
-          with(
-            user: user,
-            attributes: hash_excluding(otp_delivery_preference: 'voice')
-          ).
-          and_return(user_updater)
-        expect(user_updater).to receive(:call)
-
-        subject.submit(params)
-      end
-    end
-
     it 'does not raise inclusion errors for Norwegian phone numbers' do
       # ref: https://github.com/18F/identity-private/issues/2392
       params[:phone] = '21 11 11 11'
