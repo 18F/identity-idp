@@ -113,4 +113,8 @@ class FeatureManagement
   def self.doc_auth_exclusive?
     Figaro.env.doc_auth_exclusive == 'true'
   end
+
+  def self.platform_authenticator_enabled?
+    Figaro.env.platform_authenticator_enabled == 'true'
+  end
 end

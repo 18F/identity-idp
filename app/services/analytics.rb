@@ -113,6 +113,7 @@ class Analytics
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PHONE_DELETION_REQUESTED = 'Phone Number Deletion: requested'.freeze
+  PLATFORM_AUTHENTICATOR = 'Platform Authenticator'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
