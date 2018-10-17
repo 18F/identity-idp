@@ -1,7 +1,10 @@
 module Idv
   class UspsController < ApplicationController
-    include IdvStepConcern
+    include IdvSession
 
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_needed
+    before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
 
     def index
@@ -29,6 +32,15 @@ module Idv
     def confirm_mail_not_spammed
       redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
                                     usps_mail_service.mail_spammed?
+    end
+
+    def confirm_user_completed_idv_profile_step
+      # If the user has a pending profile, they may have completed idv in a
+      # different session and need a letter resent now
+      return if current_user.decorate.pending_profile_requires_verification?
+      return if idv_session.profile_confirmation == true
+
+      redirect_to idv_session_url
     end
 
     def resend_letter

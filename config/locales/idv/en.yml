@@ -149,6 +149,7 @@ en:
         - on a phone plan with your name on it
         - not a virtual phone (such as Google Voice or Skype)
         - a U.S. number
+      clear_and_start_over: Clear my information and start over
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -166,7 +167,6 @@ en:
           data to make sure no one else can access it.
         success: Next, we'll need a phone number.
       usps:
-        bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
           on file.
         resend: Send me another letter.
