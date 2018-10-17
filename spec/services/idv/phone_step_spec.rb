@@ -54,6 +54,22 @@ describe Idv::PhoneStep do
       expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts + 1)
     end
 
+    it 'does not increment step attempts when the vendor request times out' do
+      original_step_attempts = idv_session.step_attempts[:phone]
+
+      subject.submit(phone: timeout_phone)
+
+      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
+    end
+
+    it 'does not increment step attempts when the vendor raises an exception' do
+      original_step_attempts = idv_session.step_attempts[:phone]
+
+      subject.submit(phone: fail_phone)
+
+      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
+    end
+
     it 'marks the phone as confirmed if it matches 2FA phone' do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
