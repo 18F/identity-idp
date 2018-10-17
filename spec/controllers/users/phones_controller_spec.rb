@@ -127,13 +127,12 @@ describe Users::PhonesController do
       let(:user) { create(:user) }
 
       let(:extra_analytics) do
-        { :configuration_id=>nil,
-          :configuration_owner=>nil,
-          :configuration_present=>false,
-          :errors=>{},
-          :mfa_method_counts=>{},
-          :success=>true,
-        }
+        { configuration_id: nil,
+          configuration_owner: nil,
+          configuration_present: false,
+          errors: {},
+          mfa_method_counts: {},
+          success: true }
       end
 
       it 'redirects without an error' do
@@ -153,13 +152,12 @@ describe Users::PhonesController do
       let(:user) { create(:user, :signed_up) }
 
       let(:extra_analytics) do
-        { :configuration_id=>user.phone_configurations.first.id,
-          :configuration_owner=>user.uuid,
-          :configuration_present=>true,
-          :errors=>{:configuration=>["cannot be the last MFA configuration"]},
-          :mfa_method_counts=>{:phone=>1},
-          :success=>false,
-        }
+        { configuration_id: user.phone_configurations.first.id,
+          configuration_owner: user.uuid,
+          configuration_present: true,
+          errors: { configuration: ['cannot be the last MFA configuration'] },
+          mfa_method_counts: { phone: 1 },
+          success: false }
       end
 
       it 'redirects without an error' do
@@ -188,13 +186,12 @@ describe Users::PhonesController do
       let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
 
       let(:extra_analytics) do
-        { :configuration_id=>user.phone_configurations.first.id,
-          :configuration_owner=>user.uuid,
-          :configuration_present=>true,
-          :errors=>{},
-          :mfa_method_counts=>{:piv_cac=>1},
-          :success=>true
-        }
+        { configuration_id: user.phone_configurations.first.id,
+          configuration_owner: user.uuid,
+          configuration_present: true,
+          errors: {},
+          mfa_method_counts: { piv_cac: 1 },
+          success: true }
       end
 
       it 'redirects without an error' do
