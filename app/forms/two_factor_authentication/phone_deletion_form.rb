@@ -4,14 +4,16 @@ module TwoFactorAuthentication
 
     attr_reader :user, :configuration
 
+    validates :user, multiple_mfa_options: true
+    validates :configuration, allow_nil: true, owned_by_user: true
+
     def initialize(user, configuration)
       @user = user
       @configuration = configuration
     end
 
     def submit
-      success = configuration_absent? ||
-                configuration_owned_by_user? && multiple_factors_enabled? && configuration_destroyed
+      success = configuration.blank? || valid? && configuration_destroyed
 
       FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end
@@ -27,16 +29,6 @@ module TwoFactorAuthentication
       }
     end
 
-    def configuration_absent?
-      configuration.blank?
-    end
-
-    def multiple_factors_enabled?
-      return true if MfaPolicy.new(user).multiple_factors_enabled?
-      errors.add(:configuration, :singular, message: 'cannot be the last MFA configuration')
-      false
-    end
-
     def configuration_destroyed
       if configuration.destroy != false
         user.phone_configurations.reload
@@ -46,13 +38,6 @@ module TwoFactorAuthentication
         errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')
         false
       end
-    end
-
-    # Just in case the controller drops the restriction on current_user
-    def configuration_owned_by_user?
-      return true if configuration.user_id == user.id
-      errors.add(:configuration, :owner, message: "cannot delete someone else's phone")
-      false
     end
 
     def update_remember_device_revoked_at
