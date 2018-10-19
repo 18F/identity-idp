@@ -16,8 +16,13 @@ p.mt-tiny.mb4
     .pkey-info-image.mb1
       = image_tag(asset_url('personal-key/lock-check.svg'), size: '60')
     p = t('instructions.personal_key.safety_html')
-
 .clearfix
+.bg-lighter-blue.clearfix.mb2.px3.py2.rounded-lg
+  .sm-col.sm-col-2.pr2
+    = image_tag(asset_url('personal-key/email.svg'), size: '60')
+  .sm-col.sm-col-10
+    .bold.mb0 = t('instructions.personal_key.email_title')
+    p = t('instructions.personal_key.email_body')
 br
 .center
   = button_to t('forms.buttons.continue'), update_path,

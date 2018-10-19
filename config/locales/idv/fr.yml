@@ -121,6 +121,7 @@ fr:
         quelques informations personnelles de base ainsi que certaines informations
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
+      clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
         connecter à %{app}, puis saisissez votre code de vérification lorsque vous
         y serez invité.
@@ -167,7 +168,6 @@ fr:
         - pas un numéro de téléphone prépayé
         - un numéro américain
       return_to_profile: "‹ Revenir à votre profil login.gov"
-      clear_and_start_over: Supprimer mes données et recommencer
       return_to_sp_html: Vous pouvez maintenant vous connecter à <strong>%{sp}</strong>.
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre

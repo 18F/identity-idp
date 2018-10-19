@@ -64,6 +64,9 @@ fr:
         v: Excellente!
     personal_key:
       accent: Notez-la ou imprimez-la.
+      email_body: Utilisez-la uniquement lorsque vous ne disposez d'aucun autre moyen
+        de connexion.
+      email_title: Nous ne vous demanderons pas votre clé personelle par courriel
       info_html: C'est le seul moyen de retrouver l'accès à votre compte si vous perdez
         votre téléphone ou vos options de sécurité. %{accent}
       once_html: "<strong>Les clés personnelles sont à usage unique.</strong> Si vous
