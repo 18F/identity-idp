@@ -59,6 +59,9 @@ es:
         v: "¡Muy buena!"
     personal_key:
       accent: Anótelo o imprímalo.
+      email_body: Sólo se debe usar cuando no se puede utilizar métodos normales de
+        inicio de sesión.
+      email_title: Nunca pedimos su clave personal en el correo electrónico
       info_html: Esta es la única manera de recuperar el acceso a su cuenta si pierde
         su teléfono o las opciones de seguridad. %{accent}
       once_html: "<strong>Las claves personales son de un solo uso.</strong> Si necesita
