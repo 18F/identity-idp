@@ -155,7 +155,7 @@ describe Users::PhonesController do
         { configuration_id: user.phone_configurations.first.id,
           configuration_owner: user.uuid,
           configuration_present: true,
-          errors: { configuration: ['cannot be the last MFA configuration'] },
+          errors: { user: ['must have multiple MFA configurations'] },
           mfa_method_counts: { phone: 1 },
           success: false }
       end
