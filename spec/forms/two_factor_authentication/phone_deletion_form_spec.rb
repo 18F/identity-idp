@@ -35,6 +35,10 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
         expect(result.success?).to eq true
       end
 
+      it 'updates the user remember device revokation timestamp' do
+        expect(user.reload.remember_device_revoked_at.to_i).to be_within(1).of(Time.zone.now.to_i)
+      end
+
       it 'returns analytics' do
         expect(result.extra).to eq(
           configuration_present: true,

@@ -38,9 +38,14 @@ module TwoFactorAuthentication
     end
 
     def configuration_destroyed
-      return true if configuration.destroy != false
-      errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')
-      false
+      if configuration.destroy != false
+        user.phone_configurations.reload
+        update_remember_device_revoked_at
+        true
+      else
+        errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')
+        false
+      end
     end
 
     # Just in case the controller drops the restriction on current_user
@@ -48,6 +53,11 @@ module TwoFactorAuthentication
       return true if configuration.user_id == user.id
       errors.add(:configuration, :owner, message: "cannot delete someone else's phone")
       false
+    end
+
+    def update_remember_device_revoked_at
+      attributes = { remember_device_revoked_at: Time.zone.now }
+      UpdateUser.new(user: user, attributes: attributes).call
     end
   end
 end
