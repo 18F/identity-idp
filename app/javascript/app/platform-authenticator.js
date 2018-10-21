@@ -4,7 +4,7 @@ function platformAuthenticator() {
     window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
       .then(function(userIntent) {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/platform_authenticator', true);
+        xhr.open('POST', '/analytics', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.send(`available=${userIntent}`);
       });

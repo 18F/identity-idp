@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PlatformAuthenticatorController do
+describe AnalyticsController do
   describe '#create' do
     before do
       stub_sign_in

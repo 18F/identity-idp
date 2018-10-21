@@ -1,4 +1,4 @@
-class PlatformAuthenticatorController < ApplicationController
+class AnalyticsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :confirm_two_factor_authenticated
 
