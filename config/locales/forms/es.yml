@@ -10,6 +10,7 @@ es:
       disable: Suspender
       edit: Editar
       enable: Permitir
+      manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código
       submit:
@@ -34,6 +35,9 @@ es:
       instructions: Confirme que tiene una copia de su clave personal ingresándola
         a continuación.
       title: Ingrese su clave personal
+    phone:
+      buttons:
+        delete: Eliminar el teléfono
     piv_cac_mfa:
       submit: Presentar tarjeta PIV/CAC
     piv_cac_setup:

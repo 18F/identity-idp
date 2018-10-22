@@ -39,7 +39,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     # webauthn keys and phones. However, we only want to show one of each option
     # during login, except for phones, where we want to allow the user to choose
     # which MFA-enabled phone they want to use.
-    all_sms_and_voice_options_plus_one_of_each_remaining_option(configurations)
+    configurations.group_by(&:class).flat_map { |klass, set| klass.selection_presenters(set) }
   end
 
   def should_display_account_reset_or_cancel_link?
@@ -52,27 +52,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   private
-
-  def all_sms_and_voice_options_plus_one_of_each_remaining_option(configurations)
-    presenters = configurations.flat_map(&:selection_presenters)
-    presenters_for_phone_options(presenters) + presenters_for_options_that_are_not_phone(presenters)
-  end
-
-  def presenters_for_options_that_are_not_phone(presenters)
-    presenters.select { |presenter| !phone_presenter_class?(presenter.class) }.uniq(&:class)
-  end
-
-  def presenters_for_phone_options(presenters)
-    presenters.select { |presenter| phone_presenter_class?(presenter.class) }
-  end
-
-  def phone_presenter_class?(class_name)
-    phone_classes = [
-      TwoFactorAuthentication::SmsSelectionPresenter,
-      TwoFactorAuthentication::VoiceSelectionPresenter,
-    ]
-    phone_classes.include?(class_name)
-  end
 
   def account_reset_link
     t('two_factor_authentication.account_reset.text_html',
