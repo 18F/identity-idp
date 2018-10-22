@@ -63,6 +63,10 @@ en:
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it, you'll
       be provided a new key.
+    phone:
+      delete:
+        success: Your phone has been removed.
+        failure: Unable to remove your phone.
     phone_fallback:
       question: Don't have access to your phone right now?
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.

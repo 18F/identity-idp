@@ -137,6 +137,7 @@ Rails.application.routes.draw do
     patch '/manage/password' => 'users/passwords#update'
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
+    delete '/manage/phone' => 'users/phones#delete'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'

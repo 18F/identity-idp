@@ -24,7 +24,7 @@ en:
     edit_info:
       email: Change your email
       password: Change your password
-      phone: Enter your new phone number
+      phone: Manage your phone number
     lock_failure: Here's what you can do
     passwords:
       change: Change your password

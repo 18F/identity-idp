@@ -21,6 +21,12 @@ describe WebauthnConfiguration do
     end
   end
 
+  describe 'class#selection_presenters' do
+    it 'returns an empty array for an empty set' do
+      expect(described_class.selection_presenters([])).to eq []
+    end
+  end
+
   describe '#mfa_enabled?' do
     let(:mfa_enabled) { subject.mfa_enabled? }
     context 'when webauthn enabled' do

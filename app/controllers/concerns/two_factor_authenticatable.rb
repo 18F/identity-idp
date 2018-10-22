@@ -269,7 +269,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if MfaContext.new(current_user).phone_configurations.any?
+    if MfaPolicy.new(current_user).two_factor_enabled?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -277,7 +277,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && MfaContext.new(current_user).phone_configurations.any?
+    confirmation_context? && MfaPolicy.new(current_user).two_factor_enabled?
   end
 
   def presenter_for_two_factor_authentication_method

@@ -24,7 +24,6 @@ en:
     sign_in: Sign in
     sign_out: Sign out
     two_factor_authentication:
-      app_option: Use an authentication application instead.
       get_another_code: Get another code
     what_is_totp: What is an authentication app?
     what_is_webauthn: What is a hardware security key?

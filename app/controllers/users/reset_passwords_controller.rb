@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     include RecaptchaConcern
@@ -132,4 +131,3 @@ module Users
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
