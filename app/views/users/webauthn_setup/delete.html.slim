@@ -1,0 +1,15 @@
+.p0.cntnr-xxskinny.border-box.bg-white.rounded-xxl.modal-warning
+  h2.my2.fs-20p.sans-serif.regular.center
+    = t('forms.webauthn_delete.confirm')
+  hr.mb3.bw4.rounded
+  .mb1.bold
+    = t('forms.webauthn_delete.caution')
+
+  ul.px2.yellow-dots
+    li.mb1 = t('forms.webauthn_delete.bullet_1', app: APP_NAME)
+  .center
+    = button_to(t('account.index.webauthn_delete'), webauthn_setup_path(id: params[:id]),
+            method: :delete, class: 'btn btn-primary col-12 mb2 p2 rounded-lg')
+
+    = link_to t('users.delete.actions.cancel'), account_path,
+            class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'

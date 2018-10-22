@@ -35,6 +35,10 @@ module Users
       redirect_to account_url
     end
 
+    def show_delete
+      render 'users/webauthn_setup/delete'
+    end
+
     private
 
     def flash_error(errors)
@@ -53,7 +57,6 @@ module Users
     end
 
     def handle_failed_delete
-      flash[:error] = t('errors.webauthn_setup.delete_last')
       track_delete(false)
     end
 

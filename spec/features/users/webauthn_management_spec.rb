@@ -109,10 +109,31 @@ feature 'Webauthn Management' do
 
       expect(page).to have_content 'key1'
 
+      click_link t('account.index.webauthn_delete')
+
+      expect(current_path).to eq webauthn_setup_delete_path
+
       click_button t('account.index.webauthn_delete')
 
       expect(page).to_not have_content 'key1'
       expect(page).to have_content t('notices.webauthn_deleted')
+    end
+
+    it 'allows the user to cancel delete the webauthn key' do
+      create_webauthn_configuration(user, 'key1', '1', 'foo1')
+
+      sign_in_and_2fa_user(user)
+      visit account_path
+
+      expect(page).to have_content 'key1'
+
+      click_link t('account.index.webauthn_delete')
+
+      expect(current_path).to eq webauthn_setup_delete_path
+
+      click_link t('users.delete.actions.cancel')
+
+      expect(page).to have_content 'key1'
     end
 
     it 'prevents a user from deleting the last key' do
@@ -123,11 +144,7 @@ feature 'Webauthn Management' do
       visit account_path
 
       expect(page).to have_content 'key1'
-
-      click_button t('account.index.webauthn_delete')
-
-      expect(page).to have_content 'key1'
-      expect(page).to have_content t('errors.webauthn_setup.delete_last')
+      expect(page).to_not have_link t('account.index.webauthn_delete')
     end
   end
 

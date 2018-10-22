@@ -96,6 +96,11 @@ fr:
       name: Code de confirmation
       submit: Confirmer le compte
       title: Confirmez votre compte
+    webauthn_delete:
+      bullet_1: Vous ne pourrez pas utiliser votre clé de sécurité pour accéder en
+        toute sécurité à vos informations à l'aide de login.gov.
+      caution: Si vous supprimez votre clé de sécurité
+      confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour l’enregistrer
