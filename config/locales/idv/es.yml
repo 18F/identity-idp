@@ -176,7 +176,7 @@ es:
       usps:
         byline: Le enviaremos una carta con un código de confirmación a su dirección
           verificada en el archivo.
-        resend: Envíeme otra carta.
+        resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:
       dob: Fecha de nacimiento
