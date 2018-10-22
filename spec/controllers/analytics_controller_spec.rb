@@ -9,21 +9,24 @@ describe AnalyticsController do
 
     it 'logs true for platform authenticator' do
       expect(@analytics).to receive(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, errors: {}, success: 'true')
+        with(Analytics::PLATFORM_AUTHENTICATOR,
+             errors: {}, success: true, platform_authenticator: 'true')
 
       post :create, params: { available: true }
     end
 
     it 'logs false for platform authenticator' do
       expect(@analytics).to receive(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, errors: {}, success: 'false')
+        with(Analytics::PLATFORM_AUTHENTICATOR,
+             errors: {}, success: true, platform_authenticator: 'false')
 
       post :create, params: { available: false }
     end
 
     it 'logs once per session' do
       expect(@analytics).to receive(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, errors: {}, success: 'true')
+        with(Analytics::PLATFORM_AUTHENTICATOR,
+             errors: {}, success: true, platform_authenticator: 'true')
 
       post :create, params: { available: true }
       post :create, params: { available: true }

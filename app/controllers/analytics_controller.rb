@@ -13,7 +13,8 @@ class AnalyticsController < ApplicationController
   private
 
   def results
-    FormResponse.new(success: params[:available], errors: {})
+    FormResponse.new(success: true, errors: {},
+                     extra: { platform_authenticator: params[:available] })
   end
 
   def analytics_saved?
