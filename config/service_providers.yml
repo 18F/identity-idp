@@ -837,3 +837,18 @@ production:
       - 'https://sam.gov/SAM'
       - 'https://www.sam.gov/SAM'
     restrict_to_deploy_env: 'prod'
+
+  # OPM Secure Portal
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:OPM:TibcoMFT':
+    agency_id: 2
+    friendly_name: 'OPM Secure Portal'
+    agency: 'OPM'
+    logo: 'opm.png'
+    acs_url: 'https://secureportal.opm.gov/cfcc/login/servlet/SAMLSSO/SimpleResp'
+    sp_initiated_login_url: 'https://secureportal.opm.gov'
+    return_to_sp_url: 'https://secureportal.opm.gov'
+    block_encryption: 'aes256-cbc'
+    cert: 'opm_prod'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
