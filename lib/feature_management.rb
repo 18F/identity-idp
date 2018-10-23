@@ -115,6 +115,6 @@ class FeatureManagement
   end
 
   def self.platform_authenticator_enabled?
-    Figaro.env.platform_authenticator_analytics_enabled == 'true'
+    Figaro.env.platform_authenticator_enabled == 'true'
   end
 end
