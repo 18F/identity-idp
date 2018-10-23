@@ -464,7 +464,7 @@ describe 'FeatureManagement', type: :feature do
     end
 
     it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:platform_authenticator_enabled) { 'false' }
+      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'false' }
 
       expect(FeatureManagement.platform_authenticator_enabled?).to eq(false)
     end
