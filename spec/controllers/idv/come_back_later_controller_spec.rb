@@ -9,7 +9,7 @@ describe Idv::ComeBackLaterController do
     allow(user_decorator).to receive(:pending_profile_requires_verification?).
       and_return(pending_profile_requires_verification)
     allow(user).to receive(:decorate).and_return(user_decorator)
-    allow(subject).to receive(:current_user).and_return(user)
+    stub_sign_in(user)
   end
 
   context 'user needs USPS address verification' do

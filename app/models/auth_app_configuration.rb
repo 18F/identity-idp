@@ -22,4 +22,8 @@ class AuthAppConfiguration
   def friendly_name
     :auth_app
   end
+
+  def self.selection_presenters(set)
+    set.flat_map(&:selection_presenters)
+  end
 end

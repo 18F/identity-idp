@@ -1,5 +1,5 @@
 require 'rails_helper'
-feature 'Webauthn Management', :js do
+feature 'Webauthn Management' do
   include WebauthnHelper
 
   let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
