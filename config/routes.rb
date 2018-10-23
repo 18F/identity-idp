@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         via: %i[get post delete],
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
+  post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
   if FeatureManagement.enable_saml_cert_rotation?
