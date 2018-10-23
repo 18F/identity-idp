@@ -852,3 +852,17 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # The SEC 19d-1 Filing System
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1':
+    agency_id: 13
+    friendly_name: 'Rule 19d-1'
+    agency: 'SEC'
+    logo: 'sec.png'
+    cert: 'sec_prod'
+    return_to_sp_url: 'https://rule19d1.sec.gov'
+    redirect_uris:
+      - 'https://rule19d1.sec.gov/auth/login-gov/callback/loa-1'
+      - 'https://rule19d1.sec.gov/auth/login-gov/logout'
+    restrict_to_deploy_env: 'prod'
+
