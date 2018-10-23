@@ -6,7 +6,7 @@ function platformAuthenticator() {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/analytics', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.send(`available=${userIntent}`);
+        xhr.send(`platform_authenticator[available]=${userIntent}`);
       });
   }
 }
