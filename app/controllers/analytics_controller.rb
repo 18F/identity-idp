@@ -3,9 +3,10 @@ class AnalyticsController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def create
-    unless analytics_saved?
-      session[:platform_authenticator] = true
-      analytics.track_event(Analytics::PLATFORM_AUTHENTICATOR, results.to_h)
+    results.each do |event, result|
+      next if result.nil?
+
+      analytics.track_event(event, result.to_h)
     end
     head :ok
   end
@@ -13,11 +14,28 @@ class AnalyticsController < ApplicationController
   private
 
   def results
-    FormResponse.new(success: true, errors: {},
-                     extra: { platform_authenticator: params[:available] })
+    {
+      Analytics::PLATFORM_AUTHENTICATOR => platform_authenticator_result,
+    }
   end
 
-  def analytics_saved?
-    session[:platform_authenticator]
+  def platform_authenticator_result
+    return if platform_authenticator_results_saved? || !platform_authenticator_params_valid?
+
+    session[:platform_authenticator_analytics_saved] = true
+    platform_authenticator_available = params[:available] ||
+                                       params.dig(:platform_authenticator, :available)
+    extra = { platform_authenticator: (platform_authenticator_available == 'true') }
+    FormResponse.new(success: true, errors: {}, extra: extra)
+  end
+
+  def platform_authenticator_params_valid?
+    result = params[:available] || params.dig(:platform_authenticator, :available)
+    %w[true false].include?(result)
+  end
+
+  def platform_authenticator_results_saved?
+    session[:platform_authenticator_analytics_saved] == true ||
+      session[:platform_authenticator] == true
   end
 end

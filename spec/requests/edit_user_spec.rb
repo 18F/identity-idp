@@ -10,18 +10,9 @@ describe 'user edits their account', email: true do
     session['warden.user.user.session']
   end
 
-  def sign_in_as_a_valid_user
-    post new_user_session_path, params: { user: { email: user.email, password: user.password } }
-    get otp_send_path, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-    follow_redirect!
-    post login_two_factor_path, params: {
-      otp_delivery_preference: 'sms', code: user.reload.direct_otp
-    }
-  end
-
   context 'user changes email address' do
     before do
-      sign_in_as_a_valid_user
+      sign_in_user(user)
       put manage_email_path, params: { update_user_email_form: { email: 'new_email@example.com' } }
     end
 
@@ -51,7 +42,7 @@ describe 'user edits their account', email: true do
 
   context 'user submits email address with invalid encoding' do
     it 'returns a 400 error and logs the user uuid' do
-      sign_in_as_a_valid_user
+      sign_in_user(user)
       params = { update_user_email_form: { email: "test\xFFbar\xF8@test.com" } }
       headers = { CONTENT_TYPE: 'application/x-www-form-urlencoded;foo' }
 
