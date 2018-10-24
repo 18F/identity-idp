@@ -10,6 +10,7 @@ fr:
       disable: Désactiver
       edit: Modifier
       enable: Activer
+      manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
       submit:
@@ -34,6 +35,9 @@ fr:
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
+    phone:
+      buttons:
+        delete: Supprimer le numéro de teléfono
     piv_cac_mfa:
       submit: Veuillez présenter une carte PIV/CAC
     piv_cac_setup:

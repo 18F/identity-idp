@@ -24,4 +24,8 @@ class PhoneConfiguration < ApplicationRecord
   def friendly_name
     :phone
   end
+
+  def self.selection_presenters(set)
+    set.flat_map(&:selection_presenters)
+  end
 end

@@ -8,3 +8,4 @@ require('../app/phone-internationalization');
 require('../app/phone-validation');
 require('../app/print-personal-key');
 require('../app/i18n-dropdown');
+require('../app/platform-authenticator');

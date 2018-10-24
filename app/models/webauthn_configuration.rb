@@ -17,4 +17,12 @@ class WebauthnConfiguration < ApplicationRecord
   def friendly_name
     :webauthn
   end
+
+  def self.selection_presenters(set)
+    if set.any?
+      set.first.selection_presenters
+    else
+      []
+    end
+  end
 end

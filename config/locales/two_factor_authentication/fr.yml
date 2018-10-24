@@ -65,6 +65,10 @@ fr:
     personal_key_header_text: Entrez votre clé personnelle
     personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
       Une fois que vous l'entrez, vous recevrez une nouvelle clé.
+    phone:
+      delete:
+        success: Votre numéro de téléphone a été supprimé.
+        failure: Impossible de supprimer votre numéro de téléphone.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
     phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois

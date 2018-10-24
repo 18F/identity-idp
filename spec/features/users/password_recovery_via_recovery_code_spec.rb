@@ -11,6 +11,7 @@ feature 'Password recovery via personal key' do
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
   scenario 'resets password and reactivates profile with personal key', email: true, js: true do
+    allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
     personal_key = personal_key_from_pii(user, pii)
@@ -29,6 +30,7 @@ feature 'Password recovery via personal key' do
   end
 
   scenario 'resets password and reactivates profile with no personal key', email: true, js: true do
+    allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     personal_key_from_pii(user, pii)
     trigger_reset_password_and_click_email_link(user.email)
@@ -78,6 +80,7 @@ feature 'Password recovery via personal key' do
 
   context 'account recovery alternative paths' do
     before do
+      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       personal_key_from_pii(user, pii)
       trigger_reset_password_and_click_email_link(user.email)

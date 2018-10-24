@@ -223,4 +223,15 @@ describe Idv::SessionsController do
       end
     end
   end
+
+  describe '#destroy' do
+    it 'tracks an analytics event' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
+
+      delete(:destroy)
+    end
+  end
 end

@@ -2,7 +2,7 @@
   = image_tag(asset_url('check-email.svg'), size: '48x48', alt: 'check email',\
     class: 'absolute top-n24 left-0 right-0 mx-auto')
   h1.h2
-    = @decorated_usps.title
+    = @presenter.title
   p
     = t('idv.messages.usps.byline')
 
@@ -10,10 +10,11 @@
     strong
       = t('idv.messages.usps.success')
 
-= button_to @decorated_usps.button, idv_usps_path, method: 'put',
+= button_to @presenter.button, idv_usps_path, method: 'put',
   class: 'btn btn-primary btn-wide', form_class: 'inline-block mr2'
 
-= link_to t('idv.messages.usps.bad_address'), idv_phone_path
+= button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete,
+  class: 'btn btn-link'
 
 .mt2.pt1.border-top
-  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'
+  = link_to t('links.cancel'), @presenter.cancel_path, class: 'h5'
