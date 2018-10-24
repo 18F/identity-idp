@@ -11,7 +11,7 @@ describe 'frontend analytics requests' do
 
     it 'does not log anything if the user is not authed' do
       expect(analytics).to_not receive(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, any_args)
+        with(Analytics::FRONTEND_BROWSER_CAPABILITIES, any_args)
 
       post analytics_path, params: { platform_authenticator: { available: true } }
     end
@@ -22,7 +22,7 @@ describe 'frontend analytics requests' do
       post analytics_path, params: { platform_authenticator: { available: true } }
 
       expect(analytics).to have_received(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, hash_including(platform_authenticator: true))
+        with(Analytics::FRONTEND_BROWSER_CAPABILITIES, hash_including(platform_authenticator: true))
     end
 
     it 'logs false if the platform authenticator is not available' do
@@ -31,7 +31,10 @@ describe 'frontend analytics requests' do
       post analytics_path, params: { platform_authenticator: { available: false } }
 
       expect(analytics).to have_received(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, hash_including(platform_authenticator: false))
+        with(
+          Analytics::FRONTEND_BROWSER_CAPABILITIES,
+          hash_including(platform_authenticator: false)
+        )
     end
 
     it 'only logs 1 platform authenticator event per session' do
@@ -41,7 +44,10 @@ describe 'frontend analytics requests' do
       post analytics_path, params: { platform_authenticator: { available: true } }
 
       expect(analytics).to have_received(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, hash_including(platform_authenticator: true)).
+        with(
+          Analytics::FRONTEND_BROWSER_CAPABILITIES,
+          hash_including(platform_authenticator: true)
+        ).
         once
     end
 
@@ -51,7 +57,7 @@ describe 'frontend analytics requests' do
       post analytics_path, params: { platform_authenticator: { available: 'blah blah blah' } }
 
       expect(analytics).to_not have_received(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, any_args)
+        with(Analytics::FRONTEND_BROWSER_CAPABILITIES, any_args)
     end
 
     it 'supports the legacy API format' do
@@ -60,7 +66,7 @@ describe 'frontend analytics requests' do
       post analytics_path, params: { available: true }
 
       expect(analytics).to have_received(:track_event).
-        with(Analytics::PLATFORM_AUTHENTICATOR, hash_including(platform_authenticator: true))
+        with(Analytics::FRONTEND_BROWSER_CAPABILITIES, hash_including(platform_authenticator: true))
     end
   end
 end

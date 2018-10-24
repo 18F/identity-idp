@@ -15,7 +15,7 @@ class AnalyticsController < ApplicationController
 
   def results
     {
-      Analytics::PLATFORM_AUTHENTICATOR => platform_authenticator_result,
+      Analytics::FRONTEND_BROWSER_CAPABILITIES => platform_authenticator_result,
     }
   end
 
