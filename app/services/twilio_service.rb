@@ -59,20 +59,23 @@ module TwilioService
       sanitize_phone_number(error.message)
       raise
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-      retry unless (tries -= 1).zero?
-      raise_custom_timeout_error
+      log_custom_timeout_error
+      raise custom_timeout_error if (tries -= 1).zero?
+      retry
     end
 
     DIGITS_TO_PRESERVE = 5
 
-    def raise_custom_timeout_error
+    def log_custom_timeout_error
       Rails.logger.info(request_data.to_json)
-      raise Twilio::REST::RestError.new('timeout', TwilioTimeoutResponse.new)
+    end
+
+    def custom_timeout_error
+      Twilio::REST::RestError.new('timeout', TwilioTimeoutResponse.new)
     end
 
     def request_data
       last_request = @client.http_client.last_request
-
       {
         event: 'Twilio Request Timeout',
         url: last_request.url,

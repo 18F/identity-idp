@@ -189,7 +189,7 @@ describe TwilioService::Utils do
         headers: {},
       }.to_json
 
-      expect(Rails.logger).to receive(:info).with(request_data)
+      expect(Rails.logger).to receive(:info).with(request_data).twice
 
       expect(service.send(:client).messages).to receive(:create).twice.
         and_raise(Faraday::TimeoutError)
