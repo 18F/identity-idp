@@ -131,7 +131,7 @@ feature 'Webauthn Management' do
 
       expect(current_path).to eq webauthn_setup_delete_path
 
-      click_link t('users.delete.actions.cancel')
+      click_link t('links.cancel')
 
       expect(page).to have_content 'key1'
     end
