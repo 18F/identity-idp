@@ -124,6 +124,7 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
+      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
       allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).

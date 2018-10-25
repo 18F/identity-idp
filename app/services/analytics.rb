@@ -88,6 +88,7 @@ class Analytics
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
+  IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
@@ -111,6 +112,8 @@ class Analytics
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
+  PHONE_DELETION_REQUESTED = 'Phone Number Deletion: requested'.freeze
+  PLATFORM_AUTHENTICATOR = 'Platform Authenticator'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze

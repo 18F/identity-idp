@@ -455,4 +455,18 @@ describe 'FeatureManagement', type: :feature do
       expect(FeatureManagement.doc_auth_exclusive?).to eq(false)
     end
   end
+
+  describe '#platform_authenticator_enabled?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'true' }
+
+      expect(FeatureManagement.platform_authenticator_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'false' }
+
+      expect(FeatureManagement.platform_authenticator_enabled?).to eq(false)
+    end
+  end
 end

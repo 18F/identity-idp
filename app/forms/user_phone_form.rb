@@ -25,8 +25,7 @@ class UserPhoneForm
     success = valid?
     self.phone = submitted_phone unless success
 
-    update_otp_delivery_preference_for_user if
-      success && otp_delivery_preference.present? && otp_delivery_preference_changed?
+    update_remember_device_revoked_at if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -58,13 +57,9 @@ class UserPhoneForm
     self.otp_delivery_preference = tfa_prefs if tfa_prefs
   end
 
-  def otp_delivery_preference_changed?
-    otp_delivery_preference != phone_configuration&.delivery_preference
-  end
-
-  def update_otp_delivery_preference_for_user
-    user_attributes = { otp_delivery_preference: otp_delivery_preference }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+  def update_remember_device_revoked_at
+    attributes = { remember_device_revoked_at: Time.zone.now }
+    UpdateUser.new(user: user, attributes: attributes).call
   end
 
   def formatted_user_phone

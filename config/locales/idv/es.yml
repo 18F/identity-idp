@@ -114,6 +114,7 @@ es:
         información personal básica, así como su información financiera para completar
         este proceso. Si no tiene la información que necesitamos en este momento,
         puede continuar más tarde.
+      clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app} e introduce tu
         código de verificación cuando se te solicite.
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app}</strong>.
@@ -173,10 +174,9 @@ es:
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
       usps:
-        bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
           verificada en el archivo.
-        resend: Envíeme otra carta.
+        resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:
       dob: Fecha de nacimiento

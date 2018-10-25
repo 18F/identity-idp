@@ -20,6 +20,20 @@ module Users
       end
     end
 
+    def delete
+      result = TwoFactorAuthentication::PhoneDeletionForm.new(
+        current_user, phone_configuration
+      ).submit
+      analytics.track_event(Analytics::PHONE_DELETION_REQUESTED, result.to_h)
+      if result.success?
+        flash[:success] = t('two_factor_authentication.phone.delete.success')
+      else
+        flash[:error] = t('two_factor_authentication.phone.delete.failure')
+      end
+
+      redirect_to account_url
+    end
+
     private
 
     # we only allow editing of the first configuration since we'll eventually be
@@ -38,10 +52,13 @@ module Users
     end
 
     def process_updates
-      if @user_phone_form.phone_changed?
+      form = @user_phone_form
+      if form.phone_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
-        prompt_to_confirm_phone(phone: @user_phone_form.phone)
+        prompt_to_confirm_phone(
+          phone: form.phone, selected_delivery_method: form.otp_delivery_preference
+        )
       else
         redirect_to account_url
       end

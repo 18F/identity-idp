@@ -38,7 +38,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         create_webauthn_configuration(controller.current_user)
         get :show
 
-        expect(subject.user_session[:webauthn_challenge].length).to eq(16)
+        expect(subject.user_session[:webauthn_challenge].length).to eq(32)
         expect(response).to render_template(:show)
       end
 
