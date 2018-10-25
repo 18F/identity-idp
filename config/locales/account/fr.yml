@@ -30,7 +30,7 @@ fr:
         success: Votre compte a été vérifié.
       webauthn: Clé de sécurité physique
       webauthn_add: "+ Ajouter une clé de sécurité physique"
-      webauthn_delete: Retirer
+      webauthn_delete: Oui, retirer la clé
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle

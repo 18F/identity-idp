@@ -89,10 +89,9 @@ en:
       submit: Confirm account
       title: Confirm your account
     webauthn_delete:
-      bullet_1: You won't be able to use your security key to securely access your
-        information using login.gov.
-      caution: If you delete your security key
-      confirm: Are you sure you want to delete your security key?
+      caution: If you remove your security key you won't be able to use it to access
+        your login.gov account.
+      confirm: Are you sure you want to remove your security key?
     webauthn_setup:
       continue: Continue
       instructions_text: Press the button on your security key to register it with
