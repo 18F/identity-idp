@@ -28,7 +28,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def account_reset_request(email_address, account_reset)
-    #account_reset = user.account_reset_request
     @token = account_reset&.request_token
     mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
   end

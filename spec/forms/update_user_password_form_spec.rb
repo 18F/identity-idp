@@ -58,7 +58,8 @@ describe UpdateUserPasswordForm, type: :model do
 
       it 'sends an email to notify of the password change' do
         mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        allow(UserMailer).to receive(:password_changed).with(user.email_addresses.first).and_return(mailer)
+        allow(UserMailer).to receive(:password_changed).
+          with(user.email_addresses.first).and_return(mailer)
 
         subject.submit(params)
 
@@ -99,7 +100,8 @@ describe UpdateUserPasswordForm, type: :model do
     context 'when the user does not have an active profile' do
       it 'does not call ActiveProfileEncryptor' do
         mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        expect(UserMailer).to receive(:password_changed).with(user.email_addresses.first).and_return(mailer)
+        expect(UserMailer).to receive(:password_changed).
+          with(user.email_addresses.first).and_return(mailer)
         expect(ActiveProfileEncryptor).to_not receive(:new)
 
         subject.submit(params)
