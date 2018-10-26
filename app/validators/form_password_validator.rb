@@ -25,7 +25,7 @@ module FormPasswordValidator
   def password_score
     @password_score = ZXCVBN_TESTER.test(
       password,
-      ForbiddenPasswords.new(user.email_address.email).call
+      ForbiddenPasswords.new(user.email_address&.email).call
     )
   end
 
