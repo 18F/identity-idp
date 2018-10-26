@@ -44,6 +44,11 @@ en:
       help: If you did not make this change, please visit the %{app} %{help_link}
         or %{contact_link}.
       intro: You have a new password for your %{app} account.
+    personal_key_sign_in:
+      help: If you did not sign in with a personal key, please visit the %{app} %{help_link}
+        or %{contact_link}.
+      intro: Your personal key was used to sign in to your %{app} account.
+      subject: Your personal key was used to sign in
     phone_changed:
       help: If you did not want to change your phone number, please visit the %{app}
         %{help_link} or %{contact_link}.

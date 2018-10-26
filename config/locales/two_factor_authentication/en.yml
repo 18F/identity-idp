@@ -65,8 +65,8 @@ en:
       be provided a new key.
     phone:
       delete:
-        success: Your phone has been removed.
         failure: Unable to remove your phone.
+        success: Your phone has been removed.
     phone_fallback:
       question: Don't have access to your phone right now?
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
