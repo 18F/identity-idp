@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :email_address do
     confirmed_at { Time.zone.now }
     email { 'jd@example.com' }
-    association :user
+    user { association :user }
   end
 end

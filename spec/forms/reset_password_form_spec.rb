@@ -52,7 +52,7 @@ describe ResetPasswordForm, type: :model do
 
     context 'when both the password and token are valid' do
       it 'sets the user password to the submitted password' do
-        user = build_stubbed(:user, uuid: '123')
+        user = build_stubbed(:user, :with_email, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
         expect(Event).to receive(:create).with(user_id: user.id, event_type: :password_changed)
 

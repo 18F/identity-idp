@@ -5,6 +5,8 @@ class User < ApplicationRecord
     encrypted_phone phone_confirmed_at
   ]
 
+  deprecate :email_address, :email_address=
+
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
@@ -44,7 +46,7 @@ class User < ApplicationRecord
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
-  has_one :email_address, dependent: :destroy, inverse_of: :user
+  has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
 
@@ -52,8 +54,16 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes
 
+  def email_address
+    email_addresses.first
+  end
+
   def set_default_role
     self.role ||= :user
+  end
+
+  def confirmed_email_addresses
+    email_addresses.where.not(confirmed_at: nil)
   end
 
   def need_two_factor_authentication?(_request)

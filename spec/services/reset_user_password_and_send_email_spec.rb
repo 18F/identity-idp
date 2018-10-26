@@ -11,7 +11,7 @@ describe ResetUserPasswordAndSendEmail do
       subject = ResetUserPasswordAndSendEmail.new(user_emails: 'test@test.com')
 
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
-      allow(UserMailer).to receive(:please_reset_password).with(email).and_return(mailer)
+      allow(UserMailer).to receive(:please_reset_password).with(user).and_return([mailer])
 
       expect(mailer).to receive(:deliver_now)
 

@@ -145,7 +145,9 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    UserMailer.phone_changed(current_user).deliver_later
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.phone_changed(email_address).deliver_later
+    end
   end
 
   def phone_confirmed
@@ -234,7 +236,7 @@ module TwoFactorAuthenticatable
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_address.email,
+      user_email: current_user.email_addresses.first.email,
       remember_device_available: false,
     }.merge(generic_data)
   end

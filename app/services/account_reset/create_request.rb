@@ -5,8 +5,8 @@ module AccountReset
     end
 
     def call
-      create_request
-      notify_user_by_email
+      request = create_request
+      notify_user_by_email(request)
       notify_user_by_sms_if_applicable
     end
 
@@ -23,10 +23,13 @@ module AccountReset
         granted_at: nil,
         granted_token: nil
       )
+      request
     end
 
-    def notify_user_by_email
-      UserMailer.account_reset_request(user).deliver_later
+    def notify_user_by_email(request)
+      user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_request(email_address, request).deliver_later
+      end
     end
 
     def notify_user_by_sms_if_applicable

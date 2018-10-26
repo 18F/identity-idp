@@ -22,7 +22,7 @@ class ResetUserPasswordAndSendEmail
       user = User.find_with_email(email)
       if user
         ResetUserPassword.new(user: user).call
-        UserMailer.please_reset_password(email).deliver_now
+        UserMailer.please_reset_password(user).each(&:deliver_now)
         Kernel.puts "Email sent to user with email #{email}"
       else
         Kernel.puts "user with email #{email} not found"

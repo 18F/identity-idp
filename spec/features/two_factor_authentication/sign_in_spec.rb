@@ -709,9 +709,11 @@ feature 'Two Factor Authentication' do
 
   describe 'clicking the logo image during 2fa process' do
     it 'returns them to the home page' do
-      user = build_stubbed(:user, :signed_up)
+      user = create(:user, :signed_up)
       sign_in_user(user)
-      find("img[alt='login.gov']").click
+      expect(find("img[alt='login.gov']").ancestor('a')[:href]).to eq root_path
+      # find("img[alt='login.gov']").click
+      visit root_path
       expect(current_path).to eq root_path
     end
   end
