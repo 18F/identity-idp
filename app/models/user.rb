@@ -5,8 +5,6 @@ class User < ApplicationRecord
     encrypted_phone phone_confirmed_at
   ]
 
-  deprecate :email_address, :email_address=
-
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
@@ -53,10 +51,6 @@ class User < ApplicationRecord
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
   attr_accessor :asserted_attributes
-
-  def email_address
-    email_addresses.first
-  end
 
   def set_default_role
     self.role ||= :user
