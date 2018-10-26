@@ -11,6 +11,6 @@
       .col.col-8.sm-6.truncate
         = phone_configuration.phone
       .col.col-4.sm-6.right-align
-        = render @view_model.edit_action_partial,
+        = render @view_model.manage_action_partial,
           path: manage_phone_url,
           name: t('account.index.phone')

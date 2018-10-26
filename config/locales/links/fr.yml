@@ -24,7 +24,6 @@ fr:
     sign_in: Connexion
     sign_out: Déconnexion
     two_factor_authentication:
-      app_option: Utilisez une application d'authentification à la place.
       get_another_code: Obtenir un autre code
     what_is_totp: Qu'est-ce qu'une application d'authentification?
     what_is_webauthn: Qu'est-ce qu'une clé de sécurité physique?

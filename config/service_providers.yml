@@ -837,3 +837,32 @@ production:
       - 'https://sam.gov/SAM'
       - 'https://www.sam.gov/SAM'
     restrict_to_deploy_env: 'prod'
+
+  # OPM Secure Portal
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:OPM:TibcoMFT':
+    agency_id: 2
+    friendly_name: 'OPM Secure Portal'
+    agency: 'OPM'
+    logo: 'opm.png'
+    acs_url: 'https://secureportal.opm.gov/cfcc/login/servlet/SAMLSSO/SimpleResp'
+    sp_initiated_login_url: 'https://secureportal.opm.gov'
+    return_to_sp_url: 'https://secureportal.opm.gov'
+    block_encryption: 'aes256-cbc'
+    cert: 'opm_prod'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # The SEC 19d-1 Filing System
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1':
+    agency_id: 13
+    friendly_name: 'Rule 19d-1'
+    agency: 'SEC'
+    logo: 'sec.png'
+    cert: 'sec_prod'
+    return_to_sp_url: 'https://rule19d1.sec.gov'
+    redirect_uris:
+      - 'https://rule19d1.sec.gov/auth/login-gov/callback/loa-1'
+      - 'https://rule19d1.sec.gov/auth/login-gov/logout'
+    restrict_to_deploy_env: 'prod'
+

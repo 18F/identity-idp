@@ -23,6 +23,8 @@ test:
     name: 'USFS'
   12:
     name: 'HUD'
+  13:
+    name: 'SEC'
 
 development:
   1:
@@ -49,6 +51,8 @@ development:
     name: 'USFS'
   12:
     name: 'HUD'
+  13:
+    name: 'SEC'
 
 production:
   1:
@@ -75,3 +79,5 @@ production:
     name: 'USFS'
   12:
     name: 'HUD'
+  13:
+    name: 'SEC'

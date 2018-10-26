@@ -61,6 +61,7 @@ class Analytics
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
+  FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
@@ -112,6 +113,7 @@ class Analytics
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
+  PHONE_DELETION_REQUESTED = 'Phone Number Deletion: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze

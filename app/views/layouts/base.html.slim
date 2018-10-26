@@ -67,6 +67,7 @@ html lang="#{I18n.locale}" class='no-js'
 
     #session-timeout-cntnr
     - if current_user
+      = render 'shared/platform_authenticator'
       = auto_session_timeout_js
     - else
       = auto_session_expired_js
