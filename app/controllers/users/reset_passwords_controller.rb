@@ -36,7 +36,6 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-
       @reset_password_form = ResetPasswordForm.new(resource)
 
       result = @reset_password_form.submit(user_params)
@@ -112,8 +111,9 @@ module Users
     end
 
     def handle_unsuccessful_password_reset(result)
-      if result.errors[:reset_password_token].present?
-        flash[:error] = t('devise.passwords.token_expired')
+      reset_password_token_errors = result.errors[:reset_password_token]
+      if reset_password_token_errors.present?
+        flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return
       end
