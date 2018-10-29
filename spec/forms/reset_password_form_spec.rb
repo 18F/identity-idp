@@ -95,6 +95,25 @@ describe ResetPasswordForm, type: :model do
       end
     end
 
+    context 'when the user does not exist in the db' do
+      it 'returns a hash with errors' do
+        user = User.new
+
+        form = ResetPasswordForm.new(user)
+        errors = {
+          reset_password_token: ['invalid_token'],
+        }
+
+        extra = { user_id: nil }
+
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(form.submit(password: 'a good and powerful password')).to eq result
+      end
+    end
+
     it_behaves_like 'strong password', 'ResetPasswordForm'
   end
 end
