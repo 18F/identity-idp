@@ -11,6 +11,7 @@ fr:
     email_changed: Adresse courriel modifiée
     new_personal_key: Clé personnelle modifié
     password_changed: Mot de passe modifié
+    personal_key_used: Clé personnelle utilisée pour la connexion
     phone_changed: Numéro de téléphone modifié
     phone_confirmed: Numéro de téléphone confirmé
     piv_cac_disabled: Carte PIV/CAC non associée

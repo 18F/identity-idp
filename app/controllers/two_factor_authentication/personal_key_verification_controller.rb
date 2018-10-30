@@ -29,6 +29,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
+        create_user_event(:personal_key_used)
         generate_new_personal_key
         handle_valid_otp
       else
