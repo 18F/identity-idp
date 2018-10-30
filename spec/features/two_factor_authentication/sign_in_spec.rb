@@ -713,9 +713,7 @@ feature 'Two Factor Authentication' do
     it 'returns them to the home page' do
       user = create(:user, :signed_up)
       sign_in_user(user)
-      expect(find("img[alt='login.gov']").ancestor('a')[:href]).to eq root_path
-      # find("img[alt='login.gov']").click
-      visit root_path
+      click_link 'login.gov'
       expect(current_path).to eq root_path
     end
   end
