@@ -17,3 +17,5 @@ es:
     piv_cac_disabled: Tarjeta PIV/CAC no asociada
     piv_cac_enabled: Tarjeta PIV/CAC asociada
     usps_mail_sent: Carta enviada
+    webauthn_key_added: Clave de seguridad de hardware añadido
+    webauthn_key_removed: Clave de seguridad de hardware eliminada

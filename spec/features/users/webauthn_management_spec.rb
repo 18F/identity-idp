@@ -18,6 +18,11 @@ feature 'Webauthn Management' do
       mock_press_button_on_hardware_key
 
       expect(current_path).to eq webauthn_setup_success_path
+
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content t('event_types.webauthn_key_added')
     end
 
     it 'gives an error if the challenge/secret is incorrect' do
