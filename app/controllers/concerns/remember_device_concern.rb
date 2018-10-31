@@ -13,7 +13,7 @@ module RememberDeviceConcern
     return unless authentication_context?
     return if remember_device_cookie.nil?
     return unless remember_device_cookie.valid_for_user?(
-      current_user,
+      user: current_user,
       expiration_interval: decorated_session.mfa_expiration_interval
     )
 
@@ -33,7 +33,7 @@ module RememberDeviceConcern
     return true if remember_device_cookie.nil?
 
     !remember_device_cookie.valid_for_user?(
-      current_user,
+      user: current_user,
       expiration_interval: decorated_session.mfa_expiration_interval
     )
   end
