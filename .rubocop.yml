@@ -56,6 +56,7 @@ Metrics/ClassLength:
   - spec/**/*
   - app/controllers/application_controller.rb
   - app/controllers/openid_connect/authorization_controller.rb
+  - app/controllers/saml_idp_controller.rb
   - app/controllers/users/confirmations_controller.rb
   - app/controllers/users/sessions_controller.rb
   - app/controllers/users/two_factor_authentication_controller.rb
@@ -78,7 +79,6 @@ Metrics/LineLength:
   - https
   Exclude:
     - 'config/routes.rb'
-    - 'app/controllers/saml_idp_controller.rb'
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
