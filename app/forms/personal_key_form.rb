@@ -36,7 +36,7 @@ class PersonalKeyForm
 
   def send_personal_key_sign_in_notification
     UserMailer.personal_key_sign_in(user.email_address.email).deliver_now
-    MfaContext.new(user).phone_configurations.map do |phone_configuration|
+    MfaContext.new(user).phone_configurations.each do |phone_configuration|
       SmsPersonalKeySignInNotifierJob.perform_now(phone: phone_configuration.phone)
     end
   end
