@@ -14,10 +14,9 @@ class SamlIdpController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :validate_saml_logout_request, only: :logout
+  before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
 
-  def auth # rubocop:disable AbcSize
-    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-    return redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+  def auth
     link_identity_from_session_data
     capture_analytics
     return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?
@@ -41,6 +40,11 @@ class SamlIdpController < ApplicationController
   end
 
   private
+
+  def confirm_user_is_authenticated_with_fresh_mfa
+    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+    redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+  end
 
   def validate_saml_logout_request(raw_saml_request = params[:SAMLRequest])
     request_valid = saml_request_valid?(raw_saml_request)
