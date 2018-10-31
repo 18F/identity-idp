@@ -78,6 +78,7 @@ Metrics/LineLength:
   - https
   Exclude:
     - 'config/routes.rb'
+    - 'app/controllers/saml_idp_controller.rb'
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
