@@ -21,7 +21,7 @@ es:
       show_hdr: Crear una contraseña segura
     example: 'ejemplo:'
     messages:
-      remember_device: Recuerde este navegador por %{duration} días
+      remember_device: Recuerde este navegador
     passwords:
       edit:
         buttons:

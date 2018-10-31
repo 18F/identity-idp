@@ -12,8 +12,12 @@ module RememberDeviceConcern
   def check_remember_device_preference
     return unless authentication_context?
     return if remember_device_cookie.nil?
-    return unless remember_device_cookie.valid_for_user?(current_user)
-    handle_valid_otp
+    return unless remember_device_cookie.valid_for_user?(
+      current_user,
+      expiration_interval: decorated_session.mfa_expiration_interval
+    )
+
+    handle_valid_remember_device_cookie
   end
 
   def remember_device_cookie
@@ -24,9 +28,27 @@ module RememberDeviceConcern
     )
   end
 
+  def remember_device_expired_for_sp?
+    return false unless user_session[:mfa_device_remembered]
+    return true if remember_device_cookie.nil?
+
+    !remember_device_cookie.valid_for_user?(
+      current_user,
+      expiration_interval: decorated_session.mfa_expiration_interval
+    )
+  end
+
   private
 
+  def handle_valid_remember_device_cookie
+    user_session[:mfa_device_remembered] = true
+    mark_user_session_authenticated
+    bypass_sign_in current_user
+    redirect_to after_otp_verification_confirmation_url
+    reset_otp_session_data
+  end
+
   def remember_device_cookie_expiration
-    Figaro.env.remember_device_expiration_days.to_i.days.from_now
+    Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours.from_now
   end
 end

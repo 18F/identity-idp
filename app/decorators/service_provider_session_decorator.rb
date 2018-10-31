@@ -119,6 +119,15 @@ class ServiceProviderSessionDecorator
     custom_alert? ? CUSTOM_SP_ALERTS.dig(sp_name, :learn_more) : 'https://login.gov/help/'
   end
 
+  # :reek:DuplicateMethodCall
+  def mfa_expiration_interval # rubocop:disable Metrics/AbcSize
+    aal_1_expiration = Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
+    aal_2_expiration = Figaro.env.remember_device_expiration_hours_aal_2.to_i.hours
+    return aal_2_expiration if sp.aal.present? && sp.aal > 1
+    return aal_2_expiration if sp.ial.present? && sp.ial > 1
+    aal_1_expiration
+  end
+
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request

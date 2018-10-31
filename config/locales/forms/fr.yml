@@ -21,7 +21,7 @@ fr:
       show_hdr: Créez un mot de passe fort
     example: 'exemple:'
     messages:
-      remember_device: Enregistrer ce navigateur pendant %{duration} jours
+      remember_device: Enregistrer ce navigateur
     passwords:
       edit:
         buttons:

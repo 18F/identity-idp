@@ -8,14 +8,16 @@ class SamlIdpController < ApplicationController
   include SamlIdpLogoutConcern
   include AccountRecoverable
   include FullyAuthenticatable
+  include RememberDeviceConcern
   include VerifyProfileConcern
   include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
   before_action :validate_saml_logout_request, only: :logout
 
-  def auth
+  def auth # rubocop:disable AbcSize
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+    return redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
     link_identity_from_session_data
     capture_analytics
     return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?

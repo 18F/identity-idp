@@ -53,8 +53,10 @@ module TwoFactorAuthenticatable
 
   def check_already_authenticated
     return unless initial_authentication_context?
+    return unless user_fully_authenticated?
+    return if remember_device_expired_for_sp?
 
-    redirect_to after_otp_verification_confirmation_url if user_fully_authenticated?
+    redirect_to after_otp_verification_confirmation_url
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
@@ -76,6 +78,7 @@ module TwoFactorAuthenticatable
       handle_valid_otp_for_confirmation_context
     end
     save_remember_device_preference
+    user_session.delete(:mfa_device_remembered)
 
     redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data

@@ -2,6 +2,7 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     include AccountRecoverable
     include FullyAuthenticatable
+    include RememberDeviceConcern
     include VerifyProfileConcern
     include VerifySPAttributesConcern
 
@@ -11,8 +12,9 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
 
-    def index
+    def index # rubocop:disable AbcSize
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+      return redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
       link_identity_to_service_provider
       return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
