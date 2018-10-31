@@ -1,7 +1,5 @@
-class AccountRecoveryOptionsPresenter
+class AccountRecoveryOptionsPresenter < TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
-
-  AVAILABLE_2FA_TYPES = %w[sms voice].freeze
 
   def title
     t('titles.account_recovery_setup')
@@ -17,16 +15,5 @@ class AccountRecoveryOptionsPresenter
 
   def label
     t('forms.account_recovery_setup.legend') + ':'
-  end
-
-  def options
-    AVAILABLE_2FA_TYPES.map do |type|
-      OpenStruct.new(
-        type: type,
-        label: t("two_factor_authentication.two_factor_choice_options.#{type}"),
-        info: t("two_factor_authentication.two_factor_choice_options.#{type}_info"),
-        selected: type == :sms
-      )
-    end
   end
 end
