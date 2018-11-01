@@ -69,7 +69,7 @@ function webauthn() {
       excludeCredentials: excludeCredentialsArray,
     },
   };
-  if (location.href.indexOf('?error=') == -1 &&
+  if (location.href.indexOf('?error=') === -1 &&
     !(navigator && navigator.credentials && navigator.credentials.create)) {
     window.location.href = '/webauthn_setup?error=NotSupportedError';
   }
