@@ -13,7 +13,7 @@ module AccountReset
     def create
       analytics.track_event(Analytics::ACCOUNT_RESET, analytics_attributes)
       AccountReset::CreateRequest.new(current_user).call
-      flash[:email] = current_user.email_address.email
+      flash[:email] = current_user.email_addresses.first.email
       redirect_to account_reset_confirm_request_url
     end
 
@@ -40,6 +40,7 @@ module AccountReset
         sms_phone: TwoFactorAuthentication::PhonePolicy.new(current_user).configured?,
         totp: TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured?,
         piv_cac: TwoFactorAuthentication::PivCacPolicy.new(current_user).configured?,
+        email_addresses: current_user.email_addresses.count,
       }
     end
   end

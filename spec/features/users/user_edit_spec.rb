@@ -107,7 +107,7 @@ feature 'User edit' do
       visit sign_up_enter_password_path(confirmation_token: token)
 
       expect(page).to have_current_path(account_path)
-      expect(page).to_not have_content user.email
+      expect(page).to_not have_content user.email_addresses.first.email
     end
   end
 

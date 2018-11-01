@@ -28,8 +28,8 @@ module PivCacService
       Figaro.env.piv_cac_verify_token_url
     end
 
-    def piv_cac_available_for_agency?(agency, email = nil)
-      available_for_agency?(agency) || available_for_email?(agency, email)
+    def piv_cac_available_for_agency?(agency, emails = [])
+      available_for_agency?(agency) || available_for_email?(agency, emails)
     end
 
     private
@@ -40,14 +40,15 @@ module PivCacService
       piv_cac_agencies.include?(agency)
     end
 
-    def available_for_email?(agency, email)
-      return unless email.present? && agency_scoped_by_email?(agency)
+    def available_for_email?(agency, emails)
+      return unless emails.any? && agency_scoped_by_email?(agency)
 
       piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
+      supported_domains = JSON.parse(piv_cac_email_domains)
 
-      (_, email_domain) = email.split(/@/, 2)
-      domains = JSON.parse(piv_cac_email_domains)
-      domains.any? { |supported_domain| domain_match?(email_domain, supported_domain) }
+      email_domains = emails.map { |email| email.split(/@/, 2).last }
+
+      emails_match_domains?(email_domains, supported_domains)
     end
 
     def agency_scoped_by_email?(agency)
@@ -59,11 +60,17 @@ module PivCacService
       piv_cac_agencies_email_scope.include?(agency)
     end
 
-    def domain_match?(given, matcher)
-      if matcher[0] == '.'
-        given.end_with?(matcher)
-      else
-        given == matcher
+    def emails_match_domains?(email_domains, supported_domains)
+      partial_domains, exact_domains = supported_domains.partition { |domain| domain[0] == '.' }
+
+      (email_domains & exact_domains).any? ||
+        any_partial_domains_match?(email_domains, partial_domains)
+    end
+
+    # :reek:NestedIterators
+    def any_partial_domains_match?(givens, matchers)
+      givens.any? do |given|
+        matchers.any? { |matcher| given.end_with?(matcher) }
       end
     end
 

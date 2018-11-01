@@ -134,7 +134,7 @@ describe Identity do
     context 'when agency configured to support piv/cac' do
       before(:each) do
         allow(PivCacService).to receive(:piv_cac_available_for_agency?).with(
-          service_provider.agency, identity_with_sp.user.email
+          service_provider.agency, identity_with_sp.user.email_addresses.map(&:email)
         ).and_return(true)
       end
 
@@ -146,7 +146,7 @@ describe Identity do
     context 'when agency is not configured to support piv/cac' do
       before(:each) do
         allow(PivCacService).to receive(:piv_cac_available_for_agency?).with(
-          service_provider.agency, identity_with_sp.user.email
+          service_provider.agency, identity_with_sp.user.email_addresses.map(&:email)
         ).and_return(false)
       end
 
