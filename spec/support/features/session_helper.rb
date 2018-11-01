@@ -73,7 +73,7 @@ module Features
     end
 
     def sign_in_user(user = create(:user))
-      signin(user.email, user.password)
+      signin(user.email_addresses.first.email, user.password)
       user
     end
 

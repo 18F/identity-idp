@@ -26,7 +26,10 @@ module AccountReset
     def grant_request_and_send_email(arr)
       user = arr.user
       return false unless AccountReset::GrantRequest.new(user).call
-      UserMailer.account_reset_granted(user, arr.reload).deliver_later
+      arr = arr.reload
+      user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_granted(email_address, arr).deliver_later
+      end
       true
     end
   end

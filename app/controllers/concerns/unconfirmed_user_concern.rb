@@ -24,7 +24,9 @@ module UnconfirmedUserConcern
 
   def process_valid_confirmation_token
     @confirmation_token = params[:confirmation_token]
-    @forbidden_passwords = ForbiddenPasswords.new(@user.email_address.email).call
+    @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
+      ForbiddenPasswords.new(email_address.email).call
+    end
     flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
     session[:user_confirmation_token] = @confirmation_token
   end
