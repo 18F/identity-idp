@@ -2,6 +2,7 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     include AccountRecoverable
     include FullyAuthenticatable
+    include RememberDeviceConcern
     include VerifyProfileConcern
     include VerifySPAttributesConcern
 
@@ -10,9 +11,9 @@ module OpenidConnect
     before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
+    before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
 
     def index
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       link_identity_to_service_provider
       return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_multiple_mfa_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
@@ -21,6 +22,11 @@ module OpenidConnect
     end
 
     private
+
+    def confirm_user_is_authenticated_with_fresh_mfa
+      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+      redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+    end
 
     def link_identity_to_service_provider
       @authorize_form.link_identity_to_service_provider(current_user, session.id)

@@ -36,6 +36,7 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       redirect_to next_step
       reset_otp_session_data
+      user_session.delete(:mfa_device_remembered)
     end
 
     def next_step
