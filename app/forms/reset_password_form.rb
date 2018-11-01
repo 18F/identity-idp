@@ -62,7 +62,9 @@ class ResetPasswordForm
   end
 
   def notify_user_of_password_change_via_email
-    UserMailer.password_changed(user).deliver_later
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.password_changed(email_address).deliver_later
+    end
   end
 
   def extra_analytics_attributes

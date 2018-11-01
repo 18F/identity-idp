@@ -31,8 +31,8 @@ class AnonymousUser
 
   def email; end
 
-  def email_address
-    EMPTY_EMAIL_ADDRESS
+  def email_addresses
+    [EMPTY_EMAIL_ADDRESS]
   end
 
   def confirmed_at

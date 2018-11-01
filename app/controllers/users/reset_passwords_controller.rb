@@ -27,7 +27,7 @@ module Users
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_address.email)
+        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
       else
         handle_invalid_or_expired_token(result)
       end
@@ -51,8 +51,10 @@ module Users
 
     protected
 
-    def forbidden_passwords(email_address)
-      ForbiddenPasswords.new(email_address).call
+    def forbidden_passwords(email_addresses)
+      email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     end
 
     def email_params

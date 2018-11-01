@@ -13,7 +13,7 @@ RSpec.describe IdTokenBuilder do
           # this is a known value from an example developer guide
           # https://developer.pingidentity.com/en/resources/openid-connect-developers-guide.html
           access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-          user: build(:user))
+          user: build(:user, :with_email))
   end
 
   let(:custom_expiration) { 5.minutes.from_now.to_i }
@@ -107,7 +107,7 @@ RSpec.describe IdTokenBuilder do
         let(:scope) { 'openid email' }
 
         it 'sets the email' do
-          expect(decoded_payload[:email]).to eq(identity.user.email)
+          expect(decoded_payload[:email]).to eq(identity.user.email_addresses.first.email)
         end
       end
     end

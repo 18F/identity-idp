@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe AccountReset::RequestController do
+  let(:user) { build(:user, :with_authentication_app, :with_email) }
   describe '#show' do
     it 'renders the page' do
-      user = build(:user, :with_authentication_app)
       stub_sign_in_before_2fa(user)
 
       get :show
@@ -19,7 +19,6 @@ describe AccountReset::RequestController do
 
     it 'redirects to root if feature is not enabled' do
       allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-      user = build(:user, :with_authentication_app)
       stub_sign_in_before_2fa(user)
 
       get :show
@@ -35,7 +34,6 @@ describe AccountReset::RequestController do
     end
 
     it 'logs the visit to analytics' do
-      user = build(:user, :with_authentication_app)
       stub_sign_in_before_2fa(user)
       stub_analytics
 
@@ -47,7 +45,6 @@ describe AccountReset::RequestController do
 
   describe '#create' do
     it 'logs totp user in the analytics' do
-      user = build(:user, :with_authentication_app)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -56,6 +53,7 @@ describe AccountReset::RequestController do
         sms_phone: false,
         totp: true,
         piv_cac: false,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)
@@ -65,7 +63,7 @@ describe AccountReset::RequestController do
 
     it 'logs sms user in the analytics' do
       TwilioService::Utils.telephony_service = FakeSms
-      user = build(:user, :signed_up)
+      user = build(:user, :signed_up, :with_email)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -74,6 +72,7 @@ describe AccountReset::RequestController do
         sms_phone: true,
         totp: false,
         piv_cac: false,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)
@@ -82,7 +81,7 @@ describe AccountReset::RequestController do
     end
 
     it 'logs PIV/CAC user in the analytics' do
-      user = build(:user, :with_piv_or_cac)
+      user = build(:user, :with_piv_or_cac, :with_email)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -91,6 +90,7 @@ describe AccountReset::RequestController do
         sms_phone: false,
         totp: false,
         piv_cac: true,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)
@@ -106,7 +106,6 @@ describe AccountReset::RequestController do
 
     it 'redirects to root if feature is not enabled' do
       allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-      user = build(:user, :with_authentication_app)
       stub_sign_in_before_2fa(user)
 
       post :create

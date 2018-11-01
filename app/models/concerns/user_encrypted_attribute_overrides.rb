@@ -34,7 +34,7 @@ module UserEncryptedAttributeOverrides
   def email=(email)
     set_encrypted_attribute(name: :email, value: email)
     self.email_fingerprint = email.present? ? encrypted_attributes[:email].fingerprint : ''
-    return if email_address.blank?
-    email_address.email = email
+    return if email_addresses.empty?
+    email_addresses.first.email = email
   end
 end
