@@ -89,7 +89,7 @@ describe ServiceProvider do
       it 'calls with the user email' do
         expect(PivCacService).to receive(
           :piv_cac_available_for_agency?
-        ).with(service_provider.agency, user.email)
+        ).with(service_provider.agency, user.email_addresses.map(&:email))
 
         service_provider.piv_cac_available?(user)
       end

@@ -24,7 +24,9 @@ module AccountReset
     attr_reader :success, :token
 
     def notify_user_via_email_of_account_reset_cancellation
-      UserMailer.account_reset_cancel(user.email_address.email).deliver_later
+      user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_cancel(email_address).deliver_later
+      end
     end
 
     def notify_user_via_phone_of_account_reset_cancellation

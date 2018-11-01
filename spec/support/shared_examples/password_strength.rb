@@ -103,7 +103,7 @@ shared_examples 'strong password' do |form_class|
   end
 
   it 'does not allow a password that is the user email' do
-    user = build_stubbed(:user, email: 'custom@benevolent.com', uuid: '123')
+    user = build(:user, :with_email, email: 'custom@benevolent.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
     password = 'custom@benevolent.com'

@@ -55,8 +55,10 @@ describe AccountReset::Cancel do
       token = create_account_reset_request_for(user)
 
       @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-      expect(UserMailer).to receive(:account_reset_cancel).with(user.email).
-        and_return(@mailer)
+      user.email_addresses.each do |email_address|
+        expect(UserMailer).to receive(:account_reset_cancel).with(email_address).
+          and_return(@mailer)
+      end
 
       AccountReset::Cancel.new(token).call
     end

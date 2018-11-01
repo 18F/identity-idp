@@ -32,17 +32,17 @@ class RememberDeviceCookie
     }.to_json
   end
 
-  def valid_for_user?(user)
+  def valid_for_user?(user:, expiration_interval:)
     return false if user.id != user_id
     return false if user_has_changed_phone?(user)
-    return false if expired?
+    return false if expired?(expiration_interval)
     true
   end
 
   private
 
-  def expired?
-    created_at < Figaro.env.remember_device_expiration_days.to_i.days.ago
+  def expired?(interval)
+    created_at < interval.ago
   end
 
   def user_has_changed_phone?(user)

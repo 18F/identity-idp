@@ -56,4 +56,10 @@ RSpec.describe SessionDecorator do
       expect(decorator.cancel_link_url).to eq 'http://www.example.com'
     end
   end
+
+  describe '#mfa_expiration_interval' do
+    it 'returns the AAL1 expiration interval' do
+      expect(subject.mfa_expiration_interval).to eq(30.days)
+    end
+  end
 end

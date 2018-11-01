@@ -21,7 +21,7 @@ en:
       show_hdr: Create a strong password
     example: 'example:'
     messages:
-      remember_device: Remember this browser for %{duration} days
+      remember_device: Remember this browser
     passwords:
       edit:
         buttons:

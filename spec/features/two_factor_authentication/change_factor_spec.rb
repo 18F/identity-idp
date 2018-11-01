@@ -18,7 +18,9 @@ feature 'Changing authentication factor' do
       allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
 
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-      allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
+      user.email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:phone_changed).with(email_address).and_return(mailer)
+      end
 
       @previous_phone_confirmed_at =
         MfaContext.new(user).phone_configurations.reload.first.confirmed_at
@@ -46,7 +48,9 @@ feature 'Changing authentication factor' do
       submit_correct_otp
 
       expect(current_path).to eq account_path
-      expect(UserMailer).to have_received(:phone_changed).with(user)
+      user.email_addresses.each do |email_address|
+        expect(UserMailer).to have_received(:phone_changed).with(email_address)
+      end
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(
