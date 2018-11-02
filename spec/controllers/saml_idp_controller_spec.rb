@@ -901,6 +901,7 @@ describe SamlIdpController do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
         stub_auth
+        allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
         allow(controller).to receive(:saml_request_id).

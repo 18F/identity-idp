@@ -11,6 +11,7 @@ es:
     email_changed: Email cambiado
     new_personal_key: Clave personal cambiado
     password_changed: Contraseña cambiada
+    personal_key_used: Clave personal utilizada para iniciar sesión
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
     piv_cac_disabled: Tarjeta PIV/CAC no asociada

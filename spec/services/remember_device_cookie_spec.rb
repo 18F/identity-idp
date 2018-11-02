@@ -61,22 +61,32 @@ describe RememberDeviceCookie do
     end
   end
 
-  describe '#valid_for_user?(user)' do
+  describe '#valid_for?(user:, expiration_interval:)' do
+    let(:expiration_interval) { 30.days }
+
+    subject do
+      cookie = described_class.new(user_id: user.id, created_at: created_at)
+      cookie.valid_for_user?(user: user, expiration_interval: expiration_interval)
+    end
+
     context 'when the token is valid' do
-      it { expect(subject.valid_for_user?(user)).to eq(true) }
+      it { expect(subject).to eq(true) }
     end
 
     context 'when the token is expired' do
-      let(:created_at) { (Figaro.env.remember_device_expiration_days.to_i + 1).days.ago }
+      let(:created_at) { (expiration_interval + 1).days.ago }
 
-      it { expect(subject.valid_for_user?(user)).to eq(false) }
+      it { expect(subject).to eq(false) }
     end
 
     context 'when the token does not refer to the current user' do
       it 'returns false' do
         other_user = create(:user, :with_phone, with: { confirmed_at: 90.days.ago })
+        cookie = described_class.new(user_id: user.id, created_at: created_at)
 
-        expect(subject.valid_for_user?(other_user)).to eq(false)
+        expect(
+          cookie.valid_for_user?(user: other_user, expiration_interval: expiration_interval)
+        ).to eq(false)
       end
     end
 
@@ -84,7 +94,7 @@ describe RememberDeviceCookie do
       let(:created_at) { 5.days.ago }
       let(:phone_confirmed_at) { 4.days.ago }
 
-      it { expect(subject.valid_for_user?(user)).to eq(false) }
+      it { expect(subject).to eq(false) }
     end
   end
 end
