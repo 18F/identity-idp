@@ -869,7 +869,7 @@ describe SamlIdpController do
 
           expect(email.name).to eq('Attribute')
           expect(email['Name']).to eq('email')
-          expect(email['NameFormat']).to eq(Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS)
+          expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:basic')
           expect(email['FriendlyName']).to eq('email')
         end
 
@@ -878,7 +878,7 @@ describe SamlIdpController do
 
           expect(uuid.name).to eq('Attribute')
           expect(uuid['Name']).to eq('uuid')
-          expect(uuid['NameFormat']).to eq(Saml::XML::Namespaces::Formats::NameId::PERSISTENT)
+          expect(uuid['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:basic')
           expect(uuid['FriendlyName']).to eq('uuid')
         end
 
