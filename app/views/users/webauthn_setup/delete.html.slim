@@ -10,6 +10,7 @@ h1.h3.mb1.mt3.my0 = t('forms.webauthn_delete.confirm')
 br
 p == t('forms.webauthn_delete.caution')
 br
+br
 = button_to(t('account.index.webauthn_confirm_delete'), webauthn_setup_path(id: params[:id]),
           method: :delete, class: 'btn btn-primary col-6 mb2 p2 rounded')
 
