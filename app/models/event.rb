@@ -15,6 +15,8 @@ class Event < ApplicationRecord
     piv_cac_disabled: 11,
     new_personal_key: 12,
     personal_key_used: 13,
+    webauthn_key_added: 14,
+    webauthn_key_removed: 15,
   }
 
   validates :event_type, presence: true
