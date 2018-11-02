@@ -26,9 +26,10 @@ es:
         instructions: Su cuenta requiere que un código secreto sea verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Su cuenta ha sido verificada.
-      webauthn: Clave de seguridad de hardware
-      webauthn_add: "+ Agregar clave de seguridad de hardware"
-      webauthn_delete: Si quitar la llave
+      webauthn: Clave de seguridad
+      webauthn_add: "+ Añadir clave de seguridad"
+      webauthn_confirm_delete: Si quitar la llave
+      webauthn_delete: Quitar llave
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal

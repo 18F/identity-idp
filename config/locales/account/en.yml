@@ -26,9 +26,10 @@ en:
         instructions: Your account requires a secret code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
-      webauthn: Hardware security key
-      webauthn_add: "+ Add hardware security key"
-      webauthn_delete: Yes, remove key
+      webauthn: Security key
+      webauthn_add: "+ Add security key"
+      webauthn_confirm_delete: Yes, remove key
+      webauthn_delete: Remove key
     items:
       delete_your_account: Delete your account
       personal_key: Personal key
