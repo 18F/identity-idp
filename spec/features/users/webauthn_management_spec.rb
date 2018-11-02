@@ -113,7 +113,7 @@ feature 'Webauthn Management' do
 
       expect(current_path).to eq webauthn_setup_delete_path
 
-      click_button t('account.index.webauthn_delete')
+      click_button t('account.index.webauthn_confirm_delete')
 
       expect(page).to_not have_content 'key1'
       expect(page).to have_content t('notices.webauthn_deleted')
