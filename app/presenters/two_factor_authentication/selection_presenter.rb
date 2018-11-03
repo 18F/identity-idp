@@ -30,5 +30,9 @@ module TwoFactorAuthentication
         'two_factor_choice_options'
       end
     end
+
+    def html_class
+      ''
+    end
   end
 end
