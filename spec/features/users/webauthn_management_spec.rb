@@ -90,7 +90,7 @@ feature 'Webauthn Management' do
   end
 
   context 'with webauthn associations' do
-    it 'displays the user supplied names of the webauthn keys' do
+    it 'displays the user supplied names of the security keys' do
       create_webauthn_configuration(user, 'key1', '1', 'foo1')
       create_webauthn_configuration(user, 'key2', '2', 'bar2')
 
@@ -101,7 +101,7 @@ feature 'Webauthn Management' do
       expect(page).to have_content 'key2'
     end
 
-    it 'allows the user to delete the webauthn key' do
+    it 'allows user to delete security key when another 2FA option is set up' do
       create_webauthn_configuration(user, 'key1', '1', 'foo1')
 
       sign_in_and_2fa_user(user)
@@ -119,7 +119,7 @@ feature 'Webauthn Management' do
       expect(page).to have_content t('notices.webauthn_deleted')
     end
 
-    it 'allows the user to cancel delete the webauthn key' do
+    it 'allows the user to cancel delete the security key' do
       create_webauthn_configuration(user, 'key1', '1', 'foo1')
 
       sign_in_and_2fa_user(user)
