@@ -122,6 +122,7 @@ Rails.application.routes.draw do
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
       patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
       delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+      get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
       get '/webauthn_setup_success' => 'users/webauthn_setup#success'
     end
 

@@ -45,6 +45,27 @@ fr:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
         de %{app} ou %{contact_link}.
       intro: Le mot de passe de votre compte %{app} a été changé.
+    personal_key_sign_in:
+      help_html: <p>Votre compte login.gov a été connecté à l'aide de votre clé personnelle.
+        Vous recevez cet email pour vous assurer que c'était bien vous.</p><p>Si vous
+        venez de vous connecter avec votre clé personnelle, c'est parfait! Vous ne
+        devez rien faire.</p><p>Si vous ne vous êtes pas connecté avec une clé personnelle
+        ou si vous n’êtes pas sûr, prenez immédiatement les mesures suivantes pour
+        sécuriser votre compte:<ol><li><strong><a href="%{reset_password_url}">Changez
+        votre mot de passe</a>.</strong> Choisissez un mot de passe que vous n'avez
+        pas encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">Connectez-vous
+        à votre compte login.gov</a></strong> et assurez-vous de reconnaître toutes
+        les informations de la page de votre compte, y compris les méthodes que vous
+        utilisez pour l'authentification à deux facteurs, telles que le numéro de
+        téléphone, l'application d'authentification ou la clé de sécurité.</li><li><strong>Sur
+        la page de votre compte login.gov, demandez une nouvelle clé personnelle.</strong>
+        N'oubliez pas de ne jamais le partager à moins que vous ne l'utilisiez pour
+        vous connecter à un site Web de confiance utilisant login.gov.</li></ol></p><p>Vous
+        devriez a nous contacter par téléphone au 844-875-6446 ou par courriel à <a
+        href="mailto:security@login.gov">security@login.gov</a>.</p><br>Merci,<br>L'équipe
+        login.gov
+      intro: La clé personnelle utilisée pour vous connecter
+      subject: Alerte de sécurité du compte
     phone_changed:
       help: Si vous ne souhaitiez pas changer votre numéro de téléphone, veuillez
         visiter le %{help_link} de %{app} ou %{contact_link}.

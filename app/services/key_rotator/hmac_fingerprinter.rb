@@ -25,9 +25,10 @@ module KeyRotator
     end
 
     def rotate_email_fingerprints(user)
-      email_address = user.email_address
-      ee = EncryptedAttribute.new_from_decrypted(email_address.email)
-      email_address.update_columns(email_fingerprint: ee.fingerprint)
+      user.email_addresses.each do |email_address|
+        ee = EncryptedAttribute.new_from_decrypted(email_address.email)
+        email_address.update_columns(email_fingerprint: ee.fingerprint)
+      end
     end
     # rubocop:enable Rails/SkipsModelValidations
   end

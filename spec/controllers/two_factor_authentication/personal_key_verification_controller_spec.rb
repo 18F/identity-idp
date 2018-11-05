@@ -29,8 +29,9 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
   describe '#create' do
     context 'when the user enters a valid personal key' do
-      before do
-        stub_sign_in_before_2fa(build(:user, personal_key: 'foo'))
+      it 'tracks the valid authentication event' do
+        sign_in_before_2fa
+
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: true, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
@@ -38,21 +39,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
-      end
 
-      it 'redirects to the manage_personal_key_url so the user can see their new personal key' do
-        post :create, params: payload
-
-        expect(response).to redirect_to manage_personal_key_url
-      end
-
-      it 'calls handle_valid_otp_for_authentication_context' do
-        expect(subject).to receive(:handle_valid_otp_for_authentication_context).and_call_original
-
-        post :create, params: payload
-      end
-
-      it 'tracks the valid authentication event' do
         stub_analytics
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal key' }
 

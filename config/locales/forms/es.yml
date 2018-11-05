@@ -21,7 +21,7 @@ es:
       show_hdr: Crear una contraseña segura
     example: 'ejemplo:'
     messages:
-      remember_device: Recuerde este navegador por %{duration} días
+      remember_device: Recuerde este navegador
     passwords:
       edit:
         buttons:
@@ -89,6 +89,10 @@ es:
       name: Código de confirmación
       submit: Confirmar cuenta
       title: Confirme su cuenta
+    webauthn_delete:
+      caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
+        cuenta login.gov.
+      confirm: "¿Estás seguro de que quieres eliminar tu clave de seguridad?"
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

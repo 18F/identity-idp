@@ -44,7 +44,7 @@ class User < ApplicationRecord
   has_many :events, dependent: :destroy
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
-  has_one :email_address, dependent: :destroy, inverse_of: :user
+  has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
 
@@ -54,6 +54,10 @@ class User < ApplicationRecord
 
   def set_default_role
     self.role ||= :user
+  end
+
+  def confirmed_email_addresses
+    email_addresses.where.not(confirmed_at: nil)
   end
 
   def need_two_factor_authentication?(_request)

@@ -4,7 +4,9 @@ module Users
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
-      @forbidden_passwords = ForbiddenPasswords.new(current_user.email_address.email).call
+      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     end
 
     def update
@@ -41,7 +43,9 @@ module Users
       # need to provide our custom forbidden passwords data that zxcvbn needs,
       # otherwise the JS will throw an exception and the password strength
       # meter will not appear.
-      @forbidden_passwords = ForbiddenPasswords.new(current_user.email).call
+      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
       render :edit
     end
   end

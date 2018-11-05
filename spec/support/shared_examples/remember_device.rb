@@ -9,7 +9,7 @@ shared_examples 'remember device' do
   it 'requires 2FA on sign in after expiration' do
     user = remember_device_and_sign_out_user
 
-    days_to_travel = (Figaro.env.remember_device_expiration_days.to_i + 1).days.from_now
+    days_to_travel = (Figaro.env.remember_device_expiration_hours_aal_1.to_i + 1).hours.from_now
     Timecop.travel days_to_travel do
       sign_in_user(user)
 

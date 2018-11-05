@@ -11,11 +11,11 @@ module TwoFactorAuthentication
     def info
       if configuration.present?
         t(
-          "two_factor_authentication.login_options.#{method}_info_html",
+          "two_factor_authentication.#{option_mode}.#{method}_info_html",
           phone: masked_number(configuration.phone)
         )
       else
-        t("two_factor_authentication.login_options.#{method}_setup_info")
+        t("two_factor_authentication.#{option_mode}.#{method}_info")
       end
     end
 

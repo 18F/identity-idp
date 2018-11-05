@@ -1,10 +1,16 @@
 require 'rails_helper'
 
 feature 'Signing in via one-time use personal key' do
-  it 'destroys old key, displays new one, and redirects to profile after acknowledging' do
-    user = create(:user, :signed_up)
+  it 'destroys old key, displays new one, notifies, and redirects to profile after acknowledging' do
+    user = create(:user, :signed_up, :with_phone, with: { phone: '+1 (202) 345-6789' })
     raw_key = PersonalKeyGenerator.new(user).create
     old_key = user.reload.encrypted_recovery_code_digest
+
+    personal_key_sign_in_mail = double
+    expect(personal_key_sign_in_mail).to receive(:deliver_now)
+    expect(UserMailer).to receive(:personal_key_sign_in).and_return(personal_key_sign_in_mail)
+    expect(SmsPersonalKeySignInNotifierJob).to receive(:perform_now).
+      with(phone: '+1 (202) 345-6789')
 
     sign_in_before_2fa(user)
     choose_another_security_option('personal_key')

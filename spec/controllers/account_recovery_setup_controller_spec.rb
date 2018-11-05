@@ -13,7 +13,7 @@ describe AccountRecoverySetupController do
 
   context 'user is piv_cac enabled and phone enabled' do
     it 'redirects to account_url' do
-      user = build(:user, :signed_up, :with_piv_or_cac)
+      user = build(:user, :signed_up, :with_piv_or_cac, :with_email)
       stub_sign_in(user)
 
       get :index
@@ -24,7 +24,7 @@ describe AccountRecoverySetupController do
 
   context 'user is piv_cac enabled but not phone enabled' do
     it 'redirects to account_url' do
-      user = build(:user, :signed_up, :with_piv_or_cac, with: { mfa_enabled: false })
+      user = build(:user, :signed_up, :with_piv_or_cac, :with_email, with: { mfa_enabled: false })
       stub_sign_in(user)
 
       get :index
