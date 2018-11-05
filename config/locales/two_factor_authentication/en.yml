@@ -97,8 +97,8 @@ en:
       sms_info: Get your security code via text message / SMS
       voice: Phone call
       voice_info: Get your security code via phone call
-      webauthn: Hardware security key
+      webauthn: Security key
       webauthn_info: Use a security key to secure your account
     webauthn_fallback:
-      question: Don't have your hardware security key available?
+      question: Don't have your security key available?
     webauthn_header_text: Present your security key

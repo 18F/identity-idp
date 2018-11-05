@@ -17,8 +17,8 @@ namespace :rotate do
             rotator = KeyRotator::AttributeEncryption.new(phone_configuration)
             rotator.rotate
           end
-          if user.email_address.present?
-            rotator = KeyRotator::AttributeEncryption.new(user.email_address)
+          user.email_addresses.each do |email_address|
+            rotator = KeyRotator::AttributeEncryption.new(email_address)
             rotator.rotate
           end
           progress&.increment
