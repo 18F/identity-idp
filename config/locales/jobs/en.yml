@@ -13,5 +13,5 @@ en:
       verify_message: "%{code} is your %{app} confirmation code. Use this to confirm
         your phone number. This code will expire in %{expiration} minutes."
     sms_personal_key_sign_in_notifier_job:
-      message: This message was sent to alert you that your personal key has been
-        used to sign into %{app}.
+      message: Your personal key was just used to sign into your login.gov account.
+        If this wasn’t you, reset your password and contact us at security@login.gov.
