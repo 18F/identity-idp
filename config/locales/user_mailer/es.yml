@@ -61,7 +61,7 @@ es:
         debe comunicarse con nosotros llamando al 844-875-6446 o enviando un e-mail
         a <a href="mailto:security@login.gov">security@login.gov</a>.</p> <br>Gracias,<br>El
         equipo de login.gov
-      intro_html: "<strong>Clave personal utilizada para iniciar sesión</strong>"
+      intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
     phone_changed:
       help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}

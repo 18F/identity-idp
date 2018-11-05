@@ -60,7 +60,7 @@ en:
         a trusted website that uses login.gov.</li></ol></p><p>You should then contact
         us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p>
         <br>Thanks,<br>The login.gov team
-      intro_html: "<strong>Personal key used to sign in</strong>"
+      intro: Personal key used to sign in
       subject: Account Security Alert
     phone_changed:
       help: If you did not want to change your phone number, please visit the %{app}

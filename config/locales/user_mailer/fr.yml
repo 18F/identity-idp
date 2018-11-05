@@ -64,7 +64,7 @@ fr:
         devriez a nous contacter par téléphone au 844-875-6446 ou par courriel à <a
         href="mailto:security@login.gov">security@login.gov</a>.</p><br>Merci,<br>L'équipe
         login.gov
-      intro_html: "<strong>La clé personnelle utilisée pour vous connecter</strong>"
+      intro: La clé personnelle utilisée pour vous connecter
       subject: Alerte de sécurité du compte
     phone_changed:
       help: Si vous ne souhaitiez pas changer votre numéro de téléphone, veuillez

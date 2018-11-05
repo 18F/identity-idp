@@ -61,9 +61,8 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.personal_key_sign_in.intro', app: APP_NAME)
+        t('user_mailer.personal_key_sign_in.intro')
       )
-      expect_email_body_to_have_help_and_contact_links
     end
   end
 
