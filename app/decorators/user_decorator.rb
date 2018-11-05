@@ -11,7 +11,7 @@ class UserDecorator
   end
 
   def email
-    user.email_address&.email
+    user.email_addresses.first&.email
   end
 
   def lockout_time_remaining_in_words

@@ -869,7 +869,7 @@ describe SamlIdpController do
 
           expect(email.name).to eq('Attribute')
           expect(email['Name']).to eq('email')
-          expect(email['NameFormat']).to eq(Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS)
+          expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:basic')
           expect(email['FriendlyName']).to eq('email')
         end
 
@@ -878,7 +878,7 @@ describe SamlIdpController do
 
           expect(uuid.name).to eq('Attribute')
           expect(uuid['Name']).to eq('uuid')
-          expect(uuid['NameFormat']).to eq(Saml::XML::Namespaces::Formats::NameId::PERSISTENT)
+          expect(uuid['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:basic')
           expect(uuid['FriendlyName']).to eq('uuid')
         end
 
@@ -901,6 +901,7 @@ describe SamlIdpController do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
         stub_auth
+        allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
         allow(controller).to receive(:saml_request_id).

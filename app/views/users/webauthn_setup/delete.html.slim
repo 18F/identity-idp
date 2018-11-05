@@ -1,0 +1,18 @@
+- title t('forms.webauthn_delete.confirm')
+
+= image_tag(asset_url('alert/warning-lg.svg'),
+        alt: t('forms.webauthn_delete.confirm'), width: 54)
+
+h1.h3.mb1.mt3.my0 = t('forms.webauthn_delete.confirm')
+
+.col-2
+  hr class="mt3 mb2 bw4 rounded border-yellow"
+br
+p == t('forms.webauthn_delete.caution')
+br
+br
+= button_to(t('account.index.webauthn_confirm_delete'), webauthn_setup_path(id: params[:id]),
+          method: :delete, class: 'btn btn-primary col-6 mb2 p2 rounded')
+
+= link_to t('links.cancel'), account_path,
+          class: 'btn col-6 p2 rounded-lg border border-blue blue border-box center'

@@ -48,4 +48,4 @@ fr:
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Or, %{link}
-    webauthn_deleted: Vous avez supprimé une clé de sécurité physique.
+    webauthn_deleted: Vous avez supprimé une clé de sécurité.

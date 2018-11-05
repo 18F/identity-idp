@@ -8,7 +8,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:identity) do
     build(:identity,
           rails_session_id: rails_session_id,
-          user: build(:user),
+          user: build(:user, :with_email),
           scope: scope)
   end
 
@@ -21,7 +21,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       aggregate_failures do
         expect(user_info[:sub]).to eq(identity.uuid)
         expect(user_info[:iss]).to eq(root_url)
-        expect(user_info[:email]).to eq(identity.user.email)
+        expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
           it 'returns attributes allowed by the scope' do
             aggregate_failures do
-              expect(user_info[:email]).to eq(identity.user.email)
+              expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
               expect(user_info[:email_verified]).to eq(true)
               expect(user_info[:given_name]).to eq(nil)
               expect(user_info[:family_name]).to eq(nil)

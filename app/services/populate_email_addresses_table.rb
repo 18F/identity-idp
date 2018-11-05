@@ -16,12 +16,13 @@ class PopulateEmailAddressesTable
 
   private
 
+  # :reek:DuplicateMethodCall
   def process_batch(relation)
     User.transaction do
       relation.each do |user|
         @total += 1
-        next if user.email_address.present? || user.encrypted_email.blank?
-        user.create_email_address(email_info_for_user(user))
+        next if user.email_addresses.any? || user.encrypted_email.blank?
+        user.email_addresses.create(email_info_for_user(user))
         @count += 1
       end
     end

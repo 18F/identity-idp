@@ -68,8 +68,8 @@ es:
       se le dará una nueva clave.
     phone:
       delete:
-        success: Su teléfono ha sido eliminado.
         failure: No se puede eliminar el teléfono.
+        success: Su teléfono ha sido eliminado.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
     phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
@@ -101,8 +101,8 @@ es:
       sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS
       voice: Llamada telefónica
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
-      webauthn: Clave de seguridad de hardware
+      webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
     webauthn_fallback:
-      question: "¿No tienes tu clave de seguridad de hardware disponible?"
+      question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad
