@@ -27,6 +27,10 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
 
+  def personal_key_sign_in(email)
+    mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
+  end
+
   def account_reset_request(email_address, account_reset)
     @token = account_reset&.request_token
     mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))

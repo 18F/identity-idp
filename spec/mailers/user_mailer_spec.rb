@@ -46,6 +46,26 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'personal_key_sign_in' do
+    let(:mail) { UserMailer.personal_key_sign_in(user.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.personal_key_sign_in.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.personal_key_sign_in.intro')
+      )
+    end
+  end
+
   describe 'signup_with_your_email' do
     let(:mail) { UserMailer.signup_with_your_email(user.email) }
 
