@@ -10,6 +10,7 @@
     .col.col-8.sm-6.truncate
       = cfg.name
     .col.col-4.sm-6.right-align
-      = button_to(t('account.index.webauthn_delete'), webauthn_setup_path(id: cfg.id),
-        method: :delete, class: 'btn btn-link')
+      = link_to_if(MfaPolicy.new(current_user).multiple_factors_enabled?,
+        t('account.index.webauthn_delete'), webauthn_setup_delete_path(id: cfg.id),
+        method: :get, class: 'btn btn-link')
   .clearfix
