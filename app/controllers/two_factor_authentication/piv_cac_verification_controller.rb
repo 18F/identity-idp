@@ -36,6 +36,7 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       redirect_to next_step
       reset_otp_session_data
+      user_session.delete(:mfa_device_remembered)
     end
 
     def next_step
@@ -63,7 +64,7 @@ module TwoFactorAuthentication
     def piv_cac_view_data
       {
         two_factor_authentication_method: two_factor_authentication_method,
-        user_email: current_user.email_address.email,
+        user_email: current_user.email_addresses.first.email,
         remember_device_available: false,
       }.merge(generic_data)
     end

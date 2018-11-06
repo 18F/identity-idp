@@ -13,12 +13,11 @@ module AccountReset
       track_account_age
       track_mfa_method_counts
 
-      if success
-        notify_user_via_email_of_deletion
-        destroy_user
-      end
+      extra = extra_analytics_attributes
 
-      FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+      handle_successful_submission if success
+
+      FormResponse.new(success: success, errors: errors.messages, extra: extra)
     end
 
     private
@@ -33,19 +32,26 @@ module AccountReset
       @mfa_method_counts = MfaContext.new(user).enabled_two_factor_configuration_counts_hash
     end
 
+    def handle_successful_submission
+      notify_user_via_email_of_deletion
+      destroy_user
+    end
+
     def destroy_user
       user.destroy!
     end
 
     def notify_user_via_email_of_deletion
-      UserMailer.account_reset_complete(user.email_address.email).deliver_later
+      user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_complete(email_address).deliver_later
+      end
     end
 
     def extra_analytics_attributes
       {
         user_id: user.uuid,
         event: 'delete',
-        email: user.email_address.email,
+        email: user.email_addresses.first&.email,
         account_age_in_days: account_age,
         mfa_method_counts: mfa_method_counts,
       }

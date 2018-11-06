@@ -58,7 +58,7 @@ describe Users::ResetPasswordsController, devise: true do
         email_address = instance_double('EmailAddress')
         allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
-        allow(user).to receive(:email_address).and_return(email_address)
+        allow(user).to receive(:email_addresses).and_return([email_address])
         expect(email_address).to receive(:email).twice
 
         forbidden = instance_double(ForbiddenPasswords)
@@ -138,6 +138,28 @@ describe Users::ResetPasswordsController, devise: true do
         put :update, params: { reset_password_form: form_params }
 
         expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'user submits the reset password form twice' do
+      it 'shows an invalid token error' do
+        allow(Figaro.env).to receive(:password_strength_enabled).and_return('true')
+
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
+        create(
+          :user,
+          :unconfirmed,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.zone.now
+        )
+        form_params = { password: 'a really long passw0rd', reset_password_token: raw_reset_token }
+
+        put :update, params: { reset_password_form: form_params }
+        put :update, params: { reset_password_form: form_params }
+
+        expect(response).to redirect_to new_user_password_path
+        expect(flash[:error]).to eq t('devise.passwords.invalid_token')
       end
     end
 
@@ -521,7 +543,9 @@ describe Users::ResetPasswordsController, devise: true do
 
   def stub_user_mailer(user)
     mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-    allow(UserMailer).to receive(:password_changed).with(user).and_return(mailer)
+    user.email_addresses.each do |email_address|
+      allow(UserMailer).to receive(:password_changed).with(email_address).and_return(mailer)
+    end
   end
 
   def mock_captcha(enabled:, present:, valid:)

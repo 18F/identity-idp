@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181015153200) do
+ActiveRecord::Schema.define(version: 20181029203754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -205,6 +205,8 @@ ActiveRecord::Schema.define(version: 20181015153200) do
     t.string "redirect_uris", default: [], array: true
     t.integer "agency_id"
     t.text "failure_to_proof_url"
+    t.integer "aal"
+    t.integer "ial"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

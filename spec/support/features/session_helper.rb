@@ -73,7 +73,7 @@ module Features
     end
 
     def sign_in_user(user = create(:user))
-      signin(user.email, user.password)
+      signin(user.email_addresses.first.email, user.password)
       user
     end
 
@@ -420,7 +420,7 @@ module Features
 
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
-        t('two_factor_authentication.login_options.piv_cac')
+        t('two_factor_authentication.two_factor_choice_options.piv_cac')
       )
 
       set_up_2fa_with_piv_cac
