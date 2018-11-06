@@ -103,6 +103,8 @@ es:
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
+      recovery_code: Códigos de seguridad personal
+      recovery_code_info: Reciba una lista generada previamente de códigos de seguridad para usar al iniciar sesión
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad

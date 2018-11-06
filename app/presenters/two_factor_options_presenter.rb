@@ -25,7 +25,7 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    phone_options + totp_option + webauthn_option + piv_cac_option
+    phone_options + totp_option + webauthn_option + piv_cac_option + recovery_code_option
   end
 
   private
@@ -62,5 +62,11 @@ class TwoFactorOptionsPresenter
     return [] if policy.enabled?
     return [] unless policy.available? || service_provider&.piv_cac_available?(current_user)
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
+  end
+
+  def recovery_code_option
+    policy = TwoFactorAuthentication::RecoveryCodePolicy.new(current_user)
+    return [TwoFactorAuthentication::RecoveryCodeSelectionPresenter.new] if policy.available?
+    []
   end
 end
