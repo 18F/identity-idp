@@ -14,7 +14,6 @@ class TwoFactorOptionsForm
     self.selection = params[:selection]
 
     success = valid?
-
     update_otp_delivery_preference_for_user if success && user_needs_updating?
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
