@@ -17,7 +17,7 @@ module TwoFactorAuthentication
     end
 
     def available?
-      FeatureManagement.recovery_codes_enabled? == true
+      true #FeatureManagement.recovery_codes_enabled? == true
     end
 
     private

@@ -118,6 +118,9 @@ class Analytics
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
+  RECOVERY_CODE_DELETED = 'Recovery Code Delete'.freeze
+  RECOVERY_CODE_SETUP_VISIT = 'Recovery Code Setup Visited'.freeze
+  RECOVERY_CODE_SETUP_SUBMITTED = 'Recovery Code Setup submitted'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
