@@ -8,13 +8,9 @@ es:
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
       authentication_app: App de autenticación
-      current_ip: Dirección IP actual
-      current_sign_in: Hora de inicio de sesión actual
       dob: Fecha de nacimiento
       email: Email
       full_name: Nombre completo
-      last_ip: Dirección IP anterior
-      last_sign_in: Hora de inicio de sesión anterior
       login: Información para iniciar sesión
       password: Contraseña
       phone: Teléfono
@@ -25,7 +21,10 @@ es:
       reactivation:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
+      sign_in_location_and_ip: 'Desde %{location} (Dirección IP: %{ip})'
+      sign_in_timestamp: Hace %{timestamp}
       ssn: Número de Seguro Social
+      unknown_location: ubicación desconocida
       verification:
         instructions: Su cuenta requiere que un código secreto sea verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.

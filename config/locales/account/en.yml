@@ -8,13 +8,9 @@ en:
       auth_app_disabled: not enabled
       auth_app_enabled: enabled
       authentication_app: Authentication app
-      current_ip: Current IP address
-      current_sign_in: Current sign in time
       dob: Date of birth
       email: Email address
       full_name: Full name
-      last_ip: Last IP address
-      last_sign_in: Last sign in time
       login: Login Information
       password: Password
       phone: Phone number
@@ -25,7 +21,10 @@ en:
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.
+      sign_in_location_and_ip: 'From %{location} (IP address: %{ip})'
+      sign_in_timestamp: "%{timestamp} ago"
       ssn: Social Security Number
+      unknown_location: unknown location
       verification:
         instructions: Your account requires a secret code to be verified.
         reactivate_button: Enter the code you received via US mail
