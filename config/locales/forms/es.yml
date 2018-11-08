@@ -35,6 +35,10 @@ es:
       instructions: Confirme que tiene una copia de su clave personal ingresándola
         a continuación.
       title: Ingrese su clave personal
+    recovery_code:
+      title: Use códigos de inicio de sesión si no puede acceder a su teléfono para iniciar sesión
+      instructions: Se le pedirá un código de inicio de sesión cada vez que inicie sesión.
+        a su cuenta login.gov.
     phone:
       buttons:
         delete: Eliminar el teléfono

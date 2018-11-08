@@ -9,6 +9,7 @@ module TwoFactorAuthentication
       'piv_cac' => :login_two_factor_piv_cac_url,
       'webauthn' => :login_two_factor_webauthn_url,
       'personal_key' => :login_two_factor_personal_key_url,
+      'recovery_code' => :login_two_factor_recovery_code_url,
     }.freeze
 
     EXTRA_URL_OPTIONS = {

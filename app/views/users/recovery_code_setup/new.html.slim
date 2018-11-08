@@ -1,0 +1,18 @@
+.relative
+  form(id='verify-key' method='post' action="#{create_verify_personal_key_path}" name="verify-key")
+    .pt4.px1.sm-px5.key-badge.border.border-dashed.border-red.rounded-xl
+      h3.mt0.mb2 = t('forms.personal_key.title')
+      p.mb3 = t('forms.personal_key.instructions')
+
+      = render 'shared/personal_key_input', code: ''
+      = hidden_field_tag :authenticity_token, form_authenticity_token
+
+    .mt3
+      = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'
+
+.mt2
+  = t('forms.personal_key.alternative')
+  = button_to(t('links.reverify'), reactivate_account_path, method: :put,
+    class: 'btn btn-link ml1', form_class: 'inline-block')
+
+= render 'shared/cancel', link: account_path

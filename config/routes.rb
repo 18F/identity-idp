@@ -151,6 +151,8 @@ Rails.application.routes.draw do
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
+    get '/recovery_code_setup' => 'users/recovery_code_setup#index'
+    patch '/recovery_code_setup' => 'users/recovery_code_setup#create'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')

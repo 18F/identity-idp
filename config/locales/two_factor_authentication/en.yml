@@ -99,6 +99,8 @@ en:
       voice_info: Get your security code via phone call
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
+      recovery_code: Personal Security Codes
+      recovery_code_info: Recieve a pre-generated list of security codes to use when signing in
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
