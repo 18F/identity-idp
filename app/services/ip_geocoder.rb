@@ -4,9 +4,12 @@ class IpGeocoder
   end
 
   def location
-    return city_and_state if city && state
+    geocoded_location&.language = I18n.locale
 
-    country
+    return city_and_state if both_city_and_state_present?
+    return country if country.present?
+
+    I18n.t('account.index.unknown_location')
   end
 
   private
@@ -14,7 +17,11 @@ class IpGeocoder
   attr_reader :ip
 
   def city_and_state
-    "#{city}, #{state]}"
+    "#{city}, #{state}"
+  end
+
+  def both_city_and_state_present?
+    city.present? && state.present?
   end
 
   def city
@@ -30,10 +37,6 @@ class IpGeocoder
   end
 
   def geocoded_location
-    @geocoded_location ||= begin
-      Geocoder.search(ip).first
-    rescue => error
-      Rails.logger.info "Geocode error: #{error.class.name}: #{error.message}"
-    end
+    @geocoded_location ||= Geocoder.search(ip).first
   end
 end

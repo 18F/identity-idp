@@ -11,6 +11,7 @@ describe 'accounts/show.html.slim' do
       :view_model,
       AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
     )
+    assign(:login_presenter, LoginPresenter.new(user: user))
   end
 
   context 'user is not TOTP enabled' do
@@ -192,41 +193,38 @@ describe 'accounts/show.html.slim' do
   end
 
   describe 'sign in timestamps and IP addresses' do
-    current_sign_in_at = Time.zone.parse('Sep 19 2019 09:19')
-    last_sign_in_at = Time.zone.parse('Sep 18 2018 09:18')
-    let(:user) do
-      build_stubbed(
+    before do
+      current_sign_in_at = Time.zone.now - 5.seconds
+      last_sign_in_at = Time.zone.now - 5.seconds
+      user = build(
         :user,
         :signed_up,
+        :with_email,
         current_sign_in_at: current_sign_in_at,
         last_sign_in_at: last_sign_in_at,
         current_sign_in_ip: '1.2.3.4',
-        last_sign_in_ip: '4.3.2.1'
+        last_sign_in_ip: '159.142.31.80'
       )
+      allow(view).to receive(:current_user).and_return(user)
+      assign(:login_presenter, LoginPresenter.new(user: user))
     end
 
-    it 'shows the current sign_in time' do
+    it 'uses distance of time in words for timestamp' do
       render
 
-      expect(rendered).to have_content UtcTimePresenter.new(user.current_sign_in_at).to_s
-    end
-
-    it 'shows the last sign_in time' do
-      render
-
-      expect(rendered).to have_content UtcTimePresenter.new(user.last_sign_in_at).to_s
+      expect(rendered).to have_content 'seconds ago'
     end
 
     it 'shows the current sign_in IP address' do
       render
 
-      expect(rendered).to have_content '1.2.3.4'
+      expect(rendered).to have_content 'From United States (IP address: 1.2.3.4)'
     end
 
     it 'shows the last sign_in IP address' do
       render
 
-      expect(rendered).to have_content '4.3.2.1'
+      expect(rendered).to have_content 'From Arlington, VA (IP address: 159.142.31.80)'
     end
   end
 end
