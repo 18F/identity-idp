@@ -79,7 +79,7 @@ h1.hide = t('titles.account')
 
   = render 'accounts/sign_in_ip',
     description: t('account.index.current_ip'),
-    ip: current_user.current_sign_in_ip
+    ip: Geocoder.search(current_user.current_sign_in_ip).first.city
 
   = render 'accounts/sign_in_timestamp',
     description: t('account.index.last_sign_in'),
