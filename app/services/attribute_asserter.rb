@@ -38,7 +38,7 @@ class AttributeAsserter
     {
       uuid: {
         getter: uuid_getter_function,
-        name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
+        name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
         name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
       },
     }
@@ -75,7 +75,7 @@ class AttributeAsserter
   def add_email(attrs)
     attrs[:email] = {
       getter: :email,
-      name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+      name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
   end

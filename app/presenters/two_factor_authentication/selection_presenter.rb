@@ -14,11 +14,21 @@ module TwoFactorAuthentication
     end
 
     def label
-      t("two_factor_authentication.login_options.#{method}")
+      t("two_factor_authentication.#{option_mode}.#{method}")
     end
 
     def info
-      t("two_factor_authentication.login_options.#{method}_info")
+      t("two_factor_authentication.#{option_mode}.#{method}_info")
+    end
+
+    private
+
+    def option_mode
+      if @configuration.present?
+        'login_options'
+      else
+        'two_factor_choice_options'
+      end
     end
   end
 end

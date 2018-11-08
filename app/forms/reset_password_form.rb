@@ -26,9 +26,13 @@ class ResetPasswordForm
   attr_reader :success
 
   def valid_token
-    return if user.reset_password_period_valid?
-
-    errors.add(:reset_password_token, 'token_expired')
+    if !user.persisted?
+      # If the user is not saved in the database, that means looking them up by
+      # their token failed
+      errors.add(:reset_password_token, 'invalid_token')
+    elsif !user.reset_password_period_valid?
+      errors.add(:reset_password_token, 'token_expired')
+    end
   end
 
   def handle_valid_password
@@ -58,7 +62,9 @@ class ResetPasswordForm
   end
 
   def notify_user_of_password_change_via_email
-    UserMailer.password_changed(user).deliver_later
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.password_changed(email_address).deliver_later
+    end
   end
 
   def extra_analytics_attributes

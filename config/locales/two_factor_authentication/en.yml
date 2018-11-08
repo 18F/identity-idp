@@ -65,8 +65,8 @@ en:
       be provided a new key.
     phone:
       delete:
-        success: Your phone has been removed.
         failure: Unable to remove your phone.
+        success: Your phone has been removed.
     phone_fallback:
       question: Don't have access to your phone right now?
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
@@ -97,8 +97,8 @@ en:
       sms_info: Get your security code via text message / SMS
       voice: Phone call
       voice_info: Get your security code via phone call
-      webauthn: Hardware security key
+      webauthn: Security key
       webauthn_info: Use a security key to secure your account
     webauthn_fallback:
-      question: Don't have your hardware security key available?
+      question: Don't have your security key available?
     webauthn_header_text: Present your security key

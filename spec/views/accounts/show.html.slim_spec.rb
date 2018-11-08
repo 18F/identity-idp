@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.slim' do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build(:user, :signed_up, :with_email) }
   let(:decorated_user) { user.decorate }
 
   before do
@@ -37,7 +37,7 @@ describe 'accounts/show.html.slim' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '123') }
+    let(:user) { build(:user, :signed_up, :with_email, otp_secret_key: '123') }
 
     before do
       assign(
@@ -157,7 +157,7 @@ describe 'accounts/show.html.slim' do
 
     context 'user has no phone' do
       let(:user) do
-        record = build_stubbed(:user, :signed_up, :with_piv_or_cac)
+        record = build(:user, :signed_up, :with_piv_or_cac, :with_email)
         record.phone_configurations = []
         record
       end

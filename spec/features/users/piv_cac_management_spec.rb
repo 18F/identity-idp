@@ -98,7 +98,7 @@ feature 'PIV/CAC Management' do
       end
 
       context 'when the user does not have a phone number yet' do
-        it 'prompts to set one up after configuring PIV/CAC' do
+        it 'does not prompt to set one up after configuring PIV/CAC' do
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
           stub_piv_cac_service
 
@@ -115,10 +115,6 @@ feature 'PIV/CAC Management' do
                                 nonce: nonce,
                                 uuid: SecureRandom.uuid,
                                 subject: 'SomeIgnoredSubject')
-
-          expect(page).to have_current_path(account_recovery_setup_path)
-
-          configure_backup_phone
 
           expect(page).to have_current_path account_path
         end
