@@ -4,11 +4,14 @@ module Users
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
+      @presenter = TwoFactorAuthCode::RecoveryCodePresenter.new(data: {:current_user => current_user}, view: self.view_context)
       result = RecoveryCodeVisitForm.new.submit(params)
       analytics.track_event(Analytics::RECOVERY_CODE_SETUP_VISIT, result.to_h)
-      save_challenge_in_session
-      @exclude_credentials = exclude_credentials
       flash_error(result.errors) unless result.success?
+    end
+
+    def index
+      new
     end
 
     def confirm
@@ -23,7 +26,7 @@ module Users
     end
 
     def success
-      @next_url = url_after_successful_RecoveryCode_setup
+      @next_url = url_after_successful_recovery_code_setup
     end
 
     def delete
@@ -43,10 +46,6 @@ module Users
 
     def flash_error(errors)
       flash.now[:error] = errors.values.first.first
-    end
-
-    def exclude_credentials
-      current_user.recovery_code_configurations.map(&:credential_id)
     end
 
     def handle_successful_delete
@@ -70,27 +69,17 @@ module Users
       )
     end
 
-    def save_challenge_in_session
-      credential_creation_options = ::RecoveryCode.credential_creation_options
-      user_session[:RecoveryCode_challenge] = credential_creation_options[:challenge].bytes.to_a
-    end
-
     def two_factor_enabled?
       MfaPolicy.new(current_user).two_factor_enabled?
     end
 
-    def process_valid_RecoveryCode
+    def process_valid_recovery_code
       mark_user_as_fully_authenticated
-      redirect_to RecoveryCode_setup_success_url
+      redirect_to recovery_code_setup_success_url
     end
 
-    def url_after_successful_RecoveryCode_setup
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
-
-      idv_jurisdiction_url
+    def url_after_successful_recovery_code_setup
+      return account_url
     end
 
     def process_invalid_RecoveryCode(form)

@@ -1,18 +1,37 @@
-.relative
-  form(id='verify-key' method='post' action="#{create_verify_personal_key_path}" name="verify-key")
-    .pt4.px1.sm-px5.key-badge.border.border-dashed.border-red.rounded-xl
-      h3.mt0.mb2 = t('forms.recovery_code.title')
-      p.mb3 = t('forms.recovery_code.instructions')
+- title t('forms.recovery_code.title')
+- btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
-      = render 'shared/recovery_code_input', code: ''
-      = hidden_field_tag :authenticity_token, form_authenticity_token
+h1.h3.my0 = t('forms.recovery_code.info')
+p.mt-tiny.mb3 = t('forms.recovery_code.instructions')
+ul.list-reset
+  li.py2.border-top
+    .inline-block.bold = t('forms.recovery_code.subtitle1')
+    .inline-block = t('forms.recovery_code.subinfo1')
+  li.py2.border-top
+    .mb2
+      .inline-block.bold = @presenter.codes
+    .sm-col-9.sm-ml-28p
+      .px2.py1.border.border-dashed.border-navy
 
-    .mt3
-      = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'
+      .py2.center.bold
 
-.mt2
-  = t('forms.personal_key.alternative')
-  = button_to(t('links.reverify'), reactivate_account_path, method: :put,
-    class: 'btn btn-link ml1', form_class: 'inline-block')
+  li.py2.border-top
+    .mb2
+      .mr1.inline-block.circle.circle-number.bg-blue.white
+        | 3
+      #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_3')
+    .sm-col-9.sm-ml-28p
+      = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
+        .clearfix.mxn1
+          .col.col-6.sm-col-7.px1
+            = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
+                    class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
+                    'aria-labelledby': 'totp-label'
+          .col.col-6.sm-col-5.px1
+            = submit_tag t('forms.buttons.submit.default'),
+                    class: 'col-12 btn btn-primary align-top'
 
-= render 'shared/cancel', link: account_path
+= render 'shared/cancel_or_back_to_options'
+
+== javascript_pack_tag 'clipboard'
+

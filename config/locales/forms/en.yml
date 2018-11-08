@@ -36,9 +36,18 @@ en:
         it below.
       title: Enter your personal key
     recovery_code:
-      title: Use login codes if you cannot access your phone to sign in
+      title: Personal Security Codes
+      info: Use login codes if you cannot access your phone to sign in
       instructions: You will be asked for a login code each time you sign in
         to your login.gov account.
+      subtitle1: Your login codes
+      subinfo1: Each code may only be used once, once the 9th code has been
+        used you will be prompted to download a new list.  Treat your recovery
+        codes with the same level of attention as you would your password.
+      download: Download, print or write down your personal security codes.
+      generate: Generate new login codes
+      generate_info: When you generate new codes, you must download or print them.
+        Your old codes won't work anymore.
     phone:
       buttons:
         delete: Remove Phone
