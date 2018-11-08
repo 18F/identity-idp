@@ -1,0 +1,10 @@
+input(
+  aria-label="#{t('forms.personal_key.confirmation_label')}"
+  maxlength="#{PersonalKeyFormatter.code_length}"
+  autocomplete='off'
+  class='col-12 mb4 border-dashed field monospace personal-key caps'
+  name="personal_key"
+  pattern="^#{PersonalKeyFormatter.regexp_string}$"
+  required=true
+  spellcheck='false'
+  type='text')

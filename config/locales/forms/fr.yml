@@ -35,6 +35,10 @@ fr:
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
+    recovery_code:
+      title: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre téléphone pour vous connecter
+      instructions: Un code de connexion vous sera demandé chaque fois que vous vous connecterez.
+        sur votre compte login.gov.
     phone:
       buttons:
         delete: Supprimer le numéro de teléfono

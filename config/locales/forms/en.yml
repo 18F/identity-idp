@@ -35,6 +35,10 @@ en:
       instructions: Please confirm you have a copy of your personal key by entering
         it below.
       title: Enter your personal key
+    recovery_code:
+      title: Use login codes if you cannot access your phone to sign in
+      instructions: You will be asked for a login code each time you sign in
+        to your login.gov account.
     phone:
       buttons:
         delete: Remove Phone
