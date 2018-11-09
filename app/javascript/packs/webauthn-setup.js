@@ -71,7 +71,7 @@ function webauthn() {
   };
   if (location.href.indexOf('?error=') === -1 &&
     !(navigator && navigator.credentials && navigator.credentials.create)) {
-    window.location.href = '/login/two_factor/options';
+    window.location.href = '/webauthn_setup?error=NotSupportedError';
   }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
