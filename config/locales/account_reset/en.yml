@@ -21,8 +21,6 @@ en:
         phone number.
     delete_account:
       are_you_sure: Are you sure you want to delete your account?
-      cancel: Cancel
-      delete_button: Delete account
       info: Deleting your account should be your last resort if you are locked out
         of your account. You will not be able to recover any information linked to
         your account. Once your account is deleted, you can create a new one using

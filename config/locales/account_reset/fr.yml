@@ -23,8 +23,6 @@ fr:
         votre numéro de téléphone enregistré.
     delete_account:
       are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte?
-      cancel: Annuler
-      delete_button: Supprimer le compte
       info: La suppression de votre compte devrait être votre dernier recours si vous
         êtes en lock-out de votre compte Vous ne pourrez pas récupérer les informations
         liées à ton compte. Une fois votre compte supprimé, vous pouvez en créer un
