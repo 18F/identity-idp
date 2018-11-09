@@ -19,11 +19,8 @@ module TwoFactorAuthCode
     end
 
     def codes
-      %w(1203 5439)
-    end
-
-    def fallback_question
-      t('two_factor_authentication.webauthn_fallback.question')
+      generator = RecoveryCodeGenerator.new(@current_user)
+      generator.generate
     end
   end
 end
