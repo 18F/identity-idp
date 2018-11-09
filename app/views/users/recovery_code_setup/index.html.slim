@@ -9,7 +9,8 @@ ul.list-reset
     .inline-block = t('forms.recovery_code.subinfo1')
   li.py2.border-top
     .mb2
-      .inline-block.bold = @presenter.codes
+      - @presenter.codes.each_with_index  do |code, index|
+        .inline-block.bold = code
     .sm-col-9.sm-ml-28p
       .px2.py1.border.border-dashed.border-navy
 

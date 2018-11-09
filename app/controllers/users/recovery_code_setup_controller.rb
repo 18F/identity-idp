@@ -19,9 +19,9 @@ module Users
       result = form.submit(request.protocol, params)
       analytics.track_event(Analytics::RECOVERY_CODE_SETUP_SUBMITTED, result.to_h)
       if result.success?
-        process_valid_RecoveryCode
+        process_valid_recovery_code
       else
-        process_invalid_RecoveryCode(form)
+        process_invalid_recovery_code(form)
       end
     end
 
@@ -49,7 +49,7 @@ module Users
     end
 
     def handle_successful_delete
-      create_user_event(:RecoveryCode_key_removed)
+      create_user_event(:recovery_code_key_removed)
       RecoveryCodeConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
       flash[:success] = t('notices.recovery_code_deleted')
       track_delete(true)
@@ -76,6 +76,10 @@ module Users
     def process_valid_recovery_code
       mark_user_as_fully_authenticated
       redirect_to recovery_code_setup_success_url
+    end
+
+    def process_invalid_recovery_code
+      redirect_to recovery_code_setup_failed_url
     end
 
     def url_after_successful_recovery_code_setup
