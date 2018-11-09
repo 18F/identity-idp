@@ -17,6 +17,7 @@ function webauthn() {
     }
     return window.btoa(binary);
   };
+  // If webauthn is not supported redirect back to the 2fa options list
   if (!(navigator && navigator.credentials && navigator.credentials.create)) {
     window.location.href = '/login/two_factor/options';
   }
