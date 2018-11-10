@@ -26,7 +26,7 @@ module Users
       ).submit
       analytics.track_event(Analytics::PHONE_DELETION_REQUESTED, result.to_h)
       if result.success?
-        flash[:success] = t('two_factor_authentication.phone.delete.success')
+        handle_successful_delete
       else
         flash[:error] = t('two_factor_authentication.phone.delete.failure')
       end
@@ -62,6 +62,11 @@ module Users
       else
         redirect_to account_url
       end
+    end
+
+    def handle_successful_delete
+      flash[:success] = t('two_factor_authentication.phone.delete.success')
+      create_user_event(:phone_removed)
     end
   end
 end
