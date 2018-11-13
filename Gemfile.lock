@@ -534,7 +534,7 @@ GEM
       nokogiri (>= 1.8.1)
       nori (~> 2.4)
       wasabi (~> 3.4)
-    scrypt (3.0.5)
+    scrypt (3.0.6)
       ffi-compiler (>= 1.0, < 2.0)
     secure_headers (6.0.0)
     selenium-webdriver (3.14.0)
