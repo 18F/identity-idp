@@ -3,5 +3,9 @@ module TwoFactorAuthentication
     def method
       :webauthn
     end
+
+    def html_class
+      'hidden'
+    end
   end
 end
