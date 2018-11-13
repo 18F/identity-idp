@@ -460,7 +460,7 @@ GEM
     recaptcha (4.13.0)
       json
     redis (3.3.5)
-    reek (5.0.2)
+    reek (5.2.0)
       codeclimate-engine-rb (~> 0.4.0)
       kwalify (~> 0.7.0)
       parser (>= 2.5.0.0, < 2.6, != 2.5.1.1)
