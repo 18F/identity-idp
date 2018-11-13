@@ -43,8 +43,14 @@ describe PhoneVerification do
       PhoneVerification.adapter = Faraday.new(url: PhoneVerification::AUTHY_HOST)
 
       locale = 'fr'
-      body = "code_length=6&country_code=1&custom_code=#{code}&locale=#{locale}&" \
-             "phone_number=7035551212&via=sms"
+      body = {
+        code_length: '6',
+        country_code: '1',
+        custom_code: code,
+        locale: locale,
+        phone_number: '7035551212',
+        via: 'sms',
+      }
 
       stub_request(:post, 'https://api.authy.com/protected/json/phones/verification/start').
         with(
@@ -53,7 +59,7 @@ describe PhoneVerification do
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'User-Agent' => 'Faraday v0.15.2',
+            'User-Agent' => 'Faraday v0.15.3',
             'X-Authy-Api-Key' => Figaro.env.twilio_verify_api_key,
           }
         ).
