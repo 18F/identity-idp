@@ -344,7 +344,7 @@ GEM
     lumberjack (1.0.13)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    mail (2.7.0)
+    mail (2.7.1)
       mini_mime (>= 0.1.1)
     memory_profiler (0.9.11)
     method_source (0.9.2)
@@ -614,7 +614,7 @@ GEM
     user_agent_parser (2.4.1)
     uuid (2.3.9)
       macaddr (~> 1.0)
-    valid_email (0.1.0)
+    valid_email (0.1.2)
       activemodel
       mail (>= 2.6.1)
     virtus (1.0.5)
