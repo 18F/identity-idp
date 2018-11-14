@@ -36,10 +36,10 @@ function getFeedback(z) {
   return `${suggestions.map(s => lookup(s)).join('')}`;
 }
 
-function disableSubmit(submitEl, score = 0) {
+function disableSubmit(submitEl, length = 0, score = 0) {
   if (!submitEl) return;
 
-  if (score < 3) {
+  if (score < 3 || length < 12) {
     submitEl.setAttribute('disabled', true);
   } else {
     submitEl.removeAttribute('disabled');
@@ -73,7 +73,7 @@ function analyzePw() {
     pwStrength.innerHTML = strength;
     pwFeedback.innerHTML = feedback;
 
-    disableSubmit(submit, z.score);
+    disableSubmit(submit, z.password.length, z.score);
   }
 
   if (/(msie 9)/i.test(userAgent)) {
