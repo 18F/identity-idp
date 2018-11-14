@@ -34,7 +34,7 @@ feature 'Two Factor Authentication' do
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.phone_configurations).to be_empty
+      expect(MfaContext.new(user).phone_configurations).to be_empty
       expect(user.sms?).to eq true
     end
 
@@ -255,6 +255,7 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up)
         sign_in_user(user)
 
+        allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
         3.times do
           fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')
@@ -281,6 +282,7 @@ feature 'Two Factor Authentication' do
 
     context 'user requests an OTP too many times within `findtime` minutes', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
+        allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
@@ -349,7 +351,9 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq account_path
 
-        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone_configurations.first.phone)
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(
+          MfaContext.new(user).phone_configurations.first.phone
+        )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         # let findtime period expire
@@ -387,7 +391,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(second_user)
         click_link t('links.two_factor_authentication.get_another_code')
         phone_fingerprint = Pii::Fingerprinter.fingerprint(
-          first_user.phone_configurations.first.phone
+          MfaContext.new(first_user).phone_configurations.first.phone
         )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
@@ -707,9 +711,9 @@ feature 'Two Factor Authentication' do
 
   describe 'clicking the logo image during 2fa process' do
     it 'returns them to the home page' do
-      user = build_stubbed(:user, :signed_up)
+      user = create(:user, :signed_up)
       sign_in_user(user)
-      find("img[alt='login.gov']").click
+      click_link 'login.gov'
       expect(current_path).to eq root_path
     end
   end

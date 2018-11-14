@@ -4,8 +4,11 @@ module Users
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT)
+      result = WebauthnVisitForm.new.submit(params)
+      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
+      @exclude_credentials = exclude_credentials
+      flash_error(result.errors) unless result.success?
     end
 
     def confirm
@@ -13,14 +16,18 @@ module Users
       result = form.submit(request.protocol, params)
       analytics.track_event(Analytics::WEBAUTHN_SETUP_SUBMITTED, result.to_h)
       if result.success?
-        process_valid_webauthn(form.attestation_response)
+        process_valid_webauthn
       else
         process_invalid_webauthn(form)
       end
     end
 
+    def success
+      @next_url = url_after_successful_webauthn_setup
+    end
+
     def delete
-      if current_user.total_mfa_options_enabled > 1
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
       else
         handle_failed_delete
@@ -28,24 +35,38 @@ module Users
       redirect_to account_url
     end
 
+    def show_delete
+      render 'users/webauthn_setup/delete'
+    end
+
     private
 
+    def flash_error(errors)
+      flash.now[:error] = errors.values.first.first
+    end
+
+    def exclude_credentials
+      current_user.webauthn_configurations.map(&:credential_id)
+    end
+
     def handle_successful_delete
+      create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
     end
 
     def handle_failed_delete
-      flash[:error] = t('errors.webauthn_setup.delete_last')
       track_delete(false)
     end
 
     def track_delete(success)
+      counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
+
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
-        mfa_options_enabled: current_user.total_mfa_options_enabled
+        mfa_method_counts: counts_hash
       )
     end
 
@@ -55,26 +76,21 @@ module Users
     end
 
     def two_factor_enabled?
-      current_user.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
-    def process_valid_webauthn(attestation_response)
+    def process_valid_webauthn
       mark_user_as_fully_authenticated
-      create_webauthn_configuration(attestation_response)
-      flash[:success] = t('notices.webauthn_added')
-      redirect_to url_after_successful_webauthn_setup
+      redirect_to webauthn_setup_success_url
     end
 
     def url_after_successful_webauthn_setup
       return account_url if user_already_has_a_personal_key?
 
       policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
 
-      if policy.show_personal_key_after_initial_2fa_setup?
-        sign_up_personal_key_url
-      else
-        idv_jurisdiction_url
-      end
+      idv_jurisdiction_url
     end
 
     def process_invalid_webauthn(form)
@@ -92,18 +108,8 @@ module Users
       user_session[:authn_at] = Time.zone.now
     end
 
-    def create_webauthn_configuration(attestation_response)
-      credential = attestation_response.credential
-      public_key = Base64.strict_encode64(credential.public_key)
-      id = Base64.strict_encode64(credential.id)
-      WebauthnConfiguration.create(user_id: current_user.id,
-                                   credential_public_key: public_key,
-                                   credential_id: id,
-                                   name: params[:name])
-    end
-
     def user_already_has_a_personal_key?
-      PersonalKeyLoginOptionPolicy.new(current_user).configured?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
 end

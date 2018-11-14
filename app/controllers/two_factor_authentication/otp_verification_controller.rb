@@ -28,15 +28,19 @@ module TwoFactorAuthentication
     def confirm_two_factor_enabled
       return if confirmation_context? || phone_enabled?
 
-      if current_user.two_factor_enabled? && !phone_enabled? && user_signed_in?
+      if two_factor_enabled? && !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
       redirect_to phone_setup_url
     end
 
+    def two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
+    end
+
     def phone_enabled?
-      current_user.phone_configurations.any?(&:mfa_enabled?)
+      TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
     end
 
     def confirm_voice_capability
@@ -54,7 +58,8 @@ module TwoFactorAuthentication
     end
 
     def phone
-      current_user&.phone_configurations&.first&.phone || user_session[:unconfirmed_phone]
+      MfaContext.new(current_user).phone_configurations.first&.phone ||
+        user_session[:unconfirmed_phone]
     end
 
     def form_params

@@ -264,15 +264,18 @@ describe TwoFactorAuthentication::OtpVerificationController do
         sign_in_as_user
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
-        @previous_phone_confirmed_at = subject.current_user.phone_configurations.first&.confirmed_at
+        @previous_phone_confirmed_at =
+          MfaContext.new(subject.current_user).phone_configurations.first&.confirmed_at
         subject.current_user.create_direct_otp
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        allow(UserMailer).to receive(:phone_changed).with(subject.current_user).
-          and_return(@mailer)
-        @previous_phone = subject.current_user.phone_configurations.first&.phone
+        subject.current_user.email_addresses.each do |email_address|
+          allow(UserMailer).to receive(:phone_changed).with(email_address).
+            and_return(@mailer)
+        end
+        @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
       end
 
       context 'user has an existing phone number' do
@@ -305,7 +308,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
               with(Analytics::MULTI_FACTOR_AUTH, properties)
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-            expect(UserMailer).to have_received(:phone_changed).with(subject.current_user)
+            subject.current_user.email_addresses.each do |email_address|
+              expect(UserMailer).to have_received(:phone_changed).with(email_address)
+            end
             expect(@mailer).to have_received(:deliver_later)
           end
         end
@@ -322,10 +327,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'does not update user phone or phone_confirmed_at attributes' do
-            expect(subject.current_user.phone_configurations.first.phone).to eq('+1 202-555-1212')
-            expect(
-              subject.current_user.phone_configurations.first.confirmed_at
-            ).to eq(@previous_phone_confirmed_at)
+            first_configuration = MfaContext.new(subject.current_user).phone_configurations.first
+            expect(first_configuration.phone).to eq('+1 202-555-1212')
+            expect(first_configuration.confirmed_at).to eq(@previous_phone_confirmed_at)
           end
 
           it 'renders :show' do
@@ -353,7 +357,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'when user does not have an existing phone number' do
         before do
-          subject.current_user.phone_configurations.clear
+          MfaContext.new(subject.current_user).phone_configurations.clear
           subject.current_user.create_direct_otp
         end
 

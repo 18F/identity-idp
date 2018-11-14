@@ -23,7 +23,10 @@ module FormPasswordValidator
   end
 
   def password_score
-    @password_score = ZXCVBN_TESTER.test(password, ForbiddenPasswords.new(user.email).call)
+    @password_score = ZXCVBN_TESTER.test(
+      password,
+      user.email_addresses.flat_map { |address| ForbiddenPasswords.new(address.email).call }
+    )
   end
 
   def min_password_score

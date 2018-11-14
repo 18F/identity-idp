@@ -1,5 +1,4 @@
 require 'rails_helper'
-
 feature 'Webauthn Management' do
   include WebauthnHelper
 
@@ -12,14 +11,18 @@ feature 'Webauthn Management' do
       visit account_path
       expect(current_path).to eq account_path
 
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_url
+      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key_and_fill_in_name_field
-      click_submit_default
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key
 
-      expect(current_path).to eq account_path
-      expect(page).to have_content t('notices.webauthn_added')
+      expect(current_path).to eq webauthn_setup_success_path
+
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content t('event_types.webauthn_key_added')
     end
 
     it 'gives an error if the challenge/secret is incorrect' do
@@ -27,11 +30,11 @@ feature 'Webauthn Management' do
       visit account_path
       expect(current_path).to eq account_path
 
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_url
+      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key_and_fill_in_name_field
-      click_submit_default
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key
 
       expect(current_path).to eq account_path
       expect(page).to have_content t('errors.webauthn_setup.general_error')
@@ -43,10 +46,10 @@ feature 'Webauthn Management' do
       visit account_path
       expect(current_path).to eq account_path
 
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_url
+      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path
 
-      click_submit_default
+      mock_submit_without_pressing_button_on_hardware_key
 
       expect(current_path).to eq account_path
       expect(page).to have_content t('errors.webauthn_setup.general_error')
@@ -59,20 +62,20 @@ feature 'Webauthn Management' do
       visit account_path
       expect(current_path).to eq account_path
 
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_url
+      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key_and_fill_in_name_field
-      click_submit_default
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key
 
-      expect(current_path).to eq account_path
-      expect(page).to have_content t('notices.webauthn_added')
+      expect(current_path).to eq webauthn_setup_success_path
+      click_button t('forms.buttons.continue')
 
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_url
+      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path
 
-      mock_press_button_on_hardware_key_and_fill_in_name_field
-      click_submit_default
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key
 
       expect(current_path).to eq webauthn_setup_path
       expect(page).to have_content t('errors.webauthn_setup.unique_name')
@@ -82,12 +85,12 @@ feature 'Webauthn Management' do
       sign_in_and_2fa_user(user)
 
       visit account_path
-      expect(page).to have_link(t('account.index.webauthn_add'), href: webauthn_setup_url)
+      expect(page).to have_link(t('account.index.webauthn_add'), href: webauthn_setup_path)
     end
   end
 
   context 'with webauthn associations' do
-    it 'displays the user supplied names of the webauthn keys' do
+    it 'displays the user supplied names of the security keys' do
       create_webauthn_configuration(user, 'key1', '1', 'foo1')
       create_webauthn_configuration(user, 'key2', '2', 'bar2')
 
@@ -98,7 +101,7 @@ feature 'Webauthn Management' do
       expect(page).to have_content 'key2'
     end
 
-    it 'allows the user to delete the webauthn key' do
+    it 'allows user to delete security key when another 2FA option is set up' do
       create_webauthn_configuration(user, 'key1', '1', 'foo1')
 
       sign_in_and_2fa_user(user)
@@ -106,10 +109,31 @@ feature 'Webauthn Management' do
 
       expect(page).to have_content 'key1'
 
-      click_button t('account.index.webauthn_delete')
+      click_link t('account.index.webauthn_delete')
+
+      expect(current_path).to eq webauthn_setup_delete_path
+
+      click_button t('account.index.webauthn_confirm_delete')
 
       expect(page).to_not have_content 'key1'
       expect(page).to have_content t('notices.webauthn_deleted')
+    end
+
+    it 'allows the user to cancel delete the security key' do
+      create_webauthn_configuration(user, 'key1', '1', 'foo1')
+
+      sign_in_and_2fa_user(user)
+      visit account_path
+
+      expect(page).to have_content 'key1'
+
+      click_link t('account.index.webauthn_delete')
+
+      expect(current_path).to eq webauthn_setup_delete_path
+
+      click_link t('links.cancel')
+
+      expect(page).to have_content 'key1'
     end
 
     it 'prevents a user from deleting the last key' do
@@ -120,11 +144,7 @@ feature 'Webauthn Management' do
       visit account_path
 
       expect(page).to have_content 'key1'
-
-      click_button t('account.index.webauthn_delete')
-
-      expect(page).to have_content 'key1'
-      expect(page).to have_content t('errors.webauthn_setup.delete_last')
+      expect(page).to_not have_link t('account.index.webauthn_delete')
     end
   end
 

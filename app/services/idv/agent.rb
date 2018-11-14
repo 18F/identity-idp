@@ -14,13 +14,12 @@ module Idv
       results = init_results
 
       stages.each do |stage|
-        vendor = Idv::Proofer.get_vendor(stage).new
-        log_vendor(vendor, results, stage)
-        proofer_result = vendor.proof(@applicant)
+        proofer_result = submit_applicant(applicant: @applicant, stage: stage, results: results)
+        track_exception_in_result(proofer_result)
         results = merge_results(results, proofer_result)
+        results[:timed_out] = proofer_result.timed_out?
         break unless proofer_result.success?
       end
-
       results
     end
 
@@ -35,7 +34,14 @@ module Idv
         },
         exception: nil,
         success: false,
+        timed_out: false,
       }
+    end
+
+    def submit_applicant(applicant:, stage:, results:)
+      vendor = Idv::Proofer.get_vendor(stage).new
+      log_vendor(vendor, results, stage)
+      vendor.proof(applicant)
     end
 
     def log_vendor(vendor, results, stage)
@@ -47,6 +53,14 @@ module Idv
       results.merge(proofer_result.to_h) do |key, orig, current|
         key == :messages ? orig + current : current
       end
+    end
+
+    def track_exception_in_result(proofer_result)
+      exception = proofer_result.exception
+      return if exception.nil?
+
+      NewRelic::Agent.notice_error(exception)
+      ExceptionNotifier.notify_exception(exception)
     end
   end
 end

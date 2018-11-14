@@ -6,14 +6,16 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  delegate :email, to: :user
-
   def initialize(recaptcha_results = [true, {}])
     @allow, @recaptcha_h = recaptcha_results
   end
 
   def user
     @user ||= User.new
+  end
+
+  def email
+    @email || user.email
   end
 
   def resend
@@ -71,7 +73,7 @@ class RegisterUserEmailForm
   end
 
   def user_unconfirmed?
-    !existing_user.confirmed?
+    existing_user.email_addresses.none?(&:confirmed?)
   end
 
   def existing_user

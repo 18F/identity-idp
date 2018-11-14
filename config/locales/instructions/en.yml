@@ -37,8 +37,8 @@ en:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         number_message: We just called you at %{number}.
       webauthn:
-        confirm_webauthn_html: Present the hardware security key that you associated
-          with your account.
+        confirm_webauthn_html: Present the security key that you associated with your
+          account.
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
@@ -56,6 +56,13 @@ en:
         intro: 'Password strength: '
         iv: Good
         v: Great!
-    personal_key_accent: Write it down or print it out.
-    personal_key_html: This is the only way to regain access to your account if you
-      lose the phone where we send your security code. %{accent}
+    personal_key:
+      accent: Write it down or print it out.
+      email_body: Only use it when you cannot use normal sign-in methods.
+      email_title: We never ask for your personal key in email
+      info_html: This is the only way to regain access to your account if you lose
+        your phone or security options. %{accent}
+      once_html: "<strong>Personal keys are one-time use.</strong> If you need to
+        use your personal key for any reason, you'll be issued a new key."
+      safety_html: "<strong>Keep it private and safe.</strong> Don't share your personal
+        key, and only use it when you do not have access to your normal sign-in methods."

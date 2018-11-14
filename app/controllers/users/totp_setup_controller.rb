@@ -6,8 +6,8 @@ module Users
     def new
       return redirect_to account_url if current_user.totp_enabled?
 
-      track_event
       store_totp_secret_in_session
+      track_event
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
@@ -38,11 +38,14 @@ module Users
     private
 
     def two_factor_enabled?
-      current_user.two_factor_enabled?
+      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def track_event
-      properties = { user_signed_up: current_user.two_factor_enabled? }
+      properties = {
+        user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
+        totp_secret_present: new_totp_secret.present?,
+      }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
     end
 
@@ -75,7 +78,7 @@ module Users
     end
 
     def user_already_has_a_personal_key?
-      PersonalKeyLoginOptionPolicy.new(current_user).configured?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
 
     def process_invalid_code

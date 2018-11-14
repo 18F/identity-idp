@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UpdateUserPasswordForm, type: :model do
-  let(:user) { User.new(password: 'old strong password') }
+  let(:user) { build(:user, :with_email, password: 'old strong password') }
   let(:user_session) { {} }
   let(:password) { 'salty new password' }
   let(:params) { { password: password } }
@@ -57,13 +57,13 @@ describe UpdateUserPasswordForm, type: :model do
       end
 
       it 'sends an email to notify of the password change' do
-        email_notifier = instance_double(EmailNotifier)
-        allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
-        allow(email_notifier).to receive(:send_password_changed_email)
+        mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+        allow(UserMailer).to receive(:password_changed).
+          with(user.email_addresses.first).and_return(mailer)
 
         subject.submit(params)
 
-        expect(email_notifier).to have_received(:send_password_changed_email)
+        expect(mailer).to have_received(:deliver_later)
       end
 
       it 'increments password metrics for the password' do
@@ -99,10 +99,9 @@ describe UpdateUserPasswordForm, type: :model do
 
     context 'when the user does not have an active profile' do
       it 'does not call ActiveProfileEncryptor' do
-        email_notifier = instance_double(EmailNotifier)
-
-        expect(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
-        expect(email_notifier).to receive(:send_password_changed_email)
+        mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+        expect(UserMailer).to receive(:password_changed).
+          with(user.email_addresses.first).and_return(mailer)
         expect(ActiveProfileEncryptor).to_not receive(:new)
 
         subject.submit(params)
@@ -111,8 +110,9 @@ describe UpdateUserPasswordForm, type: :model do
   end
 
   def stub_email_delivery
-    email_notifier = instance_double(EmailNotifier)
-    allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
-    allow(email_notifier).to receive(:send_password_changed_email)
+    mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+    user.email_addresses.each do |email_address|
+      allow(UserMailer).to receive(:password_changed).with(email_address).and_return(mailer)
+    end
   end
 end

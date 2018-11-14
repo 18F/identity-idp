@@ -22,7 +22,12 @@ class WebauthnSetupForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_attestation_response?(protocol)
-    FormResponse.new(success: success, errors: errors.messages)
+    if success
+      create_webauthn_configuration
+      create_user_event
+    end
+
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -52,7 +57,31 @@ class WebauthnSetupForm
       attestation_object: Base64.decode64(@attestation_object),
       client_data_json: Base64.decode64(@client_data_json)
     )
-    original_origin = "#{protocol}#{self.class.domain_name}"
+    safe_response("#{protocol}#{self.class.domain_name}")
+  end
+
+  def safe_response(original_origin)
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
+  rescue StandardError
+    errors.add :name, I18n.t('errors.webauthn_setup.attestation_error')
+    false
+  end
+
+  def create_webauthn_configuration
+    credential = attestation_response.credential
+    public_key = Base64.strict_encode64(credential.public_key)
+    id = Base64.strict_encode64(credential.id)
+    WebauthnConfiguration.create(user_id: user.id,
+                                 credential_public_key: public_key,
+                                 credential_id: id,
+                                 name: name)
+  end
+
+  def create_user_event
+    Event.create(user_id: user.id, event_type: :webauthn_key_added)
+  end
+
+  def extra_analytics_attributes
+    { mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash }
   end
 end

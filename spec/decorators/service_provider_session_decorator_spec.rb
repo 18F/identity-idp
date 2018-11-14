@@ -49,6 +49,41 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
+  describe '#sp_msg' do
+    context 'sp_name is included in list of SPs that see the default alert' do
+      it 'uses the default template' do
+        random_sp_name = ServiceProviderSessionDecorator::DEFAULT_ALERT_SP_NAMES.sample
+        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+
+        expect(subject.sp_msg('create_account_link')).
+          to eq I18n.t('service_providers.default.create_account_link')
+      end
+
+      it 'interpolates the sp_name' do
+        sp_msg = subject.sp_msg('account_page.body')
+        expect(sp_msg).to include(sp_name)
+      end
+
+      it 'interpolates the link parameter' do
+        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
+      end
+    end
+
+    context 'sp_name is included in list of SPs that see the custom alert' do
+      it 'uses the custom template' do
+        random_sp_name = ServiceProviderSessionDecorator::CUSTOM_ALERT_SP_NAMES.sample
+        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+
+        expect(subject.sp_msg('create_account_link')).
+          to eq I18n.t("service_providers.#{subject.sp_alert_name}.create_account_link")
+      end
+
+      it 'interpolates the link parameter' do
+        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
+      end
+    end
+  end
+
   describe '#sp_name' do
     it 'returns the SP friendly name if present' do
       expect(subject.sp_name).to eq sp.friendly_name
@@ -210,6 +245,28 @@ RSpec.describe ServiceProviderSessionDecorator do
       allow(subject).to receive(:request_url).and_return(nil)
       allow(sp).to receive(:redirect_uris).and_return(['foo'])
       subject.sp_return_url
+    end
+  end
+
+  describe 'mfa_expiration_interval' do
+    context 'with an AAL2 sp' do
+      before do
+        allow(sp).to receive(:aal).and_return(2)
+      end
+
+      it { expect(subject.mfa_expiration_interval).to eq(12.hours) }
+    end
+
+    context 'with an IAL2 sp' do
+      before do
+        allow(sp).to receive(:ial).and_return(2)
+      end
+
+      it { expect(subject.mfa_expiration_interval).to eq(12.hours) }
+    end
+
+    context 'with an sp that is not AAL2 or IAL2' do
+      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
     end
   end
 end

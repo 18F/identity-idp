@@ -28,6 +28,7 @@ en:
         dob: Your date of birth must be entered in as mm/dd/yyyy
         personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
+        state_id_number: Your ID number cannot be more than 25 characters.
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
@@ -63,6 +64,17 @@ en:
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
+    forgot_password:
+      link_html: Forgot password? %{link}
+      link_text: Follow these instructions
+      modal_header: Are you sure you can't remember your password?
+      reset_password: Reset password
+      try_again: Try again
+      warnings:
+        warning_1: If you forgot your password, you'll need to reset it and fill out
+          the form again.
+        warning_2: You'll have to re-enter your personal information, like your name,
+          state ID number, etc.
     form:
       activate_by_mail: get a code via mail instead ›
       address1: Address
@@ -78,6 +90,7 @@ en:
       ssn_label_html: Social Security Number
       state: State
       state_id: ID number
+      state_id_tip: do not include spaces or dashes
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
@@ -98,6 +111,7 @@ en:
         some basic personal information as well as some financial information from
         you to complete this process. If you don’t have the information we need at
         this time you can continue later.
+      clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
       come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong>
@@ -149,14 +163,13 @@ en:
         id_information_message: as it appears on your state-issued ID
         id_information_subtitle: ID Information
         no_pii: FAKE Do not use real personal information (demo purposes only) FAKE
-        review_message: When you enter your password, login.gov will secure your personal
-          information. We do this to make sure no one else can access your information.
+        review_message: When you re-enter your password, login.gov will encrypt your
+          data to make sure no one else can access it.
         success: Next, we'll need a phone number.
       usps:
-        bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
           on file.
-        resend: Send me another letter.
+        resend: Send me another letter
         success: It should arrive in 5 to 10 business days.
     review:
       dob: Date of birth
@@ -184,7 +197,7 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Enter a phone number to help verify your identity
-        review: Enter your login.gov password
+        review: Re-enter your login.gov password to encrypt your data
         success: We've verified the information on your state-issued ID.
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

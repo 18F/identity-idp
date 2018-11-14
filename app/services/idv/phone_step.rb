@@ -7,7 +7,7 @@ module Idv
     def submit(step_params)
       self.step_params = step_params
       self.idv_result = Idv::Agent.new(applicant).proof(:address)
-      increment_attempts_count
+      increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       update_idv_session if success
       FormResponse.new(
@@ -18,6 +18,7 @@ module Idv
 
     def failure_reason
       return :fail if idv_session.step_attempts[:phone] >= Idv::Attempter.idv_max_attempts
+      return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
     end
@@ -43,6 +44,10 @@ module Idv
       idv_session.step_attempts[:phone] += 1
     end
 
+    def failed_due_to_timeout_or_exception?
+      idv_result[:timed_out] || idv_result[:exception]
+    end
+
     def update_idv_session
       idv_session.address_verification_mechanism = :phone
       idv_session.applicant = applicant
@@ -57,7 +62,9 @@ module Idv
     end
 
     def user_phones
-      idv_session.current_user.phone_configurations.map do |phone_configuration|
+      MfaContext.new(
+        idv_session.current_user
+      ).phone_configurations.map do |phone_configuration|
         PhoneFormatter.format(phone_configuration.phone)
       end.compact
     end

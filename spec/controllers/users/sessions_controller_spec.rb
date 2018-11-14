@@ -53,7 +53,7 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(timeout.to_i)
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(timeout.to_i)
       end
 
       it 'includes the remaining key' do
@@ -80,7 +80,7 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(Time.zone.now.to_i - 1)
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
       end
 
       it 'includes the remaining time' do
@@ -124,7 +124,7 @@ describe Users::SessionsController, devise: true do
       get :timeout
 
       expect(flash[:notice]).to eq t(
-        'session_timedout',
+        'notices.session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes
       )
@@ -162,6 +162,7 @@ describe Users::SessionsController, devise: true do
         user_locked_out: false,
         stored_location: 'http://example.com',
         sp_request_url_present: false,
+        remember_device: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -180,6 +181,7 @@ describe Users::SessionsController, devise: true do
         user_locked_out: false,
         stored_location: nil,
         sp_request_url_present: false,
+        remember_device: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -196,6 +198,7 @@ describe Users::SessionsController, devise: true do
         user_locked_out: false,
         stored_location: nil,
         sp_request_url_present: false,
+        remember_device: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -218,6 +221,7 @@ describe Users::SessionsController, devise: true do
         user_locked_out: true,
         stored_location: nil,
         sp_request_url_present: false,
+        remember_device: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -235,6 +239,7 @@ describe Users::SessionsController, devise: true do
         user_locked_out: false,
         stored_location: nil,
         sp_request_url_present: true,
+        remember_device: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -303,6 +308,7 @@ describe Users::SessionsController, devise: true do
           user_locked_out: false,
           stored_location: nil,
           sp_request_url_present: false,
+          remember_device: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -355,6 +361,59 @@ describe Users::SessionsController, devise: true do
       end
 
       post :create, params: { user: { email: user.email, password: user.password } }
+    end
+
+    context 'with remember_device cookie present and valid' do
+      it 'tracks the cookie validity in analytics' do
+        user = create(:user, :signed_up)
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 2.days.from_now,
+        }
+
+        stub_analytics
+        analytics_hash = {
+          success: true,
+          user_id: user.uuid,
+          user_locked_out: false,
+          stored_location: nil,
+          sp_request_url_present: false,
+          remember_device: true,
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+      end
+    end
+
+    context 'with remember_device cookie present but expired' do
+      it 'only tracks the cookie presence in analytics' do
+        user = create(:user, :signed_up)
+
+        allow(Figaro.env).to receive(:remember_device_expiration_days).and_return('2')
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: 2.days.ago).to_json,
+        }
+
+        stub_analytics
+        analytics_hash = {
+          success: true,
+          user_id: user.uuid,
+          user_locked_out: false,
+          stored_location: nil,
+          sp_request_url_present: false,
+          remember_device: true,
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+      end
     end
   end
 

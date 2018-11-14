@@ -11,7 +11,7 @@ describe UserPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject { UserPhoneForm.new(user) }
+  subject { UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
   it_behaves_like 'a phone form'
 
@@ -21,16 +21,16 @@ describe UserPhoneForm do
       with: { phone: '+1 (703) 500-5000' },
       otp_delivery_preference: 'voice'
     )
-    subject = UserPhoneForm.new(user)
+    subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
 
-    expect(subject.phone).to eq(user.phone_configurations.first.phone)
+    expect(subject.phone).to eq(MfaContext.new(user).phone_configurations.first.phone)
     expect(subject.international_code).to eq('US')
     expect(subject.otp_delivery_preference).to eq(user.otp_delivery_preference)
   end
 
   it 'infers the international code from the user phone number' do
     user = build_stubbed(:user, :with_phone, with: { phone: '+81 744 21 1234' })
-    subject = UserPhoneForm.new(user)
+    subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
 
     expect(subject.international_code).to eq('JP')
   end
@@ -72,13 +72,13 @@ describe UserPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = UserPhoneForm.new(user)
+        subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
 
         user.reload
-        expect(user.phone_configurations).to be_empty
+        expect(MfaContext.new(user).phone_configurations).to be_empty
       end
 
       it 'preserves the format of the submitted phone number if phone is invalid' do
@@ -160,36 +160,6 @@ describe UserPhoneForm do
       end
     end
 
-    context "when the submitted otp_delivery_preference is different from the user's" do
-      it "updates the user's otp_delivery_preference" do
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).
-          to receive(:new).
-          with(
-            user: user,
-            attributes: { otp_delivery_preference: 'voice' }
-          ).
-          and_return(user_updater)
-        expect(user_updater).to receive(:call)
-
-        params = {
-          phone: '703-555-5000',
-          international_code: 'US',
-          otp_delivery_preference: 'voice',
-        }
-
-        subject.submit(params)
-      end
-    end
-
-    context "when the submitted otp_delivery_preference is the same as the user's" do
-      it "does not update the user's otp_delivery_preference" do
-        expect(UpdateUser).to_not receive(:new)
-
-        subject.submit(params)
-      end
-    end
-
     it 'does not raise inclusion errors for Norwegian phone numbers' do
       # ref: https://github.com/18F/identity-private/issues/2392
       params[:phone] = '21 11 11 11'
@@ -199,6 +169,12 @@ describe UserPhoneForm do
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
+    end
+
+    it 'revokes the users rememder device sessions' do
+      subject.submit(params)
+
+      expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
     end
   end
 
@@ -211,7 +187,7 @@ describe UserPhoneForm do
     end
 
     it 'returns false if the user phone has not changed' do
-      params[:phone] = user.phone_configurations.first.phone
+      params[:phone] = MfaContext.new(user).phone_configurations.first.phone
       subject.submit(params)
 
       expect(subject.phone_changed?).to eq(false)
@@ -219,7 +195,7 @@ describe UserPhoneForm do
 
     context 'when a user has no phone' do
       it 'returns true' do
-        user.phone_configurations.clear
+        MfaContext.new(user).phone_configurations.clear
 
         params[:phone] = '+1 504 444 1643'
         subject.submit(params)

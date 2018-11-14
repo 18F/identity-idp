@@ -52,6 +52,7 @@ end
 
 shared_examples 'signing in as LOA3 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', :email do
+    stub_twilio_service
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
@@ -175,7 +176,7 @@ shared_examples 'signing with while PIV/CAC enabled but not phone enabled' do |s
     stub_piv_cac_service
 
     user = create(:user, :signed_up, :with_piv_or_cac)
-    user.phone_configurations.clear
+    MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)

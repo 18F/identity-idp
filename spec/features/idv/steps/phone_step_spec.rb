@@ -19,7 +19,7 @@ feature 'idv phone step' do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(user.phone_configurations.first.phone)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.session.review'))
@@ -104,6 +104,30 @@ feature 'idv phone step' do
     visit idv_review_path
 
     expect(page).to have_current_path(idv_phone_path)
+  end
+
+  it 'requires the user to complete the profile step before completing' do
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+    start_idv_from_sp
+    complete_idv_steps_before_profile_step
+    # Try to advance ahead to the phone step
+    visit idv_phone_path
+
+    # Expect to land on the profile step
+    expect(page).to have_content(t('idv.titles.sessions'))
+    expect(page).to have_current_path(idv_session_path)
+
+    # Try to submit and fail
+    fill_out_idv_form_fail
+    click_idv_continue
+
+    # Try to advance ahead to the phone step
+    visit idv_phone_path
+
+    # Expect to land on the profile step
+    expect(page).to have_content(t('idv.titles.sessions'))
+    expect(page).to have_current_path(idv_session_path)
   end
 
   context 'cancelling IdV' do

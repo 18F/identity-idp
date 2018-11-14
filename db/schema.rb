@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906181420) do
+ActiveRecord::Schema.define(version: 20181029203754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,17 @@ ActiveRecord::Schema.define(version: 20180906181420) do
     t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
+  create_table "doc_auths", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "attempted_at"
+    t.integer "attempts", default: 0
+    t.datetime "license_confirmed_at"
+    t.datetime "selfie_confirmed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_doc_auths_on_user_id"
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id"
     t.string "confirmation_token", limit: 255
@@ -64,6 +75,7 @@ ActiveRecord::Schema.define(version: 20180906181420) do
     t.string "encrypted_email", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
@@ -193,6 +205,8 @@ ActiveRecord::Schema.define(version: 20180906181420) do
     t.string "redirect_uris", default: [], array: true
     t.integer "agency_id"
     t.text "failure_to_proof_url"
+    t.integer "aal"
+    t.integer "ial"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -235,6 +249,7 @@ ActiveRecord::Schema.define(version: 20180906181420) do
     t.string "x509_dn_uuid"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
+    t.datetime "remember_device_revoked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true

@@ -96,6 +96,8 @@ ignore_unused:
   - 'devise.mailer.confirmation_instructions.subject'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
+  - 'datetime.dotiw.two_words_connector'
+  - 'service_providers.*'
   - 'two_factor_authentication.invalid_otp'
   - 'two_factor_authentication.invalid_personal_key'
   - 'two_factor_authentication.invalid_piv_cac'

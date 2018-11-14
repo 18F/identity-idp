@@ -18,9 +18,12 @@ feature 'Changing authentication factor' do
       allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
 
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-      allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
+      user.email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:phone_changed).with(email_address).and_return(mailer)
+      end
 
-      @previous_phone_confirmed_at = user.phone_configurations.reload.first.confirmed_at
+      @previous_phone_confirmed_at =
+        MfaContext.new(user).phone_configurations.reload.first.confirmed_at
       new_phone = '+1 703-555-0100'
 
       visit manage_phone_path
@@ -39,17 +42,19 @@ feature 'Changing authentication factor' do
       enter_incorrect_otp_code
 
       expect(page).to have_content t('two_factor_authentication.invalid_otp')
-      expect(user.phone_configurations.reload.first.phone).to_not eq new_phone
+      expect(MfaContext.new(user).phone_configurations.reload.first.phone).to_not eq new_phone
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
       submit_correct_otp
 
       expect(current_path).to eq account_path
-      expect(UserMailer).to have_received(:phone_changed).with(user)
+      user.email_addresses.each do |email_address|
+        expect(UserMailer).to have_received(:phone_changed).with(email_address)
+      end
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(
-        user.phone_configurations.reload.first.confirmed_at
+        MfaContext.new(user).phone_configurations.reload.first.confirmed_at
       ).to_not eq(@previous_phone_confirmed_at)
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
@@ -58,7 +63,7 @@ feature 'Changing authentication factor' do
 
     scenario 'editing phone number with no voice otp support only allows sms delivery' do
       user.update(otp_delivery_preference: 'voice')
-      user.phone_configurations.first.update(delivery_preference: 'voice')
+      MfaContext.new(user).phone_configurations.first.update(delivery_preference: 'voice')
       unsupported_phone = '242-327-0143'
 
       visit manage_phone_path
@@ -81,7 +86,7 @@ feature 'Changing authentication factor' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
 
       user = sign_in_and_2fa_user
-      old_phone = user.phone_configurations.first.phone
+      old_phone = MfaContext.new(user).phone_configurations.first.phone
       visit manage_phone_path
       update_phone_number
 
@@ -108,7 +113,7 @@ feature 'Changing authentication factor' do
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
         user = sign_in_and_2fa_user
-        old_phone = user.phone_configurations.first.phone
+        old_phone = MfaContext.new(user).phone_configurations.first.phone
 
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
           visit manage_phone_path

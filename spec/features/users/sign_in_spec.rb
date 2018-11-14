@@ -124,6 +124,7 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
+      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
       allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
@@ -417,6 +418,7 @@ feature 'Sign in' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'redirects to the personal key page' do
       user = create(:user, :signed_up)
+      stub_twilio_service
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
@@ -429,6 +431,7 @@ feature 'Sign in' do
       click_acknowledge_personal_key
 
       expect(page).to have_current_path(account_path)
+      expect(page).to have_content t('event_types.personal_key_used')
     end
   end
 
@@ -479,6 +482,26 @@ feature 'Sign in' do
     it 'does not display OTP Fallback text and links' do
       expect(page).
         to_not have_content t('two_factor_authentication.totp_fallback.sms_link_text')
+    end
+  end
+
+  context 'visiting via SP1, then via SP2, then signing in' do
+    it 'redirects to SP2' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      user = create(:user, :signed_up)
+      visit_idp_from_sp_with_loa1(:saml)
+      click_link t('links.sign_in')
+      visit_idp_from_sp_with_loa1(:oidc)
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+      click_continue
+
+      redirect_uri = URI(current_url)
+
+      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      expect(ServiceProviderRequest.count).to eq 0
     end
   end
 end

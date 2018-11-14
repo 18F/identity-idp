@@ -5,13 +5,14 @@ fr:
       account_history: Historique du compte
       account_management: Gestion de compte
       connected_apps: Applications
+      login_history: Historique de connexion
       login_info: Votre compte
       profile_info: Information du profil
       reactivate: Réactivez votre compte
       two_factor: Authentification à deux facteurs
       verified_account: Compte vérifié
     account_recovery_setup:
-      piv_cac_linked: NOT TRANSLATED YET
+      piv_cac_linked: Votre carte PIV/CAC est liée à votre compte
     cancellations:
       confirmation: Vous avez annulé la vérification de votre identité avec login.gov
       prompt: Es-tu sûre de vouloir annuler?
@@ -24,13 +25,13 @@ fr:
     edit_info:
       email: Changez votre courriel
       password: Changez votre mot de passe
-      phone: Entrez votre nouveau numéro de téléphone
+      phone: Administrer votre numéro de téléphone
     lock_failure: Voici ce que vous pouvez faire
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
       forgot: Vous avez oublié votre mot de passe?
-    personal_key: Voici votre clé personnelle
+    personal_key: Ayez toujours accès à votre compte avec votre clé personnelle
     piv_cac_setup:
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.
@@ -41,11 +42,12 @@ fr:
         unverified: Le certificat que vous avez sélectionné n'est pas valide.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:
-        already_associated: NOT TRANSLATED YET
+        already_associated: La carte PIV/CAC que vous avez présentée est associée
+          à un autre utilisateur.
       token:
-        bad: NOT TRANSLATED YET
-        invalid: NOT TRANSLATED YET
-        missing: NOT TRANSLATED YET
+        bad: Erreur interne.
+        invalid: Le certificat sélectionné n'est pas valide.
+        missing: Erreur interne.
     registrations:
       enter_email: Entrez votre adresse email
     session_timeout_warning: Vous avez besoin de plus de temps?
@@ -55,4 +57,4 @@ fr:
       new: Activer une application d'authentification
     verify_email: Consultez vos courriels
     webauthn_setup:
-      new: Enregistrez votre clé de sécurité physique
+      new: Ajoutez votre clé de sécurité

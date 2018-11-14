@@ -12,14 +12,14 @@ feature 'idv usps step' do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it 'redirects to the phone step when the user says they cannot receive mail' do
+  it 'allows the user to clear IdV and restart' do
     start_idv_from_sp
     complete_idv_steps_before_usps_step
 
-    click_on t('idv.messages.usps.bad_address')
+    click_on t('idv.messages.clear_and_start_over')
 
-    expect(page).to have_content(t('idv.titles.session.phone'))
-    expect(page).to have_current_path(idv_phone_path)
+    expect(page).to have_content(t('idv.messages.jurisdiction.why'))
+    expect(page).to have_current_path(idv_jurisdiction_path)
   end
 
   context 'the user has sent a letter but not verified an OTP' do
@@ -33,6 +33,15 @@ feature 'idv usps step' do
       expect_user_to_be_unverified(user)
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
+    end
+
+    it 'allows the user to cancel and return to usps otp confirmation' do
+      complete_idv_and_return_to_usps_step
+      click_link t('links.cancel')
+
+      expect(page).to have_content(t('forms.verify_profile.title'))
+      expect(page).to have_current_path(verify_account_path)
+      expect_user_to_be_unverified(user)
     end
 
     def complete_idv_and_return_to_usps_step

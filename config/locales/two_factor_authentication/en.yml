@@ -27,11 +27,15 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: Use your PIV/CAC card instead of a security code.
       sms: Text message
-      sms_info: Get security code via text message.
+      sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
+      sms_setup_info: Get security code via text message.
       voice: Automated phone call
-      voice_info: Get security code via phone call (North America phone numbers only).
-      webauthn: Hardware security key
-      webauthn_info: Use your hardware security key instead of a security code.
+      voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
+        (North America phone numbers only).
+      voice_setup_info: Get security code via phone call (North America phone numbers
+        only).
+      webauthn: Security key
+      webauthn_info: Use your security key to access your account.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
     max_generic_login_attempts_reached: For your security, your account is temporarily
@@ -59,6 +63,10 @@ en:
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it, you'll
       be provided a new key.
+    phone:
+      delete:
+        failure: Unable to remove your phone.
+        success: Your phone has been removed.
     phone_fallback:
       question: Don't have access to your phone right now?
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
@@ -67,8 +75,6 @@ en:
       sign in</strong>.
     phone_voice_label: Phone number
     piv_cac_fallback:
-      link: Use your PIV/CAC instead
-      text_html: Do you have your PIV/CAC? %{link}
       question: Don't have your piv/cac card available?
     piv_cac_header_text: Present your PIV/CAC
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
@@ -91,8 +97,8 @@ en:
       sms_info: Get your security code via text message / SMS
       voice: Phone call
       voice_info: Get your security code via phone call
-      webauthn: Hardware security key
-      webauthn_info: Use a hardware security key to secure your account
+      webauthn: Security key
+      webauthn_info: Use a security key to secure your account
     webauthn_fallback:
-      question: Don't have your hardware security key available?
-    webauthn_header_text: Present your hardware security key
+      question: Don't have your security key available?
+    webauthn_header_text: Present your security key

@@ -2,12 +2,14 @@
 fr:
   errors:
     account_reset:
-      cancel_token_invalid: NOT TRANSLATED YET
-      cancel_token_missing: NOT TRANSLATED YET
+      cancel_token_invalid: le jeton d'annulation n'est pas valide
+      cancel_token_missing: le jeton d'annulation est manquant
       granted_token_expired: Le lien pour supprimer votre compte login.gov a expiré.
         Veuillez créer une autre demande pour supprimer votre compte.
-      granted_token_invalid: NOT TRANSLATED YET
-      granted_token_missing: NOT TRANSLATED YET
+      granted_token_invalid: Le lien de suppression de votre compte login.gov n'est
+        pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
+      granted_token_missing: Le lien de suppression de votre compte login.gov n'est
+        pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
     confirm_password_incorrect: Mot de passe incorrect.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
@@ -26,30 +28,44 @@ fr:
         un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
-      improbable_phone: NOT TRANSLATED YET
-      invalid_calling_area: NOT TRANSLATED YET
-      invalid_phone_number: NOT TRANSLATED YET
-      invalid_sms_number: NOT TRANSLATED YET
+      improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro
+        de téléphone valide.
+      invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris
+        en charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
+        de cette fonction.
+      invalid_phone_number: Le numéro de téléphone saisi n'est pas valide.
+      invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
+        messages textuels. Veuillez essayer l'option d'appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
         le bon indicatif international ou régional.
       missing_field: Veuillez remplir ce champ.
-      must_have_us_country_code: NOT TRANSLATED YET
+      must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
+        de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
-      otp_failed: NOT TRANSLATED YET
+      otp_failed: Échec de l'envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
-      twilio_timeout: NOT TRANSLATED YET
+      twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
       unauthorized_authn_context: Contexte d'authentification non autorisé
-      unauthorized_nameid_format: NOT TRANSLATED YET
+      unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé
-      usps_otp_expired: NOT TRANSLATED YET
+      usps_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
+        autre lettre afin d'obtenir un nouveau code.
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
     webauthn_setup:
-      delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
+      already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
+        de sécurité différente.
+      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé
+        de sécurité FIDO. Veuillez vous assurer que votre appareil est répertorié
+        sur https://fidoalliance.org/certification/fido-certified-products/ et si
+        vous pensez que l'erreur est la nôtre, veuillez nous contacter à l'adresse
+        hello@login.gov.
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.
+      not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
+        FIDO.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

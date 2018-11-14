@@ -33,11 +33,10 @@ module Idv
     end
 
     def track_final_idv_event
+      configured_phones = MfaContext.new(current_user).phone_configurations.map(&:phone)
       result = {
         success: true,
-        new_phone_added: !current_user.phone_configurations.map(&:phone).include?(
-          idv_session.applicant['phone']
-        ),
+        new_phone_added: !configured_phones.include?(idv_session.applicant['phone']),
       }
       analytics.track_event(Analytics::IDV_FINAL, result)
     end

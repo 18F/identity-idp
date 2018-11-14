@@ -1,10 +1,9 @@
-# rubocop:disable Metrics/ClassLength
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     include RecaptchaConcern
-    before_action :prevent_token_leakage, only: %i[edit]
 
     def new
+      analytics.track_event(Analytics::PASSWORD_RESET_VISIT)
       @password_reset_email_form = PasswordResetEmailForm.new('')
     end
 
@@ -28,7 +27,7 @@ module Users
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = ForbiddenPasswords.new(token_user.email).call
+        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
       else
         handle_invalid_or_expired_token(result)
       end
@@ -36,8 +35,7 @@ module Users
 
     # PUT /resource/password
     def update
-      self.resource = user_matching_token(session[:reset_password_token])
-
+      self.resource = user_matching_token(user_params[:reset_password_token])
       @reset_password_form = ResetPasswordForm.new(resource)
 
       result = @reset_password_form.submit(user_params)
@@ -52,6 +50,12 @@ module Users
     end
 
     protected
+
+    def forbidden_passwords(email_addresses)
+      email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
+    end
 
     def email_params
       params.require(:password_reset_email_form).permit(:email, :resend, :request_id)
@@ -96,14 +100,7 @@ module Users
     end
 
     def token_user
-      @_token_user ||= User.with_reset_password_token(session[:reset_password_token])
-    end
-
-    def validated_token_from_url
-      reset_password_token = params[:reset_password_token]
-      return if reset_password_token.blank?
-      user = User.with_reset_password_token(reset_password_token)
-      user ? reset_password_token :  nil
+      @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 
     def build_user
@@ -111,43 +108,19 @@ module Users
     end
 
     def handle_successful_password_reset
-      create_user_event(:password_changed, resource)
-      update_user
-
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
-
       redirect_to new_user_session_url
-
-      EmailNotifier.new(resource).send_password_changed_email
-      session.delete(:reset_password_token)
     end
 
     def handle_unsuccessful_password_reset(result)
-      if result.errors[:reset_password_token].present?
-        flash[:error] = t('devise.passwords.token_expired')
+      reset_password_token_errors = result.errors[:reset_password_token]
+      if reset_password_token_errors.present?
+        flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
-        session.delete(:reset_password_token)
         return
       end
 
       render :edit
-    end
-
-    def update_user
-      attributes = { password: user_params[:password] }
-      attributes[:confirmed_at] = Time.zone.now unless resource.confirmed?
-      UpdateUser.new(user: resource, attributes: attributes).call
-      increment_password_metrics
-
-      mark_profile_inactive
-    end
-
-    def increment_password_metrics
-      PasswordMetricsIncrementer.new(user_params[:password]).increment_password_metrics
-    end
-
-    def mark_profile_inactive
-      resource.active_profile&.deactivate(:password_reset)
     end
 
     def user_params
@@ -155,19 +128,8 @@ module Users
         permit(:password, :reset_password_token)
     end
 
-    def redirect_without_token_url(token)
-      session[:reset_password_token] = token
-      redirect_to url_for
-    end
-
-    def prevent_token_leakage
-      token = validated_token_from_url
-      redirect_without_token_url(token) if token
-    end
-
     def assert_reset_token_passed
       # remove devise's default behavior
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

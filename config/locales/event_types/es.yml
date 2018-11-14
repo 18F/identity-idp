@@ -11,8 +11,12 @@ es:
     email_changed: Email cambiado
     new_personal_key: Clave personal cambiado
     password_changed: Contraseña cambiada
+    personal_key_used: Clave personal utilizada para iniciar sesión
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
+    phone_removed: Teléfono eliminado
     piv_cac_disabled: Tarjeta PIV/CAC no asociada
     piv_cac_enabled: Tarjeta PIV/CAC asociada
     usps_mail_sent: Carta enviada
+    webauthn_key_added: Clave de seguridad de hardware añadido
+    webauthn_key_removed: Clave de seguridad de hardware eliminada

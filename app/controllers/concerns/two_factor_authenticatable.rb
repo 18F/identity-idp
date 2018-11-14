@@ -53,8 +53,10 @@ module TwoFactorAuthenticatable
 
   def check_already_authenticated
     return unless initial_authentication_context?
+    return unless user_fully_authenticated?
+    return if remember_device_expired_for_sp?
 
-    redirect_to after_otp_verification_confirmation_url if user_fully_authenticated?
+    redirect_to after_otp_verification_confirmation_url
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
@@ -76,6 +78,7 @@ module TwoFactorAuthenticatable
       handle_valid_otp_for_confirmation_context
     end
     save_remember_device_preference
+    user_session.delete(:mfa_device_remembered)
 
     redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -140,12 +143,14 @@ module TwoFactorAuthenticatable
   end
 
   def old_phone
-    current_user.phone_configurations.first&.phone
+    MfaContext.new(current_user).phone_configurations.first&.phone
   end
 
   def phone_changed
     create_user_event(:phone_changed)
-    UserMailer.phone_changed(current_user).deliver_later
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.phone_changed(email_address).deliver_later
+    end
   end
 
   def phone_confirmed
@@ -221,7 +226,6 @@ module TwoFactorAuthenticatable
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      totp_enabled: current_user.totp_enabled?,
       remember_device_available: true,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
@@ -235,16 +239,14 @@ module TwoFactorAuthenticatable
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email,
+      user_email: current_user.email_addresses.first.email,
       remember_device_available: false,
-      phone_enabled: current_user.phone_configurations.any?(&:mfa_enabled?),
     }.merge(generic_data)
   end
 
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
-      has_piv_cac_configured: current_user.piv_cac_enabled?,
       reauthn: reauthn?,
     }
   end
@@ -259,7 +261,7 @@ module TwoFactorAuthenticatable
 
   def voice_otp_delivery_unsupported?
     phone_number = if authentication_context?
-                     current_user.phone_configurations.first&.phone
+                     MfaContext.new(current_user).phone_configurations.first&.phone
                    else
                      user_session[:unconfirmed_phone]
                    end
@@ -272,7 +274,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if current_user.phone_configurations.any?
+    if MfaPolicy.new(current_user).two_factor_enabled?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -280,7 +282,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && current_user.phone_configurations.any?
+    confirmation_context? && MfaPolicy.new(current_user).two_factor_enabled?
   end
 
   def presenter_for_two_factor_authentication_method

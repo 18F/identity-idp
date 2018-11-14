@@ -18,10 +18,10 @@ es:
     piv_cac_disabled: Tarjeta PIV/CAC desvinculada con éxito.
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
-    send_code:
-      personal_key: Tiene una nueva clave personal.
     session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
       nueva dentro de %{minutes} minutos.
+    session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra
+      su sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.
     signed_up_but_unconfirmed:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
@@ -45,7 +45,4 @@ es:
     use_diff_email:
       link: use un email diferente
       text_html: O %{link}
-    webauthn_added: Agregaste una clave de seguridad de hardware.
-    webauthn_deleted: Has eliminado una clave de seguridad de hardware.
-  session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra su
-    sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.
+    webauthn_deleted: Has eliminado una clave de seguridad.

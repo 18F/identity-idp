@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         via: %i[get post delete],
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
+  post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
   if FeatureManagement.enable_saml_cert_rotation?
@@ -54,7 +55,8 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
-      get '/account_reset/cancel' => 'account_reset/cancel#create'
+      get '/account_reset/cancel' => 'account_reset/cancel#show'
+      post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
@@ -68,9 +70,7 @@ Rails.application.routes.draw do
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
-      if FeatureManagement.piv_cac_enabled?
-        get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
-      end
+      get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       if FeatureManagement.webauthn_enabled?
         get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
         patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
@@ -92,10 +92,8 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
-        if FeatureManagement.piv_cac_enabled?
-          get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
-          post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
-        end
+        get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
+        post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
       end
     end
 
@@ -116,16 +114,16 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
-    if FeatureManagement.piv_cac_enabled?
-      get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
-      delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-      get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
-    end
+    get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
+    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
 
     if FeatureManagement.webauthn_enabled?
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
       patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
       delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+      get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
+      get '/webauthn_setup_success' => 'users/webauthn_setup#success'
     end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
@@ -141,6 +139,7 @@ Rails.application.routes.draw do
     patch '/manage/password' => 'users/passwords#update'
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
+    delete '/manage/phone' => 'users/phones#delete'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
@@ -187,6 +186,8 @@ Rails.application.routes.draw do
         get '/come_back_later' => 'come_back_later#show'
         get '/confirmations' => 'confirmations#show'
         post '/confirmations' => 'confirmations#update'
+        get '/forgot_password' => 'forgot_password#new'
+        post '/forgot_password' => 'forgot_password#update'
         get '/otp_delivery_method' => 'otp_delivery_method#new'
         put '/otp_delivery_method' => 'otp_delivery_method#create'
         get '/phone' => 'phone#new'
@@ -207,6 +208,11 @@ Rails.application.routes.draw do
         get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
         get '/cancel/' => 'cancellations#new', as: :cancel
         delete '/cancel' => 'cancellations#destroy'
+        if FeatureManagement.doc_auth_enabled?
+          get '/doc_auth' => 'doc_auth#index'
+          get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+          put '/doc_auth/:step' => 'doc_auth#update'
+        end
       end
     end
 

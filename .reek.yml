@@ -40,6 +40,7 @@ detectors:
       - ServiceProviderSeeder#run
       - OtpDeliverySelectionForm#unsupported_phone?
       - fallback_to_english
+      - TwilioService::Utils#request_data
       - UserEncryptedAttributeOverrides#find_with_email
       - Utf8Sanitizer#event_attributes
       - Utf8Sanitizer#remote_ip
@@ -76,11 +77,13 @@ detectors:
       - IdvController
       - Idv::Base
       - Rack::Attack
+      - ServiceProviderSessionDecorator
   TooManyConstants:
     exclude:
       - Analytics
   TooManyInstanceVariables:
     exclude:
+      - BaseFlow
       - OpenidConnectAuthorizeForm
       - OpenidConnectRedirector
       - Idv::VendorResult
@@ -102,6 +105,7 @@ detectors:
       - Idv::Agent#proof
       - Idv::VendorResult#initialize
       - SamlIdpController#auth
+      - TwilioService::Utils#sanitize_errors
       - Upaya::QueueConfig#self.choose_queue_adapter
       - Upaya::RandomTools#self.random_weighted_sample
       - UserFlowFormatter#stop
@@ -121,12 +125,16 @@ detectors:
       - HolidayService
       - PhoneDeliveryPresenter
       - CloudhsmKeyGenerator
+      - TwoFactorLoginOptionsPresenter
   UncommunicativeMethodName:
     exclude:
+      - Deploy::Activate#download_application_yml_from_s3
+      - Deploy::Activate#download_geocoding_database_from_s3
       - PhoneConfirmationFlow
       - render_401
       - SessionDecorator#registration_bullet_1
       - ServiceProviderSessionDecorator#registration_bullet_1
+
   UncommunicativeModuleName:
     exclude:
       - X509
@@ -148,6 +156,7 @@ detectors:
     public_methods_only: true
     exclude:
       - AnalyticsEventJob#perform
+      - AnonymousUser#confirmed_at
       - ApplicationController#default_url_options
       - ApplicationHelper#step_class
       - NullTwilioClient#http_client

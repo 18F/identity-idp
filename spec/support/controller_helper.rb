@@ -21,6 +21,7 @@ module ControllerHelper
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
     allow(controller).to receive(:user_fully_authenticated?).and_return(true)
+    allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
     user
   end
 
@@ -37,6 +38,7 @@ module ControllerHelper
     stub_sign_in(user)
     idv_session = Idv::Session.new(user_session: user_session, current_user: user, issuer: nil)
     idv_session.applicant = { first_name: 'Some', last_name: 'One' }.with_indifferent_access
+    idv_session.profile_confirmation = true
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
     allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)

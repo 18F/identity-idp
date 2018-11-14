@@ -11,6 +11,7 @@ describe 'Account Reset Request: Cancellation' do
       click_button t('account_reset.request.yes_continue')
       open_last_email
       click_email_link_matching(/cancel\?token/)
+      click_button t('account_reset.cancel_request.cancel_button')
 
       expect(page).to have_current_path new_user_session_path
       expect(page).
@@ -34,9 +35,10 @@ describe 'Account Reset Request: Cancellation' do
       reset_email
 
       Timecop.travel(Time.zone.now + 2.days) do
-        AccountResetService.grant_tokens_and_send_notifications
+        AccountReset::GrantRequestsAndSendEmails.new.call
         open_last_email
         click_email_link_matching(/cancel\?token/)
+        click_button t('account_reset.cancel_request.cancel_button')
 
         expect(page).to have_current_path new_user_session_path
         expect(page).

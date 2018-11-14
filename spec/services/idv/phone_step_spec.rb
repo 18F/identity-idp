@@ -12,13 +12,14 @@ describe Idv::PhoneStep do
   let(:good_phone) { '2255555000' }
   let(:bad_phone) { '7035555555' }
   let(:fail_phone) { '7035555999' }
+  let(:timeout_phone) { '7035555888' }
 
   subject { described_class.new(idv_session: idv_session) }
 
   describe '#submit' do
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
-      extra = { vendor: { messages: [], context: context, exception: nil } }
+      extra = { vendor: { messages: [], context: context, exception: nil, timed_out: false } }
 
       result = subject.submit(phone: good_phone)
 
@@ -32,7 +33,7 @@ describe Idv::PhoneStep do
 
     it 'fails with bad params' do
       context = { stages: [{ address: 'AddressMock' }] }
-      extra = { vendor: { messages: [], context: context, exception: nil } }
+      extra = { vendor: { messages: [], context: context, exception: nil, timed_out: false } }
 
       result = subject.submit(phone: bad_phone)
 
@@ -51,6 +52,22 @@ describe Idv::PhoneStep do
       subject.submit(phone: bad_phone)
 
       expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts + 1)
+    end
+
+    it 'does not increment step attempts when the vendor request times out' do
+      original_step_attempts = idv_session.step_attempts[:phone]
+
+      subject.submit(phone: timeout_phone)
+
+      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
+    end
+
+    it 'does not increment step attempts when the vendor raises an exception' do
+      original_step_attempts = idv_session.step_attempts[:phone]
+
+      subject.submit(phone: fail_phone)
+
+      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
     end
 
     it 'marks the phone as confirmed if it matches 2FA phone' do
@@ -87,6 +104,14 @@ describe Idv::PhoneStep do
         subject.submit(phone: bad_phone)
 
         expect(subject.failure_reason).to eq(:fail)
+      end
+    end
+
+    context 'when the vendor raises a timeout exception' do
+      it 'returns :timeout' do
+        subject.submit(phone: timeout_phone)
+
+        expect(subject.failure_reason).to eq(:timeout)
       end
     end
 

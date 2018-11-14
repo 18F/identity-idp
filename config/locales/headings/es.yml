@@ -5,13 +5,14 @@ es:
       account_history: Historial de cuenta
       account_management: Manejo de cuenta
       connected_apps: Aplicaciones
+      login_history: Historial de sesión
       login_info: Su cuenta
       profile_info: Información de perfil
       reactivate: Reactive su cuenta
       two_factor: Autenticación de dos factores
       verified_account: Cuenta verificada
     account_recovery_setup:
-      piv_cac_linked: NOT TRANSLATED YET
+      piv_cac_linked: Tu tarjeta PIV/CAC está vinculada a tu cuenta
     cancellations:
       confirmation: Ha cancelado la verificación de su identidad con login.gov
       prompt: "¿Estas seguro que quieres cancelar?"
@@ -24,13 +25,13 @@ es:
     edit_info:
       email: Cambie su email
       password: Cambie su contraseña
-      phone: Ingrese su nuevo número de teléfono
+      phone: Administrar su número de teléfono
     lock_failure: Esto es lo que puedes hacer
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
       forgot: "¿Olvidó su contraseña?"
-    personal_key: Aquí está su clave personal
+    personal_key: Siempre tenga acceso a su cuenta con su clave personal
     piv_cac_setup:
       certificate:
         bad: El certificado que seleccionaste no es válido.
@@ -41,11 +42,11 @@ es:
         unverified: El certificado que seleccionaste no es válido.
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
       piv_cac:
-        already_associated: NOT TRANSLATED YET
+        already_associated: La PIV/CAC que has presentado está asociada a otro usuario.
       token:
-        bad: NOT TRANSLATED YET
-        invalid: NOT TRANSLATED YET
-        missing: NOT TRANSLATED YET
+        bad: Error interno.
+        invalid: El certificado que seleccionaste no es válido.
+        missing: Error interno.
     registrations:
       enter_email: Ingrese su dirección de correo electrónico
     session_timeout_warning: "¿Necesita más tiempo?"
@@ -55,4 +56,4 @@ es:
       new: Permita una app de autenticación
     verify_email: Revise su email
     webauthn_setup:
-      new: Registre su clave de seguridad de hardware
+      new: Añade tu clave de seguridad

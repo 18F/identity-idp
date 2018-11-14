@@ -76,4 +76,8 @@ RSpec.configure do |config|
     example.run
     Capybara.use_default_driver
   end
+
+  config.before(:each, type: :feature) do
+    allow_any_instance_of(Geocoder::Result::Test).to receive(:language=)
+  end
 end

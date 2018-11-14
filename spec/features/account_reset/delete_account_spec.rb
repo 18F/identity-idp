@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Account Reset Request: Delete Account', email: true do
   let(:user) { create(:user, :signed_up) }
+  let(:user_email) { user.email_addresses.first.email }
 
   before do
     TwilioService::Utils.telephony_service = FakeSms
@@ -9,14 +10,14 @@ describe 'Account Reset Request: Delete Account', email: true do
 
   context 'as an LOA1 user' do
     it 'allows the user to delete their account after 24 hours' do
-      signin(user.email, user.password)
+      signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions', email: user.email)
+          t('account_reset.confirm_request.instructions', email: user_email)
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
@@ -24,7 +25,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       Timecop.travel(Time.zone.now + 2.days) do
-        AccountResetService.grant_tokens_and_send_notifications
+        AccountReset::GrantRequestsAndSendEmails.new.call
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
@@ -37,7 +38,7 @@ describe 'Account Reset Request: Delete Account', email: true do
           strip_tags(
             t(
               'account_reset.confirm_delete_account.info',
-              email: user.email,
+              email: user_email,
               link: t('account_reset.confirm_delete_account.link_text')
             )
           )
@@ -54,16 +55,17 @@ describe 'Account Reset Request: Delete Account', email: true do
   end
 
   context 'as an LOA1 user without a phone' do
+    let(:user) { create(:user, :with_authentication_app) }
+
     it 'does not tell the user that an SMS was sent to their registered phone' do
-      user = create(:user, :with_authentication_app)
-      signin(user.email, user.password)
+      signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
       click_button t('account_reset.request.yes_continue')
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions', email: user.email)
+          t('account_reset.confirm_request.instructions', email: user_email)
         )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
@@ -86,7 +88,7 @@ describe 'Account Reset Request: Delete Account', email: true do
     end
 
     it 'does not allow the user to delete their account from 2FA screen' do
-      signin(user.email, user.password)
+      signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
 
       # Account reset link should not be present

@@ -31,7 +31,13 @@ class SessionDecorator
     view_context.root_url
   end
 
+  def mfa_expiration_interval
+    Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
+  end
+
   def failure_to_proof_url; end
+
+  def sp_msg; end
 
   def sp_name; end
 
@@ -48,8 +54,6 @@ class SessionDecorator
   def requested_attributes; end
 
   def sp_alert?(_path); end
-
-  def sp_alert_name; end
 
   def sp_alert_learn_more; end
 

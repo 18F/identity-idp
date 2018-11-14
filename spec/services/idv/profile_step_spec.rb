@@ -26,7 +26,7 @@ describe Idv::ProfileStep do
       context = { stages: [{ resolution: 'ResolutionMock' }, { state_id: 'StateIdMock' }] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: [], context: context, exception: nil },
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
       result = subject.submit(user_attrs)
@@ -47,7 +47,7 @@ describe Idv::ProfileStep do
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: [], context: context, exception: nil },
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
       result = subject.submit(user_attrs)
@@ -63,6 +63,16 @@ describe Idv::ProfileStep do
 
     it 'increments attempts count' do
       expect { subject.submit(user_attrs) }.to change(user, :idv_attempts).by(1)
+    end
+
+    it 'does not increment attempts count when the vendor request times out' do
+      expect { subject.submit(user_attrs.merge(first_name: 'Time')) }.
+        to_not change(user, :idv_attempts)
+    end
+
+    it 'does not increment attempts count when the vendor raises an exception' do
+      expect { subject.submit(user_attrs.merge(first_name: 'Fail')) }.
+        to_not change(user, :idv_attempts)
     end
   end
 
@@ -82,6 +92,14 @@ describe Idv::ProfileStep do
         subject.submit(user_attrs.merge(first_name: 'Bad'))
 
         expect(subject.failure_reason).to eq(:fail)
+      end
+    end
+
+    context 'when the vendor raises a timeout exception' do
+      it 'returns :timeout' do
+        subject.submit(user_attrs.merge(first_name: 'Time'))
+
+        expect(subject.failure_reason).to eq(:timeout)
       end
     end
 

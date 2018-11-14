@@ -214,28 +214,6 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe 'piv/cac feature' do
-    describe '#piv_cac_enabled?' do
-      context 'when enabled' do
-        before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
-        end
-
-        it 'has the feature disabled' do
-          expect(FeatureManagement.piv_cac_enabled?).to be_truthy
-        end
-      end
-
-      context 'when disabled' do
-        before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
-        end
-
-        it 'has the feature disabled' do
-          expect(FeatureManagement.piv_cac_enabled?).to be_falsey
-        end
-      end
-    end
-
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do
@@ -258,29 +236,23 @@ describe 'FeatureManagement', type: :feature do
       end
     end
 
-    describe '#development_and_piv_cac_entry_enabled?' do
+    describe '#development_and_identity_pki_disabled?' do
       context 'in development environment' do
         before(:each) do
           allow(Rails.env).to receive(:development?).and_return(true)
         end
 
-        context 'has piv/cac enabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
-          end
-
-          it 'has piv/cac test entry enabled' do
-            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_truthy
+        context 'identity_pki disabled' do
+          it 'returns true' do
+            allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+            expect(FeatureManagement.development_and_identity_pki_disabled?).to be_truthy
           end
         end
 
-        context 'has piv/cac disabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
-          end
-
-          it 'has piv/cac test entry disabled' do
-            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+        context 'identity_pki not disabled' do
+          it 'returns false' do
+            allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+            expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
       end
@@ -291,23 +263,17 @@ describe 'FeatureManagement', type: :feature do
           allow(Rails.env).to receive(:development?).and_return(false)
         end
 
-        context 'has piv/cac enabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
-          end
-
-          it 'has piv/cac test entry disabled' do
-            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+        context 'identity_pki disabled' do
+          it 'returns false' do
+            allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+            expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
 
-        context 'has piv/cac disabled' do
-          before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
-          end
-
-          it 'has piv/cac test entry disabled' do
-            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+        context 'identity_pki not disabled' do
+          it 'returns false' do
+            allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+            expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
       end
@@ -459,6 +425,48 @@ describe 'FeatureManagement', type: :feature do
       it 'disables the feature' do
         expect(FeatureManagement.webauthn_enabled?).to eq(false)
       end
+    end
+  end
+
+  describe '#doc_auth_enabled?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:doc_auth_enabled) { 'true' }
+
+      expect(FeatureManagement.doc_auth_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:doc_auth_enabled) { 'false' }
+
+      expect(FeatureManagement.doc_auth_enabled?).to eq(false)
+    end
+  end
+
+  describe '#doc_auth_exclusive?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'true' }
+
+      expect(FeatureManagement.doc_auth_exclusive?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'false' }
+
+      expect(FeatureManagement.doc_auth_exclusive?).to eq(false)
+    end
+  end
+
+  describe '#platform_authenticator_enabled?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'true' }
+
+      expect(FeatureManagement.platform_authenticator_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'false' }
+
+      expect(FeatureManagement.platform_authenticator_enabled?).to eq(false)
     end
   end
 end

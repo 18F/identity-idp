@@ -27,7 +27,7 @@ describe PivCacService do
   describe '#decode_token' do
     context 'when configured for local development' do
       before(:each) do
-        allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { true }
+        allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?) { true }
       end
 
       it 'raises an error if no token provided' do
@@ -58,7 +58,7 @@ describe PivCacService do
     context 'when communicating with piv/cac service' do
       context 'when in non-development mode' do
         before(:each) do
-          allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { false }
+          allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?) { false }
         end
 
         it 'raises an error if no token provided' do
@@ -69,7 +69,6 @@ describe PivCacService do
 
         describe 'when configured with a user-facing endpoint' do
           before(:each) do
-            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
             allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
             allow(Figaro.env).to receive(:piv_cac_service_url) { base_url }
           end
@@ -85,7 +84,7 @@ describe PivCacService do
 
         context 'when in development mode' do
           before(:each) do
-            allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { true }
+            allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?) { true }
           end
           let(:nonce) { 'once' }
 
@@ -97,7 +96,6 @@ describe PivCacService do
 
       describe 'when configured to contact remote service' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
           allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
           allow(Figaro.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
         end
@@ -138,7 +136,6 @@ describe PivCacService do
 
       describe 'with bad json' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
           allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
           allow(Figaro.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
         end
@@ -163,7 +160,7 @@ describe PivCacService do
   end
 
   describe '#piv_cac_available_for_agency?' do
-    let(:subject) { PivCacService.piv_cac_available_for_agency?('foo', 'foo@example.com') }
+    let(:subject) { PivCacService.piv_cac_available_for_agency?('foo', ['foo@example.com']) }
 
     context 'with an agency not encouraged to use piv/cac for anyone' do
       before(:each) do
@@ -198,7 +195,6 @@ describe PivCacService do
 
     context 'with the agency not configured to be available' do
       before(:each) do
-        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar"]')
       end
 
@@ -207,7 +203,6 @@ describe PivCacService do
 
     context 'with the agency configured to be available' do
       before(:each) do
-        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies).and_return('["bar","foo"]')
       end
 
@@ -216,11 +211,10 @@ describe PivCacService do
   end
 
   describe '#available_for_email?' do
-    let(:subject) { PivCacService.send(:available_for_email?, 'foo', 'foo@bar.example.com') }
+    let(:subject) { PivCacService.send(:available_for_email?, 'foo', ['foo@bar.example.com']) }
 
     context 'with the agency not configured to be available' do
       before(:each) do
-        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar"]')
       end
 
@@ -229,7 +223,6 @@ describe PivCacService do
 
     context 'with the agency configured to be available' do
       before(:each) do
-        allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar","foo"]')
       end
 

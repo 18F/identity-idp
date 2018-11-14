@@ -1,0 +1,16 @@
+p.lead
+  strong == t('.intro')
+
+table.spacer
+  tbody
+    tr
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
+      | &nbsp;
+
+p == t('.help_html',
+        reset_password_url: forgot_password_url,
+        account_url: account_url)

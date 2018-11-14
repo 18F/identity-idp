@@ -21,7 +21,7 @@ class Identity < ApplicationRecord
   end
 
   def piv_cac_enabled?
-    user&.piv_cac_enabled?
+    TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end
 
   def decorate
@@ -29,6 +29,13 @@ class Identity < ApplicationRecord
   end
 
   def piv_cac_available?
-    PivCacService.piv_cac_available_for_agency?(sp_metadata[:agency], user.email)
+    PivCacService.piv_cac_available_for_agency?(
+      sp_metadata[:agency],
+      user.email_addresses.map(&:email)
+    )
+  end
+
+  def email
+    user.email_addresses.first&.email
   end
 end

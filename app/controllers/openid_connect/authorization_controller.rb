@@ -2,6 +2,7 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     include AccountRecoverable
     include FullyAuthenticatable
+    include RememberDeviceConcern
     include VerifyProfileConcern
     include VerifySPAttributesConcern
 
@@ -9,19 +10,23 @@ module OpenidConnect
     before_action :validate_authorize_form, only: [:index]
     before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
     before_action :store_request, only: [:index]
-    before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
+    before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
 
     def index
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       link_identity_to_service_provider
-      return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?
+      return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_multiple_mfa_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       handle_successful_handoff
     end
 
     private
+
+    def confirm_user_is_authenticated_with_fresh_mfa
+      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+      redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+    end
 
     def link_identity_to_service_provider
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
@@ -64,10 +69,6 @@ module OpenidConnect
 
     def build_authorize_form_from_params
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
-
-      @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
-        scopes: @authorize_form.scope
-      )
     end
 
     def authorization_params
@@ -99,23 +100,12 @@ module OpenidConnect
     end
 
     def store_request
-      client_id = @authorize_form.client_id
-
-      @request_id = SecureRandom.uuid
-      ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
-        sp_request.issuer = client_id
-        sp_request.loa = @authorize_form.acr_values.sort.max
-        sp_request.url = request.original_url
-        sp_request.requested_attributes = requested_attributes
-      end
-    end
-
-    def add_sp_metadata_to_session
-      StoreSpMetadataInSession.new(session: session, request_id: @request_id).call
-    end
-
-    def requested_attributes
-      @_attributes ||= @authorize_decorator.requested_attributes
+      ServiceProviderRequestHandler.new(
+        url: request.original_url,
+        session: session,
+        protocol_request: @authorize_form,
+        protocol: FederatedProtocols::Oidc
+      ).call
     end
   end
 end

@@ -189,4 +189,12 @@ describe Idv::ProfileForm do
       expect(subject.errors).to include(:state_id_type)
     end
   end
+
+  describe 'state id number length validity' do
+    it 'populates error for invalid state id number length' do
+      subject.submit(profile_attrs.merge(state_id_number: '8' * 26))
+      expect(subject.valid?).to eq false
+      expect(subject.errors).to include(:state_id_number)
+    end
+  end
 end

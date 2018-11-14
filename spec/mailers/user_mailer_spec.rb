@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe UserMailer, type: :mailer do
-  let(:user) { build_stubbed(:user) }
+  let(:user) { build(:user, :with_email) }
+  let(:email_address) { user.email_addresses.first }
 
   describe 'email_changed' do
     let(:mail) { UserMailer.email_changed('old@email.com') }
@@ -25,12 +26,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'password_changed' do
-    let(:mail) { UserMailer.password_changed(user) }
+    let(:mail) { UserMailer.password_changed(email_address) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -42,6 +43,26 @@ describe UserMailer, type: :mailer do
         t('user_mailer.password_changed.intro', app: APP_NAME)
       )
       expect_email_body_to_have_help_and_contact_links
+    end
+  end
+
+  describe 'personal_key_sign_in' do
+    let(:mail) { UserMailer.personal_key_sign_in(user.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.personal_key_sign_in.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.personal_key_sign_in.intro')
+      )
     end
   end
 
@@ -78,12 +99,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'phone_changed' do
-    let(:mail) { UserMailer.phone_changed(user) }
+    let(:mail) { UserMailer.phone_changed(email_address) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -132,12 +153,13 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'account_reset_request' do
-    let(:mail) { UserMailer.account_reset_request(user) }
+    let(:mail) { UserMailer.account_reset_request(email_address, account_reset) }
+    let(:account_reset) { user.account_reset_request }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -155,12 +177,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'account_reset_granted' do
-    let(:mail) { UserMailer.account_reset_granted(user, user.account_reset_request) }
+    let(:mail) { UserMailer.account_reset_granted(email_address, user.account_reset_request) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -174,12 +196,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'account_reset_complete' do
-    let(:mail) { UserMailer.account_reset_complete(user.email) }
+    let(:mail) { UserMailer.account_reset_complete(email_address) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do
@@ -193,12 +215,12 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(user.email) }
+    let(:mail) { UserMailer.please_reset_password(email_address) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
+      expect(mail.to).to eq [email_address.email]
     end
 
     it 'renders the subject' do

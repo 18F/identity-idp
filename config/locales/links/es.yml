@@ -24,7 +24,6 @@ es:
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     two_factor_authentication:
-      app_option: Use una aplicación de autenticación en su lugar.
       get_another_code: Obtener otro código
     what_is_totp: "¿Qué es una app de autenticación?"
     what_is_webauthn: "¿Qué es una clave de seguridad de hardware?"

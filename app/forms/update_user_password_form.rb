@@ -33,7 +33,9 @@ class UpdateUserPasswordForm
   end
 
   def email_user_about_password_change
-    EmailNotifier.new(user).send_password_changed_email
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.password_changed(email_address).deliver_later
+    end
   end
 
   def encrypt_user_profile_if_active

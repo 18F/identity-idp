@@ -38,7 +38,7 @@ Rails.application.configure do
       type: :n_plus_one_query, class_name: 'User', association: :phone_configurations
     )
     Bullet.add_whitelist(
-      type: :n_plus_one_query, class_name: 'User', association: :email_address
+      type: :n_plus_one_query, class_name: 'User', association: :email_addresses
     )
   end
 

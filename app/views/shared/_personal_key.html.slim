@@ -1,28 +1,35 @@
 h1.h3.my0 = t('headings.personal_key')
 
-p.mt-tiny.mb0
-  = t('instructions.personal_key_html',
-      accent: content_tag(:strong, t('instructions.personal_key_accent')))
+p.mt-tiny.mb4
+  = t('instructions.personal_key.info_html',
+      accent: content_tag(:strong, t('instructions.personal_key.accent')))
 
-= render 'partials/personal_key/key', code: code
+.full-width-box
+  = render 'partials/personal_key/key', code: code
 
-.mb3.right-align
-  = button_to(t('users.personal_key.get_another'), create_new_personal_key_path(resend: true),
-            method: :post,
-            class: 'btn btn-link ml1 btn-border ico ico-refresh text-decoration-none',
-            form_class: 'inline-block')
-
-  = link_to t('users.personal_key.print'), '#',
-    data: { print: true },
-    class: 'ml2 btn-border ico ico-print text-decoration-none'
-
-= accordion('personal-key-info', t('users.personal_key.help_text_header')) do
-  = simple_format(t('users.personal_key.help_text'))
-
-div
+.pkey-info.mt4.mb2
+  .sm-col.sm-col-6.sm-pr1.mb1
+    .pkey-info-image.mb1
+      = image_tag(asset_url('personal-key/warning.svg'), size: '60')
+    p = t('instructions.personal_key.once_html')
+  .sm-col.sm-col-6.sm-pl1.mb1
+    .pkey-info-image.mb1
+      = image_tag(asset_url('personal-key/lock-check.svg'), size: '60')
+    p = t('instructions.personal_key.safety_html')
+.clearfix
+.bg-lighter-blue.clearfix.mb2.px3.py2.rounded-lg
+  .sm-col.sm-col-2.pr2
+    = image_tag(asset_url('personal-key/email.svg'), size: '60')
+  .sm-col.sm-col-10
+    .bold.mb0 = t('instructions.personal_key.email_title')
+    p = t('instructions.personal_key.email_body')
+br
+.center
   = button_to t('forms.buttons.continue'), update_path,
-            class: 'btn btn-primary btn-wide mb1 personal-key-continue sm-col-6 col-12 mb3',
+            class: 'btn btn-primary btn-wide mb1 personal-key-continue sm-col-6 col-12 mb2',
             'data-toggle': 'modal'
+
+  = link_to t('users.personal_key.print'), '#', data: { print: true }
 
 = render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path
 

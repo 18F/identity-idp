@@ -8,16 +8,18 @@ es:
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
-      send_confirmation_code: NOT TRANSLATED YET
+      send_confirmation_code: Continuar
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
       warning_header: Si usted cancela ahora
       warnings:
-        warning_1: NOT TRANSLATED YET
-        warning_2: NOT TRANSLATED YET
-        warning_3: NOT TRANSLATED YET
-        warning_4: NOT TRANSLATED YET
-        warning_5: NOT TRANSLATED YET
+        warning_1: No podremos verificar tu identidad
+        warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número
+          de la seguridad social
+        warning_3: No podrás acceder de forma segura a tu información usando %{app}
+        warning_4: Seguirás teniendo una cuenta login.gov para tu dirección de correo
+          electrónico
+        warning_5: Puedes gestionar o eliminar esa cuenta desde tu página de perfil
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
@@ -27,6 +29,7 @@ es:
         dob: Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        state_id_number: Su número de ID no puede tener más de 25 caracteres
         zipcode: 'Su código postal debe ser ingresado como #####-####'
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
@@ -51,18 +54,30 @@ es:
           durante 24 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con la información
           de su teléfono.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
+        jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
+          Vuelve a intentarlo mañana.
+        timeout: Nuestra solicitud para verificar tu información ha caducado.
         warning: Compruebe la información que ingresó.
       sessions:
         fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
           durante 24 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
+        jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
+          Vuelve a intentarlo mañana.
+        timeout: Nuestra solicitud para verificar tu información ha caducado.
         warning: Compruebe la información que ingresó. Los errores comunes son números
           incorrectos de Seguro Social, código postal o fecha de nacimiento.
+    forgot_password:
+      link_html: "¿Se te olvidó tu contraseña? %{link}"
+      link_text: Siga estas instrucciones
+      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      reset_password: Restablecer la contraseña
+      try_again: Inténtalo de nuevo
+      warnings:
+        warning_1: Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
+        warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
+          número de identificación del estado, etc.
     form:
       activate_by_mail: obtener un código por correo electrónico en su lugar ›
       address1: Dirección
@@ -78,9 +93,10 @@ es:
       ssn_label_html: Número de Seguro Social
       state: Estado
       state_id: Número de identificación
+      state_id_tip: sin espacios ni guiones
       state_id_type:
-        drivers_license: NOT TRANSLATED YET
-        drivers_permit: NOT TRANSLATED YET
+        drivers_license: Licencia de conducir
+        drivers_permit: Permiso de conducir
         state_id_card: Identificación del estado
       state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
@@ -92,21 +108,24 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
       activated_link: Contáctenos
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
+      agencies_login: Ahora puedes continuar e iniciar sesión en estas agencias.
+      agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
       cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
         información personal básica, así como su información financiera para completar
         este proceso. Si no tiene la información que necesitamos en este momento,
         puede continuar más tarde.
-      come_back_later: NOT TRANSLATED YET
-      come_back_later_no_sp_html: NOT TRANSLATED YET
-      come_back_later_sp_html: NOT TRANSLATED YET
+      clear_and_start_over: Borrar mi información y empezar de nuevo
+      come_back_later: Una vez llegue tu carta, regístrate en %{app} e introduce tu
+        código de verificación cuando se te solicite.
+      come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app}</strong>.
+      come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       dupe_ssn1: Si recibe este error, es posible que ya haya creado y verificado
         una cuenta, pero con un email diferente.
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
       dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
-      hardfail: NOT TRANSLATED YET
+      hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
+        tu edad de nuevo en %{hours} horas.
       jurisdiction:
         no_id: No tengo una identificación emitida por el estado
         no_id_failure: Estamos trabajando arduamente para agregar más formas de verificar
@@ -123,7 +142,7 @@ es:
           emitida por el estado.
       mail_sent: Su carta está en camino
       otp_delivery_method:
-        phone_number_html: NOT TRANSLATED YET
+        phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
@@ -136,8 +155,8 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
-      return_to_profile: NOT TRANSLATED YET
-      return_to_sp_html: NOT TRANSLATED YET
+      return_to_profile: "‹ Volver a tu perfil de login.gov"
+      return_to_sp_html: Ahora puedes iniciar sesión en <strong>%{sp}</strong>.
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
@@ -151,15 +170,13 @@ es:
         id_information_subtitle: Información de identificación
         no_pii: FALSO No utilice información personal real (sólo para propósitos de
           demostración) FALSO
-        review_message: Cuando ingrese su contraseña, login.gov protegerá su información
-          personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
-          su información.
+        review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
+          sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
       usps:
-        bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
           verificada en el archivo.
-        resend: Envíeme otra carta.
+        resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:
       dob: Fecha de nacimiento
@@ -169,7 +186,7 @@ es:
     titles:
       activated: Su identidad ha sido verificada.
       cancel: No podemos verificar su identidad.
-      come_back_later: NOT TRANSLATED YET
+      come_back_later: Vuelve pronto.
       complete: Verificación de identidad completa
       dupe: 'Error: Una cuenta puede que ya exista.'
       expectations: A continuación, ayúdenos a identificarlo.
@@ -182,13 +199,13 @@ es:
         verify: "¿Desea una carta?"
       no_id: No podemos verificar su identidad sin una identificación emitida por
         el estado
-      otp_delivery_method: NOT TRANSLATED YET
+      otp_delivery_method: "¿Cómo te gustaría recibir el código?"
       phone: Número de teléfono del registro
       review: Revise y envíe
       select_verification: Active su cuenta
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
-        review: Encripte sus datos verificados ingresando su contraseña.
+        review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
         success: Hemos verificado la información en su identificación emitida por
           el estado.
       sessions: Información acerca de ti

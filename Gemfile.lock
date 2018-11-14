@@ -1,20 +1,20 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: f69b0295933809057292736ed173a5a5e11b668c
-  tag: v3.1.0
+  revision: 03fc2f8c9bfb3218da2a7cb7c309b0650a5bebe5
+  tag: v3.2.1
   specs:
-    aamva (3.1.0)
+    aamva (3.2.1)
       dotenv
       hashie
-      httpi
+      typhoeus
       xmldsig
 
 GIT
   remote: git@github.com:18F/identity-lexisnexis-api-client-gem
-  revision: d17049ab1a03d50c0cc8a272d86cf2144192fab5
-  tag: v1.1.0
+  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
+  tag: v1.2.0
   specs:
-    lexisnexis (1.1.0)
+    lexisnexis (1.2.0)
       dotenv
       typhoeus
 
@@ -28,10 +28,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 875246d603bbd9b29cbc82493513f948d4e8689b
-  tag: v2.6.1
+  revision: f48ecd14ef602d574119022c0fc15350cbd7baa0
+  tag: v2.7.0
   specs:
-    proofer (2.6.1)
+    proofer (2.7.0)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
@@ -54,14 +54,6 @@ GIT
       nokogiri (>= 1.6.2)
       pkcs11
       uuid
-
-GIT
-  remote: https://github.com/mattheworiordan/capybara-screenshot.git
-  revision: fe47a6816677d573fd5428dae60a31bc8898f623
-  specs:
-    capybara-screenshot (1.0.14)
-      capybara (>= 1.0, < 3)
-      launchy
 
 GEM
   remote: https://rubygems.org/
@@ -169,13 +161,16 @@ GEM
       rainbow
       thor
     byebug (10.0.2)
-    capybara (2.17.0)
+    capybara (3.7.2)
       addressable
       mini_mime (>= 0.1.3)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (>= 2.0, < 4.0)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      xpath (~> 3.1)
+    capybara-screenshot (1.0.21)
+      capybara (>= 1.0, < 4)
+      launchy
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
@@ -197,6 +192,8 @@ GEM
     colorize (0.8.1)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.2)
+    cose (0.1.0)
+      cbor (~> 0.5.9.2)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
@@ -226,7 +223,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.4.0)
+    dotenv (2.5.0)
     dotiw (4.0.1)
       actionpack (>= 4)
       i18n
@@ -346,9 +343,10 @@ GEM
       systemu (~> 2.6.2)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
+    maxminddb (0.1.22)
     memory_profiler (0.9.11)
     method_source (0.9.0)
-    mini_mime (1.0.0)
+    mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multi_xml (0.6.0)
@@ -358,7 +356,7 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (5.2.0.345)
+    newrelic_rpm (5.4.0.347)
     nio4r (2.3.1)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
@@ -390,7 +388,8 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
-    public_suffix (3.0.2)
+    public_suffix (3.0.3)
+    puma (3.12.0)
     rack (2.0.5)
     rack-attack (5.4.0)
       rack (>= 1.0, < 3)
@@ -619,8 +618,9 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
-    webauthn (0.2.0)
+    webauthn (1.3.0)
       cbor (~> 0.5.9.2)
+      cose (~> 0.1.0)
     webmock (3.4.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -642,7 +642,7 @@ GEM
       xmlmapper (>= 0.7.3)
     xmlmapper (0.7.3)
       nokogiri (~> 1.5)
-    xpath (3.0.0)
+    xpath (3.1.0)
       nokogiri (~> 1.8)
     zonebie (0.6.1)
     zxcvbn-js (4.4.3)
@@ -664,7 +664,7 @@ DEPENDENCIES
   brakeman
   bullet
   bummr
-  capybara-screenshot!
+  capybara-screenshot
   capybara-selenium
   chromedriver-helper
   codeclimate-test-reporter
@@ -696,6 +696,7 @@ DEPENDENCIES
   knapsack
   lexisnexis!
   lograge
+  maxminddb
   net-sftp
   newrelic_rpm
   overcommit
@@ -705,6 +706,7 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
+  puma
   rack-attack
   rack-cors
   rack-headers_filter
@@ -756,4 +758,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.16.6

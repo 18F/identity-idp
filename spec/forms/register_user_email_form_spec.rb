@@ -33,7 +33,7 @@ describe RegisterUserEmailForm do
 
     context 'when email is already taken and existing user is unconfirmed' do
       it 'sends confirmation instructions to existing user' do
-        user = instance_double(User, email: 'existing@test.com', confirmed?: false, uuid: '123')
+        user = create(:user, email: 'existing@test.com', confirmed_at: nil, uuid: '123')
         allow(User).to receive(:find_with_email).with(user.email).and_return(user)
 
         expect(user).to receive(:send_custom_confirmation_instructions)

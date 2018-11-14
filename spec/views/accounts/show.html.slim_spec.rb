@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.slim' do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build(:user, :signed_up, :with_email) }
   let(:decorated_user) { user.decorate }
 
   before do
@@ -11,6 +11,7 @@ describe 'accounts/show.html.slim' do
       :view_model,
       AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
     )
+    assign(:login_presenter, LoginPresenter.new(user: user))
   end
 
   context 'user is not TOTP enabled' do
@@ -37,7 +38,7 @@ describe 'accounts/show.html.slim' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '123') }
+    let(:user) { build(:user, :signed_up, :with_email, otp_secret_key: '123') }
 
     before do
       assign(
@@ -146,5 +147,99 @@ describe 'accounts/show.html.slim' do
     render
 
     expect(view).to render_template(partial: '_delete_account_item_heading')
+  end
+
+  context 'phone listing and adding' do
+    it 'renders the phone section' do
+      render
+
+      expect(view).to render_template(partial: '_phone')
+    end
+
+    context 'user has no phone' do
+      let(:user) do
+        record = build(:user, :signed_up, :with_piv_or_cac, :with_email)
+        record.phone_configurations = []
+        record
+      end
+
+      it 'shows the add phone link' do
+        render
+
+        expect(rendered).to have_link(
+          t('account.index.phone_add'), href: manage_phone_path
+        )
+      end
+    end
+
+    context 'user has a phone' do
+      it 'shows no add phone link' do
+        render
+
+        expect(rendered).to_not have_content t('account.index.phone_add')
+        expect(rendered).to_not have_link(
+          t('account.index.phone_add'), href: manage_phone_path
+        )
+      end
+
+      it 'shows an edit link' do
+        render
+
+        expect(rendered).to have_link(
+          t('account.index.phone'), href: manage_phone_url
+        )
+      end
+    end
+  end
+
+  describe 'sign in timestamps and IP addresses' do
+    before do
+      current_sign_in_at = Time.zone.now - 5.seconds
+      last_sign_in_at = Time.zone.now - 5.seconds
+      user = build(
+        :user,
+        :signed_up,
+        :with_email,
+        current_sign_in_at: current_sign_in_at,
+        last_sign_in_at: last_sign_in_at,
+        current_sign_in_ip: '1.2.3.4',
+        last_sign_in_ip: '159.142.31.80'
+      )
+      allow(view).to receive(:current_user).and_return(user)
+      assign(:login_presenter, LoginPresenter.new(user: user))
+      allow_any_instance_of(Geocoder::Result::Test).to receive(:language=)
+    end
+
+    it 'uses distance of time in words for timestamp' do
+      render
+
+      expect(rendered).to have_content 'seconds ago'
+    end
+
+    it 'only shows the country if city and state not geocoded from IP address' do
+      render
+
+      expect(rendered).to have_content 'From United States (IP address: 1.2.3.4)'
+    end
+
+    it 'shows city and state when geocoded from IP address' do
+      render
+
+      expect(rendered).to have_content 'From Arlington, VA (IP address: 159.142.31.80)'
+    end
+
+    it 'shows unknown location when IP address cannot be geocoded' do
+      user = build(
+        :user,
+        :signed_up,
+        :with_email,
+        current_sign_in_ip: '4.3.2.1'
+      )
+      assign(:login_presenter, LoginPresenter.new(user: user))
+
+      render
+
+      expect(rendered).to have_content 'From unknown location (IP address: 4.3.2.1)'
+    end
   end
 end

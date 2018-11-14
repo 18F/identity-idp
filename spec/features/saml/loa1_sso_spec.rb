@@ -79,6 +79,7 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'user can view and confirm personal key during sign up', :js do
+      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
       code = 'ABC1-DEF2-GH13-JK14'
@@ -96,6 +97,7 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'coerces invalid characters into their Crockford Base32 equivalents', :js do
+      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       displayed_personal_key = '0000-1111-1111-1234'
       misread_personal_key = 'ooOO-iiII-llLL-1234'
 
@@ -112,22 +114,6 @@ feature 'LOA1 Single Sign On' do
       click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
 
       expect(current_path).to eq sign_up_completed_path
-    end
-
-    it 'redirects user to SP after asking for new personal key during sign up' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
-      saml_authn_request = auth_request.create(saml_settings)
-      visit saml_authn_request
-      register_user
-      click_on t('users.personal_key.get_another')
-      click_acknowledge_personal_key
-
-      expect(current_path).to eq sign_up_completed_path
-
-      click_on t('forms.buttons.continue')
-
-      expect(current_url).to eq saml_authn_request
     end
 
     it 'after session timeout, signing in takes user back to SP' do
@@ -247,40 +233,6 @@ feature 'LOA1 Single Sign On' do
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
-    end
-  end
-
-  context 'creating two accounts during the same session' do
-    it 'allows the second account creation process to complete fully', email: true do
-      first_email = 'test1@test.com'
-      second_email = 'test2@test.com'
-      authn_request = auth_request.create(saml_settings)
-
-      perform_in_browser(:one) do
-        visit authn_request
-        sign_up_user_from_sp_without_confirming_email(first_email)
-      end
-
-      perform_in_browser(:two) do
-        confirm_email_in_a_different_browser(first_email)
-        click_button t('forms.buttons.continue')
-
-        expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to include('sp')
-      end
-
-      perform_in_browser(:one) do
-        visit authn_request
-        sign_up_user_from_sp_without_confirming_email(second_email)
-      end
-
-      perform_in_browser(:two) do
-        confirm_email_in_a_different_browser(second_email)
-        click_button t('forms.buttons.continue')
-
-        expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to include('sp')
-      end
     end
   end
 

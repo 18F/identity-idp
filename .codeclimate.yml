@@ -10,7 +10,7 @@ checks:
     enabled: false
   method-complexity:
     config:
-      threshold: 5
+      threshold: 15
   method-count:
     enabled: false
   method-lines:
@@ -86,6 +86,9 @@ plugins:
     channel: rubocop-0-58
   scss-lint:
     enabled: true
+    checks:
+      HexLength:
+        enabled: false
 
 exclude_patterns:
   - 'db/schema.rb'

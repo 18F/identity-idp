@@ -5,6 +5,7 @@ en:
       account_history: Account history
       account_management: Account Management
       connected_apps: Applications
+      login_history: Login history
       login_info: Your account
       profile_info: Profile information
       reactivate: Reactivate your account
@@ -24,13 +25,13 @@ en:
     edit_info:
       email: Change your email
       password: Change your password
-      phone: Enter your new phone number
+      phone: Manage your phone number
     lock_failure: Here's what you can do
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    personal_key: Store your personal key
+    personal_key: Always have access to your account with your personal key
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.
@@ -55,4 +56,4 @@ en:
       new: Enable an authentication app
     verify_email: Check your email
     webauthn_setup:
-      new: Register your Hardware Security Key
+      new: Add your security key

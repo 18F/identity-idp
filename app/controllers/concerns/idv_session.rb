@@ -2,7 +2,6 @@ module IdvSession
   extend ActiveSupport::Concern
 
   def confirm_idv_session_started
-    return if current_user.decorate.pending_profile_requires_verification?
     redirect_to idv_session_url if idv_session.applicant.blank?
   end
 

@@ -14,20 +14,25 @@ es:
       login: Información para iniciar sesión
       password: Contraseña
       phone: Teléfono
+      phone_add: "+ Añadir teléfono"
       piv_cac_card: Tarjeta PIV/CAC
       piv_cac_disabled: desactivada
       piv_cac_enabled: activada
       reactivation:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
+      sign_in_location_and_ip: 'Desde %{location} (Dirección IP: %{ip})'
+      sign_in_timestamp: Hace %{timestamp}
       ssn: Número de Seguro Social
+      unknown_location: ubicación desconocida
       verification:
         instructions: Su cuenta requiere que un código secreto sea verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Su cuenta ha sido verificada.
-      webauthn: Clave de seguridad de hardware
-      webauthn_add: "+ Agregar clave de seguridad de hardware"
-      webauthn_delete: Retirar
+      webauthn: Clave de seguridad
+      webauthn_add: "+ Añadir clave de seguridad"
+      webauthn_confirm_delete: Si quitar la llave
+      webauthn_delete: Quitar llave
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal

@@ -58,10 +58,12 @@ describe Idv::Agent do
       let(:state_id_message) { 'reason 2' }
       let(:failed_message) { 'bah humbug' }
       let(:error) { { bad: 'stuff' } }
+      let(:exception) { StandardError.new }
 
       subject { agent.proof(*stages) }
 
       before do
+        exception_instance = exception
         allow(Idv::Proofer).to receive(:get_vendor) do |stage|
           logic = case stage
                   when :resolution
@@ -70,6 +72,10 @@ describe Idv::Agent do
                     proc { |_, r| r.add_message('reason 2') }
                   when :failed
                     proc { |_, r| r.add_message('bah humbug').add_error(:bad, 'stuff') }
+                  when :timed_out
+                    proc { |_, r| r.instance_variable_set(:@exception, Proofer::TimeoutError.new) }
+                  when :exception
+                    proc { |_, r| r.instance_variable_set(:@exception, exception_instance) }
                   end
           Class.new(Proofer::Base) do
             required_attributes(:foo)
@@ -86,7 +92,8 @@ describe Idv::Agent do
             errors: {},
             messages: [resolution_message, state_id_message],
             success: true,
-            exception: nil
+            exception: nil,
+            timed_out: false
           )
         end
       end
@@ -99,7 +106,33 @@ describe Idv::Agent do
             errors: { bad: ['stuff'] },
             messages: [failed_message],
             success: false,
-            exception: nil
+            exception: nil,
+            timed_out: false
+          )
+        end
+      end
+
+      context 'when the first stage times out' do
+        let(:stages) { %i[timed_out state_id] }
+
+        it 'returns a result where timed out is true' do
+          expect(subject.to_h).to include(
+            success: false,
+            timed_out: true
+          )
+        end
+      end
+
+      context 'when there is an exception' do
+        let(:stages) { %i[exception state_id] }
+
+        it 'returns an unsuccessful result and notifies exception trackers' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(exception)
+          expect(ExceptionNotifier).to receive(:notify_exception).with(exception)
+
+          expect(subject.to_h).to include(
+            success: false,
+            exception: exception
           )
         end
       end

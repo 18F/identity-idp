@@ -44,6 +44,24 @@ en:
       help: If you did not make this change, please visit the %{app} %{help_link}
         or %{contact_link}.
       intro: You have a new password for your %{app} account.
+    personal_key_sign_in:
+      help_html: <p>Your login.gov account was just signed into using your 16-character
+        personal key. You're getting this email to make sure it was you.</p> <p>If
+        you just signed in using your personal key, great! There's nothing you need
+        to do.</p><p>If you did not sign in with a personal key, or if you're not
+        sure, please immediately take these steps to secure your account:<ol><li><strong><a
+        href="%{reset_password_url}">Change your password</a>.</strong> Choose a password
+        that you haven't already used with this account.</li><li><strong><a href="%{account_url}">Sign
+        in to your login.gov account</a></strong> and make sure you recognize all
+        of the information on your account page, including the methods you use for
+        two-factor authentication, such as phone number, authentication app, or security
+        key.</li><li><strong>On your login.gov account page, request a new personal
+        key.</strong> Remember, never share it unless you are using it to sign into
+        a trusted website that uses login.gov.</li></ol></p><p>You should then contact
+        us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p>
+        <br>Thanks,<br>The login.gov team
+      intro: Personal key used to sign in
+      subject: Account Security Alert
     phone_changed:
       help: If you did not want to change your phone number, please visit the %{app}
         %{help_link} or %{contact_link}.
