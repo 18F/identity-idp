@@ -18,7 +18,7 @@ class RecoveryCodeGenerator
 
   def verify(plaintext_code)
     code = encrypt( plaintext_code )
-    RecoveryCode.exists? user_id: @user.id, code: code
+    @user.recovery_code_configurations.exists? code: code
   end
 
   private
@@ -28,15 +28,15 @@ class RecoveryCodeGenerator
   end
 
   def save_code(code)
-    rc = RecoveryCode.new
+    rc = RecoveryCodeConfiguration.new
     rc.code = code
     rc.user_id = @user.id
-    rc.used = 0
+    rc.used = false
     rc.save
   end
 
   def delete_existing_codes
-    RecoveryCode.where(:user_id => @user.id).destroy_all
+    @user.recovery_code_configurations.destroy_all
   end
 
   def generate_new_codes

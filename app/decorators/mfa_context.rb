@@ -39,7 +39,7 @@ class MfaContext
 
   def recovery_code_configurations
     if user.present?
-      user.recovery_codes
+      user.recovery_code_configurations.unused
     else
       []
     end

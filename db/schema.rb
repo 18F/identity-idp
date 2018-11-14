@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181109042235) do
+ActiveRecord::Schema.define(version: 20181114213758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["uuid"], name: "index_agency_identities_on_uuid", unique: true
   end
 
-  create_table "authorizations", force: :cascade do |t|
+  create_table "authorizations", id: :serial, force: :cascade do |t|
     t.string "provider", limit: 255
     t.string "uid", limit: 255
     t.integer "user_id"
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "event_type", null: false
     t.datetime "created_at", null: false
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "identities", force: :cascade do |t|
+  create_table "identities", id: :serial, force: :cascade do |t|
     t.string "service_provider", limit: 255
     t.datetime "last_authenticated_at"
     t.integer "user_id"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end
 
-  create_table "otp_requests_trackers", force: :cascade do |t|
+  create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
     t.string "attribute_cost"
@@ -142,7 +142,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["user_id"], name: "index_phone_configurations_on_user_id"
   end
 
-  create_table "profiles", force: :cascade do |t|
+  create_table "profiles", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "active", default: false, null: false
     t.datetime "verified_at"
@@ -161,14 +161,15 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
-  create_table "recovery_codes", force: :cascade do |t|
+  create_table "recovery_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "used", default: 0, null: false
+    t.text "code", null: false
+    t.boolean "used", default: false
+    t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "when_user"
-    t.string "code"
-    t.index ["user_id"], name: "index_recovery_codes_on_user_id"
+    t.index ["code"], name: "index_recovery_code_configurations_on_code"
+    t.index ["user_id"], name: "index_recovery_code_configurations_on_user_id"
   end
 
   create_table "remote_settings", force: :cascade do |t|
@@ -180,7 +181,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
-  create_table "service_provider_requests", force: :cascade do |t|
+  create_table "service_provider_requests", id: :serial, force: :cascade do |t|
     t.string "issuer", null: false
     t.string "loa", null: false
     t.string "url", null: false
@@ -191,7 +192,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true
   end
 
-  create_table "service_providers", force: :cascade do |t|
+  create_table "service_providers", id: :serial, force: :cascade do |t|
     t.string "issuer", null: false
     t.string "friendly_name"
     t.text "description"
@@ -220,7 +221,7 @@ ActiveRecord::Schema.define(version: 20181109042235) do
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -273,13 +274,13 @@ ActiveRecord::Schema.define(version: 20181109042235) do
   create_table "usps_confirmation_codes", force: :cascade do |t|
     t.integer "profile_id", null: false
     t.string "otp_fingerprint", null: false
-    t.datetime "code_sent_at", default: -> { "now()" }, null: false
+    t.datetime "code_sent_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
 
-  create_table "usps_confirmations", force: :cascade do |t|
+  create_table "usps_confirmations", id: :serial, force: :cascade do |t|
     t.text "entry", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
