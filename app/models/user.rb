@@ -47,6 +47,7 @@ class User < ApplicationRecord
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
+  has_many :recovery_codes, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

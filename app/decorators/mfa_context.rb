@@ -34,7 +34,15 @@ class MfaContext
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_configurations + [piv_cac_configuration, auth_app_configuration]
+    phone_configurations + webauthn_configurations + recovery_code_configurations + [piv_cac_configuration, auth_app_configuration]
+  end
+
+  def recovery_code_configurations
+    if user.present?
+      user.recovery_codes
+    else
+      []
+    end
   end
 
   def enabled_two_factor_configurations_count

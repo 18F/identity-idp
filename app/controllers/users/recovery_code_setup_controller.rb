@@ -15,6 +15,7 @@ module Users
     end
 
     def create
+      binding.pry
       analytics.track_event(Analytics::RECOVERY_CODE_CREATED)
       Event.create(user_id: current_user.id, event_type: :new_personal_key)
       puts "############### In CREATE RECOVERY_CODE"
