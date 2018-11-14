@@ -7,5 +7,5 @@
           service_provider_link: link_to(event.display_name, event.return_to_sp_url))
         - else
           = t('event_types.authenticated_at', service_provider: event.display_name)
-    .sm-col.sm-col-6.px1.sm-right-align
-      = event.happened_at_in_words
+    .sm-col.sm-col-6.px1.sm-right-align`
+      = local_time(event.happened_at, t('time.formats.event_timestamp'))
