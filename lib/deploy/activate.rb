@@ -13,16 +13,47 @@ module Deploy
     end
 
     def run
-      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/%<env>s/idp/v1/application.yml' => env_yaml_path
-      )
+      download_application_yml_from_s3
+      deep_merge_s3_data_with_example_application_yml
+      set_proper_file_permissions_for_application_yml
 
-      File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
-
-      FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
+      download_geocoding_database_from_s3
+      set_proper_file_permissions_for_geolocation_db
     end
 
     private
+
+    def download_application_yml_from_s3
+      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
+        '/%<env>s/idp/v1/application.yml' => env_yaml_path
+      )
+    end
+
+    def deep_merge_s3_data_with_example_application_yml
+      File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
+    end
+
+    def set_proper_file_permissions_for_application_yml
+      FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
+    end
+
+    def download_geocoding_database_from_s3
+      LoginGov::Hostdata::S3.new(
+        bucket: "login-gov-geolocation-db-#{ec2.account_id}",
+        env: nil,
+        region: ec2.region,
+        logger: logger,
+        s3_client: s3_client
+      ).download_configs('GeoLite2-City.mmdb' => geolocation_db_path)
+    end
+
+    def ec2
+      @ec2 ||= LoginGov::Hostdata::EC2.load
+    end
+
+    def set_proper_file_permissions_for_geolocation_db
+      FileUtils.chmod(0o640, geolocation_db_path)
+    end
 
     def default_logger
       logger = Logger.new(STDOUT)
@@ -48,6 +79,10 @@ module Deploy
 
     def result_yaml_path
       File.join(root, 'config/application.yml')
+    end
+
+    def geolocation_db_path
+      File.join(root, 'data/GeoLite2-City.mmdb')
     end
   end
 end
