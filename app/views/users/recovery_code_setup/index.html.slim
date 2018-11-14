@@ -12,20 +12,11 @@ ul.list-reset
       - @presenter.codes.each_with_index  do |code, index|
         p.mt-tiny.mb0 = code
   li.py2.border-top
-    .mb2
-      .mr1.inline-block.circle.circle-number.bg-blue.white
-        | 3
-      #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_3')
     .sm-col-9.sm-ml-28p
-      = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
+      = form_tag(recovery_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
         .clearfix.mxn1
-          .col.col-6.sm-col-7.px1
-            = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
-                    class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
-                    'aria-labelledby': 'totp-label'
           .col.col-6.sm-col-5.px1
-            = submit_tag t('forms.buttons.submit.default'),
-                    class: 'col-12 btn btn-primary align-top'
+            = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'
 
 = render 'shared/cancel_or_back_to_options'
 

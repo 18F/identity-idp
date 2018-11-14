@@ -131,6 +131,9 @@ Rails.application.routes.draw do
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
     get '/authenticator_start' => 'users/totp_setup#start'
 
+    get '/recovery_key_setup' => 'users/recovery_key_setup#new'
+    patch '/recovery_key_setup' => 'users/recovery_key_setup#confirm'
+
     get '/forgot_password' => 'forgot_password#show'
 
     get '/manage/email' => 'users/emails#edit'
