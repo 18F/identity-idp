@@ -40,7 +40,7 @@ var e=window.LocalTime;
       }, datetime: {at: "{date} at {time}", formats: {"default": "%B %e, %Y at %l:%M %P %Z"}}
     },
 
-// login.gov
+// login.gov (only the translations we need have been modified)
     es: {
       date: {
         dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
