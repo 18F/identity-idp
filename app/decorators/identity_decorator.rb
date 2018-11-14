@@ -19,11 +19,11 @@ IdentityDecorator = Struct.new(:identity) do
   end
 
   def created_at_in_words
-    UtcTimePresenter.new(identity.created_at).to_s
+    UtcTimePresenter.new(identity.created_at.utc).to_s
   end
 
   def happened_at
-    identity.last_authenticated_at
+    identity.last_authenticated_at.utc
   end
 
   def happened_at_in_words
