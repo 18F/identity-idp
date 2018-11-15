@@ -1,7 +1,6 @@
 IdentityDecorator = Struct.new(:identity) do
   delegate :display_name, to: :identity
   delegate :agency_name, to: :identity
-  delegate :created_at, to: :identity
 
   def connected_app_partial
     'accounts/connected_app'
@@ -20,7 +19,11 @@ IdentityDecorator = Struct.new(:identity) do
   end
 
   def created_at_in_words
-    UtcTimePresenter.new(identity.created_at.utc).to_s
+    UtcTimePresenter.new(created_at).to_s
+  end
+
+  def created_at
+    identity.created_at.utc
   end
 
   def happened_at
