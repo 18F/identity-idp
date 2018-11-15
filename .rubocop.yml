@@ -36,6 +36,7 @@ Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
+    - 'app/decorators/identity_decorator.rb'
     - 'app/decorators/user_decorator.rb'
     - 'app/services/omniauth_authorizer.rb'
     - 'app/services/single_logout_handler.rb'

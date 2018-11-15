@@ -10,7 +10,7 @@ describe UtcTimePresenter do
       Time.zone = current_timezone
 
       expect(UtcTimePresenter.new(timestamp).to_s).to eq(
-        'April 12, 2017 at 6:19 PM UTC'
+        'April 12, 2017 at 6:19 PM'
       )
     end
   end

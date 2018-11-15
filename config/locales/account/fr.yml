@@ -2,7 +2,7 @@
 fr:
   account:
     connected_apps:
-      associated: Associé
+      associated: Associé %{timestamp}
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée
