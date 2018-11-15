@@ -75,6 +75,7 @@ Rails.application.routes.draw do
         get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
         patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       end
+      get 'login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#show'
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',

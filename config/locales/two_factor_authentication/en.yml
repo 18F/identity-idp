@@ -63,6 +63,9 @@ en:
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it, you'll
       be provided a new key.
+    recovery_code_header_text: Enter your security code
+    recovery_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     phone:
       delete:
         failure: Unable to remove your phone.
@@ -81,6 +84,8 @@ en:
     read_about_two_factor_authentication:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
+    recovery_code_fallback:
+      question: Don't have your recovery codes available?
     totp_fallback:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code

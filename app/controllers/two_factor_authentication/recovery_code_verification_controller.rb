@@ -10,14 +10,14 @@ module TwoFactorAuthentication
       )
       @presenter = TwoFactorAuthCode::RecoveryCodePresenter.new(
           view: view_context,
-          data: { credential_ids: credential_ids }
+          data: { current_user: current_user }
       )
-      @personal_key_form = PersonalKeyForm.new(current_user)
+      @recovery_code_form = RecoveryCodeVerificationForm.new(current_user)
     end
 
     def create
-      @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
-      result = @personal_key_form.submit
+      @recovery_code_form = RecoveryCodeVerificationForm.new(current_user)
+      result = @recovery_code_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
 
@@ -29,7 +29,7 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::RecoveryCodePresenter.new(
           view: view_context,
-          data: { credential_ids: credential_ids }
+          data: { current_user: current_user }
       )
     end
 

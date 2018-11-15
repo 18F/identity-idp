@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      true
+      @user.recovery_code_configurations.unused.any?
     end
 
     def enabled?

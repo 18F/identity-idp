@@ -19,6 +19,12 @@ en:
       generated_on_html: Generated on %{date}
       header: Your personal key
       print: Print this page
+    recovery_code:
+      close: Close
+      confirmation_error: You've entered an incorrect recovery code.
+      generated_on_html: Generated on %{date}
+      header: Your recovery code
+      print: Print this page
     totp_setup:
       new:
         qr_img_alt: QR Code for Authenticator App

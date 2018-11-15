@@ -93,6 +93,7 @@ en:
     two_factor:
       code: One-time security code
       personal_key: Personal key
+      recovery_code: Security code
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account

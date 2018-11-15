@@ -17,8 +17,8 @@ class RecoveryCodeGenerator
   end
 
   def verify(plaintext_code)
-    code = encrypt( plaintext_code )
-    @user.recovery_code_configurations.exists? code: code
+    # code = encrypt( plaintext_code )
+    @user.recovery_code_configurations.exists? code: plaintext_code
   end
 
   private

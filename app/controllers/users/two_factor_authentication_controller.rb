@@ -202,6 +202,8 @@ module Users
         login_two_factor_webauthn_url
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
+      elsif TwoFactorAuthentication::RecoveryCodePolicy.new(current_user).enabled?
+        login_two_factor_recovery_code_url
       end
     end
 

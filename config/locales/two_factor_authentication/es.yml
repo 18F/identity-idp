@@ -66,6 +66,9 @@ es:
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
+    recovery_code_header_text: Enter your security code
+    recovery_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     phone:
       delete:
         failure: No se puede eliminar el teléfono.
@@ -82,6 +85,8 @@ es:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
+    recovery_code_fallback:
+      question: Don't have your recovery codes available?
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
