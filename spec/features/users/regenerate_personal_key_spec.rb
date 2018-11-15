@@ -5,6 +5,8 @@ feature 'View personal key' do
   include PersonalKeyHelper
   include SamlAuthHelper
 
+  before { stub_twilio_service }
+
   context 'during sign up' do
     scenario 'refreshing personal key page displays the same key and does not notify the user' do
       sign_up_and_view_personal_key
