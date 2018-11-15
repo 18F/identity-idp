@@ -52,13 +52,13 @@ en:
         not sure, please immediately take these steps to secure your account:<ol><li><strong><a
         href="%{reset_password_url}">Change your password</a>.</strong> Choose a password
         that you haven't already used with this account.</li><li><strong><a href="%{account_url}">Sign
-        in to your login.gov account</a></strong> and make sure you recognize all of
-        the information on your account page, including the methods you use for two-factor
-        authentication, such as phone number, authentication app, or security key.</li><li><strong>On
-        your <a href="%{account_url}">login.gov account page</a>, request a new personal
-        key.</strong> Remember, never share it unless you are using it to sign into
-        a trusted website that uses login.gov.</li></ol></p><p>You should then contact
-        us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p><br>Thanks,<br>The
+        in to your login.gov account</a></strong> and make sure you recognize all
+        of the information on your account page, including the methods you use for
+        two-factor authentication, such as phone number, authentication app, or security
+        key.</li><li><strong>On your <a href="%{account_url}">login.gov account page</a>,
+        request a new personal key.</strong> Remember, never share it unless you are
+        using it to sign into a trusted website that uses login.gov.</li></ol></p><p>You
+        should then contact us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p><br>Thanks,<br>The
         login.gov team
       intro: New personal key issued
       subject: Account Security Alert
