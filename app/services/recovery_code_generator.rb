@@ -18,7 +18,12 @@ class RecoveryCodeGenerator
 
   def verify(plaintext_code)
     # code = encrypt( plaintext_code )
-    @user.recovery_code_configurations.exists? code: plaintext_code
+    puts "*********************** #{plaintext_code}"
+    recovery_code = normalize(plaintext_code)
+    code = @user.recovery_code_configurations.find_by code: recovery_code
+    return false if code.nil?
+    code.update!(used: true, used_at: Time.zone.now)
+    true
   end
 
   private
@@ -56,12 +61,12 @@ class RecoveryCodeGenerator
 
   def normalize(plaintext_code)
     normed = plaintext_code.gsub(/\W/, '')
-    split_length = @split
-    normed_length = normed.length
-    return INVALID_CODE unless normed_length == @length * split_length
-    encode_code(code: normed, length: normed_length, split: split_length)
-  rescue ArgumentError, RegexpError
-    INVALID_CODE
+    #split_length = @split
+    #normed_length = normed.length
+    #return INVALID_CODE unless normed_length == @length * split_length
+    #encode_code(code: normed, length: normed_length, split: split_length)
+  #rescue ArgumentError, RegexpError
+   # INVALID_CODE
   end
 
   def recovery_code

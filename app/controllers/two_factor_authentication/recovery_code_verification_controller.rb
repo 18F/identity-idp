@@ -5,6 +5,8 @@ module TwoFactorAuthentication
     prepend_before_action :authenticate_user
 
     def show
+      puts "############## IN SHOW"
+
       analytics.track_event(
           Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
       )
@@ -17,7 +19,8 @@ module TwoFactorAuthentication
 
     def create
       @recovery_code_form = RecoveryCodeVerificationForm.new(current_user)
-      result = @recovery_code_form.submit
+      result = @recovery_code_form.submit(recovery_code_params)
+      puts "############## #{result}"
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
 
@@ -35,48 +38,42 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        create_user_event(:personal_key_used)
-        generate_new_personal_key
-        handle_valid_otp
+        # create_user_event(:recovery_code_used)
+        handle_valid_recovery_code
       else
-        handle_invalid_otp(type: 'personal_key')
+        handle_invalid_otp(type: 'recovery_code')
       end
     end
 
-    def generate_new_recovery_codes
-      if password_reset_profile.present?
-        re_encrypt_profile_recovery_pii
-      else
-        user_session[:recovery_codes] = PersonalKeyGenerator.new(current_user).create
-      end
+    def generate_new_recovery_codes_if_needed
+      #if password_reset_profile.present?
+        # re_encrypt_profile_recovery_pii
+      #else
+      #  user_session[:recovery_codes] = PersonalKeyGenerator.new(current_user).create
+      #end
+    end
+    
+    def recovery_code_params
+      params.require(:recovery_code_verification_form).permit :recovery_code
     end
 
-    def re_encrypt_profile_recovery_pii
-      Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
-      user_session[:personal_key] = password_reset_profile.personal_key
-    end
-
-    def password_reset_profile
-      @_password_reset_profile ||= current_user.decorate.password_reset_profile
-    end
-
-    def pii
-      @_pii ||= password_reset_profile.recover_pii(normalized_personal_key)
-    end
-
-    def personal_key_param
-      params[:personal_key_form][:personal_key]
-    end
-
-    def normalized_personal_key
-      @personal_key_form.personal_key
-    end
-
-    def handle_valid_otp
+    def handle_valid_recovery_code
       handle_valid_otp_for_authentication_context
       redirect_to manage_personal_key_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
+    end
+
+    def handle_invalid_recovery_code(type: 'recovery_code')
+      update_invalid_user
+
+      flash.now[:error] = t("two_factor_authentication.invalid_#{type}")
+
+      if decorated_user.locked_out?
+        handle_second_factor_locked_user(type)
+      else
+        render_show_after_invalid
+      end
     end
   end
 end
