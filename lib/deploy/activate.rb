@@ -38,9 +38,17 @@ module Deploy
     end
 
     def download_geocoding_database_from_s3
-      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/common/GeoLite2-City.mmdb' => geolocation_db_path
-      )
+      LoginGov::Hostdata::S3.new(
+        bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_data.region}",
+        env: nil,
+        region: ec2_data.region,
+        logger: logger,
+        s3_client: s3_client
+      ).download_configs('/commmon/GeoLite2-City.mmdb' => geolocation_db_path)
+    end
+
+    def ec2_data
+      @ec2_data ||= LoginGov::Hostdata::EC2.load
     end
 
     def set_proper_file_permissions_for_geolocation_db
