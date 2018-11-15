@@ -1,6 +1,7 @@
 IdentityDecorator = Struct.new(:identity) do
   delegate :display_name, to: :identity
   delegate :agency_name, to: :identity
+  delegate :created_at, to: :identity
 
   def connected_app_partial
     'accounts/connected_app'
