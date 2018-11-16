@@ -2,7 +2,7 @@
 en:
   account:
     connected_apps:
-      associated: Associated
+      associated: Associated %{timestamp}
     index:
       address: Current address
       auth_app_disabled: not enabled
