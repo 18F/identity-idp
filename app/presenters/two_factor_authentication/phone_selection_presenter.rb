@@ -2,7 +2,7 @@ module TwoFactorAuthentication
   class PhoneSelectionPresenter < SelectionPresenter
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
+        "#{super}:#{configuration.id}"
       else
         super
       end
