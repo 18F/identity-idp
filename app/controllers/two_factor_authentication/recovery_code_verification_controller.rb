@@ -52,7 +52,7 @@ module TwoFactorAuthentication
       #  user_session[:recovery_codes] = PersonalKeyGenerator.new(current_user).create
       #end
     end
-    
+
     def recovery_code_params
       params.require(:recovery_code_verification_form).permit :recovery_code
     end

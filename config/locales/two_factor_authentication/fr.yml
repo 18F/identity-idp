@@ -16,6 +16,7 @@ fr:
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
     invalid_personal_key: Cette clé personnelle est non valide.
+    invalid_recovery_code: Ce code de sécurité personnel est invalide.
     invalid_piv_cac: Cette carte PIV/CAC n'est pas correcte.
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
@@ -52,6 +53,8 @@ fr:
     max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été temporairement
       bloqué en raison de la saisie de mauvais identifiants PIV/CAC à de trop nombreuses
       reprises.
+    max_recovery_code_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
+      verrouillé parce que vous avez entré trop de fois le code de sécurité personnel à tort.
     otp_delivery_preference:
       instruction: Vous pouvez changer cette sélection la prochaine fois que vous
         vous connectez.

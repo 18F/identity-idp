@@ -16,6 +16,7 @@ es:
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
       nuevo o solicitar un nuevo código de seguridad de sólo un uso.
     invalid_personal_key: Esa clave personal no es válida.
+    invalid_recovery_code: Ese código de seguridad personal no es válido.
     invalid_piv_cac: Esa PIV/CAC no es correcta.
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
@@ -54,6 +55,8 @@ es:
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
       temporalmente dado que has presentado las credenciales de tu piv/cac de forma
       incorrecta demasiadas veces.
+    max_recovery_code_login_attempts_reached: Para su seguridad, su cuenta está temporalmente
+      bloqueado porque ingresaste el código de seguridad personal incorrectamente demasiadas veces.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       phone_unsupported: En este momento no podemos realizar llamadas a personas en

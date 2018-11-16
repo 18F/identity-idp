@@ -100,6 +100,7 @@ fr:
     two_factor:
       code: Code de sécurité
       personal_key: Clé personnelle
+      recovery_code: Code de sécurité
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte

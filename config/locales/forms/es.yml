@@ -94,6 +94,7 @@ es:
     two_factor:
       code: Código de seguridad de sólo un uso
       personal_key: Clave personal
+      recovery_code: Código de seguridad
       try_again: Use otro número de teléfono.
     two_factor_choice:
       legend: Seleccione una opción para proteger su cuenta
