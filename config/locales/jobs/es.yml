@@ -17,4 +17,4 @@ es:
         eres tú, restablece tu contraseña y ponte en contacto con nosotros en security@login.gov.
     sms_personal_key_sign_in_notifier_job:
       message: Su clave personal solo se utilizó para iniciar sesión en su cuenta
-        login.gov. Si no fue así, reinicie su contraseña y contáctenos en security@login.gov.
+        %{app}. Si no fue así, reinicie su contraseña y contáctenos en security@login.gov.

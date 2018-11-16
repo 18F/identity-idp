@@ -20,5 +20,5 @@ fr:
         à security@login.gov.
     sms_personal_key_sign_in_notifier_job:
       message: Votre clé personnelle a été utilisée pour vous connecter à votre compte
-        login.gov. Si ce n’était pas vous, changez votre mot de passe et contactez-nous
+        %{app}. Si ce n’était pas vous, changez votre mot de passe et contactez-nous
         à security@login.gov.
