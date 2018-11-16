@@ -22,7 +22,7 @@ describe TwoFactorAuthentication::SmsSelectionPresenter do
       end
 
       it 'returns sms:id' do
-        expect(subject.type).to eq "sms_#{phone.id}"
+        expect(subject.type).to eq "sms:#{phone.id}"
       end
     end
   end
