@@ -129,7 +129,11 @@ module Users
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
 
       send_user_otp(method)
-      redirect_to login_two_factor_url(otp_delivery_preference: method, reauthn: reauthn?)
+      redirect_to login_two_factor_url_with_id(method)
+    end
+
+    def login_two_factor_url_with_id(method)
+      login_two_factor_url(otp_delivery_preference: method, reauthn: reauthn?, id: params[:id])
     end
 
     def exceeded_otp_send_limit?

@@ -13,6 +13,10 @@ class MfaContext
     end
   end
 
+  def phone_configuration(id)
+    phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
+  end
+
   def webauthn_configurations
     if user.present?
       user.webauthn_configurations

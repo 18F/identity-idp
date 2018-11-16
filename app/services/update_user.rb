@@ -6,7 +6,7 @@ class UpdateUser
 
   def call
     result = user.update!(attributes.except(:phone, :phone_confirmed_at))
-    manage_phone_configuration
+    create_phone_configuration
     result
   end
 
@@ -14,21 +14,13 @@ class UpdateUser
 
   attr_reader :user, :attributes
 
-  def manage_phone_configuration
-    if MfaContext.new(user).phone_configurations.any?
-      update_phone_configuration
-    else
-      create_phone_configuration
-    end
-  end
-
-  def update_phone_configuration
-    MfaContext.new(user).phone_configurations.first.update!(phone_attributes)
-  end
-
   def create_phone_configuration
-    return if phone_attributes[:phone].blank?
+    return if phone_attributes[:phone].blank? || duplicate_phone?
     MfaContext.new(user).phone_configurations.create(phone_attributes)
+  end
+
+  def duplicate_phone?
+    MfaContext.new(user).phone_configurations.map(&:phone).index(phone_attributes[:phone])
   end
 
   def phone_attributes

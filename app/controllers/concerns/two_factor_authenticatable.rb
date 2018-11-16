@@ -131,14 +131,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = old_phone.present?
-
-    if @updating_existing_number && confirmation_context?
-      phone_changed
-    else
-      phone_confirmed
-    end
-
+    phone_confirmed
     update_phone_attributes
   end
 
@@ -253,7 +246,7 @@ module TwoFactorAuthenticatable
 
   def display_phone_to_deliver_to
     if authentication_context?
-      decorated_user.masked_two_factor_phone_number
+      masked_number(phone_configuration.phone)
     else
       user_session[:unconfirmed_phone]
     end
@@ -261,7 +254,7 @@ module TwoFactorAuthenticatable
 
   def voice_otp_delivery_unsupported?
     phone_number = if authentication_context?
-                     MfaContext.new(current_user).phone_configurations.first&.phone
+                     phone_configuration&.phone
                    else
                      user_session[:unconfirmed_phone]
                    end
@@ -296,5 +289,19 @@ module TwoFactorAuthenticatable
       data: data,
       view: view_context
     )
+  end
+
+  def phone_configuration
+    id = params[:id]
+    if id
+      MfaContext.new(current_user).phone_configuration(id)
+    else
+      MfaContext.new(current_user).phone_configurations.first
+    end
+  end
+
+  def masked_number(number)
+    return '' if number.blank?
+    "***-***-#{number[-4..-1]}"
   end
 end

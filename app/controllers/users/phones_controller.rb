@@ -1,8 +1,24 @@
 module Users
-  class PhonesController < ReauthnRequiredController
+  class PhonesController < ApplicationController
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
+
+    def add
+      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+    end
+
+    def create
+      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+      if @user_phone_form.submit(user_params).success?
+        process_updates
+        bypass_sign_in current_user
+      else
+        render :add
+      end
+    end
 
     def edit
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
@@ -40,7 +56,7 @@ module Users
     # doing away with this controller. Once we move to multiple phones, we'll allow
     # adding and deleting, but not editing.
     def phone_configuration
-      MfaContext.new(current_user).phone_configurations.first
+      MfaContext.new(current_user).phone_configuration(params[:id])
     end
 
     def user_params

@@ -306,12 +306,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::MULTI_FACTOR_AUTH, properties)
-            expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-            subject.current_user.email_addresses.each do |email_address|
-              expect(UserMailer).to have_received(:phone_changed).with(email_address)
-            end
-            expect(@mailer).to have_received(:deliver_later)
           end
         end
 

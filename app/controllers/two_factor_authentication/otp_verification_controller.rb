@@ -58,7 +58,7 @@ module TwoFactorAuthentication
     end
 
     def phone
-      MfaContext.new(current_user).phone_configurations.first&.phone ||
+      MfaContext.new(current_user).phone_configuration(params[:id])&.phone ||
         user_session[:unconfirmed_phone]
     end
 
