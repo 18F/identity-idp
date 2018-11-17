@@ -12,7 +12,11 @@ class TwoFactorLoginOptionsForm
 
   def submit(params)
     selection = params[:selection]
-    (selection, configuration_id) = selection.split(':', 2) if selection.present?
+    configuration_id = nil
+    if selection =~ /(.+)[:_](\d+)/
+      selection = Regexp.last_match(1)
+      configuration_id = Regexp.last_match(2)
+    end
 
     self.selection = selection
     self.configuration_id = configuration_id
