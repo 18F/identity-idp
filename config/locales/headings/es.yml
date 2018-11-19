@@ -12,6 +12,8 @@ es:
       verified_account: Cuenta verificada
     account_recovery_setup:
       piv_cac_linked: Tu tarjeta PIV/CAC está vinculada a tu cuenta
+    add_info:
+      phone: Agregar un número de teléfono
     cancellations:
       confirmation: Ha cancelado la verificación de su identidad con login.gov
       prompt: "¿Estas seguro que quieres cancelar?"

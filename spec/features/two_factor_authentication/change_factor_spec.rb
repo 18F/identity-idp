@@ -26,7 +26,7 @@ feature 'Changing authentication factor' do
         MfaContext.new(user).phone_configurations.reload.first.confirmed_at
       new_phone = '+1 703-555-0100'
 
-      visit manage_phone_path
+      visit manage_phone_path(id: user.phone_configurations.first.id)
 
       expect(page).to have_content t('help_text.change_factor', factor: 'phone')
 

@@ -22,8 +22,6 @@ es:
         a su registro número de teléfono.
     delete_account:
       are_you_sure: "¿Seguro que quieres eliminar tu cuenta?"
-      cancel: Cancelar
-      delete_button: Borrar cuenta
       info: Eliminar su cuenta debe ser su último recurso si está bloqueado         
         de tu cuenta No podrá recuperar ninguna información vinculada a su cuenta.
         Una vez que se elimine su cuenta, puede crear una nueva usando la misma dirección

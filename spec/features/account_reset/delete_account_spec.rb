@@ -32,7 +32,7 @@ describe 'Account Reset Request: Delete Account', email: true do
         expect(page).to have_content(t('account_reset.delete_account.title'))
         expect(page).to have_current_path(account_reset_delete_account_path)
 
-        click_on t('account_reset.delete_account.delete_button')
+        click_button t('account_reset.request.yes_continue')
 
         expect(page).to have_content(
           strip_tags(

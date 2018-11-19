@@ -89,6 +89,7 @@ feature 'User edit' do
         click_button t('forms.phone.buttons.delete')
         expect(page).to have_current_path(account_path)
         expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
+        expect(page).to have_content t('event_types.phone_removed')
       end
     end
   end
