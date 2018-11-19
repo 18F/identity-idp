@@ -131,7 +131,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = old_phone.present?
+    @updating_existing_number = session[:phone_id].present?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
