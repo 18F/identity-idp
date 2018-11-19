@@ -55,8 +55,8 @@ module TwoFactorAuthentication
       options = EXTRA_URL_OPTIONS[selection] || {}
 
       configuration_id = @two_factor_options_form.configuration_id
-      session[:phone_id] = configuration_id if configuration_id.present?
-      options[:id] = session[:phone_id]
+      user_session[:phone_id] = configuration_id if configuration_id.present?
+      options[:id] = user_session[:phone_id]
 
       build_url(selection, options)
     end

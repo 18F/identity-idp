@@ -131,7 +131,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = session[:phone_id].present?
+    @updating_existing_number = user_session[:phone_id].present?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
@@ -156,7 +156,7 @@ module TwoFactorAuthenticatable
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
-      attributes: { phone_id: session[:phone_id], phone: user_session[:unconfirmed_phone],
+      attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
                     phone_confirmed_at: Time.zone.now }
     ).call
   end
@@ -296,7 +296,7 @@ module TwoFactorAuthenticatable
   end
 
   def phone_configuration
-    MfaContext.new(current_user).phone_configuration(session[:phone_id])
+    MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
   end
 
   def masked_number(number)
