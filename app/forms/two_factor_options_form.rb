@@ -37,7 +37,7 @@ class TwoFactorOptionsForm
 
   def user_needs_updating?
     %w[voice sms].include?(selection) &&
-      selection != MfaContext.new(user).phone_configurations.first&.delivery_preference &&
+      selection != MfaContext.new(user).phone_configuration&.delivery_preference &&
       selection != user.otp_delivery_preference
   end
 

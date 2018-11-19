@@ -396,7 +396,7 @@ feature 'Sign in' do
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
       expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
