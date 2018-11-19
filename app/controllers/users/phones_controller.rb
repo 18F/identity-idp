@@ -14,7 +14,7 @@ module Users
       @user_phone_form = UserPhoneForm.new(current_user, nil)
       @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
       if @user_phone_form.submit(user_params).success?
-        process_updates
+        confirm_phone
         bypass_sign_in current_user
       else
         render :add
@@ -73,12 +73,16 @@ module Users
       form = @user_phone_form
       if form.phone_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
-        flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
-        prompt_to_confirm_phone(id: session[:phone_id], phone: form.phone,
-                                selected_delivery_method: form.otp_delivery_preference)
+        confirm_phone
       else
         redirect_to account_url
       end
+    end
+
+    def confirm_phone
+      flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
+      prompt_to_confirm_phone(id: session[:phone_id], phone: @user_phone_form.phone,
+                              selected_delivery_method: @user_phone_form.otp_delivery_preference)
     end
 
     def handle_successful_delete
