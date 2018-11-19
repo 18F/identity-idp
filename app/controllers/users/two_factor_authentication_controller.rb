@@ -51,6 +51,7 @@ module Users
     end
 
     def update_otp_delivery_preference_if_needed
+      return unless user_signed_in?
       OtpDeliveryPreferenceUpdater.new(
         user: current_user,
         preference: delivery_params[:otp_delivery_preference],
