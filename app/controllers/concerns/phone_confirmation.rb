@@ -5,7 +5,6 @@ module PhoneConfirmation
 
     redirect_to otp_send_url(
       otp_delivery_selection_form: {
-        id: id.to_s,
         otp_delivery_preference: otp_delivery_method(id, phone, selected_delivery_method),
       }
     )
