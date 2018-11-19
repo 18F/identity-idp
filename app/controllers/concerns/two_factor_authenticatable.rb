@@ -135,10 +135,6 @@ module TwoFactorAuthenticatable
     update_phone_attributes
   end
 
-  def old_phone
-    MfaContext.new(current_user).phone_configurations.first&.phone
-  end
-
   def phone_changed
     create_user_event(:phone_changed)
     current_user.confirmed_email_addresses.each do |email_address|
@@ -153,7 +149,8 @@ module TwoFactorAuthenticatable
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
-      attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: Time.zone.now }
+      attributes: { phone_id: session[:phone_id], phone: user_session[:unconfirmed_phone],
+                    phone_confirmed_at: Time.zone.now }
     ).call
   end
 
@@ -292,12 +289,7 @@ module TwoFactorAuthenticatable
   end
 
   def phone_configuration
-    id = params[:id]
-    if id
-      MfaContext.new(current_user).phone_configuration(id)
-    else
-      MfaContext.new(current_user).phone_configurations.first
-    end
+    MfaContext.new(current_user).phone_configuration(session[:phone_id])
   end
 
   def masked_number(number)

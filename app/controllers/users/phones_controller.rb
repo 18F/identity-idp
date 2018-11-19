@@ -5,6 +5,7 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     def add
+      session[:phone_id] = nil
       @user_phone_form = UserPhoneForm.new(current_user, nil)
       @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
     end
@@ -21,6 +22,7 @@ module Users
     end
 
     def edit
+      set_phone_id
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
       @presenter = PhoneSetupPresenter.new(delivery_preference)
     end
@@ -56,7 +58,7 @@ module Users
     # doing away with this controller. Once we move to multiple phones, we'll allow
     # adding and deleting, but not editing.
     def phone_configuration
-      MfaContext.new(current_user).phone_configuration(params[:id])
+      MfaContext.new(current_user).phone_configuration(session[:phone_id])
     end
 
     def user_params
@@ -72,9 +74,8 @@ module Users
       if form.phone_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
-        prompt_to_confirm_phone(
-          phone: form.phone, selected_delivery_method: form.otp_delivery_preference
-        )
+        prompt_to_confirm_phone(id: session[:phone_id], phone: form.phone,
+                                selected_delivery_method: form.otp_delivery_preference)
       else
         redirect_to account_url
       end
@@ -83,6 +84,11 @@ module Users
     def handle_successful_delete
       flash[:success] = t('two_factor_authentication.phone.delete.success')
       create_user_event(:phone_removed)
+    end
+
+    def set_phone_id
+      phone_id = params[:id]
+      session[:phone_id] = phone_id if phone_id.present?
     end
   end
 end

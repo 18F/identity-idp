@@ -11,15 +11,7 @@ class TwoFactorLoginOptionsForm
   end
 
   def submit(params)
-    selection = params[:selection]
-    configuration_id = nil
-    if selection =~ /(.+)[:_](\d+)/
-      selection = Regexp.last_match(1)
-      configuration_id = Regexp.last_match(2)
-    end
-
-    self.selection = selection
-    self.configuration_id = configuration_id
+    self.selection, self.configuration_id = selection_and_configuration_id(params)
 
     success = valid?
 
@@ -31,6 +23,16 @@ class TwoFactorLoginOptionsForm
   attr_accessor :user
   attr_writer :selection
   attr_writer :configuration_id
+
+  def selection_and_configuration_id(params)
+    selection = params[:selection]
+    configuration_id = nil
+    if selection =~ /(.+)[:_](\d+)/
+      selection = Regexp.last_match(1)
+      configuration_id = Regexp.last_match(2)
+    end
+    [selection, configuration_id]
+  end
 
   def extra_analytics_attributes
     {

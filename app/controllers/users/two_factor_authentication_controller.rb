@@ -31,7 +31,7 @@ module Users
     end
 
     def phone_configuration
-      MfaContext.new(current_user).phone_configurations.first
+      MfaContext.new(current_user).phone_configuration(session[:phone_id])
     end
 
     def validate_otp_delivery_preference_and_send_code
@@ -54,7 +54,7 @@ module Users
       OtpDeliveryPreferenceUpdater.new(
         user: current_user,
         preference: delivery_params[:otp_delivery_preference],
-        context: otp_delivery_selection_form.context
+        phone_id: session[:phone_id]
       ).call
     end
 
