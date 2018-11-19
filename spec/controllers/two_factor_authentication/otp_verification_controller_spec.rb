@@ -281,6 +281,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
+            controller.session[:phone_id] = \
+              MfaContext.new(subject.current_user).phone_configurations.last.id
             post(
               :create,
               params: {
