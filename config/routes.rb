@@ -137,6 +137,8 @@ Rails.application.routes.draw do
     match '/manage/email' => 'users/emails#update', via: %i[patch put]
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
+    get '/add/phone' => 'users/phones#add'
+    post '/add/phone' => 'users/phones#create'
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
     delete '/manage/phone' => 'users/phones#delete'

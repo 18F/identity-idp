@@ -2,7 +2,7 @@
 es:
   account:
     connected_apps:
-      associated: Asociado
+      associated: Asociado %{timestamp}
     index:
       address: Dirección actual
       auth_app_disabled: no permitido

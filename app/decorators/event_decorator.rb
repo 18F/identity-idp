@@ -8,7 +8,7 @@ EventDecorator = Struct.new(:event) do
   end
 
   def happened_at
-    event.created_at
+    event.created_at.utc
   end
 
   def happened_at_in_words

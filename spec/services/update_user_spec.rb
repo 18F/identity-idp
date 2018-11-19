@@ -16,21 +16,6 @@ describe UpdateUser do
     context 'with a phone already configured' do
       let(:user) { create(:user, :with_phone) }
 
-      it 'updates the phone configuration' do
-        confirmed_at = 1.day.ago.change(usec: 0)
-        attributes = {
-          otp_delivery_preference: 'voice',
-          phone: '+1 222 333-4444',
-          phone_confirmed_at: confirmed_at,
-        }
-        updater = UpdateUser.new(user: user, attributes: attributes)
-        updater.call
-        phone_configuration = user.phone_configurations.reload.first
-        expect(phone_configuration.delivery_preference).to eq 'voice'
-        expect(phone_configuration.confirmed_at).to eq confirmed_at
-        expect(phone_configuration.phone).to eq '+1 222 333-4444'
-      end
-
       it 'does not delete the phone configuration' do
         attributes = { phone: nil }
         updater = UpdateUser.new(user: user, attributes: attributes)

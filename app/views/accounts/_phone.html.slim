@@ -3,14 +3,13 @@
     .col.col-6.bold
       = t('account.index.phone')
     .right-align.col.col-6
-      - if MfaContext.new(current_user).phone_configurations.empty?
-        .btn.btn-account-action.rounded-lg.bg-light-blue
-          = link_to t('account.index.phone_add'), manage_phone_path
+      .btn.btn-account-action.rounded-lg.bg-light-blue
+        = link_to t('account.index.phone_add'), add_phone_path
   - MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
     .p2.col.col-12.border-top.border-blue-light.account-list-item
       .col.col-8.sm-6.truncate
         = phone_configuration.phone
       .col.col-4.sm-6.right-align
         = render @view_model.manage_action_partial,
-          path: manage_phone_url,
+          path: manage_phone_url(id: phone_configuration.id),
           name: t('account.index.phone')
