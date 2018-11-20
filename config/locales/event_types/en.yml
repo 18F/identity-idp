@@ -14,6 +14,7 @@ en:
     personal_key_used: Personal key used to sign in
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
+    phone_removed: Phone number removed
     piv_cac_disabled: PIV/CAC card unassociated
     piv_cac_enabled: PIV/CAC card associated
     usps_mail_sent: Letter sent

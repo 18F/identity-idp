@@ -5,7 +5,7 @@ class UtcTimePresenter
 
   def to_s
     # i18n-tasks-use t('date.month_names')
-    I18n.l(timestamp, format: :event_timestamp_utc)
+    I18n.l(timestamp, format: :event_timestamp)
   end
 
   private

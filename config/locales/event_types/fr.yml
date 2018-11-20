@@ -14,6 +14,7 @@ fr:
     personal_key_used: Clé personnelle utilisée pour la connexion
     phone_changed: Numéro de téléphone modifié
     phone_confirmed: Numéro de téléphone confirmé
+    phone_removed: Numéro de téléphone supprimé
     piv_cac_disabled: Carte PIV/CAC non associée
     piv_cac_enabled: Carte PIV/CAC associée
     usps_mail_sent: Lettre envoyée

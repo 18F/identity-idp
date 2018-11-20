@@ -11,14 +11,16 @@ p.mt-tiny.mb3 = @presenter.info
     fieldset.m0.p0.border-none.
       legend.mb2.serif.bold = @presenter.label
       - @presenter.options.each_with_index do |option, index|
-        label.btn-border.col-12.mb2 for="two_factor_options_form_selection_#{option.type}"
-          .radio
-            = radio_button_tag('two_factor_options_form[selection]',
+        span id="select_#{option.type}" class="#{option.html_class}"
+          label.btn-border.col-12.mb2 for="two_factor_options_form_selection_#{option.type}"
+            .radio
+              = radio_button_tag('two_factor_options_form[selection]',
                     option.type,
-                    index.zero?)
-            span.indicator.mt-tiny
-            span.blue.bold.fs-20p = option.label
-            .regular.gray-dark.fs-10p.mb-tiny = option.info
+                    index.zero?,
+                    class: option.html_class.to_s)
+              span.indicator.mt-tiny
+              span.blue.bold.fs-20p = option.label
+              .regular.gray-dark.fs-10p.mb-tiny = option.info
 
   = f.button :submit, t('forms.buttons.continue')
 
@@ -26,3 +28,5 @@ br
 - if @presenter.should_display_account_reset_or_cancel_link?
   p = @presenter.account_reset_or_cancel_link
 = render 'shared/cancel', link: destroy_user_session_path
+
+== javascript_pack_tag 'webauthn-unhide'
