@@ -10,7 +10,11 @@ class UserPivCacSetupForm
   def submit
     success = valid? && valid_token?
 
-    FormResponse.new(success: success && process_valid_submission, errors: {})
+    FormResponse.new(
+      success: success && process_valid_submission,
+      errors: {},
+      extra: extra_analytics_attributes
+    )
   end
 
   private
@@ -75,5 +79,11 @@ class UserPivCacSetupForm
     else
       true
     end
+  end
+
+  def extra_analytics_attributes
+    {
+      multi_factor_auth_method: 'piv_cac',
+    }
   end
 end
