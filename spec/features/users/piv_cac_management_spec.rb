@@ -190,4 +190,19 @@ feature 'PIV/CAC Management' do
       expect(user.x509_dn_uuid).to be_nil
     end
   end
+
+  context 'with PIV/CAC as the only MFA method' do
+    let(:user) { create(:user, :with_piv_or_cac) }
+
+    scenario 'disallows disassociation PIV/CAC' do
+      sign_in_and_2fa_user(user)
+      visit account_path
+
+      form = find_form(page, action: disable_piv_cac_url)
+      expect(form).to be_nil
+
+      user.reload
+      expect(user.x509_dn_uuid).to_not be_nil
+    end
+  end
 end

@@ -129,7 +129,7 @@ describe Users::PivCacAuthenticationSetupController do
     end
 
     context 'with associated piv/cac' do
-      let(:user) { create(:user, :with_piv_or_cac) }
+      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
 
       describe 'GET index' do
         it 'redirects to account page' do
@@ -153,6 +153,15 @@ describe Users::PivCacAuthenticationSetupController do
           subject.user_session[:decrypted_x509] = {}
           delete :delete
           expect(subject.user_session[:decrypted_x509]).to be_nil
+        end
+
+        it 'does not remove the piv/cac association if it is the last mfa method' do
+          user.phone_configurations.destroy_all
+
+          delete :delete
+
+          expect(response).to redirect_to(account_url)
+          expect(user.reload.x509_dn_uuid).to_not be_nil
         end
       end
     end
