@@ -16,7 +16,7 @@ module Users
     def confirm
       result = TotpSetupForm.new(current_user, new_totp_secret, params[:code].strip).submit
 
-      analytics.track_event(Analytics::TOTP_SETUP, result.to_h)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
 
       if result.success?
         process_valid_code

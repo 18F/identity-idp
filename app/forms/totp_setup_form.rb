@@ -29,6 +29,9 @@ class TotpSetupForm
   end
 
   def extra_analytics_attributes
-    { totp_secret_present: secret.present? }
+    {
+      totp_secret_present: secret.present?,
+      multi_factor_auth_method: 'totp',
+    }
   end
 end
