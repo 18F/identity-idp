@@ -26,6 +26,7 @@ class TotpSetupForm
   def process_valid_submission
     user.save!
     Event.create(user_id: user.id, event_type: :authenticator_enabled)
+    MarkUserAsMfaEnabled.new(user).call
   end
 
   def extra_analytics_attributes

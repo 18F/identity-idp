@@ -25,6 +25,7 @@ class WebauthnSetupForm
     if success
       create_webauthn_configuration
       create_user_event
+      MarkUserAsMfaEnabled.new(user).call
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)

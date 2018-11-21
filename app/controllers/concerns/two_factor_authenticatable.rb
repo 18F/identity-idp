@@ -121,6 +121,7 @@ module TwoFactorAuthenticatable
 
   def handle_valid_otp_for_confirmation_context
     assign_phone
+    MarkUserAsMfaEnabled.new(current_user).call
   end
 
   def handle_valid_otp_for_authentication_context

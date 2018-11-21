@@ -19,6 +19,7 @@ class UserPivCacSetupForm
     user.x509_dn_uuid = x509_dn_uuid
     user.save!
     Event.create(user_id: user.id, event_type: :piv_cac_enabled)
+    MarkUserAsMfaEnabled.new(user).call
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
