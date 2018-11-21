@@ -14,7 +14,7 @@ module Users
     def confirm
       form = WebauthnSetupForm.new(current_user, user_session)
       result = form.submit(request.protocol, params)
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_SUBMITTED, result.to_h)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
       if result.success?
         process_valid_webauthn
       else

@@ -88,9 +88,14 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
-        result = { success: true, errors: {}, mfa_method_counts: { auth_app: 1, phone: 1 } }
+        result = {
+          success: true,
+          errors: {},
+          mfa_method_counts: { auth_app: 1, phone: 1 },
+          multi_factor_auth_method: 'webauthn',
+        }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::WEBAUTHN_SETUP_SUBMITTED, result)
+          with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
 
         patch :confirm, params: params
       end

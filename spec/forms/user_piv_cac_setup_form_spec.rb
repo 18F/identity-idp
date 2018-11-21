@@ -25,9 +25,10 @@ describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: true' do
         result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}).and_return(result)
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(Event).to receive(:create).
           with(user_id: user.id, event_type: :piv_cac_enabled)
         expect(form.submit).to eq result
@@ -41,9 +42,10 @@ describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
+          extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}).and_return(result)
+            with(success: false, errors: {}, extra: extra).and_return(result)
           expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
@@ -57,9 +59,10 @@ describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
+          extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}).and_return(result)
+            with(success: false, errors: {}, extra: extra).and_return(result)
           expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
@@ -73,9 +76,10 @@ describe UserPivCacSetupForm do
             allow(user).to receive(:save!).and_raise(PG::UniqueViolation)
 
             result = instance_double(FormResponse)
+            extra = { multi_factor_auth_method: 'piv_cac' }
 
             expect(FormResponse).to receive(:new).
-              with(success: false, errors: {}).and_return(result)
+              with(success: false, errors: {}, extra: extra).and_return(result)
             expect(Event).to_not receive(:create)
             expect(form.submit).to eq result
             expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
@@ -93,9 +97,10 @@ describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}).and_return(result)
+          with(success: false, errors: {}, extra: extra).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
@@ -112,9 +117,10 @@ describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}).and_return(result)
+          with(success: false, errors: {}, extra: extra).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.invalid'
@@ -126,9 +132,10 @@ describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}).and_return(result)
+          with(success: false, errors: {}, extra: extra).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
