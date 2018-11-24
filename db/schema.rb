@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181029203754) do
+ActiveRecord::Schema.define(version: 20181121223714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -207,6 +207,8 @@ ActiveRecord::Schema.define(version: 20181029203754) do
     t.text "failure_to_proof_url"
     t.integer "aal"
     t.integer "ial"
+    t.boolean "piv_cac", default: false
+    t.boolean "piv_cac_scoped_by_email", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

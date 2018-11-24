@@ -28,20 +28,14 @@ module PivCacService
       Figaro.env.piv_cac_verify_token_url
     end
 
-    def piv_cac_available_for_agency?(agency, emails = [])
-      available_for_agency?(agency) || available_for_email?(agency, emails)
+    def piv_cac_available_for_sp?(sp, emails = [])
+      sp.piv_cac || available_for_email?(sp, emails)
     end
 
     private
 
-    def available_for_agency?(agency)
-      return if agency.blank?
-      piv_cac_agencies = JSON.parse(Figaro.env.piv_cac_agencies || '[]')
-      piv_cac_agencies.include?(agency)
-    end
-
-    def available_for_email?(agency, emails)
-      return unless emails.any? && agency_scoped_by_email?(agency)
+    def available_for_email?(sp, emails)
+      return unless emails.any? && sp.piv_cac_scoped_by_email
 
       piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
       supported_domains = JSON.parse(piv_cac_email_domains)
@@ -49,15 +43,6 @@ module PivCacService
       email_domains = emails.map { |email| email.split(/@/, 2).last }
 
       emails_match_domains?(email_domains, supported_domains)
-    end
-
-    def agency_scoped_by_email?(agency)
-      return if agency.blank?
-
-      piv_cac_agencies_email_scope =
-        JSON.parse(Figaro.env.piv_cac_agencies_scoped_by_email || '[]')
-
-      piv_cac_agencies_email_scope.include?(agency)
     end
 
     def emails_match_domains?(email_domains, supported_domains)
