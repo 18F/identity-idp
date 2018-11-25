@@ -22,10 +22,7 @@ feature 'PIV/CAC Management' do
 
       before(:each) do
         user.identities << [identity_with_sp]
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          ['Test Government Agency'].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(true)
       end
 
       scenario 'allows association of a piv/cac with an account' do
@@ -132,8 +129,7 @@ feature 'PIV/CAC Management' do
 
       before(:each) do
         user.identities << [identity_with_sp]
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return('[]')
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(false)
       end
 
       scenario "doesn't advertise association of a piv/cac with an account" do

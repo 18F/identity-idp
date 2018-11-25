@@ -64,12 +64,6 @@ module PivCacService
       uri.gsub('{random}') { |_| SecureRandom.hex(RANDOM_HOSTNAME_BYTES) }
     end
 
-    # Only used in tests
-    def reset_piv_cac_avaialable_agencies
-      @piv_cac_agencies = nil
-      @piv_cac_agencies_email_scope = nil
-    end
-
     def token_present(token)
       raise ArgumentError, 'token missing' if token.blank?
       true
