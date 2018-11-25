@@ -4,6 +4,8 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+    allow_any_instance_of(ServiceProvider).to \
+      receive(:attribute_bundle).and_return(%w[first_name last_name email phone])
   end
 
   let(:email) { 'test@test.com' }
