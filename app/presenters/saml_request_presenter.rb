@@ -38,7 +38,7 @@ class SamlRequestPresenter
 
   def bundle
     @_bundle ||= (
-      authn_request_bundle || service_provider.attribute_bundle || []
+      (authn_request_bundle & service_provider.attribute_bundle) || []
     ).map(&:to_sym)
   end
 

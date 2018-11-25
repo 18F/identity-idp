@@ -46,7 +46,7 @@ class AttributeAsserter
 
   def add_bundle(attrs)
     bundle.each do |attr|
-      next unless VALID_ATTRIBUTES.include? attr
+      next unless VALID_ATTRIBUTES.include?(attr) && allowed_attributes.include?(attr)
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
       attrs[attr] = { getter: getter }
     end
@@ -100,5 +100,9 @@ class AttributeAsserter
 
   def ascii?
     bundle.include?(:ascii)
+  end
+
+  def allowed_attributes
+    @allowed_attributes ||= service_provider.attribute_bundle.map(&:to_sym)
   end
 end
