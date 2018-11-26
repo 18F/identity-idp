@@ -38,13 +38,10 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
       context 'allowing it' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-            [service_provider.agency].to_json
-          )
-          PivCacService.send(:reset_piv_cac_avaialable_agencies)
+          allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(true)
         end
 
-        it 'does allows piv/cac' do
+        it 'does allow piv/cac' do
           expect(subject.available?).to be_truthy
         end
       end
