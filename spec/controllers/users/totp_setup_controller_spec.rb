@@ -249,5 +249,16 @@ describe Users::TotpSetupController, devise: true do
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
     end
+
+    context 'when totp is the last mfa method' do
+      it 'does not disable totp' do
+        user = create(:user, :with_authentication_app)
+        sign_in user
+
+        delete :disable
+        expect(user.reload.otp_secret_key).to_not be_nil
+        expect(response).to redirect_to(account_path)
+      end
+    end
   end
 end
