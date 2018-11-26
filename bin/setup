@@ -35,6 +35,11 @@ Dir.chdir APP_ROOT do
   run "test -L certs/saml.crt || cp certs/saml.crt.example certs/saml.crt"
   run "test -L certs/saml2018.crt || cp certs/saml2018.crt.example certs/saml2018.crt"
 
+  puts "== Copying GeoLite2 City database =="
+  run "test -L geo_data/GeoLite2-City.mmdb || mkdir geo_data && cd geo_data && " \
+      "curl http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz | tar xvz"
+  run "mv geo_data/GeoLite2-City_20181120/GeoLite2-City.mmdb geo_data/GeoLite2-City.mmdb"
+
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
     run 'docker-compose run --rm web yarn install'

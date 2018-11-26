@@ -11,6 +11,7 @@ describe 'accounts/show.html.slim' do
       :view_model,
       AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
     )
+    assign(:login_presenter, LoginPresenter.new(user: user))
   end
 
   context 'user is not TOTP enabled' do
@@ -188,6 +189,57 @@ describe 'accounts/show.html.slim' do
           t('account.index.phone'), href: manage_phone_url(id: user.phone_configurations.first.id)
         )
       end
+    end
+  end
+
+  describe 'sign in timestamps and IP addresses' do
+    before do
+      current_sign_in_at = Time.zone.now - 5.seconds
+      last_sign_in_at = Time.zone.now - 5.seconds
+      user = build(
+        :user,
+        :signed_up,
+        :with_email,
+        current_sign_in_at: current_sign_in_at,
+        last_sign_in_at: last_sign_in_at,
+        current_sign_in_ip: '1.2.3.4',
+        last_sign_in_ip: '159.142.31.80'
+      )
+      allow(view).to receive(:current_user).and_return(user)
+      assign(:login_presenter, LoginPresenter.new(user: user))
+      allow_any_instance_of(Geocoder::Result::Test).to receive(:language=)
+    end
+
+    it 'uses distance of time in words for timestamp' do
+      render
+
+      expect(rendered).to have_content 'seconds ago'
+    end
+
+    it 'only shows the country if city and state not geocoded from IP address' do
+      render
+
+      expect(rendered).to have_content 'From United States (IP address: 1.2.3.4)'
+    end
+
+    it 'shows city and state when geocoded from IP address' do
+      render
+
+      expect(rendered).to have_content 'From Arlington, VA (IP address: 159.142.31.80)'
+    end
+
+    it 'shows unknown location when IP address cannot be geocoded' do
+      user = build(
+        :user,
+        :signed_up,
+        :with_email,
+        current_sign_in_ip: '4.3.2.1'
+      )
+      assign(:login_presenter, LoginPresenter.new(user: user))
+
+      render
+
+      expect(rendered).to have_content 'From unknown location (IP address: 4.3.2.1)'
     end
   end
 end
