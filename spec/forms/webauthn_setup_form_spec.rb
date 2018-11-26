@@ -17,7 +17,10 @@ describe WebauthnSetupForm do
           client_data_json: client_data_json,
           name: 'mykey',
         }
-        extra_attributes = { mfa_method_counts: { webauthn: 1 } }
+        extra_attributes = {
+          mfa_method_counts: { webauthn: 1 },
+          multi_factor_auth_method: 'webauthn',
+        }
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra_attributes).and_return(result)
@@ -33,7 +36,10 @@ describe WebauthnSetupForm do
           client_data_json: client_data_json,
           name: 'mykey',
         }
-        extra_attributes = { mfa_method_counts: {} }
+        extra_attributes = {
+          mfa_method_counts: {},
+          multi_factor_auth_method: 'webauthn',
+        }
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra_attributes).and_return(result)
@@ -50,7 +56,10 @@ describe WebauthnSetupForm do
           client_data_json: client_data_json,
           name: 'mykey',
         }
-        extra_attributes = { mfa_method_counts: {} }
+        extra_attributes = {
+          mfa_method_counts: {},
+          multi_factor_auth_method: 'webauthn',
+        }
 
         expect(FormResponse).to receive(:new).
           with(success: false, extra: extra_attributes, errors:

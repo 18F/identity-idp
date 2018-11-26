@@ -20,22 +20,21 @@ class AnalyticsController < ApplicationController
 
   def platform_authenticator_result
     return unless current_user
-    return if platform_authenticator_results_saved? || !platform_authenticator_params_valid?
+    return if platform_authenticator_results_saved? || platform_authenticator_available?.nil?
 
     session[:platform_authenticator_analytics_saved] = true
-    platform_authenticator_available = params[:available] ||
-                                       params.dig(:platform_authenticator, :available)
-    extra = { platform_authenticator: (platform_authenticator_available == 'true') }
+    extra = { platform_authenticator: platform_authenticator_available? }
     FormResponse.new(success: true, errors: {}, extra: extra)
   end
 
-  def platform_authenticator_params_valid?
-    result = params[:available] || params.dig(:platform_authenticator, :available)
-    %w[true false].include?(result)
+  def platform_authenticator_available?
+    @platform_authenticator_available ||= begin
+      available = params.dig(:platform_authenticator, :available)
+      available == 'true' if %w[true false].include?(available)
+    end
   end
 
   def platform_authenticator_results_saved?
-    session[:platform_authenticator_analytics_saved] == true ||
-      session[:platform_authenticator] == true
+    session[:platform_authenticator_analytics_saved] == true
   end
 end
