@@ -25,8 +25,7 @@ module TwoFactorAuthentication
     end
 
     def handle_if_all_codes_used
-      count = RecoveryCodeConfiguration.where(user_id: current_user.id, used: true).count # current_user.recovery_code_configurations.count('used' => 'true')
-      if count == (RecoveryCodeGenerator::NUMBER_OF_CODES - 1)
+      if RecoveryCodeConfiguration.where(user_id: current_user.id, used: true).count == (RecoveryCodeGenerator::NUMBER_OF_CODES - 1)
         RecoveryCodeGenerator.new(current_user).delete_existing_codes
         redirect_to recovery_code_setup_url
       end
