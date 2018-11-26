@@ -4,6 +4,8 @@ es:
     account: Cuenta
     account_locked: Cuenta bloqueada temporalmente
     account_recovery_setup: Ajustes de recuperación de cuenta
+    add_info:
+      phone: Agregar un número de teléfono
     confirmations:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña

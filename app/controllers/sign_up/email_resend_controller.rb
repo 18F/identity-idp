@@ -1,7 +1,5 @@
 module SignUp
   class EmailResendController < ApplicationController
-    include UnconfirmedUserConcern
-
     def new
       @user = User.new
       @resend_email_confirmation_form = ResendEmailConfirmationForm.new

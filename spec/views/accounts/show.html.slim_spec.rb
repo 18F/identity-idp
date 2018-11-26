@@ -166,18 +166,18 @@ describe 'accounts/show.html.slim' do
         render
 
         expect(rendered).to have_link(
-          t('account.index.phone_add'), href: manage_phone_path
+          t('account.index.phone_add'), href: add_phone_path
         )
       end
     end
 
     context 'user has a phone' do
-      it 'shows no add phone link' do
+      it 'shows add phone link' do
         render
 
-        expect(rendered).to_not have_content t('account.index.phone_add')
-        expect(rendered).to_not have_link(
-          t('account.index.phone_add'), href: manage_phone_path
+        expect(rendered).to have_content t('account.index.phone_add')
+        expect(rendered).to have_link(
+          t('account.index.phone_add'), href: add_phone_path
         )
       end
 
@@ -185,7 +185,7 @@ describe 'accounts/show.html.slim' do
         render
 
         expect(rendered).to have_link(
-          t('account.index.phone'), href: manage_phone_url
+          t('account.index.phone'), href: manage_phone_url(id: user.phone_configurations.first.id)
         )
       end
     end

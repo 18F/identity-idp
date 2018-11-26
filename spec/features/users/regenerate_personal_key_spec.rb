@@ -5,11 +5,17 @@ feature 'View personal key' do
   include PersonalKeyHelper
   include SamlAuthHelper
 
+  before { stub_twilio_service }
+
   context 'during sign up' do
-    scenario 'user refreshes personal key page' do
+    scenario 'refreshing personal key page displays the same key and does not notify the user' do
       sign_up_and_view_personal_key
 
       personal_key = scrape_personal_key
+
+      # The user should not receive an SMS and an email
+      expect(UserMailer).to_not receive(:personal_key_regenerated)
+      expect(SmsPersonalKeyRegenerationNotifierJob).to_not receive(:perform_now)
 
       visit sign_up_personal_key_path
 
@@ -24,9 +30,18 @@ feature 'View personal key' do
 
   context 'after sign up' do
     context 'regenerating personal key' do
-      scenario 'displays new code' do
+      scenario 'displays new code and notifies the user' do
         user = sign_in_and_2fa_user
         old_digest = user.encrypted_recovery_code_digest
+
+        # The user should receive an SMS and an email
+        personal_key_sign_in_mail = double
+        expect(personal_key_sign_in_mail).to receive(:deliver_now)
+        expect(UserMailer).to receive(:personal_key_regenerated).
+          with(user.email).
+          and_return(personal_key_sign_in_mail)
+        expect(SmsPersonalKeyRegenerationNotifierJob).to receive(:perform_now).
+          with(phone: user.phone_configurations.first.phone)
 
         click_button t('account.links.regenerate_personal_key')
 

@@ -12,6 +12,8 @@ fr:
       verified_account: Compte vérifié
     account_recovery_setup:
       piv_cac_linked: Votre carte PIV/CAC est liée à votre compte
+    add_info:
+      phone: Ajouter un numéro de téléphone
     cancellations:
       confirmation: Vous avez annulé la vérification de votre identité avec login.gov
       prompt: Es-tu sûre de vouloir annuler?
