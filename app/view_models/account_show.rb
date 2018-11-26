@@ -58,18 +58,36 @@ class AccountShow
 
   def totp_partial
     if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
-      'accounts/actions/disable_totp'
+      disable_totp_partial
     else
-      'accounts/actions/enable_totp'
+      enable_totp_partial
     end
+  end
+
+  def disable_totp_partial
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
+    'accounts/actions/disable_totp'
+  end
+
+  def enable_totp_partial
+    'accounts/actions/enable_totp'
   end
 
   def piv_cac_partial
     if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
-      'accounts/actions/disable_piv_cac'
+      disable_piv_cac_partial
     else
-      'accounts/actions/enable_piv_cac'
+      enable_piv_cac_partial
     end
+  end
+
+  def disable_piv_cac_partial
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
+    'accounts/actions/disable_piv_cac'
+  end
+
+  def enable_piv_cac_partial
+    'accounts/actions/enable_piv_cac'
   end
 
   def manage_personal_key_partial

@@ -2,6 +2,7 @@ module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
     include SecureHeadersConcern
+    include RememberDeviceConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -112,6 +113,7 @@ module Users
         user_locked_out: user_locked_out?(user),
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
+        remember_device: remember_device_cookie.present?,
       }
 
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)

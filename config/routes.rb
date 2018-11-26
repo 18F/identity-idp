@@ -122,6 +122,7 @@ Rails.application.routes.draw do
       get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
       patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
       delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+      get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
       get '/webauthn_setup_success' => 'users/webauthn_setup#success'
     end
 
@@ -136,6 +137,8 @@ Rails.application.routes.draw do
     match '/manage/email' => 'users/emails#update', via: %i[patch put]
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
+    get '/add/phone' => 'users/phones#add'
+    post '/add/phone' => 'users/phones#create'
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
     delete '/manage/phone' => 'users/phones#delete'

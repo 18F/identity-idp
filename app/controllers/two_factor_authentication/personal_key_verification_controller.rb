@@ -29,6 +29,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
+        create_user_event(:personal_key_used)
         generate_new_personal_key
         handle_valid_otp
       else
@@ -69,6 +70,7 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       redirect_to manage_personal_key_url
       reset_otp_session_data
+      user_session.delete(:mfa_device_remembered)
     end
   end
 end

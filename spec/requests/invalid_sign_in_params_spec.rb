@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 describe 'visiting sign in page with invalid user params' do
-  it 'does not raise an exception' do
-    get new_user_session_path, params: { user: 'test@test.com' }
+  it 'raises ActionController::ParameterMissing' do
+    params = { user: 'test@test.com' }
+    message_string = 'param is missing or the value is empty: #permit called on String'
+
+    expect { get new_user_session_path, params: params }.
+      to raise_error(ActionController::ParameterMissing, message_string)
   end
 end
 

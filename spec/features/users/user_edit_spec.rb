@@ -89,6 +89,7 @@ feature 'User edit' do
         click_button t('forms.phone.buttons.delete')
         expect(page).to have_current_path(account_path)
         expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
+        expect(page).to have_content t('event_types.phone_removed')
       end
     end
   end
@@ -107,7 +108,7 @@ feature 'User edit' do
       visit sign_up_enter_password_path(confirmation_token: token)
 
       expect(page).to have_current_path(account_path)
-      expect(page).to_not have_content user.email
+      expect(page).to_not have_content user.email_addresses.first.email
     end
   end
 

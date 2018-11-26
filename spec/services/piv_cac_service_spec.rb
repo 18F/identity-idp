@@ -160,7 +160,7 @@ describe PivCacService do
   end
 
   describe '#piv_cac_available_for_agency?' do
-    let(:subject) { PivCacService.piv_cac_available_for_agency?('foo', 'foo@example.com') }
+    let(:subject) { PivCacService.piv_cac_available_for_agency?('foo', ['foo@example.com']) }
 
     context 'with an agency not encouraged to use piv/cac for anyone' do
       before(:each) do
@@ -211,7 +211,7 @@ describe PivCacService do
   end
 
   describe '#available_for_email?' do
-    let(:subject) { PivCacService.send(:available_for_email?, 'foo', 'foo@bar.example.com') }
+    let(:subject) { PivCacService.send(:available_for_email?, 'foo', ['foo@bar.example.com']) }
 
     context 'with the agency not configured to be available' do
       before(:each) do

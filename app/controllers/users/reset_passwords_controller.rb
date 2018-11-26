@@ -27,7 +27,7 @@ module Users
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_address.email)
+        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
       else
         handle_invalid_or_expired_token(result)
       end
@@ -36,7 +36,6 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-
       @reset_password_form = ResetPasswordForm.new(resource)
 
       result = @reset_password_form.submit(user_params)
@@ -52,8 +51,10 @@ module Users
 
     protected
 
-    def forbidden_passwords(email_address)
-      ForbiddenPasswords.new(email_address).call
+    def forbidden_passwords(email_addresses)
+      email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     end
 
     def email_params
@@ -112,8 +113,9 @@ module Users
     end
 
     def handle_unsuccessful_password_reset(result)
-      if result.errors[:reset_password_token].present?
-        flash[:error] = t('devise.passwords.token_expired')
+      reset_password_token_errors = result.errors[:reset_password_token]
+      if reset_password_token_errors.present?
+        flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return
       end

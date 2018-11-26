@@ -396,7 +396,7 @@ feature 'Sign in' do
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
       expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'India'
@@ -418,6 +418,7 @@ feature 'Sign in' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'redirects to the personal key page' do
       user = create(:user, :signed_up)
+      stub_twilio_service
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
@@ -430,6 +431,7 @@ feature 'Sign in' do
       click_acknowledge_personal_key
 
       expect(page).to have_current_path(account_path)
+      expect(page).to have_content t('event_types.personal_key_used')
     end
   end
 

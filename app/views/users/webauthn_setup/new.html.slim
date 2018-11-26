@@ -2,6 +2,7 @@
 - help_link = link_to t('links.what_is_webauthn'),
               MarketingSite.help_hardware_security_key_url, target: :_blank
 
+= image_tag asset_url('security-key.svg'), width: '90', class: 'ml1'
 h1.h3.my0 = t('headings.webauthn_setup.new')
 p.mt-tiny.mb3 = t('forms.webauthn_setup.intro_html', link: help_link)
 div

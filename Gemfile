@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.5.1'
+ruby '~> 2.5.3'
 
 gem 'rails', '~> 5.1.3'
 
@@ -25,6 +25,7 @@ gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
 gem 'json-jwt'
+gem 'local_time'
 gem 'lograge'
 gem 'net-sftp'
 gem 'newrelic_rpm'

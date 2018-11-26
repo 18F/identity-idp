@@ -14,9 +14,9 @@ module Users
     def confirm
       form = WebauthnSetupForm.new(current_user, user_session)
       result = form.submit(request.protocol, params)
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_SUBMITTED, result.to_h)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
       if result.success?
-        process_valid_webauthn(form.attestation_response)
+        process_valid_webauthn
       else
         process_invalid_webauthn(form)
       end
@@ -35,6 +35,10 @@ module Users
       redirect_to account_url
     end
 
+    def show_delete
+      render 'users/webauthn_setup/delete'
+    end
+
     private
 
     def flash_error(errors)
@@ -46,21 +50,23 @@ module Users
     end
 
     def handle_successful_delete
+      create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
     end
 
     def handle_failed_delete
-      flash[:error] = t('errors.webauthn_setup.delete_last')
       track_delete(false)
     end
 
     def track_delete(success)
+      counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
+
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
-        mfa_options_enabled: MfaContext.new(current_user).enabled_two_factor_configurations_count
+        mfa_method_counts: counts_hash
       )
     end
 
@@ -73,9 +79,8 @@ module Users
       MfaPolicy.new(current_user).two_factor_enabled?
     end
 
-    def process_valid_webauthn(attestation_response)
+    def process_valid_webauthn
       mark_user_as_fully_authenticated
-      create_webauthn_configuration(attestation_response)
       redirect_to webauthn_setup_success_url
     end
 
@@ -101,16 +106,6 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-    end
-
-    def create_webauthn_configuration(attestation_response)
-      credential = attestation_response.credential
-      public_key = Base64.strict_encode64(credential.public_key)
-      id = Base64.strict_encode64(credential.id)
-      WebauthnConfiguration.create(user_id: current_user.id,
-                                   credential_public_key: public_key,
-                                   credential_id: id,
-                                   name: params[:name])
     end
 
     def user_already_has_a_personal_key?

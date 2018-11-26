@@ -56,6 +56,7 @@ feature 'Password recovery via personal key' do
   end
 
   scenario 'resets password, uses personal key as 2fa', email: true do
+    stub_twilio_service
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)

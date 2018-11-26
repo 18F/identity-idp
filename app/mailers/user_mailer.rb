@@ -14,12 +14,12 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def password_changed(user)
-    mail(to: user.email_address.email, subject: t('devise.mailer.password_updated.subject'))
+  def password_changed(email_address)
+    mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
-  def phone_changed(user)
-    mail(to: user.email_address.email, subject: t('user_mailer.phone_changed.subject'))
+  def phone_changed(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.phone_changed.subject'))
   end
 
   def account_does_not_exist(email, request_id)
@@ -27,27 +27,34 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
 
-  def account_reset_request(user)
-    account_reset = user.account_reset_request
-    @token = account_reset&.request_token
-    mail(to: user.email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+  def personal_key_sign_in(email)
+    mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 
-  def account_reset_granted(user, account_reset)
+  def personal_key_regenerated(email)
+    mail(to: email, subject: t('user_mailer.personal_key_regenerated.subject'))
+  end
+
+  def account_reset_request(email_address, account_reset)
+    @token = account_reset&.request_token
+    mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+  end
+
+  def account_reset_granted(email_address, account_reset)
     @token = account_reset&.request_token
     @granted_token = account_reset&.granted_token
-    mail(to: user.email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
+    mail(to: email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
   end
 
-  def account_reset_complete(email)
-    mail(to: email, subject: t('user_mailer.account_reset_complete.subject'))
+  def account_reset_complete(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
   end
 
-  def account_reset_cancel(email)
-    mail(to: email, subject: t('user_mailer.account_reset_cancel.subject'))
+  def account_reset_cancel(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
   end
 
-  def please_reset_password(email)
-    mail(to: email, subject: t('user_mailer.please_reset_password.subject'))
+  def please_reset_password(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.please_reset_password.subject'))
   end
 end

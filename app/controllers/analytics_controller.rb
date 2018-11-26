@@ -1,6 +1,5 @@
 class AnalyticsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :confirm_two_factor_authenticated
 
   def create
     results.each do |event, result|
@@ -20,6 +19,7 @@ class AnalyticsController < ApplicationController
   end
 
   def platform_authenticator_result
+    return unless current_user
     return if platform_authenticator_results_saved? || platform_authenticator_available?.nil?
 
     session[:platform_authenticator_analytics_saved] = true

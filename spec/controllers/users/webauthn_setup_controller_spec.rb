@@ -34,7 +34,7 @@ describe Users::WebauthnSetupController do
   describe 'when signed in and not account creation' do
     before do
       stub_analytics
-      user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
+      user = build(:user, :signed_up, :with_authentication_app)
       stub_sign_in(user)
     end
 
@@ -88,28 +88,25 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the submission' do
-        result = { success: true, errors: {} }
+        result = {
+          success: true,
+          errors: {},
+          mfa_method_counts: { auth_app: 1, phone: 1 },
+          multi_factor_auth_method: 'webauthn',
+        }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::WEBAUTHN_SETUP_SUBMITTED, result)
+          with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
 
         patch :confirm, params: params
       end
     end
 
     describe 'delete' do
-      before do
-        mock_mfa = MfaContext.new(controller.current_user)
-        allow(mock_mfa).to receive(:enabled_two_factor_configurations_count).and_return(2)
-        allow(MfaContext).to receive(:new).with(controller.current_user).and_return(mock_mfa)
-        mock_mfa_policy = MfaPolicy.new(controller.current_user)
-        allow(mock_mfa_policy).to receive(:multiple_factors_enabled?).and_return(true)
-        allow(MfaPolicy).to receive(:new).with(
-          controller.current_user
-        ).and_return(mock_mfa_policy)
-      end
-
       it 'deletes a webauthn configuration' do
+        expect(Event).to receive(:create).
+          with(user_id: controller.current_user.id, event_type: :webauthn_key_removed)
         cfg = create_webauthn_configuration(controller.current_user, 'key1', 'id1', 'foo1')
+
         delete :delete, params: { id: cfg.id }
 
         expect(response).to redirect_to(account_url)
@@ -120,7 +117,7 @@ describe Users::WebauthnSetupController do
       it 'tracks the delete' do
         cfg = create_webauthn_configuration(controller.current_user, 'key1', 'id1', 'foo1')
 
-        result = { success: true, mfa_options_enabled: 2 }
+        result = { success: true, mfa_method_counts: { auth_app: 1, phone: 1 } }
         expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
 
         delete :delete, params: { id: cfg.id }
@@ -129,25 +126,21 @@ describe Users::WebauthnSetupController do
   end
 
   describe 'when signed in and account creation' do
-    before do
-      user = build(:user)
-      stub_sign_in(user)
-    end
-
     describe 'patch confirm' do
-      let(:params) do
-        {
+      it 'processes a valid webauthn and redirects to success page' do
+        user = build(:user)
+        stub_sign_in(user)
+
+        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
+        expect(Event).to receive(:create).with(user_id: user.id, event_type: :webauthn_key_added)
+        controller.user_session[:webauthn_challenge] = challenge
+
+        params = {
           attestation_object: attestation_object,
           client_data_json: client_data_json,
           name: 'mykey',
         }
-      end
-      before do
-        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
-        controller.user_session[:webauthn_challenge] = challenge
-      end
 
-      it 'processes a valid webauthn and redirects to success page' do
         patch :confirm, params: params
 
         expect(response).to redirect_to(webauthn_setup_success_url)

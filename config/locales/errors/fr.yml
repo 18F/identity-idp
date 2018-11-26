@@ -64,7 +64,6 @@ fr:
         sur https://fidoalliance.org/certification/fido-certified-products/ et si
         vous pensez que l'erreur est la nôtre, veuillez nous contacter à l'adresse
         hello@login.gov.
-      delete_last: Désolé, vous ne pouvez pas supprimer votre dernière option MFA
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité

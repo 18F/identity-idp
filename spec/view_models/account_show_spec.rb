@@ -126,6 +126,9 @@ describe AccountShow do
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy
         ).to receive(:enabled?).and_return(true)
+        allow_any_instance_of(
+          MfaPolicy
+        ).to receive(:multiple_factors_enabled?).and_return(true)
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
@@ -168,7 +171,7 @@ describe AccountShow do
     context 'AccountShow instance does not have decrypted_pii' do
       it "returns the user's email" do
         email = 'john@smith.com'
-        user = build(:user, email: email).decorate
+        user = build(:user, :with_email, email: email).decorate
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
         expect(profile_index.header_personalization).to eq email

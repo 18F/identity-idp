@@ -21,7 +21,7 @@ fr:
       show_hdr: Créez un mot de passe fort
     example: 'exemple:'
     messages:
-      remember_device: Enregistrer ce navigateur pendant %{duration} jours
+      remember_device: Enregistrer ce navigateur
     passwords:
       edit:
         buttons:
@@ -96,6 +96,10 @@ fr:
       name: Code de confirmation
       submit: Confirmer le compte
       title: Confirmez votre compte
+    webauthn_delete:
+      caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus l'utiliser
+        pour accéder à votre compte login.gov.
+      confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour l’enregistrer

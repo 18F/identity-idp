@@ -52,7 +52,7 @@ describe ResetPasswordForm, type: :model do
 
     context 'when both the password and token are valid' do
       it 'sets the user password to the submitted password' do
-        user = build_stubbed(:user, uuid: '123')
+        user = build_stubbed(:user, :with_email, uuid: '123')
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
         expect(Event).to receive(:create).with(user_id: user.id, event_type: :password_changed)
 
@@ -92,6 +92,25 @@ describe ResetPasswordForm, type: :model do
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
         expect(form.submit(password: password)).to eq result
+      end
+    end
+
+    context 'when the user does not exist in the db' do
+      it 'returns a hash with errors' do
+        user = User.new
+
+        form = ResetPasswordForm.new(user)
+        errors = {
+          reset_password_token: ['invalid_token'],
+        }
+
+        extra = { user_id: nil }
+
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(form.submit(password: 'a good and powerful password')).to eq result
       end
     end
 

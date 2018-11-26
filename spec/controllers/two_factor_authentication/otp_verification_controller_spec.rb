@@ -271,14 +271,18 @@ describe TwoFactorAuthentication::OtpVerificationController do
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        allow(UserMailer).to receive(:phone_changed).with(subject.current_user).
-          and_return(@mailer)
+        subject.current_user.email_addresses.each do |email_address|
+          allow(UserMailer).to receive(:phone_changed).with(email_address).
+            and_return(@mailer)
+        end
         @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
       end
 
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
+            controller.user_session[:phone_id] = \
+              MfaContext.new(subject.current_user).phone_configurations.last.id
             post(
               :create,
               params: {
@@ -303,10 +307,12 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH, properties)
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-            expect(UserMailer).to have_received(:phone_changed).with(subject.current_user)
+            subject.current_user.email_addresses.each do |email_address|
+              expect(UserMailer).to have_received(:phone_changed).with(email_address)
+            end
             expect(@mailer).to have_received(:deliver_later)
           end
         end
@@ -346,7 +352,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH, properties)
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
           end
         end
       end
@@ -382,7 +388,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH, properties)
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
 
             expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
             expect(subject).to have_received(:create_user_event).exactly(:once)

@@ -58,7 +58,6 @@ es:
       attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
         clave de seguridad FIDO. Asegúrese de que su dispositivo esté en https://fidoalliance.org/certification/fido-certified-products/
         y si cree que el error es nuestro, contáctenos en hello@login.gov.
-      delete_last: Lo sentimos, no puedes eliminar tu última opción de MFA.
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.

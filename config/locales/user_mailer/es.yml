@@ -43,6 +43,47 @@ es:
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
+    personal_key_regenerated:
+      help_html: <p>Tu cuenta de login.gov acaba de emitir una nueva clave personal
+        de 16 caracteres. Estás recibiendo este correo electrónico para verificar
+        que eras tú. </p><p>Si acabas de iniciar sesión y has regenerado tu clave
+        personal, ¡fantástico! No es necesario que hagas nada.</p><p>Si no acabas
+        de regenerar tu clave personal, o si no estás seguro, sigue estos pasos para
+        proteger tu cuenta:<ol><li><strong><a href="%{reset_password_url}">Cambia
+        tu contraseña</a>.</strong> Elige una contraseña que aún no hayas utilizado
+        con esta cuenta. </li><li><strong><a href="%{account_url}">Inicia sesión en
+        tu cuenta de login.gov</a></strong> y asegúrate de que reconoces toda la información
+        de la página de tu cuenta, como los métodos que utilizas para la autenticación
+        de dos factores, como el número de teléfono, la aplicación de autenticación
+        o la clave de seguridad. </li><li><strong>En la <a href="%{account_url}">página
+        de tu cuenta de login.gov</a>, solicita una nueva clave personal</strong>.
+        Recuerda no compartirla nunca a menos que la estés usando para acceder a un
+        sitio web de confianza que utilice login.gov.</li></ol></p><p>Deberías ponerte
+        en contacto con nosotros llamando al 844-875-6446 o enviando un correo electrónico
+        a <a href="mailto:security@login.gov">security@login.gov</a>.</p><br>Gracias,<br>El
+        equipo de login.gov
+      intro: Nueva clave personal emitida
+      subject: Alerta de seguridad de la cuenta
+    personal_key_sign_in:
+      help_html: <p>Su cuenta login.gov acaba de iniciar sesión con su clave personal
+        de 16 caracteres. Usted está recibiendo este e-mail para asegurarse de que
+        era usted.</p><p>Si acaba de iniciar sesión con su clave personal, ¡genial!
+        No hay nada que tenga que hacer.</p><p>Si no inició sesión con una clave personal,
+        o si no está seguro, por favor, siga estos pasos de inmediato para proteger
+        su cuenta.<ol><li><strong><a href="%{reset_password_url}">Cambie tu contraseña</a>.</strong>
+        Elija una contraseña que no haya utilizado con esta cuenta.</li><li><strong><a
+        href="%{account_url}">Inicie sesión en su cuenta login.gov</a></strong> y
+        asegúrese de reconocer toda la información en la página de su cuenta, incluidos
+        los métodos que utiliza para la autenticación de dos factores, como el número
+        de teléfono, la aplicación de autenticación, o la clave de seguridad.</li><li><strong>En
+        la página de su cuenta login.gov, solicite una nueva clave personal.</strong>
+        Recuerde, nunca lo comparta a menos que lo esté utilizando para iniciar sesión
+        en un sitio web de confianza que utiliza login.gov.</li></ol></p><p>Luego
+        debe comunicarse con nosotros llamando al 844-875-6446 o enviando un e-mail
+        a <a href="mailto:security@login.gov">security@login.gov</a>.</p> <br>Gracias,<br>El
+        equipo de login.gov
+      intro: Clave personal utilizada para iniciar sesión
+      subject: Alerta de seguridad de cuenta
     phone_changed:
       help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}
         o el %{contact_link}.
