@@ -5,6 +5,8 @@ module Users
 
     def new
       @presenter = TwoFactorAuthCode::RecoveryCodePresenter.new(data: {:current_user => current_user}, view: self.view_context)
+      generator = RecoveryCodeGenerator.new(@current_user)
+      @codes = generator.generate
       result = RecoveryCodeVisitForm.new.submit(params)
       analytics.track_event(Analytics::RECOVERY_CODE_SETUP_VISIT, result.to_h)
       mark_user_as_fully_authenticated

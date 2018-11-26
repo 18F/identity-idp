@@ -22,10 +22,10 @@ module TwoFactorAuthCode
       t('two_factor_authentication.recovery_code_fallback.question')
     end
 
-    def codes
-      generator = RecoveryCodeGenerator.new(@current_user)
-      generator.generate
-    end
+    #def codes
+    #  generator = RecoveryCodeGenerator.new(@current_user)
+    #  generator.generate
+    #end
   end
 end
 

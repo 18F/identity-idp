@@ -9,7 +9,7 @@ ul.list-reset
     .inline-block = t('forms.recovery_code.subinfo1')
   li.py2.border-top
     .mb2
-      - @presenter.codes.each_with_index  do |code, index|
+      - @codes.each_with_index  do |code, index|
         p.mt-tiny.mb0 = code
   li.py2.border-top
     .sm-col-9.sm-ml-28p
