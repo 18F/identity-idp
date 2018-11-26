@@ -13,7 +13,7 @@ feature 'sign up with recovery code', :js do
     user = create(:user, :signed_up)
     codes = RecoveryCodeGenerator.new(user).generate
     signin(user.email, user.password)
-    #binding.pry
+    # binding.pry
     fill_in :recovery_code_verification_form_recovery_code, with: codes.first
     click_on 'Submit'
     binding.pry

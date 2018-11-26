@@ -4,6 +4,7 @@ class RecoveryCodeGenerator
   attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
+  NUMBER_OF_CODES = 2
 
   def initialize(user, length: 2, split: 4)
     @length = length
@@ -18,12 +19,25 @@ class RecoveryCodeGenerator
 
   def verify(plaintext_code)
     # code = encrypt( plaintext_code )
-    puts "*********************** #{plaintext_code}"
     recovery_code = normalize(plaintext_code)
     code = @user.recovery_code_configurations.find_by code: recovery_code
     return false if code.nil?
     code.update!(used: true, used_at: Time.zone.now)
     true
+  end
+
+  def delete_existing_codes
+    @user.recovery_code_configurations.destroy_all
+  end
+
+  def generate_new_codes
+    result = []
+    (0..(NUMBER_OF_CODES - 1)).each do
+      code = recovery_code
+      result.push code
+      save_code(code)
+    end
+    result
   end
 
   private
@@ -38,20 +52,6 @@ class RecoveryCodeGenerator
     rc.user_id = @user.id
     rc.used = false
     rc.save
-  end
-
-  def delete_existing_codes
-    @user.recovery_code_configurations.destroy_all
-  end
-
-  def generate_new_codes
-    result = []
-    (0..9).each do
-      code = recovery_code
-      result.push code
-      save_code(code)
-    end
-    result
   end
 
   def encode_code(code:, length:, split:)
