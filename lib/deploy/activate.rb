@@ -54,7 +54,7 @@ module Deploy
     end
 
     def set_proper_file_permissions_for_geolocation_db
-      FileUtils.chmod(0o640, geolocation_db_path)
+      FileUtils.chmod(0o644, geolocation_db_path)
     end
 
     def default_logger
