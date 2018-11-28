@@ -1,19 +1,19 @@
-- title t('forms.recovery_code.title')
+- title t('forms.backup_code.title')
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
-h1.h3.my0 = t('forms.recovery_code.info')
-p.mt-tiny.mb3 = t('forms.recovery_code.instructions')
+h1.h3.my0 = t('forms.backup_code.info')
+p.mt-tiny.mb3 = t('forms.backup_code.instructions')
 ul.list-reset
   li.py2.border-top
-    .inline-block.bold = t('forms.recovery_code.subtitle1')
-    .inline-block = t('forms.recovery_code.subinfo1')
+    .inline-block.bold = t('forms.backup_code.subtitle1')
+    .inline-block = t('forms.backup_code.subinfo1')
   li.py2.border-top
     .mb2
       - @codes.each_with_index  do |code, index|
         p.mt-tiny.mb0 = code
   li.py2.border-top
     .sm-col-9.sm-ml-28p
-      = form_tag(recovery_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
+      = form_tag(backup_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
         .clearfix.mxn1
           .col.col-6.sm-col-5.px1
             = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'sign up with recovery code', :js do
+feature 'sign up with backup code', :js do
   it 'works' do
     sign_up_and_set_password
-    select_2fa_option('recovery_code')
+    select_2fa_option('backup_code')
     click_on 'Continue'
     # binding.pry
     # puts 'Done!'
@@ -11,10 +11,10 @@ feature 'sign up with recovery code', :js do
 
   it 'works on signin' do
     user = create(:user, :signed_up)
-    codes = RecoveryCodeGenerator.new(user).generate
+    codes = BackupCodeGenerator.new(user).generate
     signin(user.email, user.password)
     # binding.pry
-    fill_in :recovery_code_verification_form_recovery_code, with: codes.first
+    fill_in :backup_code_verification_form_backup_code, with: codes.first
     click_on 'Submit'
     binding.pry
   end

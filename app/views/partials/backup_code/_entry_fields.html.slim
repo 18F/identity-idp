@@ -1,8 +1,8 @@
-- word_count = Figaro.env.recovery_code_length.to_i
+- word_count = Figaro.env.backup_code_length.to_i
 
 .mb3
   = f.input attribute_name,
-    label: t('simple_form.required.html') + t('forms.two_factor.recovery_code'),
+    label: t('simple_form.required.html') + t('forms.two_factor.backup_code'),
     input_html: { autocapitalize: 'none',
       autocomplete: 'off',
       class: 'personal-key caps',

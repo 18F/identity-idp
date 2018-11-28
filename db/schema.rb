@@ -161,15 +161,15 @@ ActiveRecord::Schema.define(version: 20181114213758) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
-  create_table "recovery_code_configurations", force: :cascade do |t|
+  create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.text "code", null: false
     t.boolean "used", default: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_recovery_code_configurations_on_code"
-    t.index ["user_id"], name: "index_recovery_code_configurations_on_user_id"
+    t.index ["code"], name: "index_backup_code_configurations_on_code"
+    t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
   end
 
   create_table "remote_settings", force: :cascade do |t|

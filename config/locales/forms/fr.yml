@@ -35,7 +35,7 @@ fr:
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
-    recovery_code:
+    backup_code:
       title: Personal Security Codes
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous connecterez.
@@ -100,7 +100,7 @@ fr:
     two_factor:
       code: Code de sécurité
       personal_key: Clé personnelle
-      recovery_code: Code de sécurité
+      backup_code: Code de sécurité
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte

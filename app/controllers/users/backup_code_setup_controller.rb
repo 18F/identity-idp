@@ -1,14 +1,14 @@
 module Users
-  class RecoveryCodeSetupController < ApplicationController
+  class BackupCodeSetupController < ApplicationController
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
-      @presenter = TwoFactorAuthCode::RecoveryCodePresenter.new(data: {:current_user => current_user}, view: self.view_context)
-      generator = RecoveryCodeGenerator.new(@current_user)
+      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: {:current_user => current_user}, view: self.view_context)
+      generator = BackupCodeGenerator.new(@current_user)
       @codes = generator.generate
-      result = RecoveryCodeVisitForm.new.submit(params)
-      analytics.track_event(Analytics::RECOVERY_CODE_SETUP_VISIT, result.to_h)
+      result = BackupCodeVisitForm.new.submit(params)
+      analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       mark_user_as_fully_authenticated
     end
 
@@ -17,7 +17,7 @@ module Users
     end
 
     def create
-      analytics.track_event(Analytics::RECOVERY_CODE_CREATED)
+      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
       Event.create(user_id: current_user.id, event_type: :new_personal_key)
       redirect_to sign_up_personal_key_url
     end

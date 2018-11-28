@@ -1,4 +1,4 @@
-module RecoveryCodeEncryptedAttributeOverrides
+module BackupCodeEncryptedAttributeOverrides
   extend ActiveSupport::Concern
 
   class_methods do

@@ -1,4 +1,4 @@
-class RecoveryCodeVisitForm
+class BackupCodeVisitForm
   include ActiveModel::Model
 
   def submit(params)

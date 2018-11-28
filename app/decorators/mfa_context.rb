@@ -34,12 +34,12 @@ class MfaContext
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_configurations + recovery_code_configurations + [piv_cac_configuration, auth_app_configuration]
+    phone_configurations + webauthn_configurations + backup_code_configurations + [piv_cac_configuration, auth_app_configuration]
   end
 
-  def recovery_code_configurations
+  def backup_code_configurations
     if user.present?
-      user.recovery_code_configurations.unused
+      user.backup_code_configurations.unused
     else
       []
     end

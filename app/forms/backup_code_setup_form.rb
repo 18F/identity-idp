@@ -1,4 +1,4 @@
-class RecoveryCodeSetupForm
+class BackupCodeSetupForm
   include ActiveModel::Model
 
   validates :user, presence: true

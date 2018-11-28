@@ -71,7 +71,7 @@ function handleSubmit(event) {
 
   if (value === personalKey) {
     unsetInvalidHTML();
-    // Recovery code page, without js enabled, has a form submission that posts
+    // backup code page, without js enabled, has a form submission that posts
     // to the server with no body.
     // Mimic that here.
     formEl.removeEventListener('submit', handleSubmit);

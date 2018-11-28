@@ -35,7 +35,7 @@ en:
       instructions: Please confirm you have a copy of your personal key by entering
         it below.
       title: Enter your personal key
-    recovery_code:
+    backup_code:
       title: Personal Security Codes
       info: Use login codes if you cannot access your phone to sign in
       instructions: You will be asked for a login code each time you sign in
@@ -93,7 +93,7 @@ en:
     two_factor:
       code: One-time security code
       personal_key: Personal key
-      recovery_code: Security code
+      backup_code: Security code
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account

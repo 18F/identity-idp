@@ -1,4 +1,4 @@
-class RecoveryCodeConfiguration < ApplicationRecord
+class BackupCodeConfiguration < ApplicationRecord
   belongs_to :user
 
   def self.unused
@@ -10,11 +10,11 @@ class RecoveryCodeConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    [TwoFactorAuthentication::RecoveryCodeSelectionPresenter.new]
+    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
   end
 
   def friendly_name
-    :recovery_codes
+    :backup_codes
   end
 
   def self.selection_presenters(set)

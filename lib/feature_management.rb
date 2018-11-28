@@ -118,7 +118,7 @@ class FeatureManagement
     Figaro.env.platform_authenticator_analytics_enabled == 'true'
   end
 
-  def self.recovery_codes_enabled?
-    Figaro.env.recovery_codes_enabled == 'true'
+  def self.backup_codes_enabled?
+    Figaro.env.backup_codes_enabled == 'true'
   end
 end

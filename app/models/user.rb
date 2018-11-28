@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   self.ignored_columns = %w[
     encrypted_password password_salt password_cost encryption_key
-    recovery_code recovery_cost recovery_salt
+    backup_code recovery_cost recovery_salt
     encrypted_phone phone_confirmed_at
   ]
 
@@ -47,7 +47,7 @@ class User < ApplicationRecord
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
-  has_many :recovery_code_configurations, dependent: :destroy
+  has_many :backup_code_configurations, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

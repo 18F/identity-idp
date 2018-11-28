@@ -41,8 +41,8 @@ module Users
         redirect_to setup_piv_cac_url
       when 'webauthn'
         redirect_to webauthn_setup_url
-      when 'recovery_code'
-        redirect_to recovery_code_setup_url
+      when 'backup_code'
+        redirect_to backup_code_setup_url
       end
     end
 

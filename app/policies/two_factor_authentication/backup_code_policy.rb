@@ -1,11 +1,11 @@
 module TwoFactorAuthentication
-  class RecoveryCodePolicy
+  class BackupCodePolicy
     def initialize(user)
       @user = user
     end
 
     def configured?
-      @user.recovery_code_configurations.unused.any?
+      @user.backup_code_configurations.unused.any?
     end
 
     def enabled?
@@ -17,7 +17,7 @@ module TwoFactorAuthentication
     end
 
     def available?
-      true #FeatureManagement.recovery_codes_enabled? == true
+      true #FeatureManagement.backup_codes_enabled? == true
     end
 
     private

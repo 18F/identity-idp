@@ -35,7 +35,7 @@ es:
       instructions: Confirme que tiene una copia de su clave personal ingresándola
         a continuación.
       title: Ingrese su clave personal
-    recovery_code:
+    backup_code:
       title: Personal Security Codes
       info: Use códigos de inicio de sesión si no puede acceder a su teléfono para iniciar sesión
       instructions: Se le pedirá un código de inicio de sesión cada vez que inicie sesión.
@@ -94,7 +94,7 @@ es:
     two_factor:
       code: Código de seguridad de sólo un uso
       personal_key: Clave personal
-      recovery_code: Código de seguridad
+      backup_code: Código de seguridad
       try_again: Use otro número de teléfono.
     two_factor_choice:
       legend: Seleccione una opción para proteger su cuenta

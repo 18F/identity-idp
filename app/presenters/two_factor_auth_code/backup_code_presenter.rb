@@ -1,5 +1,5 @@
 module TwoFactorAuthCode
-  class RecoveryCodePresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+  class BackupCodePresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TranslationHelper
 
@@ -19,7 +19,7 @@ module TwoFactorAuthCode
     end
 
     def fallback_question
-      t('two_factor_authentication.recovery_code_fallback.question')
+      t('two_factor_authentication.backup_code_fallback.question')
     end
 
     #def codes

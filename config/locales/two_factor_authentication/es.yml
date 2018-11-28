@@ -16,7 +16,7 @@ es:
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
       nuevo o solicitar un nuevo código de seguridad de sólo un uso.
     invalid_personal_key: Esa clave personal no es válida.
-    invalid_recovery_code: Ese código de seguridad personal no es válido.
+    invalid_backup_code: Ese código de seguridad personal no es válido.
     invalid_piv_cac: Esa PIV/CAC no es correcta.
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
@@ -55,7 +55,7 @@ es:
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
       temporalmente dado que has presentado las credenciales de tu piv/cac de forma
       incorrecta demasiadas veces.
-    max_recovery_code_login_attempts_reached: Para su seguridad, su cuenta está temporalmente
+    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está temporalmente
       bloqueado porque ingresaste el código de seguridad personal incorrectamente demasiadas veces.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
@@ -69,8 +69,8 @@ es:
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
-    recovery_code_header_text: Enter your security code
-    recovery_code_prompt: You can use this security code once. After you enter it, you'll
+    backup_code_header_text: Enter your security code
+    backup_code_prompt: You can use this security code once. After you enter it, you'll
       need to use a new key.
     phone:
       delete:
@@ -88,8 +88,8 @@ es:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
-    recovery_code_fallback:
-      question: Don't have your recovery codes available?
+    backup_code_fallback:
+      question: Don't have your backup codes available?
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
@@ -111,8 +111,8 @@ es:
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
-      recovery_code: Códigos de seguridad personal
-      recovery_code_info: Reciba una lista generada previamente de códigos de seguridad para usar al iniciar sesión
+      backup_code: Códigos de seguridad personal
+      backup_code_info: Reciba una lista generada previamente de códigos de seguridad para usar al iniciar sesión
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad

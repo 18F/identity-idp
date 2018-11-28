@@ -1,6 +1,6 @@
 require 'digest'
 
-class RecoveryCodeGenerator
+class BackupCodeGenerator
   attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
@@ -19,21 +19,21 @@ class RecoveryCodeGenerator
 
   def verify(plaintext_code)
     # code = encrypt( plaintext_code )
-    recovery_code = normalize(plaintext_code)
-    code = @user.recovery_code_configurations.find_by code: recovery_code
+    backup_code = normalize(plaintext_code)
+    code = @user.backup_code_configurations.find_by code: backup_code
     return false if code.nil?
     code.update!(used: true, used_at: Time.zone.now)
     true
   end
 
   def delete_existing_codes
-    @user.recovery_code_configurations.destroy_all
+    @user.backup_code_configurations.destroy_all
   end
 
   def generate_new_codes
     result = []
     (0..(NUMBER_OF_CODES - 1)).each do
-      code = recovery_code
+      code = backup_code
       result.push code
       save_code(code)
     end
@@ -47,7 +47,7 @@ class RecoveryCodeGenerator
   end
 
   def save_code(code)
-    rc = RecoveryCodeConfiguration.new
+    rc = BackupCodeConfiguration.new
     rc.code = code
     rc.user_id = @user.id
     rc.used = false
@@ -69,7 +69,7 @@ class RecoveryCodeGenerator
    # INVALID_CODE
   end
 
-  def recovery_code
+  def backup_code
     c = SecureRandom.hex
     raw = c[1, @split * @length]
     normalize(raw)
