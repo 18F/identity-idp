@@ -1,4 +1,3 @@
----
 es:
   forms:
     account_recovery_setup:
@@ -41,13 +40,13 @@ es:
       instructions: Se le pedirá un código de inicio de sesión cada vez que inicie sesión.
         a su cuenta login.gov.
       subtitle1: Tus códigos de respaldo
-      subinfo1: Cada código solo se puede utilizar una vez, una vez que el 9º código haya sido
-        Se le pedirá que descargue una nueva lista. Trata tu recuperación
-        Códigos con el mismo nivel de atención que tu contraseña.
+      subinfo1: Each code may only be used once, once the 9th code has been
+        used you will be prompted to download a new list.  Treat your recovery
+        codes with the same level of attention as you would your password.
       download: Descargue, imprima o anote sus códigos de seguridad personales.
       generate: Generar nuevos códigos de respaldo.
-      generate_info: Cuando genera nuevos códigos, debe descargarlos o imprimirlos.
-         Tus viejos códigos ya no funcionarán.
+      generate_info: When you generate new codes, you must download or print them.
+        Your old codes won't work anymore.
     phone:
       buttons:
         delete: Eliminar el teléfono
