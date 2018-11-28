@@ -12,7 +12,7 @@ p.mt-tiny.mb3 = t('forms.backup_code.instructions')
       li.py-12p.border-top
         .mb2
           - @codes.each_with_index  do |code, index|
-            p.px-12p.mb0 = code
+            p.px-12p.mb0 = code.upcase.insert 4, '-'
 
 = form_tag(backup_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
   .clearfix.mxn1
