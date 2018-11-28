@@ -36,18 +36,18 @@ fr:
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
     backup_code:
-      title: Personal Security Codes
+      title: Codes de sauvegarde
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous connecterez.
         sur votre compte login.gov.
-      subtitle1: Your backup codes
-      subinfo1: Each code may only be used once, once the 9th code has been
-        used you will be prompted to download a new list.  Treat your recovery
-        codes with the same level of attention as you would your password.
-      download: Download, print or write down your personal security codes.
-      generate: Generate new backup codes
-      generate_info: When you generate new codes, you must download or print them.
-        Your old codes won't work anymore.
+      subtitle1: Vos codes de sauvegarde
+      subinfo1: Chaque code ne peut être utilisé qu'une seule fois, une fois que le 9ème code a été
+        utilisé, vous serez invité à télécharger une nouvelle liste. Traitez votre rétablissement
+        codes avec le même niveau d'attention que votre mot de passe.
+      download: Téléchargez, imprimez ou notez vos codes de sauvegarde.
+      generate: Générer de nouveaux codes de sauvegarde
+      generate_info: Lorsque vous générez de nouveaux codes, vous devez les télécharger ou les imprimer.
+         Vos anciens codes ne fonctionneront plus.
     phone:
       buttons:
         delete: Supprimer le numéro de teléfono
