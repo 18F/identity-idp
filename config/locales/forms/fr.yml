@@ -40,12 +40,12 @@ fr:
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous connecterez.
         sur votre compte login.gov.
-      subtitle1: Your login codes
+      subtitle1: Your backup codes
       subinfo1: Each code may only be used once, once the 9th code has been
         used you will be prompted to download a new list.  Treat your recovery
         codes with the same level of attention as you would your password.
       download: Download, print or write down your personal security codes.
-      generate: Generate new login codes
+      generate: Generate new backup codes
       generate_info: When you generate new codes, you must download or print them.
         Your old codes won't work anymore.
     phone:
