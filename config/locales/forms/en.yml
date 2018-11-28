@@ -38,7 +38,7 @@ en:
     backup_code:
       title: Backup Codes
       info: Use backup codes if you cannot access your phone to sign in
-      instructions: You will be asked for a login code each time you sign in
+      instructions: You will be asked for a backup code each time you sign in
         to your login.gov account.
       subtitle1: Your backup codes
       subinfo1: Each code may only be used once, once the 9th code has been
