@@ -11,12 +11,17 @@ en:
         has been cancelled.
       text_html: If you can't use any of these security options above, you can reset
         your preferences by %{link}.
+    backup_code_fallback:
+      question: Don't have your backup codes available?
+    backup_code_header_text: Enter your backup security code
+    backup_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     choose_another_option: "‹ Choose another option"
     header_text: Enter your security code
+    invalid_backup_code: That personal security code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
       a new one-time security code.
     invalid_personal_key: That personal key is invalid.
-    invalid_backup_code: That personal security code is invalid.
     invalid_piv_cac: That PIV/CAC is incorrect.
     login_intro: You set these up when you created your account
     login_options:
@@ -39,6 +44,9 @@ en:
       webauthn_info: Use your security key to access your account.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
+    max_backup_code_login_attempts_reached: For your security, your account is temporarily
+      locked because you have entered the personal security code incorrectly too many
+      times.
     max_generic_login_attempts_reached: For your security, your account is temporarily
       locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily
@@ -51,8 +59,6 @@ en:
     max_piv_cac_login_attempts_reached: For your security, your account is temporarily
       locked because you have presented your piv/cac credential incorrectly too many
       times.
-    max_backup_code_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the personal security code incorrectly too many times.
     otp_delivery_preference:
       instruction: You can change this selection the next time you log in. If you
         entered a landline, please select "Phone call" below.
@@ -66,9 +72,6 @@ en:
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it, you'll
       be provided a new key.
-    backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it, you'll
-      need to use a new key.
     phone:
       delete:
         failure: Unable to remove your phone.
@@ -87,8 +90,6 @@ en:
     read_about_two_factor_authentication:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
-    backup_code_fallback:
-      question: Don't have your backup codes available?
     totp_fallback:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code
@@ -99,6 +100,9 @@ en:
       auth_app: Authentication application
       auth_app_info: Set up an authentication application to get your security code
         without providing a phone number
+      backup_code: Backup Codes
+      backup_code_info: Recieve a pre-generated list of security codes to use when
+        signing in
       piv_cac: Government employees
       piv_cac_info: Use your PIV/CAC card to secure your account
       sms: Text message / SMS
@@ -107,8 +111,6 @@ en:
       voice_info: Get your security code via phone call
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
-      backup_code: Backup Codes
-      backup_code_info: Recieve a pre-generated list of security codes to use when signing in
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key

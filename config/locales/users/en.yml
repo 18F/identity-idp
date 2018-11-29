@@ -1,6 +1,12 @@
 ---
 en:
   users:
+    backup_code:
+      close: Close
+      confirmation_error: You've entered an incorrect backup code.
+      generated_on_html: Generated on %{date}
+      header: Your backup code
+      print: Print this page
     delete:
       actions:
         cancel: Cancel and return to your profile
@@ -18,12 +24,6 @@ en:
       confirmation_error: You've entered an incorrect personal key.
       generated_on_html: Generated on %{date}
       header: Your personal key
-      print: Print this page
-    backup_code:
-      close: Close
-      confirmation_error: You've entered an incorrect backup code.
-      generated_on_html: Generated on %{date}
-      header: Your backup code
       print: Print this page
     totp_setup:
       new:

@@ -11,12 +11,17 @@ es:
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
         puede restablecer tus preferencias por %{link}.
+    backup_code_fallback:
+      question: Don't have your backup codes available?
+    backup_code_header_text: Enter your backup security code
+    backup_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     choose_another_option: "‹ Elige otra opción"
     header_text: Ingrese su código de seguridad
+    invalid_backup_code: Ese código de seguridad personal no es válido.
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de
       nuevo o solicitar un nuevo código de seguridad de sólo un uso.
     invalid_personal_key: Esa clave personal no es válida.
-    invalid_backup_code: Ese código de seguridad personal no es válido.
     invalid_piv_cac: Esa PIV/CAC no es correcta.
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
@@ -42,6 +47,9 @@ es:
       webauthn_info: Use su clave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
+    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está temporalmente
+      bloqueado porque ingresaste el código de seguridad personal incorrectamente
+      demasiadas veces.
     max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
       temporalmente.
     max_otp_login_attempts_reached: Para su seguridad, su cuenta ha sido bloqueada
@@ -55,8 +63,6 @@ es:
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
       temporalmente dado que has presentado las credenciales de tu piv/cac de forma
       incorrecta demasiadas veces.
-    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está temporalmente
-      bloqueado porque ingresaste el código de seguridad personal incorrectamente demasiadas veces.
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       phone_unsupported: En este momento no podemos realizar llamadas a personas en
@@ -69,9 +75,6 @@ es:
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
-    backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it, you'll
-      need to use a new key.
     phone:
       delete:
         failure: No se puede eliminar el teléfono.
@@ -88,8 +91,6 @@ es:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
-    backup_code_fallback:
-      question: Don't have your backup codes available?
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
@@ -103,6 +104,9 @@ es:
       auth_app: Aplicación de autenticación
       auth_app_info: Configure una aplicación de autenticación para obtener su código
         de seguridad sin proporcionar un número de teléfono
+      backup_code: Códigos de seguridad personal
+      backup_code_info: Reciba una lista generada previamente de códigos de seguridad
+        para usar al iniciar sesión
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta
       sms: Mensaje de texto / SMS
@@ -111,8 +115,6 @@ es:
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
-      backup_code: Códigos de seguridad personal
-      backup_code_info: Reciba una lista generada previamente de códigos de seguridad para usar al iniciar sesión
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad
