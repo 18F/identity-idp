@@ -36,6 +36,7 @@ Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
+    - 'app/decorators/identity_decorator.rb'
     - 'app/decorators/user_decorator.rb'
     - 'app/services/omniauth_authorizer.rb'
     - 'app/services/single_logout_handler.rb'
@@ -66,6 +67,7 @@ Metrics/ClassLength:
   - app/services/analytics.rb
   - app/services/idv/session.rb
   - app/presenters/two_factor_auth_code/phone_delivery_presenter.rb
+  - app/view_models/account_show.rb
   - lib/cloudhsm/cloudhsm_key_generator.rb
 
 Metrics/LineLength:

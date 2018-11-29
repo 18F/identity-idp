@@ -63,6 +63,7 @@ search:
     - app/assets/images
     - app/assets/fonts
     - app/views/shared/newrelic/_browser_instrumentation.html.erb
+    - app/javascript/app/local-time.js
 
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:
   ## If specified, this settings takes priority over `exclude`, but `exclude` still applies.
@@ -96,6 +97,7 @@ ignore_unused:
   - 'devise.mailer.confirmation_instructions.subject'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
+  - 'datetime.dotiw.two_words_connector'
   - 'service_providers.*'
   - 'two_factor_authentication.invalid_otp'
   - 'two_factor_authentication.invalid_personal_key'

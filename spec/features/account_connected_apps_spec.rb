@@ -44,8 +44,7 @@ describe 'Account connected applications' do
       identity_with_link.display_name, href: 'http://localhost:3000'
     )
 
-    expect(t('account.connected_apps.associated') + ' ' + identity_without_link_timestamp).
-      to appear_before(t('account.connected_apps.associated') + ' ' + identity_with_link_timestamp)
+    expect(identity_without_link_timestamp).to appear_before(identity_with_link_timestamp)
   end
 
   def build_account_connected_apps

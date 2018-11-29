@@ -53,7 +53,7 @@ module Users
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_ENABLED, result.to_h)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
       if result.success?
         process_valid_submission
       else
@@ -97,7 +97,8 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      redirect_to account_url unless piv_cac_enabled?
+      return redirect_to account_url unless piv_cac_enabled? &&
+                                            MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def authorize_piv_cac_setup

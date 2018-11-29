@@ -27,6 +27,7 @@ module Users
       user_session[:personal_key] = create_new_code
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
       Event.create(user_id: current_user.id, event_type: :new_personal_key)
+      send_new_personal_key_notification
       redirect_to manage_personal_key_url
     end
 
@@ -44,6 +45,15 @@ module Users
 
     def user_has_not_visited_any_sp_yet?
       current_user.identities.pluck(:last_authenticated_at).compact.empty?
+    end
+
+    def send_new_personal_key_notification
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.personal_key_regenerated(email_address.email).deliver_now
+      end
+      MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
+        SmsPersonalKeyRegenerationNotifierJob.perform_now(phone: phone_configuration.phone)
+      end
     end
   end
 end

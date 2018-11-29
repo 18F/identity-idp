@@ -4,6 +4,8 @@ en:
     account: Account
     account_locked: Account temporarily locked
     account_recovery_setup: Account Recovery Setup
+    add_info:
+      phone: Add a phone number
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password

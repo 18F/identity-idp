@@ -21,7 +21,7 @@ module Users
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
       if result.success?
-        prompt_to_confirm_phone(phone: @user_phone_form.phone)
+        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
       else
         render :index
       end

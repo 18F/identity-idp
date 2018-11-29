@@ -7,4 +7,5 @@
         - else
           = identity.display_name
     .sm-col.sm-col-6.px1.sm-right-align
-      = t('account.connected_apps.associated') + ' ' + identity.created_at_in_words
+      == t('account.connected_apps.associated',
+        timestamp: local_time(identity.created_at, t('time.formats.event_timestamp')))

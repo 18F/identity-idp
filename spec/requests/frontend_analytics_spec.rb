@@ -59,14 +59,5 @@ describe 'frontend analytics requests' do
       expect(analytics).to_not have_received(:track_event).
         with(Analytics::FRONTEND_BROWSER_CAPABILITIES, any_args)
     end
-
-    it 'supports the legacy API format' do
-      sign_in_user
-
-      post analytics_path, params: { available: true }
-
-      expect(analytics).to have_received(:track_event).
-        with(Analytics::FRONTEND_BROWSER_CAPABILITIES, hash_including(platform_authenticator: true))
-    end
   end
 end
