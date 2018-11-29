@@ -4,10 +4,6 @@ fr:
     account_recovery_setup:
       legend: Sélectionnez une option d'authentification secondaire
     backup_code:
-      download: Téléchargez, imprimez ou notez vos codes de sauvegarde.
-      generate: Générer de nouveaux codes de sauvegarde
-      generate_info: When you generate new codes, you must download or print them.
-        Your old codes won't work anymore.
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
         téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous

@@ -4,10 +4,6 @@ es:
     account_recovery_setup:
       legend: Selecciona una opción de autenticación secundaria
     backup_code:
-      download: Descargue, imprima o anote sus códigos de seguridad personales.
-      generate: Generar nuevos códigos de respaldo.
-      generate_info: When you generate new codes, you must download or print them.
-        Your old codes won't work anymore.
       info: Use códigos de inicio de sesión si no puede acceder a su teléfono para
         iniciar sesión
       instructions: Se le pedirá un código de inicio de sesión cada vez que inicie

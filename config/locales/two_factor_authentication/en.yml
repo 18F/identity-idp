@@ -18,7 +18,6 @@ en:
       need to use a new key.
     choose_another_option: "‹ Choose another option"
     header_text: Enter your security code
-    invalid_backup_code: That personal security code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
       a new one-time security code.
     invalid_personal_key: That personal key is invalid.
@@ -44,9 +43,6 @@ en:
       webauthn_info: Use your security key to access your account.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
-    max_backup_code_login_attempts_reached: For your security, your account is temporarily
-      locked because you have entered the personal security code incorrectly too many
-      times.
     max_generic_login_attempts_reached: For your security, your account is temporarily
       locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily

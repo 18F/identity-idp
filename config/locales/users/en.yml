@@ -1,12 +1,8 @@
----
 en:
   users:
     backup_code:
-      close: Close
-      confirmation_error: You've entered an incorrect backup code.
       generated_on_html: Generated on %{date}
       header: Your backup code
-      print: Print this page
     delete:
       actions:
         cancel: Cancel and return to your profile

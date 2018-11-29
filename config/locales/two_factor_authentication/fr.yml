@@ -18,7 +18,6 @@ fr:
       need to use a new key.
     choose_another_option: "‹ Choisissez une autre option"
     header_text: Entrez votre code de sécurité
-    invalid_backup_code: Ce code de sécurité personnel est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
     invalid_personal_key: Cette clé personnelle est non valide.
@@ -45,9 +44,6 @@ fr:
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
-    max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
-      temporairement verrouillé parce que vous avez entré trop de fois le code de
-      sécurité personnel à tort.
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
       verrouillé.
     max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement

@@ -4,10 +4,6 @@ en:
     account_recovery_setup:
       legend: Select a secondary authentication option
     backup_code:
-      download: Download, print or write down your backup codes.
-      generate: Generate new backup codes
-      generate_info: When you generate new codes, you must download or print them.
-        Your old codes won't work anymore.
       info: Use backup codes if you cannot access your phone to sign in
       instructions: You will be asked for a backup code each time you sign in to your
         login.gov account.
