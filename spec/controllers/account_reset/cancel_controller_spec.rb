@@ -91,7 +91,7 @@ describe AccountReset::CancelController do
       stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
-        event: 'visit',
+        event: 'cancel token validation',
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_invalid')] },
       }

@@ -14,6 +14,7 @@ es:
     personal_key_used: Clave personal utilizada para iniciar sesión
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
+    phone_removed: Teléfono eliminado
     piv_cac_disabled: Tarjeta PIV/CAC no asociada
     piv_cac_enabled: Tarjeta PIV/CAC asociada
     usps_mail_sent: Carta enviada

@@ -167,7 +167,7 @@ feature 'Sign Up' do
   end
 
   it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
-    allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
+    allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(false)
     begin_sign_up_with_sp_and_loa(loa3: false)
 
     expect(page).to have_current_path two_factor_options_path
