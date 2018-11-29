@@ -1,5 +1,4 @@
 - title t('forms.backup_code.title')
-- btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
 h1.h3.my0 = t('forms.backup_code.info')
 p.mt-tiny.mb3 = t('forms.backup_code.instructions')
@@ -11,7 +10,7 @@ p.mt-tiny.mb3 = t('forms.backup_code.instructions')
         .inline-block = t('forms.backup_code.subinfo1')
       li.py-12p.border-top
         .mb2
-          - @codes.each_with_index  do |code, index|
+          - @codes.each do |code|
             p.px-12p.mb0 = code.upcase.insert 4, '-'
 
 = form_tag(backup_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
@@ -22,4 +21,3 @@ p.mt-tiny.mb3 = t('forms.backup_code.instructions')
 = render 'shared/cancel_or_back_to_options'
 
 == javascript_pack_tag 'clipboard'
-
