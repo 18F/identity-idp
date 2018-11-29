@@ -69,7 +69,7 @@ es:
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
-    backup_code_header_text: Enter your security code
+    backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it, you'll
       need to use a new key.
     phone:

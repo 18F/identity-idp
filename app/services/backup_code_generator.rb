@@ -4,7 +4,7 @@ class BackupCodeGenerator
   attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
-  NUMBER_OF_CODES = 2
+  NUMBER_OF_CODES = 9
 
   def initialize(user, length: 2, split: 4)
     @length = length
