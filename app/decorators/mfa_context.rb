@@ -3,10 +3,11 @@ class MfaContext
 
   def initialize(user)
     @user = user
+    @present = @user.present?
   end
 
   def phone_configurations
-    if user.present?
+    if @present
       user.phone_configurations
     else
       []
@@ -14,8 +15,16 @@ class MfaContext
   end
 
   def webauthn_configurations
-    if user.present?
+    if @present
       user.webauthn_configurations
+    else
+      []
+    end
+  end
+
+  def backup_code_configurations
+    if @present
+      user.backup_code_configurations.unused
     else
       []
     end
@@ -34,15 +43,8 @@ class MfaContext
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_configurations + backup_code_configurations + [piv_cac_configuration, auth_app_configuration]
-  end
-
-  def backup_code_configurations
-    if user.present?
-      user.backup_code_configurations.unused
-    else
-      []
-    end
+    phone_configurations + webauthn_configurations + backup_code_configurations +
+        [piv_cac_configuration, auth_app_configuration]
   end
 
   def enabled_two_factor_configurations_count

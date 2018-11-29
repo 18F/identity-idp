@@ -2,28 +2,17 @@ class BackupCodeSetupForm
   include ActiveModel::Model
 
   validates :user, presence: true
-  validates :challenge, presence: true
-  validates :attestation_object, presence: true
-  validates :client_data_json, presence: true
-  validates :name, presence: true
-  validate :name_is_unique
-
-  attr_reader :attestation_response, :name_taken
 
   def initialize(user, user_session)
     @user = user
-    @challenge = user_session[:webauthn_challenge]
-    @attestation_object = nil
-    @client_data_json = nil
-    @attestation_response = nil
-    @name = nil
+    @success = false
   end
 
   def submit(protocol, params)
     consume_parameters(params)
-    success = valid? && valid_attestation_response?(protocol)
+    success = valid?
     if success
-      create_webauthn_configuration
+      create_backup_codes_configuration
       create_user_event
     end
 
@@ -38,47 +27,17 @@ class BackupCodeSetupForm
   private
 
   attr_reader :success
-  attr_accessor :user, :challenge, :attestation_object, :client_data_json, :name
+  attr_accessor :user
 
   def consume_parameters(params)
-    @attestation_object = params[:attestation_object]
-    @client_data_json = params[:client_data_json]
-    @name = params[:name]
   end
 
-  def name_is_unique
-    return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
-    errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
-    @name_taken = true
-  end
-
-  def valid_attestation_response?(protocol)
-    @attestation_response = ::WebAuthn::AuthenticatorAttestationResponse.new(
-        attestation_object: Base64.decode64(@attestation_object),
-        client_data_json: Base64.decode64(@client_data_json)
-    )
-    safe_response("#{protocol}#{self.class.domain_name}")
-  end
-
-  def safe_response(original_origin)
-    @attestation_response.valid?(@challenge.pack('c*'), original_origin)
-  rescue StandardError
-    errors.add :name, I18n.t('errors.webauthn_setup.attestation_error')
-    false
-  end
-
-  def create_webauthn_configuration
-    credential = attestation_response.credential
-    public_key = Base64.strict_encode64(credential.public_key)
-    id = Base64.strict_encode64(credential.id)
-    WebauthnConfiguration.create(user_id: user.id,
-                                 credential_public_key: public_key,
-                                 credential_id: id,
-                                 name: name)
+  def create_backup_codes_configuration
+    # BackupCodeConfiguration.create
   end
 
   def create_user_event
-    Event.create(user_id: user.id, event_type: :webauthn_key_added)
+    Event.create(user_id: user.id, event_type: :backup_codes_added)
   end
 
   def extra_analytics_attributes

@@ -13,8 +13,7 @@ module BackupCodeEncryptedAttributeOverrides
     def find_with_code(code)
       return nil if !code.is_a?(String) || code.empty?
 
-      code = code.downcase.strip
-      code_fingerprint = create_fingerprint(code)
+      code_fingerprint = create_fingerprint(code.downcase.strip)
       find_by(code_fingerprint: code_fingerprint)
     end
 
