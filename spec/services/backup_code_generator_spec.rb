@@ -2,7 +2,6 @@ require 'rspec'
 require 'rails_helper'
 
 describe 'backup code Generation' do
-
   it 'should generate backup codes ans be able to verify them' do
     user = create(:user)
     rcg = BackupCodeGenerator.new(user)
@@ -19,7 +18,7 @@ describe 'backup code Generation' do
     rcg = BackupCodeGenerator.new(user)
     rcg.generate
 
-    success = rcg.verify "This is a string which will never result from code generation"
+    success = rcg.verify 'This is a string which will never result from code generation'
     expect(success).to eq(false)
   end
 end
