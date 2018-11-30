@@ -196,6 +196,7 @@ module Users
       true
     end
 
+    # rubocop:disable Metrics/AbcSize
     def redirect_url
       if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url
@@ -207,6 +208,7 @@ module Users
         login_two_factor_backup_code_url
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def redirect_on_non_phone
       url = redirect_url

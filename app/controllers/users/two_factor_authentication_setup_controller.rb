@@ -46,7 +46,7 @@ module Users
         redirect_to backup_code_setup_url
       end
     end
-    #rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection)

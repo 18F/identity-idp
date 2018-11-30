@@ -5,7 +5,7 @@ module Users
 
     def new
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
-                                                              view: self.view_context)
+                                                              view: view_context)
       generator = BackupCodeGenerator.new(@current_user)
       @codes = generator.generate
       user_session[:codes] = @codes

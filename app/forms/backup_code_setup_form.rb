@@ -5,6 +5,7 @@ class BackupCodeSetupForm
 
   def initialize(user, user_session)
     @user = user
+    @user_session = user_session
     @success = false
     @codes = []
   end

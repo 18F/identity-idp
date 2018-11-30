@@ -60,13 +60,7 @@ class BackupCodeGenerator
   end
 
   def normalize(plaintext_code)
-    normed = plaintext_code.gsub(/\W/, '')
-    #split_length = @split
-    #normed_length = normed.length
-    #return INVALID_CODE unless normed_length == @length * split_length
-    #encode_code(code: normed, length: normed_length, split: split_length)
-  #rescue ArgumentError, RegexpError
-   # INVALID_CODE
+    plaintext_code.gsub(/\W/, '')
   end
 
   def backup_code

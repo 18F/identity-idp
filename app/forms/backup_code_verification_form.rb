@@ -19,7 +19,7 @@ class BackupCodeVerificationForm
 
   def extra_analytics_attributes
     {
-        multi_factor_auth_method: 'backup_code',
+      multi_factor_auth_method: 'backup_code',
     }
   end
 end
