@@ -249,7 +249,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_selector("#two_factor_options_form_selection_voice_#{second_id}", count: 1)
       expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 1)
-      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 1)
+      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 0)
