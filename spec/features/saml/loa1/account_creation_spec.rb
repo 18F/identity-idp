@@ -25,7 +25,7 @@ feature 'Canceling Account Creation' do
       click_confirmation_link_in_email('test@test.com')
       click_button t('links.cancel_account_creation')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_cancel_url
     end
   end
 end
