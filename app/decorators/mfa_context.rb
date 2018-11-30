@@ -6,14 +6,10 @@ class MfaContext
   end
 
   def call_configuration(method_symbol)
-    if @user.present?
-      @user.send(method_symbol)
-    else
-      []
-    end
+    return @user.send(method_symbol) if @user.present?
+    []
   end
 
-  # :reek:RepeatedConditional { max_ifs: 4 }
   def phone_configurations
     call_configuration(:phone_configurations)
   end
@@ -23,12 +19,10 @@ class MfaContext
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 
-  # :reek:RepeatedConditional { max_ifs: 4 }
   def webauthn_configurations
     call_configuration(:webauthn_configurations)
   end
 
-  # :reek:RepeatedConditional { max_ifs: 4 }
   def backup_code_configurations
     call_configuration(:backup_code_configurations)
   end
