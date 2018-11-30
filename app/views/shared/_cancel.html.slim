@@ -1,2 +1,12 @@
+- other_cancel = link || decorated_session&.sp_return_url || profile_path
+
 .mt2.pt1.border-top
-  = link_to cancel_link_text, sign_up_cancel_path, class: 'h5'
+  - if user_signing_up?
+    - method = user_signing_up? ? :delete : :get
+
+    = button_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'btn btn-link'
+    = render 'shared/cancel_action_modal',
+      idv: user_verifying_identity?,
+      user_signing_up: user_signing_up?
+  - else
+    = link_to cancel_link_text, other_cancel, class: 'h5'

@@ -325,8 +325,6 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       visit_idp_from_sp_with_loa1
       click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
-      sp_request_id = ServiceProviderRequest.last.uuid
-      sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
       expect(current_url).to eq sign_up_cancel_url
