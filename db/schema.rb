@@ -161,6 +161,14 @@ ActiveRecord::Schema.define(version: 20181121223714) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "recovery_codes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.text "code", null: false
+    t.integer "used", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "remote_settings", force: :cascade do |t|
     t.string "name", null: false
     t.string "url", null: false
