@@ -6,10 +6,10 @@ class BackupCodeSetupForm
   def initialize(user, user_session)
     @user = user
     @success = false
+    @codes = []
   end
 
-  def submit(protocol, params)
-    consume_parameters(params)
+  def submit
     success = valid?
     if success
       create_backup_codes_configuration
@@ -29,15 +29,12 @@ class BackupCodeSetupForm
   attr_reader :success
   attr_accessor :user
 
-  def consume_parameters(params)
-  end
-
   def create_backup_codes_configuration
     # BackupCodeConfiguration.create
   end
 
   def create_user_event
-    Event.create(user_id: user.id, event_type: :backup_codes_added)
+    # Event.create(user_id: user.id, event_type: :backup_codes_added)
   end
 
   def extra_analytics_attributes

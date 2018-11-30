@@ -4,10 +4,12 @@ module Users
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
-      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: {:current_user => current_user}, view: self.view_context)
+      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
+                                                              view: self.view_context)
       generator = BackupCodeGenerator.new(@current_user)
       @codes = generator.generate
-      result = BackupCodeVisitForm.new.submit(params)
+      user_session[:codes] = @codes
+      result = BackupCodeSetupForm.new(current_user, user_session).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       mark_user_as_fully_authenticated
     end

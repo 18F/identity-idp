@@ -5,14 +5,15 @@ module TwoFactorAuthentication
     prepend_before_action :authenticate_user
     prepend_before_action :handle_if_all_codes_used
 
+    # rubocop:disable Layout/FirstParameterIndentation
     def show
       analytics.track_event(
-          Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
-      )
+          Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context
+        )
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
           view: view_context,
           data: { current_user: current_user }
-      )
+        )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
 
@@ -25,20 +26,21 @@ module TwoFactorAuthentication
     end
 
     def handle_if_all_codes_used
-      if BackupCodeConfiguration.where(user_id: current_user.id, used: true).count == (BackupCodeGenerator::NUMBER_OF_CODES - 1)
-        BackupCodeGenerator.new(current_user).delete_existing_codes
-        redirect_to backup_code_setup_url
-      end
+      count = BackupCodeConfiguration.where(user_id: current_user.id, used: true).count
+      return unless count == (BackupCodeGenerator::NUMBER_OF_CODES - 1)
+      BackupCodeGenerator.new(current_user).delete_existing_codes
+      redirect_to backup_code_setup_url
     end
 
     private
 
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
-          view: view_context,
-          data: { current_user: current_user }
-      )
+            view: view_context,
+            data: { current_user: current_user }
+          )
     end
+    # rubocop:enable Layout/FirstParameterIndentation
 
     def handle_result(result)
       if result.success?
