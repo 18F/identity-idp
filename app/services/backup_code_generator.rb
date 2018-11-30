@@ -46,6 +46,7 @@ class BackupCodeGenerator
     plaintext
   end
 
+  # This method smells of :reek:FeatureEnvy
   def save_code(code)
     rc = BackupCodeConfiguration.new
     rc.code = code

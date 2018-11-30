@@ -9,6 +9,7 @@ class BackupCodeConfiguration < ApplicationRecord
     used == false
   end
 
+  # This method smells of :reek:UtilityFunction
   def selection_presenters
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
   end

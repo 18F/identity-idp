@@ -10,6 +10,7 @@ module BackupCodeEncryptedAttributeOverrides
       find_by(tainted_conditions)
     end
 
+    # This method smells of :reek:FeatureEnvy
     def find_with_code(code)
       return nil if !code.is_a?(String) || code.empty?
 
@@ -17,6 +18,7 @@ module BackupCodeEncryptedAttributeOverrides
       find_by(code_fingerprint: code_fingerprint)
     end
 
+    # This method smells of :reek:UtilityFunction
     def create_fingerprint(code)
       Pii::Fingerprinter.fingerprint(code)
     end

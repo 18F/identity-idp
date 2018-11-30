@@ -16,6 +16,7 @@ module TwoFactorAuthentication
       true
     end
 
+    # This method smells of :reek:UtilityFunction
     def available?
       FeatureManagement.backup_codes_enabled?
     end
