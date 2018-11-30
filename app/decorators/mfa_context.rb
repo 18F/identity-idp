@@ -7,8 +7,8 @@ class MfaContext
 
   # This method smells of :reek:RepeatedConditional
   def phone_configurations
-    if @user.present?
-      @user.phone_configurations
+    if user.present?
+      user.phone_configurations
     else
       []
     end
@@ -21,8 +21,8 @@ class MfaContext
 
   # This method smells of :reek:RepeatedConditional
   def webauthn_configurations
-    if @user.present?
-      @user.webauthn_configurations
+    if user.present?
+      user.webauthn_configurations
     else
       []
     end
@@ -30,8 +30,8 @@ class MfaContext
 
   # This method smells of :reek:RepeatedConditional
   def backup_code_configurations
-    if @user.present?
-      @user.backup_code_configurations
+    if user.present?
+      user.backup_code_configurations
     else
       []
     end

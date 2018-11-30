@@ -57,7 +57,7 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
 end
 
 shared_examples 'creating an LOA3 account using authenticator app for 2FA' do |sp|
-  it 'does not prompt for backup code before IdV flow', email: true, idv_job: true do
+  it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true do
     visit_idp_from_sp_with_loa3(sp)
     register_user_with_authenticator_app
     fill_out_idv_jurisdiction_ok
@@ -123,7 +123,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 end
 
 shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
-  it 'does not prompt for backup code before IdV flow', email: true do
+  it 'does not prompt for recovery code before IdV flow', email: true do
     mock_challenge
     visit_idp_from_sp_with_loa3(sp)
     confirm_email_and_password('test@test.com')

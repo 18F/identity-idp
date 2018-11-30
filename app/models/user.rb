@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   self.ignored_columns = %w[
     encrypted_password password_salt password_cost encryption_key
-    backup_code recovery_cost recovery_salt
+    recovery_code recovery_cost recovery_salt
     encrypted_phone phone_confirmed_at
   ]
 

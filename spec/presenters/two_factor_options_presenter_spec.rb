@@ -25,7 +25,6 @@ describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::VoiceSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
-        TwoFactorAuthentication::BackupCodeSelectionPresenter
       ]
     end
 
@@ -38,7 +37,6 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter
         ]
       end
     end
@@ -51,7 +49,6 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter
         ]
       end
     end
@@ -65,7 +62,6 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter
         ]
       end
     end

@@ -41,7 +41,7 @@ describe PersonalKeyGenerator do
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
 
-    it 'sets the encrypted backup code digest' do
+    it 'sets the encrypted recovery code digest' do
       user = create(:user)
       generator = PersonalKeyGenerator.new(user)
       key = generator.create
