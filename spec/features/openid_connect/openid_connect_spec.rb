@@ -329,8 +329,8 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
-      expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
+      expect(current_url).to eq sign_up_cancel_url
+      expect(page).to have_content t('links.go_back')
     end
   end
 
