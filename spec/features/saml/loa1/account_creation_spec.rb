@@ -19,7 +19,6 @@ feature 'Canceling Account Creation' do
     it 'redirects to the branded start page' do
       authn_request = auth_request.create(saml_settings)
       visit authn_request
-      sp_request_id = ServiceProviderRequest.last.uuid
       click_link t('sign_up.registrations.create_account')
       submit_form_with_valid_email
       click_confirmation_link_in_email('test@test.com')

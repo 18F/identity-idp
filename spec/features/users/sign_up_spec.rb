@@ -26,7 +26,7 @@ feature 'Sign Up' do
   end
 
   context 'user cancels on the enter password screen', email: true do
-    it 'returns them to the home page' do
+    it 'sends them to the cancel page' do
       email = 'test@test.com'
 
       visit sign_up_email_path
@@ -36,7 +36,7 @@ feature 'Sign Up' do
 
       click_on t('links.cancel_account_creation')
 
-      expect(current_path).to eq root_path
+      expect(current_path).to eq sign_up_cancel_path
     end
   end
 
