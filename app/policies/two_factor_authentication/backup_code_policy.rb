@@ -17,7 +17,7 @@ module TwoFactorAuthentication
     end
 
     def available?
-      true #FeatureManagement.backup_codes_enabled? == true
+      FeatureManagement.backup_codes_enabled?
     end
 
     private
