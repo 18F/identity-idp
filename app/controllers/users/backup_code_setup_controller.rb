@@ -3,7 +3,6 @@ module Users
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
-    # rubocop:disable TooManyStatements
     def new
       generate_codes
       user_session[:codes] = @codes
@@ -11,7 +10,6 @@ module Users
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       mark_user_as_fully_authenticated
     end
-    # rubocop:enable TooManyStatements
 
     def index
       new
