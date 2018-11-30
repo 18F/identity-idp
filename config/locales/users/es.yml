@@ -6,8 +6,7 @@ es:
         cancel: Anular y regresar a su perfil
         delete: Eliminar cuenta
       bullet_1: Usted no tendrá una %{app} cuenta.
-      bullet_2_loa1: "%{app} borrará su email, contraseña y número de teléfono de
-        nuestro sistema."
+      bullet_2_loa1: Eliminaremos su dirección de correo electrónico, contraseña y número de teléfono
       bullet_2_loa3: "%{app} borrará su email, contraseña, número de teléfono, nombre,
         dirección, fecha de nacimiento y número de Seguro Social de nuestro sistema."
       bullet_3: Usted no podrá tener acceso seguro a su información usando %{app}
