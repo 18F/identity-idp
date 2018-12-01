@@ -2,13 +2,12 @@ require 'rails_helper'
 
 feature 'sign up with backup code', :js do
   it 'works' do
-    binding.pry
+    # binding.pry
     sign_up_and_set_password
-    binding.pry
+    # binding.pry
     select_2fa_option('backup_code')
-    binding.pry
+    # binding.pry
     click_on 'Continue'
-    binding.pry
     # binding.pry
   end
 
