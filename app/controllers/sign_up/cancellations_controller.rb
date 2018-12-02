@@ -1,6 +1,6 @@
 module SignUp
   class CancellationsController < ApplicationController
-    before_action :confirm_sign_up
+    before_action :ensure_in_setup
 
     def new
       properties = ParseControllerFromReferer.new(request.referer).call
@@ -10,8 +10,12 @@ module SignUp
 
     private
 
-    def confirm_sign_up
-      redirect_to root_url unless session[:user_confirmation_token] || current_user
+    def ensure_in_setup
+      redirect_to root_url if !session[:user_confirmation_token] && two_factor_enabled
+    end
+
+    def two_factor_enabled
+      current_user && MfaPolicy.new(current_user).two_factor_enabled?
     end
   end
 end
