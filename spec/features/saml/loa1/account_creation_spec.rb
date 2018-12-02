@@ -25,6 +25,24 @@ feature 'Canceling Account Creation' do
       click_button t('links.cancel_account_creation')
 
       expect(current_url).to eq sign_up_cancel_url
+
+      click_button t('forms.buttons.cancel')
+      expect(current_url).to eq sign_up_start_url(request_id: ServiceProviderRequest.last.uuid)
+    end
+
+    it 'redirects to the password page after cancelling the cancellation' do
+      authn_request = auth_request.create(saml_settings)
+      visit authn_request
+      click_link t('sign_up.registrations.create_account')
+      submit_form_with_valid_email
+      click_confirmation_link_in_email('test@test.com')
+      previous_url = current_url
+      click_button t('links.cancel_account_creation')
+
+      expect(current_url).to eq sign_up_cancel_url
+
+      click_link t('links.go_back')
+      expect(current_url).to eq previous_url
     end
   end
 end
