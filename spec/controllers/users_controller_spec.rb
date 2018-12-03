@@ -11,10 +11,23 @@ describe UsersController do
 
     it 'destroys the current user and redirects to sign in page, with a helpful flash message' do
       sign_in_as_user
+      subject.session[:user_confirmation_token] = '1'
 
       expect { delete :destroy }.to change(User, :count).by(-1)
       expect(response).to redirect_to(root_url)
       expect(flash.now[:success]).to eq t('sign_up.cancel.success')
+    end
+
+    it 'does not destroy the user if the user is not in setup mode and is after 2fa' do
+      sign_in_as_user
+
+      expect { delete :destroy }.to change(User, :count).by(0)
+    end
+
+    it 'does not destroy the user if the user is not in setup mode and is before 2fa' do
+      sign_in_before_2fa
+
+      expect { delete :destroy }.to change(User, :count).by(0)
     end
 
     it 'finds the proper user and removes their record without `current_user`' do
