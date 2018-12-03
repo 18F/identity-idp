@@ -10,9 +10,13 @@ describe TotpSetupForm do
       it 'returns FormResponse with success: true' do
         form = TotpSetupForm.new(user, secret, code)
         result = instance_double(FormResponse)
+        extra = {
+          totp_secret_present: true,
+          multi_factor_auth_method: 'totp',
+        }
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: { totp_secret_present: true }).and_return(result)
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(Event).to receive(:create).
           with(user_id: user.id, event_type: :authenticator_enabled)
         expect(form.submit).to eq result
@@ -24,9 +28,13 @@ describe TotpSetupForm do
       it 'returns FormResponse with success: false' do
         form = TotpSetupForm.new(user, secret, 'kode')
         result = instance_double(FormResponse)
+        extra = {
+          totp_secret_present: true,
+          multi_factor_auth_method: 'totp',
+        }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { totp_secret_present: true }).and_return(result)
+          with(success: false, errors: {}, extra: extra).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(user.reload.totp_enabled?).to eq false
@@ -39,9 +47,13 @@ describe TotpSetupForm do
       it 'returns FormResponse with success: false' do
         form = TotpSetupForm.new(user, nil, 'kode')
         result = instance_double(FormResponse)
+        extra = {
+          totp_secret_present: false,
+          multi_factor_auth_method: 'totp',
+        }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { totp_secret_present: false }).and_return(result)
+          with(success: false, errors: {}, extra: extra).and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(user.reload.totp_enabled?).to eq false

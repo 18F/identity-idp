@@ -12,9 +12,10 @@ module TwoFactorAuthentication
     end
 
     def create
-      result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
+      result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
+      properties = result.to_h.merge(analytics_properties)
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
+      analytics.track_event(mfa_event_name, properties)
 
       if result.success?
         handle_valid_otp
@@ -62,8 +63,18 @@ module TwoFactorAuthentication
         user_session[:unconfirmed_phone]
     end
 
+    def sanitized_otp_code
+      form_params[:code].strip
+    end
+
     def form_params
       params.permit(:code)
+    end
+
+    def mfa_event_name
+      return Analytics::MULTI_FACTOR_AUTH_SETUP if context == 'confirmation'
+
+      Analytics::MULTI_FACTOR_AUTH
     end
 
     def analytics_properties

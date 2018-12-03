@@ -68,16 +68,16 @@ describe ServiceProvider do
   end
 
   describe 'piv_cac_available?' do
-    context 'when the service provider is with an enabled agency' do
+    context 'when the service provider has piv_cac enabled' do
       it 'is truthy' do
-        allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+        allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
         expect(service_provider.piv_cac_available?).to be_truthy
       end
     end
 
-    context 'when the service provider agency is not enabled' do
+    context 'when the service provider does not have piv_cac enabled' do
       it 'is falsey' do
-        allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
+        allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(false)
 
         expect(service_provider.piv_cac_available?).to be_falsey
       end
@@ -88,8 +88,8 @@ describe ServiceProvider do
 
       it 'calls with the user email' do
         expect(PivCacService).to receive(
-          :piv_cac_available_for_agency?
-        ).with(service_provider.agency, user.email_addresses.map(&:email))
+          :piv_cac_available_for_sp?
+        ).with(service_provider, user.email_addresses.map(&:email))
 
         service_provider.piv_cac_available?(user)
       end

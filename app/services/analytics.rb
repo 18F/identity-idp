@@ -100,6 +100,7 @@ class Analytics
   MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'.freeze
   MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'.freeze
   MULTI_FACTOR_AUTH_MAX_SENDS = 'Multi-Factor Authentication: max otp sends reached'.freeze
+  MULTI_FACTOR_AUTH_SETUP = 'Multi-Factor Authentication Setup'.freeze
   OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'.freeze
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'.freeze
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'.freeze
@@ -121,7 +122,6 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
-  TOTP_SETUP = 'TOTP Setup'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
@@ -129,6 +129,7 @@ class Analytics
   TWILIO_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE = 'User registration: agency handoff complete'.freeze
+  USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'.freeze
   USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'.freeze
@@ -139,10 +140,8 @@ class Analytics
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze
-  USER_REGISTRATION_PIV_CAC_ENABLED = 'User Registration: piv cac enabled'.freeze
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
   WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
-  WEBAUTHN_SETUP_SUBMITTED = 'WebAuthn Setup Submitted'.freeze
   # rubocop:enable Metrics/LineLength
 end

@@ -21,7 +21,10 @@ en:
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.
+      sign_in_location_and_ip: 'From %{location} (IP address: %{ip})'
+      sign_in_timestamp: "%{timestamp} ago"
       ssn: Social Security Number
+      unknown_location: unknown location
       verification:
         instructions: Your account requires a secret code to be verified.
         reactivate_button: Enter the code you received via US mail
