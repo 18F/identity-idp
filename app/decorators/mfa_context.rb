@@ -1,3 +1,5 @@
+# :reek:RepeatedConditional
+
 class MfaContext
   attr_reader :user
 
@@ -5,7 +7,6 @@ class MfaContext
     @user = user
   end
 
-  # This method smells of :reek:RepeatedConditional
   def phone_configurations
     if user.present?
       user.phone_configurations
@@ -19,7 +20,6 @@ class MfaContext
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 
-  # This method smells of :reek:RepeatedConditional
   def webauthn_configurations
     if user.present?
       user.webauthn_configurations
@@ -28,7 +28,6 @@ class MfaContext
     end
   end
 
-  # This method smells of :reek:RepeatedConditional
   def backup_code_configurations
     if user.present?
       user.backup_code_configurations
