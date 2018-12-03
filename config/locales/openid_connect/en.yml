@@ -4,6 +4,7 @@ en:
     authorization:
       errors:
         bad_client_id: Bad client_id
+        no_auth: The acr_values are not authorized
         no_valid_acr_values: No acceptable acr_values found
         no_valid_scope: No valid scope values found
         redirect_uri_invalid: redirect_uri is invalid

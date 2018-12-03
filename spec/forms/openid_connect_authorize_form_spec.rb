@@ -19,7 +19,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:acr_values) do
     [
       Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
     ].join(' ')
   end
 
@@ -103,6 +102,15 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
           to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
+      end
+    end
+
+    context 'with not authorized acr_values' do
+      let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+      it 'has errors' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:acr_values]).
+          to include(t('openid_connect.authorization.errors.no_auth'))
       end
     end
 
@@ -248,6 +256,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with loa1 and loa3' do
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
       it { expect(loa3_requested?).to eq(true) }
     end
 
@@ -280,7 +294,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         expect(identity.code_challenge).to eq(code_challenge)
         expect(identity.nonce).to eq(nonce)
-        expect(identity.ial).to eq(3)
+        expect(identity.ial).to eq(1)
       end
     end
   end
