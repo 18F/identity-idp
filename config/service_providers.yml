@@ -65,6 +65,7 @@ test:
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
+    ial: 2
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
