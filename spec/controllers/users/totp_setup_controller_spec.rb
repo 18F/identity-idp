@@ -94,8 +94,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          get :new
           patch :confirm, params: { code: 123 }
         end
 
@@ -108,30 +108,24 @@ describe Users::TotpSetupController, devise: true do
             success: false,
             errors: {},
             totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
           }
-          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
 
       context 'when user presents correct code' do
         before do
           user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
+          secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          subject.user_session[:new_totp_secret] = secret
 
-          code = '123455'
-          totp_secret = 'abdef'
-          subject.user_session[:new_totp_secret] = totp_secret
-          form = instance_double(TotpSetupForm)
-
-          allow(TotpSetupForm).to receive(:new).
-            with(subject.current_user, totp_secret, code).and_return(form)
-          response = FormResponse.new(success: true, errors: {})
-          allow(form).to receive(:submit).and_return(response)
-
-          get :new
-          patch :confirm, params: { code: code }
+          patch :confirm, params: { code: generate_totp_code(secret) }
         end
 
         it 'redirects to account_path with a success message' do
@@ -142,8 +136,12 @@ describe Users::TotpSetupController, devise: true do
           result = {
             success: true,
             errors: {},
+            totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
           }
-          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
     end
@@ -154,8 +152,8 @@ describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          get :new
           patch :confirm, params: { code: 123 }
         end
 
@@ -168,29 +166,22 @@ describe Users::TotpSetupController, devise: true do
             success: false,
             errors: {},
             totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
           }
-          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
 
       context 'when user presents correct code' do
         before do
+          secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
+          subject.user_session[:new_totp_secret] = secret
 
-          code = '123455'
-          totp_secret = 'abdef'
-          subject.user_session[:new_totp_secret] = totp_secret
-          form = instance_double(TotpSetupForm)
-
-          allow(TotpSetupForm).to receive(:new).
-            with(subject.current_user, totp_secret, code).and_return(form)
-          response = FormResponse.new(success: true, errors: {})
-          allow(form).to receive(:submit).and_return(response)
-
-          get :new
-          patch :confirm, params: { code: code }
+          patch :confirm, params: { code: generate_totp_code(secret) }
         end
 
         it 'redirects to personal key page with a success message' do
@@ -201,8 +192,12 @@ describe Users::TotpSetupController, devise: true do
           result = {
             success: true,
             errors: {},
+            totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
           }
-          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
 
@@ -224,8 +219,11 @@ describe Users::TotpSetupController, devise: true do
             success: false,
             errors: {},
             totp_secret_present: false,
+            multi_factor_auth_method: 'totp',
           }
-          expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
     end
@@ -249,6 +247,17 @@ describe Users::TotpSetupController, devise: true do
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
+      end
+    end
+
+    context 'when totp is the last mfa method' do
+      it 'does not disable totp' do
+        user = create(:user, :with_authentication_app)
+        sign_in user
+
+        delete :disable
+        expect(user.reload.otp_secret_key).to_not be_nil
+        expect(response).to redirect_to(account_path)
       end
     end
   end

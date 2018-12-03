@@ -347,6 +347,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
+    maxminddb (0.1.22)
     memory_profiler (0.9.11)
     method_source (0.9.2)
     mime-types (3.2.2)
@@ -710,6 +711,7 @@ DEPENDENCIES
   lexisnexis!
   local_time
   lograge
+  maxminddb
   net-sftp
   newrelic_rpm
   overcommit
@@ -768,7 +770,7 @@ DEPENDENCIES
   zxcvbn-js
 
 RUBY VERSION
-   ruby 2.5.1p57
+   ruby 2.5.3p105
 
 BUNDLED WITH
-   1.16.6
+   1.17.1

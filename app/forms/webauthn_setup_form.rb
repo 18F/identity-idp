@@ -82,6 +82,9 @@ class WebauthnSetupForm
   end
 
   def extra_analytics_attributes
-    { mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash }
+    {
+      mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash,
+      multi_factor_auth_method: 'webauthn',
+    }
   end
 end
