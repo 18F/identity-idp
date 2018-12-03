@@ -1,4 +1,3 @@
-require 'rspec'
 require 'rails_helper'
 
 describe 'backup code Generation' do
