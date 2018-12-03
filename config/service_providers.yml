@@ -58,6 +58,17 @@ test:
     logo: 'generic.svg'
     ial: 2
 
+  'urn:gov:gsa:openidconnect:test:loa1':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/logout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
     redirect_uris:
