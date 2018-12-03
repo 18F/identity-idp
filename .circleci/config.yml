@@ -46,7 +46,7 @@ jobs:
             - v1-identity-idp-yarn-
       - run:
           name: Install Yarn
-          command: yarn install --cache-folder ~/.cache/yarn
+          command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
       - save-cache:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
