@@ -90,10 +90,30 @@ describe SamlRequestValidator do
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra)
       end
+
+      it 'returns FormResponse with success: true for loa3 and an ial:2 sp' do
+        sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
+        sp.ial = 2
+        authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+        allow(FormResponse).to receive(:new)
+        extra = {
+          authn_context: authn_context,
+          service_provider: sp.issuer,
+        }
+
+        SamlRequestValidator.new.call(
+          service_provider: sp,
+          authn_context: authn_context,
+          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+        )
+
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: extra)
+      end
     end
 
     context 'invalid authentication context and valid service provider' do
-      it 'returns FormResponse with success: false' do
+      it 'returns FormResponse with success: false for unknown authn context' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = 'LOA11'
         allow(FormResponse).to receive(:new)
@@ -109,6 +129,29 @@ describe SamlRequestValidator do
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        )
+
+        expect(FormResponse).to have_received(:new).
+          with(success: false, errors: errors, extra: extra)
+      end
+
+      it 'returns FormResponse with success: false for loa3 on an ial:1 sp' do
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp.ial = 1
+        authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+        allow(FormResponse).to receive(:new)
+        extra = {
+          authn_context: authn_context,
+          service_provider: sp.issuer,
+        }
+        errors = {
+          authn_context: [t('errors.messages.unauthorized_authn_context')],
+        }
+
+        SamlRequestValidator.new.call(
+          service_provider: sp,
+          authn_context: authn_context,
+          nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         )
 
         expect(FormResponse).to have_received(:new).
