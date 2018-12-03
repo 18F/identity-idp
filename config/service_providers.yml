@@ -56,6 +56,7 @@ test:
     agency_id: 1
     uuid_priority: 20
     logo: 'generic.svg'
+    ial: 2
 
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
