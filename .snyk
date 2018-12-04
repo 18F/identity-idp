@@ -1,10 +1,23 @@
-version: v1.38.1
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  'SNYK-RUBY-NOKOGIRI-20299':
+  SNYK-RUBY-NOKOGIRI-20299:
     - '* > nokogiri':
-        reason: 'We do not opt in to DTDLOAD and do not opt out of NONET'
+        reason: We do not opt in to DTDLOAD and do not opt out of NONET
         expires: '2018-01-01T00:00:00.000Z'
-  'SNYK-RUBY-ACTIONCABLE-20338':
+  SNYK-RUBY-ACTIONCABLE-20338:
     - '* > actioncable':
-        reason: 'We do not use actioncable'
+        reason: We do not use actioncable
         expires: '2017-09-10T00:00:00.000Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:hoek:20180212':
+    - '@rails/webpacker > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > hoek':
+        patched: '2018-12-04T22:24:51.279Z'
+    - '@rails/webpacker > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > boom > hoek':
+        patched: '2018-12-04T22:24:51.279Z'
+    - '@rails/webpacker > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > sntp > hoek':
+        patched: '2018-12-04T22:24:51.279Z'
+    - '@rails/webpacker > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > cryptiles > boom > hoek':
+        patched: '2018-12-04T22:24:51.279Z'
