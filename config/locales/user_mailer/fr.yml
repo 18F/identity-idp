@@ -111,3 +111,9 @@ fr:
       link_text: Allez à %{app}
       reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
         %{app} pour le réinitialiser.
+    undeliverable_address:
+      call_to_action: Veuillez vous connecter à login.gov et suivre les instructions.
+      help: ''
+      intro: Nous n'avons pas pu envoyer de courrier à l'adresse que vous avez fournie.
+      subject: Le courrier envoyé à votre adresse était non distribuable.
+
