@@ -13,4 +13,33 @@ class UspsConfirmationCode < ApplicationRecord
   def expired?
     code_sent_at < Figaro.env.usps_confirmation_max_days.to_i.days.ago
   end
+
+  def self.process_code(otp)
+    ucc = usps_confirmation_code(otp)
+    return if ucc.nil?
+    ucc.safe_update_bounced_at_and_send_notification
+  end
+
+  def safe_update_bounced_at_and_send_notification
+    with_lock do
+      return if bounced_at
+      update_bounced_at_and_send_notification
+    end
+    true
+  end
+
+  def update_bounced_at_and_send_notification
+    update(bounced_at: Time.zone.now)
+    self.class.send_email(profile.user)
+  end
+
+  def self.send_email(user)
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.undeliverable_address(email_address).deliver_later
+    end
+  end
+
+  def usps_confirmation_code(otp)
+    @ucc ||= UspsConfirmationCode.find_by(otp_fingerprint: Pii::Fingerprinter.fingerprint(otp))
+  end
 end
