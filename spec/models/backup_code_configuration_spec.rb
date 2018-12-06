@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-
 RSpec.describe BackupCodeConfiguration, type: :model do
   describe 'Methods' do
     it { is_expected.to belong_to(:user) }
