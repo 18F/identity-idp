@@ -1,13 +1,12 @@
-require 'rspec'
+require 'rails_helper'
 
-describe 'BackupCodePresenter' do
+describe TwoFactorAuthCode::BackupCodePresenter do
+  include Rails.application.routes.url_helpers
+
   let(:presenter) do
-    TwoFactorAuthCode::BackupCodePresenter.new
-  end
-
-  describe '#help_text'
-  it 'should return help text' do
-    expect(presenter.help_text).to eq ''
+    arguments = {}
+    view = ActionController::Base.new.view_context
+    TwoFactorAuthCode::BackupCodePresenter.new(data:arguments, view:view)
   end
 
   describe '#fallback_question' do
@@ -16,32 +15,12 @@ describe 'BackupCodePresenter' do
         t('two_factor_authentication.backup_code_fallback.question')
     end
   end
+
+  describe '#help_text' do
+    it 'returns blank' do
+      expect(presenter.help_text).to eq ''
+    end
+  end
 end
 
-
-#module TwoFactorAuthCode
-#  class BackupCodePresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-#    include Rails.application.routes.url_helpers
-#    include ActionView::Helpers::TranslationHelper
-#
-#    attr_reader :credential_ids
-#
-#    def help_text
-#      ''
-#    end
-#
-#    def cancel_link
-#      locale = LinkLocaleResolver.locale
-#      if reauthn
-#        account_path(locale: locale)
-#      else
-#        sign_out_path(locale: locale)
-#      end
-#    end
-#
-#    def fallback_question
-#      t('two_factor_authentication.backup_code_fallback.question')
-#    end
-#  end
-#end
 
