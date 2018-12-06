@@ -18,6 +18,12 @@ const scale = {
 const fallback = ['pw-na', '...'];
 
 function getStrength(z) {
+  // override the strength value to 2 if the password is < 12
+  if (!(z && z.password.length && z.password.length >= 12)) {
+    if (z.score >= 3) {
+      z.score = 2;
+    }
+  }
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
