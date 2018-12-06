@@ -2,7 +2,7 @@ require 'rspec'
 
 describe 'BackupCodePresenter' do
   let(:presenter) do
-    BackupCodePresenter.new
+    TwoFactorAuthCode::BackupCodePresenter.new
   end
 
   describe '#help_text'
