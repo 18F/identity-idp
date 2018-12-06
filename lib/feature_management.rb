@@ -119,7 +119,6 @@ class FeatureManagement
   end
 
   def self.backup_codes_enabled?
-    # Figaro.env.backup_codes_enabled == 'true'
-    true
+    Figaro.env.backup_codes_enabled == 'true'
   end
 end
