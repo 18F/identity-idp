@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UspsUploadController do
+describe UndeliverableAddressController do
   describe '#create' do
     context 'with no token' do
       it 'returns unauthorized' do
@@ -24,10 +24,14 @@ describe UspsUploadController do
 
     context 'with a valid token' do
       before do
-        headers(Figaro.env.usps_upload_token)
+        headers(Figaro.env.usps_download_token)
       end
 
       it 'returns a good status' do
+        notifier = instance_double(UndeliverableAddressNotifier)
+        expect(notifier).to receive(:call)
+        expect(UndeliverableAddressNotifier).to receive(:new).and_return(notifier)
+
         post :create
 
         expect(response).to have_http_status(:ok)

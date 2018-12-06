@@ -3,7 +3,7 @@ class UndeliverableAddressController < ApplicationController
 
   def create
     authorize do
-      UndeliverableAddressNotifier.call
+      UndeliverableAddressNotifier.new.call
 
       render plain: 'ok'
     end

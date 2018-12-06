@@ -451,7 +451,7 @@ test:
   usps_download_sftp_host:
   usps_download_sftp_username:
   usps_download_sftp_password:
-  usps_download_token:
+  usps_download_token: 'test_token'
   usps_upload_sftp_directory: '/directory'
   usps_upload_sftp_host: 'example.com'
   usps_upload_sftp_username: 'user'
