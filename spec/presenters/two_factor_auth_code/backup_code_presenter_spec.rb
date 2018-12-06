@@ -16,6 +16,13 @@ describe TwoFactorAuthCode::BackupCodePresenter do
     end
   end
 
+  describe '#cancel_link' do
+    it 'returns the link for cancellation' do
+      expect(presenter.cancel_link).to eq \
+        '/sign_out'
+    end
+  end
+
   describe '#help_text' do
     it 'returns blank' do
       expect(presenter.help_text).to eq ''
