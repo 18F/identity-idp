@@ -415,7 +415,7 @@ module Features
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')
-      allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+      allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
 
       expect(page).to have_current_path two_factor_options_path

@@ -22,10 +22,7 @@ feature 'PIV/CAC Management' do
 
       before(:each) do
         user.identities << [identity_with_sp]
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
-          ['Test Government Agency'].to_json
-        )
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(true)
       end
 
       scenario 'allows association of a piv/cac with an account' do
@@ -132,8 +129,7 @@ feature 'PIV/CAC Management' do
 
       before(:each) do
         user.identities << [identity_with_sp]
-        allow(Figaro.env).to receive(:piv_cac_agencies).and_return('[]')
-        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(false)
       end
 
       scenario "doesn't advertise association of a piv/cac with an account" do
@@ -188,6 +184,21 @@ feature 'PIV/CAC Management' do
 
       user.reload
       expect(user.x509_dn_uuid).to be_nil
+    end
+  end
+
+  context 'with PIV/CAC as the only MFA method' do
+    let(:user) { create(:user, :with_piv_or_cac) }
+
+    scenario 'disallows disassociation PIV/CAC' do
+      sign_in_and_2fa_user(user)
+      visit account_path
+
+      form = find_form(page, action: disable_piv_cac_url)
+      expect(form).to be_nil
+
+      user.reload
+      expect(user.x509_dn_uuid).to_not be_nil
     end
   end
 end

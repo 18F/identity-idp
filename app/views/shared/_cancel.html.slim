@@ -1,12 +1,8 @@
-- cancel = sign_up_or_idv_no_js_link || link
 - other_cancel = link || decorated_session&.sp_return_url || profile_path
 
 .mt2.pt1.border-top
   - if user_signing_up?
-    - method = user_signing_up? ? :delete : :get
-
-    = button_to cancel_link_text, cancel, method: method,
-      class: 'btn btn-link', id: 'auth-flow-cancel'
+    = button_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'btn btn-link'
     = render 'shared/cancel_action_modal',
       idv: user_verifying_identity?,
       user_signing_up: user_signing_up?
