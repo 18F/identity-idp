@@ -128,10 +128,13 @@ detectors:
       - TwoFactorLoginOptionsPresenter
   UncommunicativeMethodName:
     exclude:
+      - Deploy::Activate#download_application_yml_from_s3
+      - Deploy::Activate#download_geocoding_database_from_s3
       - PhoneConfirmationFlow
       - render_401
       - SessionDecorator#registration_bullet_1
       - ServiceProviderSessionDecorator#registration_bullet_1
+
   UncommunicativeModuleName:
     exclude:
       - X509
