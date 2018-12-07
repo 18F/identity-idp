@@ -22,7 +22,7 @@ fr:
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
     invalid_personal_key: Cette clé personnelle est non valide.
     invalid_piv_cac: Cette carte PIV/CAC n'est pas correcte.
-    invalid_backup_code: That backup code is invalid.
+    invalid_backup_code: Ce code de sauvegarde est invalide.
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
       auth_app: Application d'authentification

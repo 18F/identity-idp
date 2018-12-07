@@ -37,4 +37,19 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(backup_code_config.friendly_name).to eq :backup_codes
     end
   end
+
+  describe 'self.selection_presenters(set)' do
+    it 'returns [] if set is []' do
+      set = BackupCodeConfiguration.selection_presenters([])
+
+      expect(set).to eq []
+    end
+
+    it 'returns a selection presenter' do
+      bc = BackupCodeConfiguration.new
+      set = BackupCodeConfiguration.selection_presenters([bc])
+
+      expect(set.first).instance_of? TwoFactorAuthentication::BackupCodeSelectionPresenter.class
+    end
+  end
 end
