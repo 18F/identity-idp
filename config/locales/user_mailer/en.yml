@@ -102,3 +102,8 @@ en:
         you can ignore this message.
       link_text: Go to %{app}
       reset_password: If you can't remember your password, go to %{app} to reset it.
+    undeliverable_address:
+      call_to_action: Please sign in to login.gov and follow instructions.
+      help: ''
+      intro: We were unable to send mail to the address you provided.
+      subject: Mail sent to your address was undeliverable
