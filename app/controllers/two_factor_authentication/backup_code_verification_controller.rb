@@ -42,11 +42,23 @@ module TwoFactorAuthentication
     end
     # rubocop:enable Layout/FirstParameterIndentation
 
+    def handle_invalid_backup_code
+      update_invalid_user
+
+      flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
+
+      if decorated_user.locked_out?
+        handle_second_factor_locked_user('backup_code')
+      else
+        render_show_after_invalid
+      end
+    end
+
     def handle_result(result)
       if result.success?
         handle_valid_backup_code
       else
-        handle_invalid_otp(type: 'backup_code')
+        handle_invalid_backup_code
       end
     end
 
@@ -59,18 +71,6 @@ module TwoFactorAuthentication
       redirect_to manage_personal_key_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
-    end
-
-    def handle_invalid_backup_code(type: 'backup_code')
-      update_invalid_user
-
-      flash.now[:error] = t("two_factor_authentication.invalid_#{type}")
-
-      if decorated_user.locked_out?
-        handle_second_factor_locked_user(type)
-      else
-        render_show_after_invalid
-      end
     end
   end
 end
