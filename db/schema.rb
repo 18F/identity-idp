@@ -55,6 +55,17 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
+  create_table "backup_code_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.text "code", null: false
+    t.boolean "used", default: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_backup_code_configurations_on_code"
+    t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
+  end
+
   create_table "doc_auths", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.datetime "attempted_at"
@@ -159,17 +170,6 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
-  end
-
-  create_table "backup_code_configurations", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.text "code", null: false
-    t.boolean "used", default: false
-    t.datetime "used_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_backup_code_configurations_on_code"
-    t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
   end
 
   create_table "remote_settings", force: :cascade do |t|

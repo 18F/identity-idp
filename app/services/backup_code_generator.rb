@@ -42,10 +42,6 @@ class BackupCodeGenerator
 
   private
 
-  def encrypt(plaintext)
-    plaintext
-  end
-
   # This method smells of :reek:FeatureEnvy
   def save_code(code)
     rc = BackupCodeConfiguration.new
@@ -53,11 +49,6 @@ class BackupCodeGenerator
     rc.user_id = @user.id
     rc.used = false
     rc.save
-  end
-
-  def encode_code(code:, length:, split:)
-    decoded = Base32::Crockford.decode(code)
-    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
   end
 
   def normalize(plaintext_code)
