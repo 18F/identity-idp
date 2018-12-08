@@ -18,7 +18,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
   end
 
   describe '#create' do
-    context 'when the user enters a valid personal key' do
+    context 'when the user enters a valid backup code' do
       it 'tracks the valid authentication event' do
         sign_in_before_2fa
 
@@ -51,7 +51,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
           success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
         )
         allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user, '').and_return(form)
+          with(subject.current_user).and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
 
@@ -68,10 +68,10 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
         )
         allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user, 'foo').and_return(form)
+          with(subject.current_user).and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
 
