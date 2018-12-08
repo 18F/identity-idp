@@ -22,7 +22,7 @@ feature 'sign up with backup code', :js do
   it 'works for each code' do
     user = create(:user, :signed_up)
     codes = BackupCodeGenerator.new(user).generate
-    n = 9
+    n = BackupCodeGenerator::NUMBER_OF_CODES
     (0..(n - 2)).each do |index|
       # binding.pry
       code = codes[index]
@@ -34,5 +34,6 @@ feature 'sign up with backup code', :js do
       # binding.pry
       click_on 'Sign out'
     end
+    signin(user.email, user.password)
   end
 end

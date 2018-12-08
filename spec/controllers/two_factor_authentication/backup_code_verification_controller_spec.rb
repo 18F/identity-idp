@@ -46,11 +46,11 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
       before do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
-        form = instance_double(PersonalKeyForm)
+        form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
         )
-        allow(PersonalKeyForm).to receive(:new).
+        allow(BackupCodeVerificationForm).to receive(:new).
           with(subject.current_user, '').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
@@ -70,7 +70,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(PersonalKeyForm).to receive(:new).
+        allow(BackupCodeVerificationForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
