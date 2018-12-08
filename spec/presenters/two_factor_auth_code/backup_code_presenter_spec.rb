@@ -21,6 +21,12 @@ describe TwoFactorAuthCode::BackupCodePresenter do
       expect(presenter.cancel_link).to eq \
         '/sign_out'
     end
+
+    it 'returns a different link for cancellation if reauthn is true' do
+      allow(presenter).to receive(:reauthn).and_return(true)
+      expect(presenter.cancel_link).to eq \
+        '/account'
+    end
   end
 
   describe '#help_text' do
