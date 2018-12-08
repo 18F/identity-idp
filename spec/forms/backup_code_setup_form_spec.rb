@@ -6,4 +6,3 @@ describe BackupCodeSetupForm do
     expect(domain).to eq 'www.example.com'
   end
 end
-
