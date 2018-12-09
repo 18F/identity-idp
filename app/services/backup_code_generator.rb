@@ -1,7 +1,7 @@
 require 'digest'
 
 class BackupCodeGenerator
-  attr_reader :user_access_key, :length
+  attr_reader :length
 
   NUMBER_OF_CODES = 9
 
