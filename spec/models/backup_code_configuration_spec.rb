@@ -38,6 +38,22 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
   end
 
+  describe 'code_in_database' do
+    it 'returns nil' do
+      backup_code_config = BackupCodeConfiguration.new
+
+      expect(backup_code_config.code_in_database).to eq nil
+    end
+  end
+
+  describe 'will_save_change_to_code?' do
+    it 'returns false' do
+      backup_code_config = BackupCodeConfiguration.new
+
+      expect(backup_code_config.will_save_change_to_code?).to eq false
+    end
+  end
+
   describe 'self.selection_presenters(set)' do
     it 'returns [] if set is []' do
       set = BackupCodeConfiguration.selection_presenters([])

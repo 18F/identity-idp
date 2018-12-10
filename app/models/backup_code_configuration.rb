@@ -29,11 +29,6 @@ class BackupCodeConfiguration < ApplicationRecord
     :backup_codes
   end
 
-  def code=(code)
-    set_encrypted_attribute(name: :code, value: code)
-    self.code_fingerprint = code.present? ? encrypted_attributes[:code].fingerprint : ''
-  end
-
   def self.selection_presenters(set)
     if set.any?
       set.first.selection_presenters
