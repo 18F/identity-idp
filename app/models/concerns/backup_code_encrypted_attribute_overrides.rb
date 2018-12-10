@@ -1,13 +1,6 @@
 module BackupCodeEncryptedAttributeOverrides
   extend ActiveSupport::Concern
 
-  class_methods do
-    # :reek:UtilityFunction
-    def find_with_code(code)
-      BackupCodeConfiguration.find_with_code(code)
-    end
-  end
-
   # Override ActiveModel::Dirty methods in order to
   # use code_fingerprint_changed? instead of code_changed?
   # This is necessary because code is no longer an ActiveRecord
