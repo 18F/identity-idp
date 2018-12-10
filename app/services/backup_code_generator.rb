@@ -16,6 +16,11 @@ class BackupCodeGenerator
     generate_new_codes
   end
 
+  def create
+    @user.save
+    generate
+  end
+
   def verify(plaintext_code)
     backup_code = normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)

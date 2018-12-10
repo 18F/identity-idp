@@ -21,6 +21,8 @@ module Users
       redirect_to sign_up_personal_key_url
     end
 
+    private
+
     def generate_codes
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
                                                               view: view_context)

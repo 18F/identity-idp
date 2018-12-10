@@ -25,14 +25,14 @@ module TwoFactorAuthentication
       handle_result(result)
     end
 
+    private
+    
     def handle_if_all_codes_used
       count = BackupCodeConfiguration.where(user_id: current_user.id, used: true).count
       return unless count == (BackupCodeGenerator::NUMBER_OF_CODES - 1)
       BackupCodeGenerator.new(current_user).delete_existing_codes
       redirect_to backup_code_setup_url
     end
-
-    private
 
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
