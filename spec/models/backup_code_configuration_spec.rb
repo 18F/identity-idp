@@ -54,6 +54,17 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
   end
 
+  describe 'find_with_code' do
+    it 'returns code' do
+      user = User.new
+      user.save
+      codes = BackupCodeGenerator.new(user).generate_new_codes
+      first_code = codes.first
+      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
+      expect(backup_code.code).to eq first_code
+    end
+  end
+
   describe 'self.selection_presenters(set)' do
     it 'returns [] if set is []' do
       set = BackupCodeConfiguration.selection_presenters([])
