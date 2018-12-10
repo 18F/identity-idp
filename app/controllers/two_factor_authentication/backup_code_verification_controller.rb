@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     end
 
     private
-    
+
     def handle_if_all_codes_used
       count = BackupCodeConfiguration.where(user_id: current_user.id, used: true).count
       return unless count == (BackupCodeGenerator::NUMBER_OF_CODES - 1)
