@@ -1,8 +1,7 @@
 class BackupCodeConfiguration < ApplicationRecord
   include EncryptableAttribute
 
-  devise(
-  )
+  devise
 
   include EncryptableAttribute
 
