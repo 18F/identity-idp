@@ -17,9 +17,8 @@ class BackupCodeGenerator
   end
 
   def verify(plaintext_code)
-    # code = encrypt( plaintext_code )
     backup_code = normalize(plaintext_code)
-    code = @user.backup_code_configurations.find_by code: backup_code
+    code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
     return false if code.nil?
     code.update!(used: true, used_at: Time.zone.now)
     true
@@ -51,7 +50,7 @@ class BackupCodeGenerator
   end
 
   def normalize(plaintext_code)
-    plaintext_code.gsub(/\W/, '')
+    plaintext_code.gsub(/\W/, '').downcase.strip
   end
 
   def backup_code

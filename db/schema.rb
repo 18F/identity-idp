@@ -57,12 +57,13 @@ ActiveRecord::Schema.define(version: 20181122100307) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.text "code", null: false
+    t.string "encrypted_code", default: "", null: false
+    t.string "code_fingerprint", default: "", null: false
     t.boolean "used", default: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_backup_code_configurations_on_code"
+    t.index ["code_fingerprint"], name: "index_backup_code_configurations_on_code"
     t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
   end
 
