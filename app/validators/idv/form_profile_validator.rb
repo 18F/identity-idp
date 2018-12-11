@@ -3,8 +3,7 @@ module Idv
     extend ActiveSupport::Concern
 
     included do
-      validates :address1, :city, :dob, :first_name, :last_name, :ssn, :state, :zipcode,
-                presence: true
+      validates :dob, :ssn, :state, :zipcode, presence: true
 
       validate :dob_is_sane, :ssn_is_unique
 
@@ -16,6 +15,12 @@ module Idv
                           with: /\A\d{3}-?\d{2}-?\d{4}\z/,
                           message: I18n.t('idv.errors.pattern_mismatch.ssn'),
                           allow_blank: true
+
+      validates :city, presence: true, length: { maximum: 255 }
+      validates :first_name, presence: true, length: { maximum: 255 }
+      validates :last_name, presence: true, length: { maximum: 255 }
+      validates :address1, presence: true, length: { maximum: 255 }
+      validates :address2, length: { maximum: 255 }
     end
 
     def duplicate_ssn?
