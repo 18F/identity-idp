@@ -9,8 +9,8 @@ describe Idv::Utils::PiiFromDoc do
 
   describe '#call' do
     it 'correctly parses the pii data from acuant and returns a hash' do
-      results = subject.new(DocAuthHelper::ACUANT_RESULTS).call(ssn, phone)
-
+      results = subject.new(DocAuthHelper::ACUANT_RESULTS).call(phone)
+      results[:ssn] = ssn
       expect(results).to eq(DocAuthHelper::ACUANT_RESULTS_TO_PII)
     end
   end

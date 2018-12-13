@@ -18,7 +18,7 @@ feature 'doc auth ssn step' do
     fill_out_ssn_form_ok
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(page).to have_current_path(idv_doc_auth_doc_success_step)
   end
 
   it 'does not proceed to the next page with invalid info' do
