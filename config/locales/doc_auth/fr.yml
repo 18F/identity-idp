@@ -16,13 +16,18 @@ fr:
       entered_info: 'Informations que vous avez entrées:'
       first_name: Prénom
       last_name: Nom de famille
-      selfie_next: Ensuite, nous devrons prendre votre photo.
+      option_1: 'Utilisateurs d''ordinateur de bureau: Vous avez besoin d''une copie
+        numérisée de votre identifiant. Si vous n''en avez pas, connectez-vous à partir
+        d''un téléphone portable.'
+      option_2: 'Utilisateurs de téléphones mobiles: Vous pouvez utiliser votre appareil
+        photo ou des photos à partir de votre pellicule.'
       ssn: Numéro de sécurité sociale
       state_id_info: 'Information from your uploaded state-issued ID:'
     headings:
-      selfie: Prendre un selfie!
-      ssn: Pour vérifier votre identité, vous aurez besoin de votre numéro de sécurité
+      intro: Pour vérifier votre identité, vous aurez besoin de votre numéro de sécurité
         sociale et de votre identifiant délivré par l'État.
+      selfie: Prendre un selfie!
+      ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis

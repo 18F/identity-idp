@@ -14,13 +14,17 @@ en:
       entered_info: 'Information you entered:'
       first_name: First Name
       last_name: Last Name
-      selfie_next: Next, we'll need to take your picture.
+      option_1: 'Desktop computer users: You need a scanned copy of your id. If you
+        do not have one please sign in from a mobile phone.'
+      option_2: 'Mobile phone users: You can use your camera or photos from your camera
+        roll.'
       ssn: Social Security Number
       state_id_info: 'Information from your uploaded state-issued ID:'
     headings:
+      intro: To verify your identity, you'll need your social security number and
+        state-issued ID.
       selfie: Take a selfie!
-      ssn: To verify your identity, you'll need your social security number and state-issued
-        ID.
+      ssn: Please enter your social security number.
       upload_back: Please upload a photo of the back of your state-issued ID.
       upload_front: Please upload a photo of the front of your state-issued ID.
     titles:
