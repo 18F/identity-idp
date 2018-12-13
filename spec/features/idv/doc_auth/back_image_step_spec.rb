@@ -19,7 +19,7 @@ feature 'doc auth back image step' do
     attach_image
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_doc_success_step)
+    expect(page).to have_current_path(idv_doc_auth_ssn_step)
   end
 
   it 'does not proceed to the next page if resolution fails' do
