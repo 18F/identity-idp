@@ -2,10 +2,8 @@
 fr:
   doc_auth:
     buttons:
-      capture: Capturer
       start_over: Recommencer
     errors:
-      selfie: Désolé, nous ne pouvons pas correspondre à votre photo, veuillez réessayer.
       state_id_fail: Pardon. Les informations de votre identifiant émis par l'état
         téléchargé ne correspondent pas aux informations de votre numéro de sécurité
         sociale.
@@ -26,7 +24,6 @@ fr:
     headings:
       intro: Pour vérifier votre identité, vous aurez besoin de votre numéro de sécurité
         sociale et de votre identifiant délivré par l'État.
-      selfie: Prendre un selfie!
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.

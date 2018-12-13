@@ -2,10 +2,8 @@
 en:
   doc_auth:
     buttons:
-      capture: Capture
       start_over: Start over
     errors:
-      selfie: Sorry, we are unable to match your picture, please try again.
       state_id_fail: Sorry. Information from your uploaded state-issued ID does not
         match information for your social security number.
     forms:
@@ -23,7 +21,6 @@ en:
     headings:
       intro: To verify your identity, you'll need your social security number and
         state-issued ID.
-      selfie: Take a selfie!
       ssn: Please enter your social security number.
       upload_back: Please upload a photo of the back of your state-issued ID.
       upload_front: Please upload a photo of the front of your state-issued ID.
