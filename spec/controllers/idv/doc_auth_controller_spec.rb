@@ -23,12 +23,13 @@ describe Idv::DocAuthController do
     it 'redirects to the first step' do
       get :index
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :ssn)
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :front_image)
     end
   end
 
   describe '#show' do
     it 'renders the front_image template' do
+      mock_next_step(:ssn)
       get :show, params: { step: 'ssn' }
 
       expect(response).to render_template :ssn
@@ -69,9 +70,9 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'ssn' }
+      result = { step: 'front_image' }
 
-      get :show, params: { step: 'ssn' }
+      get :show, params: { step: 'front_image' }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result
@@ -80,9 +81,6 @@ describe Idv::DocAuthController do
   end
 
   describe '#update' do
-    it 'renders the front_image template' do
-    end
-
     it 'tracks analytics' do
       result = { success: true, errors: {}, step: 'ssn' }
 

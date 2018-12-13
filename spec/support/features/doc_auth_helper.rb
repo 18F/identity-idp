@@ -69,14 +69,14 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :self_image)
   end
 
-  def complete_doc_auth_steps_before_ssn_step(user = user_with_2fa)
+  def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
-    visit idv_doc_auth_ssn_step unless current_path == idv_doc_auth_ssn_step
+    visit idv_doc_auth_front_image_step unless current_path == idv_doc_auth_front_image_step
   end
 
-  def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_ssn_step(user)
-    fill_out_ssn_form_ok
+  def complete_doc_auth_steps_before_ssn_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_back_image_step(user)
+    attach_image
     click_idv_continue
   end
 
@@ -88,8 +88,8 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_doc_success_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_back_image_step(user)
-    attach_image
+    complete_doc_auth_steps_before_ssn_step(user)
+    fill_out_ssn_form_ok
     click_idv_continue
   end
 
