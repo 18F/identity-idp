@@ -1,4 +1,4 @@
-class CreateRecoveryCodeConfigurations < ActiveRecord::Migration[5.1]
+class CreateBackupCodeConfigurations < ActiveRecord::Migration[5.1]
   def change
     create_table :backup_code_configurations do |t|
       t.integer :user_id, null: false
