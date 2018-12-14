@@ -49,13 +49,6 @@ describe Idv::DocAuthController do
       expect(response).to render_template :back_image
     end
 
-    it 'renders the self image template' do
-      mock_next_step(:self_image)
-      get :show, params: { step: 'self_image' }
-
-      expect(response).to render_template :self_image
-    end
-
     it 'redirect to the right step' do
       mock_next_step(:front_image)
       get :show, params: { step: 'back_image' }
