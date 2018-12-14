@@ -24,7 +24,7 @@ class BackupCodeGenerator
   def verify(plaintext_code)
     backup_code = normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
-    return false if code.nil?
+    return unless code_usable?(code)
     code.update!(used: true, used_at: Time.zone.now)
     true
   end
@@ -44,6 +44,10 @@ class BackupCodeGenerator
   end
 
   private
+
+  def code_usable?(code)
+    code && !code.used
+  end
 
   # This method smells of :reek:FeatureEnvy
   def save_code(code)
