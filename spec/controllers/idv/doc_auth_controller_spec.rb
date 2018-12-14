@@ -75,6 +75,9 @@ describe Idv::DocAuthController do
 
   describe '#update' do
     it 'tracks analytics' do
+      mock_next_step(:back_image)
+      allow_any_instance_of(Flow::BaseFlow).to \
+        receive(:flow_session).and_return(pii_from_doc: {})
       result = { success: true, errors: {}, step: 'ssn' }
 
       put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
