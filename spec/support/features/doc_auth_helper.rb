@@ -94,7 +94,9 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_doc_failed_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_doc_success_step(user)
+    complete_doc_auth_steps_before_ssn_step(user)
+    fill_out_ssn_form_ok
+
     allow_any_instance_of(Idv::Agent).to receive(:proof).
       and_return(success: false, errors: {})
     click_idv_continue
