@@ -116,20 +116,6 @@ development:
     attribute_bundle:
       - email
 
-  'https://dashboard.login.gov':
-    friendly_name: 'Dashboard'
-    agency: 'GSA'
-    agency_id: 2
-    uuid_priority: 30
-    logo: '18f.svg'
-    acs_url: 'http://localhost:3001/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
-    sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'identity_dashboard_cert'
-    attribute_bundle:
-      - email
-
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
     friendly_name: 'Dashboard'
     agency: 'GSA'
@@ -139,7 +125,7 @@ development:
     cert: 'identity_dashboard_cert'
     return_to_sp_url: 'http://localhost:3001'
     redirect_uris:
-      - 'http://localhost:3001/users/result'
+      - 'http://localhost:3001/auth/logindotgov/callback'
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uris:
@@ -230,20 +216,6 @@ production:
       - email
   <% end %>
 
-  # Dashboard
-  <% if LoginGov::Hostdata.in_datacenter? %>
-  'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>':
-    friendly_name: 'Dashboard'
-    agency: 'GSA'
-    logo: '18f.svg'
-    acs_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml/logout'
-    sp_initiated_login_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'identity_dashboard_cert'
-    attribute_bundle:
-      - email
-
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
     friendly_name: 'Dashboard'
     agency: 'GSA'
@@ -253,8 +225,8 @@ production:
     cert: 'identity_dashboard_cert'
     return_to_sp_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
     redirect_uris:
+      - 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/logindotgov/callback'
       - 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/result'
-  <% end %>
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency: 'GSA'
@@ -881,4 +853,3 @@ production:
       - 'https://rule19d1.sec.gov/auth/login-gov/callback/loa-1'
       - 'https://rule19d1.sec.gov/auth/login-gov/logout'
     restrict_to_deploy_env: 'prod'
-
