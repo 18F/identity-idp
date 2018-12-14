@@ -18,6 +18,6 @@ describe 'backup code Generation' do
     rcg.generate
 
     success = rcg.verify 'This is a string which will never result from code generation'
-    expect(success).to eq(false)
+    expect(success).to be_falsy
   end
 end
