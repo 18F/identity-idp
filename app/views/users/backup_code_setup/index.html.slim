@@ -5,13 +5,26 @@ p.mt-tiny.mb3 = t('forms.backup_code.instructions')
 .mb3
   fieldset.m0.p0.rounded-xl
     ul.list-reset
-      li.px-12p.border-none
-        .inline-block.bold = t('forms.backup_code.subtitle1')
+      li.px-12p.mb1.border-none.mt1
+        .inline-block.h2.px-20p.bold = t('forms.backup_code.subtitle1')
         .inline-block = t('forms.backup_code.subinfo1')
-      li.py-12p.border-top
-        .mb2
-          - @codes.each do |code|
-            p.px-12p.mb0 = code.upcase.insert 4, '-'
+      li.mb0.border-top
+        table.ml4
+          tr
+            td
+              br
+              strong
+                - @codes[0..@codes.length/2].each do |code|
+                  = code.upcase.insert 4, '-'
+                  br
+                  br
+            td
+              br
+              strong
+                - @codes[@codes.length/2 + 1..-1].each do |code|
+                  = code.upcase.insert 4, '-'
+                  br
+                  br
 
 = form_tag(backup_code_setup_path, method: :patch, role: 'form', class: 'mb1') do
   .clearfix.mxn1
