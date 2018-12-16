@@ -29,6 +29,12 @@ describe MfaContext do
         expect(mfa.webauthn_configurations).to be_empty
       end
     end
+
+    describe '#backup_code_configurations' do
+      it 'is empty' do
+        expect(mfa.backup_code_configurations).to be_empty
+      end
+    end
   end
 
   context 'with a user' do
@@ -59,6 +65,14 @@ describe MfaContext do
         it 'is empty' do
           expect(mfa.webauthn_configurations).to be_empty
         end
+      end
+    end
+
+    describe '#backup_code_configurations' do
+      let(:user) {}
+
+      it 'is empty' do
+        expect(mfa.backup_code_configurations).to be_empty
       end
     end
   end

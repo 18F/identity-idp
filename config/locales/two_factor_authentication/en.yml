@@ -11,11 +11,17 @@ en:
         has been cancelled.
       text_html: If you can't use any of these security options above, you can reset
         your preferences by %{link}.
+    backup_code_fallback:
+      question: Don't have your backup codes available?
+    backup_code_header_text: Enter your backup security code
+    backup_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     choose_another_option: "‹ Choose another option"
     header_text: Enter your security code
     invalid_otp: That security code is invalid. You can try entering it again or request
       a new one-time security code.
     invalid_personal_key: That personal key is invalid.
+    invalid_backup_code: That backup code is invalid.
     invalid_piv_cac: That PIV/CAC is incorrect.
     login_intro: You set these up when you created your account
     login_options:
@@ -91,6 +97,9 @@ en:
       auth_app: Authentication application
       auth_app_info: Set up an authentication application to get your security code
         without providing a phone number
+      backup_code: Backup Codes
+      backup_code_info: Recieve a pre-generated list of security codes to use when
+        signing in
       piv_cac: Government employees
       piv_cac_info: Use your PIV/CAC card to secure your account
       sms: Text message / SMS

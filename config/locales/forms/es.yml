@@ -3,6 +3,16 @@ es:
   forms:
     account_recovery_setup:
       legend: Selecciona una opción de autenticación secundaria
+    backup_code:
+      info: Use códigos de inicio de sesión si no puede acceder a su teléfono para
+        iniciar sesión
+      instructions: Se le pedirá un código de inicio de sesión cada vez que inicie
+        sesión. a su cuenta login.gov.
+      subinfo1: Each code may only be used once, once the 9th code has been used you
+        will be prompted to download a new list.  Treat your recovery codes with the
+        same level of attention as you would your password.
+      subtitle1: Tus códigos de respaldo
+      title: Códigos de respaldo
     buttons:
       back: Atrás
       cancel: Sí, cancelar
@@ -79,6 +89,7 @@ es:
       totp_step_2: Ingrese esta clave en la app.
       totp_step_3: Ingrese el código de la app.
     two_factor:
+      backup_code: Código de seguridad
       code: Código de seguridad de sólo un uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.

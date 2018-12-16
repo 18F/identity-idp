@@ -3,6 +3,16 @@ fr:
   forms:
     account_recovery_setup:
       legend: Sélectionnez une option d'authentification secondaire
+    backup_code:
+      info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
+        téléphone pour vous connecter
+      instructions: Un code de connexion vous sera demandé chaque fois que vous vous
+        connecterez. sur votre compte login.gov.
+      subinfo1: Each code may only be used once, once the 9th code has been used you
+        will be prompted to download a new list.  Treat your recovery codes with the
+        same level of attention as you would your password.
+      subtitle1: Vos codes de sauvegarde
+      title: Codes de sauvegarde
     buttons:
       back: Retour
       cancel: Oui, annuler
@@ -85,6 +95,7 @@ fr:
       totp_step_2: Entrez cette clé dans l'application
       totp_step_3: Entrez le code à partir de l'application
     two_factor:
+      backup_code: Code de sécurité
       code: Code de sécurité
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone

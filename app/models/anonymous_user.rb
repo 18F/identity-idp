@@ -25,6 +25,10 @@ class AnonymousUser
     []
   end
 
+  def backup_code_configurations
+    []
+  end
+
   def x509_dn_uuid; end
 
   def otp_secret_key; end

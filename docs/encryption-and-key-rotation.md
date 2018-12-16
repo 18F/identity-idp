@@ -98,7 +98,7 @@ Since the user's password is an integral part of this multi-factor
 model, if the user forgets their password, the PII may not be recovered.
 To mitigate that loss, we repeat the process above using the user recovery
 code, a randomly generated 128-bit string the user is given when they create
-their account. The recovery code can be used once as a replacement for their
+their account. The backup code can be used once as a replacement for their
 second authentication factor (e.g. if they lose their mobile phone). It also functions
 as a backup password for encrypted PII.
 
@@ -114,10 +114,10 @@ particular data elements needed are extracted.
 When sessions expire, the ciphertext they contain is deleted.
 
 When a user loses their password and requests a reset, if the user has
-encrypted private PII stored with us, they are also prompted for their recovery code.
-The recovery code acts as a backup password. Their PII can be decrypted,
-a new recovery code generated, and the PII re-encrypted. If the user loses their
-recovery code and their password, they will need to go through the proofing process
+encrypted private PII stored with us, they are also prompted for their backup code.
+The backup code acts as a backup password. Their PII can be decrypted,
+a new backup code generated, and the PII re-encrypted. If the user loses their
+backup code and their password, they will need to go through the proofing process
 again after they reset their password.
 
 In order to facilitate fast lookups of existing SSNs and help prevent

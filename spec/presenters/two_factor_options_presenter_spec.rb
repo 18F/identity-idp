@@ -25,6 +25,7 @@ describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::VoiceSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::BackupCodeSelectionPresenter,
       ]
     end
 
@@ -37,6 +38,7 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
     end
@@ -49,6 +51,7 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
     end
@@ -62,6 +65,21 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
+        ]
+      end
+    end
+
+    context 'with a user with backup_code configured' do
+      let(:user) { build(:user, :with_backup_code) }
+
+      it 'supplies all the options' do
+        expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SmsSelectionPresenter,
+          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
     end

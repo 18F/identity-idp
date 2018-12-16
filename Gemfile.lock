@@ -745,6 +745,7 @@ DEPENDENCIES
   recaptcha
   redis-session-store!
   reek
+  rotp
   rqrcode
   rspec-rails (~> 3.7)
   rubocop (~> 0.58.0)

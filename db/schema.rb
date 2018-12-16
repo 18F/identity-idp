@@ -55,6 +55,17 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
+  create_table "backup_code_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "encrypted_code", default: "", null: false
+    t.string "code_fingerprint", default: "", null: false
+    t.boolean "used", default: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint"
+  end
+
   create_table "doc_auths", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.datetime "attempted_at"
