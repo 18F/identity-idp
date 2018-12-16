@@ -14,14 +14,14 @@ p.mt-tiny.mb3 = t('forms.backup_code.instructions')
             td
               br
               strong
-                - @codes[0..@codes.length/2].each do |code|
+                - @codes[0..@codes.length / 2].each do |code|
                   = code.upcase.insert 4, '-'
                   br
                   br
             td
               br
               strong
-                - @codes[@codes.length/2 + 1..-1].each do |code|
+                - @codes[@codes.length / 2 + 1..-1].each do |code|
                   = code.upcase.insert 4, '-'
                   br
                   br
