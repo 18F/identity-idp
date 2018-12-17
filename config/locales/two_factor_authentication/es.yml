@@ -47,6 +47,9 @@ es:
       webauthn_info: Use su clave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
+    max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
+      temporalmente porque ha ingresado el código de respaldo incorrectamente muchas
+      veces.
     max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
       temporalmente.
     max_otp_login_attempts_reached: Para su seguridad, su cuenta ha sido bloqueada

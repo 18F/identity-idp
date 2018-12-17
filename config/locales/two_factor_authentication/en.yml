@@ -44,6 +44,8 @@ en:
       webauthn_info: Use your security key to access your account.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
+    max_backup_code_login_attempts_reached: For your security, your account is temporarily
+      locked because you have entered the backup code incorrectly too many times.
     max_generic_login_attempts_reached: For your security, your account is temporarily
       locked.
     max_otp_login_attempts_reached: For your security, your account is temporarily

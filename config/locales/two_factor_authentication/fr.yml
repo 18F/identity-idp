@@ -45,6 +45,8 @@ fr:
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
+    max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
+      temporairement verrouillé car vous avez saisi trop de fois le code de sauvegarde.
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
       verrouillé.
     max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
