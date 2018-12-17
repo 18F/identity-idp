@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user
     before_action :authorize_user
+    before_action :clear_backup_codes, only: [:index]
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -26,6 +27,10 @@ module Users
     end
 
     private
+
+    def clear_backup_codes
+      current_user.backup_code_configurations&.destroy_all
+    end
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp)
