@@ -74,6 +74,30 @@ twilio_timeout: '5'
 usps_download_sftp_timeout: '5'
 usps_upload_sftp_timeout: '5'
 
+piv_cac_email_domains: >-
+  [
+    ".eop.gov", ".mil", ".treas.gov", ".dhs.gov",
+    "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
+    "bea.gov", "bis.doc.gov",
+    "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
+    "dhs.gov", "doc.gov", "dol.gov", "dra.gov",
+    "eac.gov", "ed.gov", "eda.gov", "epa.gov",
+    "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
+    "gao.gov", "gpo.gov", "gsa.gov",
+    "heritageabroad.gov", "hq.doe.gov", "hud.gov", "hudoig.gov",
+    "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
+    "jusfc.gov", "justice.gov",
+    "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
+    "nara.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
+    "oig.doc.gov", "oig.hhs.gov", "opm.gov",
+    "pclob.gov",
+    "restorethegulf.gov",
+    "sba.gov", "sec.gov", "si.edu", "sss.gov", "state.gov", "stateoig.gov",
+    "trade.gov", "truman.gov", "tsp.gov", "tva.gov",
+    "usadf.gov", "uscc.gov", "usccr.gov", "uscirf.gov",
+    "va.gov", "vef.gov"
+  ]
+
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
@@ -150,7 +174,6 @@ development:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
   password_strength_enabled: 'true'
-  piv_cac_email_domains: '[".mil","state.gov"]'
   piv_cac_verify_token_secret: 'ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
@@ -280,7 +303,6 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
-  piv_cac_email_domains: '[".mil","state.gov"]'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
@@ -404,7 +426,6 @@ test:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
   password_strength_enabled: 'false'
-  piv_cac_email_domains: '[".mil","state.gov"]'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_secret: '3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f'
   piv_cac_verify_token_url: 'https://localhost:8443/'
