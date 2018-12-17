@@ -21,6 +21,11 @@ RUN apt-key add /tmp/yarn-pubkey.gpg && rm /tmp/yarn-pubkey.gpg
 RUN echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y --no-install-recommends yarn
 
+RUN \
+  groupadd --gid 999 appuser && \
+  useradd --system --create-home --uid 999 --gid appuser appuser
+USER appuser
+
 WORKDIR /upaya
 
 COPY package.json /upaya
