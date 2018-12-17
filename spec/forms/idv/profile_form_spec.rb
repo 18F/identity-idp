@@ -197,4 +197,18 @@ describe Idv::ProfileForm do
       expect(subject.errors).to include(:state_id_number)
     end
   end
+
+  describe 'field lengths' do
+    it 'populates error for invalid lengths' do
+      %i[city first_name last_name address1 address2]. each do |symbol|
+        max_length(symbol)
+      end
+    end
+  end
+
+  def max_length(symbol)
+    subject.submit(profile_attrs.merge(symbol => 'a' * 256))
+    expect(subject.valid?).to eq false
+    expect(subject.errors).to include(symbol)
+  end
 end
