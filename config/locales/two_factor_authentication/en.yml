@@ -18,10 +18,10 @@ en:
       need to use a new key.
     choose_another_option: "‹ Choose another option"
     header_text: Enter your security code
+    invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
       a new one-time security code.
     invalid_personal_key: That personal key is invalid.
-    invalid_backup_code: That backup code is invalid.
     invalid_piv_cac: That PIV/CAC is incorrect.
     login_intro: You set these up when you created your account
     login_options:
