@@ -13,9 +13,9 @@ es:
         viejos códigos ya no funcionarán.
       new_login_codes: Generar nuevos códigos de inicio de sesión
       print: Impresión
-      subinfo1: Each code may only be used once, once the 9th code has been used you
-        will be prompted to download a new list.  Treat your recovery codes with the
-        same level of attention as you would your password.
+      subinfo1: Cada código solo se puede utilizar una vez, una vez que se haya utilizado
+        el décimo código, se le pedirá que descargue una nueva lista. Trate sus códigos
+        de recuperación con el mismo nivel de atención como lo haría con su contraseña.
       subtitle1: Tus códigos de respaldo
       title: Códigos de respaldo
       warn: Descargue, imprima o escriba sus códigos de seguridad personales.
