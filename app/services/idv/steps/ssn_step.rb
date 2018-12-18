@@ -32,8 +32,8 @@ module Idv
 
       def skip_legacy_steps
         idv_session['profile_confirmation'] = true
-        idv_session['vendor_phone_confirmation'] = true
-        idv_session['user_phone_confirmation'] = true
+        idv_session['vendor_phone_confirmation'] = false
+        idv_session['user_phone_confirmation'] = false
         idv_session['address_verification_mechanism'] = 'phone'
         idv_session['resolution_successful'] = 'phone'
       end
