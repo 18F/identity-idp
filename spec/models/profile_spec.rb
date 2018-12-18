@@ -23,8 +23,8 @@ describe Profile do
       profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii).to_not be_nil
-      expect(profile.encrypted_pii).to_not eq 'Jane'
-      expect(profile.encrypted_pii).to_not eq '666'
+      expect(profile.encrypted_pii).to_not match 'Jane'
+      expect(profile.encrypted_pii).to_not match '666'
     end
 
     it 'generates new personal key' do
