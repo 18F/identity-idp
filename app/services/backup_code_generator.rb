@@ -49,13 +49,8 @@ class BackupCodeGenerator
     code && !code.used
   end
 
-  # This method smells of :reek:FeatureEnvy
   def save_code(code)
-    rc = BackupCodeConfiguration.new
-    rc.code = code
-    rc.user_id = @user.id
-    rc.used = false
-    rc.save
+    @user.backup_code_configurations.create!(code: code)
   end
 
   def normalize(plaintext_code)
