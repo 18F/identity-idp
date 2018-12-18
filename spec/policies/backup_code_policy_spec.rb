@@ -31,7 +31,7 @@ describe TwoFactorAuthentication::BackupCodePolicy do
   end
 
   describe '#visible?' do
-    it 'is set to true' do
+    it 'is always set to true' do
       expect(policy.visible?).to eq true
     end
   end
