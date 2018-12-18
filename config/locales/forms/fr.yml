@@ -13,10 +13,10 @@ fr:
         ou les imprimer. Vos anciens codes ne fonctionneront plus.
       new_login_codes: Générer de nouveaux codes de connexion
       print: Impression
-      subinfo1: Chaque code ne peut être utilisé qu'une seule fois. Une fois le code
+      subinfo: Chaque code ne peut être utilisé qu'une seule fois. Une fois le code
         10 utilisé, vous serez invité à télécharger une nouvelle liste. Traitez vos
         codes de récupération avec le même niveau d’attention que votre mot de passe.
-      subtitle1: Vos codes de sauvegarde
+      subtitle: Vos codes de sauvegarde
       title: Codes de sauvegarde
       warn: Téléchargez, imprimez ou notez vos codes de sécurité personnels.
     buttons:
