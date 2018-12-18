@@ -35,7 +35,7 @@ class BackupCodeGenerator
 
   def generate_new_codes
     result = []
-    (0..(NUMBER_OF_CODES - 1)).each do
+    NUMBER_OF_CODES.times do
       code = backup_code
       result.push code
       save_code(code)
