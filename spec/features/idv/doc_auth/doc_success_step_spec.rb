@@ -17,6 +17,6 @@ feature 'doc auth success step' do
   it 'proceeds to the next page with valid info' do
     click_idv_continue
 
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_phone_path)
   end
 end
