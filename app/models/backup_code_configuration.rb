@@ -1,10 +1,6 @@
 class BackupCodeConfiguration < ApplicationRecord
   include EncryptableAttribute
 
-  devise
-
-  include EncryptableAttribute
-
   encrypted_attribute_without_setter(name: :code)
 
   # IMPORTANT this comes *after* devise() call.
@@ -17,7 +13,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    used == false
+    !used
   end
 
   # This method smells of :reek:UtilityFunction
@@ -39,7 +35,7 @@ class BackupCodeConfiguration < ApplicationRecord
 
   class << self
     def find_with_code(code:, user_id:)
-      return nil if !code.is_a?(String) || code.empty?
+      return if code.blank?
       code = code.downcase.strip
       code_fingerprint = create_fingerprint(code)
       find_by(code_fingerprint: code_fingerprint, user_id: user_id)
