@@ -5,15 +5,14 @@ module TwoFactorAuthentication
     prepend_before_action :authenticate_user
     prepend_before_action :handle_if_all_codes_used
 
-    # rubocop:disable Layout/FirstParameterIndentation
     def show
       analytics.track_event(
-          Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context
-        )
+        Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context
+      )
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
-          view: view_context,
-          data: { current_user: current_user }
-        )
+        view: view_context,
+        data: { current_user: current_user }
+      )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
 
@@ -36,11 +35,10 @@ module TwoFactorAuthentication
 
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
-            view: view_context,
-            data: { current_user: current_user }
-          )
+        view: view_context,
+        data: { current_user: current_user }
+      )
     end
-    # rubocop:enable Layout/FirstParameterIndentation
 
     def handle_invalid_backup_code
       update_invalid_user
