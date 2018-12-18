@@ -10,8 +10,8 @@ p = link_to t('links.access_help'),
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.ml0.p0.border-none
-    = f.input :first_name, label: t('idv.form.first_name'), required: true
-    = f.input :last_name, label: t('idv.form.last_name'), required: true
+    = f.input :first_name, label: t('idv.form.first_name'), required: true, maxlength: 255
+    = f.input :last_name, label: t('idv.form.last_name'), required: true, maxlength: 255
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
         / using :tel for mobile numeric keypad
@@ -52,9 +52,9 @@ p = link_to t('links.access_help'),
         pattern: '^.{0,25}$',
         input_html: { class: 'sm-col-8 state_id_number', value: @idv_form.state_id_number }
     = f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'mb1' },
-        required: true
-    = f.input :address2, label: t('idv.form.address2')
-    = f.input :city, label: t('idv.form.city'), required: true
+        required: true, maxlength: 255
+    = f.input :address2, label: t('idv.form.address2'), maxlength: 255
+    = f.input :city, label: t('idv.form.city'), required: true, maxlength: 255
 
     .clearfix.mxn1
       .sm-col.sm-col-8.px1

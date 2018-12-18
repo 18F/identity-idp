@@ -33,6 +33,7 @@ Rails.application.routes.draw do
         defaults: { format: :xml }
 
   post '/api/usps_upload' => 'usps_upload#create'
+  post '/api/usps_download' => 'undeliverable_address#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
