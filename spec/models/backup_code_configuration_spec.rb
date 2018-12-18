@@ -9,13 +9,13 @@ RSpec.describe BackupCodeConfiguration, type: :model do
   end
 
   describe 'self.unused' do
-    it 'is set to false' do
+    it 'count is zero' do
       expect(BackupCodeConfiguration.unused.count).to eq 0
     end
   end
 
   describe 'mfa_enabled?' do
-    it 'is set to false' do
+    it 'is set to true' do
       backup_code_config = BackupCodeConfiguration.new
 
       expect(backup_code_config.mfa_enabled?).to eq true
