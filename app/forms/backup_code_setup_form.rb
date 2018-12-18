@@ -20,11 +20,6 @@ class BackupCodeSetupForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  # this gives us a hook to override the domain embedded in the attestation test object
-  def self.domain_name
-    Figaro.env.domain_name
-  end
-
   private
 
   attr_reader :success
