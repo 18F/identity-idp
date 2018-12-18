@@ -3,8 +3,6 @@ module TwoFactorAuthCode
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :credential_ids
-
     def help_text
       ''
     end
