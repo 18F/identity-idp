@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint"
+    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
   end
 
   create_table "doc_auths", force: :cascade do |t|
