@@ -11,6 +11,10 @@ class BackupCodeConfiguration < ApplicationRecord
     where(used_at: nil)
   end
 
+  def self.used
+    where('used_at is NOT NULL')
+  end
+
   def mfa_enabled?
     used_at.nil?
   end
