@@ -25,7 +25,7 @@ class BackupCodeGenerator
     backup_code = normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
     return unless code_usable?(code)
-    code.update!(used: true, used_at: Time.zone.now)
+    code.update!(used_at: Time.zone.now)
     true
   end
 
@@ -46,7 +46,7 @@ class BackupCodeGenerator
   private
 
   def code_usable?(code)
-    code && !code.used
+    code && code.used_at.nil?
   end
 
   def save_code(code)

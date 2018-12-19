@@ -9,11 +9,11 @@ class BackupCodeConfiguration < ApplicationRecord
   belongs_to :user
 
   def self.unused
-    where(used: false)
+    where(used_at: nil)
   end
 
   def mfa_enabled?
-    !used
+    used_at.nil?
   end
 
   # This method smells of :reek:UtilityFunction

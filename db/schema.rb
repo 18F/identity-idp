@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.integer "user_id", null: false
     t.string "encrypted_code", default: "", null: false
     t.string "code_fingerprint", default: "", null: false
-    t.boolean "used", default: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

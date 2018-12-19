@@ -11,7 +11,7 @@ describe TwoFactorAuthentication::BackupCodePolicy do
 
     it 'returns false if all the backup codes are used' do
       user.save
-      user.backup_code_configurations.create!(code: 'foo', used: true)
+      user.backup_code_configurations.create!(code: 'foo', used_at: Time.zone.now)
 
       expect(policy.configured?).to eq false
     end
@@ -31,7 +31,7 @@ describe TwoFactorAuthentication::BackupCodePolicy do
 
     it 'returns false if all the backup codes are used' do
       user.save
-      user.backup_code_configurations.create!(code: 'foo', used: true)
+      user.backup_code_configurations.create!(code: 'foo', used_at: Time.zone.now)
 
       expect(policy.enabled?).to eq false
     end
