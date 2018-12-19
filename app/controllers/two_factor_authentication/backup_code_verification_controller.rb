@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    prepend_before_action :handle_if_all_codes_used
+    prepend_before_action :handle_if_all_codes_used, only: [:create]
 
     def show
       analytics.track_event(
