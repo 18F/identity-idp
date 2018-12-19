@@ -26,6 +26,5 @@ feature 'sign up with backup code', :js do
       click_on 'Submit'
       click_on 'Sign out'
     end
-    signin(user.email, user.password)
   end
 end
