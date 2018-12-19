@@ -1,5 +1,5 @@
 - title t('forms.backup_code.title')
-- btn_cls = 'ml2 btn-border ico ico-print text-decoration-none'
+- btn_cls = 'btn-border text-decoration-none'
 
 h1.h3.my0.mt0 = t('forms.backup_code.info')
 p.mt-tiny.mb3 == t('forms.backup_code.instructions')
@@ -37,7 +37,7 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
             data: { print: true },
             class: 'ml2 btn-border ico ico-print text-decoration-none'
           .clipboard.ml2.mt-tiny class=btn_cls data-clipboard-text=@codes.join(' ')
-            = link_to t('links.copy'), '#', class: 'text-decoration-none'
+            = link_to t('links.copy'), '#', class: 'text-decoration-none ico ico-copy'
 
 h2.h3.my0 = t('forms.backup_code.new_login_codes')
 p.mb0 = t('forms.backup_code.new_info')

@@ -4,6 +4,10 @@
   background-size: 1rem;
   padding-left: 2.5rem;
 
+  &-copy {
+    background-image: url(image-path('ico-copy.svg'));
+  }
+
   &-refresh {
     background-image: url(image-path('ico-refresh.svg'));
   }
