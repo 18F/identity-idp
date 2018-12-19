@@ -9,7 +9,8 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
       li.px-12p.mb1.border-none.mt1.m2
         .inline-block.h1.bold = t('forms.backup_code.subtitle')
         .h5.mt0.mb0.pt1.pb2.fs-12p
-          = t('users.backup_code.generated_on_html', date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))
+          = t('users.backup_code.generated_on_html',
+            date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))
         .inline-block = t('forms.backup_code.subinfo')
       li.mb0.border-top
         .alert-warning.p1.bold = \
