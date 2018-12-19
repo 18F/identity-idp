@@ -62,13 +62,24 @@ RSpec.describe BackupCodeConfiguration, type: :model do
   end
 
   describe 'find_with_code' do
-    it 'returns code' do
+    it 'returns the code' do
       user = User.new
       user.save
       codes = BackupCodeGenerator.new(user).generate_new_codes
       first_code = codes.first
+
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
       expect(backup_code.code).to eq first_code
+    end
+
+    it 'does not return the code with a wrong user id' do
+      user = User.new
+      user.save
+      codes = BackupCodeGenerator.new(user).generate_new_codes
+      first_code = codes.first
+
+      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)
+      expect(backup_code).to be_nil
     end
   end
 
