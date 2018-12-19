@@ -47,10 +47,17 @@ RSpec.describe BackupCodeConfiguration, type: :model do
   end
 
   describe 'will_save_change_to_code?' do
-    it 'returns false' do
+    it 'returns false if code did not change' do
       backup_code_config = BackupCodeConfiguration.new
 
       expect(backup_code_config.will_save_change_to_code?).to eq false
+    end
+
+    it 'returns true if code changed' do
+      backup_code_config = BackupCodeConfiguration.new
+      backup_code_config.code = 'foo'
+
+      expect(backup_code_config.will_save_change_to_code?).to eq true
     end
   end
 
