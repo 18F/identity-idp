@@ -29,9 +29,7 @@ feature 'doc auth ssn step' do
   end
 
   it 'does not proceed to the next page if resolution fails' do
-    allow_any_instance_of(Idv::Agent).to receive(:proof).
-      and_return(success: false, errors: {})
-    fill_out_ssn_form_ok
+    fill_out_ssn_form_with_known_bad_ssn
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
