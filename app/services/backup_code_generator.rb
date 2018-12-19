@@ -58,8 +58,6 @@ class BackupCodeGenerator
   end
 
   def backup_code
-    ccode = SecureRandom.hex
-    raw = ccode[1, @split * @length]
-    normalize(raw)
+    normalize(SecureRandom.hex(@split * @length / 2))
   end
 end
