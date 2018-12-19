@@ -8,27 +8,19 @@ describe Idv::Flows::DocAuthFlow do
   let(:name) { :doc_auth }
 
   describe '#next_step' do
-    it 'returns ssn as the first step' do
+    it 'returns front_image as the first step' do
       subject = Idv::Flows::DocAuthFlow.new(new_session, user, name)
       result = subject.next_step
 
-      expect(result).to eq('ssn')
-    end
-
-    it 'returns front image after the ssn step' do
-      expect_next_step(:ssn, :front_image)
+      expect(result).to eq('front_image')
     end
 
     it 'returns back image after the front image step' do
       expect_next_step(:front_image, :back_image)
     end
 
-    it 'returns self_image after the doc success step' do
-      expect_next_step(:doc_success, :self_image)
-    end
-
-    it 'returns self_image after the doc success step' do
-      expect_next_step(:self_image, nil)
+    it 'returns ssn after the back image step' do
+      expect_next_step(:back_image, :ssn)
     end
   end
 
