@@ -3,7 +3,6 @@ class BackupCodeConfiguration < ApplicationRecord
 
   encrypted_attribute_without_setter(name: :code)
 
-  # IMPORTANT this comes *after* devise() call.
   include BackupCodeEncryptedAttributeOverrides
 
   belongs_to :user
