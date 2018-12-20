@@ -5,7 +5,7 @@ class BackupCodeGenerator
 
   NUMBER_OF_CODES = 10
 
-  def initialize(user, length: 2, split: 4)
+  def initialize(user, length: 3, split: 4)
     @length = length
     @split = split
     @user = user
@@ -54,7 +54,7 @@ class BackupCodeGenerator
   end
 
   def normalize(plaintext_code)
-    plaintext_code.gsub(/\W/, '').downcase.strip
+    plaintext_code.gsub(/\W/, '').delete('-').downcase.strip
   end
 
   def backup_code

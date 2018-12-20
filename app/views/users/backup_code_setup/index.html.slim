@@ -22,14 +22,14 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
               br
               strong
                 - @codes[0..@codes.length / 2 - 1].each do |code|
-                  = code.upcase.insert 4, '-'
+                  = code.upcase.insert(8, '-').insert(4, '-')
                   br
                   br
             td
               br
               strong
                 - @codes[@codes.length / 2..-1].each do |code|
-                  = code.upcase.insert 4, '-'
+                  = code.upcase.insert(8, '-').insert(4, '-')
                   br
                   br
         .center
