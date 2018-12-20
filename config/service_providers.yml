@@ -867,10 +867,10 @@ production:
       - 'https://flag.dol.gov/auth/auth/login-gov/callback/loa-1'
       - 'https://staging.flag.gov/auth/auth/login-gov/callback/loa-1'
       - 'https://staging.flag.gov/auth/auth/login-gov/callback/loa-1'
-      - 'http://staging.flag.dol.gov/dashboard/'
-      - 'http://flag.dol.gov/dashboard/'
-      - 'http://staging.flag.dol.gov/'
-      - 'http://flag.dol.gov/'
+      - 'https://staging.flag.dol.gov/dashboard/'
+      - 'https://flag.dol.gov/dashboard/'
+      - 'https://staging.flag.dol.gov/'
+      - 'https://flag.dol.gov/'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
