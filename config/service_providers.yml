@@ -854,10 +854,10 @@ production:
       - 'https://rule19d1.sec.gov/auth/login-gov/logout'
     restrict_to_deploy_env: 'prod'
 
-  # Foreign Labor Gateway
+  # Foreign Labor Application Gateway
   'urn:gov:gsa:openidconnect.profiles:sp:sso:doloflc:flagapp':
     agency_id: 14
-    friendly_name: 'Foreign Labor Gateway'
+    friendly_name: 'Foreign Labor Application Gateway'
     agency: 'DOL'
     logo: 'dol.svg'
     cert: 'dol_prod'
@@ -870,10 +870,10 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
-  # Foreign Labor Gateway (staging)
+  # Foreign Labor Application Gateway (staging)
   'urn:gov:gsa:openidconnect.profiles:sp:sso:doloflc:flagapp_staging':
     agency_id: 14
-    friendly_name: 'Foreign Labor Gateway - Staging'
+    friendly_name: 'Foreign Labor Application Gateway - Staging'
     agency: 'DOL'
     logo: 'dol.svg'
     cert: 'dol_prod'

@@ -4,7 +4,8 @@ class ServiceProviderSessionDecorator
   DEFAULT_LOGO = 'generic.svg'.freeze
   CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs'].freeze
   DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1',
-                            'Foreign Labor Gateway', 'Foreign Labor Gateway - Staging'].freeze
+                            'Foreign Labor Application Gateway',
+                            'Foreign Labor Application Gateway - Staging'].freeze
 
   # These are SPs that are migrating users and require special help messages
   CUSTOM_SP_ALERTS = {
