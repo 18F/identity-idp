@@ -865,12 +865,23 @@ production:
     redirect_uris:
       - 'https://flag.dol.gov/'
       - 'https://flag.dol.gov/auth/auth/login-gov/callback/loa-1'
-      - 'https://flag.dol.gov/auth/auth/login-gov/callback/loa-1'
-      - 'https://staging.flag.gov/auth/auth/login-gov/callback/loa-1'
+      - 'https://flag.dol.gov/dashboard/'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # Foreign Labor Gateway (staging)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:doloflc:flagapp_staging':
+    agency_id: 14
+    friendly_name: 'Foreign Labor Gateway - Staging'
+    agency: 'DOL'
+    logo: 'dol.svg'
+    cert: 'dol_prod'
+    return_to_sp_url: 'https://staging.flag.dol.gov/'
+    redirect_uris:
+      - 'https://staging.flag.dol.gov/'
       - 'https://staging.flag.gov/auth/auth/login-gov/callback/loa-1'
       - 'https://staging.flag.dol.gov/dashboard/'
-      - 'https://flag.dol.gov/dashboard/'
-      - 'https://staging.flag.dol.gov/'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
