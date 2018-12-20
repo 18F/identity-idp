@@ -2,12 +2,11 @@ module Idv
   module Flows
     class DocAuthFlow < Flow::BaseFlow
       STEPS = {
-        ssn: Idv::Steps::SsnStep,
         front_image: Idv::Steps::FrontImageStep,
         back_image: Idv::Steps::BackImageStep,
+        ssn: Idv::Steps::SsnStep,
         doc_failed: Idv::Steps::DocFailedStep,
         doc_success: Idv::Steps::DocSuccessStep,
-        self_image: Idv::Steps::SelfImageStep,
       }.freeze
 
       ACTIONS = {
