@@ -5,10 +5,15 @@ module Users
 
     def index
       generate_codes
-      user_session[:codes] = @codes
-      result = BackupCodeSetupForm.new(current_user, user_session).submit
+      result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       mark_user_as_fully_authenticated
+    end
+
+    def create
+      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      Event.create(user_id: current_user.id, event_type: :backup_codes_added)
+      redirect_to sign_up_personal_key_url
     end
 
     private
