@@ -16,7 +16,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    used_at.nil?
+    Event.find_by(user_id: user&.id, event_type: :backup_codes_added)
   end
 
   # This method smells of :reek:UtilityFunction
