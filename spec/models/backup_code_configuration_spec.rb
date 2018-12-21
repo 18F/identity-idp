@@ -15,10 +15,19 @@ RSpec.describe BackupCodeConfiguration, type: :model do
   end
 
   describe 'mfa_enabled?' do
-    it 'is set to true' do
+    it 'is falsey if there is no backup code configuration event' do
       backup_code_config = BackupCodeConfiguration.new
 
-      expect(backup_code_config.mfa_enabled?).to eq true
+      expect(backup_code_config.mfa_enabled?).to be_falsey
+    end
+
+    it 'is truthy if there is a backup code configuration event' do
+      user = User.new
+      user.save
+      Event.create(user_id: user.id, event_type: :backup_codes_added)
+      backup_code_config = BackupCodeConfiguration.new(user_id: user.id)
+
+      expect(backup_code_config.mfa_enabled?).to be_truthy
     end
   end
 
