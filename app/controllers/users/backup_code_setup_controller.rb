@@ -16,6 +16,11 @@ module Users
       redirect_to sign_up_personal_key_url
     end
 
+    def download
+      data = current_user.backup_code_configurations.map(&:code).join("\n") + "\n"
+      send_data data, filename: 'backup_codes.txt'
+    end
+
     private
 
     def generate_codes

@@ -161,6 +161,7 @@ Rails.application.routes.draw do
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_setup' => 'users/backup_code_setup#index'
     patch '/backup_code_setup' => 'users/backup_code_setup#create'
+    get '/backup_code_download' => 'users/backup_code_setup#download'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')

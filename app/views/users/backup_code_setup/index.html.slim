@@ -33,6 +33,9 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
                   br
                   br
         .center
+          .ml2.mt-tiny class=btn_cls
+            = link_to t('forms.backup_code.download'), backup_code_download_path,
+              class: 'text-decoration-none'
           = link_to t('forms.backup_code.print'), '#',
             data: { print: true },
             class: 'ml2 btn-border ico ico-print text-decoration-none'

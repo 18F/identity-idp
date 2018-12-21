@@ -4,6 +4,7 @@ fr:
     account_recovery_setup:
       legend: Sélectionnez une option d'authentification secondaire
     backup_code:
+      download: Télécharger
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
         téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous
