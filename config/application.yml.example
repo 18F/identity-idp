@@ -317,7 +317,7 @@ production:
   remember_device_expiration_hours_aal_2: '12'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
-  requests_per_ip_track_only_mode: 'true'
+  requests_per_ip_track_only_mode: 'false'
   saml_passphrase:
   saml_secret_rotation_certificate:
   saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
