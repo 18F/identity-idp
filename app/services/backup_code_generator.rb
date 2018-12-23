@@ -3,7 +3,7 @@ require 'digest'
 class BackupCodeGenerator
   attr_reader :length
 
-  NUMBER_OF_CODES = 3
+  NUMBER_OF_CODES = 10
 
   def initialize(user, length: 3, split: 4)
     @length = length

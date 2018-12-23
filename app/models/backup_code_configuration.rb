@@ -11,10 +11,6 @@ class BackupCodeConfiguration < ApplicationRecord
     where(used_at: nil)
   end
 
-  def self.used
-    where('used_at is NOT NULL')
-  end
-
   def mfa_enabled?
     Event.find_by(user_id: user&.id, event_type: :backup_codes_added)
   end
