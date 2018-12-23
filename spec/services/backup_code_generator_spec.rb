@@ -4,7 +4,7 @@ describe 'backup code Generation' do
   it 'should generate backup codes ans be able to verify them' do
     user = create(:user)
     rcg = BackupCodeGenerator.new(user)
-    codes = rcg.generate
+    codes = rcg.create
 
     codes.each do |code|
       success = rcg.verify code

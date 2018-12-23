@@ -17,6 +17,7 @@ class BackupCodeGenerator
   end
 
   def create
+    @user.save
     save(generate)
   end
 
