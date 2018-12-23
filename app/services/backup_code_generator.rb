@@ -18,7 +18,7 @@ class BackupCodeGenerator
 
   def create
     @user.save
-    generate
+    save(generate)
   end
 
   def verify(plaintext_code)
@@ -33,12 +33,16 @@ class BackupCodeGenerator
     @user.backup_code_configurations.destroy_all
   end
 
+  def save(codes)
+    delete_existing_codes
+    codes.each { |code| save_code(code) }
+  end
+
   def generate_new_codes
     result = []
     NUMBER_OF_CODES.times do
       code = backup_code
-      result.push code
-      save_code(code)
+      result << code
     end
     result
   end
