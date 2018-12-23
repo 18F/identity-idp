@@ -5,7 +5,6 @@ module Users
 
     before_action :authenticate_user
     before_action :authorize_user
-    before_action :initialize_backup_codes_unless_enabled, only: [:index]
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -27,12 +26,6 @@ module Users
     end
 
     private
-
-    def initialize_backup_codes_unless_enabled
-      cfg = current_user.backup_code_configurations
-      return if cfg.any?(&:mfa_enabled?)
-      cfg&.destroy_all
-    end
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp)
