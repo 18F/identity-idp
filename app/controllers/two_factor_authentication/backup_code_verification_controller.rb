@@ -3,7 +3,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    prepend_before_action :handle_if_all_codes_used, only: [:create]
 
     def show
       analytics.track_event(
@@ -26,9 +25,8 @@ module TwoFactorAuthentication
 
     private
 
-    def handle_if_all_codes_used
-      count = current_user.backup_code_configurations.used.count
-      return unless count == (BackupCodeGenerator::NUMBER_OF_CODES - 1)
+    def all_codes_used
+      return if current_user.backup_code_configurations.unused.any?
       BackupCodeGenerator.new(current_user).delete_existing_codes
       redirect_to backup_code_setup_url
     end
@@ -54,6 +52,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
+        return if all_codes_used
         handle_valid_backup_code
       else
         handle_invalid_backup_code
