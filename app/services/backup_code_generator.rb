@@ -3,7 +3,7 @@ require 'digest'
 class BackupCodeGenerator
   attr_reader :length
 
-  NUMBER_OF_CODES = 10
+  NUMBER_OF_CODES = 3
 
   def initialize(user, length: 3, split: 4)
     @length = length
@@ -38,6 +38,8 @@ class BackupCodeGenerator
     codes.each { |code| save_code(code) }
   end
 
+  private
+
   def generate_new_codes
     result = []
     NUMBER_OF_CODES.times do
@@ -46,8 +48,6 @@ class BackupCodeGenerator
     end
     result
   end
-
-  private
 
   def code_usable?(code)
     code && code.used_at.nil?

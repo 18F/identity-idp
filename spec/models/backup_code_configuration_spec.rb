@@ -84,7 +84,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     it 'does not return the code with a wrong user id' do
       user = User.new
       user.save
-      codes = BackupCodeGenerator.new(user).generate_new_codes
+      codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)
