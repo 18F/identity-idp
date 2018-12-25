@@ -18,7 +18,7 @@ module Users
     end
 
     def download
-      data = current_user.backup_code_configurations.map(&:code).join("\n") + "\n"
+      data = user_session[:backup_codes].join("\n") + "\n"
       send_data data, filename: 'backup_codes.txt'
     end
 
