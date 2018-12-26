@@ -19,16 +19,7 @@ feature 'doc auth back image step' do
     attach_image
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_doc_success_step)
-  end
-
-  it 'does not proceed to the next page if resolution fails' do
-    allow_any_instance_of(Idv::Agent).to receive(:proof).
-      and_return(success: false, errors: {})
-    attach_image
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
+    expect(page).to have_current_path(idv_doc_auth_ssn_step)
   end
 
   it 'does not proceed to the next page with invalid info' do

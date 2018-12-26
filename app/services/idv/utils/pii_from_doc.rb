@@ -19,12 +19,11 @@ module Idv
         end
       end
 
-      def call(ssn, phone)
+      def call(phone)
         VALUE.each do |key, value|
           hash[value] = @name_to_value[key]
         end
         hash[:dob] = convert_date(hash[:dob])
-        hash[:ssn] = ssn
         hash[:phone] = phone
         hash
       end
