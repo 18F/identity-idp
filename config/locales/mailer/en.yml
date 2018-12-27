@@ -14,12 +14,12 @@ en:
       footer: This link will expire in %{confirmation_period}.
       header: "%{intro} Please click the link below or copy and paste the entire link
         into your browser."
-      link_text: Confirm your email address
+      link_text: Confirm email address
     email_change_notice:
       subject: Change your email address
     email_reuse_notice:
       subject: This email address is already associated with an account.
-    help: For more help, visit %{link}.
+    help: If you need help, visit %{link}
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:

@@ -58,15 +58,7 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                         tr
                                           td.s30 height="30px"
                                             | &nbsp;
-                                    p
-                                      i = t('mailer.no_reply')
-                                    table.spacer
-                                      tbody
-                                        tr
-                                          td.s30 height="30px"
-                                            | &nbsp;
-                                  th.expander
-                      table.wrapper.footer align="center"
+                      table.wrapper align="center"
                         tr
                           td.wrapper-inner
                             table.row
@@ -76,29 +68,32 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                     table
                                       tr
                                         th
-                                          p == t('mailer.help',
-                                                link: link_to(MarketingSite.help_url,
+                                          p == t('mailer.no_reply') + ' ' + t('mailer.help',
+                                                link: link_to(MarketingSite.nice_help_url,
                                                               MarketingSite.help_url),
                                                 app: link_to(APP_NAME,
                                                              Figaro.env.mailer_domain_name,
                                                              style: 'text-decoration: none;'))
-                                        th.expander
-                      table.wrapper.legal align="center"
+                      table.xwrapper
                         tr
-                          td.wrapper-inner
+                          td.xwrapper-inner
                             table.row
                               tbody
                                 tr
                                   th.small-12.large-12.columns.first.last
+                                    table.hr
+                                      tr
+                                        th
+                                          | &nbsp;
                                     table
                                       tr
                                         th
-                                          p.text-center
+                                          p
                                             = link_to(t('mailer.about', app: APP_NAME),
-                                                      MarketingSite.base_url)
+                                                      MarketingSite.base_url, style: 'text-decoration: underline;')
                                             ' &nbsp;&nbsp;|&nbsp;&nbsp;
                                             = link_to(t('mailer.privacy_policy'),
-                                                      MarketingSite.privacy_url)
+                                                      MarketingSite.privacy_url, style: 'text-decoration: underline;')
                                         th.expander
       /! prevent Gmail on iOS font size manipulation
       div style="display:none; white-space:nowrap; font:15px courier; line-height:0;"
