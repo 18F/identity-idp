@@ -90,10 +90,12 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                         th
                                           p
                                             = link_to(t('mailer.about', app: APP_NAME),
-                                                      MarketingSite.base_url, style: 'text-decoration: underline;')
+                                                      MarketingSite.base_url,
+                                                      style: 'text-decoration: underline;')
                                             ' &nbsp;&nbsp;|&nbsp;&nbsp;
                                             = link_to(t('mailer.privacy_policy'),
-                                                      MarketingSite.privacy_url, style: 'text-decoration: underline;')
+                                                      MarketingSite.privacy_url,
+                                                      style: 'text-decoration: underline;')
                                         th.expander
       /! prevent Gmail on iOS font size manipulation
       div style="display:none; white-space:nowrap; font:15px courier; line-height:0;"
