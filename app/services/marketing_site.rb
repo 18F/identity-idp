@@ -18,6 +18,10 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'contact').to_s
   end
 
+  def self.nice_help_url
+    URI.join(BASE_URL, locale_segment, 'help').to_s.gsub('https://', '')
+  end
+
   def self.help_url
     URI.join(BASE_URL, locale_segment, 'help').to_s
   end
