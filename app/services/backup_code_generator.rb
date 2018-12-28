@@ -42,9 +42,9 @@ class BackupCodeGenerator
 
   def generate_new_codes
     result = []
-    NUMBER_OF_CODES.times do
+    while result.length < NUMBER_OF_CODES
       code = backup_code
-      result << code
+      result << code unless result.include?(code)
     end
     result
   end
