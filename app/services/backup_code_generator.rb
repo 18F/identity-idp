@@ -41,7 +41,6 @@ class BackupCodeGenerator
   private
 
   def generate_new_codes
-    result = []
     while result.length < NUMBER_OF_CODES
       code = backup_code
       result << code unless result.include?(code)
@@ -63,5 +62,9 @@ class BackupCodeGenerator
 
   def backup_code
     normalize(SecureRandom.hex(@split * @length / 2))
+  end
+
+  def result
+    @result ||= []
   end
 end
