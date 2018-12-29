@@ -7,11 +7,11 @@ module Users
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
-      mark_user_as_fully_authenticated
     end
 
     def create
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       Event.create(user_id: current_user.id, event_type: :backup_codes_added)
       redirect_to sign_up_personal_key_url
