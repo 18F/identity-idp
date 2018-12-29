@@ -2,6 +2,7 @@ module Users
   class BackupCodeSetupController < ApplicationController
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :ensure_backup_codes_in_session, only: [:create, :download]
 
     def index
       generate_codes
@@ -23,6 +24,10 @@ module Users
     end
 
     private
+
+    def ensure_backup_codes_in_session
+      redirect_to backup_code_setup_url unless user_session[:backup_codes]
+    end
 
     def generate_codes
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
