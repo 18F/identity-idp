@@ -29,7 +29,7 @@ shared_examples 'front image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
+      expect(page).to have_current_path(idv_doc_auth_front_image_step)
     end
   end
 end
