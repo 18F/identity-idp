@@ -24,7 +24,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     it 'is truthy if there is a backup code configuration event' do
       user = User.new
       user.save
-      Event.create(user_id: user.id, event_type: :backup_codes_added)
+      BackupCodeGenerator.new(user).create
       backup_code_config = BackupCodeConfiguration.new(user_id: user.id)
 
       expect(backup_code_config.mfa_enabled?).to be_truthy

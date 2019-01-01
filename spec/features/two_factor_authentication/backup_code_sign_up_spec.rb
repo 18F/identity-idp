@@ -15,7 +15,6 @@ feature 'sign up with backup code' do
   it 'works for each code and refreshes the codes on the last one' do
     user = create(:user, :with_backup_code)
     old_codes = user.backup_code_configurations.map(&:code)
-    Event.create(user_id: user.id, event_type: :backup_codes_added)
     BackupCodeGenerator::NUMBER_OF_CODES.times do |index|
       signin(user.email, user.password)
       code = user.backup_code_configurations[index].code

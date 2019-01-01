@@ -131,7 +131,6 @@ FactoryBot.define do
     trait :with_backup_code do
       after :build do |user|
         BackupCodeGenerator.new(user).create
-        Event.create(user_id: user.id, event_type: :backup_codes_added)
       end
     end
 

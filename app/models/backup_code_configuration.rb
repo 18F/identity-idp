@@ -12,7 +12,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def mfa_enabled?
-    Event.find_by(user_id: user&.id, event_type: :backup_codes_added)
+    user.backup_code_configurations.unused.any? if user
   end
 
   # This method smells of :reek:UtilityFunction
