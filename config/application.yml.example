@@ -125,6 +125,7 @@ development:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  backup_codes_enabled: 'true'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
@@ -260,6 +261,7 @@ production:
   aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
+  backup_codes_enabled: 'false'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
@@ -380,6 +382,7 @@ test:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  backup_codes_enabled: 'true'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'

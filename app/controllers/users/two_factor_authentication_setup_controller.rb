@@ -31,6 +31,7 @@ module Users
       TwoFactorOptionsPresenter.new(current_user, current_sp)
     end
 
+    # rubocop:disable Metrics/MethodLength
     def process_valid_form
       case @two_factor_options_form.selection
       when 'sms', 'voice'
@@ -41,8 +42,11 @@ module Users
         redirect_to setup_piv_cac_url
       when 'webauthn'
         redirect_to webauthn_setup_url
+      when 'backup_code'
+        redirect_to backup_code_setup_url
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection)
