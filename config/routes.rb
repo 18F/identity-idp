@@ -76,6 +76,10 @@ Rails.application.routes.draw do
         get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
         patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       end
+      if FeatureManagement.backup_codes_enabled?
+        get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
+        post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
+      end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
@@ -132,6 +136,9 @@ Rails.application.routes.draw do
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
     get '/authenticator_start' => 'users/totp_setup#start'
 
+    get '/recovery_key_setup' => 'users/recovery_key_setup#new'
+    patch '/recovery_key_setup' => 'users/recovery_key_setup#confirm'
+
     get '/forgot_password' => 'forgot_password#show'
 
     get '/manage/email' => 'users/emails#edit'
@@ -154,6 +161,11 @@ Rails.application.routes.draw do
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
+    if FeatureManagement.backup_codes_enabled?
+      get '/backup_code_setup' => 'users/backup_code_setup#index'
+      patch '/backup_code_setup' => 'users/backup_code_setup#create'
+      get '/backup_code_download' => 'users/backup_code_setup#download'
+    end
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')

@@ -1,4 +1,5 @@
-p.lead == t('mailer.confirmation_instructions.header', intro: @first_sentence)
+p.lead == t('mailer.confirmation_instructions.header', intro: @first_sentence) + ' ' + \
+  t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
 
 table.button.expanded.large.radius
   tbody
@@ -20,15 +21,3 @@ p = link_to sign_up_create_email_confirmation_url(_request_id: @request_id, \
     confirmation_token: @token, locale: @locale), \
     sign_up_create_email_confirmation_url(_request_id: @request_id, \
     confirmation_token: @token, locale: @locale), target: '_blank'
-
-table.spacer
-  tbody
-    tr
-      td.s10 height="10px"
-        | &nbsp;
-table.hr
-  tr
-    th
-      | &nbsp;
-
-p = t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)

@@ -3,6 +3,22 @@ en:
   forms:
     account_recovery_setup:
       legend: Select a secondary authentication option
+    backup_code:
+      download: Download
+      info: Use backup codes if you cannot access your phone to sign in
+      instructions: You will be asked for a backup code <strong>each time you sign
+        in</strong> to your login.gov account.
+      new_codes: Generate new codes
+      new_info: When you generate new codes, you must download or print them. Your
+        old codes won't work anymore.
+      new_login_codes: Generate new login codes
+      print: Print
+      subinfo: Each code may only be used once, once the 10th code has been used you
+        will be prompted to download a new list.  Treat your recovery codes with the
+        same level of attention as you would your password.
+      subtitle: Your backup codes
+      title: Backup Codes
+      warn: Download, print, or write down your personal security codes.
     buttons:
       back: Back
       cancel: Yes, cancel
@@ -78,6 +94,7 @@ en:
       totp_step_2: Enter this key in the app
       totp_step_3: Enter the code from the app
     two_factor:
+      backup_code: Security code
       code: One-time security code
       personal_key: Personal key
       try_again: Use another phone number
