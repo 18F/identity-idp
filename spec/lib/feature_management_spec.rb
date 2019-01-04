@@ -214,6 +214,28 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe 'piv/cac feature' do
+    describe '#allow_piv_cac_by_email_only?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:allow_piv_cac_by_email_only) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.allow_piv_cac_by_email_only?).to be_truthy
+        end
+      end
+
+      context 'when not enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:allow_piv_cac_by_email_only) { 'not-true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.allow_piv_cac_by_email_only?).to be_falsey
+        end
+      end
+    end
+
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do

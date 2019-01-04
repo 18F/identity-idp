@@ -42,10 +42,6 @@ class MfaContext
     phone_configurations + webauthn_configurations + [piv_cac_configuration, auth_app_configuration]
   end
 
-  def enabled_two_factor_configurations_count
-    two_factor_configurations.count(&:mfa_enabled?)
-  end
-
   # returns a hash showing the count for each enabled 2FA configuration,
   # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.
   def enabled_two_factor_configuration_counts_hash
