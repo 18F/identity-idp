@@ -23,10 +23,6 @@ module Encryption
       def aes_encryption_key
         Figaro.env.session_encryption_key[0...32]
       end
-
-      def deprecated_encryptor
-        DeprecatedSessionEncryptor.new
-      end
     end
   end
 end
