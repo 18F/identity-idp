@@ -31,7 +31,7 @@ $ico-offset: 1rem;
   padding: 12px $space-2 12px $space-5;
   position: relative;
 
-   &::before {
+  &::before {
     background-image: url(image-path('alert/warning.svg'));
     background-repeat: no-repeat;
     content: '';
