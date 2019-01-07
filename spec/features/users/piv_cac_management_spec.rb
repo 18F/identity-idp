@@ -11,18 +11,11 @@ feature 'PIV/CAC Management' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
 
-    context 'with a service provider allowed to use piv/cac' do
-      let(:identity_with_sp) do
-        Identity.create(
-          user_id: user.id,
-          service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.zone.now
-        )
-      end
-
+    context 'with an account allowed to use piv/cac' do
       before(:each) do
-        user.identities << [identity_with_sp]
-        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(true)
+        allow_any_instance_of(
+          TwoFactorAuthentication::PivCacPolicy
+        ).to receive(:available?).and_return(true)
       end
 
       scenario 'allows association of a piv/cac with an account' do
@@ -118,18 +111,11 @@ feature 'PIV/CAC Management' do
       end
     end
 
-    context 'with a service provider not allowed to use piv/cac' do
-      let(:identity_with_sp) do
-        Identity.create(
-          user_id: user.id,
-          service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.zone.now
-        )
-      end
-
+    context 'with an account not allowed to use piv/cac' do
       before(:each) do
-        user.identities << [identity_with_sp]
-        allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(false)
+        allow_any_instance_of(
+          TwoFactorAuthentication::PivCacPolicy
+        ).to receive(:available?).and_return(false)
       end
 
       scenario "doesn't advertise association of a piv/cac with an account" do
@@ -152,7 +138,7 @@ feature 'PIV/CAC Management' do
     end
   end
 
-  context 'with a piv/cac associated and no identities allowing piv/cac' do
+  context 'with a piv/cac associated' do
     let(:user) do
       create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
     end
