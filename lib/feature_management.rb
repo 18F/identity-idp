@@ -20,6 +20,10 @@ class FeatureManagement
       !env.piv_cac_verify_token_url
   end
 
+  def self.allow_piv_cac_by_email_only?
+    Figaro.env.allow_piv_cac_by_email_only == 'true'
+  end
+
   def self.development_and_identity_pki_disabled?
     # This controls if we try to hop over to identity-pki or just throw up
     # a screen asking for a Subject or one of a list of error conditions.
