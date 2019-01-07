@@ -23,6 +23,7 @@ en:
         or you already confirmed your account.
       confirmation_period_expired: Expired confirmation link. You can click "Resend
         confirmation instructions" to get another one.
+      country_not_supported: We're unable to make phone calls to people in your country at this time.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone

@@ -23,6 +23,7 @@ es:
         expiró o usted ya ha confirmado su cuenta.
       confirmation_period_expired: El enlace de confirmación expiró. Puede hacer clic
         en "Reenviar instrucciones de confirmación" para obtener otro.
+      country_not_supported: No podemos hacer llamadas telefónicas a personas en tu país en este momento.
       expired: ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, use el formato solicitado.
       improbable_phone: Número de teléfono no válido. Asegúrate de introducir un número

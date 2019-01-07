@@ -5,6 +5,12 @@ const isPhoneValid = (phone, countryCode) => {
   if (!phoneValid && countryCode === 'US') {
     phoneValid = isValidNumber(`+1 ${phone}`, countryCode);
   }
+  if (phoneValid && countryCode === 'JP') {
+    if (phone.length == 10 && document.getElementById('user_phone_form_otp_delivery_preference_sms').checked) {
+      // 10-digit phone number is landline and cannot receive SMS
+      phoneValid = false;
+    }
+  }
   return phoneValid;
 };
 

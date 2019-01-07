@@ -26,6 +26,7 @@ fr:
       confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer
         sur « Envoyer les instructions de confirmation de nouveau » pour en obtenir
         un autre.
+      country_not_supported: Nous ne pouvons pas appeler des personnes de votre pays pour le moment.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro
