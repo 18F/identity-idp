@@ -1,6 +1,8 @@
 ---
 fr:
   users:
+    backup_code:
+      generated_on_html: Généré le %{date}
     delete:
       actions:
         cancel: Annuler et retourner à votre profil

@@ -98,6 +98,8 @@ piv_cac_email_domains: >-
     "va.gov", "vef.gov"
   ]
 
+allow_piv_cac_by_email_only: 'true'
+
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
@@ -118,13 +120,14 @@ development:
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
-  attribute_encryption_without_kms: 'false'
+  attribute_encryption_without_kms: 'true'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  backup_codes_enabled: 'true'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
@@ -253,13 +256,14 @@ production:
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: # generate via `rake secret`
   attribute_encryption_key_queue: # '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
-  attribute_encryption_without_kms: 'false'
+  attribute_encryption_without_kms: 'true'
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
   aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
+  backup_codes_enabled: 'false'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
@@ -317,7 +321,7 @@ production:
   remember_device_expiration_hours_aal_2: '12'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
-  requests_per_ip_track_only_mode: 'true'
+  requests_per_ip_track_only_mode: 'false'
   saml_passphrase:
   saml_secret_rotation_certificate:
   saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
@@ -373,13 +377,14 @@ test:
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
-  attribute_encryption_without_kms: 'false'
+  attribute_encryption_without_kms: 'true'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  backup_codes_enabled: 'true'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'

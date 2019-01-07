@@ -16,12 +16,12 @@ fr:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
         le lien complet dans votre navigateur."
-      link_text: Confirmez votre adresse courriel
+      link_text: Confirmez votre adresse email
     email_change_notice:
       subject: Changez votre adresse courriel
     email_reuse_notice:
       subject: Cette adresse courriel est déjà associée à un compte.
-    help: Pour plus d'aide, visitez %{link}.
+    help: Si vous avez besoin d’aide, visitez le site %{link}
     no_reply: Veuillez ne pas répondre à ce message.
     privacy_policy: Politique de confidentialité
     reset_password:

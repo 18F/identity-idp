@@ -13,9 +13,18 @@ module Idv
       end
 
       def assure_id
-        @assure_id ||= Idv::Acuant::AssureId.new
+        @assure_id ||= new_assure_id
         @assure_id.instance_id = flow_session[:instance_id]
         @assure_id
+      end
+
+      def new_assure_id
+        klass = simulate? ? Idv::Acuant::FakeAssureId : Idv::Acuant::AssureId
+        klass.new
+      end
+
+      def simulate?
+        Figaro.env.acuant_simulator == 'true'
       end
 
       delegate :idv_session, to: :@context

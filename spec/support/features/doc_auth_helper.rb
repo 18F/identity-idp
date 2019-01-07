@@ -128,6 +128,8 @@ module DocAuthHelper
   def mock_assure_id_fail
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:create_document).
       and_return([false, ''])
+    allow_any_instance_of(Idv::Acuant::FakeAssureId).to receive(:create_document).
+      and_return([false, ''])
   end
 
   def enable_doc_auth

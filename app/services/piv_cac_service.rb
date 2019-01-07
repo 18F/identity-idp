@@ -29,13 +29,11 @@ module PivCacService
     end
 
     def piv_cac_available_for_sp?(sp, emails = [])
-      sp.piv_cac || available_for_email?(sp, emails)
+      sp.piv_cac? || sp.piv_cac_scoped_by_email? && piv_cac_available_for_email?(emails)
     end
 
-    private
-
-    def available_for_email?(sp, emails)
-      return unless emails.any? && sp.piv_cac_scoped_by_email
+    def piv_cac_available_for_email?(emails)
+      return unless emails.any?
 
       piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
       supported_domains = JSON.parse(piv_cac_email_domains)
@@ -44,6 +42,8 @@ module PivCacService
 
       emails_match_domains?(email_domains, supported_domains)
     end
+
+    private
 
     def emails_match_domains?(email_domains, supported_domains)
       partial_domains, exact_domains = supported_domains.partition { |domain| domain[0] == '.' }
