@@ -57,8 +57,7 @@ en:
         two-factor authentication, such as phone number, authentication app, or security
         key.</li><li><strong>On your <a href="%{account_url}">login.gov account page</a>,
         request a new personal key.</strong> Remember, never share it unless you are
-        using it to sign into a trusted website that uses login.gov.</li></ol></p><p>You
-        should then contact us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p><br>Thanks,<br>The
+        using it to sign into a trusted website that uses login.gov.</li></ol></p><br>Thanks,<br>The
         login.gov team
       intro: New personal key issued
       subject: Account Security Alert
@@ -75,8 +74,7 @@ en:
         two-factor authentication, such as phone number, authentication app, or security
         key.</li><li><strong>On your <a href="%{account_url}">login.gov account page</a>,
         request a new personal key.</strong> Remember, never share it unless you are
-        using it to sign into a trusted website that uses login.gov.</li></ol></p><p>You
-        should then contact us by calling 844-875-6446 or emailing <a href="mailto:security@login.gov">security@login.gov</a>.</p>
+        using it to sign into a trusted website that uses login.gov.</li></ol></p>
         <br>Thanks,<br>The login.gov team
       intro: Personal key used to sign in
       subject: Account Security Alert
