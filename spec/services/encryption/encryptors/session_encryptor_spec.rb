@@ -25,20 +25,10 @@ describe Encryption::Encryptors::SessionEncryptor do
   end
 
   describe '#decrypt' do
-    context 'with a legacy ciphertext' do
-      let(:ciphertext) { Encryption::Encryptors::DeprecatedSessionEncryptor.new.encrypt(plaintext) }
+    let(:ciphertext) { Encryption::Encryptors::SessionEncryptor.new.encrypt(plaintext) }
 
-      it 'decrypts the ciphertext' do
-        expect(subject.decrypt(ciphertext)).to eq(plaintext)
-      end
-    end
-
-    context 'with a 2L-KMS ciphertext' do
-      let(:ciphertext) { Encryption::Encryptors::SessionEncryptor.new.encrypt(plaintext) }
-
-      it 'decrypts the ciphertext' do
-        expect(subject.decrypt(ciphertext)).to eq(plaintext)
-      end
+    it 'decrypts the ciphertext' do
+      expect(subject.decrypt(ciphertext)).to eq(plaintext)
     end
   end
 end

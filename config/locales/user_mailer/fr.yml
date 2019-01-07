@@ -61,8 +61,7 @@ fr:
         ou la clé de sécurité.</li><li><strong>Sur votre <a href="%{account_url}">page
         de compte login.gov</a>, demandez une nouvelle clé personnelle.</strong> N'oubliez
         pas de ne jamais la partager, sauf si vous l'utilisez pour vous connecter
-        à un site de confiance qui utilise login.gov.</li></ol></p><p>Veuillez ensuite
-        nous contacter en appelant le 844-875-6446 ou par e-mail à <a href="mailto:security@login.gov">security@login.gov</a>.</p><br>Merci,<br>L'équipe
+        à un site de confiance qui utilise login.gov.</li></ol></p><br>Merci,<br>L'équipe
         login.gov
       intro: Nouvelle clé personnelle émise
       subject: Alerte de sécurité du compte
@@ -81,9 +80,7 @@ fr:
         téléphone, l'application d'authentification ou la clé de sécurité.</li><li><strong>Sur
         la page de votre compte login.gov, demandez une nouvelle clé personnelle.</strong>
         N'oubliez pas de ne jamais le partager à moins que vous ne l'utilisiez pour
-        vous connecter à un site Web de confiance utilisant login.gov.</li></ol></p><p>Vous
-        devriez a nous contacter par téléphone au 844-875-6446 ou par courriel à <a
-        href="mailto:security@login.gov">security@login.gov</a>.</p><br>Merci,<br>L'équipe
+        vous connecter à un site Web de confiance utilisant login.gov.</li></ol></p><br>Merci,<br>L'équipe
         login.gov
       intro: La clé personnelle utilisée pour vous connecter
       subject: Alerte de sécurité du compte

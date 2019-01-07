@@ -58,7 +58,6 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       it 'renders the show page' do
         post :create, params: payload
         expect(response).to render_template(:show)
-        puts flash[:error]
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
       end
     end
