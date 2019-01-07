@@ -4,58 +4,110 @@ describe TwoFactorAuthentication::PivCacPolicy do
   let(:subject) { described_class.new(user) }
 
   describe '#available?' do
-    context 'when a user has no identities' do
-      let(:user) { create(:user) }
-
-      it 'does not allow piv/cac' do
-        expect(subject.available?).to be_falsey
-      end
-    end
-
-    context 'when a user has an identity' do
-      let(:user) { create(:user) }
-
-      let(:service_provider) do
-        create(:service_provider)
-      end
-
-      let(:identity_with_sp) do
-        Identity.create(
-          user_id: user.id,
-          service_provider: service_provider.issuer
-        )
-      end
-
+    context 'when not configured to be available only based on email' do
       before(:each) do
-        user.identities << [identity_with_sp]
+        allow(FeatureManagement).to receive(:allow_piv_cac_by_email_only?).and_return(false)
       end
 
-      context 'not allowing it' do
+      context 'when a user has no identities' do
+        let(:user) { create(:user) }
+
         it 'does not allow piv/cac' do
           expect(subject.available?).to be_falsey
         end
       end
 
-      context 'allowing it' do
-        before(:each) do
-          allow_any_instance_of(ServiceProvider).to receive(:piv_cac).and_return(true)
+      context 'when a user has an identity' do
+        let(:user) { create(:user) }
+
+        let(:service_provider) do
+          create(:service_provider)
         end
 
-        it 'does allow piv/cac' do
-          expect(subject.available?).to be_truthy
+        let(:identity_with_sp) do
+          Identity.create(
+            user_id: user.id,
+            service_provider: service_provider.issuer
+          )
+        end
+
+        before(:each) do
+          user.identities << [identity_with_sp]
+        end
+
+        context 'not allowing it' do
+          it 'does not allow piv/cac' do
+            expect(subject.available?).to be_falsey
+          end
+        end
+
+        context 'allowing it' do
+          before(:each) do
+            allow_any_instance_of(ServiceProvider).to receive(:piv_cac?).and_return(true)
+          end
+
+          it 'does allow piv/cac' do
+            expect(subject.available?).to be_truthy
+          end
+        end
+      end
+
+      context 'when a user has a piv/cac associated' do
+        let(:user) { create(:user, :with_piv_or_cac) }
+
+        it 'disallows piv/cac setup' do
+          expect(subject.available?).to be_falsey
+        end
+
+        it 'allow piv/cac visibility' do
+          expect(subject.visible?).to be_truthy
         end
       end
     end
 
-    context 'when a user has a piv/cac associated' do
-      let(:user) { create(:user, :with_piv_or_cac) }
-
-      it 'disallows piv/cac setup' do
-        expect(subject.available?).to be_falsey
+    context 'when configured to be available only based on email' do
+      before(:each) do
+        allow(FeatureManagement).to receive(:allow_piv_cac_by_email_only?).and_return(true)
       end
 
-      it 'allow piv/cac visibility' do
-        expect(subject.visible?).to be_truthy
+      context 'when a user has an allowed email address' do
+        let(:user) { create(:user, :signed_up) }
+
+        before(:each) do
+          allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
+            user.email_addresses.map(&:email)
+          ).and_return(true)
+        end
+
+        it 'allows piv/cac' do
+          expect(subject.available?).to be_truthy
+        end
+      end
+
+      context 'when a user does not have an allowed email address' do
+        let(:user) { create(:user, :signed_up) }
+
+        before(:each) do
+          allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
+            user.email_addresses.map(&:email)
+          ).and_return(false)
+        end
+
+        it 'does not allow piv/cac' do
+          expect(subject.available?).to be_falsey
+        end
+      end
+
+      context 'when a user has a piv/cac associated' do
+        let(:user) { create(:user, :with_piv_or_cac) }
+
+        it 'disallows piv/cac setup' do
+          expect(subject.available?).to be_falsey
+        end
+
+        it 'allow piv/cac visibility' do
+          expect(subject.visible?).to be_truthy
+        end
       end
     end
   end
@@ -99,22 +151,18 @@ describe TwoFactorAuthentication::PivCacPolicy do
       it { expect(subject.visible?).to be_truthy }
     end
 
-    context 'when associated with a supported identity' do
+    context 'when available' do
       before(:each) do
-        identity = double
-        allow(identity).to receive(:piv_cac_available?).and_return(true)
-        allow(user).to receive(:identities).and_return([identity])
+        allow(subject).to receive(:available?).and_return(true)
       end
 
       it { expect(subject.visible?).to be_truthy }
     end
 
-    context 'when not enabled and not a supported identity' do
+    context 'when neither enabled nor available' do
       before(:each) do
-        identity = double
-        allow(identity).to receive(:piv_cac_available?).and_return(false)
-        allow(user).to receive(:identities).and_return([identity])
         allow(subject).to receive(:enabled?).and_return(false)
+        allow(subject).to receive(:available?).and_return(false)
       end
 
       it { expect(subject.visible?).to be_falsey }

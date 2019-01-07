@@ -11,8 +11,14 @@ fr:
         login.gov a été annulée.
       text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité ci-dessus,
         vous pouvez réinitialiser vos préférences par %{link}.
+    backup_code_fallback:
+      question: Don't have your backup codes available?
+    backup_code_header_text: Enter your backup security code
+    backup_code_prompt: You can use this security code once. After you enter it, you'll
+      need to use a new key.
     choose_another_option: "‹ Choisissez une autre option"
     header_text: Entrez votre code de sécurité
+    invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
     invalid_personal_key: Cette clé personnelle est non valide.
@@ -39,6 +45,8 @@ fr:
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
+    max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
+      temporairement verrouillé car vous avez saisi trop de fois le code de sauvegarde.
     max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
       verrouillé.
     max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
@@ -94,6 +102,9 @@ fr:
       auth_app: Application d'authentification
       auth_app_info: Configurez une application d'authentification pour obtenir votre
         code de sécurité sans fournir de numéro de téléphone
+      backup_code: Codes de sécurité personnels
+      backup_code_info: Recevoir une liste pré-générée de codes de sécurité à utiliser
+        lors de la connexion
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte
       sms: SMS

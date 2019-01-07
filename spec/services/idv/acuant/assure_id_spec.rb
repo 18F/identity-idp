@@ -3,11 +3,11 @@ require 'rails_helper'
 describe Idv::Acuant::AssureId do
   let(:subject) { Idv::Acuant::AssureId.new }
   let(:instance_id) { '123' }
-  let(:accuant_result_2) { '{"Result":2,"Alerts":[{"Actions":"Check the document"}]}' }
+  let(:acuant_result_2) { '{"Result":2,"Alerts":[{"Actions":"Check the document"}]}' }
   let(:good_acuant_status) { [true, '{"Result":1}'] }
   let(:bad_acuant_status) { [false, ''] }
   let(:good_http_status) { { status: 200, body: '{"Result":1}' } }
-  let(:failure_alerts_status) { { status: 200, body: accuant_result_2 } }
+  let(:failure_alerts_status) { { status: 200, body: acuant_result_2 } }
   let(:bad_http_status) { { status: 441, body: '' } }
   let(:acuant_base_url) { 'https://example.com' }
   let(:image_data) { 'abc' }
@@ -106,12 +106,12 @@ describe Idv::Acuant::AssureId do
       expect(result).to eq(bad_acuant_status)
     end
 
-    it 'returns failure alerts for accuant result=2' do
+    it 'returns failure alerts for acuant result=2' do
       stub_request(:get, acuant_base_url + path).to_return(failure_alerts_status)
 
       result = subject.results
 
-      expect(result).to eq([true, JSON.parse(accuant_result_2)])
+      expect(result).to eq([true, JSON.parse(acuant_result_2)])
     end
   end
 
