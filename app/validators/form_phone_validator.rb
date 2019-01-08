@@ -24,6 +24,6 @@ module FormPhoneValidator
   end
 
   def supported?
-    return !['JP'].include?(international_code)
+    !['JP'].include?(international_code)
   end
 end
