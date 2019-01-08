@@ -48,7 +48,7 @@ describe 'user edits their account', email: true do
 
       expect(Rails.logger).to receive(:info) do |arguments|
         attributes = JSON.parse(arguments)
-        keys = %w[event user_uuid ip user_agent timestamp host visitor_id content_type]
+        keys = %w[event user_uuid ip user_agent timestamp hostname visitor_id content_type]
         expect(attributes['user_uuid']).to eq user.uuid
         expect(attributes['event']).to eq 'Invalid UTF-8 encoding'
         expect(attributes['content_type']).to eq 'application/x-www-form-urlencoded;foo'
