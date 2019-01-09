@@ -15,12 +15,12 @@ es:
       footer: Este enlace expira en %{confirmation_period}.
       header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador."
-      link_text: Confirme su email
+      link_text: Confirmar el correo
     email_change_notice:
       subject: Cambie su email
     email_reuse_notice:
       subject: Este email ya está asociado a una cuenta.
-    help: Para obtener más ayuda, visite %{link}.
+    help: Si necesitas ayuda, visita %{link}
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Política de privacidad
     reset_password:

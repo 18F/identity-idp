@@ -102,6 +102,7 @@ ignore_unused:
   - 'two_factor_authentication.invalid_otp'
   - 'two_factor_authentication.invalid_personal_key'
   - 'two_factor_authentication.invalid_piv_cac'
+  - 'two_factor_authentication.max_backup_code_login_attempts_reached'
   - 'two_factor_authentication.max_generic_login_attempts_reached'
   - 'two_factor_authentication.max_otp_login_attempts_reached'
   - 'two_factor_authentication.max_otp_requests_reached'
