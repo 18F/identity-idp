@@ -12,7 +12,7 @@ describe Analytics do
       browser_device_name: nil,
       browser_device_type: nil,
       browser_bot: false,
-      host: FakeRequest.new.host,
+      hostname: FakeRequest.new.host,
       pid: Process.pid,
       service_provider: 'http://localhost:3000',
     }
