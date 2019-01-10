@@ -214,6 +214,28 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe 'piv/cac feature' do
+    describe '#allow_piv_cac_by_email_only?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:allow_piv_cac_by_email_only) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.allow_piv_cac_by_email_only?).to be_truthy
+        end
+      end
+
+      context 'when not enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:allow_piv_cac_by_email_only) { 'not-true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.allow_piv_cac_by_email_only?).to be_falsey
+        end
+      end
+    end
+
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do
@@ -467,6 +489,20 @@ describe 'FeatureManagement', type: :feature do
       allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'false' }
 
       expect(FeatureManagement.platform_authenticator_enabled?).to eq(false)
+    end
+  end
+
+  describe '#backup_codes_enabled?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:backup_codes_enabled) { 'true' }
+
+      expect(FeatureManagement.backup_codes_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:backup_codes_enabled) { 'false' }
+
+      expect(FeatureManagement.backup_codes_enabled?).to eq(false)
     end
   end
 end

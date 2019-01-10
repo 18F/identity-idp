@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def available?
-      !enabled? && user.identities.any?(&:piv_cac_available?)
+      !enabled? && available_if_not_enabled?
     end
 
     def visible?
@@ -21,6 +21,14 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def available_if_not_enabled?
+      if FeatureManagement.allow_piv_cac_by_email_only?
+        PivCacService.piv_cac_available_for_email?(user.email_addresses.map(&:email))
+      else
+        user.identities.any?(&:piv_cac_available?)
+      end
+    end
 
     attr_reader :user
   end

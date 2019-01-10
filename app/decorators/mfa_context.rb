@@ -1,3 +1,5 @@
+# :reek:RepeatedConditional
+
 class MfaContext
   attr_reader :user
 
@@ -26,6 +28,14 @@ class MfaContext
     end
   end
 
+  def backup_code_configurations
+    if user.present?
+      user.backup_code_configurations
+    else
+      []
+    end
+  end
+
   def piv_cac_configuration
     PivCacConfiguration.new(user)
   end
@@ -39,11 +49,8 @@ class MfaContext
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_configurations + [piv_cac_configuration, auth_app_configuration]
-  end
-
-  def enabled_two_factor_configurations_count
-    two_factor_configurations.count(&:mfa_enabled?)
+    phone_configurations + webauthn_configurations + backup_code_configurations +
+      [piv_cac_configuration, auth_app_configuration]
   end
 
   # returns a hash showing the count for each enabled 2FA configuration,

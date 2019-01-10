@@ -880,7 +880,7 @@ production:
     return_to_sp_url: 'https://staging.flag.dol.gov/'
     redirect_uris:
       - 'https://staging.flag.dol.gov/'
-      - 'https://staging.flag.gov/auth/auth/login-gov/callback/loa-1'
+      - 'https://staging.flag.dol.gov/auth/auth/login-gov/callback/loa-1'
       - 'https://staging.flag.dol.gov/dashboard/'
     attribute_bundle:
       - email

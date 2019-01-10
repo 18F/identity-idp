@@ -3,6 +3,23 @@ fr:
   forms:
     account_recovery_setup:
       legend: Sélectionnez une option d'authentification secondaire
+    backup_code:
+      download: Télécharger
+      info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
+        téléphone pour vous connecter
+      instructions: Un code de connexion vous sera demandé chaque fois que vous vous
+        connecterez. sur votre compte login.gov.
+      new_codes: Générer de nouveaux codes
+      new_info: Lorsque vous générez de nouveaux codes, vous devez les télécharger
+        ou les imprimer. Vos anciens codes ne fonctionneront plus.
+      new_login_codes: Générer de nouveaux codes de connexion
+      print: Impression
+      subinfo: Chaque code ne peut être utilisé qu'une seule fois. Une fois le code
+        10 utilisé, vous serez invité à télécharger une nouvelle liste. Traitez vos
+        codes de récupération avec le même niveau d’attention que votre mot de passe.
+      subtitle: Vos codes de sauvegarde
+      title: Codes de sauvegarde
+      warn: Téléchargez, imprimez ou notez vos codes de sécurité personnels.
     buttons:
       back: Retour
       cancel: Oui, annuler
@@ -85,6 +102,7 @@ fr:
       totp_step_2: Entrez cette clé dans l'application
       totp_step_3: Entrez le code à partir de l'application
     two_factor:
+      backup_code: Code de sécurité
       code: Code de sécurité
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone

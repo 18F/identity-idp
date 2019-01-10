@@ -159,48 +159,14 @@ describe PivCacService do
     end
   end
 
-  describe '#piv_cac_available?' do
-    let(:subject) { PivCacService.piv_cac_available_for_sp?(sp, ['foo@example.com']) }
-
-    context 'with an agency not encouraged to use piv/cac for anyone' do
-      let(:sp) { ServiceProvider.new(issuer: 'foo', piv_cac: false) }
-      before(:each) do
-        allow(PivCacService).to receive(:available_for_email?).and_return(false)
-      end
-
-      it { expect(subject).to be_falsey }
-    end
-
-    context 'with an agency encouraged to use piv/cac for everyone' do
-      let(:sp) { ServiceProvider.new(issuer: 'foo', piv_cac: true) }
-      let(:subject) { PivCacService.piv_cac_available_for_sp?(sp, ['foo@example.com']) }
-
-      before(:each) do
-        allow(PivCacService).to receive(:available_for_email?).and_return(false)
-      end
-
-      it { expect(subject).to eq true }
-    end
-
-    context 'with an agency encouraged to use piv/cac for certain email domains' do
-      let(:sp) { ServiceProvider.new(issuer: 'foo', piv_cac: false) }
-      let(:subject) { PivCacService.piv_cac_available_for_sp?(sp, ['foo@example.com']) }
-
-      before(:each) do
-        allow(PivCacService).to receive(:available_for_email?).and_return(true)
-      end
-
-      it { expect(subject).to eq true }
-    end
-  end
-
-  describe '#available_for_email?' do
-    let(:sp) { ServiceProvider.new(issuer: 'foo', piv_cac: true, piv_cac_scoped_by_email: true) }
-    let(:subject) { PivCacService.send(:available_for_email?, sp, ['foo@bar.example.com']) }
+  describe '#piv_cac_available_for_sp?' do
+    let(:sp) { ServiceProvider.new(issuer: 'foo', piv_cac: false, piv_cac_scoped_by_email: true) }
+    let(:subject) { PivCacService.piv_cac_available_for_sp?(sp, ['foo@bar.example.com']) }
 
     context 'with the agency not configured to be available' do
       before(:each) do
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar"]')
+        allow(PivCacService).to receive(:piv_cac_avaiable_for_email?).and_return(true)
       end
 
       it { expect(subject).to be_falsey }
@@ -209,17 +175,20 @@ describe PivCacService do
     context 'with the agency configured to be available' do
       before(:each) do
         allow(Figaro.env).to receive(:piv_cac_agencies_scoped_by_email).and_return('["bar","foo"]')
+        allow(PivCacService).to receive(:piv_cac_avaiable_for_email?).and_return(true)
       end
 
       context 'but not in the right email domain' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_email_domains).and_return(
-            '["example.com", "baz.example.com"]'
-          )
+          allow(PivCacService).to receive(:piv_cac_avaiable_for_email?).and_return(false)
         end
 
         it { expect(subject).to be_falsey }
       end
+    end
+
+    describe '#piv_cac_available_for_email?' do
+      let(:subject) { PivCacService.piv_cac_available_for_email?(['foo@bar.example.com']) }
 
       context 'in the right full domain' do
         before(:each) do
