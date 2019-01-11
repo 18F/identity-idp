@@ -23,6 +23,26 @@ $ico-offset: 1rem;
   }
 }
 
+.alert-inline {
+  background-color: #fffdd7;
+  color: #5b616a;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 12px $space-2 12px $space-5;
+  position: relative;
+
+  &::before {
+    background-image: url(image-path('alert/warning.svg'));
+    background-repeat: no-repeat;
+    content: '';
+    height: $ico-size;
+    left: 2rem;
+    position: absolute;
+    top: $ico-offset;
+    width: $ico-size;
+  }
+}
+
 .alert-success {
   background-color: #ebfcef;
   padding-left: $space-4;

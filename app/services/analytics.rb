@@ -24,7 +24,7 @@ class Analytics
   def request_attributes
     {
       user_ip: request.remote_ip,
-      host: request.host,
+      hostname: request.host,
       pid: Process.pid,
       service_provider: sp,
     }.merge!(browser_attributes)
