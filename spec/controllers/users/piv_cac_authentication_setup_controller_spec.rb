@@ -106,6 +106,12 @@ describe Users::PivCacAuthenticationSetupController do
 
             expect(subject.user_session[:decrypted_x509]).to eq json
           end
+
+          it 'resets the rememember device revocation date/time' do
+            get :new, params: { token: good_token }
+            expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
+              be_within(1).of(Time.zone.now.to_i)
+          end
         end
 
         context 'when redirected with an error token' do
@@ -147,6 +153,12 @@ describe Users::PivCacAuthenticationSetupController do
         it 'removes the piv/cac association' do
           delete :delete
           expect(user.reload.x509_dn_uuid).to be_nil
+        end
+
+        it 'resets the remember device revocation date/time' do
+          delete :delete
+          expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
+            be_within(1).of(Time.zone.now.to_i)
         end
 
         it 'removes the piv/cac information from the user session' do

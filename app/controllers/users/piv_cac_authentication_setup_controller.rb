@@ -22,7 +22,7 @@ module Users
 
     def delete
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
-      current_user.update!(x509_dn_uuid: nil)
+      remove_piv_cac
       clear_piv_cac_information
       Event.create(user_id: current_user.id, event_type: :piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
@@ -35,6 +35,11 @@ module Users
     end
 
     private
+
+    def remove_piv_cac
+      attributes = { x509_dn_uuid: nil, remember_device_revoked_at: Time.zone.now }
+      UpdateUser.new(user: current_user, attributes: attributes).call
+    end
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
