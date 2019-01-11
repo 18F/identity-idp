@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181122100307) do
+ActiveRecord::Schema.define(version: 20190110145734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20181122100307) do
     t.integer "ial"
     t.boolean "piv_cac", default: false
     t.boolean "piv_cac_scoped_by_email", default: false
+    t.boolean "pkce"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
