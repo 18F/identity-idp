@@ -70,6 +70,8 @@ gem 'xml-simple'
 gem 'xmlenc', '~> 0.6'
 gem 'zxcvbn-js'
 
+gem 'doorkeeper', '4.2.5'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
