@@ -771,6 +771,7 @@ DEPENDENCIES
   two_factor_authentication
   typhoeus
   uglifier (~> 3.2)
+  user_agent_parser
   valid_email
   webauthn
   webmock

@@ -8,6 +8,7 @@ es:
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
       authentication_app: App de autenticación
+      device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Email
       full_name: Nombre completo

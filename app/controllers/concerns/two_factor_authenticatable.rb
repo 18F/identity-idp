@@ -128,6 +128,17 @@ module TwoFactorAuthenticatable
     bypass_sign_in current_user
 
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    track_device
+  end
+
+  def track_device
+    device_cookie = cookies[:device]
+    if DeviceTracking::HasDevice.call(current_user, device_cookie)
+      DeviceTracking::UpdateDevice.call(current_user, :complete_2fa, request, device_cookie)
+    else
+      cookie_uuid = DeviceTracking::CreateDevice.call(current_user, :complete_2fa, request)
+      cookies[:device] = { value: cookie_uuid, expires: 1.year.from_now }
+    end
   end
 
   def assign_phone

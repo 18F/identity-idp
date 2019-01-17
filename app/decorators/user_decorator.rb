@@ -108,6 +108,10 @@ class UserDecorator
     (events + identities).sort_by(&:happened_at).reverse
   end
 
+  def recent_devices
+    DeviceTracking::ListDevices.new.call(user).map(&:decorate)
+  end
+
   def connected_apps
     user.identities.order('created_at DESC').map(&:decorate)
   end
