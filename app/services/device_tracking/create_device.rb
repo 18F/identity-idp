@@ -5,7 +5,7 @@ module DeviceTracking
       uuid = SecureRandom.uuid
       remote_ip = request.remote_ip
       device = Device.create(user_id: user.id,
-                             user_agent: request.user_agent,
+                             user_agent: request.user_agent || '',
                              cookie_uuid: uuid,
                              last_used_at: last_login_at,
                              last_ip: remote_ip)
