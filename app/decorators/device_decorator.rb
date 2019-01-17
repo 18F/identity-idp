@@ -16,8 +16,4 @@ DeviceDecorator = Struct.new(:device) do
   def happened_at
     device.last_used_at.utc
   end
-
-  def happened_at_in_words
-    UtcTimePresenter.new(happened_at).to_s
-  end
 end

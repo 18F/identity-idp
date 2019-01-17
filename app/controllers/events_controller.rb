@@ -15,6 +15,7 @@ class EventsController < ApplicationController
     )
 
     @login_presenter = LoginPresenter.new(user: current_user)
+    render 'accounts/events/show'
   end
 
   private
