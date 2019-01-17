@@ -10,18 +10,20 @@ module DeviceTracking
     private
 
     def nice_name(parser, device)
-      user_agent = parser.parse(device.user_agent)
+      device_user_agent = device.user_agent
+      user_agent = parser.parse(device_user_agent)
       if user_agent
         I18n.t('account.index.device',
                browser: browser(user_agent),
                os: os(user_agent))
       else
-        ''
+        device_user_agent
       end
     end
 
     def browser(user_agent)
-      "#{user_agent.family} #{user_agent.version.major}"
+      version = user_agent.version
+      "#{user_agent.family} #{version ? version.major : ''}"
     end
 
     def os(user_agent)
