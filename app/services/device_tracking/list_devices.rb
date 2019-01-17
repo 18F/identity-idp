@@ -28,7 +28,8 @@ module DeviceTracking
 
     def os(user_agent)
       user_agent_os = user_agent.os
-      "#{user_agent_os.family} #{user_agent_os.version.major}"
+      version = user_agent_os.version
+      "#{user_agent_os.family} #{version ? version.major : ''}"
     end
   end
 end
