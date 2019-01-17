@@ -4,16 +4,21 @@ module DeviceTracking
       devices = Device.where(user_id: user.id).order(created_at: :desc)
       # heavy cost to load; instantiate once and parse in bulk
       parser = UserAgentParser::Parser.new
-      devices.each do |device|
-        user_agent = parser.parse(device.user_agent)
-        device.nice_name = I18n.t('account.index.device',
-                                  browser: browser(user_agent),
-                                  os: os(user_agent))
-      end
-      devices
+      devices.each { |device| device.nice_name = nice_name(parser, device) }
     end
 
     private
+
+    def nice_name(parser, device)
+      user_agent = parser.parse(device.user_agent)
+      if user_agent
+        I18n.t('account.index.device',
+               browser: browser(user_agent),
+               os: os(user_agent))
+      else
+        ''
+      end
+    end
 
     def browser(user_agent)
       "#{user_agent.family} #{user_agent.version.major}"
