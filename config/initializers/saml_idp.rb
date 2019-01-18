@@ -1,15 +1,14 @@
 require 'service_provider'
-require 'saml_idp_encryption_configurator'
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
   api_base = protocol + Figaro.env.domain_name + '/api'
 
-  config.x509_certificate = OpenSSL::X509::Certificate.new(
-    File.read(Rails.root.join('certs', 'saml.crt')),
-  ).to_pem
-
-  SamlIdpEncryptionConfigurator.configure(config, FeatureManagement.use_cloudhsm?)
+  # Setup CloudHSM
+  config.cloudhsm_enabled = FeatureManagement.use_cloudhsm?
+  config.cloudhsm_pin = Figaro.env.cloudhsm_pin
+  config.pkcs11 = PKCS11.open(Figaro.env.pkcs11_lib) unless Rails.env.test? ||
+                                                            Figaro.env.pkcs11_lib.nil?
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'

@@ -91,15 +91,16 @@ module SamlIdpAuthConcern
       authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
-      signature: rotation_signature_opts,
+      signature: saml_response_signature_options,
     )
   end
 
-  def rotation_signature_opts
-    return {} unless SamlCertRotationManager.use_new_secrets_for_request?(request)
+  def saml_response_signature_options
+    endpoint = SamlEndpoint.new(request)
     {
-      x509_certificate: SamlCertRotationManager.new_certificate,
-      secret_key: SamlCertRotationManager.new_secret_key,
+      x509_certificate: endpoint.x509_certificate,
+      secret_key: endpoint.secret_key,
+      cloudhsm_key_label: endpoint.cloudhsm_key_label,
     }
   end
 

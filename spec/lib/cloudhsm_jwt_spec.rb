@@ -4,9 +4,6 @@ require 'cloudhsm_jwt'
 class MockSession; end
 
 describe CloudhsmJwt do
-  after(:all) do
-    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
-  end
   let(:jwt_payload) { { key1: 'value1', key2: 'value2' } }
   let(:subject) { CloudhsmJwt.encode(jwt_payload) }
 
@@ -50,7 +47,6 @@ describe CloudhsmJwt do
 
   def mock_cloudhsm
     allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
-    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, true) }
     allow(MockSession).to receive(:login).and_return(true)
     allow(MockSession).to receive(:logout).and_return(true)
     allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
