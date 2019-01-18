@@ -63,6 +63,7 @@ Metrics/ClassLength:
   - app/controllers/users/two_factor_authentication_controller.rb
   - app/decorators/service_provider_session_decorator.rb
   - app/decorators/user_decorator.rb
+  - app/forms/openid_connect_token_form.rb
   - app/models/user.rb
   - app/services/analytics.rb
   - app/services/idv/session.rb
