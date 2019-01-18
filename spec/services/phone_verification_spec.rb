@@ -59,7 +59,7 @@ describe PhoneVerification do
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'User-Agent' => 'Faraday v0.15.3',
+            'User-Agent' => 'Faraday v0.15.4',
             'X-Authy-Api-Key' => Figaro.env.twilio_verify_api_key,
           },
         ).
