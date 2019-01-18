@@ -11,7 +11,7 @@ describe Encryption::Encryptors::AttributeEncryptor do
     allow(Figaro.env).to receive(:attribute_encryption_key).and_return(current_key)
     allow(Figaro.env).to receive(:attribute_cost).and_return(current_cost)
     allow(Figaro.env).to receive(:attribute_encryption_key_queue).and_return(
-      [{ key: retired_key, cost: retired_cost }].to_json
+      [{ key: retired_key, cost: retired_cost }].to_json,
     )
   end
 

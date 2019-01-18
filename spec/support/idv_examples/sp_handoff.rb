@@ -27,7 +27,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(page).to have_content t(
         'titles.sign_up.verified',
-        app: APP_NAME
+        app: APP_NAME,
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
@@ -57,7 +57,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(page).to have_content t(
         'titles.sign_up.verified',
-        app: APP_NAME
+        app: APP_NAME,
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
@@ -206,7 +206,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
   def client_private_key
     @client_private_key ||= begin
       OpenSSL::PKey::RSA.new(
-        File.read(Rails.root.join('keys', 'saml_test_sp.key'))
+        File.read(Rails.root.join('keys', 'saml_test_sp.key')),
       )
     end
   end

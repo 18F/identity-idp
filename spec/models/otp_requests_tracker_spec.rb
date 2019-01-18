@@ -10,7 +10,7 @@ describe OtpRequestsTracker do
         OtpRequestsTracker.create(
           phone_fingerprint: phone_fingerprint,
           otp_send_count: 3,
-          otp_last_sent_at: Time.zone.now - 1.hour
+          otp_last_sent_at: Time.zone.now - 1.hour,
         )
 
         existing = OtpRequestsTracker.where(phone_fingerprint: phone_fingerprint).first
@@ -54,7 +54,7 @@ describe OtpRequestsTracker do
       old_ort = OtpRequestsTracker.create(
         phone_fingerprint: phone_fingerprint,
         otp_send_count: 3,
-        otp_last_sent_at: Time.zone.now - 1.hour
+        otp_last_sent_at: Time.zone.now - 1.hour,
       )
       new_ort = OtpRequestsTracker.atomic_increment(old_ort.id)
       expect(new_ort.otp_last_sent_at).to be > old_ort.otp_last_sent_at
@@ -64,7 +64,7 @@ describe OtpRequestsTracker do
       old_ort = OtpRequestsTracker.create(
         phone_fingerprint: phone_fingerprint,
         otp_send_count: 3,
-        otp_last_sent_at: Time.zone.now
+        otp_last_sent_at: Time.zone.now,
       )
       new_ort = OtpRequestsTracker.atomic_increment(old_ort.id)
       expect(new_ort.otp_send_count - 1).to eq(old_ort.otp_send_count)

@@ -27,7 +27,7 @@ describe TwoFactorOptionsForm do
           to receive(:new).
           with(
             user: user,
-            attributes: { otp_delivery_preference: 'voice' }
+            attributes: { otp_delivery_preference: 'voice' },
           ).
           and_return(user_updater)
         expect(user_updater).to receive(:call)

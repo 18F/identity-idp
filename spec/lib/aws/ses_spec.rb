@@ -5,7 +5,7 @@ describe Aws::SES::Base do
     Mail.new(
       to: 'asdf@example.com',
       cc: 'ghjk@example.com',
-      body: 'asdf1234'
+      body: 'asdf1234',
     )
   end
   let(:ses_response) do
@@ -29,7 +29,7 @@ describe Aws::SES::Base do
       expect(ses_client).to have_received(:send_raw_email).with(
         raw_message: {
           data: raw_mail_data,
-        }
+        },
       )
     end
 

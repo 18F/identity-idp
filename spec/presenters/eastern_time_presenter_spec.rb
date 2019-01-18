@@ -7,7 +7,7 @@ describe EasternTimePresenter do
       timestamp = Time.zone.parse(str)
 
       expect(EasternTimePresenter.new(timestamp).to_s).to eq(
-        'April 12, 2017 at 2:19 PM (Eastern)'
+        'April 12, 2017 at 2:19 PM (Eastern)',
       )
     end
   end

@@ -89,7 +89,7 @@ module Idv
     def set_idv_form
       @idv_form ||= Idv::ProfileForm.new(
         user: current_user,
-        previous_params: idv_session.previous_profile_step_params
+        previous_params: idv_session.previous_profile_step_params,
       )
     end
 

@@ -48,7 +48,7 @@ describe Idv::SendPhoneConfirmationOtp do
           code: phone_confirmation_otp,
           phone: parsed_phone,
           message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: 'en'
+          locale: 'en',
         )
       end
     end
@@ -71,7 +71,7 @@ describe Idv::SendPhoneConfirmationOtp do
           otp_created_at: idv_session.phone_confirmation_otp_sent_at,
           code: phone_confirmation_otp,
           phone: parsed_phone,
-          locale: 'en'
+          locale: 'en',
         )
       end
     end

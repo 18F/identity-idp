@@ -35,7 +35,7 @@ describe Deploy::Activate do
       s3_client.put_object(
         bucket: 'login-gov.app-secrets.12345-us-west-1',
         key: '/int/idp/v1/application.yml',
-        body: application_yml
+        body: application_yml,
       )
 
       FileUtils.mkdir_p('/etc/login.gov/info')

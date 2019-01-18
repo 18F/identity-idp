@@ -10,7 +10,7 @@ describe Idv::WarningPresenter do
       reason: reason,
       remaining_attempts: remaining_attempts,
       step_name: step_name,
-      view_context: view_context
+      view_context: view_context,
     )
   end
 

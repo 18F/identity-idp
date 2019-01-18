@@ -56,7 +56,7 @@ describe CloudhsmJwt do
     allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
     allow(MockSession).to receive(:sign) do |_algorithm, _key, input|
       JWT::Algos::Rsa.sign(
-        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key)
+        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key),
       )
     end
     allow(SamlIdp).

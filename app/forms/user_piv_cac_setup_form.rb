@@ -13,7 +13,7 @@ class UserPivCacSetupForm
     FormResponse.new(
       success: success && process_valid_submission,
       errors: {},
-      extra: extra_analytics_attributes
+      extra: extra_analytics_attributes,
     )
   end
 

@@ -19,7 +19,7 @@ class LoginPresenter
       'account.index.sign_in_timestamp',
       timestamp: time_ago_in_words(
         timestamp, highest_measures: 2, two_words_connector: two_words_connector
-      )
+      ),
     )
   end
 
@@ -29,7 +29,7 @@ class LoginPresenter
       'account.index.sign_in_timestamp',
       timestamp: time_ago_in_words(
         timestamp, highest_measures: 2, two_words_connector: two_words_connector
-      )
+      ),
     )
   end
 

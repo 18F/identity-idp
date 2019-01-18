@@ -1,7 +1,7 @@
 module WebauthnHelper
   def mock_challenge
     allow(WebAuthn).to receive(:credential_creation_options).and_return(
-      challenge: challenge.pack('c*')
+      challenge: challenge.pack('c*'),
     )
   end
 

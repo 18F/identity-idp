@@ -41,7 +41,7 @@ module Idv
       def perform_resolution(pii_from_doc)
         idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
         FormResponse.new(
-          success: idv_result[:success], errors: idv_result[:errors]
+          success: idv_result[:success], errors: idv_result[:errors],
         )
       end
     end

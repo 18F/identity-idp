@@ -16,7 +16,7 @@ module IdvFailureConcern
     Idv::MaxAttemptsFailurePresenter.new(
       decorated_session: decorated_session,
       step_name: step,
-      view_context: view_context
+      view_context: view_context,
     )
   end
 
@@ -25,7 +25,7 @@ module IdvFailureConcern
       reason: reason,
       remaining_attempts: remaining_step_attempts,
       step_name: step,
-      view_context: view_context
+      view_context: view_context,
     )
   end
 end

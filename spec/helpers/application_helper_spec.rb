@@ -34,7 +34,7 @@ describe ApplicationHelper do
       context 'current path is email confirmation path' do
         it 'returns true' do
           allow(helper).to receive(:current_page?).with(
-            controller: 'sign_up/passwords', action: 'new'
+            controller: 'sign_up/passwords', action: 'new',
           ).and_return(true)
 
           expect(helper.session_with_trust?).to eq true
@@ -44,10 +44,10 @@ describe ApplicationHelper do
       context 'current path is reset password path' do
         it 'returns true' do
           allow(helper).to receive(:current_page?).with(
-            controller: 'sign_up/passwords', action: 'new'
+            controller: 'sign_up/passwords', action: 'new',
           ).and_return(true)
           allow(helper).to receive(:current_page?).with(
-            controller: 'users/reset_passwords', action: 'edit'
+            controller: 'users/reset_passwords', action: 'edit',
           ).and_return(true)
 
           expect(helper.session_with_trust?).to eq true

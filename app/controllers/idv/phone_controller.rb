@@ -69,7 +69,7 @@ module Idv
     def set_idv_form
       @idv_form ||= Idv::PhoneForm.new(
         user: current_user,
-        previous_params: idv_session.previous_phone_step_params
+        previous_params: idv_session.previous_phone_step_params,
       )
     end
 

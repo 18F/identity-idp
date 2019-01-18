@@ -34,7 +34,7 @@ module Idv
       FormResponse.new(
         success: false,
         errors: {},
-        extra: extra_analytics_attributes
+        extra: extra_analytics_attributes,
       )
     end
 
@@ -66,7 +66,7 @@ module Idv
         phone: phone,
         otp_created_at: idv_session.phone_confirmation_otp_sent_at,
         message: 'jobs.sms_otp_sender_job.verify_message',
-        locale: locale
+        locale: locale,
       )
     end
 
@@ -75,7 +75,7 @@ module Idv
         code: idv_session.phone_confirmation_otp,
         phone: phone,
         otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-        locale: locale
+        locale: locale,
       )
     end
 

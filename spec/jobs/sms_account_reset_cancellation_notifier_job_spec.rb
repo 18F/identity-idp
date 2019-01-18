@@ -12,7 +12,7 @@ describe SmsAccountResetCancellationNotifierJob do
 
     subject(:perform) do
       SmsAccountResetCancellationNotifierJob.perform_now(
-        phone: '+1 (888) 555-5555'
+        phone: '+1 (888) 555-5555',
       )
     end
 

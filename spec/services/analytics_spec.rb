@@ -46,7 +46,7 @@ describe Analytics do
       analytics = Analytics.new(
         user: current_user,
         request: FakeRequest.new,
-        sp: 'http://localhost:3000'
+        sp: 'http://localhost:3000',
       )
 
       analytics_hash = {

@@ -7,14 +7,14 @@ RSpec.describe UndeliverableAddressNotifier do
     create(
       :profile,
       deactivation_reason: :verification_pending,
-      pii: { ssn: '123-45-6789', dob: '1970-01-01' }
+      pii: { ssn: '123-45-6789', dob: '1970-01-01' },
     )
   end
   let(:usps_confirmation_code) do
     create(
       :usps_confirmation_code,
       profile: profile,
-      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
   end
   let(:user) { profile.user }

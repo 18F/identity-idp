@@ -10,7 +10,7 @@ module Idv
       user.profiles.verification_pending.each do |profile|
         profile.update!(
           active: false,
-          deactivation_reason: :verification_cancelled
+          deactivation_reason: :verification_cancelled,
         )
       end
     end

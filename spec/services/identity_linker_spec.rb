@@ -37,7 +37,7 @@ describe IdentityLinker do
         nonce: nonce,
         ial: ial,
         scope: scope,
-        code_challenge: code_challenge
+        code_challenge: code_challenge,
       )
       user.reload
 

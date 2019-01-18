@@ -26,7 +26,7 @@ module Rack
 
     cache = Readthis::Cache.new(
       expires_in: 2.weeks.to_i,
-      redis: { url: Figaro.env.redis_throttle_url, driver: :hiredis }
+      redis: { url: Figaro.env.redis_throttle_url, driver: :hiredis },
     )
 
     Rack::Attack.cache.store = cache
@@ -58,7 +58,7 @@ module Rack
       track(
         'req/ip',
         limit: Figaro.env.requests_per_ip_limit.to_i,
-        period: Figaro.env.requests_per_ip_period.to_i
+        period: Figaro.env.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
@@ -66,7 +66,7 @@ module Rack
       throttle(
         'req/ip',
         limit: Figaro.env.requests_per_ip_limit.to_i,
-        period: Figaro.env.requests_per_ip_period.to_i
+        period: Figaro.env.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
@@ -88,7 +88,7 @@ module Rack
       track(
         'logins/ip',
         limit: Figaro.env.logins_per_ip_limit.to_i,
-        period: Figaro.env.logins_per_ip_period.to_i
+        period: Figaro.env.logins_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
@@ -96,7 +96,7 @@ module Rack
       throttle(
         'logins/ip',
         limit: Figaro.env.logins_per_ip_limit.to_i,
-        period: Figaro.env.logins_per_ip_period.to_i
+        period: Figaro.env.logins_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end

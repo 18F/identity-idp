@@ -43,7 +43,7 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
         view: view_context,
-        data: { credential_ids: credential_ids }
+        data: { credential_ids: credential_ids },
       )
     end
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TwoFactorLoginOptionsForm do
   subject do
     TwoFactorLoginOptionsForm.new(
-      build_stubbed(:user)
+      build_stubbed(:user),
     )
   end
 

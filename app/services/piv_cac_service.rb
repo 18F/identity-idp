@@ -92,7 +92,7 @@ module PivCacService
       return '' if secret.blank?
       nonce = SecureRandom.hex(10)
       hmac = Base64.urlsafe_encode64(
-        OpenSSL::HMAC.digest('SHA256', secret, [token, nonce].join('+'))
+        OpenSSL::HMAC.digest('SHA256', secret, [token, nonce].join('+')),
       )
       "hmac :#{nonce}:#{hmac}"
     end

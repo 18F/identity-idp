@@ -2,7 +2,7 @@ class SamlCertRotationManager
   def self.new_certificate
     filepath = Rails.root.join(
       'certs',
-      Figaro.env.saml_secret_rotation_certificate
+      Figaro.env.saml_secret_rotation_certificate,
     )
     File.read(filepath)
   end
@@ -12,7 +12,7 @@ class SamlCertRotationManager
     return env.saml_secret_rotation_cloudhsm_saml_key_label if FeatureManagement.use_cloudhsm?
     filepath = Rails.root.join(
       'keys',
-      env.saml_secret_rotation_secret_key
+      env.saml_secret_rotation_secret_key,
     )
     load_secret_key_at_path(filepath).to_pem
   end
@@ -30,7 +30,7 @@ class SamlCertRotationManager
   def self.load_secret_key_at_path(filepath)
     OpenSSL::PKey::RSA.new(
       File.read(filepath),
-      Figaro.env.saml_secret_rotation_secret_key_password
+      Figaro.env.saml_secret_rotation_secret_key_password,
     )
   end
   private_class_method :load_secret_key_at_path

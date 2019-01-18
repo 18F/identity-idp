@@ -17,7 +17,7 @@ describe SignUp::CompletionsController do
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: false, service_provider_name: subject.decorated_session.sp_name
+            loa3: false, service_provider_name: subject.decorated_session.sp_name,
           )
         end
       end
@@ -32,7 +32,7 @@ describe SignUp::CompletionsController do
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: true, service_provider_name: subject.decorated_session.sp_name
+            loa3: true, service_provider_name: subject.decorated_session.sp_name,
           )
         end
       end
@@ -110,7 +110,7 @@ describe SignUp::CompletionsController do
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-          loa3: false, service_provider_name: subject.decorated_session.sp_name
+          loa3: false, service_provider_name: subject.decorated_session.sp_name,
         )
       end
 
@@ -139,7 +139,7 @@ describe SignUp::CompletionsController do
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-          loa3: true, service_provider_name: subject.decorated_session.sp_name
+          loa3: true, service_provider_name: subject.decorated_session.sp_name,
         )
       end
 

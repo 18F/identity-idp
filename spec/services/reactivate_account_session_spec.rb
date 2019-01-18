@@ -7,7 +7,7 @@ describe ReactivateAccountSession do
   before do
     @reactivate_account_session = ReactivateAccountSession.new(
       user: user,
-      user_session: user_session
+      user_session: user_session,
     )
   end
 

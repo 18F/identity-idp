@@ -12,7 +12,7 @@ RSpec.describe Idv::UspsPresenter do
     context 'a letter has not been sent' do
       it 'provides text to send' do
         expect(subject.title).to eq(
-          I18n.t('idv.titles.mail.verify')
+          I18n.t('idv.titles.mail.verify'),
         )
       end
     end
@@ -21,7 +21,7 @@ RSpec.describe Idv::UspsPresenter do
       it 'provides text to resend' do
         create_letter_send_event
         expect(subject.title).to eq(
-          I18n.t('idv.titles.mail.resend')
+          I18n.t('idv.titles.mail.resend'),
         )
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe Idv::UspsPresenter do
     context 'a letter has not been sent' do
       it 'provides text to send' do
         expect(subject.button).to eq(
-          I18n.t('idv.buttons.mail.send')
+          I18n.t('idv.buttons.mail.send'),
         )
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe Idv::UspsPresenter do
       it 'provides text to resend' do
         create_letter_send_event
         expect(subject.button).to eq(
-          I18n.t('idv.buttons.mail.resend')
+          I18n.t('idv.buttons.mail.resend'),
         )
       end
     end

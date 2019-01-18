@@ -8,7 +8,7 @@ describe SmsForm do
     before do
       # Only testing our validation here; service spec tests Twilio msg failing
       allow_any_instance_of(Twilio::Security::RequestValidator).to(
-        receive(:validate).and_return(true)
+        receive(:validate).and_return(true),
       )
     end
 

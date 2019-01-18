@@ -23,7 +23,7 @@ module Idv
         attributes: {
           second_factor_attempts_count: 0,
           second_factor_locked_at: nil,
-        }
+        },
       ).call
     end
 
@@ -40,7 +40,7 @@ module Idv
     def handle_max_attempts(type)
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         type,
-        decorated_user
+        decorated_user,
       )
       sign_out
       render_full_width('shared/_failure', locals: { presenter: presenter })

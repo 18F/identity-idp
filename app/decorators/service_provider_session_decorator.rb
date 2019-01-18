@@ -92,7 +92,7 @@ class ServiceProviderSessionDecorator
       URIService.add_params(
         oidc_redirect_uri,
         error: 'access_denied',
-        state: request_params[:state]
+        state: request_params[:state],
       )
     else
       sp.return_to_sp_url

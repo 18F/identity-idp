@@ -70,7 +70,7 @@ module Users
       @user_piv_cac_form ||= UserPivCacSetupForm.new(
         user: current_user,
         token: params[:token],
-        nonce: piv_cac_nonce
+        nonce: piv_cac_nonce,
       )
     end
 
@@ -78,7 +78,7 @@ module Users
       flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
-        presented: true
+        presented: true,
       )
       redirect_to next_step
     end

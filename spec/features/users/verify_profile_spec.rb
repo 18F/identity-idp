@@ -9,7 +9,7 @@ feature 'verify profile with OTP' do
       :profile,
       deactivation_reason: :verification_pending,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '+1 703-555-9999' },
-      user: user
+      user: user,
     )
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
     create(:usps_confirmation_code, profile: profile, otp_fingerprint: otp_fingerprint)

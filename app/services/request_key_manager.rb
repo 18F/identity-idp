@@ -2,7 +2,7 @@ class RequestKeyManager
   def self.read_key_file(key_file, passphrase)
     OpenSSL::PKey::RSA.new(
       File.read(key_file),
-      passphrase
+      passphrase,
     )
   rescue OpenSSL::PKey::RSAError
     raise OpenSSL::PKey::RSAError, "Failed to load #{key_file.inspect}. Bad passphrase?"

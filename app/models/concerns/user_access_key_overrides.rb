@@ -10,7 +10,7 @@ module UserAccessKeyOverrides
   def valid_password?(password)
     result = Encryption::PasswordVerifier.verify(
       password: password,
-      digest: encrypted_password_digest
+      digest: encrypted_password_digest,
     )
     log_password_verification_failure unless result
     result
@@ -25,7 +25,7 @@ module UserAccessKeyOverrides
   def valid_personal_key?(normalized_personal_key)
     Encryption::PasswordVerifier.verify(
       password: normalized_personal_key,
-      digest: encrypted_recovery_code_digest
+      digest: encrypted_recovery_code_digest,
     )
   end
 
@@ -40,7 +40,7 @@ module UserAccessKeyOverrides
   def authenticatable_salt
     return if encrypted_password_digest.blank?
     Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
-      encrypted_password_digest
+      encrypted_password_digest,
     ).password_salt
   end
 

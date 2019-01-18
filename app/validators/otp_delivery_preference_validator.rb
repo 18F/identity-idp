@@ -17,8 +17,8 @@ module OtpDeliveryPreferenceValidator
       :phone,
       I18n.t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: phone_number_capabilities.unsupported_location
-      )
+        location: phone_number_capabilities.unsupported_location,
+      ),
     )
   end
 

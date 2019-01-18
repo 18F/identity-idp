@@ -7,7 +7,7 @@ module Health
 
       # Add health check summary data to New Relic traces.
       ::NewRelic::Agent.add_custom_attributes(
-        health_check_summary: summary.as_json
+        health_check_summary: summary.as_json,
       )
 
       render json: summary, status: (summary.healthy? ? :ok : :internal_error)

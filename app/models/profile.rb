@@ -36,14 +36,14 @@ class Profile < ApplicationRecord
   def decrypt_pii(password)
     Pii::Attributes.new_from_encrypted(
       encrypted_pii,
-      password: password
+      password: password,
     )
   end
 
   def recover_pii(personal_key)
     Pii::Attributes.new_from_encrypted(
       encrypted_pii_recovery,
-      password: personal_key
+      password: personal_key,
     )
   end
 

@@ -6,7 +6,7 @@ SamlIdp.configure do |config|
   api_base = protocol + Figaro.env.domain_name + '/api'
 
   config.x509_certificate = OpenSSL::X509::Certificate.new(
-    File.read(Rails.root.join('certs', 'saml.crt'))
+    File.read(Rails.root.join('certs', 'saml.crt')),
   ).to_pem
 
   SamlIdpEncryptionConfigurator.configure(config, FeatureManagement.use_cloudhsm?)

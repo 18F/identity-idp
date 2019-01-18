@@ -61,7 +61,7 @@ describe PhoneVerification do
             'Content-Type' => 'application/x-www-form-urlencoded',
             'User-Agent' => 'Faraday v0.15.3',
             'X-Authy-Api-Key' => Figaro.env.twilio_verify_api_key,
-          }
+          },
         ).
         to_return(status: 200, body: '', headers: {})
 

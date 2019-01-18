@@ -32,9 +32,9 @@ describe AccountReset::Cancel do
         AccountReset::Cancel.new(token).call
 
         expect(
-          SmsAccountResetCancellationNotifierJob
+          SmsAccountResetCancellationNotifierJob,
         ).to have_received(:perform_now).with(
-          phone: MfaContext.new(user).phone_configurations.first.phone
+          phone: MfaContext.new(user).phone_configurations.first.phone,
         )
       end
     end

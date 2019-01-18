@@ -7,8 +7,8 @@ class SmsPersonalKeySignInNotifierJob < ApplicationJob
       to: phone,
       body: I18n.t(
         'jobs.sms_personal_key_sign_in_notifier_job.message',
-        app: APP_NAME
-      )
+        app: APP_NAME,
+      ),
     )
   end
 end

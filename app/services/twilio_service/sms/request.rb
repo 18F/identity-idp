@@ -36,7 +36,7 @@ module TwilioService
       # https://github.com/twilio/twilio-ruby/wiki/Request-Validator
       def signature_valid?
         Twilio::Security::RequestValidator.new(
-          Figaro.env.twilio_auth_token
+          Figaro.env.twilio_auth_token,
         ).validate(url, params, signature)
       end
 

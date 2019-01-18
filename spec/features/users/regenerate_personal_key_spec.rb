@@ -171,7 +171,7 @@ def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
     "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
   )
   expect(page.evaluate_script('document.activeElement.value')).to eq(
-    t('forms.buttons.continue')
+    t('forms.buttons.continue'),
   )
 end
 

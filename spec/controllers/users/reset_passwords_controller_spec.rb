@@ -86,7 +86,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :signed_up,
           reset_password_sent_at: Time.zone.now - Devise.reset_password_within - 1.hour,
-          reset_password_token: db_confirmation_token
+          reset_password_token: db_confirmation_token,
         )
 
         params = { password: 'short', reset_password_token: raw_reset_token }
@@ -121,7 +121,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :signed_up,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.zone.now
+          reset_password_sent_at: Time.zone.now,
         )
         form_params = { password: 'short', reset_password_token: raw_reset_token }
         analytics_hash = {
@@ -151,7 +151,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :unconfirmed,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.zone.now
+          reset_password_sent_at: Time.zone.now,
         )
         form_params = { password: 'a really long passw0rd', reset_password_token: raw_reset_token }
 
@@ -176,7 +176,7 @@ describe Users::ResetPasswordsController, devise: true do
             :user,
             :signed_up,
             reset_password_token: db_confirmation_token,
-            reset_password_sent_at: Time.zone.now
+            reset_password_sent_at: Time.zone.now,
           )
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
@@ -217,7 +217,7 @@ describe Users::ResetPasswordsController, devise: true do
         user = create(
           :user,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.zone.now
+          reset_password_sent_at: Time.zone.now,
         )
         _profile = create(:profile, :active, :verified, user: user)
 
@@ -256,7 +256,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :unconfirmed,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.zone.now
+          reset_password_sent_at: Time.zone.now,
         )
 
         stub_user_mailer(user)
@@ -290,7 +290,7 @@ describe Users::ResetPasswordsController, devise: true do
         :user,
         :unconfirmed,
         reset_password_token: db_confirmation_token,
-        reset_password_sent_at: Time.zone.now
+        reset_password_sent_at: Time.zone.now,
       )
 
       stub_user_mailer(user)

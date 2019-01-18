@@ -18,7 +18,7 @@ RSpec.describe OpenidConnectLogoutForm do
     IdTokenBuilder.new(
       identity: identity,
       code: code,
-      custom_expiration: 1.day.from_now.to_i
+      custom_expiration: 1.day.from_now.to_i,
     ).id_token
   end
 
@@ -26,7 +26,7 @@ RSpec.describe OpenidConnectLogoutForm do
     OpenidConnectLogoutForm.new(
       id_token_hint: id_token_hint,
       post_logout_redirect_uri: post_logout_redirect_uri,
-      state: state
+      state: state,
     )
   end
 
@@ -120,7 +120,7 @@ RSpec.describe OpenidConnectLogoutForm do
           IdTokenBuilder.new(
             identity: identity,
             code: code,
-            custom_expiration: 5.days.ago.to_i
+            custom_expiration: 5.days.ago.to_i,
           ).id_token
         end
 

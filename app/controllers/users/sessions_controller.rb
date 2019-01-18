@@ -16,7 +16,7 @@ module Users
       analytics.track_event(
         Analytics::SIGN_IN_PAGE_VISIT,
         flash: flash[:alert],
-        stored_location: session['user_return_to']
+        stored_location: session['user_return_to'],
       )
       super
     end
@@ -44,7 +44,7 @@ module Users
       flash[:notice] = t(
         'notices.session_timedout',
         app: APP_NAME,
-        minutes: Figaro.env.session_timeout_in_minutes
+        minutes: Figaro.env.session_timeout_in_minutes,
       )
       redirect_to root_url(request_id: request_id)
     end
@@ -74,7 +74,7 @@ module Users
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
-        current_user.decorate
+        current_user.decorate,
       )
       sign_out
       render_full_width('shared/_failure', locals: { presenter: presenter })

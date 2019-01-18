@@ -15,7 +15,7 @@ module SamlIdpAuthConcern
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
       authn_context: requested_authn_context,
-      nameid_format: saml_request.name_id_format
+      nameid_format: saml_request.name_id_format,
     )
 
     return if @result.success?
@@ -29,7 +29,7 @@ module SamlIdpAuthConcern
       url: request.original_url,
       session: session,
       protocol_request: saml_request,
-      protocol: FederatedProtocols::Saml
+      protocol: FederatedProtocols::Saml,
     ).call
   end
 
@@ -71,7 +71,7 @@ module SamlIdpAuthConcern
       user: principal,
       service_provider: current_service_provider,
       authn_request: saml_request,
-      decrypted_pii: decrypted_pii
+      decrypted_pii: decrypted_pii,
     )
   end
 
@@ -91,7 +91,7 @@ module SamlIdpAuthConcern
       authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
-      signature: rotation_signature_opts
+      signature: rotation_signature_opts,
     )
   end
 

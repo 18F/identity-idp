@@ -3,7 +3,7 @@ module KeyRotationHelper
     env = Figaro.env
     old_hmac_key = env.hmac_fingerprinter_key
     allow(env).to receive(:hmac_fingerprinter_key_queue).and_return(
-      "[\"#{old_hmac_key}\"]"
+      "[\"#{old_hmac_key}\"]",
     )
     allow(env).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end
@@ -31,7 +31,7 @@ module KeyRotationHelper
   def rotate_attribute_encryption_key_with_invalid_queue
     env = Figaro.env
     allow(env).to receive(:attribute_encryption_key_queue).and_return(
-      [{ key: 'key-that-was-never-used-in-the-past', cost: '4000$8$2$' }].to_json
+      [{ key: 'key-that-was-never-used-in-the-past', cost: '4000$8$2$' }].to_json,
     )
     allow(env).to receive(:attribute_encryption_key).and_return('4' * 32)
   end
