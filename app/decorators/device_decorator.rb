@@ -1,5 +1,5 @@
 DeviceDecorator = Struct.new(:device) do
-  delegate :nice_name, :last_used_at, to: :device
+  delegate :nice_name, :last_used_at, :id, to: :device
 
   def device_partial
     'accounts/device_item'

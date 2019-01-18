@@ -1,6 +1,5 @@
 class EventsController < ApplicationController
   before_action :confirm_two_factor_authenticated
-  before_action :confirm_personal_key_receipt
 
   layout 'card_wide'
 
@@ -13,16 +12,7 @@ class EventsController < ApplicationController
       personal_key: flash[:personal_key],
       decorated_user: current_user.decorate
     )
-
-    @login_presenter = LoginPresenter.new(user: current_user)
+    @events = DeviceTracking::ListDeviceEvents.call(current_user, params[:id]).map(&:decorate)
     render 'accounts/events/show'
-  end
-
-  private
-
-  def confirm_personal_key_receipt
-    return if user_session[:personal_key].blank?
-
-    redirect_to manage_personal_key_url
   end
 end

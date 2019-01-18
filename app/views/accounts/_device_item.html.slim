@@ -6,4 +6,4 @@
     .sm-col.sm-col-6.px1.sm-right-align
       = device.last_sign_in_location_and_ip
       br
-      = link_to t('headings.account.events'), account_events_path
+      = link_to t('headings.account.events'), account_events_path(id: device.id)

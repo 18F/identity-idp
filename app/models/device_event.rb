@@ -1,5 +1,6 @@
 class DeviceEvent < ApplicationRecord
   belongs_to :device
+  validates :event_type, presence: true
 
   enum event_type: {
     account_created: 1,
@@ -22,5 +23,7 @@ class DeviceEvent < ApplicationRecord
     complete_2fa: 18,
   }
 
-  validates :event_type, presence: true
+  def decorate
+    EventDecorator.new(self)
+  end
 end

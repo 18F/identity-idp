@@ -3,19 +3,9 @@
 
 - title t('titles.account')
 
-= render @view_model.personal_key_partial, view_model: @view_model
-
-= render @view_model.password_reset_partial, view_model: @view_model
-
-= render @view_model.pending_profile_partial, view_model: @view_model
-
-h1.hide = t('titles.account')
-
-= render @view_model.header_partial, view_model: @view_model
-
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
     = t('headings.account.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
-  - @view_model.recent_events.each do |event|
+  - @events.each do |event|
     = render event.event_partial, event: event
