@@ -5,11 +5,9 @@ class EventsController < ApplicationController
 
   def show
     analytics.track_event(Analytics::ACCOUNT_VISIT)
-    cacher = Pii::Cacher.new(current_user, user_session)
-
     @view_model = AccountShow.new(
-      decrypted_pii: cacher.fetch,
-      personal_key: flash[:personal_key],
+      decrypted_pii: nil,
+      personal_key: nil,
       decorated_user: current_user.decorate
     )
     @events = DeviceTracking::ListDeviceEvents.call(current_user, params[:id]).map(&:decorate)
