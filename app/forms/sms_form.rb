@@ -13,7 +13,7 @@ class SmsForm
     FormResponse.new(
       success: success,
       errors: errors.messages,
-      extra: message.extra_analytics_attributes
+      extra: message.extra_analytics_attributes,
     )
   end
 

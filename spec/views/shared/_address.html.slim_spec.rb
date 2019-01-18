@@ -20,7 +20,7 @@ describe 'shared/_address.html.slim' do
           '123 Fake St',
           'Apt 456',
           'Washington, DC 21234',
-        ]
+        ],
       )
     end
   end

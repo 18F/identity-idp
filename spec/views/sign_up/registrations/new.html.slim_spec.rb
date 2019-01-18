@@ -9,7 +9,7 @@ describe 'sign_up/registrations/new.html.slim' do
 
     view_context = ActionController::Base.new.view_context
     @decorated_session = DecoratedSession.new(
-      sp: nil, view_context: view_context, sp_session: {}, service_provider_request: nil
+      sp: nil, view_context: view_context, sp_session: {}, service_provider_request: nil,
     ).call
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
     allow(view_context).to receive(:root_url).and_return('http://www.example.com')
@@ -61,7 +61,7 @@ describe 'sign_up/registrations/new.html.slim' do
       @sp = build_stubbed(
         :service_provider,
         friendly_name: 'SAM',
-        return_to_sp_url: 'www.awesomeness.com'
+        return_to_sp_url: 'www.awesomeness.com',
       )
       view_context = ActionController::Base.new.view_context
       allow(view_context).to receive(:sign_up_start_url).
@@ -70,7 +70,7 @@ describe 'sign_up/registrations/new.html.slim' do
         sp: @sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new
+        service_provider_request: ServiceProviderRequest.new,
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end

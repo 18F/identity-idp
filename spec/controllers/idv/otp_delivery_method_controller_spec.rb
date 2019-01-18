@@ -212,7 +212,7 @@ describe Idv::OtpDeliveryMethodController do
             error: 'error',
             code: 60_033,
             status: 400,
-            response: '{"error_code":"60004"}'
+            response: '{"error_code":"60004"}',
           )
         end
         let(:twilio_error) do
@@ -220,7 +220,7 @@ describe Idv::OtpDeliveryMethodController do
             code: 60_033,
             message: 'error',
             status: 400,
-            response:  '{"error_code":"60004"}'
+            response:  '{"error_code":"60004"}',
           )
         end
 

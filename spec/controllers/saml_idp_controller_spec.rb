@@ -63,7 +63,7 @@ describe SamlIdpController do
       it 'finishes SLO at the IdP' do
         user.identities << Identity.create(
           service_provider: 'foo',
-          last_authenticated_at: Time.zone.now
+          last_authenticated_at: Time.zone.now,
         )
         sign_in user
 
@@ -160,7 +160,7 @@ describe SamlIdpController do
           first_name: 'Some',
           last_name: 'One',
           ssn: '666666666',
-          zipcode: '12345'
+          zipcode: '12345',
         )
       end
       let(:this_authn_request) do
@@ -172,7 +172,7 @@ describe SamlIdpController do
           user: user,
           service_provider: ServiceProvider.from_issuer(loa3_saml_settings.issuer),
           authn_request: this_authn_request,
-          decrypted_pii: pii
+          decrypted_pii: pii,
         )
       end
 
@@ -180,7 +180,7 @@ describe SamlIdpController do
         stub_sign_in(user)
         IdentityLinker.new(user, loa3_saml_settings.issuer).link_identity(ial: 3)
         user.identities.last.update!(
-          verified_attributes: %w[given_name family_name social_security_number address]
+          verified_attributes: %w[given_name family_name social_security_number address],
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
       end
@@ -213,7 +213,7 @@ describe SamlIdpController do
         end
 
         expect(xmldoc.attribute_value_for('verified_at')).to eq(
-          user.active_profile.verified_at.iso8601
+          user.active_profile.verified_at.iso8601,
         )
       end
     end
@@ -354,7 +354,7 @@ describe SamlIdpController do
           loa3: false,
           request_url: @saml_request.request.original_url,
           request_id: sp_request_id,
-          requested_attributes: ['email']
+          requested_attributes: ['email'],
         )
       end
 
@@ -391,7 +391,7 @@ describe SamlIdpController do
 
         it 'does not redirect after verifying attributes' do
           IdentityLinker.new(@user, saml_settings.issuer).link_identity(
-            verified_attributes: ['email']
+            verified_attributes: ['email'],
           )
           saml_get_auth(saml_settings)
 
@@ -825,7 +825,7 @@ describe SamlIdpController do
         let(:subject) do
           xmldoc.saml_document.at(
             '//ds:AuthnStatement/ds:AuthnContext',
-            ds: Saml::XML::Namespaces::ASSERTION
+            ds: Saml::XML::Namespaces::ASSERTION,
           )
         end
 
@@ -837,7 +837,7 @@ describe SamlIdpController do
           let(:subject) do
             xmldoc.saml_document.at(
               '//ds:AuthnStatement/ds:AuthnContext/ds:AuthnContextClassRef',
-              ds: Saml::XML::Namespaces::ASSERTION
+              ds: Saml::XML::Namespaces::ASSERTION,
             )
           end
 
@@ -857,7 +857,7 @@ describe SamlIdpController do
         it 'includes the saml:AttributeStatement element' do
           attribute_statement = xmldoc.saml_document.at(
             '//*/saml:AttributeStatement',
-            saml: Saml::XML::Namespaces::ASSERTION
+            saml: Saml::XML::Namespaces::ASSERTION,
           )
 
           expect(attribute_statement.class).to eq(Nokogiri::XML::Element)
@@ -986,7 +986,7 @@ describe SamlIdpController do
         :disable_caching,
         :validate_saml_request,
         :validate_service_provider_and_authn_context,
-        :store_saml_request
+        :store_saml_request,
       )
     end
   end

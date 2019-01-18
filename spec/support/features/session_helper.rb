@@ -123,10 +123,10 @@ module Features
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
-        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now
+        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
       visit sign_up_create_email_confirmation_path(
-        confirmation_token: @raw_confirmation_token
+        confirmation_token: @raw_confirmation_token,
       )
     end
 
@@ -149,7 +149,7 @@ module Features
       stub_piv_cac_service
       visit_piv_cac_service(
         dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        uuid: user.x509_dn_uuid
+        uuid: user.x509_dn_uuid,
       )
     end
 
@@ -354,7 +354,7 @@ module Features
 
     def attempt_to_confirm_email_with_invalid_token(request_id)
       visit sign_up_create_email_confirmation_url(
-        _request_id: request_id, confirmation_token: 'foo'
+        _request_id: request_id, confirmation_token: 'foo',
       )
     end
 
@@ -420,7 +420,7 @@ module Features
 
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
-        t('two_factor_authentication.two_factor_choice_options.piv_cac')
+        t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
 
       set_up_2fa_with_piv_cac
@@ -490,9 +490,9 @@ module Features
     def link_identity(user, client_id, ial = nil)
       IdentityLinker.new(
         user,
-        client_id
+        client_id,
       ).link_identity(
-        ial: ial
+        ial: ial,
       )
     end
 

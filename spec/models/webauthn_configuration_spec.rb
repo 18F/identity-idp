@@ -16,7 +16,7 @@ describe WebauthnConfiguration do
       presenters = subject.selection_presenters
       expect(presenters.count).to eq 1
       expect(presenters.first).to be_instance_of(
-        TwoFactorAuthentication::WebauthnSelectionPresenter
+        TwoFactorAuthentication::WebauthnSelectionPresenter,
       )
     end
   end

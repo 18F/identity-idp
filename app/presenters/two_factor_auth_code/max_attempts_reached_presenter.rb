@@ -53,7 +53,7 @@ module TwoFactorAuthCode
     def read_about_two_factor_authentication
       link = link_to(
         t('read_about_two_factor_authentication.link', scope: T_SCOPE),
-        MarketingSite.help_url
+        MarketingSite.help_url,
       )
 
       t('read_about_two_factor_authentication.text_html', scope: T_SCOPE, link: link)

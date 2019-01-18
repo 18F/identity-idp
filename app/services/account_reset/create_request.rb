@@ -21,7 +21,7 @@ module AccountReset
         requested_at: Time.zone.now,
         cancelled_at: nil,
         granted_at: nil,
-        granted_token: nil
+        granted_token: nil,
       )
       request
     end
@@ -37,7 +37,7 @@ module AccountReset
       return unless phone
       SmsAccountResetNotifierJob.perform_now(
         phone: phone,
-        token: user.account_reset_request.request_token
+        token: user.account_reset_request.request_token,
       )
     end
   end

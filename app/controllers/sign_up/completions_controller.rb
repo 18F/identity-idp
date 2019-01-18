@@ -11,7 +11,7 @@ module SignUp
       @view_model = view_model
       if show_completions_page?
         track_agency_handoff(
-          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         )
       else
         redirect_to account_url
@@ -20,7 +20,7 @@ module SignUp
 
     def update
       track_agency_handoff(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
       )
       update_verified_attributes
       clear_verify_attributes_sessions
@@ -43,7 +43,7 @@ module SignUp
         loa3_requested: loa3?,
         decorated_session: decorated_session,
         current_user: current_user,
-        handoff: new_service_provider_attributes
+        handoff: new_service_provider_attributes,
       )
     end
 
@@ -61,7 +61,7 @@ module SignUp
 
     def decider
       CompletionsDecider.new(
-        user_agent: request.user_agent, request_url: sp_session[:request_url]
+        user_agent: request.user_agent, request_url: sp_session[:request_url],
       )
     end
 
@@ -69,7 +69,7 @@ module SignUp
       sign_out
       flash[:notice] = t(
         'instructions.go_back_to_mobile_app',
-        friendly_name: view_model.decorated_session.sp_name
+        friendly_name: view_model.decorated_session.sp_name,
       )
       redirect_to new_user_session_url
     end
@@ -77,7 +77,7 @@ module SignUp
     def track_agency_handoff(analytic)
       analytics.track_event(
         analytic,
-        service_provider_attributes
+        service_provider_attributes,
       )
     end
   end

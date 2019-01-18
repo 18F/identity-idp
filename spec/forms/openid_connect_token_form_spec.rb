@@ -47,7 +47,7 @@ RSpec.describe OpenidConnectTokenForm do
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,
-        code_challenge: code_challenge
+        code_challenge: code_challenge,
       )
   end
 
@@ -118,7 +118,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end
@@ -129,7 +129,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end
@@ -140,7 +140,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end

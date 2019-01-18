@@ -64,7 +64,7 @@ shared_examples 'remember device' do
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: SecureRandom.hex,
-      nonce: SecureRandom.hex
+      nonce: SecureRandom.hex,
     )
     user = remember_device_and_sign_out_user
 

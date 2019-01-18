@@ -37,7 +37,7 @@ module TwoFactorAuthenticatable
   def handle_max_attempts(type)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
-      decorated_user
+      decorated_user,
     )
     sign_out
     render_full_width('shared/_failure', locals: { presenter: presenter })
@@ -67,7 +67,7 @@ module TwoFactorAuthenticatable
       attributes: {
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
-      }
+      },
     ).call
   end
 
@@ -115,7 +115,7 @@ module TwoFactorAuthenticatable
 
     UpdateUser.new(
       user: current_user,
-      attributes: attributes
+      attributes: attributes,
     ).call
   end
 
@@ -157,7 +157,7 @@ module TwoFactorAuthenticatable
     UpdateUser.new(
       user: current_user,
       attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
-                    phone_confirmed_at: Time.zone.now }
+                    phone_confirmed_at: Time.zone.now },
     ).call
   end
 
@@ -291,7 +291,7 @@ module TwoFactorAuthenticatable
 
     TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
       data: data,
-      view: view_context
+      view: view_context,
     )
   end
 

@@ -24,7 +24,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
+          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
         )
         allow(BackupCodeVerificationForm).to receive(:new).
           with(subject.current_user).and_return(form)
@@ -48,7 +48,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
         )
         allow(BackupCodeVerificationForm).to receive(:new).
           with(subject.current_user).and_return(form)
@@ -67,7 +67,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' }
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
         )
         allow(BackupCodeVerificationForm).to receive(:new).
           with(subject.current_user).and_return(form)

@@ -10,7 +10,7 @@ module Users
       @verify_password_form = VerifyPasswordForm.new(
         user: current_user,
         password: '',
-        decrypted_pii: decrypted_pii
+        decrypted_pii: decrypted_pii,
       )
     end
 
@@ -46,7 +46,7 @@ module Users
       VerifyPasswordForm.new(
         user: current_user,
         password: params.require(:user).permit(:password)[:password],
-        decrypted_pii: decrypted_pii
+        decrypted_pii: decrypted_pii,
       )
     end
   end

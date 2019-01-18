@@ -63,7 +63,7 @@ describe ServiceProviderUpdater do
       before do
         stub_request(:get, fake_dashboard_url).to_return(
           status: 200,
-          body: dashboard_service_providers.to_json
+          body: dashboard_service_providers.to_json,
         )
       end
 
@@ -174,7 +174,7 @@ describe ServiceProviderUpdater do
       it 'raises an error' do
         stub_request(:get, fake_dashboard_url).to_return(
           status: 200,
-          body: dashboard_service_providers.to_json
+          body: dashboard_service_providers.to_json,
         )
         expect { subject.run }.to raise_error(ActiveRecord::RecordInvalid)
       end

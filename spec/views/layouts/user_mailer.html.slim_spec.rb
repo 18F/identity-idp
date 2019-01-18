@@ -28,7 +28,7 @@ describe 'layouts/user_mailer.html.slim' do
   it 'includes the support text and link' do
     expect(rendered).to have_content(t('mailer.no_reply'))
     expect(rendered).to have_content(
-      t('mailer.help', app: APP_NAME, link: MarketingSite.nice_help_url)
+      t('mailer.help', app: APP_NAME, link: MarketingSite.nice_help_url),
     )
     expect(rendered).to have_link(MarketingSite.nice_help_url, href: MarketingSite.help_url)
   end

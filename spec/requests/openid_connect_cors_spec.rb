@@ -68,7 +68,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
           :options,
           api_openid_connect_token_path,
           params: {},
-          headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+          headers: { 'HTTP_ORIGIN' => 'https://example.com' },
         )
 
         aggregate_failures do
@@ -96,7 +96,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
           :options,
           api_openid_connect_token_path,
           params: {},
-          headers: { 'HTTP_ORIGIN' => 'https://foo.com' }
+          headers: { 'HTTP_ORIGIN' => 'https://foo.com' },
         )
 
         aggregate_failures do

@@ -19,7 +19,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.email_changed.intro', app: APP_NAME)
+        t('user_mailer.email_changed.intro', app: APP_NAME),
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -40,7 +40,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.password_changed.intro', app: APP_NAME)
+        t('user_mailer.password_changed.intro', app: APP_NAME),
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -61,7 +61,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.personal_key_sign_in.intro')
+        t('user_mailer.personal_key_sign_in.intro'),
       )
     end
   end
@@ -81,7 +81,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.personal_key_regenerated.intro')
+        t('user_mailer.personal_key_regenerated.intro'),
       )
     end
   end
@@ -103,8 +103,8 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         I18n.t(
           'user_mailer.signup_with_your_email.intro',
-          app: APP_NAME
-        )
+          app: APP_NAME,
+        ),
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -133,7 +133,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.phone_changed.intro', app: APP_NAME)
+        t('user_mailer.phone_changed.intro', app: APP_NAME),
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -154,11 +154,11 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.account_does_not_exist.intro', app: APP_NAME)
+        t('user_mailer.account_does_not_exist.intro', app: APP_NAME),
       )
       expect(mail.html_part.body).to have_link(
         t('user_mailer.account_does_not_exist.link_text', app: APP_NAME),
-        href: sign_up_email_url(request_id: 'request_id')
+        href: sign_up_email_url(request_id: 'request_id'),
       )
     end
   end
@@ -190,8 +190,8 @@ describe UserMailer, type: :mailer do
       reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro', cancel_account_reset: reset_text)
-        )
+          t('user_mailer.account_reset_request.intro', cancel_account_reset: reset_text),
+        ),
       )
     end
   end

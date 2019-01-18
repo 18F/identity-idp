@@ -68,7 +68,7 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
           'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Bahamas'
+          location: 'Bahamas',
         )
 
         click_on t('two_factor_authentication.choose_another_option')
@@ -123,7 +123,7 @@ feature 'Two Factor Authentication' do
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: 'ar'
+          locale: 'ar',
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
@@ -269,7 +269,7 @@ feature 'Two Factor Authentication' do
           user: user,
           attributes: {
             second_factor_locked_at: Time.zone.now - (lockout_period + 1.minute),
-          }
+          },
         ).call
 
         sign_in_user(user)
@@ -352,7 +352,7 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq account_path
 
         phone_fingerprint = Pii::Fingerprinter.fingerprint(
-          MfaContext.new(user).phone_configurations.first.phone
+          MfaContext.new(user).phone_configurations.first.phone,
         )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
@@ -391,7 +391,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(second_user)
         click_link t('links.two_factor_authentication.get_another_code')
         phone_fingerprint = Pii::Fingerprinter.fingerprint(
-          MfaContext.new(first_user).phone_configurations.first.phone
+          MfaContext.new(first_user).phone_configurations.first.phone,
         )
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
@@ -565,7 +565,7 @@ feature 'Two Factor Authentication' do
           phone: '+212 661-289324',
           otp_created_at: user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
-          locale: 'ar'
+          locale: 'ar',
         )
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end

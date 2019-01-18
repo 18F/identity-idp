@@ -14,7 +14,7 @@ describe SmsAccountResetNotifierJob do
     subject(:perform) do
       SmsAccountResetNotifierJob.perform_now(
         phone: '+1 (888) 555-5555',
-        token: 'UUID1'
+        token: 'UUID1',
       )
     end
 

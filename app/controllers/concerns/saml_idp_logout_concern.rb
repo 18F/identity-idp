@@ -67,7 +67,7 @@ module SamlIdpLogoutConcern
       saml_idp_config.base_saml_location,
       saml_request.response_url,
       saml_request.request_id,
-      saml_idp_config.algorithm
+      saml_idp_config.algorithm,
     )
   end
 
@@ -102,7 +102,7 @@ module SamlIdpLogoutConcern
     render_template_for(
       Base64.strict_encode64(slo_session[:logout_response]),
       slo_session[:logout_response_url],
-      'SAMLResponse'
+      'SAMLResponse',
     )
 
     sign_out if user_signed_in?

@@ -15,7 +15,7 @@ RSpec.describe Users::VerifyAccountController do
     create(
       :usps_confirmation_code,
       profile: pending_profile,
-      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
@@ -53,7 +53,7 @@ RSpec.describe Users::VerifyAccountController do
           verify_account_form: {
             otp: submitted_otp,
           },
-        }
+        },
       )
     end
 

@@ -62,7 +62,7 @@ describe UserDecorator do
       user.identities << create(
         :identity,
         service_provider: sp.issuer,
-        session_uuid: SecureRandom.uuid
+        session_uuid: SecureRandom.uuid,
       )
 
       user_decorator = UserDecorator.new(user)
@@ -120,12 +120,12 @@ describe UserDecorator do
           :profile,
           deactivation_reason: :verification_pending,
           created_at: 1.day.ago,
-          user: user
+          user: user,
         )
         new_profile = create(
           :profile,
           deactivation_reason: :verification_pending,
-          user: user
+          user: user,
         )
         user_decorator = UserDecorator.new(user)
 
@@ -140,12 +140,12 @@ describe UserDecorator do
           :profile,
           deactivation_reason: :password_reset,
           created_at: 1.day.ago,
-          user: user
+          user: user,
         )
         create(
           :profile,
           deactivation_reason: :encryption_error,
-          user: user
+          user: user,
         )
         user_decorator = UserDecorator.new(user)
 

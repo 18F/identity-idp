@@ -6,14 +6,14 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     attributes_for(:generic_otp_presenter).merge(
       two_factor_authentication_method: 'authenticator',
       user_email: view.current_user.email,
-      phone_enabled: TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+      phone_enabled: TwoFactorAuthentication::PhonePolicy.new(user).enabled?,
     )
   end
 
   before do
     allow(view).to receive(:current_user).and_return(user)
     @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-      data: presenter_data, view: ApplicationController.new.view_context
+      data: presenter_data, view: ApplicationController.new.view_context,
     )
     allow(@presenter).to receive(:reauthn).and_return(false)
 
@@ -34,14 +34,14 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   it 'allows the user to fallback to SMS and voice' do
     expect(rendered).to have_link(
       t('two_factor_authentication.login_options_link_text'),
-      href: login_two_factor_options_path
+      href: login_two_factor_options_path,
     )
   end
 
   it 'provides an option to use a personal key' do
     expect(rendered).to have_link(
       t('two_factor_authentication.login_options_link_text'),
-      href: login_two_factor_options_path
+      href: login_two_factor_options_path,
     )
   end
 
@@ -59,13 +59,13 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     it 'provides a cancel link to return to profile' do
       expect(rendered).to have_link(
         t('links.cancel'),
-        href: account_path
+        href: account_path,
       )
     end
 
     it 'renders the reauthn partial' do
       expect(view).to render_template(
-        partial: 'two_factor_authentication/totp_verification/_reauthn'
+        partial: 'two_factor_authentication/totp_verification/_reauthn',
       )
     end
   end

@@ -26,7 +26,7 @@ describe TwilioService::Utils do
         code: '1234',
         phone: '17035551212',
         message: 'jobs.sms_otp_sender_job.verify_message',
-        otp_created_at: Time.zone.now.to_s
+        otp_created_at: Time.zone.now.to_s,
       )
 
       expect(FakeSms.messages.size).to eq 0
@@ -69,7 +69,7 @@ describe TwilioService::Utils do
 
       service.place_call(
         to: '5555555555',
-        url: 'https://twimlets.com/say?merp'
+        url: 'https://twimlets.com/say?merp',
       )
 
       calls = FakeVoiceCall.calls
@@ -141,7 +141,7 @@ describe TwilioService::Utils do
 
       service.send_sms(
         to: '5555555555',
-        body: '!!CODE1!!'
+        body: '!!CODE1!!',
       )
 
       messages = FakeSms.messages

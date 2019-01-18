@@ -47,7 +47,7 @@ module Idv
       confirmation_maker = UspsConfirmationMaker.new(
         pii: Pii::Cacher.new(current_user, user_session).fetch,
         issuer: sp_session[:issuer],
-        profile: current_user.decorate.pending_profile
+        profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
 

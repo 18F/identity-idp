@@ -9,7 +9,7 @@ describe 'accounts/show.html.slim' do
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :view_model,
-      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user),
     )
     assign(:login_presenter, LoginPresenter.new(user: user))
   end
@@ -43,7 +43,7 @@ describe 'accounts/show.html.slim' do
     before do
       assign(
         :view_model,
-        AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+        AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user),
       )
     end
 
@@ -203,7 +203,7 @@ describe 'accounts/show.html.slim' do
         current_sign_in_at: current_sign_in_at,
         last_sign_in_at: last_sign_in_at,
         current_sign_in_ip: '1.2.3.4',
-        last_sign_in_ip: '159.142.31.80'
+        last_sign_in_ip: '159.142.31.80',
       )
       allow(view).to receive(:current_user).and_return(user)
       assign(:login_presenter, LoginPresenter.new(user: user))
@@ -233,7 +233,7 @@ describe 'accounts/show.html.slim' do
         :user,
         :signed_up,
         :with_email,
-        current_sign_in_ip: '4.3.2.1'
+        current_sign_in_ip: '4.3.2.1',
       )
       assign(:login_presenter, LoginPresenter.new(user: user))
 

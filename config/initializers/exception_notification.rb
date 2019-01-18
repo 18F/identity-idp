@@ -9,7 +9,7 @@ ExceptionNotification.configure do |config|
     sender_address: %("Exception Notifier" <notifier@#{LoginGov::Hostdata.domain}>),
     exception_recipients: EXCEPTION_RECIPIENTS,
     error_grouping: true,
-    sections: %w[request backtrace session]
+    sections: %w[request backtrace session],
   )
 
   config.ignored_exceptions << 'ActionController::BadRequest'

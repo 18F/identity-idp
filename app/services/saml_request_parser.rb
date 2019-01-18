@@ -20,7 +20,7 @@ class SamlRequestParser
       doc.xpath(
         '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
         samlp: Saml::XML::Namespaces::PROTOCOL,
-        saml: Saml::XML::Namespaces::ASSERTION
+        saml: Saml::XML::Namespaces::ASSERTION,
       ).select do |node|
         node.content =~ /#{Regexp.escape(URI_PATTERN)}/
       end

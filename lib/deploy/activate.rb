@@ -25,7 +25,7 @@ module Deploy
 
     def download_application_yml_from_s3
       LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/%<env>s/idp/v1/application.yml' => env_yaml_path
+        '/%<env>s/idp/v1/application.yml' => env_yaml_path,
       )
     end
 
@@ -45,7 +45,7 @@ module Deploy
         env: nil,
         region: ec2_region,
         logger: logger,
-        s3_client: s3_client
+        s3_client: s3_client,
       ).download_configs('/common/GeoLite2-City.mmdb' => geolocation_db_path)
     end
 

@@ -10,8 +10,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       t(
         'mailer.confirmation_instructions.footer',
-        confirmation_period: user.decorate.confirmation_period
-      )
+        confirmation_period: user.decorate.confirmation_period,
+      ),
     )
   end
 
@@ -22,7 +22,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
     expect(rendered).to have_link(
       'http://test.host/sign_up/email/confirm?confirmation_token=foo',
-      href: 'http://test.host/sign_up/email/confirm?confirmation_token=foo'
+      href: 'http://test.host/sign_up/email/confirm?confirmation_token=foo',
     )
   end
 
@@ -36,7 +36,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
       expect(rendered).to have_link(
         'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo',
-        href: 'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo'
+        href: 'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo',
       )
     end
   end
@@ -51,8 +51,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.confirmed',
-        app: APP_NAME, confirmation_period: presenter.confirmation_period
-      )
+        app: APP_NAME, confirmation_period: presenter.confirmation_period,
+      ),
     )
   end
 
@@ -66,8 +66,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.unconfirmed',
-        app: APP_NAME, confirmation_period: presenter.confirmation_period
-      )
+        app: APP_NAME, confirmation_period: presenter.confirmation_period,
+      ),
     )
   end
 
@@ -81,8 +81,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.reset_requested',
-        app: APP_NAME
-      )
+        app: APP_NAME,
+      ),
     )
 
     expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")

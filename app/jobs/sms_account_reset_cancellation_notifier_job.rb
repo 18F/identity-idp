@@ -6,8 +6,8 @@ class SmsAccountResetCancellationNotifierJob < ApplicationJob
       to: phone,
       body: I18n.t(
         'jobs.sms_account_reset_cancel_job.message',
-        app: APP_NAME
-      )
+        app: APP_NAME,
+      ),
     )
   end
 end

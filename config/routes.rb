@@ -45,7 +45,7 @@ Rails.application.routes.draw do
     devise_for(
       :users,
       skip: %i[confirmations sessions registrations two_factor_authentication],
-      controllers: { passwords: 'users/reset_passwords' }
+      controllers: { passwords: 'users/reset_passwords' },
     )
 
     # Additional device controller routes.

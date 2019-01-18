@@ -36,7 +36,7 @@ feature 'Changing authentication factor' do
       expect(page).to have_link t('links.cancel'), href: account_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
-        t('two_factor_authentication.personal_key_fallback.text_html')
+        t('two_factor_authentication.personal_key_fallback.text_html'),
       )
 
       enter_incorrect_otp_code
@@ -54,7 +54,7 @@ feature 'Changing authentication factor' do
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(
-        MfaContext.new(user).phone_configurations.reload.first.confirmed_at
+        MfaContext.new(user).phone_configurations.reload.first.confirmed_at,
       ).to_not eq(@previous_phone_confirmed_at)
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
@@ -100,7 +100,7 @@ feature 'Changing authentication factor' do
             phone: old_phone,
             otp_created_at: user.reload.direct_otp_sent_at.to_s,
             message: 'jobs.sms_otp_sender_job.login_message',
-            locale: nil
+            locale: nil,
           )
 
         expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
@@ -126,7 +126,7 @@ feature 'Changing authentication factor' do
               phone: old_phone,
               otp_created_at: user.reload.direct_otp_sent_at.to_s,
               message: 'jobs.sms_otp_sender_job.login_message',
-              locale: nil
+              locale: nil,
             )
 
           expect(current_path).
@@ -216,7 +216,7 @@ feature 'Changing authentication factor' do
     click_button t('forms.buttons.continue')
 
     expect(current_path).to eq login_two_factor_path(
-      otp_delivery_preference: user.otp_delivery_preference
+      otp_delivery_preference: user.otp_delivery_preference,
     )
   end
 
