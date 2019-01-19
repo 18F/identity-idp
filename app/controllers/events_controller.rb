@@ -8,7 +8,7 @@ class EventsController < ApplicationController
     @view_model = AccountShow.new(
       decrypted_pii: nil,
       personal_key: nil,
-      decorated_user: current_user.decorate
+      decorated_user: current_user.decorate,
     )
     @events = DeviceTracking::ListDeviceEvents.call(current_user, params[:id]).map(&:decorate)
     render 'accounts/events/show'
