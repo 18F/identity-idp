@@ -57,7 +57,13 @@ class ApplicationController < ActionController::Base
   end
 
   def create_user_event(event_type, user = current_user)
-    Event.create(user_id: user.id, event_type: event_type)
+    device_cookie = cookies[:device]
+    if DeviceTracking::HasDevice.call(user, device_cookie)
+      DeviceTracking::UpdateDevice.call(user, event_type, request, device_cookie)
+    else
+      cookie_uuid = DeviceTracking::CreateDevice.call(user, event_type, request)
+      cookies[:device] = { value: cookie_uuid, expires: 1.year.from_now }
+    end
   end
 
   def decorated_session

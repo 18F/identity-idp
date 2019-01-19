@@ -20,7 +20,6 @@ class DeviceEvent < ApplicationRecord
     webauthn_key_removed: 15,
     phone_removed: 16,
     backup_codes_added: 17,
-    complete_2fa: 18,
   }
 
   def decorate
