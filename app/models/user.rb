@@ -59,7 +59,7 @@ class User < ApplicationRecord
   end
 
   def device_events
-    device_ids = self.devices.map(&:id)
+    device_ids = devices.map(&:id)
     DeviceEvent.where(device_id: device_ids)
   end
 
