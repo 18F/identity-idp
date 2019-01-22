@@ -171,17 +171,17 @@ describe ApplicationController do
       it 'creates an Event object for the current_user' do
         allow(subject).to receive(:current_user).and_return(user)
 
-        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
-
         subject.create_user_event(:account_created)
+
+        expect_user_event(user, 'account_created')
       end
     end
 
     context 'when the user is specified' do
       it 'creates an Event object for the specified user' do
-        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
-
         subject.create_user_event(:account_created, user)
+
+        expect_user_event(user, 'account_created')
       end
     end
   end
@@ -272,5 +272,13 @@ describe ApplicationController do
 
       subject.sign_out
     end
+  end
+
+  def expect_user_event(user, event_type)
+    device = Device.first
+    expect(device.user_id).to eq(user.id)
+    event = DeviceEvent.first
+    expect(event.event_type).to eq(event_type)
+    expect(event.device_id).to eq(device.id)
   end
 end
