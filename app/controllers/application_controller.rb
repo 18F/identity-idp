@@ -57,13 +57,19 @@ class ApplicationController < ActionController::Base
   end
 
   def create_user_event(event_type, user = current_user)
-    device_cookie = cookies[:device]
-    if DeviceTracking::HasDevice.call(user, device_cookie)
-      DeviceTracking::UpdateDevice.call(user, event_type, request, device_cookie)
+    device = create_or_update_device(user)
+    DeviceEvent.create(device_id: device.id, ip: request.remote_ip, event_type: event_type)
+  end
+
+  def create_or_update_device(user)
+    device = DeviceTracking::HasDevice.call(user, cookies[:device])
+    if device
+      DeviceTracking::UpdateDevice.call(device, request)
     else
-      cookie_uuid = DeviceTracking::CreateDevice.call(user, event_type, request)
-      cookies[:device] = { value: cookie_uuid, expires: 1.year.from_now }
+      device = DeviceTracking::CreateDevice.call(user, request)
+      cookies[:device] = { value: device.uuid, expires: 1.year.from_now }
     end
+    device
   end
 
   def decorated_session
