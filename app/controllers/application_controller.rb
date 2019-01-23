@@ -57,6 +57,7 @@ class ApplicationController < ActionController::Base
   end
 
   def create_user_event(event_type, user = current_user)
+    return unless user
     device = create_or_update_device(user)
     DeviceEvent.create(device_id: device.id, ip: request.remote_ip, event_type: event_type)
   end
