@@ -63,6 +63,6 @@ RSpec.describe Idv::UspsPresenter do
 
   def create_letter_send_event
     create(:device, user_id: user.id)
-    create(:device_event, device_id: 1, event_type: :usps_mail_sent)
+    create(:device_event, user_id: user.id, device_id: 1, event_type: :usps_mail_sent)
   end
 end
