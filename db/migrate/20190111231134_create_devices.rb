@@ -17,7 +17,7 @@ class CreateDevices < ActiveRecord::Migration[5.1]
       t.integer :device_id, null: false
       t.integer :event_type, null: false
       t.string :ip, limit: 255, null: false
-      t.timestamp :created_at, null: false
+      t.timestamps
       t.index [:device_id, :created_at], name: "index_device_events_on_device_id_created_at"
       t.index [:user_id, :created_at], name: "index_device_events_on_user_id_created_at"
     end
