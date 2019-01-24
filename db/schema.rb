@@ -66,12 +66,13 @@ ActiveRecord::Schema.define(version: 20190111231134) do
   end
 
   create_table "device_events", force: :cascade do |t|
+    t.integer "user_id", null: false
     t.integer "device_id", null: false
     t.integer "event_type", null: false
     t.string "ip", limit: 255, null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["device_id", "created_at"], name: "index_device_events_on_device_id_created_at"
+    t.index ["user_id", "created_at"], name: "index_device_events_on_user_id_created_at"
   end
 
   create_table "devices", force: :cascade do |t|
