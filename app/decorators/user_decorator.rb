@@ -115,8 +115,7 @@ class UserDecorator
 
   def legacy_events(event_count)
     return [] if event_count <= 0
-    user.events.order('created_at DESC').limit(MAX_RECENT_EVENTS - event_count).
-      map(&:decorate)
+    user.events.order('created_at DESC').limit(event_count).map(&:decorate)
   end
 
   def recent_devices
