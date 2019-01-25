@@ -431,7 +431,7 @@ feature 'Sign in' do
       click_acknowledge_personal_key
 
       expect(page).to have_current_path(account_path)
-      # expect(page).to have_content t('event_types.personal_key_used')
+      expect(page).to have_content t('event_types.personal_key_used')
     end
   end
 
