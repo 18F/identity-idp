@@ -11,7 +11,6 @@ describe 'accounts/show.html.slim' do
       :view_model,
       AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user),
     )
-    assign(:login_presenter, LoginPresenter.new(user: user))
   end
 
   context 'user is not TOTP enabled' do
