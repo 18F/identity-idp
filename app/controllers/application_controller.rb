@@ -70,8 +70,17 @@ class ApplicationController < ActionController::Base
     if device
       DeviceTracking::UpdateDevice.call(device, request)
     else
-      device = DeviceTracking::CreateDevice.call(user, request)
-      cookies[:device] = { value: device.cookie_uuid, expires: 1.year.from_now }
+      device = create_device(user)
+    end
+    device
+  end
+
+  def create_device(user)
+    cookie_uuid = cookies[:device]
+    device = DeviceTracking::CreateDevice.call(user, request, cookie_uuid)
+    device_uuid = device.cookie_uuid
+    unless device_uuid == cookie_uuid
+      cookies[:device] = { value: device_uuid, expires: 1.year.from_now }
     end
     device
   end

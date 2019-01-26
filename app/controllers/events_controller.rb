@@ -10,7 +10,15 @@ class EventsController < ApplicationController
       personal_key: nil,
       decorated_user: current_user.decorate,
     )
-    @events = DeviceTracking::ListDeviceEvents.call(current_user, params[:id]).map(&:decorate)
+    device_and_events
     render 'accounts/events/show'
+  end
+
+  private
+
+  def device_and_events
+    id = params[:id]
+    @events = DeviceTracking::ListDeviceEvents.call(current_user, id).map(&:decorate)
+    @device = Device.where(id: id.to_i).first
   end
 end

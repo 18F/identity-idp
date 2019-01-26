@@ -119,7 +119,7 @@ class UserDecorator
   end
 
   def recent_devices
-    DeviceTracking::ListDevices.new.call(user).map(&:decorate)
+    DeviceTracking::ListDevices.call(user).map(&:decorate)
   end
 
   def connected_apps

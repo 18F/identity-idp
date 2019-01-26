@@ -16,4 +16,8 @@ DeviceDecorator = Struct.new(:device) do
   def happened_at
     device.last_used_at.utc
   end
+
+  def device_name
+    DeviceName.call(UserAgentParser::Parser.new, device)
+  end
 end

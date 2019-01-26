@@ -6,4 +6,8 @@ class Device < ApplicationRecord
   def decorate
     DeviceDecorator.new(self)
   end
+
+  def device_name
+    DeviceTracking::DeviceName.call(UserAgentParser::Parser.new, self)
+  end
 end
