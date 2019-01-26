@@ -21,6 +21,7 @@ EventDecorator = Struct.new(:event) do
   end
 
   def last_location
+    return '' unless event&.ip
     IpGeocoder.new(event.ip).location
   end
 end
