@@ -23,7 +23,6 @@ es:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
       sign_in_location_and_ip: 'Desde %{location} (Dirección IP: %{ip})'
-      sign_in_timestamp: Hace %{timestamp}
       ssn: Número de Seguro Social
       unknown_location: ubicación desconocida
       verification:
