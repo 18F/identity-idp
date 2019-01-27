@@ -92,12 +92,12 @@ feature 'LOA3 Single Sign On' do
 
           click_link(t('idv.messages.usps.resend'))
 
-          expect(user.device_events.account_verified.size).to be(0)
+          expect(user.events.account_verified.size).to be(0)
           expect(current_path).to eq(idv_usps_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(user.device_events.usps_mail_sent.size).to eq 2
+          expect(user.events.usps_mail_sent.size).to eq 2
           expect(current_path).to eq(idv_come_back_later_path)
         end
 
@@ -113,7 +113,7 @@ feature 'LOA3 Single Sign On' do
 
           click_link(t('idv.messages.usps.resend'))
 
-          expect(user.device_events.account_verified.size).to be(0)
+          expect(user.events.account_verified.size).to be(0)
           expect(current_path).to eq(idv_usps_path)
 
           click_button(t('idv.buttons.mail.resend'))
