@@ -103,19 +103,13 @@ class UserDecorator
   end
 
   def recent_events
-    events = DeviceEvent.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
+    events = Event.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
              map(&:decorate)
-    events.concat legacy_events(MAX_RECENT_EVENTS - events.size)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 
   def identity_events
     user.identities.order('last_authenticated_at DESC').map(&:decorate)
-  end
-
-  def legacy_events(event_count)
-    return [] if event_count <= 0
-    user.events.order('created_at DESC').limit(event_count).map(&:decorate)
   end
 
   def recent_devices

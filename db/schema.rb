@@ -65,17 +65,6 @@ ActiveRecord::Schema.define(version: 20190111231134) do
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
   end
 
-  create_table "device_events", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "device_id", null: false
-    t.integer "event_type", null: false
-    t.string "ip", limit: 255, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["device_id", "created_at"], name: "index_device_events_on_device_id_created_at"
-    t.index ["user_id", "created_at"], name: "index_device_events_on_user_id_created_at"
-  end
-
   create_table "devices", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "cookie_uuid", null: false
@@ -118,6 +107,10 @@ ActiveRecord::Schema.define(version: 20190111231134) do
     t.integer "event_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "device_id"
+    t.string "ip"
+    t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
+    t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

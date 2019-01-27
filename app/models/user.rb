@@ -60,7 +60,7 @@ class User < ApplicationRecord
 
   def device_events
     device_ids = devices.map(&:id)
-    DeviceEvent.where(device_id: device_ids)
+    Event.where(device_id: device_ids)
   end
 
   def confirmed_email_addresses

@@ -277,7 +277,7 @@ describe ApplicationController do
   def expect_user_event(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)
-    event = DeviceEvent.first
+    event = Event.first
     expect(event.event_type).to eq(event_type)
     expect(event.device_id).to eq(device.id)
   end

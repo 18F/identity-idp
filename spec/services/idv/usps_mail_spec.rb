@@ -65,7 +65,7 @@ describe Idv::UspsMail do
                              last_used_at: last_login_at,
                              last_ip: remote_ip)
     end
-    DeviceEvent.create(user_id: user.id,
+    Event.create(user_id: user.id,
                        device_id: device.id,
                        ip: remote_ip,
                        event_type: event,

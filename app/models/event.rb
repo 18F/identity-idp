@@ -19,6 +19,8 @@ class Event < ApplicationRecord
     webauthn_key_removed: 15,
     phone_removed: 16,
     backup_codes_added: 17,
+    sign_in_before_2fa: 18,
+    sign_in_after_2fa: 19,
   }
 
   validates :event_type, presence: true
