@@ -173,7 +173,7 @@ describe ApplicationController do
 
         subject.create_user_event(:account_created)
 
-        expect_user_event(user, 'account_created')
+        expect_user_event_to_have_been_created(user, 'account_created')
       end
     end
 
@@ -181,7 +181,7 @@ describe ApplicationController do
       it 'creates an Event object for the specified user' do
         subject.create_user_event(:account_created, user)
 
-        expect_user_event(user, 'account_created')
+        expect_user_event_to_have_been_created(user, 'account_created')
       end
     end
   end
@@ -274,7 +274,7 @@ describe ApplicationController do
     end
   end
 
-  def expect_user_event(user, event_type)
+  def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)
     event = Event.first
