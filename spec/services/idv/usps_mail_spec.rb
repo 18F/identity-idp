@@ -52,7 +52,7 @@ describe Idv::UspsMail do
     event = hash[:event_type]
     now = Time.zone.now
     updated_at = hash[:updated_at] || now
-    device = DeviceTracking::HasDevice.call(user, uuid)
+    device = DeviceTracking::LookupDeviceForUser.call(user, uuid)
     if device
       device.last_used_at = now
       device.last_ip = remote_ip

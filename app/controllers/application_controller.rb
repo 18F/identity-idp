@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
   end
 
   def create_or_update_device(user)
-    device = DeviceTracking::HasDevice.call(user, cookies[:device])
+    device = DeviceTracking::LookupDeviceForUser.call(user, cookies[:device])
     if device
       DeviceTracking::UpdateDevice.call(device, request)
     else
