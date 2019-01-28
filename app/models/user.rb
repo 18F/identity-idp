@@ -58,11 +58,6 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
-  def device_events
-    device_ids = devices.map(&:id)
-    Event.where(device_id: device_ids)
-  end
-
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil)
   end
