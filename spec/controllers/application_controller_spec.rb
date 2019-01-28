@@ -165,7 +165,7 @@ describe ApplicationController do
   end
 
   describe '#create_user_event' do
-    let(:user) { build_stubbed(:user) }
+    let(:user) { create(:user) }
 
     context 'when the user is not specified' do
       it 'creates an Event object for the current_user' do
