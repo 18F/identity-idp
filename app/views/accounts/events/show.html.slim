@@ -11,3 +11,5 @@
     = @device.device_name
   - @events.each do |event|
     = render event.event_partial, event: event
+
+= link_to cancel_link_text, account_path, class: 'h5'

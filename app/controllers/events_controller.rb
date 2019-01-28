@@ -4,7 +4,7 @@ class EventsController < ApplicationController
   layout 'card_wide'
 
   def show
-    analytics.track_event(Analytics::ACCOUNT_VISIT)
+    analytics.track_event(Analytics::EVENTS_VISIT)
     @view_model = AccountShow.new(
       decrypted_pii: nil,
       personal_key: nil,
@@ -19,6 +19,6 @@ class EventsController < ApplicationController
   def device_and_events
     id = params[:id]
     @events = DeviceTracking::ListDeviceEvents.call(current_user, id).map(&:decorate)
-    @device = Device.where(id: id.to_i).first
+    @device = Device.find_by(user_id: current_user.id, id: id.to_i)
   end
 end
