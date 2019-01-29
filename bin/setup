@@ -71,6 +71,10 @@ Dir.chdir APP_ROOT do
   run 'bin/rake db:create RAILS_ENV=test'
   run 'bin/rake db:reset RAILS_ENV=test'
 
+  puts "\n== Cleaning up old assets =="
+  run "rake assets:clobber"
+  run "RAILS_ENV=test rake assets:clobber"
+
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
   run "rm -rf tmp/cache"
