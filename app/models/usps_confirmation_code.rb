@@ -5,7 +5,7 @@ class UspsConfirmationCode < ApplicationRecord
     find do |usps_confirmation_code|
       Pii::Fingerprinter.verify(
         Base32::Crockford.normalize(otp),
-        usps_confirmation_code.otp_fingerprint
+        usps_confirmation_code.otp_fingerprint,
       )
     end
   end

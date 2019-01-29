@@ -7,7 +7,7 @@ describe SignUp::PersonalKeysController do
       stub_sign_in
 
       expect(@analytics).to receive(:track_event).with(
-        Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT
+        Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT,
       )
 
       get :show

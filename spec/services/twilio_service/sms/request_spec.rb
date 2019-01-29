@@ -9,7 +9,7 @@ describe TwilioService::Sms::Request do
     context 'when message signature is invalid' do
       it 'returns false' do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(false)
+          receive(:validate).and_return(false),
         )
 
         message = described_class.new(url, params, signature)
@@ -21,7 +21,7 @@ describe TwilioService::Sms::Request do
     context 'when message signature is valid' do
       before do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(true)
+          receive(:validate).and_return(true),
         )
       end
 

@@ -41,7 +41,7 @@ module Users
     def user_phone_form_params
       params.require(:user_phone_form).permit(
         :international_code,
-        :phone
+        :phone,
       )
     end
   end

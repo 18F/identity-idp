@@ -6,7 +6,7 @@ describe OtpDeliverySelectionForm do
     OtpDeliverySelectionForm.new(
       build_stubbed(:user),
       phone_to_deliver_to,
-      'authentication'
+      'authentication',
     )
   end
 
@@ -57,7 +57,7 @@ describe OtpDeliverySelectionForm do
         subject = OtpDeliverySelectionForm.new(
           build_stubbed(:user),
           nil,
-          'authentication'
+          'authentication',
         )
 
         expect(FormResponse).to receive(:new).
@@ -72,7 +72,7 @@ describe OtpDeliverySelectionForm do
         form = OtpDeliverySelectionForm.new(
           user,
           '+12423270143',
-          'authentication'
+          'authentication',
         )
         attributes = { otp_delivery_preference: 'sms' }
 
@@ -92,7 +92,7 @@ describe OtpDeliverySelectionForm do
         form = OtpDeliverySelectionForm.new(
           user,
           '+17035551212',
-          'authentication'
+          'authentication',
         )
 
         expect(UpdateUser).to_not receive(:new)

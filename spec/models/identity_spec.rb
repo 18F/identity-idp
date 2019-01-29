@@ -5,7 +5,7 @@ describe Identity do
   let(:identity) do
     Identity.create(
       user_id: user.id,
-      service_provider: 'externalapp'
+      service_provider: 'externalapp',
     )
   end
   subject { identity }
@@ -88,7 +88,7 @@ describe Identity do
   let(:identity_with_sp) do
     Identity.create(
       user_id: user.id,
-      service_provider: service_provider.issuer
+      service_provider: service_provider.issuer,
     )
   end
 

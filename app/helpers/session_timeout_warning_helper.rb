@@ -14,7 +14,7 @@ module SessionTimeoutWarningHelper
   def timeout_refresh_path
     URIService.add_params(
       request.original_fullpath,
-      timeout: true
+      timeout: true,
     )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 
@@ -39,7 +39,7 @@ module SessionTimeoutWarningHelper
       render(
         partial: 'session_timeout/expire_session',
         formats: [:js],
-        locals: { session_timeout_in: session_timeout_in }
+        locals: { session_timeout_in: session_timeout_in },
       )
     end
   end

@@ -319,7 +319,7 @@ feature 'SP-initiated logout' do
 
     it 'completes logout at IdP' do
       allow_any_instance_of(ServiceProvider).to receive(:metadata).and_return(
-        service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata'
+        service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
       )
 
       visit destroy_user_session_url

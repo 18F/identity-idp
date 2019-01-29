@@ -10,7 +10,7 @@ describe Idv::ProfileMaker do
       described_class.new(
         applicant: applicant,
         user: user,
-        user_password: user_password
+        user_password: user_password,
       )
     end
 

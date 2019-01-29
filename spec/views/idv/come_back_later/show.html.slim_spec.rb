@@ -16,7 +16,7 @@ describe 'idv/come_back_later/show.html.slim' do
       render
       expect(rendered).to have_link(
         t('idv.buttons.continue_plain'),
-        href: sp_return_url
+        href: sp_return_url,
       )
     end
 
@@ -25,8 +25,8 @@ describe 'idv/come_back_later/show.html.slim' do
       expect(rendered).to have_content(
         strip_tags(t(
                      'idv.messages.come_back_later_sp_html',
-                     sp: @decorated_session.sp_name
-                   ))
+                     sp: @decorated_session.sp_name,
+                   )),
       )
     end
   end
@@ -38,7 +38,7 @@ describe 'idv/come_back_later/show.html.slim' do
       render
       expect(rendered).to have_link(
         t('idv.buttons.continue_plain', sp: sp_name),
-        href: account_path
+        href: account_path,
       )
     end
   end
@@ -51,7 +51,7 @@ describe 'idv/come_back_later/show.html.slim' do
       render
       expect(rendered).to have_link(
         t('idv.buttons.continue_plain', sp: sp_name),
-        href: account_path
+        href: account_path,
       )
     end
 
@@ -60,8 +60,8 @@ describe 'idv/come_back_later/show.html.slim' do
       expect(rendered).to have_content(
         strip_tags(t(
                      'idv.messages.come_back_later_no_sp_html',
-                     app: APP_NAME
-                   ))
+                     app: APP_NAME,
+                   )),
       )
     end
   end

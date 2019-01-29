@@ -69,7 +69,7 @@ class PhoneVerification
       code: error_code,
       message: error_message,
       status: response.status,
-      response: response.body
+      response: response.body,
     )
   end
 
@@ -78,7 +78,7 @@ class PhoneVerification
       code: 4_815_162_342,
       message: "Twilio Verify: #{exception.class}",
       status: 0,
-      response: ''
+      response: '',
     )
   end
 

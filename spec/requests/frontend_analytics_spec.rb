@@ -33,7 +33,7 @@ describe 'frontend analytics requests' do
       expect(analytics).to have_received(:track_event).
         with(
           Analytics::FRONTEND_BROWSER_CAPABILITIES,
-          hash_including(platform_authenticator: false)
+          hash_including(platform_authenticator: false),
         )
     end
 
@@ -46,7 +46,7 @@ describe 'frontend analytics requests' do
       expect(analytics).to have_received(:track_event).
         with(
           Analytics::FRONTEND_BROWSER_CAPABILITIES,
-          hash_including(platform_authenticator: true)
+          hash_including(platform_authenticator: true),
         ).
         once
     end

@@ -26,8 +26,8 @@ describe SessionTimeoutWarningHelper do
         ActionDispatch::Request.new(
           'HTTP_HOST' => http_host,
           'PATH_INFO' => path_info,
-          'rack.url_scheme' => 'https'
-        )
+          'rack.url_scheme' => 'https',
+        ),
       )
     end
 

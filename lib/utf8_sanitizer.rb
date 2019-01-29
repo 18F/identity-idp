@@ -41,7 +41,7 @@ class Utf8Sanitizer
       ip: remote_ip(request),
       user_agent: request.user_agent,
       timestamp: Time.zone.now,
-      host: request.host,
+      hostname: request.host,
       visitor_id: sanitized_visitor_id(request),
       content_type: env['CONTENT_TYPE'],
     }.to_json

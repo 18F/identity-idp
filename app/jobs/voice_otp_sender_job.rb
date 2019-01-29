@@ -27,10 +27,10 @@ class VoiceOtpSenderJob < ApplicationJob
       url: BasicAuthUrl.build(
         voice_otp_url(
           encrypted_code: cipher.encrypt(code),
-          locale: locale_url_param
-        )
+          locale: locale_url_param,
+        ),
       ),
-      record: Figaro.env.twilio_record_voice == 'true'
+      record: Figaro.env.twilio_record_voice == 'true',
     )
   end
 

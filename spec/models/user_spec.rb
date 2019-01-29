@@ -128,7 +128,7 @@ describe User do
 
       it 'is true when the correct valud is provided' do
         expect(
-          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)
+          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid),
         ).to be_truthy
       end
     end
@@ -146,7 +146,7 @@ describe User do
 
       it 'is false when the user x509_dn_uuid value is provided' do
         expect(
-          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid)
+          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid),
         ).to be_falsey
       end
     end
@@ -231,12 +231,12 @@ describe User do
       user.identities << Identity.create(
         service_provider: 'first',
         last_authenticated_at: Time.zone.now - 1.hour,
-        session_uuid: SecureRandom.uuid
+        session_uuid: SecureRandom.uuid,
       )
       user.identities << Identity.create(
         service_provider: 'last',
         last_authenticated_at: Time.zone.now,
-        session_uuid: SecureRandom.uuid
+        session_uuid: SecureRandom.uuid,
       )
     end
 
@@ -269,7 +269,7 @@ describe User do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :signed_up)
       user.identities << Identity.create(
-        service_provider: 'entity_id', session_uuid: SecureRandom.uuid
+        service_provider: 'entity_id', session_uuid: SecureRandom.uuid,
       )
       user_id = user.id
       user.destroy!

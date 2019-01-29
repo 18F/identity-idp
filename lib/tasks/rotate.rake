@@ -34,7 +34,7 @@ namespace :rotate do
     ProgressBar.create(
       title: label,
       total: num,
-      format: '%t: |%B| %j%% [%a / %e]'
+      format: '%t: |%B| %j%% [%a / %e]',
     )
   end
 end

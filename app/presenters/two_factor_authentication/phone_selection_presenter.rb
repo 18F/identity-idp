@@ -12,7 +12,7 @@ module TwoFactorAuthentication
       if configuration.present?
         t(
           "two_factor_authentication.#{option_mode}.#{method}_info_html",
-          phone: masked_number(configuration.phone)
+          phone: masked_number(configuration.phone),
         )
       else
         t("two_factor_authentication.#{option_mode}.#{method}_info")

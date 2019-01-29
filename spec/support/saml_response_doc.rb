@@ -44,7 +44,7 @@ class SamlResponseDoc
   def saml_response(settings)
     @_saml_response ||= OneLogin::RubySaml::Response.new(
       raw_xml_response,
-      settings: settings
+      settings: settings,
     )
   end
 
@@ -58,8 +58,8 @@ class SamlResponseDoc
       Nokogiri::XML(
         OneLogin::RubySaml::Response.new(
           raw_xml_response,
-          settings: sp1_saml_settings
-        ).decrypted_document.to_s
+          settings: sp1_saml_settings,
+        ).decrypted_document.to_s,
       )
     else
       @original_encrypted = false
@@ -79,7 +79,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:Response/saml:Assertion',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     )
   end
 
@@ -87,7 +87,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:Response/saml:Assertion/saml:AuthnStatement/@SessionIndex',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     ).to_s
   end
 
@@ -99,7 +99,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:LogoutRequest',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     )[0]
   end
 
@@ -107,7 +107,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:LogoutResponse/samlp:Status/samlp:StatusCode/@Value',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     ).first.content
   end
 
@@ -115,7 +115,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:LogoutResponse',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     ).first
   end
 
@@ -152,42 +152,42 @@ class SamlResponseDoc
   def signature_method_nodeset
     signature.xpath(
       './ds:SignedInfo/ds:SignatureMethod',
-      ds: Saml::XML::Namespaces::SIGNATURE
+      ds: Saml::XML::Namespaces::SIGNATURE,
     )
   end
 
   def signature_canon_method_nodeset
     signature.xpath(
       './ds:SignedInfo/ds:CanonicalizationMethod',
-      ds: Saml::XML::Namespaces::SIGNATURE
+      ds: Saml::XML::Namespaces::SIGNATURE,
     )
   end
 
   def digest_method_nodeset
     signature.xpath(
       './ds:SignedInfo/ds:Reference/ds:DigestMethod',
-      ds: Saml::XML::Namespaces::SIGNATURE
+      ds: Saml::XML::Namespaces::SIGNATURE,
     )
   end
 
   def transforms_nodeset
     @_transforms ||= response_doc.xpath(
       '//ds:Reference/ds:Transforms',
-      ds: Saml::XML::Namespaces::SIGNATURE
+      ds: Saml::XML::Namespaces::SIGNATURE,
     )
   end
 
   def transform(algorithm)
     @_transform ||= transforms_nodeset[0].xpath(
       "//ds:Transform[@Algorithm='#{algorithm}']",
-      ds: Saml::XML::Namespaces::SIGNATURE
+      ds: Saml::XML::Namespaces::SIGNATURE,
     )[0]
   end
 
   def subject_nodeset
     response_doc.xpath(
       '//ds:Subject',
-      ds: Saml::XML::Namespaces::ASSERTION
+      ds: Saml::XML::Namespaces::ASSERTION,
     )
   end
 
@@ -208,14 +208,14 @@ class SamlResponseDoc
     organization_nodeset[0].
       xpath(
         './ds:OrganizationDisplayName',
-        ds: Saml::XML::Namespaces::METADATA
+        ds: Saml::XML::Namespaces::METADATA,
       ).first.content
   end
 
   def attribute_authority_organization_nodeset
     metadata.xpath(
       './ds:AttributeAuthorityDescriptor/ds:Organization',
-      ds: Saml::XML::Namespaces::METADATA
+      ds: Saml::XML::Namespaces::METADATA,
     )
   end
 
@@ -228,28 +228,28 @@ class SamlResponseDoc
     attribute_authority_organization_nodeset[0].
       xpath(
         './ds:OrganizationDisplayName',
-        ds: Saml::XML::Namespaces::METADATA
+        ds: Saml::XML::Namespaces::METADATA,
       ).first.content
   end
 
   def phone_number
     response_doc.at(
       '//ds:Attribute[@Name="phone"]',
-      ds: Saml::XML::Namespaces::ASSERTION
+      ds: Saml::XML::Namespaces::ASSERTION,
     )
   end
 
   def uuid
     response_doc.at(
       '//ds:Attribute[@Name="uuid"]',
-      ds: Saml::XML::Namespaces::ASSERTION
+      ds: Saml::XML::Namespaces::ASSERTION,
     ).children.children.to_s
   end
 
   def attribute_node_for(name)
     response_doc.at(
       %(//ds:Attribute[@Name="#{name}"]),
-      ds: Saml::XML::Namespaces::ASSERTION
+      ds: Saml::XML::Namespaces::ASSERTION,
     )
   end
 
@@ -261,7 +261,7 @@ class SamlResponseDoc
     response_doc.xpath(
       '//samlp:Response/saml:Assertion/saml:AuthnStatement',
       samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION
+      saml: Saml::XML::Namespaces::ASSERTION,
     )[0]
   end
 

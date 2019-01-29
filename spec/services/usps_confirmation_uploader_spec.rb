@@ -17,7 +17,7 @@ RSpec.describe UspsConfirmationUploader do
           zipcode: '98021',
           otp: 'ZYX987',
           issuer: '',
-        }
+        },
       ),
     ]
   end

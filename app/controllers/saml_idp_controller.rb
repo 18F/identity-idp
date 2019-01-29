@@ -77,7 +77,7 @@ class SamlIdpController < ApplicationController
     SamlIdp::MetadataBuilder.new(
       config,
       SamlCertRotationManager.new_certificate,
-      SamlCertRotationManager.new_secret_key
+      SamlCertRotationManager.new_secret_key,
     )
   end
 
@@ -94,7 +94,7 @@ class SamlIdpController < ApplicationController
   def capture_analytics
     analytics_payload = @result.to_h.merge(
       idv: identity_needs_verification?,
-      finish_profile: profile_needs_verification?
+      finish_profile: profile_needs_verification?,
     )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
   end
@@ -116,7 +116,7 @@ class SamlIdpController < ApplicationController
     render(
       template: 'saml_idp/shared/saml_post_binding',
       locals: { action_url: action_url, message: message, type: type },
-      layout: false
+      layout: false,
     )
   end
 

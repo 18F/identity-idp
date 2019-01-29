@@ -1,7 +1,7 @@
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     attr_reader(
-      :otp_delivery_preference
+      :otp_delivery_preference,
     )
 
     def header
@@ -46,7 +46,7 @@ module TwoFactorAuthCode
       :unconfirmed_phone,
       :account_reset_token,
       :confirmation_for_phone_change,
-      :voice_otp_delivery_unsupported
+      :voice_otp_delivery_unsupported,
     )
 
     def account_reset_link

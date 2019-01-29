@@ -7,7 +7,7 @@ module AccountResetHelper
       requested_at: Time.zone.now,
       cancelled_at: nil,
       granted_at: nil,
-      granted_token: nil
+      granted_token: nil,
     )
     request_token
   end

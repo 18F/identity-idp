@@ -15,7 +15,7 @@ module SignUp
         process_valid_confirmation_token
         request_id = params.fetch(:_request_id, '')
         redirect_to sign_up_enter_password_url(
-          request_id: request_id, confirmation_token: @confirmation_token
+          request_id: request_id, confirmation_token: @confirmation_token,
         )
       else
         process_confirmed_user

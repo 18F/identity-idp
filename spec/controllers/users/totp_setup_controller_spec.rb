@@ -6,7 +6,7 @@ describe Users::TotpSetupController, devise: true do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        [:confirm_two_factor_authenticated, if: :two_factor_enabled?]
+        [:confirm_two_factor_authenticated, if: :two_factor_enabled?],
       )
     end
   end
@@ -31,7 +31,7 @@ describe Users::TotpSetupController, devise: true do
 
       it 'can be used to generate a qrcode with UserDecorator#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret])
+          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 
@@ -73,7 +73,7 @@ describe Users::TotpSetupController, devise: true do
 
       it 'can be used to generate a qrcode with UserDecorator#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret])
+          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 

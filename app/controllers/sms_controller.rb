@@ -24,7 +24,7 @@ class SmsController < ApplicationController
 
     analytics.track_event(
       Analytics::TWILIO_SMS_INBOUND_MESSAGE_RECEIVED,
-      result.to_h
+      result.to_h,
     )
 
     head :accepted
@@ -33,7 +33,7 @@ class SmsController < ApplicationController
   def process_failure(result)
     analytics.track_event(
       Analytics::TWILIO_SMS_INBOUND_MESSAGE_VALIDATION_FAILED,
-      result.to_h
+      result.to_h,
     )
 
     if !@message.signature_valid?

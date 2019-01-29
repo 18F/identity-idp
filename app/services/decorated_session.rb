@@ -12,7 +12,7 @@ class DecoratedSession
         sp: sp,
         view_context: view_context,
         sp_session: sp_session,
-        service_provider_request: service_provider_request
+        service_provider_request: service_provider_request,
       )
     else
       SessionDecorator.new(view_context: view_context)

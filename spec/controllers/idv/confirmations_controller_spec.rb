@@ -8,14 +8,14 @@ describe Idv::ConfirmationsController do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
-      issuer: nil
+      issuer: nil,
     )
     idv_session.applicant = applicant
     idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      user_password: password
+      user_password: password,
     )
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
@@ -44,7 +44,7 @@ describe Idv::ConfirmationsController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_vendor_session_started
+        :confirm_idv_vendor_session_started,
       )
     end
 

@@ -4,7 +4,7 @@ module Encryption
       :encrypted_password,
       :encryption_key,
       :password_salt,
-      :password_cost
+      :password_cost,
     ) do
       def self.parse_from_string(digest_string)
         data = JSON.parse(digest_string, symbolize_names: true)
@@ -12,7 +12,7 @@ module Encryption
           data[:encrypted_password],
           data[:encryption_key],
           data[:password_salt],
-          data[:password_cost]
+          data[:password_cost],
         )
       rescue JSON::ParserError, TypeError
         raise EncryptionError, 'digest contains invalid json'
@@ -36,7 +36,7 @@ module Encryption
         uak.encrypted_password,
         uak.encryption_key,
         salt,
-        uak.cost
+        uak.cost,
       ).to_s
     end
 

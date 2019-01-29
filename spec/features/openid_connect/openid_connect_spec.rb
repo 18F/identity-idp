@@ -77,7 +77,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
         nonce: SecureRandom.hex,
-        prompt: 'select_account'
+        prompt: 'select_account',
       )
 
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -107,7 +107,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
         nonce: SecureRandom.hex,
-        prompt: 'select_account'
+        prompt: 'select_account',
       )
 
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -151,7 +151,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
         prompt: 'select_account',
         nonce: nonce,
         code_challenge: code_challenge,
-        code_challenge_method: 'S256'
+        code_challenge_method: 'S256',
       )
 
       _user = sign_in_live_with_2fa(user)
@@ -195,7 +195,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
           nonce: SecureRandom.hex,
           prompt: 'select_account',
           code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
-          code_challenge_method: 'S256'
+          code_challenge_method: 'S256',
         )
 
         sp_content = [
@@ -252,7 +252,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
         nonce: SecureRandom.hex,
-        prompt: 'select_account'
+        prompt: 'select_account',
       )
       visit oidc_path
 
@@ -298,7 +298,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       visit openid_connect_logout_path(
         post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/logout',
         state: state,
-        id_token_hint: id_token
+        id_token_hint: id_token,
       )
 
       current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
@@ -366,7 +366,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -382,7 +382,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -407,7 +407,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
       prompt: 'select_account',
       nonce: nonce,
       code_challenge: code_challenge,
-      code_challenge_method: 'S256'
+      code_challenge_method: 'S256',
     )
 
     _user = sign_in_live_with_2fa(user)
@@ -439,7 +439,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
   def client_private_key
     @client_private_key ||= begin
       OpenSSL::PKey::RSA.new(
-        File.read(Rails.root.join('keys', 'saml_test_sp.key'))
+        File.read(Rails.root.join('keys', 'saml_test_sp.key')),
       )
     end
   end
@@ -548,7 +548,7 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
     allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
     allow(MockSession).to receive(:sign) do |_algorithm, _key, input|
       JWT::Algos::Rsa.sign(
-        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key)
+        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key),
       )
     end
   end

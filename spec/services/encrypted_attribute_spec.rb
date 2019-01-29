@@ -48,25 +48,16 @@ describe EncryptedAttribute do
 
   describe '#stale?' do
     it 'returns true when email was encrypted with old key' do
-      allow(Figaro.env).to receive(:attribute_encryption_without_kms).and_return('false')
       encrypted_with_old_key = encrypted_email
       rotate_attribute_encryption_key
-
-      expect(EncryptedAttribute.new(encrypted_with_old_key).stale?).to eq true
-    end
-
-    it 'returns true with legacy encryption and old key now switched to encryption without kms' do
-      encrypted_with_old_key = encrypted_email
-      rotate_attribute_encryption_key
-      allow(Figaro.env).to receive(:attribute_encryption_without_kms).and_return('true')
 
       expect(EncryptedAttribute.new(encrypted_with_old_key).stale?).to eq true
     end
 
     it 'returns false when email was encrypted with current key' do
-      ee = EncryptedAttribute.new(encrypted_email)
+      encrypted_with_old_key = EncryptedAttribute.new(encrypted_email)
 
-      expect(ee.stale?).to eq false
+      expect(encrypted_with_old_key.stale?).to eq false
     end
   end
 end

@@ -16,7 +16,7 @@ class FakeSms
     self.class.messages << Message.new(
       opts[:to],
       opts[:body],
-      opts[:messaging_service_sid]
+      opts[:messaging_service_sid],
     )
   end
 

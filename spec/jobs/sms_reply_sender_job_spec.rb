@@ -17,7 +17,7 @@ describe SmsReplySenderJob do
     subject(:perform) do
       SmsReplySenderJob.perform_now(
         to: phone,
-        body: body
+        body: body,
       )
     end
 

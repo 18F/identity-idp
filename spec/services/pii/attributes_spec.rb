@@ -13,7 +13,7 @@ describe Pii::Attributes do
     it 'initializes from complex Hash' do
       pii = described_class.new_from_hash(
         first_name: 'José',
-        last_name: 'Foo'
+        last_name: 'Foo',
       )
 
       expect(pii.first_name.to_s).to eq 'José'

@@ -35,7 +35,7 @@ feature 'Signing in via one-time use personal key' do
       click_submit_default
 
       expect(page).to have_content(
-        t('two_factor_authentication.max_personal_key_login_attempts_reached')
+        t('two_factor_authentication.max_personal_key_login_attempts_reached'),
       )
     end
   end

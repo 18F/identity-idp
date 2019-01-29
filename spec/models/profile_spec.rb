@@ -9,7 +9,7 @@ describe Profile do
       dob: '1920-01-01',
       ssn: '666-66-1234',
       first_name: 'Jane',
-      last_name: 'Doe'
+      last_name: 'Doe',
     )
   end
 

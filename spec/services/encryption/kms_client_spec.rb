@@ -104,7 +104,7 @@ describe Encryption::KmsClient do
 
       stub_mapped_aws_kms_client(
         long_kms_plaintext[0..long_kms_plaintext_chunksize - 1] => 'chunk1',
-        long_kms_plaintext[long_kms_plaintext_chunksize..-1] => 'chunk2'
+        long_kms_plaintext[long_kms_plaintext_chunksize..-1] => 'chunk2',
       )
       allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     end

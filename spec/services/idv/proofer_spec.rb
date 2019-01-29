@@ -23,7 +23,7 @@ describe Idv::Proofer do
 
     original_descendants = Proofer::Base.descendants
     allow(Proofer::Base).to receive(:descendants).and_return(
-      original_descendants + dummy_vendors
+      original_descendants + dummy_vendors,
     )
 
     subject.instance_variable_set(:@vendors, nil)

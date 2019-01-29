@@ -44,7 +44,7 @@ class WebauthnVerificationForm
       authenticator_data: Base64.decode64(@authenticator_data),
       client_data_json: Base64.decode64(@client_data_json),
       signature: Base64.decode64(@signature),
-      credential_id: Base64.decode64(@credential_id)
+      credential_id: Base64.decode64(@credential_id),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
     assertion_response.valid?(@challenge.pack('c*'), original_origin,

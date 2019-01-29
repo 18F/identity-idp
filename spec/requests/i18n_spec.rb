@@ -15,7 +15,7 @@ describe 'i18n requests' do
 
       post root_path(
         locale: :en,
-        params: { user: { email: 'asdf@gmail.com', passowrd: '123abcdef' } }
+        params: { user: { email: 'asdf@gmail.com', passowrd: '123abcdef' } },
       )
       get response.headers['Location']
 

@@ -12,7 +12,7 @@ describe 'Account history' do
       :active,
       user: user,
       last_authenticated_at: Time.zone.now - 80.days,
-      service_provider: 'http://localhost:3000'
+      service_provider: 'http://localhost:3000',
     )
   end
   let(:usps_mail_sent_again_event) do
@@ -24,7 +24,7 @@ describe 'Account history' do
       :active,
       user: user,
       last_authenticated_at: Time.zone.now - 50.days,
-      service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata'
+      service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata',
     )
   end
   let(:account_created_timestamp) { account_created_event.decorate.happened_at_in_words }
@@ -62,12 +62,15 @@ describe 'Account history' do
     end
 
     expect(page).to have_content(
-      t('event_types.authenticated_at', service_provider: identity_without_link.display_name)
+      t('event_types.authenticated_at', service_provider: identity_without_link.display_name),
     )
     expect(page).to_not have_link(identity_without_link.display_name)
 
     expect(page).to have_content(
-      t('event_types.authenticated_at_html', service_provider_link: identity_with_link.display_name)
+      t(
+        'event_types.authenticated_at_html',
+        service_provider_link: identity_with_link.display_name,
+      ),
     )
     expect(page).to have_link(
       identity_with_link.display_name, href: 'http://localhost:3000'

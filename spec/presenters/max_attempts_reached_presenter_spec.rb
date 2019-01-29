@@ -41,7 +41,7 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
         [
           presenter.send(:please_try_again),
           presenter.send(:read_about_two_factor_authentication),
-        ]
+        ],
       )
     end
   end

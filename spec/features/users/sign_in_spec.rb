@@ -148,7 +148,7 @@ feature 'Sign in' do
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes),
       )
       expect(page).to have_field('Email', with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
@@ -159,7 +159,7 @@ feature 'Sign in' do
 
       visit root_path
       expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes),
       )
     end
   end
@@ -199,7 +199,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes),
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
@@ -332,7 +332,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Bermuda'
+        location: 'Bermuda',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
@@ -353,7 +353,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India'
+        location: 'India',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
@@ -367,7 +367,7 @@ feature 'Sign in' do
                     otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit otp_send_path(
-        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
@@ -376,7 +376,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India'
+        location: 'India',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
@@ -390,7 +390,7 @@ feature 'Sign in' do
                     otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit otp_send_path(
-        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
@@ -399,7 +399,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India'
+        location: 'India',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
