@@ -30,7 +30,7 @@ describe CompletionsDecider do
       it 'returns true' do
         decider = CompletionsDecider.new(
           user_agent: desktop_user_agent,
-          request_url: request_url_with_app_redirect_uri
+          request_url: request_url_with_app_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq true
@@ -41,7 +41,7 @@ describe CompletionsDecider do
       it 'returns false' do
         decider = CompletionsDecider.new(
           user_agent: desktop_user_agent,
-          request_url: request_url_with_web_redirect_uri
+          request_url: request_url_with_web_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq false
@@ -52,7 +52,7 @@ describe CompletionsDecider do
       it 'returns false' do
         decider = CompletionsDecider.new(
           user_agent: desktop_user_agent,
-          request_url: request_url_without_redirect_uri
+          request_url: request_url_without_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq false
@@ -63,7 +63,7 @@ describe CompletionsDecider do
       it 'returns false' do
         decider = CompletionsDecider.new(
           user_agent: mobile_user_agent,
-          request_url: request_url_without_redirect_uri
+          request_url: request_url_without_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq false
@@ -74,7 +74,7 @@ describe CompletionsDecider do
       it 'returns false' do
         decider = CompletionsDecider.new(
           user_agent: mobile_user_agent,
-          request_url: request_url_with_web_redirect_uri
+          request_url: request_url_with_web_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq false
@@ -85,7 +85,7 @@ describe CompletionsDecider do
       it 'returns false' do
         decider = CompletionsDecider.new(
           user_agent: mobile_user_agent,
-          request_url: request_url_with_app_redirect_uri
+          request_url: request_url_with_app_redirect_uri,
         )
 
         expect(decider.go_back_to_mobile_app?).to eq false

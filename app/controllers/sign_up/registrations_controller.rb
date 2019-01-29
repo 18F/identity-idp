@@ -54,7 +54,7 @@ module SignUp
       session[:email] = @register_user_email_form.email
 
       redirect_to sign_up_verify_email_url(
-        resend: resend_confirmation, request_id: permitted_params[:request_id]
+        resend: resend_confirmation, request_id: permitted_params[:request_id],
       )
     end
 

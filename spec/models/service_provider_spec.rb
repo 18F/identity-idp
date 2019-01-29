@@ -59,7 +59,7 @@ describe ServiceProvider do
         }
 
         yaml_attributes = ServiceProviderConfig.new(
-          issuer: 'http://localhost:3000'
+          issuer: 'http://localhost:3000',
         ).sp_attributes
 
         expect(service_provider.metadata).to eq yaml_attributes.merge!(fingerprint)
@@ -88,7 +88,7 @@ describe ServiceProvider do
 
       it 'calls with the user email' do
         expect(PivCacService).to receive(
-          :piv_cac_available_for_sp?
+          :piv_cac_available_for_sp?,
         ).with(service_provider, user.email_addresses.map(&:email))
 
         service_provider.piv_cac_available?(user)

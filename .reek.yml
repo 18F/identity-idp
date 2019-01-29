@@ -116,6 +116,7 @@ detectors:
       - Users::ConfirmationsController
       - ApplicationController
       - OpenidConnectAuthorizeForm
+      - OpenidConnectTokenForm
       - OpenidConnect::AuthorizationController
       - Idv::Session
       - User

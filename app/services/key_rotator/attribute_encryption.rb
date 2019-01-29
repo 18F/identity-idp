@@ -21,7 +21,7 @@ module KeyRotator
         next unless plain_attribute
 
         result[:"encrypted_#{attribute}"] = EncryptedAttribute.new_from_decrypted(
-          plain_attribute
+          plain_attribute,
         ).encrypted
       end
     end

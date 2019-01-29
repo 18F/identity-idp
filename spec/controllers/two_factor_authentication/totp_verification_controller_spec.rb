@@ -21,7 +21,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
       it 'resets the second_factor_attempts_count' do
         UpdateUser.new(
           user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 }
+          attributes: { second_factor_attempts_count: 1 },
         ).call
 
         post :create, params: { code: generate_totp_code(@secret) }
@@ -92,7 +92,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           :user,
           :signed_up,
           second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
-          second_factor_attempts_count: 3
+          second_factor_attempts_count: 3,
         )
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret

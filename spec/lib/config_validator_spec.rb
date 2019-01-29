@@ -10,7 +10,7 @@ describe ConfigValidator do
         'other_bad_key' => 'no',
         'up_bad_key' => 'YES   ',
         'cap_bad_key' => ' No',
-        'noncandidate_key' => 'yes'
+        'noncandidate_key' => 'yes',
       )
 
       mimic_figaro
@@ -20,7 +20,7 @@ describe ConfigValidator do
 
       expect { ConfigValidator.new.validate(env) }.to raise_error(
         RuntimeError,
-        %r{You have invalid values \(yes\/no\) for #{list}}
+        %r{You have invalid values \(yes\/no\) for #{list}},
       )
     end
 

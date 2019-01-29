@@ -19,7 +19,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_present: true,
           configuration_id: configuration.id,
           configuration_owner: user.uuid,
-          mfa_method_counts: { phone: 1 }
+          mfa_method_counts: { phone: 1 },
         )
       end
 
@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_present: true,
           configuration_id: configuration.id,
           configuration_owner: user.uuid,
-          mfa_method_counts: { piv_cac: 1 }
+          mfa_method_counts: { piv_cac: 1 },
         )
       end
 
@@ -66,7 +66,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_present: false,
           configuration_id: nil,
           configuration_owner: nil,
-          mfa_method_counts: { phone: 1, piv_cac: 1 }
+          mfa_method_counts: { phone: 1, piv_cac: 1 },
         )
       end
 
@@ -89,7 +89,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_present: true,
           configuration_id: configuration.id,
           configuration_owner: other_user.uuid,
-          mfa_method_counts: { phone: 1, piv_cac: 1 }
+          mfa_method_counts: { phone: 1, piv_cac: 1 },
         )
       end
 

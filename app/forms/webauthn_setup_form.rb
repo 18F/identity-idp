@@ -55,7 +55,7 @@ class WebauthnSetupForm
   def valid_attestation_response?(protocol)
     @attestation_response = ::WebAuthn::AuthenticatorAttestationResponse.new(
       attestation_object: Base64.decode64(@attestation_object),
-      client_data_json: Base64.decode64(@client_data_json)
+      client_data_json: Base64.decode64(@client_data_json),
     )
     safe_response("#{protocol}#{self.class.domain_name}")
   end

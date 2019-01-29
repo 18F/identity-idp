@@ -43,13 +43,13 @@ FactoryBot.define do
           if user.id.present?
             create(:webauthn_configuration,
                    { user: user }.merge(
-                     evaluator.with.slice(:name, :credential_id, :credential_public_key)
+                     evaluator.with.slice(:name, :credential_id, :credential_public_key),
                    ))
             user.webauthn_configurations.reload
           else
             user.webauthn_configurations << build(
               :webauthn_configuration,
-              evaluator.with.slice(:name, :credential_id, :credential_public_key)
+              evaluator.with.slice(:name, :credential_id, :credential_public_key),
             )
           end
         end
@@ -59,7 +59,7 @@ FactoryBot.define do
         if user.webauthn_configurations.empty?
           create(:webauthn_configuration,
                  { user: user }.merge(
-                   evaluator.with.slice(:name, :credential_id, :credential_public_key)
+                   evaluator.with.slice(:name, :credential_id, :credential_public_key),
                  ))
           user.webauthn_configurations.reload
         end
@@ -69,7 +69,7 @@ FactoryBot.define do
         if user.webauthn_configurations.empty?
           user.webauthn_configurations << build(
             :webauthn_configuration,
-            evaluator.with.slice(:name, :credential_id, :credential_public_key)
+            evaluator.with.slice(:name, :credential_id, :credential_public_key),
           )
         end
       end
@@ -82,15 +82,20 @@ FactoryBot.define do
           if user.id.present?
             create(:phone_configuration,
                    { user: user, delivery_preference: user.otp_delivery_preference }.merge(
-                     evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+                     evaluator.with.slice(
+                       :phone,
+                       :confirmed_at,
+                       :delivery_preference,
+                       :mfa_enabled,
+                     ),
                    ))
             user.phone_configurations.reload
           else
             user.phone_configurations << build(
               :phone_configuration,
               { delivery_preference: user.otp_delivery_preference }.merge(
-                evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
-              )
+                evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled),
+              ),
             )
           end
         end
@@ -100,7 +105,7 @@ FactoryBot.define do
         if user.phone_configurations.empty?
           create(:phone_configuration,
                  { user: user, delivery_preference: user.otp_delivery_preference }.merge(
-                   evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
+                   evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled),
                  ))
           user.phone_configurations.reload
         end
@@ -111,8 +116,8 @@ FactoryBot.define do
           user.phone_configurations << build(
             :phone_configuration,
             { delivery_preference: user.otp_delivery_preference }.merge(
-              evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled)
-            )
+              evaluator.with.slice(:phone, :confirmed_at, :delivery_preference, :mfa_enabled),
+            ),
           )
         end
       end

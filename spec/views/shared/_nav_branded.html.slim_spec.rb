@@ -12,7 +12,7 @@ describe 'shared/_nav_branded.html.slim' do
         sp: sp_with_logo,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: nil
+        service_provider_request: nil,
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       render
@@ -30,7 +30,7 @@ describe 'shared/_nav_branded.html.slim' do
         sp: sp_without_logo,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: nil
+        service_provider_request: nil,
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       render

@@ -25,7 +25,7 @@ module Encryption
         def self.extract_encrypted_data(parsed_json)
           encoded_encrypted_data = parsed_json['encrypted_data']
           raise EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
-            encoded_encrypted_data
+            encoded_encrypted_data,
           )
           decode(encoded_encrypted_data)
         end

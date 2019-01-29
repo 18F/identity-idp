@@ -11,7 +11,7 @@ class AccountsController < ApplicationController
     @view_model = AccountShow.new(
       decrypted_pii: cacher.fetch,
       personal_key: flash[:personal_key],
-      decorated_user: current_user.decorate
+      decorated_user: current_user.decorate,
     )
 
     @login_presenter = LoginPresenter.new(user: current_user)

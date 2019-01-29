@@ -66,7 +66,7 @@ module Users
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
-        mfa_method_counts: counts_hash
+        mfa_method_counts: counts_hash,
       )
     end
 

@@ -29,7 +29,7 @@ module Idv
 
     def applicant
       @applicant ||= idv_session.applicant.merge(
-        phone: normalized_phone
+        phone: normalized_phone,
       )
     end
 
@@ -63,7 +63,7 @@ module Idv
 
     def user_phones
       MfaContext.new(
-        idv_session.current_user
+        idv_session.current_user,
       ).phone_configurations.map do |phone_configuration|
         PhoneFormatter.format(phone_configuration.phone)
       end.compact

@@ -40,7 +40,7 @@ describe PivCacService do
         token = 'TEST:{"uuid":"hijackedUUID","subject":"hijackedDN"}'
         expect(PivCacService.decode_token(token)).to eq(
           'uuid' => 'hijackedUUID',
-          'subject' => 'hijackedDN'
+          'subject' => 'hijackedDN',
         )
       end
     end
@@ -104,11 +104,11 @@ describe PivCacService do
           stub_request(:post, 'localhost:8443').
             with(
               body: 'token=foo',
-              headers: { 'Authentication' => /^hmac\s+:.+:.+$/ }
+              headers: { 'Authentication' => /^hmac\s+:.+:.+$/ },
             ).
             to_return(
               status: [200, 'Ok'],
-              body: '{"subject":"dn","uuid":"uuid"}'
+              body: '{"subject":"dn","uuid":"uuid"}',
             )
         end
 
@@ -120,7 +120,7 @@ describe PivCacService do
         it 'returns the decoded JSON from the target service' do
           expect(PivCacService.decode_token('foo')).to eq(
             'subject' => 'dn',
-            'uuid' => 'uuid'
+            'uuid' => 'uuid',
           )
         end
 
@@ -128,7 +128,7 @@ describe PivCacService do
           it 'returns an error' do
             token = 'TEST:{"uuid":"hijackedUUID","subject":"hijackedDN"}'
             expect(PivCacService.decode_token(token)).to eq(
-              'error' => 'token.bad'
+              'error' => 'token.bad',
             )
           end
         end
@@ -145,14 +145,14 @@ describe PivCacService do
             with(body: 'token=foo').
             to_return(
               status: [200, 'Ok'],
-              body: 'bad-json'
+              body: 'bad-json',
             )
         end
 
         it 'returns an error' do
           token = 'foo'
           expect(PivCacService.decode_token(token)).to eq(
-            'error' => 'token.bad'
+            'error' => 'token.bad',
           )
         end
       end

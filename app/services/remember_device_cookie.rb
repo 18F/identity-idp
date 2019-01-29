@@ -13,7 +13,7 @@ class RememberDeviceCookie
     check_cookie_role(parsed_json)
     new(
       user_id: parsed_json['user_id'],
-      created_at: Time.zone.parse(parsed_json['created_at'])
+      created_at: Time.zone.parse(parsed_json['created_at']),
     )
   end
 

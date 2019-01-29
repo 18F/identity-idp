@@ -6,7 +6,7 @@ describe Idv::AttemptFailurePresenter do
   let(:presenter) do
     described_class.new(
       remaining_attempts: remaining_attempts,
-      step_name: step_name
+      step_name: step_name,
     )
   end
 

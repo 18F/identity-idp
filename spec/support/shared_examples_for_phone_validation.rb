@@ -18,7 +18,7 @@ shared_examples 'a phone form' do
         allow(User).to receive(:exists?).with(
           phone_configuration: {
             phone: MfaContext.new(second_user).phone_configurations.first.phone,
-          }
+          },
         ).and_return(true)
 
         params[:phone] = MfaContext.new(second_user).phone_configurations.first.phone

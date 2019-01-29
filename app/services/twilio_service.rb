@@ -26,7 +26,7 @@ module TwilioService
     def send_sms(params = {})
       sanitize_errors do
         params = params.reverse_merge(
-          messaging_service_sid: Figaro.env.twilio_messaging_service_sid
+          messaging_service_sid: Figaro.env.twilio_messaging_service_sid,
         )
         client.messages.create(params)
       end

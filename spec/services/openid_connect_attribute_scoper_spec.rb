@@ -55,7 +55,7 @@ RSpec.describe OpenidConnectAttributeScoper do
       it 'is only sub and iss' do
         expect(filtered).to eq(
           sub: 'abcdef',
-          iss: 'https://login.gov'
+          iss: 'https://login.gov',
         )
       end
     end

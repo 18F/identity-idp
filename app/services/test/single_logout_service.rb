@@ -28,7 +28,7 @@ module Test
         settings,
         logout_request.id,
         nil,
-        RelayState: params[:RelayState]
+        RelayState: params[:RelayState],
       )
     end
 

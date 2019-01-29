@@ -17,7 +17,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
     Base64.strict_encode64(slo_request_builder(
       sp_metadata,
       identity.uuid,
-      identity.session_uuid
+      identity.session_uuid,
     ).signed)
   end
 
@@ -66,7 +66,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
       saml_idp_config.base_saml_location,
       sp_data[:assertion_consumer_logout_service_url],
       name_id,
-      saml_idp_config.algorithm
+      saml_idp_config.algorithm,
     )
   end
 

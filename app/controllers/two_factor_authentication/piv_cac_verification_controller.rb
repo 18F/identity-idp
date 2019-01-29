@@ -30,7 +30,7 @@ module TwoFactorAuthentication
       clear_piv_cac_nonce
       save_piv_cac_information(
         subject: piv_cac_verfication_form.x509_dn,
-        presented: true
+        presented: true,
       )
 
       handle_valid_otp_for_authentication_context
@@ -73,7 +73,7 @@ module TwoFactorAuthentication
       @piv_cac_verification_form ||= UserPivCacVerificationForm.new(
         user: current_user,
         token: params[:token],
-        nonce: piv_cac_nonce
+        nonce: piv_cac_nonce,
       )
     end
 
@@ -86,7 +86,7 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
         view: view_context,
-        data: piv_cac_view_data
+        data: piv_cac_view_data,
       )
     end
 

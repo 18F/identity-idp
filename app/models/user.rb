@@ -17,7 +17,7 @@ class User < ApplicationRecord
     :timeoutable,
     :trackable,
     :two_factor_authenticatable,
-    authentication_keys: [:email]
+    authentication_keys: [:email],
   )
 
   include EncryptableAttribute

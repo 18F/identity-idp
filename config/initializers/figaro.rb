@@ -52,7 +52,7 @@ Figaro.require_keys(
   'twilio_messaging_service_sid',
   'twilio_timeout',
   'use_kms',
-  'valid_authn_contexts'
+  'valid_authn_contexts',
 )
 
 ConfigValidator.new.validate

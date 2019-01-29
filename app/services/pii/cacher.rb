@@ -32,7 +32,7 @@ module Pii
       KeyRotator::HmacFingerprinter.new.rotate(
         user: user,
         profile: profile,
-        pii_attributes: fetch
+        pii_attributes: fetch,
       )
     end
 

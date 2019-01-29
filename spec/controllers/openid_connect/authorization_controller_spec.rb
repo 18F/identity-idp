@@ -59,7 +59,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'redirects to the redirect_uri immediately' do
               IdentityLinker.new(user, client_id).link_identity(ial: 3)
               user.identities.last.update!(
-                verified_attributes: %w[given_name family_name birthdate]
+                verified_attributes: %w[given_name family_name birthdate],
               )
               action
 
@@ -194,7 +194,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,
-          requested_attributes: %w[given_name family_name birthdate]
+          requested_attributes: %w[given_name family_name birthdate],
         )
       end
     end

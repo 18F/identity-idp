@@ -10,11 +10,11 @@ describe 'sign_up/registrations/show.html.slim' do
       render
 
       expect(rendered).to have_content(
-        t('headings.create_account_without_sp', sp: nil)
+        t('headings.create_account_without_sp', sp: nil),
       )
 
       expect(rendered).not_to have_link(
-        t('links.back_to_sp', sp: 'Awesome Application!')
+        t('links.back_to_sp', sp: 'Awesome Application!'),
       )
     end
 
@@ -37,11 +37,11 @@ describe 'sign_up/registrations/show.html.slim' do
       @sp = build_stubbed(
         :service_provider,
         friendly_name: 'Awesome Application!',
-        return_to_sp_url: 'www.awesomeness.com'
+        return_to_sp_url: 'www.awesomeness.com',
       )
       view_context = ActionController::Base.new.view_context
       @decorated_session = DecoratedSession.new(
-        sp: @sp, view_context: view_context, sp_session: {}, service_provider_request: nil
+        sp: @sp, view_context: view_context, sp_session: {}, service_provider_request: nil,
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end
@@ -62,7 +62,7 @@ describe 'sign_up/registrations/show.html.slim' do
 
       expect(rendered).to have_link(
         t('links.back_to_sp', sp: 'Awesome Application!'),
-        href: @decorated_session.sp_return_url
+        href: @decorated_session.sp_return_url,
       )
     end
 

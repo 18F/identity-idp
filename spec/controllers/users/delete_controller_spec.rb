@@ -31,7 +31,7 @@ describe Users::DeleteController do
       user = stub_signed_in_user
       user.identities << Identity.create(
         service_provider: 'foo',
-        last_authenticated_at: Time.zone.now
+        last_authenticated_at: Time.zone.now,
       )
       expect(Identity.where(user_id: user.id).length).to eq(1)
       post :delete

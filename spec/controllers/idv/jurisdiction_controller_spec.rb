@@ -7,7 +7,7 @@ describe Idv::JurisdictionController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_attempts_allowed,
-        :confirm_idv_needed
+        :confirm_idv_needed,
       )
     end
   end
@@ -25,7 +25,7 @@ describe Idv::JurisdictionController do
     it 'tracks analytics' do
       get :new
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::IDV_JURISDICTION_VISIT
+        Analytics::IDV_JURISDICTION_VISIT,
       )
     end
 

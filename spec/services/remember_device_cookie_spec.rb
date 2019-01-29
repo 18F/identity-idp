@@ -31,7 +31,7 @@ describe RememberDeviceCookie do
 
       expect { described_class.from_json(json) }.to raise_error(
         RuntimeError,
-        "RememberDeviceCookie role 'something_else' did not match 'remember_me'"
+        "RememberDeviceCookie role 'something_else' did not match 'remember_me'",
       )
     end
 
@@ -44,7 +44,7 @@ describe RememberDeviceCookie do
 
       expect { described_class.from_json(json) }.to raise_error(
         RuntimeError,
-        "RememberDeviceCookie role '' did not match 'remember_me'"
+        "RememberDeviceCookie role '' did not match 'remember_me'",
       )
     end
   end
@@ -85,7 +85,7 @@ describe RememberDeviceCookie do
         cookie = described_class.new(user_id: user.id, created_at: created_at)
 
         expect(
-          cookie.valid_for_user?(user: other_user, expiration_interval: expiration_interval)
+          cookie.valid_for_user?(user: other_user, expiration_interval: expiration_interval),
         ).to eq(false)
       end
     end

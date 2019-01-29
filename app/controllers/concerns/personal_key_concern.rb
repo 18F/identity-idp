@@ -23,7 +23,7 @@ module PersonalKeyConcern
     analytics.track_event(
       Analytics::INVALID_AUTHENTICITY_TOKEN,
       controller: controller_info,
-      user_signed_in: user_signed_in?
+      user_signed_in: user_signed_in?,
     )
     sign_out
     flash[:alert] = t('errors.invalid_authenticity_token')

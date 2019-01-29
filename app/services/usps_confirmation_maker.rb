@@ -13,7 +13,7 @@ class UspsConfirmationMaker
     UspsConfirmation.create!(entry: attributes)
     UspsConfirmationCode.create!(
       profile: profile,
-      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
   end
 

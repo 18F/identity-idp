@@ -27,7 +27,7 @@ describe TwoFactorAuthentication::PivCacPolicy do
         let(:identity_with_sp) do
           Identity.create(
             user_id: user.id,
-            service_provider: service_provider.issuer
+            service_provider: service_provider.issuer,
           )
         end
 
@@ -75,7 +75,7 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
         before(:each) do
           allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
-            user.email_addresses.map(&:email)
+            user.email_addresses.map(&:email),
           ).and_return(true)
         end
 
@@ -89,7 +89,7 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
         before(:each) do
           allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
-            user.email_addresses.map(&:email)
+            user.email_addresses.map(&:email),
           ).and_return(false)
         end
 

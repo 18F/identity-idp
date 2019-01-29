@@ -41,7 +41,7 @@ RSpec.describe ServiceProviderSeeder do
         create(
           :service_provider,
           issuer: 'http://test.host',
-          acs_url: 'http://test.host/test/saml/decode_assertion_old'
+          acs_url: 'http://test.host/test/saml/decode_assertion_old',
         )
       end
 

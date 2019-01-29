@@ -20,7 +20,7 @@ namespace :dev do
       ssn: '660-00-1234',
       dob: '1920-01-01',
       first_name: 'Some',
-      last_name: 'One'
+      last_name: 'One',
     )
     personal_key = profile.encrypt_pii(pii, pw)
     profile.verified_at = Time.zone.now
@@ -50,7 +50,7 @@ namespace :dev do
       progress = ProgressBar.create(
         title: 'Users',
         total: num_users,
-        format: '%t: |%B| %j%% [%a / %e]'
+        format: '%t: |%B| %j%% [%a / %e]',
       )
     end
 

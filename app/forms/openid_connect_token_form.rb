@@ -61,11 +61,20 @@ class OpenidConnectTokenForm
   attr_reader :identity
 
   def pkce?
-    code_verifier.present? || identity.try(:code_challenge).present?
+    pkce_sp && (code_verifier.present? || identity.try(:code_challenge).present?)
   end
 
   def private_key_jwt?
-    client_assertion.present? || client_assertion_type.present?
+    non_pkce_sp && (client_assertion.present? || client_assertion_type.present?)
+  end
+
+  def non_pkce_sp
+    !service_provider.pkce
+  end
+
+  def pkce_sp
+    pkce = service_provider.pkce
+    pkce.nil? || pkce
   end
 
   def validate_pkce_or_private_key_jwt
@@ -88,8 +97,6 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return if identity.blank?
 
-    service_provider = ServiceProvider.from_issuer(client_id)
-
     payload, _headers = JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
                                    algorithm: 'RS256', verify_iat: true,
                                    iss: client_id, verify_iss: true,
@@ -105,6 +112,10 @@ class OpenidConnectTokenForm
 
     errors.add(:client_assertion,
                t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
+  end
+
+  def service_provider
+    @service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
   def client_id

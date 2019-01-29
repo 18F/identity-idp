@@ -66,7 +66,7 @@ describe UserPhoneForm do
         result = subject.submit(params)
 
         expect(result.extra).to eq(
-          otp_delivery_preference: params[:otp_delivery_preference]
+          otp_delivery_preference: params[:otp_delivery_preference],
         )
       end
 

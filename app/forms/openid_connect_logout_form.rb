@@ -90,7 +90,7 @@ class OpenidConnectLogoutForm
       uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
-      state: state
+      state: state,
     )
   end
 end

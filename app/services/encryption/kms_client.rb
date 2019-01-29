@@ -51,7 +51,7 @@ module Encryption
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
       aws_client.encrypt(
         key_id: Figaro.env.aws_kms_key_id,
-        plaintext: plaintext
+        plaintext: plaintext,
       ).ciphertext_blob
     end
 

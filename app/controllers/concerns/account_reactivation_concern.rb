@@ -9,7 +9,7 @@ module AccountReactivationConcern
   def reactivate_account_session
     @_reactivate_account_session ||= ReactivateAccountSession.new(
       user: current_user,
-      user_session: user_session
+      user_session: user_session,
     )
   end
 end

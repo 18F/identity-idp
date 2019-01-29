@@ -11,7 +11,7 @@ module Idv
     def save_profile
       profile = Profile.new(
         deactivation_reason: :verification_pending,
-        user: user
+        user: user,
       )
       profile.encrypt_pii(pii_attributes, user_password)
       profile.save!

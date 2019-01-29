@@ -7,7 +7,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       sp: sp,
       view_context: view_context,
       sp_session: {},
-      service_provider_request: ServiceProviderRequest.new
+      service_provider_request: ServiceProviderRequest.new,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
@@ -16,7 +16,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   it 'has the same public API as SessionDecorator' do
     SessionDecorator.public_instance_methods.each do |method|
       expect(
-        described_class.public_method_defined?(method)
+        described_class.public_method_defined?(method),
       ).to be(true), "expected #{described_class} to have ##{method}"
     end
   end
@@ -24,7 +24,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#return_to_service_provider_partial' do
     it 'returns the correct partial' do
       expect(subject.return_to_service_provider_partial).to eq(
-        'devise/sessions/return_to_service_provider'
+        'devise/sessions/return_to_service_provider',
       )
     end
   end
@@ -44,7 +44,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#verification_method_choice' do
     it 'returns the correct string' do
       expect(subject.verification_method_choice).to eq(
-        I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
+        I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name),
       )
     end
   end
@@ -96,7 +96,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new
+        service_provider_request: ServiceProviderRequest.new,
       )
       expect(subject.sp_name).to eq sp.agency
       expect(subject.sp_name).to_not be_nil
@@ -115,7 +115,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new
+        service_provider_request: ServiceProviderRequest.new,
       )
       expect(subject.sp_agency).to eq sp.friendly_name
       expect(subject.sp_agency).to_not be_nil
@@ -132,7 +132,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new
+          service_provider_request: ServiceProviderRequest.new,
         )
 
         expect(subject.sp_logo).to eq sp_logo
@@ -147,7 +147,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new
+          service_provider_request: ServiceProviderRequest.new,
         )
 
         expect(subject.sp_logo).to eq 'generic.svg'
@@ -165,7 +165,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new
+          service_provider_request: ServiceProviderRequest.new,
         )
 
         expect(subject.sp_logo_url).to end_with("/sp-logos/#{sp_logo}")
@@ -180,7 +180,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new
+          service_provider_request: ServiceProviderRequest.new,
         )
 
         expect(subject.sp_logo_url).to match(%r{/sp-logos/generic-.+\.svg})
@@ -196,7 +196,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new
+          service_provider_request: ServiceProviderRequest.new,
         )
 
         expect(subject.sp_logo_url).to eq(logo)
@@ -210,7 +210,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: { request_id: 'foo' },
-        service_provider_request: ServiceProviderRequest.new
+        service_provider_request: ServiceProviderRequest.new,
       )
     end
 

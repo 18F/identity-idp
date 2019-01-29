@@ -43,7 +43,7 @@ describe 'user signs in partially and visits openid_connect/authorize' do
     get(
       openid_connect_authorize_path,
       params: params,
-      headers: { 'Accept' => '*/*' }
+      headers: { 'Accept' => '*/*' },
     )
   end
 end

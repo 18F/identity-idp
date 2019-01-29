@@ -16,7 +16,7 @@ describe UspsConfirmationExporter do
           zipcode: '98021',
           otp: 'ZYX987',
           issuer: issuer,
-        }
+        },
       ),
       UspsConfirmation.new(
         entry: {
@@ -29,7 +29,7 @@ describe UspsConfirmationExporter do
           zipcode: '66666-1234',
           otp: 'ABC123',
           issuer: '',
-        }
+        },
       ),
     ]
   end
