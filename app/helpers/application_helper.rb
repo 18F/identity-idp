@@ -25,7 +25,7 @@ module ApplicationHelper
       image_tag(asset_url('tooltip.svg'), width: 16, class: 'px1 img-tooltip'), \
       class: 'hint--top hint--no-animate', \
       'aria-label': text, \
-      'tabindex': '0'
+      'tabindex': '0',
     )
   end
 

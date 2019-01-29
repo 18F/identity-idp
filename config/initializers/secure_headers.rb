@@ -39,7 +39,7 @@ SecureHeaders::Configuration.default do |config|
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(
                    script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
-                   style_src: ["'self'", "'unsafe-inline'"]
+                   style_src: ["'self'", "'unsafe-inline'"],
                  )
                else
                  default_csp_config

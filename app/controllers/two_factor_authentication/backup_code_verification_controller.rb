@@ -10,7 +10,7 @@ module TwoFactorAuthentication
       )
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
-        data: { current_user: current_user }
+        data: { current_user: current_user },
       )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
-        data: { current_user: current_user }
+        data: { current_user: current_user },
       )
     end
 

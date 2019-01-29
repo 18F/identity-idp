@@ -35,7 +35,7 @@ describe SamlRequestPresenter do
         service_provider = ServiceProvider.new(
           attribute_bundle: %w[
             email first_name middle_name last_name dob foo ssn phone
-          ]
+          ],
         )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
         valid_attributes = %i[
@@ -55,7 +55,7 @@ describe SamlRequestPresenter do
         allow(parser).to receive(:requested_attributes).and_return(nil)
 
         service_provider = ServiceProvider.new(
-          attribute_bundle: %w[address1 address2 city state zipcode]
+          attribute_bundle: %w[address1 address2 city state zipcode],
         )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 

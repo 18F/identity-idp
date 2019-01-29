@@ -28,13 +28,13 @@ feature 'Email confirmation during sign up' do
       expect { sign_up_with(email) }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
-        t('devise.mailer.confirmation_instructions.subject')
+        t('devise.mailer.confirmation_instructions.subject'),
       )
 
       expect { sign_up_with(email) }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
-        t('devise.mailer.confirmation_instructions.subject')
+        t('devise.mailer.confirmation_instructions.subject'),
       )
     end
   end
@@ -47,10 +47,10 @@ feature 'Email confirmation during sign up' do
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
-        t('devise.mailer.confirmation_instructions.subject')
+        t('devise.mailer.confirmation_instructions.subject'),
       )
       expect(page).to have_content(
-        t('notices.resend_confirmation_email.success')
+        t('notices.resend_confirmation_email.success'),
       )
     end
   end

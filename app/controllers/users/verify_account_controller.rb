@@ -29,7 +29,7 @@ module Users
     def build_verify_account_form
       VerifyAccountForm.new(
         user: current_user,
-        otp: params_otp
+        otp: params_otp,
       )
     end
 

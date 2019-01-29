@@ -32,7 +32,7 @@ class SignUpCompletionsShow
     safe_join([I18n.t(
       'titles.sign_up.completion_html',
       accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
-      app: APP_NAME
+      app: APP_NAME,
     ).html_safe])
   end
   # rubocop:enable Rails/OutputSafety
@@ -44,7 +44,7 @@ class SignUpCompletionsShow
       I18n.t(
         'titles.sign_up.completion_html',
         accent: I18n.t('titles.sign_up.loa1'),
-        app: APP_NAME
+        app: APP_NAME,
       )
     end
   end
@@ -78,7 +78,7 @@ class SignUpCompletionsShow
   def identities
     if @current_user
       @identities ||= @current_user.identities.order(
-        last_authenticated_at: :desc
+        last_authenticated_at: :desc,
       ).limit(MAX_RECENT_IDENTITIES).map(&:decorate)
     else
       false

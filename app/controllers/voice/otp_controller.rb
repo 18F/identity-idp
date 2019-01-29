@@ -47,8 +47,8 @@ module Voice
       BasicAuthUrl.build(
         voice_otp_url(
           encrypted_code: encrypted_code,
-          repeat_count: repeat_count - 1
-        )
+          repeat_count: repeat_count - 1,
+        ),
       )
     end
 

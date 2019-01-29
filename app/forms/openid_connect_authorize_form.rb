@@ -66,7 +66,7 @@ class OpenidConnectAuthorizeForm
       rails_session_id: rails_session_id,
       ial: ial,
       scope: scope.join(' '),
-      code_challenge: code_challenge
+      code_challenge: code_challenge,
     )
   end
 
@@ -132,7 +132,7 @@ class OpenidConnectAuthorizeForm
       uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
-      state: state
+      state: state,
     )
   end
 end

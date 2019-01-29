@@ -11,7 +11,7 @@ describe Users::TwoFactorAuthenticationController do
         [:require_current_password, if: :current_password_required?],
         :check_already_authenticated,
         :reset_attempt_count_if_user_no_longer_locked_out,
-        :apply_secure_headers_override
+        :apply_secure_headers_override,
       )
     end
   end
@@ -74,7 +74,7 @@ describe Users::TwoFactorAuthenticationController do
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy
+          TwoFactorAuthentication::PivCacPolicy,
         ).to receive(:enabled?).and_return(true)
 
         get :show
@@ -88,7 +88,7 @@ describe Users::TwoFactorAuthenticationController do
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy
+          TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
 
         get :show
@@ -102,7 +102,7 @@ describe Users::TwoFactorAuthenticationController do
         stub_sign_in_before_2fa(build(:user, :with_webauthn))
 
         allow_any_instance_of(
-          TwoFactorAuthentication::WebauthnPolicy
+          TwoFactorAuthentication::WebauthnPolicy,
         ).to receive(:enabled?).and_return(true)
 
         get :show
@@ -159,12 +159,12 @@ describe Users::TwoFactorAuthenticationController do
           phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
-          locale: nil
+          locale: nil,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false),
         )
       end
 
@@ -176,7 +176,7 @@ describe Users::TwoFactorAuthenticationController do
           phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.login_message',
-          locale: nil
+          locale: nil,
         )
       end
 
@@ -203,7 +203,7 @@ describe Users::TwoFactorAuthenticationController do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).with(
           phone: MfaContext.new(@user).phone_configurations.first.phone,
-          user: @user
+          user: @user,
         ).and_return(otp_rate_limiter)
 
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
@@ -242,12 +242,12 @@ describe Users::TwoFactorAuthenticationController do
           code: subject.current_user.direct_otp,
           phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
-          locale: nil
+          locale: nil,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
+          login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false),
         )
       end
 
@@ -292,7 +292,7 @@ describe Users::TwoFactorAuthenticationController do
           phone: @unconfirmed_phone,
           otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
           message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: nil
+          locale: nil,
         )
       end
 
@@ -393,7 +393,7 @@ describe Users::TwoFactorAuthenticationController do
         response = '{"error_code":"60004"}'
         status = 400
         verify_error = PhoneVerification::VerifyError.new(
-          code: code, message: error_message, status: status, response: response
+          code: code, message: error_message, status: status, response: response,
         )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(verify_error)

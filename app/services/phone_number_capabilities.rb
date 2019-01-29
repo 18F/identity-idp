@@ -1,6 +1,6 @@
 class PhoneNumberCapabilities
   INTERNATIONAL_CODES = YAML.load_file(
-    Rails.root.join('config', 'country_dialing_codes.yml')
+    Rails.root.join('config', 'country_dialing_codes.yml'),
   ).freeze
 
   attr_reader :phone

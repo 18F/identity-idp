@@ -93,7 +93,7 @@ describe Idv::Agent do
             messages: [resolution_message, state_id_message],
             success: true,
             exception: nil,
-            timed_out: false
+            timed_out: false,
           )
         end
       end
@@ -107,7 +107,7 @@ describe Idv::Agent do
             messages: [failed_message],
             success: false,
             exception: nil,
-            timed_out: false
+            timed_out: false,
           )
         end
       end
@@ -118,7 +118,7 @@ describe Idv::Agent do
         it 'returns a result where timed out is true' do
           expect(subject.to_h).to include(
             success: false,
-            timed_out: true
+            timed_out: true,
           )
         end
       end
@@ -132,7 +132,7 @@ describe Idv::Agent do
 
           expect(subject.to_h).to include(
             success: false,
-            exception: exception
+            exception: exception,
           )
         end
       end

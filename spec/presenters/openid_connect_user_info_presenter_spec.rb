@@ -109,7 +109,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
                 street_address: '123 Fake St Apt 456',
                 locality: 'Washington',
                 region: 'DC',
-                postal_code: '12345'
+                postal_code: '12345',
               )
               expect(user_info[:social_security_number]).to eq('666661234')
             end

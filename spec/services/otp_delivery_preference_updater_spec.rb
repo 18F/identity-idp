@@ -5,7 +5,7 @@ describe OtpDeliveryPreferenceUpdater do
     OtpDeliveryPreferenceUpdater.new(
       user: build_stubbed(:user, otp_delivery_preference: 'sms'),
       preference: 'sms',
-      phone_id: 1
+      phone_id: 1,
     )
   end
 
@@ -25,7 +25,7 @@ describe OtpDeliveryPreferenceUpdater do
           updater = OtpDeliveryPreferenceUpdater.new(
             user: user,
             preference: 'sms',
-            phone_id: 1
+            phone_id: 1,
           )
           attributes = { otp_delivery_preference: 'sms' }
 
@@ -45,7 +45,7 @@ describe OtpDeliveryPreferenceUpdater do
         updater = OtpDeliveryPreferenceUpdater.new(
           user: nil,
           preference: 'sms',
-          phone_id: 1
+          phone_id: 1,
         )
 
         expect(UpdateUser).to_not receive(:new)

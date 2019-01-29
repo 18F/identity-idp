@@ -9,7 +9,7 @@ module Users
     def new
       @personal_key_form = VerifyPersonalKeyForm.new(
         user: current_user,
-        personal_key: ''
+        personal_key: '',
       )
     end
 
@@ -45,7 +45,7 @@ module Users
     def personal_key_form
       VerifyPersonalKeyForm.new(
         user: current_user,
-        personal_key: params.permit(:personal_key)[:personal_key]
+        personal_key: params.permit(:personal_key)[:personal_key],
       )
     end
   end

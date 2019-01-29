@@ -23,13 +23,13 @@ describe 'SMS receiving' do
     context 'with required credentials' do
       it 'returns authorized status' do
         allow(Figaro.env).to(
-          receive(:twilio_http_basic_auth_username).and_return(username)
+          receive(:twilio_http_basic_auth_username).and_return(username),
         )
         allow(Figaro.env).to(
-          receive(:twilio_http_basic_auth_password).and_return(password)
+          receive(:twilio_http_basic_auth_password).and_return(password),
         )
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(true)
+          receive(:validate).and_return(true),
         )
 
         post_message(help_message)
@@ -42,17 +42,17 @@ describe 'SMS receiving' do
   describe 'receiving messages' do
     before do
       allow(Figaro.env).to(
-        receive(:twilio_http_basic_auth_username).and_return(username)
+        receive(:twilio_http_basic_auth_username).and_return(username),
       )
       allow(Figaro.env).to(
-        receive(:twilio_http_basic_auth_password).and_return(password)
+        receive(:twilio_http_basic_auth_password).and_return(password),
       )
     end
 
     context 'when failing' do
       it 'does not send a reply and 403s when signature is invalid' do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(false)
+          receive(:validate).and_return(false),
         )
 
         expect(SmsReplySenderJob).to_not receive(:perform_later)
@@ -64,7 +64,7 @@ describe 'SMS receiving' do
 
       it 'responds with a 200 status when signature is valid' do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(true)
+          receive(:validate).and_return(true),
         )
 
         expect(SmsReplySenderJob).to_not receive(:perform_later)
@@ -78,7 +78,7 @@ describe 'SMS receiving' do
     context 'when successful' do
       it 'sends a reply' do
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
-          receive(:validate).and_return(true)
+          receive(:validate).and_return(true),
         )
 
         expect(SmsReplySenderJob).to receive(:perform_later)
@@ -96,7 +96,7 @@ describe 'SMS receiving' do
     post(
       api_sms_receive_path,
       params: { Body: body },
-      headers: { 'HTTP_AUTHORIZATION': credentials }
+      headers: { 'HTTP_AUTHORIZATION': credentials },
     )
   end
 end

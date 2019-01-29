@@ -38,7 +38,7 @@ iwidHlwZSI6IndlYmF1dGhuLmdldCJ9'
       user_id: user.id,
       credential_id: credential_id,
       credential_public_key: public_key,
-      name: 'foo'
+      name: 'foo',
     )
   end
 end

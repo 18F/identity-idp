@@ -67,7 +67,7 @@ module IdvHelper
   def choose_idv_otp_delivery_method_sms
     page.find(
       'label',
-      text: t('two_factor_authentication.otp_delivery_preference.sms')
+      text: t('two_factor_authentication.otp_delivery_preference.sms'),
     ).click
     click_on t('idv.buttons.send_confirmation_code')
   end
@@ -75,7 +75,7 @@ module IdvHelper
   def choose_idv_otp_delivery_method_voice
     page.find(
       'label',
-      text: t('two_factor_authentication.otp_delivery_preference.voice')
+      text: t('two_factor_authentication.otp_delivery_preference.voice'),
     ).click
     click_on t('idv.buttons.send_confirmation_code')
   end
@@ -117,7 +117,7 @@ module IdvHelper
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 end

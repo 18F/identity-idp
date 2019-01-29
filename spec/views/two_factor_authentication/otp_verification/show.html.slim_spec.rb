@@ -20,7 +20,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
         data: presenter_data,
-        view: view
+        view: view,
       )
       allow(@presenter).to receive(:reauthn).and_return(false)
     end
@@ -80,7 +80,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'provides an option to use a personal key' do
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          href: login_two_factor_options_path,
         )
       end
     end
@@ -96,13 +96,13 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'provides a cancel link to return to profile' do
         expect(rendered).to have_link(
           t('links.cancel'),
-          href: account_path
+          href: account_path,
         )
       end
 
       it 'renders the reauthn partial' do
         expect(view).to render_template(
-          partial: 'two_factor_authentication/totp_verification/_reauthn'
+          partial: 'two_factor_authentication/totp_verification/_reauthn',
         )
       end
     end
@@ -114,14 +114,14 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         data = presenter_data.merge(confirmation_for_phone_change: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
-          view: view
+          view: view,
         )
 
         render
 
         expect(rendered).to have_link(
           t('links.cancel'),
-          href: account_path
+          href: account_path,
         )
       end
     end
@@ -132,14 +132,14 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: unconfirmed_data,
-          view: view
+          view: view,
         )
 
         render
 
         expect(rendered).not_to have_link(
           t('two_factor_authentication.personal_key_fallback.link'),
-          href: login_two_factor_personal_key_path
+          href: login_two_factor_personal_key_path,
         )
       end
     end
@@ -159,14 +159,14 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         totp_data = presenter_data.merge(totp_enabled: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: totp_data,
-          view: view
+          view: view,
         )
 
         render
 
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          href: login_two_factor_options_path,
         )
       end
     end
@@ -192,7 +192,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('links.two_factor_authentication.get_another_code'),
-          href: resend_path
+          href: resend_path,
         )
       end
 
@@ -201,7 +201,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          href: login_two_factor_options_path,
         )
       end
     end
@@ -214,7 +214,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         voice_data = presenter_data.merge(otp_delivery_preference: otp_delivery_preference)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: voice_data,
-          view: view
+          view: view,
         )
       end
 
@@ -225,12 +225,12 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
           otp_delivery_selection_form: {
             otp_delivery_preference: otp_delivery_preference,
             resend: true,
-          }
+          },
         )
 
         expect(rendered).to have_link(
           t('links.two_factor_authentication.get_another_code'),
-          href: resend_path
+          href: resend_path,
         )
       end
 
@@ -239,7 +239,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
-          href: login_two_factor_options_path
+          href: login_two_factor_options_path,
         )
       end
     end
@@ -250,7 +250,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
-          view: view
+          view: view,
         )
 
         render
@@ -265,7 +265,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
-          view: view
+          view: view,
         )
 
         render

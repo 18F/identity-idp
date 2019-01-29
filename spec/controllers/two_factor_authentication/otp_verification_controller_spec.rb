@@ -12,7 +12,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           presenter_data = attributes_for(:generic_otp_presenter)
           TwoFactorAuthCode::PhoneDeliveryPresenter.new(
             data: presenter_data,
-            view: ActionController::Base.new.view_context
+            view: ActionController::Base.new.view_context,
           )
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
@@ -195,7 +195,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
               remember_device: 'true',
-            }
+            },
           )
 
           expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
@@ -209,7 +209,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             params: {
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
-            }
+            },
           )
 
           expect(cookies[:remember_device]).to be_nil
@@ -223,7 +223,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         subject.current_user.update(
           second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
-          second_factor_attempts_count: 3
+          second_factor_attempts_count: 3,
         )
       end
 
@@ -288,7 +288,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               params: {
                 code: subject.current_user.direct_otp,
                 otp_delivery_preference: 'sms',
-              }
+              },
             )
           end
 
@@ -370,7 +370,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               params: {
                 code: subject.current_user.direct_otp,
                 otp_delivery_preference: 'sms',
-              }
+              },
             )
           end
 
@@ -412,7 +412,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
               remember_device: 'true',
-            }
+            },
           )
 
           expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
@@ -426,7 +426,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             params: {
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
-            }
+            },
           )
 
           expect(cookies[:remember_device]).to be_nil

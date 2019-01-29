@@ -49,7 +49,7 @@ class UserPhoneForm
     self.submitted_phone = params[:phone]
     self.phone = PhoneFormatter.format(
       submitted_phone,
-      country_code: international_code
+      country_code: international_code,
     )
 
     tfa_prefs = params[:otp_delivery_preference]

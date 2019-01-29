@@ -18,7 +18,7 @@ describe 'sign_up/passwords/new.html.slim' do
 
   it 'renders the proper help text' do
     expect(rendered).to have_content(
-      t('instructions.password.info.lead', min_length: Devise.password_length.first)
+      t('instructions.password.info.lead', min_length: Devise.password_length.first),
     )
   end
 

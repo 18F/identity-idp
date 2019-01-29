@@ -17,7 +17,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions', email: user_email)
+          t('account_reset.confirm_request.instructions', email: user_email),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
@@ -39,9 +39,9 @@ describe 'Account Reset Request: Delete Account', email: true do
             t(
               'account_reset.confirm_delete_account.info',
               email: user_email,
-              link: t('account_reset.confirm_delete_account.link_text')
-            )
-          )
+              link: t('account_reset.confirm_delete_account.link_text'),
+            ),
+          ),
         )
         expect(page).to have_current_path(account_reset_confirm_delete_account_path)
         expect(User.where(id: user.id)).to be_empty
@@ -65,7 +65,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions', email: user_email)
+          t('account_reset.confirm_request.instructions', email: user_email),
         )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
@@ -83,7 +83,7 @@ describe 'Account Reset Request: Delete Account', email: true do
         :profile,
         :active,
         :verified,
-        pii: { first_name: 'John', ssn: '111223333' }
+        pii: { first_name: 'John', ssn: '111223333' },
       ).user
     end
 

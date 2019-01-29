@@ -25,7 +25,7 @@ module EmailAddressCallback
       confirmation_token: confirmation_token,
       confirmed_at: confirmed_at,
       confirmation_sent_at: confirmation_sent_at,
-      email_fingerprint: email_fingerprint
+      email_fingerprint: email_fingerprint,
     )
   end
 
@@ -36,7 +36,7 @@ module EmailAddressCallback
       confirmation_token: confirmation_token,
       confirmed_at: confirmed_at,
       confirmation_sent_at: confirmation_sent_at,
-      email_fingerprint: email_fingerprint
+      email_fingerprint: email_fingerprint,
     )
     email_addresses.reload
   end

@@ -13,15 +13,15 @@ class UserPivCacSetupForm
     FormResponse.new(
       success: success && process_valid_submission,
       errors: {},
-      extra: extra_analytics_attributes
+      extra: extra_analytics_attributes,
     )
   end
 
   private
 
   def process_valid_submission
-    user.x509_dn_uuid = x509_dn_uuid
-    user.save!
+    attributes = { x509_dn_uuid: x509_dn_uuid, remember_device_revoked_at: Time.zone.now }
+    UpdateUser.new(user: user, attributes: attributes).call
     Event.create(user_id: user.id, event_type: :piv_cac_enabled)
     true
   rescue PG::UniqueViolation

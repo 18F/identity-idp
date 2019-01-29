@@ -13,7 +13,7 @@ module SecureHeadersConcern
 
     override_content_security_policy_directives(
       form_action: ["'self'", redirect_uri].compact,
-      preserve_schemes: true
+      preserve_schemes: true,
     )
   end
 

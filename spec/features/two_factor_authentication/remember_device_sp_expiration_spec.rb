@@ -84,11 +84,11 @@ feature 'remember device sp expiration' do
 
     ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
       aal: aal,
-      ial: ial
+      ial: ial,
     )
     ServiceProvider.from_issuer('http://localhost:3000').update!(
       aal: aal,
-      ial: ial
+      ial: ial,
     )
   end
 

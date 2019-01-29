@@ -21,7 +21,7 @@ module Idv
 
         options = default_options.merge(
           headers: content_type_json,
-          body: image_params
+          body: image_params,
         )
 
         status, @instance_id = post(url, options) { |body| body.delete('"') }
@@ -40,7 +40,7 @@ module Idv
         url = "/AssureIDService/Document/#{instance_id}"
 
         options = default_options.merge(
-          headers: accept_json
+          headers: accept_json,
         )
 
         get(url, options, &JSON.method(:parse))
@@ -59,7 +59,7 @@ module Idv
 
         options = default_options.merge(
           headers: accept_json,
-          body: image
+          body: image,
         )
 
         post(url, options)

@@ -29,7 +29,7 @@ describe IdvController do
     it 'redirects to failure page if number of attempts has been exceeded' do
       profile = create(
         :profile,
-        user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now)
+        user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now),
       )
 
       stub_sign_in(profile.user)
@@ -125,7 +125,7 @@ describe IdvController do
       it 'allows direct access' do
         profile = create(
           :profile,
-          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now)
+          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now),
         )
 
         stub_sign_in(profile.user)

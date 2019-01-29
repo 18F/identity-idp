@@ -16,7 +16,7 @@ describe PasswordMetric do
         PasswordMetric.create(
           metric: 'length',
           value: 9.0,
-          count: 2
+          count: 2,
         )
       end
 
@@ -33,7 +33,7 @@ describe PasswordMetric do
         PasswordMetric.create(
           metric: 'length',
           value: 10.0,
-          count: 1
+          count: 1,
         )
       end
 

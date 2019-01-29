@@ -16,7 +16,7 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
   describe '#submit' do
     def try_submit(code)
       described_class.new(
-        user: user, idv_session: idv_session
+        user: user, idv_session: idv_session,
       ).submit(code: code)
     end
 

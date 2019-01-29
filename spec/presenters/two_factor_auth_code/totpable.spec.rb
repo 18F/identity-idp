@@ -24,7 +24,7 @@ describe TwoFactorAuthCode::Totpable do
         link = '<a href="/login/two_factor/authenticator">authentication app</a>'
 
         expect(actual).to eq(
-          t('links.phone_confirmation.auth_app_fallback_html', link: link)
+          t('links.phone_confirmation.auth_app_fallback_html', link: link),
         )
       end
     end

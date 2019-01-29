@@ -37,7 +37,7 @@ module Encryption
       def encryption_key_from_ciphertext(ciphertext)
         encoded_encryption_key = ciphertext.split(DELIMITER).first
         raise EncryptionError, 'ciphertext is invalid' unless valid_base64_encoding?(
-          encoded_encryption_key
+          encoded_encryption_key,
         )
         decode(encoded_encryption_key)
       end

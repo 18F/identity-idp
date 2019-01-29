@@ -28,7 +28,7 @@ describe AccountShow do
       it 'returns the personal_key partial' do
         user = User.new
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: 'foo', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user.decorate,
         )
 
         expect(profile_index.personal_key_partial).to eq 'accounts/personal_key'
@@ -39,7 +39,7 @@ describe AccountShow do
       it 'returns the shared/null partial' do
         user = User.new
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.personal_key_partial).to eq 'shared/null'
@@ -53,7 +53,7 @@ describe AccountShow do
         user = User.new.decorate
         allow(user).to receive(:password_reset_profile).and_return('profile')
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: 'foo', decorated_user: user
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user,
         )
 
         expect(profile_index.password_reset_partial).to eq 'accounts/password_reset'
@@ -65,7 +65,7 @@ describe AccountShow do
         user = User.new
         allow(user).to receive(:password_reset_profile).and_return(nil)
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.password_reset_partial).to eq 'shared/null'
@@ -79,7 +79,7 @@ describe AccountShow do
         user = User.new.decorate
         allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: 'foo', decorated_user: user
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user,
         )
 
         expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_usps'
@@ -102,7 +102,7 @@ describe AccountShow do
       it 'returns the accounts/password_reset partial' do
         user = User.new.decorate
         profile_index = AccountShow.new(
-          decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user
+          decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
         )
 
         expect(profile_index.pii_partial).to eq 'accounts/pii'
@@ -124,14 +124,14 @@ describe AccountShow do
       it 'returns the disable_totp partial' do
         user = User.new
         allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy
+          TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
         allow_any_instance_of(
-          MfaPolicy
+          MfaPolicy,
         ).to receive(:multiple_factors_enabled?).and_return(true)
 
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/disable_totp'
@@ -142,11 +142,11 @@ describe AccountShow do
       it 'returns the enable_totp partial' do
         user = User.new
         allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy
+          TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
 
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/enable_totp'
@@ -161,7 +161,7 @@ describe AccountShow do
         first_name = 'John'
         decrypted_pii = Pii::Attributes.new_from_json({ first_name: first_name }.to_json)
         profile_index = AccountShow.new(
-          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -184,11 +184,11 @@ describe AccountShow do
       it 'returns localization for auth_app_enabled' do
         user = User.new
         allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy
+          TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate
+          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -199,7 +199,7 @@ describe AccountShow do
       it 'returns localization for auth_app_disabled' do
         user = User.new.decorate
         allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy
+          TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 

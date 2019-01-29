@@ -76,12 +76,12 @@ describe 'NIST Encryption Model' do
       expect(user.valid_password?(password)).to eq true
 
       digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
-        user.encrypted_password_digest
+        user.encrypted_password_digest,
       )
       user_access_key = Encryption::UserAccessKey.new(
         password: password,
         salt: digest.password_salt,
-        cost: digest.password_cost
+        cost: digest.password_cost,
       )
       user_access_key.unlock(digest.encryption_key)
 
@@ -123,7 +123,7 @@ describe 'NIST Encryption Model' do
       hash_E = OpenSSL::Digest::SHA256.hexdigest(user_access_key.z2 + random_R)
 
       user_access_key_encryptor = Encryption::Encryptors::UserAccessKeyEncryptor.new(
-        user_access_key
+        user_access_key,
       )
       encrypted_payload = user_access_key_encryptor.encrypt(pii)
 

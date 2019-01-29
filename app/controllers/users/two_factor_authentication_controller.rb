@@ -55,7 +55,7 @@ module Users
       OtpDeliveryPreferenceUpdater.new(
         user: current_user,
         preference: delivery_params[:otp_delivery_preference],
-        phone_id: user_session[:phone_id]
+        phone_id: user_session[:phone_id],
       ).call
     end
 
@@ -79,7 +79,7 @@ module Users
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
         otp_delivery_preference: phone_configuration.delivery_preference,
-        reauthn: reauthn?
+        reauthn: reauthn?,
       )
     end
 

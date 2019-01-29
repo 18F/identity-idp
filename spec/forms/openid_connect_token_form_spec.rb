@@ -47,7 +47,7 @@ RSpec.describe OpenidConnectTokenForm do
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,
-        code_challenge: code_challenge
+        code_challenge: code_challenge,
       )
   end
 
@@ -96,6 +96,19 @@ RSpec.describe OpenidConnectTokenForm do
           expect(form.errors).to be_blank
         end
 
+        it 'is true, and has no errors when the sp is set to jwt only mode' do
+          allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(false)
+          expect(valid?).to eq(true)
+          expect(form.errors).to be_blank
+        end
+
+        it 'is false, and has errors if the sp is set for pkce only mode' do
+          allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(true)
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).
+            to include(t('openid_connect.token.errors.invalid_authentication'))
+        end
+
         context 'with a trailing slash in the audience url' do
           before { jwt_payload[:aud] = 'http://www.example.com/api/openid_connect/token/' }
 
@@ -118,7 +131,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end
@@ -129,7 +142,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end
@@ -140,7 +153,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include(
-              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
             )
           end
         end
@@ -205,6 +218,19 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is true, and has no errors' do
           expect(valid?).to eq(true)
           expect(form.errors).to be_blank
+        end
+
+        it 'is true, and has no errors if the sp is set for pkce only mode' do
+          allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(true)
+          expect(valid?).to eq(true)
+          expect(form.errors).to be_blank
+        end
+
+        it 'is false, and has errors if the sp is set for jwt only mode' do
+          allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(false)
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).
+            to include(t('openid_connect.token.errors.invalid_authentication'))
         end
       end
 

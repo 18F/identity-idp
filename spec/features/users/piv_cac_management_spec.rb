@@ -14,7 +14,7 @@ feature 'PIV/CAC Management' do
     context 'with an account allowed to use piv/cac' do
       before(:each) do
         allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy
+          TwoFactorAuthentication::PivCacPolicy,
         ).to receive(:available?).and_return(true)
       end
 
@@ -114,7 +114,7 @@ feature 'PIV/CAC Management' do
     context 'with an account not allowed to use piv/cac' do
       before(:each) do
         allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy
+          TwoFactorAuthentication::PivCacPolicy,
         ).to receive(:available?).and_return(false)
       end
 
