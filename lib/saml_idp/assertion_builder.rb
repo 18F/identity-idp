@@ -32,6 +32,7 @@ module SamlIdp
       name_id_format,
       x509_certificate,
       secret_key,
+      cloudhsm_key_label,
       expiry = 60*60,
       encryption_opts = nil
     )
@@ -47,6 +48,7 @@ module SamlIdp
       self.name_id_format = name_id_format
       self.x509_certificate = x509_certificate
       self.secret_key = secret_key
+      self.cloudhsm_key_label = cloudhsm_key_label
       self.expiry = expiry
       self.encryption_opts = encryption_opts
     end

@@ -13,6 +13,7 @@ module SamlIdp
     attr_accessor :algorithm
     attr_accessor :secret_key
     attr_accessor :x509_certificate
+    attr_accessor :cloudhsm_key_label
     attr_accessor :authn_context_classref
     attr_accessor :name_id_format
     attr_accessor :expiry
@@ -32,6 +33,7 @@ module SamlIdp
       name_id_format,
       x509_certificate = nil,
       secret_key = nil,
+      cloudhsm_key_label = nil,
       expiry = 60*60,
       encryption_opts = nil
     )
@@ -46,6 +48,7 @@ module SamlIdp
       self.algorithm = algorithm
       self.secret_key = secret_key
       self.x509_certificate = x509_certificate
+      self.cloudhsm_key_label = cloudhsm_key_label
       self.authn_context_classref = authn_context_classref
       self.name_id_format = name_id_format
       self.expiry = expiry
@@ -83,6 +86,7 @@ module SamlIdp
         name_id_format,
         x509_certificate,
         secret_key,
+        cloudhsm_key_label,
         expiry,
         encryption_opts
       )

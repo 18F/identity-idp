@@ -15,7 +15,8 @@ module SamlIdp
       saml_request_id,
       algorithm,
       x509_certificate = nil,
-      secret_key = nil
+      secret_key = nil,
+      cloudhsm_key_label = nil
     )
       # rubocop:enable Metrics/ParameterLists
       self.response_id = response_id
@@ -25,6 +26,7 @@ module SamlIdp
       self.algorithm = algorithm
       self.x509_certificate = x509_certificate
       self.secret_key = secret_key
+      self.cloudhsm_key_label = cloudhsm_key_label
     end
 
     def build

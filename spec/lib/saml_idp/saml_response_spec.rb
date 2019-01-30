@@ -36,6 +36,7 @@ module SamlIdp
                                   name_id_format,
                                   nil,
                                   nil,
+                                  nil,
                                   expiry,
                                   encryption_opts
                                  )
@@ -51,6 +52,7 @@ module SamlIdp
                                   algorithm,
                                   authn_context_classref,
                                   name_id_format,
+                                  nil,
                                   nil,
                                   nil,
                                   expiry
@@ -104,6 +106,7 @@ module SamlIdp
                             name_id_format,
                             custom_idp_x509_cert,
                             custom_idp_secret_key,
+                            nil,
                             expiry,
                             encryption_opts
                            )
@@ -116,6 +119,42 @@ module SamlIdp
         resp_settings.private_key = Default::SECRET_KEY
         resp_settings.issuer = audience_uri
         resp_settings.idp_cert_fingerprint = custom_idp_x509_cert_fingerprint
+        saml_resp = OneLogin::RubySaml::Response.new(encoded_xml, settings: resp_settings)
+        saml_resp.soft = false
+        expect(saml_resp.is_valid?).to eq(true)
+      end
+    end
+
+    context 'with a cloudhsm key label' do
+      include CloudhsmMockable
+
+      subject do
+        described_class.new(reference_id,
+                            response_id,
+                            issuer_uri,
+                            name_id,
+                            audience_uri,
+                            saml_request_id,
+                            saml_acs_url,
+                            algorithm,
+                            authn_context_classref,
+                            name_id_format,
+                            cloudhsm_idp_x509_cert,
+                            nil,
+                            'secret',
+                            expiry,
+                            encryption_opts
+                           )
+      end
+
+      it 'builds encrypted' do
+        mock_cloudhsm
+        expect(subject.build).not_to match(audience_uri)
+        encoded_xml = subject.build
+        resp_settings = saml_settings(saml_acs_url)
+        resp_settings.private_key = Default::SECRET_KEY
+        resp_settings.issuer = audience_uri
+        resp_settings.idp_cert_fingerprint = cloudhsm_idp_x509_cert_fingerprint
         saml_resp = OneLogin::RubySaml::Response.new(encoded_xml, settings: resp_settings)
         saml_resp.soft = false
         expect(saml_resp.is_valid?).to eq(true)

@@ -54,6 +54,7 @@ module SamlIdp
         saml_request.name_id_format,
         signature_opts[:x509_certificate],
         signature_opts[:secret_key],
+        signature_opts[:cloudhsm_key_label],
         expiry,
         encryption_opts
       ).build

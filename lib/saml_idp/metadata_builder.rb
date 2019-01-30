@@ -8,10 +8,16 @@ module SamlIdp
     include Signable
     attr_accessor :configurator
 
-    def initialize(configurator = SamlIdp.config, x509_certificate = nil, secret_key = nil)
+    def initialize(
+      configurator = SamlIdp.config,
+      x509_certificate = nil,
+      secret_key = nil,
+      cloudhsm_key_label = nil
+    )
       self.configurator = configurator
       self.x509_certificate = x509_certificate
       self.secret_key = secret_key
+      self.cloudhsm_key_label = cloudhsm_key_label
     end
 
     def fresh

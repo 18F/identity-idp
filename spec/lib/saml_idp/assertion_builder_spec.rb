@@ -32,6 +32,7 @@ module SamlIdp
       name_id_format,
       nil,
       nil,
+      nil,
       expiry
     ) }
 
@@ -73,6 +74,7 @@ module SamlIdp
           name_id_format,
           nil,
           nil,
+          nil,
           expiry
         )
         Timecop.travel(Time.zone.local(2010, 6, 1, 13, 0, 0)) do
@@ -92,6 +94,7 @@ module SamlIdp
         algorithm,
         authn_context_classref,
         name_id_format,
+        nil,
         nil,
         nil,
         expiry,

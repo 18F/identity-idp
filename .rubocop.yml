@@ -172,7 +172,6 @@ Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
   Enabled: true
-  MaxLineLength: 80
 
 # Checks the indentation of the first element in an array literal.
 Layout/IndentArray:
