@@ -20,13 +20,13 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   let(:presenter) do
     TwoFactorAuthCode::PhoneDeliveryPresenter.new(
       data: data,
-      view: view
+      view: view,
     )
   end
 
   it 'is a subclass of GenericDeliveryPresenter' do
     expect(TwoFactorAuthCode::PhoneDeliveryPresenter.superclass).to(
-      be(TwoFactorAuthCode::GenericDeliveryPresenter)
+      be(TwoFactorAuthCode::GenericDeliveryPresenter),
     )
   end
 
@@ -51,7 +51,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       text = t(
         'instructions.mfa.sms.number_message',
         number: "<strong>#{data[:phone_number]}</strong>",
-        expiration: Figaro.env.otp_valid_for
+        expiration: Figaro.env.otp_valid_for,
       )
       expect(presenter.phone_number_message).to eq text
     end

@@ -18,7 +18,7 @@ describe VerifyAccountForm do
       :usps_confirmation_code,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
       code_sent_at: code_sent_at,
-      profile: pending_profile
+      profile: pending_profile,
     )
   end
 

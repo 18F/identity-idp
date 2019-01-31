@@ -155,7 +155,7 @@ shared_examples 'saml api' do |cloudhsm_enabled|
         allow(Figaro.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
         stub_request(:get, fake_dashboard_url).to_return(
           status: 200,
-          body: dashboard_service_providers.to_json
+          body: dashboard_service_providers.to_json,
         )
       end
 
@@ -222,7 +222,7 @@ shared_examples 'saml api' do |cloudhsm_enabled|
         decoded_response = Base64.decode64(response_node.value)
         saml_response = OneLogin::RubySaml::Response.new(
           decoded_response,
-          settings: new_cert_saml_settings
+          settings: new_cert_saml_settings,
         )
         saml_response.soft = false
 
@@ -248,7 +248,7 @@ shared_examples 'saml api' do |cloudhsm_enabled|
         decoded_response = Base64.decode64(response_node.value)
         saml_response = OneLogin::RubySaml::Logoutresponse.new(
           decoded_response,
-          new_cert_saml_settings
+          new_cert_saml_settings,
         )
         expect(saml_response.validate).to eq(true)
       end

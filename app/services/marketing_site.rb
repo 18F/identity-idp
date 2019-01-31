@@ -40,7 +40,7 @@ class MarketingSite
       locale_segment,
       'help',
       'privacy-and-security',
-      'how-does-logingov-protect-my-data'
+      'how-does-logingov-protect-my-data',
     ).to_s
   end
 end

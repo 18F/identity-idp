@@ -15,7 +15,7 @@ describe SmsOtpSenderJob do
         code: '1234',
         phone: '+1 (888) 555-5555',
         message: 'jobs.sms_otp_sender_job.login_message',
-        otp_created_at: otp_created_at
+        otp_created_at: otp_created_at,
       )
     end
 
@@ -38,7 +38,7 @@ describe SmsOtpSenderJob do
       expect(msg.to).to eq('+1 (888) 555-5555')
       expect(msg.body).to eq(
         I18n.t('jobs.sms_otp_sender_job.login_message',
-               code: '1234', app: APP_NAME, expiration: '10')
+               code: '1234', app: APP_NAME, expiration: '10'),
       )
     end
 
@@ -51,7 +51,7 @@ describe SmsOtpSenderJob do
         code: '1234',
         phone: '+1 (888) 555-5555',
         message: 'jobs.sms_otp_sender_job.verify_message',
-        otp_created_at: otp_created_at
+        otp_created_at: otp_created_at,
       )
 
       messages = FakeSms.messages
@@ -126,7 +126,7 @@ describe SmsOtpSenderJob do
           phone: phone,
           otp_created_at: otp_created_at,
           message: nil,
-          locale: locale
+          locale: locale,
         )
       end
     end
@@ -143,8 +143,8 @@ describe SmsOtpSenderJob do
           to: phone,
           body: I18n.t(
             'jobs.sms_otp_sender_job.login_message',
-            code: code, app: APP_NAME, expiration: Devise.direct_otp_valid_for.to_i / 60
-          )
+            code: code, app: APP_NAME, expiration: Devise.direct_otp_valid_for.to_i / 60,
+          ),
         )
 
         SmsOtpSenderJob.perform_now(
@@ -152,7 +152,7 @@ describe SmsOtpSenderJob do
           phone: phone,
           otp_created_at: otp_created_at,
           message: 'jobs.sms_otp_sender_job.login_message',
-          locale: 'fr'
+          locale: 'fr',
         )
       end
     end

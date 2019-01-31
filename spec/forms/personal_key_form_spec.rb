@@ -23,7 +23,7 @@ describe PersonalKeyForm do
           :user,
           :with_phone,
           email: 'jonny.hoops@gsa.gov',
-          with: { phone: '+1 (202) 345-6789' }
+          with: { phone: '+1 (202) 345-6789' },
         )
         raw_code = PersonalKeyGenerator.new(user).create
 

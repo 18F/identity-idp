@@ -21,8 +21,8 @@ feature 'Password Recovery' do
       expect(last_email.html_part.body).to have_content(
         t(
           'mailer.reset_password.footer',
-          expires: (Devise.reset_password_within / 3600)
-        )
+          expires: (Devise.reset_password_within / 3600),
+        ),
       )
 
       open_last_email

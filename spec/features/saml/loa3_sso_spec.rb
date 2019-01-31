@@ -71,7 +71,7 @@ feature 'LOA3 Single Sign On' do
         :profile,
         deactivation_reason: :verification_pending,
         phone_confirmed: phone_confirmed,
-        pii: { ssn: '6666', dob: '1920-01-01' }
+        pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end
 

@@ -10,8 +10,8 @@ describe 'layouts/application.html.slim' do
         sp: nil,
         view_context: nil,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new
-      ).call
+        service_provider_request: ServiceProviderRequest.new,
+      ).call,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
@@ -116,8 +116,8 @@ describe 'layouts/application.html.slim' do
           sp: nil,
           view_context: nil,
           sp_session: {},
-          service_provider_request: nil
-        ).call
+          service_provider_request: nil,
+        ).call,
       )
       allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
 

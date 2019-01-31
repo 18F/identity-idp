@@ -88,7 +88,7 @@ feature 'Internationalization' do
       %w[en es fr].each do |locale|
         expect(page).to_not have_link(
           t("i18n.locale.#{locale}"),
-          href: "http://test.com/#{locale}"
+          href: "http://test.com/#{locale}",
         )
       end
     end

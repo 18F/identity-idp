@@ -30,7 +30,7 @@ describe TwoFactorAuthentication::OptionsController do
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
 
       expect(response).to redirect_to otp_send_url( \
-        otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
       )
 
       piv_cac_webauthn_enabled('true')
@@ -40,7 +40,7 @@ describe TwoFactorAuthentication::OptionsController do
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
 
       expect(response).to redirect_to otp_send_url( \
-        otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
       )
     end
 
@@ -48,7 +48,7 @@ describe TwoFactorAuthentication::OptionsController do
       post :create, params: { two_factor_options_form: { selection: 'voice' } }
 
       expect(response).to redirect_to otp_send_url( \
-        otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
       )
     end
 

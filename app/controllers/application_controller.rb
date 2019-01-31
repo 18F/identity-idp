@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,
-      service_provider_request: service_provider_request
+      service_provider_request: service_provider_request,
     ).call
   end
 
@@ -84,7 +84,7 @@ class ApplicationController < ActionController::Base
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
   def add_new_relic_trace_attributes
     ::NewRelic::Agent.add_custom_attributes(
-      amzn_trace_id: request.headers['X-Amzn-Trace-Id']
+      amzn_trace_id: request.headers['X-Amzn-Trace-Id'],
     )
   end
 
@@ -145,7 +145,7 @@ class ApplicationController < ActionController::Base
     analytics.track_event(
       Analytics::INVALID_AUTHENTICITY_TOKEN,
       controller: controller_info,
-      user_signed_in: user_signed_in?
+      user_signed_in: user_signed_in?,
     )
     flash[:error] = t('errors.invalid_authenticity_token')
     redirect_back fallback_location: new_user_session_url

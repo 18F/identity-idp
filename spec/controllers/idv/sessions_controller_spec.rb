@@ -29,7 +29,7 @@ describe Idv::SessionsController do
         :confirm_two_factor_authenticated,
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
-        :confirm_step_needed
+        :confirm_step_needed,
       )
     end
   end

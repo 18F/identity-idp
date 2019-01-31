@@ -26,14 +26,14 @@ describe Users::PhonesController do
       it 'lets user know they need to confirm their new phone' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(
-          MfaContext.new(user).phone_configurations.reload.first.phone
+          MfaContext.new(user).phone_configurations.reload.first.phone,
         ).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
@@ -71,14 +71,14 @@ describe Users::PhonesController do
       it 'processes successfully and informs user' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(MfaContext.new(user).phone_configurations.reload.first.phone).to_not eq(
-          MfaContext.new(second_user).phone_configurations.first.phone
+          MfaContext.new(second_user).phone_configurations.first.phone,
         )
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
@@ -240,7 +240,7 @@ describe Users::PhonesController do
       }
       expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
       expect(
-        MfaContext.new(user).phone_configurations.reload.first.phone
+        MfaContext.new(user).phone_configurations.reload.first.phone,
       ).to_not eq '+1 202-555-4321'
       expect(response).to redirect_to(otp_send_path(otp_delivery_selection_form:
                                                       { otp_delivery_preference: 'sms' }))

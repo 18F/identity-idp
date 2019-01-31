@@ -7,7 +7,7 @@ describe 'sign_up/completions/show.html.slim' do
       current_user: @user,
       loa3_requested: false,
       decorated_session: SessionDecorator.new,
-      handoff: false
+      handoff: false,
     )
   end
 
@@ -24,7 +24,7 @@ describe 'sign_up/completions/show.html.slim' do
     identity = create_identities(@user).first
     render
     content = strip_tags(
-      t('idv.messages.agency_login_html', sp: identity.display_name)
+      t('idv.messages.agency_login_html', sp: identity.display_name),
     )
     expect(rendered).to have_content(content)
   end
@@ -35,7 +35,7 @@ describe 'sign_up/completions/show.html.slim' do
         current_user: @user,
         loa3_requested: false,
         decorated_session: SessionDecorator.new,
-        handoff: true
+        handoff: true,
       )
       create_identities(@user)
     end
@@ -52,7 +52,7 @@ describe 'sign_up/completions/show.html.slim' do
       sp = create(
         :service_provider,
         friendly_name: "SP app #{index}",
-        agency: "Agency #{index}"
+        agency: "Agency #{index}",
       )
       create(:identity, service_provider: sp.issuer, user: user)
     end

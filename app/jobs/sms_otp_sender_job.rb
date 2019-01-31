@@ -28,8 +28,8 @@ class SmsOtpSenderJob < ApplicationJob
       to: phone,
       body: I18n.t(
         message,
-        code: code, app: APP_NAME, expiration: otp_valid_for_minutes
-      )
+        code: code, app: APP_NAME, expiration: otp_valid_for_minutes,
+      ),
     )
   end
 

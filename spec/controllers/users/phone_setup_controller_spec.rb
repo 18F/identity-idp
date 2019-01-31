@@ -77,13 +77,13 @@ describe Users::PhoneSetupController do
           params: {
             user_phone_form: { phone: '703-555-0100',
                                international_code: 'US' },
-          }
+          },
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
-          )
+            otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+          ),
         )
 
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -110,13 +110,13 @@ describe Users::PhoneSetupController do
           params: {
             user_phone_form: { phone: '703-555-0100',
                                international_code: 'US' },
-          }
+          },
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          ),
         )
 
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -142,13 +142,13 @@ describe Users::PhoneSetupController do
           params: {
             user_phone_form: { phone: '703-555-0100',
                                international_code: 'US' },
-          }
+          },
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          ),
         )
 
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -161,7 +161,7 @@ describe Users::PhoneSetupController do
       expect(subject).to have_actions(
         :before,
         :authenticate_user,
-        :authorize_user
+        :authorize_user,
       )
     end
   end

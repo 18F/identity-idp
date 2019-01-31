@@ -91,7 +91,7 @@ feature 'Remembering a 2FA device' do
     it 'requires 2FA and does not offer the option to remember device' do
       expect(current_path).to eq(idv_otp_verification_path)
       expect(page).to_not have_content(
-        t('forms.messages.remember_device')
+        t('forms.messages.remember_device'),
       )
     end
   end
@@ -108,7 +108,7 @@ feature 'Remembering a 2FA device' do
       sign_in_user(user)
       expect(current_path).to eq(login_two_factor_authenticator_path)
       expect(page).to_not have_content(
-        t('forms.messages.remember_device')
+        t('forms.messages.remember_device'),
       )
     end
   end

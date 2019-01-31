@@ -90,7 +90,7 @@ describe 'throttling requests' do
             'user[email]' => user.email,
             'user[password]' => user.password,
           },
-          headers: { REMOTE_ADDR: '1.2.3.4' }
+          headers: { REMOTE_ADDR: '1.2.3.4' },
         )
 
         requests_per_ip_limit.times do

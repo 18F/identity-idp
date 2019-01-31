@@ -6,7 +6,7 @@ describe Idv::ReviewController do
       :user,
       :signed_up,
       password: ControllerHelper::VALID_PASSWORD,
-      email: 'old_email@example.com'
+      email: 'old_email@example.com',
     )
   end
   let(:zipcode) { '66044' }
@@ -28,7 +28,7 @@ describe Idv::ReviewController do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
-      issuer: nil
+      issuer: nil,
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
@@ -42,7 +42,7 @@ describe Idv::ReviewController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_session_started,
-        :confirm_idv_steps_complete
+        :confirm_idv_steps_complete,
       )
     end
   end
@@ -205,7 +205,7 @@ describe Idv::ReviewController do
 
         expect(flash.now[:success]).to eq(
           t('idv.messages.review.info_verified_html',
-            phone_message: "<strong>#{t('idv.messages.phone.phone_of_record')}</strong>")
+            phone_message: "<strong>#{t('idv.messages.phone.phone_of_record')}</strong>"),
         )
       end
     end
@@ -219,7 +219,7 @@ describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t('idv.messages.mail_sent')
+          t('idv.messages.mail_sent'),
         )
       end
     end

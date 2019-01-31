@@ -173,7 +173,7 @@ describe 'redirect_uri validation' do
       redirect_uri: 'https://example.com.evil.com/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -189,7 +189,7 @@ describe 'redirect_uri validation' do
       redirect_uri: ':aaaa',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -205,7 +205,7 @@ describe 'redirect_uri validation' do
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -221,7 +221,7 @@ describe 'redirect_uri validation' do
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -237,7 +237,7 @@ describe 'redirect_uri validation' do
       redirect_uri: 'https://example.com',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 
@@ -253,7 +253,7 @@ describe 'redirect_uri validation' do
       redirect_uri: 'http://test.host',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 end

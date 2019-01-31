@@ -12,10 +12,10 @@ module VerifySPAttributesConcern
   def update_verified_attributes
     IdentityLinker.new(
       current_user,
-      sp_session[:issuer]
+      sp_session[:issuer],
     ).link_identity(
       ial: sp_session_ial,
-      verified_attributes: sp_session[:requested_attributes]
+      verified_attributes: sp_session[:requested_attributes],
     )
   end
 

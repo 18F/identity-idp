@@ -53,7 +53,7 @@ describe Idv::ResendOtpController do
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT,
-        expected_result
+        expected_result,
       )
     end
 
@@ -91,7 +91,7 @@ describe Idv::ResendOtpController do
             error: 'error',
             code: 60_033,
             status: 400,
-            response: '{"error_code":"60004"}'
+            response: '{"error_code":"60004"}',
           )
         end
         let(:twilio_error) do
@@ -99,7 +99,7 @@ describe Idv::ResendOtpController do
             code: 60_033,
             message: 'error',
             status: 400,
-            response:  '{"error_code":"60004"}'
+            response:  '{"error_code":"60004"}',
           )
         end
 

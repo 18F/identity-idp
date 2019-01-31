@@ -14,7 +14,7 @@ module RememberDeviceConcern
     return if remember_device_cookie.nil?
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
-      expiration_interval: decorated_session.mfa_expiration_interval
+      expiration_interval: decorated_session.mfa_expiration_interval,
     )
 
     handle_valid_remember_device_cookie
@@ -24,7 +24,7 @@ module RememberDeviceConcern
     remember_device_cookie_contents = cookies.encrypted[:remember_device]
     return if remember_device_cookie_contents.blank?
     @remember_device_cookie ||= RememberDeviceCookie.from_json(
-      remember_device_cookie_contents
+      remember_device_cookie_contents,
     )
   end
 
@@ -34,7 +34,7 @@ module RememberDeviceConcern
 
     !remember_device_cookie.valid_for_user?(
       user: current_user,
-      expiration_interval: decorated_session.mfa_expiration_interval
+      expiration_interval: decorated_session.mfa_expiration_interval,
     )
   end
 

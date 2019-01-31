@@ -132,7 +132,7 @@ module Idv
       Idv::ProfileMaker.new(
         applicant: applicant,
         user: current_user,
-        user_password: user_password
+        user_password: user_password,
       )
     end
   end

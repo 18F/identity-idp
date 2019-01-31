@@ -16,22 +16,22 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.x509_dn_uuid,
       'subject' => x509_subject,
-      'nonce' => nonce
+      'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.x509_dn_uuid + 'X',
       'subject' => x509_subject + 'X',
-      'nonce' => nonce
+      'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
       'subject' => 'bad-dn',
-      'nonce' => nonce
+      'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.x509_dn_uuid,
       'subject' => x509_subject,
-      'nonce' => 'bad-' + nonce
+      'nonce' => 'bad-' + nonce,
     )
   end
 
@@ -58,7 +58,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         mock_piv_cac_configuration = mock_mfa.piv_cac_configuration
         allow(mock_piv_cac_configuration).to receive(:mfa_confirmed?).and_return(true)
         allow(mock_mfa).to receive(:piv_cac_configuration).and_return(
-          mock_piv_cac_configuration
+          mock_piv_cac_configuration,
         )
         allow(MfaContext).to receive(:new).with(subject.current_user).and_return(mock_mfa)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -75,7 +75,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       it 'resets the second_factor_attempts_count' do
         UpdateUser.new(
           user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 }
+          attributes: { second_factor_attempts_count: 1 },
         ).call
 
         get :show, params: { token: 'good-token' }

@@ -9,7 +9,7 @@ describe Idv::UspsController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_needed,
-        :confirm_mail_not_spammed
+        :confirm_mail_not_spammed,
       )
     end
   end

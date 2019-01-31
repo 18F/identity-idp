@@ -8,8 +8,8 @@ class SmsAccountResetNotifierJob < ApplicationJob
       body: I18n.t(
         'jobs.sms_account_reset_notifier_job.message',
         app: APP_NAME,
-        cancel_link: account_reset_cancel_url(token: token)
-      )
+        cancel_link: account_reset_cancel_url(token: token),
+      ),
     )
   end
 end

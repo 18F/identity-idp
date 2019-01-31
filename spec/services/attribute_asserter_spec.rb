@@ -9,14 +9,14 @@ describe AttributeAsserter do
     build(
       :identity,
       service_provider: service_provider.issuer,
-      session_uuid: SecureRandom.uuid
+      session_uuid: SecureRandom.uuid,
     )
   end
   let(:service_provider) do
     instance_double(
       ServiceProvider,
       issuer: 'http://localhost:3000',
-      metadata: {}
+      metadata: {},
     )
   end
   let(:raw_loa1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
@@ -36,7 +36,7 @@ describe AttributeAsserter do
           user: user,
           service_provider: service_provider,
           authn_request: loa3_authn_request,
-          decrypted_pii: decrypted_pii
+          decrypted_pii: decrypted_pii,
         )
       end
 
@@ -97,7 +97,7 @@ describe AttributeAsserter do
         context 'authn request specifies bundle' do
           let(:raw_loa3_authn_request) do
             CGI.unescape(
-              auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last
+              auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 
@@ -123,7 +123,7 @@ describe AttributeAsserter do
       context 'custom bundle has invalid attribute name' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[email foo]
+            %w[email foo],
           )
           subject.build
         end
@@ -140,7 +140,7 @@ describe AttributeAsserter do
           user: user,
           service_provider: service_provider,
           authn_request: loa1_authn_request,
-          decrypted_pii: decrypted_pii
+          decrypted_pii: decrypted_pii,
         )
       end
 
@@ -182,7 +182,7 @@ describe AttributeAsserter do
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
           let(:raw_loa1_authn_request) do
             CGI.unescape(
-              auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last
+              auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 
@@ -207,7 +207,7 @@ describe AttributeAsserter do
       context 'custom bundle has invalid attribute name' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[email foo]
+            %w[email foo],
           )
           subject.build
         end
@@ -222,7 +222,7 @@ describe AttributeAsserter do
       context 'custom bundle does not include email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[first_name last_name]
+            %w[first_name last_name],
           )
           subject.build
         end
@@ -235,7 +235,7 @@ describe AttributeAsserter do
       context 'custom bundle includes email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[first_name last_name email phone]
+            %w[first_name last_name email phone],
           )
           subject.build
         end
@@ -252,7 +252,7 @@ describe AttributeAsserter do
           user: loa1_user,
           service_provider: service_provider,
           authn_request: loa3_authn_request,
-          decrypted_pii: decrypted_pii
+          decrypted_pii: decrypted_pii,
         )
       end
 
@@ -265,7 +265,7 @@ describe AttributeAsserter do
           user: loa1_user,
           service_provider: service_provider,
           authn_request: loa1_authn_request,
-          decrypted_pii: decrypted_pii
+          decrypted_pii: decrypted_pii,
         )
       end
 

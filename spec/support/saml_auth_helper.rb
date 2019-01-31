@@ -32,19 +32,19 @@ module SamlAuthHelper
 
   def sp_fingerprint
     @sp_fingerprint ||= Fingerprinter.fingerprint_cert(
-      OpenSSL::X509::Certificate.new(saml_test_sp_cert)
+      OpenSSL::X509::Certificate.new(saml_test_sp_cert),
     )
   end
 
   def idp_fingerprint
     @idp_fingerprint ||= Fingerprinter.fingerprint_cert(
-      OpenSSL::X509::Certificate.new(saml_test_idp_cert)
+      OpenSSL::X509::Certificate.new(saml_test_idp_cert),
     )
   end
 
   def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
-      File.read(Rails.root + 'keys/saml_test_sp.key')
+      File.read(Rails.root + 'keys/saml_test_sp.key'),
     ).to_pem
   end
 
@@ -182,10 +182,10 @@ module SamlAuthHelper
 
     IdentityLinker.new(
       user,
-      settings.issuer
+      settings.issuer,
     ).link_identity(
       ial: loa3_requested?(settings) ? true : nil,
-      verified_attributes: ['email']
+      verified_attributes: ['email'],
     )
   end
 
@@ -223,7 +223,7 @@ module SamlAuthHelper
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'select_account',
-      nonce: nonce
+      nonce: nonce,
     )
   end
 end

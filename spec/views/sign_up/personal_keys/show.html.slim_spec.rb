@@ -27,7 +27,7 @@ describe 'sign_up/personal_keys/show.html.slim' do
     it 'displays the date the code was generated' do
       expect(rendered).to have_content(
         t('users.personal_key.generated_on_html',
-          date: I18n.l(Time.zone.today, format: '%B %d, %Y'))
+          date: I18n.l(Time.zone.today, format: '%B %d, %Y')),
       )
     end
   end
@@ -41,7 +41,7 @@ describe 'sign_up/personal_keys/show.html.slim' do
     render
     expect(rendered).to have_content(
       t('instructions.personal_key.info_html',
-        accent: t('instructions.personal_key.accent'))
+        accent: t('instructions.personal_key.accent')),
     )
   end
 
