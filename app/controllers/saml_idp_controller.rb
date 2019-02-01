@@ -62,23 +62,7 @@ class SamlIdpController < ApplicationController
   end
 
   def saml_metadata
-    if SamlCertRotationManager.use_new_secrets_for_request?(request)
-      cert_rotation_saml_metadata
-    else
-      SamlIdp.metadata
-    end
-  end
-
-  def cert_rotation_saml_metadata
-    config = SamlIdp.config.dup
-    suffix = SamlCertRotationManager.rotation_path_suffix
-    config.single_service_post_location = config.single_service_post_location + suffix
-    config.single_logout_service_post_location = config.single_logout_service_post_location + suffix
-    SamlIdp::MetadataBuilder.new(
-      config,
-      SamlCertRotationManager.new_certificate,
-      SamlCertRotationManager.new_secret_key,
-    )
+    SamlEndpoint.new(request).saml_metadata
   end
 
   def redirect_to_account_or_verify_profile_url
