@@ -81,7 +81,7 @@ module Encryption
     end
 
     def kms_client
-      KmsClient.new
+      ContextlessKmsClient.new
     end
 
     def split_scrypt_digest(digest)
