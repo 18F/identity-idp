@@ -95,6 +95,7 @@ module SamlIdpAuthConcern
     )
   end
 
+  # :reek:FeatureEnvy
   def saml_response_signature_options
     endpoint = SamlEndpoint.new(request)
     {
