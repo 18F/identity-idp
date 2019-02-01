@@ -179,7 +179,7 @@ development:
   piv_cac_verify_token_secret: 'ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
-  pkcs11_lib:
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'
@@ -300,7 +300,7 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
-  pkcs11_lib:
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'

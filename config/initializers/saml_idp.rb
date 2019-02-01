@@ -7,8 +7,8 @@ SamlIdp.configure do |config|
   # Setup CloudHSM
   config.cloudhsm_enabled = FeatureManagement.use_cloudhsm?
   config.cloudhsm_pin = Figaro.env.cloudhsm_pin
-  config.pkcs11 = PKCS11.open(Figaro.env.pkcs11_lib) unless Rails.env.test? ||
-                                                            Figaro.env.pkcs11_lib.nil?
+  config.pkcs11 = PKCS11.open(Figaro.env.pkcs11_lib) if FeatureManagement.use_cloudhsm? &&
+                                                        !Rails.env.test?
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'
