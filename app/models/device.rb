@@ -4,7 +4,6 @@ class Device < ApplicationRecord
   attr_accessor :nice_name
   validates :user_id, presence: true
   validates :cookie_uuid, presence: true
-  validates :user_agent, presence: true
   validates :last_used_at, presence: true
   validates :last_ip, presence: true
 
