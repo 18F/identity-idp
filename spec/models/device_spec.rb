@@ -8,7 +8,6 @@ describe Device do
 
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.to validate_presence_of(:cookie_uuid) }
-    it { is_expected.to validate_presence_of(:user_agent) }
     it { is_expected.to validate_presence_of(:last_used_at) }
     it { is_expected.to validate_presence_of(:last_ip) }
 
