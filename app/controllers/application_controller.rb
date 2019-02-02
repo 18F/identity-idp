@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
   def create_or_update_device(user)
     device = DeviceTracking::LookupDeviceForUser.call(user, cookies[:device])
     if device
-      DeviceTracking::UpdateDevice.call(device, request)
+      DeviceTracking::UpdateDevice.call(device, request.remote_ip)
     else
       device = create_device(user)
     end
@@ -77,7 +77,10 @@ class ApplicationController < ActionController::Base
 
   def create_device(user)
     cookie_uuid = cookies[:device]
-    device = DeviceTracking::CreateDevice.call(user, request, cookie_uuid)
+    device = DeviceTracking::CreateDevice.call(user.id,
+                                               request.remote_ip,
+                                               request.user_agent,
+                                               cookie_uuid)
     device_uuid = device.cookie_uuid
     cookies.permanent[:device] = device_uuid unless device_uuid == cookie_uuid
     device
