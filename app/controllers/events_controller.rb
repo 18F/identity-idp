@@ -19,8 +19,9 @@ class EventsController < ApplicationController
 
   def device_and_events
     id = params[:id]
-    @events = DeviceTracking::ListDeviceEvents.call(current_user, id, 0, EVENTS_PAGE_SIZE).
+    user_id = current_user.id
+    @events = DeviceTracking::ListDeviceEvents.call(user_id, id, 0, EVENTS_PAGE_SIZE).
               map(&:decorate)
-    @device = Device.find_by(user_id: current_user.id, id: id.to_i)
+    @device = Device.find_by(user_id: user_id, id: id.to_i)
   end
 end
