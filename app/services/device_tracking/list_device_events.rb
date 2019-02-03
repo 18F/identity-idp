@@ -1,7 +1,6 @@
 module DeviceTracking
   class ListDeviceEvents
-    def self.call(user, device_id, offset, limit)
-      user_id = user.id
+    def self.call(user_id, device_id, offset, limit)
       return [] unless Device.where(user_id: user_id, device_id: device_id)
       Event.where(user_id: user_id, device_id: device_id).offset(offset).limit(limit).
         order(created_at: :desc)
