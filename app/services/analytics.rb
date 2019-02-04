@@ -61,6 +61,7 @@ class Analytics
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
+  EVENTS_VISIT = 'Events Page Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze

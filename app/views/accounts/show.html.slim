@@ -69,17 +69,17 @@ h1.hide = t('titles.account')
 
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.devices')
+    = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
+  - @view_model.recent_devices.each do |device|
+    = render device.device_partial, device: device
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
     = t('headings.account.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
     = render event.event_partial, event: event
-
-.mb3.profile-info-box
-  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
-    = t('headings.account.login_history')
-    = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
-  = render 'accounts/current_sign_in', presenter: @login_presenter
-  = render 'accounts/last_sign_in', presenter: @login_presenter
 
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix

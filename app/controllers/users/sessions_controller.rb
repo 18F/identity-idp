@@ -83,6 +83,7 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_active_profile
+      create_user_event(:sign_in_before_2fa)
       redirect_to user_two_factor_authentication_url
     end
 

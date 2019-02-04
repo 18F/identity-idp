@@ -101,6 +101,7 @@ Rails.application.routes.draw do
         as: :openid_connect_configuration
 
     get '/account' => 'accounts#show'
+    get '/account/events' => 'events#show'
     get '/account/delete' => 'users/delete#show', as: :account_delete
     delete '/account/delete' => 'users/delete#delete'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
