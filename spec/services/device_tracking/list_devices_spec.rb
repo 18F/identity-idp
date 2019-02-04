@@ -3,7 +3,7 @@ require 'rails_helper'
 describe DeviceTracking::ListDevices do
   subject { described_class }
   let(:now) { Time.zone.now }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, id: 1) }
   let(:bad_user_id) { 0 }
   let(:device1) { create_device(1, 2) }
   let(:device2) { create_device(2, 3) }
@@ -37,6 +37,6 @@ describe DeviceTracking::ListDevices do
   end
 
   def create_device(id, ago)
-    create(:device, id: id, user_id: user.id, last_ip: '4.3.2.1', last_used_at: now - ago.hour)
+    create(:device, id: id, user_id: 1, last_ip: '4.3.2.1', last_used_at: now - ago.hour)
   end
 end
