@@ -3,13 +3,9 @@ module DeviceTracking
     def self.call(parser, device)
       device_user_agent = device.user_agent
       user_agent = parser.parse(device_user_agent)
-      if user_agent
-        I18n.t('account.index.device',
-               browser: browser(user_agent),
-               os: os(user_agent))
-      else
-        device_user_agent
-      end
+      I18n.t('account.index.device',
+             browser: browser(user_agent),
+             os: os(user_agent))
     end
 
     def self.browser(user_agent)
