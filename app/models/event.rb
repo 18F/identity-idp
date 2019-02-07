@@ -1,5 +1,6 @@
 class Event < ApplicationRecord
   belongs_to :user
+  belongs_to :device
 
   enum event_type: {
     account_created: 1,
