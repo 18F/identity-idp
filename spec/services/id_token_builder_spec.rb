@@ -11,7 +11,7 @@ RSpec.describe IdTokenBuilder do
           uuid: SecureRandom.uuid,
           ial: 3,
           # this is a known value from an example developer guide
-          # https://developer.pingidentity.com/en/resources/openid-connect-developers-guide.html
+          # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
           access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
           user: build(:user, :with_email))
   end
