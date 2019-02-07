@@ -1,13 +1,8 @@
 require 'rails_helper'
 
-class MockSession; end
-
-shared_examples 'OpenID Connect' do |cloudhsm_enabled|
+describe 'OpenID Connect' do
   include IdvHelper
-
-  before do
-    enable_cloudhsm(cloudhsm_enabled)
-  end
+  include CloudhsmMocks
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -351,6 +346,65 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
     end
   end
 
+  context 'with cloudhsm enabed' do
+    before do
+      allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(true)
+      mock_cloudhsm
+    end
+
+    it 'succeeds with JWT' do
+      oidc_end_client_secret_jwt
+    end
+
+    it 'succeeds with PKCE' do
+      client_id = 'urn:gov:gsa:openidconnect:test'
+      state = SecureRandom.hex
+      nonce = SecureRandom.hex
+      code_verifier = SecureRandom.hex
+      code_challenge = Digest::SHA256.base64digest(code_verifier)
+      user = user_with_2fa
+
+      link_identity(user, client_id)
+      user.identities.last.update!(verified_attributes: ['email'])
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: state,
+        prompt: 'select_account',
+        nonce: nonce,
+        code_challenge: code_challenge,
+        code_challenge_method: 'S256',
+      )
+
+      _user = sign_in_live_with_2fa(user)
+      expect(page.html).to_not include(code_challenge)
+
+      redirect_uri = URI(current_url)
+      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+
+      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+      expect(redirect_params[:state]).to eq(state)
+
+      code = redirect_params[:code]
+      expect(code).to be_present
+
+      page.driver.post api_openid_connect_token_path,
+                       grant_type: 'authorization_code',
+                       code: code,
+                       code_verifier: code_verifier
+
+      expect(page.status_code).to eq(200)
+      token_response = JSON.parse(page.body).with_indifferent_access
+
+      id_token = token_response[:id_token]
+      expect(id_token).to be_present
+    end
+  end
+
   def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
@@ -528,28 +582,4 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
     expect(userinfo_response[:social_security_number]).to eq('111223333')
     user
   end
-
-  def enable_cloudhsm(is_enabled)
-    unless is_enabled
-      allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
-      return
-    end
-    allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
-    allow(PKCS11).to receive(:open).and_return('true')
-    allow_any_instance_of(SamlIdp::Configurator).
-      to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
-    allow(MockSession).to receive(:login).and_return(true)
-    allow(MockSession).to receive(:logout).and_return(true)
-    allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
-    allow(MockSession).to receive(:sign) do |_algorithm, _key, input|
-      JWT::Algos::Rsa.sign(
-        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key),
-      )
-    end
-  end
-end
-
-feature 'OIDC' do
-  it_behaves_like  'OpenID Connect', false
-  it_behaves_like  'OpenID Connect', true
 end
