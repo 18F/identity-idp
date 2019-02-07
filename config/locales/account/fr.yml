@@ -8,6 +8,7 @@ fr:
       auth_app_disabled: non activée
       auth_app_enabled: activée
       authentication_app: Application d'authentification
+      device: "%{browser} sur %{os}"
       dob: Date de naissance
       email: Adresse courriel
       full_name: Nom complet
@@ -24,7 +25,6 @@ fr:
           votre profil.
         link: Réactivez votre profil maintenant.
       sign_in_location_and_ip: "%{location} (Adresse IP: %{ip})"
-      sign_in_timestamp: Il y a %{timestamp}
       ssn: Numéro d'assurance sociale
       unknown_location: lieu inconnu
       verification:

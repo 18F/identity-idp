@@ -1,0 +1,15 @@
+- content_for(:nav) do
+  = render 'accounts/nav_auth', greeting: @view_model.header_personalization
+
+- title t('titles.account')
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.account_history')
+    = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
+    br
+    = @device.device_name
+  - @events.each do |event|
+    = render event.event_partial, event: event
+
+= link_to cancel_link_text, account_path, class: 'h5'

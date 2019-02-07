@@ -5,7 +5,8 @@ es:
       account_history: Historial de cuenta
       account_management: Manejo de cuenta
       connected_apps: Aplicaciones
-      login_history: Historial de sesión
+      devices: Dispositivos
+      events: Eventos
       login_info: Su cuenta
       profile_info: Información de perfil
       reactivate: Reactive su cuenta

@@ -8,6 +8,7 @@ es:
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
       authentication_app: App de autenticación
+      device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Email
       full_name: Nombre completo
@@ -22,7 +23,6 @@ es:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
       sign_in_location_and_ip: 'Desde %{location} (Dirección IP: %{ip})'
-      sign_in_timestamp: Hace %{timestamp}
       ssn: Número de Seguro Social
       unknown_location: ubicación desconocida
       verification:
