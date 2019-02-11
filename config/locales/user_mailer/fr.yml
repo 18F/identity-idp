@@ -39,6 +39,7 @@ fr:
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}
+      subject: Verify your identity on a desktop computer
     email_changed:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
         le %{help_link} de %{app} ou %{contact_link}.

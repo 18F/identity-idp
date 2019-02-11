@@ -65,6 +65,6 @@ class UserMailer < ActionMailer::Base
   def doc_auth_desktop_link_to_sp(email_address, application, link)
     @link = link
     @application = application
-    mail(to: email_address, subject: 'Verify your identity on a desktop computer')
+    mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
   end
 end
