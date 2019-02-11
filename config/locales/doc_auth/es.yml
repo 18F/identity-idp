@@ -51,8 +51,8 @@ es:
       bullet2: Confirm your address
       bullet3: Secure your account
       bullet4: Account recovery
-      email_sent: Link sent to %{email}.  Please check your desktop email and follow
-        instructions to complete the proofing process
+      email_sent: Link sent to %{email}. Please check your desktop email and follow
+        instructions to verify your identity.
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take pictures of the front and back of your ID.
       take_pic: 'For best results:'

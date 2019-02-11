@@ -97,6 +97,10 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :link_sent)
   end
 
+  def idv_doc_auth_email_sent_step
+    idv_doc_auth_step_path(step: :email_sent)
+  end
+
   def complete_doc_auth_steps_before_upload_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
@@ -162,6 +166,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_send_link_step(user = user_with_2fa)
     complete_doc_auth_steps_before_upload_step(user)
     click_on t('doc_auth.buttons.use_phone')
+  end
+
+  def complete_doc_auth_steps_before_email_sent_step(user = user_with_2fa)
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    complete_doc_auth_steps_before_upload_step(user)
+    click_on t('doc_auth.buttons.use_computer')
   end
 
   def mock_assure_id_ok
