@@ -49,50 +49,28 @@ Therefore, we have adopted the following design goals:
   access is not necessary. The exception is server-accessible PII (email and phone).
 * Duplicate SSNs should not be allowed for separate accounts.
 * Forgetting your password should not necessarily result in all PII being lost.
+* The ciphertexts should be able to be migrated between cloud providers including
+  HSM providers.
 
 ## Implementation
 
 To address all these design goals we have implemented a multi-factor
 encryption model.
 
-When a user first creates an account, we use the user's password,
-a server-controlled random string, and a hardware security module (HSM)
-to create an encryption key.
-Any time the user gives us private personal information
-we use that encryption key to encrypt the personal information.
-The private PII may only be decrypted if all three factors are present: the HSM,
-the user's password, and the random string.
+When a user first creates an account, we create an scrypt digest of the user's
+password, which we then use as a key to AES encrypt the private PII.
+That ciphertext is then encrypted with Amazon KMS.
 
-All random strings are generated using the openssl library via
-the Ruby [SecureRandom module](https://ruby-doc.org/stdlib-2.3.0/libdoc/securerandom/rdoc/SecureRandom.html).
+This model means the user's password and access to KMS is required to decrypt data.
+KMS encryption activities can be monitored and audited to detect anomalous activity.
+Encrypting with the user's password means that a ciphertext that has been decrypted by KMS
+still requires brute forcing the user's password, which is expected to take large amount
+of time due to the scrypt step.
 
-It is important to note that the HSM factor strengthens the model in a
-way different than the other two factors, which rely on keeping them secret.
-Because the HSM is tied to a physical object, brute force attacks on our database
-would need to happen in proximity to the HSM, i.e., within our AWS environment, which greatly
-reduces the attack surface. A bad actor with a copy of the database cannot
-apply their own computing power to brute force cracking of passwords.
-
-Based on consultation with the [National Institute of Standards and Technology](https://www.nist.gov/)
-we follow these steps to create the encryption key:
-
-* generate and store a random, 160-bit string as `salt`
-* using the user's password and the `salt`, create a [SCrypt](https://github.com/pbhogan/scrypt) hash
-* split the SCrypt hash into two 128-bit strings, `Z1` and `Z2`
-* generate a random 256-bit string `AssignedSecret` (`R`)
-* using the HSM, encrypt `AssignedSecret` as `EncryptedAssignedSecret` (`encrypted_R`)
-* calculate the [XOR](https://en.wikipedia.org/wiki/Exclusive_or)
-  of `EncryptedAssignedSecret` and `Z1` as `MaskedCiphertext` (`D`)
-* store `MaskedCiphertext` with the user record
-* create a SHA-256 hash of the concatenation of `Z2` and `AssignedSecret` called `CEK` (`E`)
-* create a SHA-256 hash of `CEK` called `PasswordHash`
-* store `PasswordHash` with the user record
-* using the key `CEK`, encrypt the PII using AES GCM 256-bit encryption
-  as `EncryptedPII` (`C`)
-* store `EncryptedPII` with the user record
-* do *not* store plaintext PII, `AssignedSecret` or `CEK`
-
-You can review [the tests for this model in our public repository](https://github.com/18F/identity-idp/blob/master/spec/services/pii/nist_encryption_spec.rb). We have also documented some [example code](https://github.com/18F/identity-idp/blob/master/docs/encryption-examples.md) that can be used to re-create the process we use to encrypt and decrypt PII.
+Additionally, having KMS as the last step for encryption means that the Login.gov
+team can move between instances of KMS or potentially abandon KMS in favor of a different tool.
+This can be done by decrypting ciphertexts with the existing KMS instance and then
+re-encrypting them with the replacement before writing back to the database.
 
 Since the user's password is an integral part of this multi-factor
 model, if the user forgets their password, the PII may not be recovered.
@@ -104,7 +82,7 @@ as a backup password for encrypted PII.
 
 On login, the decryption process is applied, and the PII is re-encrypted
 with the same multi-factor model, using a server-controlled key in place of the user
-password so that the PII can be accessed by the server for the life of the session.
+password digest so that the PII can be accessed by the server for the life of the session.
 
 When PII needs to be accessed (e.g. to show a user their SSN, or to assert to a
 government relying party) the ciphertext is
@@ -133,7 +111,7 @@ The following cryptographic primitives are used:
 - Symmetric encryption: AES-256 in GCM mode, with 12-byte randomly generated
   nonces
 - Hashes: SHA-256
-- Key derivation: Scrypt with `:max_time` of 0.5seconds
+- Key derivation: Scrypt with parameters `10000$8$1$`
 
 ## Key Management
 
