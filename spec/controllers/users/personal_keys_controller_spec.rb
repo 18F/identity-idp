@@ -121,8 +121,6 @@ describe Users::PersonalKeysController do
 
       expect(generator).to receive(:create)
       expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
-      expect(Event).to receive(:create).
-        with(user_id: subject.current_user.id, event_type: :new_personal_key)
 
       post :create
 

@@ -126,6 +126,7 @@ module TwoFactorAuthenticatable
   def handle_valid_otp_for_authentication_context
     mark_user_session_authenticated
     bypass_sign_in current_user
+    create_user_event(:sign_in_after_2fa)
 
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end

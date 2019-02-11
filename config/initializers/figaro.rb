@@ -40,6 +40,7 @@ Figaro.require_keys(
   'requests_per_ip_track_only_mode',
   'remember_device_expiration_hours_aal_1',
   'remember_device_expiration_hours_aal_2',
+  'saml_endpoint_configs',
   'saml_passphrase',
   'scrypt_cost',
   'secret_key_base',

@@ -23,7 +23,7 @@ describe Idv::DocAuthController do
     it 'redirects to the first step' do
       get :index
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :front_image)
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
     end
   end
 
@@ -63,9 +63,9 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'front_image' }
+      result = { step: 'welcome' }
 
-      get :show, params: { step: 'front_image' }
+      get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result
