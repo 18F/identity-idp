@@ -89,6 +89,14 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :self_image)
   end
 
+  def idv_doc_auth_send_link_step
+    idv_doc_auth_step_path(step: :send_link)
+  end
+
+  def idv_doc_auth_link_sent_step
+    idv_doc_auth_step_path(step: :link_sent)
+  end
+
   def complete_doc_auth_steps_before_upload_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
