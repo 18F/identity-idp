@@ -2,14 +2,10 @@ require 'rails_helper'
 
 class MockSession; end
 
-shared_examples 'saml api' do |cloudhsm_enabled|
+feature 'saml api' do
   include SamlAuthHelper
   include IdvHelper
 
-  before { enable_cloudhsm(cloudhsm_enabled) }
-  after(:all) do
-    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
-  end
   let(:user) { create(:user, :signed_up) }
 
   context 'SAML Assertions' do
@@ -188,112 +184,4 @@ shared_examples 'saml api' do |cloudhsm_enabled|
       end
     end
   end
-
-  context 'SAML secret rotation' do
-    before do
-      allow(FeatureManagement).to receive(:enable_saml_cert_rotation?).and_return(true)
-    end
-
-    let(:new_cert_saml_settings) do
-      settings = saml_settings
-      settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth2018"
-      settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout2018"
-      settings.issuer = 'http://localhost:3000'
-      settings.idp_cert_fingerprint = Fingerprinter.fingerprint_cert(new_x509_cert)
-      settings
-    end
-
-    let(:new_cert_authn_request) do
-      auth_request.create(new_cert_saml_settings)
-    end
-
-    let(:new_x509_cert) do
-      file = File.read(Rails.root.join('certs', 'saml2018.crt.example'))
-      OpenSSL::X509::Certificate.new(file)
-    end
-
-    context 'for an auth request' do
-      it 'creates a valid auth request' do
-        sign_in_and_2fa_user(user)
-        visit new_cert_authn_request
-        click_continue
-
-        response_node = page.find('#SAMLResponse', visible: false)
-        decoded_response = Base64.decode64(response_node.value)
-        saml_response = OneLogin::RubySaml::Response.new(
-          decoded_response,
-          settings: new_cert_saml_settings,
-        )
-        saml_response.soft = false
-
-        expect(saml_response.is_valid?).to eq(true)
-      end
-    end
-
-    context 'for a logout request' do
-      it 'create a valid logout request' do
-        sign_in_and_2fa_user(user)
-        visit new_cert_authn_request
-        click_continue
-
-        service_provider = ServiceProvider.from_issuer(new_cert_saml_settings.issuer)
-        uuid = user.decorate.active_identity_for(service_provider).uuid
-        new_cert_saml_settings = saml_settings
-        new_cert_saml_settings.name_identifier_value = uuid
-
-        logout_url = OneLogin::RubySaml::Logoutrequest.new.create(new_cert_saml_settings)
-        visit logout_url
-
-        response_node = page.find('#SAMLResponse', visible: false)
-        decoded_response = Base64.decode64(response_node.value)
-        saml_response = OneLogin::RubySaml::Logoutresponse.new(
-          decoded_response,
-          new_cert_saml_settings,
-        )
-        expect(saml_response.validate).to eq(true)
-      end
-    end
-
-    context 'for a metadata request' do
-      it 'includes the cert' do
-        visit api_saml_metadata2018_path
-        document = REXML::Document.new(page.html)
-        cert_base64 = REXML::XPath.first(document, '//X509Certificate').text
-        expect(cert_base64).to eq(Base64.strict_encode64(new_x509_cert.to_der))
-      end
-
-      it 'includes the correct auth and logout urls' do
-        visit api_saml_metadata2018_path
-        document = REXML::Document.new(page.html)
-        auth_node = REXML::XPath.first(document, '//SingleSignOnService')
-        logout_node = REXML::XPath.first(document, '//SingleLogoutService')
-
-        expect(auth_node.attributes['Location']).to include(api_saml_auth2018_path)
-        expect(logout_node.attributes['Location']).to include(destroy_user_session2018_path)
-      end
-    end
-  end
-
-  def enable_cloudhsm(is_enabled)
-    unless is_enabled
-      allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
-      SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
-      return
-    end
-    allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
-    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, true) }
-    allow(PKCS11).to receive(:open).and_return('true')
-    allow_any_instance_of(SamlIdp::Configurator).
-      to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
-    allow(MockSession).to receive(:login).and_return(true)
-    allow(MockSession).to receive(:logout).and_return(true)
-    allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
-    allow(MockSession).to receive(:sign).and_return('')
-    allow_any_instance_of(OneLogin::RubySaml::Response).to receive(:is_valid?).and_return(true)
-  end
-end
-
-feature 'saml' do
-  it_behaves_like 'saml api', false
-  it_behaves_like 'saml api', true
 end

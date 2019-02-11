@@ -57,7 +57,33 @@ class ApplicationController < ActionController::Base
   end
 
   def create_user_event(event_type, user = current_user)
-    Event.create(user_id: user.id, event_type: event_type)
+    return unless user&.id
+    device = create_or_update_device(user)
+    Event.create(user_id: user.id,
+                 device_id: device.id,
+                 ip: request.remote_ip,
+                 event_type: event_type)
+  end
+
+  def create_or_update_device(user)
+    device = DeviceTracking::LookupDeviceForUser.call(user.id, cookies[:device])
+    if device
+      DeviceTracking::UpdateDevice.call(device, request.remote_ip)
+    else
+      device = create_device(user)
+    end
+    device
+  end
+
+  def create_device(user)
+    cookie_uuid = cookies[:device]
+    device = DeviceTracking::CreateDevice.call(user.id,
+                                               request.remote_ip,
+                                               request.user_agent,
+                                               cookie_uuid)
+    device_uuid = device.cookie_uuid
+    cookies.permanent[:device] = device_uuid unless device_uuid == cookie_uuid
+    device
   end
 
   def decorated_session

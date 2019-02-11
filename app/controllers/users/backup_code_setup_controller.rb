@@ -14,7 +14,7 @@ module Users
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
-      Event.create(user_id: current_user.id, event_type: :backup_codes_added)
+      create_user_event(:backup_codes_added)
       redirect_to sign_up_personal_key_url
     end
 

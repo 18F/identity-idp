@@ -6,16 +6,10 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
-  get '/api/saml/metadata' => 'saml_idp#metadata'
-  match '/api/saml/logout' => 'saml_idp#logout',
-        via: %i[get post delete],
-        as: :destroy_user_session
-  match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
   post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
-  if FeatureManagement.enable_saml_cert_rotation?
-    suffix = SamlCertRotationManager.rotation_path_suffix
+  SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout',
           via: %i[get post delete],
@@ -107,6 +101,7 @@ Rails.application.routes.draw do
         as: :openid_connect_configuration
 
     get '/account' => 'accounts#show'
+    get '/account/events' => 'events#show'
     get '/account/delete' => 'users/delete#show', as: :account_delete
     delete '/account/delete' => 'users/delete#delete'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
