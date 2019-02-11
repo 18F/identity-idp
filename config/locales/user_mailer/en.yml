@@ -35,6 +35,9 @@ en:
         to delete your account, <u>%{cancel_account_reset}</u>.
       subject: Delete your account
     contact_link_text: contact us
+    doc_auth_link:
+      message: You've requested to verify your identity on a desktop computer.  Please
+        sign in to %{sp_link}
     email_changed:
       help: If you did not want to change your email address, please visit the %{app}
         %{help_link} or %{contact_link}.

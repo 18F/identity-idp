@@ -13,15 +13,9 @@ es:
       entered_info: 'Información que ingresó:'
       first_name: Nombre de pila
       last_name: Apellido
-      option_1: 'Usuarios de computadoras de escritorio: necesita una copia escaneada
-        de su identificación. Si no tiene uno, inicie sesión desde un teléfono móvil.'
-      option_2: 'Usuarios de teléfonos móviles: puede usar su cámara o fotos de su
-        rollo de cámara.'
       ssn: Número de seguridad social
       state_id_info: 'Información de su ID emitida por el estado:'
     headings:
-      intro: Para verificar su identidad, necesitará su número de seguro social y
-        una identificación emitida por el estado.
       ssn: Por favor ingrese su número de seguro social.
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_front: Cargue una foto del frente de su identificación emitida por el
