@@ -4,6 +4,7 @@ class UserDecorator
   attr_reader :user
 
   MAX_RECENT_EVENTS = 5
+  MAX_RECENT_DEVICES = 5
   DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
@@ -103,9 +104,17 @@ class UserDecorator
   end
 
   def recent_events
-    events = user.events.order('created_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
-    identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
-    (events + identities).sort_by(&:happened_at).reverse
+    events = Event.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
+             map(&:decorate)
+    (events + identity_events).sort_by(&:happened_at).reverse
+  end
+
+  def identity_events
+    user.identities.order('last_authenticated_at DESC').map(&:decorate)
+  end
+
+  def recent_devices
+    DeviceTracking::ListDevices.call(user.id, 0, MAX_RECENT_DEVICES).map(&:decorate)
   end
 
   def connected_apps

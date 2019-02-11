@@ -8,19 +8,19 @@ describe Idv::Flows::DocAuthFlow do
   let(:name) { :doc_auth }
 
   describe '#next_step' do
-    it 'returns front_image as the first step' do
+    it 'returns welcome as the first step' do
       subject = Idv::Flows::DocAuthFlow.new(new_session, user, name)
       result = subject.next_step
 
-      expect(result).to eq('front_image')
+      expect(result).to eq('welcome')
     end
 
-    it 'returns back image after the front image step' do
+    it 'returns upload after the welcome step' do
+      expect_next_step(:welcome, :upload)
+    end
+
+    it 'returns back_image after the front image step' do
       expect_next_step(:front_image, :back_image)
-    end
-
-    it 'returns ssn after the back image step' do
-      expect_next_step(:back_image, :ssn)
     end
   end
 
@@ -30,7 +30,7 @@ describe Idv::Flows::DocAuthFlow do
       params = ActionController::Parameters.new(doc_auth: { ssn: '111111111' })
       expect_any_instance_of(Idv::Steps::SsnStep).to receive(:call).exactly(:once)
 
-      result = subject.handle(:ssn, params)
+      result = subject.handle(:ssn, {}, params)
       expect(result.class).to eq(FormResponse)
       expect(result.success?).to eq(true)
     end

@@ -196,13 +196,8 @@ development:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   saml_passphrase: 'trust-but-verify'
-  saml_secret_rotation_certificate:
-  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
-  saml_secret_rotation_enabled: 'false'
-  saml_secret_rotation_path_suffix:
-  saml_secret_rotation_secret_key:
-  saml_secret_rotation_secret_key_password:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
@@ -320,13 +315,8 @@ production:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  saml_endpoint_configs:
   saml_passphrase:
-  saml_secret_rotation_certificate:
-  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
-  saml_secret_rotation_enabled: 'false'
-  saml_secret_rotation_path_suffix:
-  saml_secret_rotation_secret_key:
-  saml_secret_rotation_secret_key_password:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
@@ -447,13 +437,8 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
+  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   saml_passphrase: 'trust-but-verify'
-  saml_secret_rotation_certificate: 'saml2018.crt'
-  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
-  saml_secret_rotation_enabled: 'true'
-  saml_secret_rotation_path_suffix: '2018'
-  saml_secret_rotation_secret_key: 'saml2018.key.enc'
-  saml_secret_rotation_secret_key_password: 'asdf1234'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'

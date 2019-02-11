@@ -165,23 +165,23 @@ describe ApplicationController do
   end
 
   describe '#create_user_event' do
-    let(:user) { build_stubbed(:user) }
+    let(:user) { create(:user) }
 
     context 'when the user is not specified' do
       it 'creates an Event object for the current_user' do
         allow(subject).to receive(:current_user).and_return(user)
 
-        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
-
         subject.create_user_event(:account_created)
+
+        expect_user_event_to_have_been_created(user, 'account_created')
       end
     end
 
     context 'when the user is specified' do
       it 'creates an Event object for the specified user' do
-        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
-
         subject.create_user_event(:account_created, user)
+
+        expect_user_event_to_have_been_created(user, 'account_created')
       end
     end
   end
@@ -272,5 +272,13 @@ describe ApplicationController do
 
       subject.sign_out
     end
+  end
+
+  def expect_user_event_to_have_been_created(user, event_type)
+    device = Device.first
+    expect(device.user_id).to eq(user.id)
+    event = Event.first
+    expect(event.event_type).to eq(event_type)
+    expect(event.device_id).to eq(device.id)
   end
 end

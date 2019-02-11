@@ -24,7 +24,7 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
       remove_piv_cac
       clear_piv_cac_information
-      Event.create(user_id: current_user.id, event_type: :piv_cac_disabled)
+      create_user_event(:piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
       redirect_to account_url
     end

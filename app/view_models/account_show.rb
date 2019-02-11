@@ -128,5 +128,5 @@ class AccountShow
     end
   end
 
-  delegate :recent_events, :connected_apps, to: :decorated_user
+  delegate :recent_events, :recent_devices, :connected_apps, to: :decorated_user
 end

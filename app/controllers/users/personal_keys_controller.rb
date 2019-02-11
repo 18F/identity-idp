@@ -26,7 +26,7 @@ module Users
     def create
       user_session[:personal_key] = create_new_code
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
-      Event.create(user_id: current_user.id, event_type: :new_personal_key)
+      create_user_event(:new_personal_key)
       send_new_personal_key_notification
       redirect_to manage_personal_key_url
     end
