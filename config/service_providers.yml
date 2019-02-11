@@ -885,3 +885,16 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # DOT – LMS
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:lms':
+    agency_id: 6
+    friendly_name: 'LMS'
+    agency: 'DOT'
+    logo: 'dot.svg'
+    cert: 'dot_lms_prod'
+    return_to_sp_url: 'https://fmcsa.lms.dot.gov'
+    redirect_uris:
+      - 'https://fmcsa.lms.dot.gov'
+      - 'https://fmcsa.lms.dot.gov/openid-connect/dot_login'
+    restrict_to_deploy_env: 'prod'
