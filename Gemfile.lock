@@ -34,15 +34,6 @@ GIT
     proofer (2.7.0)
 
 GIT
-  remote: https://github.com/18F/redis-session-store.git
-  revision: 7400dcc1c12f458da5c5dabb0fdc7ca789a66f0b
-  branch: master
-  specs:
-    redis-session-store (0.9.1)
-      actionpack (>= 3, < 5.2)
-      redis (~> 3)
-
-GIT
   remote: https://github.com/18F/saml_idp.git
   revision: 70494010f977958434ead1d3eb7e9697bd2c3a76
   tag: v0.8.0-18f
@@ -468,7 +459,10 @@ GEM
       redis (>= 3.0, < 5.0)
     recaptcha (4.13.1)
       json
-    redis (3.3.5)
+    redis (4.1.0)
+    redis-session-store (0.11.0)
+      actionpack (>= 3, < 6)
+      redis (>= 3, < 5)
     reek (5.3.0)
       codeclimate-engine-rb (~> 0.4.0)
       kwalify (~> 0.7.0)
@@ -745,7 +739,7 @@ DEPENDENCIES
   raise-if-root
   readthis
   recaptcha
-  redis-session-store!
+  redis-session-store
   reek
   rotp (~> 3.3.1)
   rqrcode
