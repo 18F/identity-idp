@@ -59,7 +59,7 @@ module Idv
     end
 
     def step_params
-      params.require(:idv_phone_form).permit(:phone)
+      params.require(:idv_phone_form).permit(:phone, :other_phone)
     end
 
     def confirm_step_needed

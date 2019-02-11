@@ -14,26 +14,31 @@ ul.py1.m0
 = simple_form_for(@idv_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
   - if @idv_form.user_has_multiple_phone_numbers?
-    - @idv.user.phone_configurations.each_with_index do |phone_configuration, index|
+    - @idv_form.user.phone_configurations.each_with_index do |phone_configuration, index|
       span id="select_sms_#{index}"
-        label.btn-border.col-12.mb2 for="two_factor_options_form_selection_#{option.type}"
+        label.btn-border.col-12.mb2 for="two_factor_options_form_selection_sms_#{index}"
           .radio
-            = radio_button_tag('phone',
+            = radio_button_tag('idv_phone_form[phone]',
                   phone_configuration.phone,
-                  @idv_form.phone == phone_configuration.phone)
+                  @idv_form.phone == phone_configuration.phone,
+                  id: "two_factor_options_form_selection_sms_#{index}")
             span.indicator.mt-tiny
             span.blue.bold.fs-20p = phone_configuration.formatted_phone
-      span id="select_sms_#{index}"
-        label.btn-border.col-12.mb2 for="two_factor_options_form_selection_#{option.type}"
-          .radio
-            = radio_button_tag('phone',
-                  'other',
-                  !@idv_form.phone_belongs_to_user?)
-            span.indicator.mt-tiny
-            span.blue.bold.fs-20p
-              = f.label :other_phone, label: t('idv.form.other_phone'), class: 'bold'
-              = f.input :other_phone, required: true, input_html: { class: 'us-phone sm-col-8' },
-                        label: false, wrapper_html: { class: 'mr2' }
+    span id="select_sms_other"
+      label.btn-border.col-12.mb2 for="two_factor_options_form_selection_sms_other"
+        .radio
+          = radio_button_tag('idv_phone_form[phone]',
+                'other',
+                !@idv_form.phone_belongs_to_user?,
+                id: 'two_factor_options_form_selection_sms_other')
+          span.indicator.mt-tiny
+          span.blue.bold.fs-20p = t('idv.form.other_phone')
+    - data_attrs = { 'required-if-checked': '#two_factor_options_form_selection_sms_other',
+                     'visible-if-checked': '#two_factor_options_form_selection_sms_other',
+                   }
+    = f.input :other_phone,
+      input_html: { data: data_attrs, class: 'auto-focus hidden us-phone sm-col-8' },
+      label: false, wrapper_html: { class: 'mr2' }
 
   - else
     = f.label :phone, label: t('idv.form.phone'), class: 'bold'

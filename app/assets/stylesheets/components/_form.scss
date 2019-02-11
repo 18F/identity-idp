@@ -100,6 +100,12 @@ input::-webkit-inner-spin-button {
   z-index: -1;
 }
 
+.radio input.visible {
+  opacity: 1;
+  position: relative;
+  z-index: inherit;
+}
+
 // scss-lint:disable VendorPrefix
 .indicator {
   background-position: center center;
