@@ -7,6 +7,9 @@ es:
       message: 'Has solicitado eliminar tu cuenta de login.gov. Su solicitud será
         ser procesado en 24 horas. Si no desea eliminar su cuenta, por favor cancelar:
         %{cancel_link}'
+    sms_doc_auth_link_job:
+      message: 'You''ve requested to verify your identity on a mobile phone.  Please
+        sign in to %{application}: %{sp_link}'
     sms_otp_sender_job:
       login_message: "%{code} es tu código de seguridad de %{app}. Use esto para continuar
         ingresando a su cuenta. Este código caducará en %{expiration} minutos."
