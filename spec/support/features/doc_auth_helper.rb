@@ -49,6 +49,14 @@ module DocAuthHelper
     fill_in 'doc_auth_ssn', with: ''
   end
 
+  def idv_doc_auth_welcome_step
+    idv_doc_auth_step_path(step: :welcome)
+  end
+
+  def idv_doc_auth_upload_step
+    idv_doc_auth_step_path(step: :upload)
+  end
+
   def idv_doc_auth_ssn_step
     idv_doc_auth_step_path(step: :ssn)
   end
@@ -73,9 +81,15 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :self_image)
   end
 
-  def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)
+  def complete_doc_auth_steps_before_upload_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
-    visit idv_doc_auth_front_image_step unless current_path == idv_doc_auth_front_image_step
+    visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+    click_on t('doc_auth.buttons.get_started')
+  end
+
+  def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_upload_step(user)
+    click_on t('doc_auth.buttons.use_computer')
   end
 
   def complete_doc_auth_steps_before_ssn_step(user = user_with_2fa)
