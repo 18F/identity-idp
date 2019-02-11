@@ -34,20 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const conditional_required_inputs = form.querySelectorAll('input[data-required-if-checked]');
+      const conditionalRequiredInputs = form.querySelectorAll('input[data-required-if-checked]');
 
-      if(conditional_required_inputs.length !== 0) {
-        [].forEach.call(conditional_required_inputs, function(drivenInput) {
+      if (conditionalRequiredInputs.length !== 0) {
+        [].forEach.call(conditionalRequiredInputs, function(drivenInput) {
           const selector = drivenInput.getAttribute('data-required-if-checked');
           const drivingElement = form.querySelector(selector);
 
-          if(drivingElement) {
-            const otherInputs = form.querySelectorAll('input[name="' + drivingElement.name + '"]');
+          if (drivingElement) {
+            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
             const handler = function() {
-              drivenInput.required = this == drivingElement;
+              drivenInput.required = this === drivingElement;
               return true;
-            }
-            if(otherInputs.count !== 0) {
+            };
+            if (otherInputs.count !== 0) {
               [].forEach.call(otherInputs, function(input) {
                 input.addEventListener('click', handler);
               });
@@ -60,32 +60,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const conditional_visible_inputs = form.querySelectorAll('input[data-visible-if-checked]');
+      const conditionalVisibleInputs = form.querySelectorAll('input[data-visible-if-checked]');
 
-      if(conditional_visible_inputs.length !== 0) {
-        [].forEach.call(conditional_visible_inputs, function(drivenInput) {
+      if (conditionalVisibleInputs.length !== 0) {
+        [].forEach.call(conditionalVisibleInputs, function(drivenInput) {
           const selector = drivenInput.getAttribute('data-visible-if-checked');
           const drivingElement = form.querySelector(selector);
 
-          if(drivingElement) {
-            const otherInputs = form.querySelectorAll('input[name="' + drivingElement.name + '"]');
+          if (drivingElement) {
+            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
             const handler = function() {
-              var visible;
-              visible = this == drivingElement;
-              if(drivenInput.classList) {
-                drivenInput.classList.toggle("hidden", !visible);
+              const visible = this === drivingElement;
+              if (drivenInput.classList) {
+                drivenInput.classList.toggle('hidden', !visible);
               }
-              else if(visible) {
-                drivenInput.className = drivenInput.className.replace(/\bhidden\b/g, "");
+              else if (visible) {
+                drivenInput.className = drivenInput.className.replace(/\bhidden\b/g, '');
               }
               else {
-                drivenInput.className = drivenInput.className + " hidden";
+                drivenInput.className = `${drivenInput.className} hidden`;
               }
 
               drivenInput.required = this == drivingElement;
               return true;
-            }
-            if(otherInputs.count !== 0) {
+            };
+
+            if (otherInputs.count !== 0) {
               [].forEach.call(otherInputs, function(input) {
                 input.addEventListener('click', handler);
               });
