@@ -22,6 +22,7 @@ fr:
     headings:
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Take a picture of the back of your ID
+      take_pic_front: Take a picture of the front of your ID
       take_picture: Take a picture with a phone
       upload: How would you like to upload your state issued ID?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par

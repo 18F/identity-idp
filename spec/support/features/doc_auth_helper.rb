@@ -65,8 +65,16 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :front_image)
   end
 
+  def idv_doc_auth_mobile_front_image_step
+    idv_doc_auth_step_path(step: :mobile_front_image)
+  end
+
   def idv_doc_auth_back_image_step
     idv_doc_auth_step_path(step: :back_image)
+  end
+
+  def idv_doc_auth_mobile_back_image_step
+    idv_doc_auth_step_path(step: :mobile_back_image)
   end
 
   def idv_doc_auth_doc_success_step
@@ -92,6 +100,17 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.use_computer')
   end
 
+  def complete_doc_auth_steps_before_mobile_front_image_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_upload_step(user)
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    click_on t('doc_auth.buttons.use_phone')
+  end
+
+  def mobile_device
+    DeviceDetector.new('Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
+AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1')
+  end
+
   def complete_doc_auth_steps_before_ssn_step(user = user_with_2fa)
     complete_doc_auth_steps_before_back_image_step(user)
     attach_image
@@ -100,6 +119,13 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_back_image_step(user = user_with_2fa)
     complete_doc_auth_steps_before_front_image_step(user)
+    mock_assure_id_ok
+    attach_image
+    click_idv_continue
+  end
+
+  def complete_doc_auth_steps_before_mobile_back_image_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_mobile_front_image_step(user)
     mock_assure_id_ok
     attach_image
     click_idv_continue
