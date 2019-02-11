@@ -16,13 +16,15 @@ module Idv
       end
 
       def link
-        current_user&.identities&.order('created_at DESC')&.limit(1)&.map(&:decorate)&.first&.
-          return_to_sp_url || root_url
+        identity&.return_to_sp_url || root_url
       end
 
       def app
-        current_user&.identities&.order('created_at DESC')&.limit(1)&.map(&:decorate)&.first&.
-          friendly_name || 'login.gov'
+        identity&.friendly_name || 'login.gov'
+      end
+
+      def identity
+        current_user&.identities&.order('created_at DESC')&.limit(1)&.map(&:decorate)&.first
       end
     end
   end

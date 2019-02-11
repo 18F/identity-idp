@@ -20,10 +20,6 @@ module Idv
         reset: Idv::Actions::ResetAction,
       }.freeze
 
-      PRESENTERS = {
-        front_image: Idv::Presenters::DocAuthPresenter,
-      }.freeze
-
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow
 
       def initialize(session, current_user, name)

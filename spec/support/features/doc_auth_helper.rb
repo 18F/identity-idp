@@ -151,6 +151,11 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
+  def complete_doc_auth_steps_before_send_link_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_upload_step(user)
+    click_on t('doc_auth.buttons.use_phone')
+  end
+
   def mock_assure_id_ok
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:create_document).
       and_return([true, '123'])
