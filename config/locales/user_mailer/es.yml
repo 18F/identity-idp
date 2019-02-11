@@ -36,6 +36,9 @@ es:
         su cuenta, <u>%{cancel_account_reset}</u>.
       subject: Eliminar su cuenta
     contact_link_text: Contáctenos
+    doc_auth_link:
+      message: You've requested to verify your identity on a desktop computer.  Please
+        sign in to %{sp_link}
     email_changed:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
       intro: El email de su cuenta de %{app} ha sido cambiado.
