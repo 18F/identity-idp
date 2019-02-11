@@ -69,19 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (drivingElement) {
             const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
+
             const handler = function() {
               const visible = this === drivingElement;
               if (drivenInput.classList) {
                 drivenInput.classList.toggle('hidden', !visible);
-              }
-              else if (visible) {
+              } else if (visible) {
                 drivenInput.className = drivenInput.className.replace(/\bhidden\b/g, '');
-              }
-              else {
+              } else {
                 drivenInput.className = `${drivenInput.className} hidden`;
               }
 
-              drivenInput.required = this == drivingElement;
+              drivenInput.required = this === drivingElement;
               return true;
             };
 

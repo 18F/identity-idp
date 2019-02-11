@@ -24,9 +24,9 @@ function highlightRadioBtn() {
       });
 
       radio.addEventListener('focus', function() {
-        const autofocusedInput = label.querySelector('input.auto-focus')
+        const autofocusedInput = label.querySelector('input.auto-focus');
         label.classList.add('is-focused');
-        if(autofocusedInput) { autofocusedInput.focus(); }
+        if (autofocusedInput) { autofocusedInput.focus(); }
       });
 
       radio.addEventListener('blur', function() {
