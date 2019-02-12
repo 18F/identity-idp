@@ -175,7 +175,6 @@ development:
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  password_strength_enabled: 'true'
   piv_cac_verify_token_secret: 'ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
@@ -299,7 +298,6 @@ production:
   otp_valid_for: '10'
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
-  password_strength_enabled: 'true'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
@@ -417,7 +415,6 @@ test:
   otp_delivery_blocklist_maxretry: '2'
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  password_strength_enabled: 'false'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_secret: '3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f'
   piv_cac_verify_token_url: 'https://localhost:8443/'
