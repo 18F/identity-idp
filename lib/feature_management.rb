@@ -65,10 +65,6 @@ class FeatureManagement
     Figaro.env.use_dashboard_service_providers == 'true'
   end
 
-  def self.enable_identity_verification?
-    Figaro.env.enable_identity_verification == 'true'
-  end
-
   def self.enable_usps_verification?
     Figaro.env.enable_usps_verification == 'true'
   end
