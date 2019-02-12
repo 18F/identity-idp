@@ -7,7 +7,7 @@ class WebauthnConfiguration < ApplicationRecord
 
   # :reek:UtilityFunction
   def mfa_enabled?
-    FeatureManagement.webauthn_enabled?
+    true
   end
 
   def selection_presenters

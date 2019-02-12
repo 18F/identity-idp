@@ -92,9 +92,4 @@ describe TwoFactorAuthentication::OptionsController do
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
     end
   end
-
-  def piv_cac_webauthn_enabled(bool)
-    allow(Figaro.env).to receive(:webauthn_enabled) { bool }
-    Rails.application.reload_routes!
-  end
 end
