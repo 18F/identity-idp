@@ -293,14 +293,14 @@ describe Users::ResetPasswordsController, devise: true do
 
       stub_user_mailer(user)
 
-      password = 'saltypickles'
+      password = 'super salty pickles'
       params = { password: password, reset_password_token: raw_reset_token }
 
       get :edit, params: { reset_password_token: raw_reset_token }
       put :update, params: { reset_password_form: params }
 
-      expect(PasswordMetric.where(metric: 'length', value: 12, count: 1).count).to eq(1)
-      expect(PasswordMetric.where(metric: 'guesses_log10', value: 7.1, count: 1).count).to eq(1)
+      expect(PasswordMetric.where(metric: 'length', value: 19, count: 1).count).to eq(1)
+      expect(PasswordMetric.where(metric: 'guesses_log10', value: 13.6, count: 1).count).to eq(1)
     end
   end
 

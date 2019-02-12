@@ -67,13 +67,13 @@ describe UpdateUserPasswordForm, type: :model do
       end
 
       it 'increments password metrics for the password' do
-        params[:password] = 'saltypickles'
+        params[:password] = 'super salty pickles'
         stub_email_delivery
 
         subject.submit(params)
 
-        expect(PasswordMetric.where(metric: 'length', value: 12, count: 1).count).to eq(1)
-        expect(PasswordMetric.where(metric: 'guesses_log10', value: 7.1, count: 1).count).to eq(1)
+        expect(PasswordMetric.where(metric: 'length', value: 19, count: 1).count).to eq(1)
+        expect(PasswordMetric.where(metric: 'guesses_log10', value: 13.6, count: 1).count).to eq(1)
       end
     end
 
