@@ -21,7 +21,7 @@ module Flow
 
     def update
       step = params[:step]
-      result = flow.handle(step, params)
+      result = flow.handle(step, request, params)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
       render_update(step, result)
     end
@@ -50,6 +50,8 @@ module Flow
     end
 
     def render_step(step, flow_session)
+      @params = params
+      @request = request
       render template: "#{@name}/#{step}", locals: { flow_session: flow_session }
     end
 

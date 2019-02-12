@@ -7,6 +7,9 @@ en:
       message: 'You''ve requested to delete your login.gov account. Your request will
         be processed in 24 hours. If you don’t want to delete your account, please
         cancel: %{cancel_link}'
+    sms_doc_auth_link_job:
+      message: 'You''ve requested to verify your identity on a mobile phone.  Please
+        sign in to %{application}: %{sp_link}'
     sms_otp_sender_job:
       login_message: "%{code} is your %{app} security code. Use this to continue signing
         in to your account. This code will expire in %{expiration} minutes."

@@ -13,8 +13,6 @@ class AccountsController < ApplicationController
       personal_key: flash[:personal_key],
       decorated_user: current_user.decorate,
     )
-
-    @login_presenter = LoginPresenter.new(user: current_user)
   end
 
   private

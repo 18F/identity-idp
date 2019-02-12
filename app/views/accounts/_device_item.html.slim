@@ -1,0 +1,9 @@
+.p2.clearfix.border-top
+  .clearfix.mxn1
+    .sm-col.sm-col-6.px1
+      .bold.truncate = device.nice_name
+      = device.last_sign_in_location_and_ip
+    .sm-col.sm-col-6.px1.sm-right-align
+      = local_time(device.happened_at, t('time.formats.event_timestamp'))
+      br
+      = link_to t('headings.account.events'), account_events_path(id: device.id)

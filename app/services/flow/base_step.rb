@@ -1,5 +1,7 @@
 module Flow
   class BaseStep
+    include Rails.application.routes.url_helpers
+
     def initialize(context, name)
       @context = context
       @form_response = nil
@@ -40,6 +42,6 @@ module Flow
       @context.flow_session = {}
     end
 
-    delegate :flow_session, :current_user, :params, :steps, to: :@context
+    delegate :flow_session, :current_user, :params, :steps, :request, to: :@context
   end
 end
