@@ -66,10 +66,8 @@ Rails.application.routes.draw do
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
-      if FeatureManagement.webauthn_enabled?
-        get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
-        patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
-      end
+      get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+      patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       if FeatureManagement.backup_codes_enabled?
         get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
         post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -118,13 +116,11 @@ Rails.application.routes.draw do
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
 
-    if FeatureManagement.webauthn_enabled?
-      get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
-      patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
-      delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-      get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-      get '/webauthn_setup_success' => 'users/webauthn_setup#success'
-    end
+    get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
+    patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
+    get '/webauthn_setup_success' => 'users/webauthn_setup#success'
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
