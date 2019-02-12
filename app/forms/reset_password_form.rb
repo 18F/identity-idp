@@ -38,7 +38,6 @@ class ResetPasswordForm
   def handle_valid_password
     create_password_changed_event
     update_user
-    increment_password_metrics
     mark_profile_inactive
     notify_user_of_password_change_via_email
   end
@@ -51,10 +50,6 @@ class ResetPasswordForm
     attributes = { password: password }
     attributes[:confirmed_at] = Time.zone.now unless user.confirmed?
     UpdateUser.new(user: user, attributes: attributes).call
-  end
-
-  def increment_password_metrics
-    PasswordMetricsIncrementer.new(password).increment_password_metrics
   end
 
   def mark_profile_inactive
