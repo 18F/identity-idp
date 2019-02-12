@@ -3,6 +3,8 @@ module TwoFactorAuthentication
   class WebauthnVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
+    before_action :confirm_webauthn_enabled, only: :show
+
     def show
       save_challenge_in_session
       @presenter = presenter_for_two_factor_authentication_method
@@ -30,6 +32,12 @@ module TwoFactorAuthentication
     def handle_invalid_webauthn
       flash[:error] = t('errors.invalid_authenticity_token')
       redirect_to login_two_factor_webauthn_url
+    end
+
+    def confirm_webauthn_enabled
+      return if TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+
+      redirect_to user_two_factor_authentication_url
     end
 
     def presenter_for_two_factor_authentication_method
