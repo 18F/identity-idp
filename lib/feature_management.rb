@@ -102,10 +102,6 @@ class FeatureManagement
     Figaro.env.account_reset_enabled != 'false' # if value not set it defaults to enabled
   end
 
-  def self.webauthn_enabled?
-    Figaro.env.webauthn_enabled == 'true'
-  end
-
   def self.doc_auth_enabled?
     Figaro.env.doc_auth_enabled == 'true'
   end
