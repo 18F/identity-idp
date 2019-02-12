@@ -1,7 +1,5 @@
 module AccountReset
   class DeleteAccountController < ApplicationController
-    before_action :check_feature_enabled
-
     def show
       render :show and return unless token
 
@@ -28,10 +26,6 @@ module AccountReset
     end
 
     private
-
-    def check_feature_enabled
-      redirect_to root_url unless FeatureManagement.account_reset_enabled?
-    end
 
     def token
       params[:token]
