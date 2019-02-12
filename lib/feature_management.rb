@@ -118,10 +118,6 @@ class FeatureManagement
     Figaro.env.doc_auth_exclusive == 'true'
   end
 
-  def self.platform_authenticator_enabled?
-    Figaro.env.platform_authenticator_analytics_enabled == 'true'
-  end
-
   def self.backup_codes_enabled?
     Figaro.env.backup_codes_enabled == 'true'
   end
