@@ -188,43 +188,41 @@ Rails.application.routes.draw do
 
     delete '/users' => 'users#destroy', as: :destroy_user
 
-    if FeatureManagement.enable_identity_verification?
-      scope '/verify', as: 'idv' do
-        get '/' => 'idv#index'
-        get '/activated' => 'idv#activated'
-        get '/fail' => 'idv#fail'
-      end
-      scope '/verify', module: 'idv', as: 'idv' do
-        get '/come_back_later' => 'come_back_later#show'
-        get '/confirmations' => 'confirmations#show'
-        post '/confirmations' => 'confirmations#update'
-        get '/forgot_password' => 'forgot_password#new'
-        post '/forgot_password' => 'forgot_password#update'
-        get '/otp_delivery_method' => 'otp_delivery_method#new'
-        put '/otp_delivery_method' => 'otp_delivery_method#create'
-        get '/phone' => 'phone#new'
-        put '/phone' => 'phone#create'
-        get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
-        post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
-        get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
-        put '/phone_confirmation' => 'otp_verification#update', as: :nil
-        get '/review' => 'review#new'
-        put '/review' => 'review#create'
-        get '/session' => 'sessions#new'
-        put '/session' => 'sessions#create'
-        get '/session/success' => 'sessions#success'
-        get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
-        delete '/session' => 'sessions#destroy'
-        get '/jurisdiction' => 'jurisdiction#new'
-        post '/jurisdiction' => 'jurisdiction#create'
-        get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
-        get '/cancel/' => 'cancellations#new', as: :cancel
-        delete '/cancel' => 'cancellations#destroy'
-        if FeatureManagement.doc_auth_enabled?
-          get '/doc_auth' => 'doc_auth#index'
-          get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-          put '/doc_auth/:step' => 'doc_auth#update'
-        end
+    scope '/verify', as: 'idv' do
+      get '/' => 'idv#index'
+      get '/activated' => 'idv#activated'
+      get '/fail' => 'idv#fail'
+    end
+    scope '/verify', module: 'idv', as: 'idv' do
+      get '/come_back_later' => 'come_back_later#show'
+      get '/confirmations' => 'confirmations#show'
+      post '/confirmations' => 'confirmations#update'
+      get '/forgot_password' => 'forgot_password#new'
+      post '/forgot_password' => 'forgot_password#update'
+      get '/otp_delivery_method' => 'otp_delivery_method#new'
+      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/phone' => 'phone#new'
+      put '/phone' => 'phone#create'
+      get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
+      post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
+      get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
+      put '/phone_confirmation' => 'otp_verification#update', as: :nil
+      get '/review' => 'review#new'
+      put '/review' => 'review#create'
+      get '/session' => 'sessions#new'
+      put '/session' => 'sessions#create'
+      get '/session/success' => 'sessions#success'
+      get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
+      delete '/session' => 'sessions#destroy'
+      get '/jurisdiction' => 'jurisdiction#new'
+      post '/jurisdiction' => 'jurisdiction#create'
+      get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+      get '/cancel/' => 'cancellations#new', as: :cancel
+      delete '/cancel' => 'cancellations#destroy'
+      if FeatureManagement.doc_auth_enabled?
+        get '/doc_auth' => 'doc_auth#index'
+        get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+        put '/doc_auth/:step' => 'doc_auth#update'
       end
     end
 
