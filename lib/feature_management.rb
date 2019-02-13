@@ -98,10 +98,6 @@ class FeatureManagement
     Figaro.env.disallow_all_web_crawlers == 'true'
   end
 
-  def self.account_reset_enabled?
-    Figaro.env.account_reset_enabled != 'false' # if value not set it defaults to enabled
-  end
-
   def self.doc_auth_enabled?
     Figaro.env.doc_auth_enabled == 'true'
   end

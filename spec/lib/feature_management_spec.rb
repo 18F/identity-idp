@@ -384,28 +384,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#account_reset_enabled?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:account_reset_enabled).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.account_reset_enabled?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:account_reset_enabled).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.account_reset_enabled?).to eq(false)
-      end
-    end
-  end
-
   describe '#doc_auth_enabled?' do
     it 'returns true when Figaro setting is true' do
       allow(Figaro.env).to receive(:doc_auth_enabled) { 'true' }
