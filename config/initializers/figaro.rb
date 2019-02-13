@@ -6,7 +6,6 @@ Figaro.require_keys(
   'database_statement_timeout',
   'disallow_all_web_crawlers',
   'domain_name',
-  'enable_identity_verification',
   'enable_rate_limiting',
   'enable_test_routes',
   'enable_usps_verification',

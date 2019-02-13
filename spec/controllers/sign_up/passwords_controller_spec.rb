@@ -49,17 +49,6 @@ describe SignUp::PasswordsController do
 
       post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end
-
-    it 'saves password metrics' do
-      token = 'new token'
-      params = { password_form: { password: 'super salty pickles' }, confirmation_token: token }
-      create(:user, confirmation_token: token, confirmation_sent_at: Time.zone.now)
-
-      post :create, params: params
-
-      expect(PasswordMetric.where(metric: 'length', value: 19, count: 1).count).to eq(1)
-      expect(PasswordMetric.where(metric: 'guesses_log10', value: 13.6, count: 1).count).to eq(1)
-    end
   end
 
   describe '#new' do
