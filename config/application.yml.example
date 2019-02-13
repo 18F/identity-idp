@@ -111,6 +111,7 @@ development:
   acuant_assure_id_url: ''
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_simulator: 'true'
   account_reset_auth_token: 'abc123'
   account_reset_enabled: 'true'
   account_reset_token_valid_for_days: '1'
@@ -242,6 +243,7 @@ production:
   acuant_assure_id_url: ''
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -354,6 +356,7 @@ test:
   acuant_assure_id_url: 'https://example.com'
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: 'https://example.com'
+  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
