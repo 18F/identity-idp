@@ -27,7 +27,6 @@ Figaro.require_keys(
   'otp_valid_for',
   'password_max_attempts',
   'password_pepper',
-  'password_strength_enabled',
   'programmable_sms_countries',
   'queue_health_check_dead_interval_seconds',
   'RACK_TIMEOUT_SERVICE_TIMEOUT',

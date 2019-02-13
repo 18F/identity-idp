@@ -143,8 +143,6 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'user submits the reset password form twice' do
       it 'shows an invalid token error' do
-        allow(Figaro.env).to receive(:password_strength_enabled).and_return('true')
-
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
         create(
