@@ -98,10 +98,6 @@ class FeatureManagement
     Figaro.env.disallow_all_web_crawlers == 'true'
   end
 
-  def self.webauthn_enabled?
-    Figaro.env.webauthn_enabled == 'true'
-  end
-
   def self.doc_auth_enabled?
     Figaro.env.doc_auth_enabled == 'true'
   end
