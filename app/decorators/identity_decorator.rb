@@ -18,6 +18,10 @@ IdentityDecorator = Struct.new(:identity) do
     identity.sp_metadata[:return_to_sp_url]
   end
 
+  def friendly_name
+    identity.sp_metadata[:friendly_name]
+  end
+
   def created_at_in_words
     UtcTimePresenter.new(created_at).to_s
   end
