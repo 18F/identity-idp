@@ -88,12 +88,16 @@ en:
       intro: The phone number associated with your %{app} account has been changed.
       subject: New phone number
     please_reset_password:
-      call_to_action: To continue using your login.gov account, please reset your
-        password using the link below.
-      intro: During a login.gov security review, we found a problem with your password.
-        Although we did not see any suspicious activity on your login.gov account,
-        we have disabled your old password. Please reset your password to continue
-        using login.gov.
+      additional_help_html: If you’ve used your login.gov password on other
+        websites, we encourage you to update these passwords as well. If you
+        have any questions, please leave a message for our team at
+        %{contact_url} — we will respond within two business days.
+      call_to_action: To regain access to your login.gov account, you will need
+        to reset your password using the link below.
+      intro: We recently identified a security issue with your password. We have
+        disabled your password to keep your account safe. This was not a result
+        of a security problem with login.gov, but was an issue with your
+        password being compromised.
       subject: Please reset your password
     signup_with_your_email:
       help: If you did not request a new account or suspect an error, please visit

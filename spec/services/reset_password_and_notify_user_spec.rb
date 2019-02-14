@@ -2,8 +2,9 @@ require 'rails_helper'
 
 describe ResetPasswordAndNotifyUser do
   let(:email_address) { 'changemypassword@example.com' }
+  let(:message) { 'Hello, user.' }
 
-  subject { described_class.new(email_address) }
+  subject { described_class.new(email_address, message) }
 
   before do
     allow(subject).to receive(:warn)
@@ -15,11 +16,13 @@ describe ResetPasswordAndNotifyUser do
         password = 'compromised password'
         user = create(:user, email: email_address, password: password)
 
-        expect(UserMailer).to receive(:please_reset_password).with(email_address)
-
         subject.call
-        user.reload
 
+        user.reload
+        mail = ActionMailer::Base.deliveries.last
+
+        expect(mail.to).to eq([email_address])
+        expect(mail.html).to include(message)
         expect(user.valid_password?(password)).to eq(false)
       end
     end

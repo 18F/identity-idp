@@ -1,8 +1,9 @@
 class ResetPasswordAndNotifyUser
-  attr_reader :email_address
+  attr_reader :email_address, :message
 
-  def initialize(email_address)
+  def initialize(email_address, message)
     @email_address = email_address
+    @message = message
   end
 
   def call
@@ -22,6 +23,6 @@ class ResetPasswordAndNotifyUser
   end
 
   def notify_user
-    UserMailer.please_reset_password(email_address)
+    UserMailer.please_reset_password(email_address, message).deliver_now
   end
 end
