@@ -8,7 +8,7 @@ class MfaPolicy
   end
 
   def multiple_factors_enabled?
-    mfa_user.two_factor_configurations.many?(&:mfa_enabled?)
+    mfa_user.enabled_mfa_methods_count > 1
   end
 
   private

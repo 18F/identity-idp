@@ -30,7 +30,7 @@ class MfaContext
 
   def backup_code_configurations
     if user.present?
-      user.backup_code_configurations
+      user.backup_code_configurations.unused
     else
       []
     end
@@ -51,6 +51,14 @@ class MfaContext
   def two_factor_configurations
     phone_configurations + webauthn_configurations + backup_code_configurations +
       [piv_cac_configuration, auth_app_configuration]
+  end
+
+  def enabled_mfa_methods_count
+    phone_configurations.count +
+      webauthn_configurations.count +
+      (backup_code_configurations.any? ? 1 : 0) +
+      (piv_cac_configuration.mfa_enabled? ? 1 : 0) +
+      (auth_app_configuration.mfa_enabled? ? 1 : 0)
   end
 
   # returns a hash showing the count for each enabled 2FA configuration,
