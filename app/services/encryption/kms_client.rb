@@ -10,8 +10,6 @@ module Encryption
     }.freeze
 
     def encrypt(plaintext, encryption_context)
-      return ContextlessKmsClient.new.encrypt(plaintext) unless FeatureManagement.use_kms_contexts?
-
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
       encrypt_local(plaintext, encryption_context)
     end

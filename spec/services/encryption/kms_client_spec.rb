@@ -64,22 +64,6 @@ describe Encryption::KmsClient do
         expect(result).to eq(local_ciphertext)
       end
     end
-
-    context 'with kms contexts disabled' do
-      it 'delegates to the contextless encryptor' do
-        allow(FeatureManagement).to receive(:use_kms_contexts?).and_return(false)
-
-        contextless_client = Encryption::ContextlessKmsClient.new
-        expect(contextless_client).to receive(:encrypt).
-          with(plaintext).
-          and_return('contextless ciphertext')
-        expect(Encryption::ContextlessKmsClient).to receive(:new).and_return(contextless_client)
-
-        result = subject.encrypt(plaintext, encryption_context)
-
-        expect(result).to eq('contextless ciphertext')
-      end
-    end
   end
 
   describe '#decrypt' do
