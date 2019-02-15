@@ -256,7 +256,6 @@ GEM
       thor (~> 0.14)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
-    front_matter_parser (0.2.0)
     geocoder (1.5.1)
     get_process_mem (0.2.3)
     gibberish (2.1.0)
@@ -697,7 +696,6 @@ DEPENDENCIES
   fasterer
   figaro
   foundation_emails
-  front_matter_parser
   gibberish
   greenletters
   guard-rspec

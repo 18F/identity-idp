@@ -211,7 +211,6 @@ development:
   use_kms: 'false'
   use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host: 'localhost'
@@ -327,7 +326,6 @@ production:
   use_kms: 'true'
   use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
   usps_download_sftp_host:
@@ -447,7 +445,6 @@ test:
   use_kms: 'false'
   use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host:
