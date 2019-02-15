@@ -48,10 +48,5 @@ module TwoFactorAuthCode
       :confirmation_for_phone_change,
       :voice_otp_delivery_unsupported,
     )
-
-    def account_reset_link
-      return if unconfirmed_phone || !FeatureManagement.account_reset_enabled?
-      account_reset_or_cancel_link
-    end
   end
 end

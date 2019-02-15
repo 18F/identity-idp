@@ -17,15 +17,6 @@ describe AccountReset::RequestController do
       expect(response).to redirect_to root_url
     end
 
-    it 'redirects to root if feature is not enabled' do
-      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-      stub_sign_in_before_2fa(user)
-
-      get :show
-
-      expect(response).to redirect_to root_url
-    end
-
     it 'redirects to 2FA setup url if 2FA not set up' do
       stub_sign_in_before_2fa
       get :show
@@ -99,15 +90,6 @@ describe AccountReset::RequestController do
     end
 
     it 'redirects to root if user not signed in' do
-      post :create
-
-      expect(response).to redirect_to root_url
-    end
-
-    it 'redirects to root if feature is not enabled' do
-      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-      stub_sign_in_before_2fa(user)
-
       post :create
 
       expect(response).to redirect_to root_url

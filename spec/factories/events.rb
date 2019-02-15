@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :event do
-    user_id { 1 }
     event_type { :account_created }
+
+    after(:build) do |event|
+      event.device ||= event.user.devices.first || build(:device, user: event.user)
+    end
   end
 end

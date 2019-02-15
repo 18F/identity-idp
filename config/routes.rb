@@ -66,10 +66,8 @@ Rails.application.routes.draw do
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
-      if FeatureManagement.webauthn_enabled?
-        get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
-        patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
-      end
+      get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+      patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       if FeatureManagement.backup_codes_enabled?
         get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
         post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -118,13 +116,11 @@ Rails.application.routes.draw do
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
 
-    if FeatureManagement.webauthn_enabled?
-      get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
-      patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
-      delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-      get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-      get '/webauthn_setup_success' => 'users/webauthn_setup#success'
-    end
+    get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
+    patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
+    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
+    get '/webauthn_setup_success' => 'users/webauthn_setup#success'
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
@@ -188,43 +184,41 @@ Rails.application.routes.draw do
 
     delete '/users' => 'users#destroy', as: :destroy_user
 
-    if FeatureManagement.enable_identity_verification?
-      scope '/verify', as: 'idv' do
-        get '/' => 'idv#index'
-        get '/activated' => 'idv#activated'
-        get '/fail' => 'idv#fail'
-      end
-      scope '/verify', module: 'idv', as: 'idv' do
-        get '/come_back_later' => 'come_back_later#show'
-        get '/confirmations' => 'confirmations#show'
-        post '/confirmations' => 'confirmations#update'
-        get '/forgot_password' => 'forgot_password#new'
-        post '/forgot_password' => 'forgot_password#update'
-        get '/otp_delivery_method' => 'otp_delivery_method#new'
-        put '/otp_delivery_method' => 'otp_delivery_method#create'
-        get '/phone' => 'phone#new'
-        put '/phone' => 'phone#create'
-        get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
-        post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
-        get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
-        put '/phone_confirmation' => 'otp_verification#update', as: :nil
-        get '/review' => 'review#new'
-        put '/review' => 'review#create'
-        get '/session' => 'sessions#new'
-        put '/session' => 'sessions#create'
-        get '/session/success' => 'sessions#success'
-        get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
-        delete '/session' => 'sessions#destroy'
-        get '/jurisdiction' => 'jurisdiction#new'
-        post '/jurisdiction' => 'jurisdiction#create'
-        get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
-        get '/cancel/' => 'cancellations#new', as: :cancel
-        delete '/cancel' => 'cancellations#destroy'
-        if FeatureManagement.doc_auth_enabled?
-          get '/doc_auth' => 'doc_auth#index'
-          get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-          put '/doc_auth/:step' => 'doc_auth#update'
-        end
+    scope '/verify', as: 'idv' do
+      get '/' => 'idv#index'
+      get '/activated' => 'idv#activated'
+      get '/fail' => 'idv#fail'
+    end
+    scope '/verify', module: 'idv', as: 'idv' do
+      get '/come_back_later' => 'come_back_later#show'
+      get '/confirmations' => 'confirmations#show'
+      post '/confirmations' => 'confirmations#update'
+      get '/forgot_password' => 'forgot_password#new'
+      post '/forgot_password' => 'forgot_password#update'
+      get '/otp_delivery_method' => 'otp_delivery_method#new'
+      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/phone' => 'phone#new'
+      put '/phone' => 'phone#create'
+      get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
+      post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
+      get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
+      put '/phone_confirmation' => 'otp_verification#update', as: :nil
+      get '/review' => 'review#new'
+      put '/review' => 'review#create'
+      get '/session' => 'sessions#new'
+      put '/session' => 'sessions#create'
+      get '/session/success' => 'sessions#success'
+      get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
+      delete '/session' => 'sessions#destroy'
+      get '/jurisdiction' => 'jurisdiction#new'
+      post '/jurisdiction' => 'jurisdiction#create'
+      get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+      get '/cancel/' => 'cancellations#new', as: :cancel
+      delete '/cancel' => 'cancellations#destroy'
+      if FeatureManagement.doc_auth_enabled?
+        get '/doc_auth' => 'doc_auth#index'
+        get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+        put '/doc_auth/:step' => 'doc_auth#update'
       end
     end
 

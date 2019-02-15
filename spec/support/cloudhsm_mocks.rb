@@ -53,10 +53,14 @@ module CloudhsmMocks
     end
   end
 
+  def cloudhsm_mock_session
+    @cloudhsm_mock_session ||= MockSession.new
+  end
+
   def mock_cloudhsm
     allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(true)
     allow(SamlIdp.config).to receive(:cloudhsm_enabled).and_return(true)
     allow(SamlIdp.config).to receive_message_chain(:pkcs11, :active_slots, :first, :open).
-      and_yield(MockSession.new)
+      and_yield(cloudhsm_mock_session)
   end
 end

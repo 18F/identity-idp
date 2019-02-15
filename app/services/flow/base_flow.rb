@@ -1,7 +1,7 @@
 module Flow
   class BaseFlow
     attr_accessor :flow_session
-    attr_reader :steps, :actions, :current_user, :params
+    attr_reader :steps, :actions, :current_user, :params, :request
 
     def initialize(steps, actions, session, current_user)
       @current_user = current_user
@@ -18,11 +18,12 @@ module Flow
       step
     end
 
-    def handle(step, params)
+    def handle(step, request, params)
       @flow_session[:error_message] = nil
       handler = steps[step] || actions[step]
       return failure("Unhandled step #{step}") unless handler
       @params = params
+      @request = request
       wrap_send(handler)
     end
 

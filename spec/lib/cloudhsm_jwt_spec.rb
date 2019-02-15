@@ -1,9 +1,9 @@
 require 'rails_helper'
 require 'cloudhsm_jwt'
 
-class MockSession; end
-
 describe CloudhsmJwt do
+  include CloudhsmMocks
+
   let(:jwt_payload) { { key1: 'value1', key2: 'value2' } }
   let(:subject) { CloudhsmJwt.encode(jwt_payload) }
 
@@ -24,7 +24,7 @@ describe CloudhsmJwt do
       end
 
       it 'raises key not found when the cloudhsm key label is not found' do
-        allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(nil)
+        allow(cloudhsm_mock_session).to receive_message_chain(:find_objects, :first).and_return(nil)
         stub_const 'SamlIdp::Default::SECRET_KEY', 'secret'
         expect { subject }.to raise_error(RuntimeError, 'CloudHSM key not found for label: key1')
       end
@@ -35,7 +35,7 @@ describe CloudhsmJwt do
       end
 
       it 'always calls session logout when opening a session with cloudhsm' do
-        allow(MockSession).to receive(:logout).and_raise(RuntimeError, 'logout called')
+        allow(cloudhsm_mock_session).to receive(:logout).and_raise(RuntimeError, 'logout called')
         expect { subject }.to raise_error(RuntimeError, 'logout called')
       end
 
@@ -43,21 +43,5 @@ describe CloudhsmJwt do
         expect(subject).to be_a(String)
       end
     end
-  end
-
-  def mock_cloudhsm
-    allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
-    allow(MockSession).to receive(:login).and_return(true)
-    allow(MockSession).to receive(:logout).and_return(true)
-    allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
-    allow(MockSession).to receive(:sign) do |_algorithm, _key, input|
-      JWT::Algos::Rsa.sign(
-        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key),
-      )
-    end
-    allow(SamlIdp).
-      to receive_message_chain(:config, :pkcs11, :active_slots, :first, :open).
-      and_yield(MockSession)
-    allow(SamlIdp).to receive_message_chain(:config, :cloudhsm_pin).and_return(true)
   end
 end
