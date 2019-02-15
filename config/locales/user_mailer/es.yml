@@ -90,12 +90,9 @@ es:
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
     please_reset_password:
-      call_to_action: Para seguir usando tu cuenta de login.gov, restablece tu contraseña
-        usando el siguiente enlace.
-      intro: Encontramos un problema con tu contraseña tras realizar una revisión
-        de seguridad de login.gov. Aunque no vimos ninguna actividad sospechosa en
-        tu cuenta de login.gov, hemos desactivado tu contraseña antigua. Restablece
-        tu contraseña para seguir usando login.gov.
+      additional_help_html:
+      call_to_action:
+      intro:
       subject: Restablece tu contraseña
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
