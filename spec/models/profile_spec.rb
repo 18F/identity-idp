@@ -63,6 +63,14 @@ describe Profile do
 
       expect(decrypted_pii).to eq pii
     end
+
+    it 'fails if the encryption context from the uuid is incorrect' do
+      profile.encrypt_pii(pii, user.password)
+
+      allow(profile.user).to receive(:uuid).and_return('a-different-uuid')
+
+      expect { profile.decrypt_pii(user.password) }.to raise_error(Encryption::EncryptionError)
+    end
   end
 
   describe '#recover_pii' do
