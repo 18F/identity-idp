@@ -1,8 +1,4 @@
 shared_examples 'strong password' do |form_class|
-  before(:each) do
-    allow(Figaro.env).to receive(:password_strength_enabled).and_return('true')
-  end
-
   it 'does not allow a password that is common and/or needs more words' do
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)

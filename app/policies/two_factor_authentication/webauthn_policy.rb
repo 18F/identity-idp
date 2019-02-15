@@ -6,7 +6,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      FeatureManagement.webauthn_enabled? && mfa_user.webauthn_configurations.any?
+      mfa_user.webauthn_configurations.any?
     end
 
     def enabled?
@@ -15,12 +15,12 @@ module TwoFactorAuthentication
 
     # :reek:UtilityFunction
     def available?
-      FeatureManagement.webauthn_enabled?
+      true
     end
 
     # :reek:UtilityFunction
     def visible?
-      FeatureManagement.webauthn_enabled?
+      true
     end
 
     private

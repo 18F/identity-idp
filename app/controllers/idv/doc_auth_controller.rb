@@ -1,5 +1,7 @@
 module Idv
   class DocAuthController < ApplicationController
+    before_action :confirm_two_factor_authenticated
+
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
 
@@ -9,7 +11,5 @@ module Idv
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: Analytics::DOC_AUTH,
     }.freeze
-
-    before_action :confirm_two_factor_authenticated
   end
 end

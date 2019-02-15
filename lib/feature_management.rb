@@ -53,10 +53,6 @@ class FeatureManagement
     Figaro.env.enable_load_testing_mode == 'true'
   end
 
-  def self.password_strength_enabled?
-    Figaro.env.password_strength_enabled == 'true'
-  end
-
   def self.use_kms?
     Figaro.env.use_kms == 'true'
   end
@@ -98,14 +94,6 @@ class FeatureManagement
     Figaro.env.disallow_all_web_crawlers == 'true'
   end
 
-  def self.account_reset_enabled?
-    Figaro.env.account_reset_enabled != 'false' # if value not set it defaults to enabled
-  end
-
-  def self.webauthn_enabled?
-    Figaro.env.webauthn_enabled == 'true'
-  end
-
   def self.doc_auth_enabled?
     Figaro.env.doc_auth_enabled == 'true'
   end
@@ -114,11 +102,15 @@ class FeatureManagement
     Figaro.env.doc_auth_exclusive == 'true'
   end
 
-  def self.platform_authenticator_enabled?
-    Figaro.env.platform_authenticator_analytics_enabled == 'true'
-  end
-
   def self.backup_codes_enabled?
     Figaro.env.backup_codes_enabled == 'true'
+  end
+
+  def self.use_kms_contexts?
+    Figaro.env.use_kms_contexts == 'true'
+  end
+
+  def self.write_2lkms_passwords?
+    Figaro.env.write_2lkms_passwords == 'true'
   end
 end

@@ -67,7 +67,9 @@ html lang="#{I18n.locale}" class='no-js'
 
     #session-timeout-cntnr
     - if current_user
-      = render 'shared/platform_authenticator'
+      / Render the JS snipped that collects platform authenticator analytics
+      div [data-platform-authenticator-enabled="true"]
+
       = auto_session_timeout_js
     - else
       = auto_session_expired_js
