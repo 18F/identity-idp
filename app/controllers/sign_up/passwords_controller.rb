@@ -51,7 +51,6 @@ module SignUp
         user: @user,
         attributes: { reset_requested_at: nil, password: password },
       ).call
-      PasswordMetricsIncrementer.new(password).increment_password_metrics
       sign_in_and_redirect_user
     end
 
