@@ -209,6 +209,7 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
+  use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -222,6 +223,7 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
+  write_2lkms_passwords: 'false'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -323,6 +325,7 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
+  use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -336,6 +339,7 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
+  write_2lkms_passwords: 'false'
 
 test:
   aamva_cert_enabled: 'true'
@@ -441,6 +445,7 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
+  use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -454,3 +459,4 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
+  write_2lkms_passwords: 'true'
