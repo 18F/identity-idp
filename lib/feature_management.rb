@@ -105,4 +105,8 @@ class FeatureManagement
   def self.backup_codes_enabled?
     Figaro.env.backup_codes_enabled == 'true'
   end
+
+  def self.use_kms_contexts?
+    Figaro.env.use_kms_contexts == 'true'
+  end
 end
