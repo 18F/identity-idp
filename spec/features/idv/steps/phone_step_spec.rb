@@ -45,6 +45,50 @@ feature 'idv phone step' do
     end
   end
 
+  context 'with multiple mfa phone numbers configured' do
+    let(:user) do
+      record = user_with_2fa
+      create(:phone_configuration, user: record, phone: '+1 409-555-1212')
+      record.phone_configurations.reload
+      record
+    end
+
+    it 'shows all of the phone numbers' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      expect(page).to have_content(user.phone_configurations.first.phone)
+      expect(page).to have_content(user.phone_configurations.last.phone)
+    end
+
+    it 'redirects to the confirmation step when a listed phone is selected' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      find('label', text: user.phone_configurations.first.phone).click
+      click_idv_continue
+      expect(page).to have_current_path(idv_review_path)
+    end
+
+    it 'redirects to the confirmation step when the phone matches the 2fa phone number' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      find('label', text: t('idv.form.other_phone')).click
+      fill_in :idv_phone_form_other_phone, with: '415-555-0199'
+      click_idv_continue
+
+      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
+
+      choose_idv_otp_delivery_method_sms
+
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
+      expect(page).to_not have_content(t('two_factor_authentication.totp_header_text'))
+      expect(page).to_not have_content(t('two_factor_authentication.login_options_link_text'))
+    end
+  end
+
   context 'after submitting valid information' do
     it 'is re-entrant before confirming OTP' do
       first_phone_number = '7032231234'

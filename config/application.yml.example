@@ -111,8 +111,8 @@ development:
   acuant_assure_id_url: ''
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_simulator: 'true'
   account_reset_auth_token: 'abc123'
-  account_reset_enabled: 'true'
   account_reset_token_valid_for_days: '1'
   account_reset_wait_period_days: '1'
   async_job_refresh_interval_seconds: '5'
@@ -145,7 +145,6 @@ development:
   doc_auth_enabled: 'false'
   doc_auth_exclusive: 'false'
   domain_name: 'localhost:3000'
-  enable_identity_verification: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -175,12 +174,10 @@ development:
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  password_strength_enabled: 'true'
   piv_cac_verify_token_secret: 'ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
@@ -212,6 +209,7 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
+  use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -225,7 +223,7 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
-  webauthn_enabled: 'true'
+  write_2lkms_passwords: 'false'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -236,7 +234,6 @@ production:
   aamva_private_key: # Base64 encoded private key for AAMVA
   aamva_verification_url: # DLDV Verification URL
   account_reset_auth_token:
-  account_reset_enabled: 'true'
   account_reset_token_valid_for_days: '1'
   account_reset_wait_period_days: '1'
   acuant_assure_id_subscription_id: ''
@@ -245,6 +242,7 @@ production:
   acuant_assure_id_url: ''
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -267,7 +265,6 @@ production:
   doc_auth_enabled: 'false'
   doc_auth_exclusive: 'false'
   domain_name: 'login.gov'
-  enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -299,9 +296,7 @@ production:
   otp_valid_for: '10'
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
-  password_strength_enabled: 'true'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
@@ -330,6 +325,7 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
+  use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -343,7 +339,7 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
-  webauthn_enabled: 'true'
+  write_2lkms_passwords: 'false'
 
 test:
   aamva_cert_enabled: 'true'
@@ -351,7 +347,6 @@ test:
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
   account_reset_auth_token: 'test'
-  account_reset_enabled: 'true'
   account_reset_token_valid_for_days: '1'
   account_reset_wait_period_days: '1'
   acuant_assure_id_subscription_id: ''
@@ -360,6 +355,7 @@ test:
   acuant_assure_id_url: 'https://example.com'
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: 'https://example.com'
+  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
@@ -389,7 +385,6 @@ test:
   disallow_all_web_crawlers: 'true'
   doc_auth_enabled: 'true'
   doc_auth_exclusive: 'false'
-  enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -417,12 +412,10 @@ test:
   otp_delivery_blocklist_maxretry: '2'
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  password_strength_enabled: 'false'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_secret: '3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f'
   piv_cac_verify_token_url: 'https://localhost:8443/'
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  platform_authenticator_analytics_enabled: 'true'
   programmable_sms_countries: 'US,CA,MX'
   proofer_mock_fallback: 'true'
   programmable_sms_countries: 'US,CA'
@@ -452,6 +445,7 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
+  use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
@@ -465,4 +459,4 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
-  webauthn_enabled: 'true'
+  write_2lkms_passwords: 'true'

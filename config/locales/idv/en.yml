@@ -85,6 +85,7 @@ en:
       first_name: First name
       last_name: Last name
       no_alternate_phone_html: 'No phone? No problem: %{link}'
+      other_phone: Other Phone Number
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number

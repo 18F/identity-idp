@@ -88,6 +88,7 @@ es:
       first_name: Nombre
       last_name: Apellido
       no_alternate_phone_html: "¿Sin teléfono? No hay problema %{link}"
+      other_phone: Otro teléfono
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social

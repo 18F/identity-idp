@@ -255,7 +255,6 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up)
         sign_in_user(user)
 
-        allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
         3.times do
           fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')
@@ -282,7 +281,6 @@ feature 'Two Factor Authentication' do
 
     context 'user requests an OTP too many times within `findtime` minutes', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
-        allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
