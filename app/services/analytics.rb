@@ -1,4 +1,4 @@
-class Analytics
+class Analytics # rubocop:disable Metrics/ClassLength
   def initialize(user:, request:, sp:)
     @user = user
     @request = request

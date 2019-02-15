@@ -33,43 +33,20 @@ Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Enabled: true
   Max: 25
+  ExcludedMethods:
+    - 'Struct.new'
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
-    - 'app/decorators/identity_decorator.rb'
-    - 'app/decorators/user_decorator.rb'
-    - 'app/services/omniauth_authorizer.rb'
-    - 'app/services/single_logout_handler.rb'
-    - 'app/services/pii/attributes.rb'
-    - 'app/services/x509/attributes.rb'
     - 'config/environments/*.rb'
-    - 'config/initializers/secure_headers.rb'
     - 'config/routes.rb'
     - 'spec/**/*.rb'
-    - 'config/initializers/active_job_logger_patch.rb'
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
   Enabled: true
   CountComments: false
   Max: 100
-  Exclude:
-  - spec/**/*
-  - app/controllers/application_controller.rb
-  - app/controllers/openid_connect/authorization_controller.rb
-  - app/controllers/saml_idp_controller.rb
-  - app/controllers/users/confirmations_controller.rb
-  - app/controllers/users/sessions_controller.rb
-  - app/controllers/users/two_factor_authentication_controller.rb
-  - app/decorators/service_provider_session_decorator.rb
-  - app/decorators/user_decorator.rb
-  - app/forms/openid_connect_token_form.rb
-  - app/models/user.rb
-  - app/services/analytics.rb
-  - app/services/idv/session.rb
-  - app/presenters/two_factor_auth_code/phone_delivery_presenter.rb
-  - app/view_models/account_show.rb
-  - lib/cloudhsm/cloudhsm_key_generator.rb
 
 Metrics/LineLength:
   Description: Limit lines to 100 characters.
@@ -100,7 +77,6 @@ Metrics/ModuleLength:
   Enabled: true
   Exclude:
   - spec/**/*
-  - 'app/controllers/concerns/two_factor_authenticatable.rb'
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
@@ -115,15 +91,6 @@ Rails/HttpPositionalArguments:
   Include:
     - 'spec/**/*'
     - 'test/**/*'
-
-Rails/LexicallyScopedActionFilter:
-  Exclude:
-    - 'app/controllers/concerns/saml_idp_auth_concern.rb'
-    - 'app/controllers/concerns/two_factor_authenticatable.rb'
-
-Rails/OutputSafety:
-  Exclude:
-  - lib/i18n_override.rb
 
 # temporarily disabled until the fix for https://github.com/bbatsov/rubocop/issues/4249
 # is available in a new release
@@ -140,8 +107,6 @@ Rails/TimeZone:
   SupportedStyles:
     - strict
     - flexible
-  Exclude:
-    - 'lib/lambdas/account_reset_lambda.rb'
 
 Layout/AlignParameters:
   # Alignment of parameters in multi-line method calls.

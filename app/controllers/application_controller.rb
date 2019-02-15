@@ -1,6 +1,6 @@
 require 'core_extensions/string/permit'
 
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::Base # rubocop:disable Metrics/ClassLength
   String.include CoreExtensions::String::Permit
   include UserSessionContext
   include VerifyProfileConcern

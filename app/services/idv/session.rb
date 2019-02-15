@@ -1,5 +1,5 @@
 module Idv
-  class Session
+  class Session # rubocop:disable Metrics/ClassLength
     VALID_SESSION_ATTRIBUTES = %i[
       async_result_id
       async_result_started_at

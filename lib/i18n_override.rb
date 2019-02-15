@@ -10,7 +10,7 @@ I18n.module_eval do
       key = args.first.to_s
       rtn = i18n_text + i18n_mode_additional_markup(key)
 
-      rtn.html_safe
+      rtn.html_safe # rubocop:disable Rails/OutputSafety
     end
 
     private
