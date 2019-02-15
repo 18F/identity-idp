@@ -11,7 +11,7 @@ class MfaContext
     if user.present?
       user.phone_configurations
     else
-      []
+      PhoneConfiguration.none
     end
   end
 
@@ -24,7 +24,7 @@ class MfaContext
     if user.present?
       user.webauthn_configurations
     else
-      []
+      WebauthnConfiguration.none
     end
   end
 
@@ -32,7 +32,7 @@ class MfaContext
     if user.present?
       user.backup_code_configurations.unused
     else
-      []
+      BackupCodeConfiguration.none
     end
   end
 
@@ -53,13 +53,15 @@ class MfaContext
       [piv_cac_configuration, auth_app_configuration]
   end
 
+  # rubocop:disable Metrics/AbcSize
   def enabled_mfa_methods_count
-    phone_configurations.count +
-      webauthn_configurations.count +
+    phone_configurations.to_a.select(&:mfa_enabled?).count +
+      webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
       (piv_cac_configuration.mfa_enabled? ? 1 : 0) +
       (auth_app_configuration.mfa_enabled? ? 1 : 0)
   end
+  # rubocop:enable Metrics/AbcSize
 
   # returns a hash showing the count for each enabled 2FA configuration,
   # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.
