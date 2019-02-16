@@ -77,11 +77,11 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :mobile_back_image)
   end
 
-  def idv_doc_auth_doc_success_step
+  def idv_doc_auth_success_step
     idv_doc_auth_step_path(step: :doc_success)
   end
 
-  def idv_doc_auth_doc_summary_step
+  def idv_doc_auth_verify_step
     idv_doc_auth_step_path(step: :verify)
   end
 
@@ -150,6 +150,11 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_doc_success_step(user = user_with_2fa)
     complete_doc_auth_steps_before_verify_step(user)
     click_idv_continue
+  end
+
+  def complete_doc_auth_steps_before_address_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_verify_step(user)
+    click_link t('doc_auth.buttons.change_address')
   end
 
   def complete_doc_auth_steps_before_verify_step(user = user_with_2fa)

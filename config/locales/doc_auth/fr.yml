@@ -2,7 +2,8 @@
 fr:
   doc_auth:
     buttons:
-      change: change
+      change_address: change
+      change_ssn: change
       get_started: Get started
       start_over: Recommencer
       use_computer: Use your computer
