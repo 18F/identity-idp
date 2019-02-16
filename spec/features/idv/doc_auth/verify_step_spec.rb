@@ -31,4 +31,13 @@ feature 'doc auth verify step' do
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
   end
+
+  it 'does not proceed to the next page if resolution fails' do
+    complete_doc_auth_steps_before_ssn_step
+    fill_out_ssn_form_with_known_bad_ssn
+    click_idv_continue
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
+  end
 end
