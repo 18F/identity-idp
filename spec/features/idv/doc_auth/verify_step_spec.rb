@@ -26,9 +26,9 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_address_path)
   end
 
-  it 'proceeds to the ssn page if the user clicks change address' do
-    click_link t('doc_auth.buttons.change_ssn')
+  it 'proceeds to the ssn page if the user clicks change ssn' do
+    click_button t('doc_auth.buttons.change_ssn')
 
-    expect(page).to have_current_path(idv_address_path)
+    expect(page).to have_current_path(idv_doc_auth_ssn_step)
   end
 end

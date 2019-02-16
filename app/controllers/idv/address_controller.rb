@@ -34,8 +34,7 @@ module Idv
     end
 
     def failure
-      reason = params[:reason].to_sym
-      render_idv_step_failure(:sessions, reason)
+      redirect_to idv_address_url
     end
 
     def set_idv_form
@@ -47,10 +46,6 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
-    end
-
-    def failure_url(reason)
-      idv_session_failure_url(reason)
     end
   end
 end
