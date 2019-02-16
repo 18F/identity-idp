@@ -18,7 +18,7 @@ feature 'doc auth ssn step' do
     fill_out_ssn_form_ok
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_doc_success_step)
+    expect(page).to have_current_path(idv_doc_auth_doc_summary_step)
   end
 
   it 'does not proceed to the next page with invalid info' do
@@ -26,12 +26,5 @@ feature 'doc auth ssn step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-  end
-
-  it 'does not proceed to the next page if resolution fails' do
-    fill_out_ssn_form_with_known_bad_ssn
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
   end
 end

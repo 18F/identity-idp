@@ -81,6 +81,10 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :doc_success)
   end
 
+  def idv_doc_auth_doc_summary_step
+    idv_doc_auth_step_path(step: :verify)
+  end
+
   def idv_doc_auth_doc_failed_step
     idv_doc_auth_step_path(step: :doc_failed)
   end
@@ -144,14 +148,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_doc_success_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_verify_step(user)
+    click_idv_continue
+  end
+
+  def complete_doc_auth_steps_before_verify_step(user = user_with_2fa)
     complete_doc_auth_steps_before_ssn_step(user)
     fill_out_ssn_form_ok
     click_idv_continue
   end
 
   def complete_doc_auth_steps_before_doc_failed_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_ssn_step(user)
-    fill_out_ssn_form_ok
+    complete_doc_auth_steps_before_verify_step(user)
 
     allow_any_instance_of(Idv::Agent).to receive(:proof).
       and_return(success: false, errors: {})
