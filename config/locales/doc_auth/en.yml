@@ -2,22 +2,25 @@
 en:
   doc_auth:
     buttons:
+      change: change
       get_started: Get started
       start_over: Start over
       use_computer: Use your computer
       use_phone: Use your phone
     errors:
-      state_id_fail: Sorry. Information from your uploaded state-issued ID does not
-        match information for your social security number.
+      state_id_fail: Sorry. We could not verify your information.
     forms:
+      address1: Address
+      city: City
       dob: Date of Birth
       doc_success: We've verified your social security number and state-issued ID.
-      entered_info: 'Information you entered:'
       first_name: First Name
       last_name: Last Name
       ssn: Social Security Number
-      state_id_info: 'Information from your uploaded state-issued ID:'
+      state: State
+      zip_code: Zip Code
     headings:
+      address: Mailing Address
       ssn: Please enter your social security number.
       take_pic_back: Take a picture of the back of your ID
       take_pic_front: Take a picture of the front of your ID
@@ -27,6 +30,7 @@ en:
       upload_from_computer: Upload from your computer
       upload_from_phone: Take a picture with a phone to upload your ID
       upload_front: Upload an image of the front of your state issued ID
+      verify: Please verify your information
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
