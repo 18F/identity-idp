@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::SsnFormatForm do
   let(:user) { create(:user) }
-  let(:subject) { Idv::SsnForm.new(user) }
+  let(:subject) { Idv::SsnFormatForm.new(user) }
   let(:ssn) { '111-11-1111' }
 
   describe '#submit' do
