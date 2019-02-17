@@ -37,6 +37,12 @@ module DocAuthHelper
     session
   end
 
+  def fill_out_ssn_form_with_duplicate_ssn
+    diff_user = create(:user)
+    create(:profile, pii: { ssn: '123-45-6666' }, user: diff_user)
+    fill_in 'doc_auth_ssn', with: '123-45-6666'
+  end
+
   def fill_out_ssn_form_with_known_bad_ssn
     fill_in 'doc_auth_ssn', with: '123-45-6666'
   end
