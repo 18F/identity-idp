@@ -21,4 +21,12 @@ describe 'Device tracking' do
       expect(page).to have_content(t('event_types.account_created'))
     end
   end
+
+  context 'when the device does not exist' do
+    it 'renders a 404 error' do
+      visit account_events_path(id: 'dne')
+
+      expect(page).to have_content(t('pages.page_not_found.header'))
+    end
+  end
 end

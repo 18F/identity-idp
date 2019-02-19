@@ -12,6 +12,7 @@ class EventsController < ApplicationController
       decorated_user: current_user.decorate,
     )
     device_and_events
+    return render_device_not_found if @device.blank?
   end
 
   private
@@ -21,6 +22,10 @@ class EventsController < ApplicationController
     @events = DeviceTracking::ListDeviceEvents.call(user_id, device_id, 0, EVENTS_PAGE_SIZE).
               map(&:decorate)
     @device = Device.find_by(user_id: user_id, id: device_id)
+  end
+
+  def render_device_not_found
+    render 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
   def device_id
