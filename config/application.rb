@@ -3,8 +3,6 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 
-require_relative '../lib/queue_config.rb'
-
 APP_NAME = 'login.gov'.freeze
 
 module Upaya
