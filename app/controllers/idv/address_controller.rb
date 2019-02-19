@@ -9,8 +9,6 @@ module Idv
 
     def new
       analytics.track_event(Analytics::IDV_ADDRESS_VISIT)
-      set_idv_form
-      render 'idv/address'
     end
 
     def update
@@ -27,21 +25,14 @@ module Idv
     private
 
     def success
-      profile_params.each do |key|
-        user_session['idv/doc_auth']['pii_from_doc'][key] = profile_params[key]
+      profile_params.each do |key, value|
+        user_session['idv/doc_auth']['pii_from_doc'][key] = value
       end
       redirect_to idv_doc_auth_url
     end
 
     def failure
       redirect_to idv_address_url
-    end
-
-    def set_idv_form
-      @idv_form ||= Idv::AddressForm.new(
-        user: current_user,
-        previous_params: idv_session.previous_profile_step_params,
-      )
     end
 
     def profile_params
