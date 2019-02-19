@@ -12,7 +12,10 @@ module Idv
     end
 
     def update
-      set_idv_form
+      idv_form = Idv::AddressForm.new(
+        user: current_user,
+        previous_params: idv_session.previous_profile_step_params,
+        )
       form_result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
       if form_result.success?
