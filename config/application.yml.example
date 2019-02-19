@@ -40,10 +40,6 @@ queue_health_check_dead_interval_seconds: '60'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '30'
 
-# Configuration to probabilistically select the config.active_job.queue_adapter
-# Currently known options are: async, inline
-queue_adapter_weights: '{"inline": 1}'
-
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
