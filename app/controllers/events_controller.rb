@@ -13,7 +13,6 @@ class EventsController < ApplicationController
     )
     device_and_events
     return render_device_not_found if @device.blank?
-    render 'accounts/events/show'
   end
 
   private
