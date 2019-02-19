@@ -90,9 +90,16 @@ es:
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
     please_reset_password:
-      additional_help_html:
-      call_to_action:
-      intro:
+      additional_help_html: Si ha utilizado su contraseña de login.gov en otros sitios,
+        le pedimos que actualice estas contraseñas también. Si tiene preguntas, por
+        favor deje un mensaje para nuestro equipo en %{contact_url}, y le responderemos
+        en dos días hábiles.
+      call_to_action: Para retomar acceso a su cuenta en login.gov, tendrá que restablecer
+        su contraseña utilizando el enlace a continuación.
+      intro: Recientemente identificamos un problema de seguridad con su contraseña.
+        Hemos deshabilitado su contraseña para mantener su cuenta segura. Esto no
+        fue el resultado de un problema de seguridad con login.gov, sino un problema
+        con su contraseña que ha sido comprometida.
       subject: Restablece tu contraseña
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}

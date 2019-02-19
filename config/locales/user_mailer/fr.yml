@@ -94,9 +94,16 @@ fr:
       intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
       subject: Nouveau numéro de téléphone
     please_reset_password:
-      additional_help_html:
-      call_to_action:
-      intro:
+      additional_help_html: Si vous avez utilisé votre mot de passe login.gov sur
+        d'autres sites internet, nous vous encourageons à mettre ces mots de passe
+        à jour également. Si vous avez des questions, veuillez laisser un message
+        à notre équipe sur %{contact_url} — nous répondrons sous deux jours ouvrables.
+      call_to_action: Pour accéder de nouveau à votre compte login.gov, vous allez
+        devoir réinitialiser votre mot de passe en utilisant le lien ci-dessous.
+      intro: Nous avons récemment identifié un problème de sécurité concernant votre
+        mot de passe. Nous avons désactivé ce dernier pour sécuriser votre compte.
+        Cela n'a pas été causé par un problème de sécurité sur login.gov mais par
+        la corruption de votre mot de passe.
       subject: Veuillez réinitialiser votre mot de passe
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
