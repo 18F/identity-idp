@@ -12,7 +12,6 @@ class EventsController < ApplicationController
       decorated_user: current_user.decorate,
     )
     device_and_events
-    render 'accounts/events/show'
   end
 
   private
