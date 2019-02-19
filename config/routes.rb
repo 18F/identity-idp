@@ -215,6 +215,8 @@ Rails.application.routes.draw do
       get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
+      get '/address' => 'address#new'
+      post '/address' => 'address#update'
       if FeatureManagement.doc_auth_enabled?
         get '/doc_auth' => 'doc_auth#index'
         get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
