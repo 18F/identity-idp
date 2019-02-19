@@ -3,8 +3,6 @@ module Idv
     include IdvSession
     include IdvFailureConcern
 
-    attr_reader :idv_form
-
     before_action :confirm_two_factor_authenticated
 
     def new
@@ -12,10 +10,6 @@ module Idv
     end
 
     def update
-      idv_form = Idv::AddressForm.new(
-        user: current_user,
-        previous_params: idv_session.previous_profile_step_params,
-        )
       form_result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
       if form_result.success?
@@ -26,6 +20,13 @@ module Idv
     end
 
     private
+
+    def idv_form
+      Idv::AddressForm.new(
+        user: current_user,
+        previous_params: idv_session.previous_profile_step_params,
+      )
+    end
 
     def success
       profile_params.each do |key, value|
