@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-$LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
-require 'i18n_converter'
-
-I18nConverter.new(stdin: STDIN, stdout: STDOUT).yml_to_xml
