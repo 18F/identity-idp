@@ -9,7 +9,7 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
     .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true
   p.red.bold = flow_session[:error_message]
-  div.mb4 id= 'target'
+  .mb4 id= 'target'
   .mt2
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'
       = t('forms.buttons.continue')
