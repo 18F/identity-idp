@@ -14,8 +14,6 @@ module UserAccessKeyOverrides
       user_uuid: uuid,
     )
     log_password_verification_failure unless result
-    password_stale = Encryption::PasswordVerifier.new.stale_digest?(encrypted_password_digest)
-    self.password = password if result && password_stale
     result
   end
 
