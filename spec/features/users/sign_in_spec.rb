@@ -410,8 +410,8 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
-  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :saml
-  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :oidc
+  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
+  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :oidc
 
   context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly
