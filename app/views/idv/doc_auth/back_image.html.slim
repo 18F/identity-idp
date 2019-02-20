@@ -1,21 +1,19 @@
--title t('doc_auth.titles.doc_auth')
+- title t('doc_auth.titles.doc_auth')
 
-h1.h3.mb0 = t('doc_auth.headings.upload_back')
+h1.h3.my0 = t('doc_auth.headings.upload_back')
 
-h5.mt0 = t('doc_auth.info.upload_image')
+= t('doc_auth.info.upload_image')
 = simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :back_image), method: 'PUT',
     html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
-    .sm-col.sm-col-9.px1
+    .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true
-
   p = flow_session[:error_message]
-
-  div id= 'target'
-  br
-  .mt4
+  .mb4 id= 'target'
+  .mt2
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
       = t('forms.buttons.continue')
+br
 
 = render 'start_over_or_cancel'
 == javascript_pack_tag 'image-preview'

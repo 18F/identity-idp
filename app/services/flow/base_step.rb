@@ -19,6 +19,11 @@ module Flow
       flow_session[klass.to_s] = true
     end
 
+    def mark_step_incomplete(step = nil)
+      klass = step.nil? ? self.class : steps[step]
+      flow_session.delete(klass.to_s)
+    end
+
     private
 
     def form_submit

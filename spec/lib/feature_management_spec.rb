@@ -74,28 +74,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#enable_i18n_mode?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_i18n_mode).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.enable_i18n_mode?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_i18n_mode).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.enable_i18n_mode?).to eq(false)
-      end
-    end
-  end
-
   describe '#use_kms?' do
     context 'when enabled' do
       before do

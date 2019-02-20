@@ -2,6 +2,8 @@
 es:
   doc_auth:
     buttons:
+      change_address: change
+      change_ssn: change
       get_started: Get started
       start_over: Comenzar de nuevo
       use_computer: Use your computer
@@ -10,15 +12,18 @@ es:
       state_id_fail: Lo siento. La información de su ID emitida por el estado no coincide
         con la información de su número de seguro social.
     forms:
+      address1: Address
+      city: City
       dob: Fecha de nacimiento
       doc_success: Verificamos su número de seguro social y su identificación emitida
         por el estado.
-      entered_info: 'Información que ingresó:'
       first_name: Nombre de pila
       last_name: Apellido
       ssn: Número de seguridad social
-      state_id_info: 'Información de su ID emitida por el estado:'
+      state: State
+      zip_code: Zip Code
     headings:
+      address: Mailing Address
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Take a picture of the back of your ID
       take_pic_front: Take a picture of the front of your ID
@@ -29,6 +34,7 @@ es:
       upload_from_phone: Take a picture with a phone to upload your ID
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
+      verify: Please verify your information
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser

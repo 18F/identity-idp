@@ -88,7 +88,6 @@ end
 
 group :development, :test do
   gem 'bullet'
-  gem 'front_matter_parser'
   gem 'i18n-tasks'
   gem 'knapsack'
   gem 'pry-byebug'

@@ -63,6 +63,8 @@ class Analytics # rubocop:disable Metrics/ClassLength
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
+  IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
+  IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
