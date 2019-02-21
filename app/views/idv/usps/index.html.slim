@@ -10,7 +10,7 @@
     strong
       = t('idv.messages.usps.success')
 
-= render @presenter.partial
+= render @presenter.usps_partial, presenter: @presenter
 br
 br
 = button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete,
