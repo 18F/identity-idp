@@ -84,7 +84,7 @@ describe Idv::SessionsController do
       expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
     end
 
-    it 'redirects to the SSN error if the SSN exists' do
+    it 'redirects to failure if the SSN exists' do
       create(:profile, pii: { ssn: '666-66-1234' })
 
       result = {
@@ -97,7 +97,7 @@ describe Idv::SessionsController do
 
       post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
-      expect(response).to redirect_to(idv_session_failure_url(:dupe_ssn))
+      expect(response).to redirect_to(idv_session_failure_url(:warning))
       expect(idv_session.profile_confirmation).to be_falsy
       expect(idv_session.resolution_successful).to be_falsy
     end
@@ -189,13 +189,7 @@ describe Idv::SessionsController do
   end
 
   describe '#failure' do
-    it 'renders the dup ssn error if the failure reason is dupe ssn' do
-      get :failure, params: { reason: :dupe_ssn }
-
-      expect(response).to render_template('shared/_failure')
-    end
-
-    it 'renders the error for the the given error case if the failure reason is not dupe ssn' do
+    it 'renders the error for the the given error case if the failure reason' do
       expect(controller).to receive(:render_idv_step_failure).with(:sessions, :fail)
 
       get :failure, params: { reason: :fail }
@@ -204,22 +198,12 @@ describe Idv::SessionsController do
 
   context 'user has created account' do
     describe '#failure' do
-      context 'reason == :dupe_ssn' do
-        it 'renders the dupe_ssn failure screen' do
-          get :failure, params: { reason: :dupe_ssn }
+      let(:reason) { :fail }
 
-          expect(response).to render_template('shared/_failure')
-        end
-      end
+      it 'calls `render_step_failure` with step_name of :sessions and the reason' do
+        expect(controller).to receive(:render_idv_step_failure).with(:sessions, reason)
 
-      context 'reason != :dupe_ssn' do
-        let(:reason) { :fail }
-
-        it 'calls `render_step_failure` with step_name of :sessions and the reason' do
-          expect(controller).to receive(:render_idv_step_failure).with(:sessions, reason)
-
-          get :failure, params: { reason: reason }
-        end
+        get :failure, params: { reason: reason }
       end
     end
   end

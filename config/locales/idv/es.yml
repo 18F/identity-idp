@@ -121,20 +121,12 @@ es:
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
-      dupe_ssn1: Si recibe este error, es posible que ya haya creado y verificado
-        una cuenta, pero con un email diferente.
-      dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
-      dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
       hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
         tu edad de nuevo en %{hours} horas.
       jurisdiction:
         no_id: No tengo una identificación emitida por el estado
         no_id_failure: Estamos trabajando arduamente para agregar más formas de verificar
           su identidad.
-        profile: Para acceder a su cuenta en el futuro, puede %{link}.
-        profile_link: mira tu cuenta aquí
-        try_again: "¿Cometer un error? Puedes %{link}."
-        try_again_link: intentarlo de nuevo
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
           estados y esperamos apoyar a %{state} pronto.
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
