@@ -230,6 +230,7 @@ Rails.application.routes.draw do
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'
+        post '/usps' => 'usps#update'
       end
     end
 

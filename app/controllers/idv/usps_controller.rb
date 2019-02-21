@@ -23,11 +23,29 @@ module Idv
       end
     end
 
+    def update
+      form_result = idv_form.submit(profile_params)
+      analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
+      if form_result.success?
+        success
+      else
+        failure
+      end
+    end
+
     def usps_mail_service
       @_usps_mail_service ||= Idv::UspsMail.new(current_user)
     end
 
     private
+
+    def success
+      profile_params.each do |key, value|
+        user_session['idv/doc_auth']['pii_from_doc'][key] = value
+      end
+      resend_letter
+      redirect_to idv_come_back_later_url
+    end
 
     def confirm_mail_not_spammed
       redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
@@ -53,6 +71,17 @@ module Idv
 
       return unless FeatureManagement.reveal_usps_code?
       session[:last_usps_confirmation_code] = confirmation_maker.otp
+    end
+
+    def idv_form
+      Idv::AddressForm.new(
+        user: current_user,
+        previous_params: idv_session.previous_profile_step_params,
+      )
+    end
+
+    def profile_params
+      params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
     end
   end
 end
