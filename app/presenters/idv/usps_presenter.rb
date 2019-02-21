@@ -30,12 +30,8 @@ module Idv
       idv_cancel_path
     end
 
-    def usps_partial
-      if current_user.decorate.usps_mail_bounced?
-        'idv/usps/new_address'
-      else
-        'idv/usps/address_on_file'
-      end
+    def usps_mail_bounced?
+      current_user.decorate.usps_mail_bounced?
     end
 
     private

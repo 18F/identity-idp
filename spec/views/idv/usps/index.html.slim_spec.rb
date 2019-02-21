@@ -14,7 +14,7 @@ describe 'idv/usps/index.html.slim' do
     expect(usps_presenter).to receive(:button)
     expect(usps_presenter).to receive(:cancel_path)
     expect(usps_presenter).to receive(:byline)
-    expect(usps_presenter).to receive(:usps_partial)
+    expect(usps_presenter).to receive(:usps_mail_bounced?)
 
     render
   end
