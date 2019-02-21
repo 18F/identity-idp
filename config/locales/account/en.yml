@@ -26,8 +26,8 @@ en:
       ssn: Social Security Number
       unknown_location: unknown location
       verification:
-        bounced: The postal service could not deliver mail to your address.
-        instructions: Your account requires a secret code to be verified.
+        bounced: The postal service could not deliver the letter to your address.
+        instructions: Your account requires a confirmation code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
         update_address: Please update your address to be verified.
