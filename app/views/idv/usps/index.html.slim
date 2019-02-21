@@ -4,15 +4,15 @@
   h1.h2
     = @presenter.title
   p
-    = t('idv.messages.usps.byline')
+    = @presenter.byline
 
   p.my0
     strong
       = t('idv.messages.usps.success')
 
-= button_to @presenter.button, idv_usps_path, method: 'put',
-  class: 'btn btn-primary btn-wide', form_class: 'inline-block mr2'
-
+= render @presenter.partial
+br
+br
 = button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete,
   class: 'btn btn-link'
 

@@ -12,6 +12,14 @@ module Idv
       letter_already_sent? ? I18n.t('idv.titles.mail.resend') : I18n.t('idv.titles.mail.verify')
     end
 
+    def byline
+      if current_user.decorate.usps_mail_bounced?
+        I18n.t('idv.messages.usps.new_address')
+      else
+        I18n.t('idv.messages.usps.address_on_file')
+      end
+    end
+
     def button
       letter_already_sent? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
     end
@@ -20,6 +28,14 @@ module Idv
       return verify_account_path if user_needs_address_otp_verification?
 
       idv_cancel_path
+    end
+
+    def partial
+      if current_user.decorate.usps_mail_bounced?
+        'idv/usps/new_address'
+      else
+        'idv/usps/address_on_file'
+      end
     end
 
     private
