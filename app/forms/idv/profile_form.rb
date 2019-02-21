@@ -26,7 +26,7 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid? && !duplicate_ssn?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors.messages)
     end
 
     def add_sp_unsupported_jurisdiction_error(sp_name)
