@@ -29,7 +29,6 @@ module Idv
 
     def failure
       reason = params[:reason].to_sym
-      render_dupe_ssn_failure and return if reason == :dupe_ssn
       render_idv_step_failure(:sessions, reason)
     end
 
@@ -54,16 +53,22 @@ module Idv
     end
 
     def process_form_failure
-      redirect_to idv_session_failure_url(:dupe_ssn) and return if idv_form.duplicate_ssn?
+      handle_dupe_ssn_failure and return if idv_form.duplicate_ssn?
       if (sp_name = decorated_session.sp_name) && idv_form.unsupported_jurisdiction?
         idv_form.add_sp_unsupported_jurisdiction_error(sp_name)
       end
       render :new
     end
 
-    def render_dupe_ssn_failure
-      presenter = Idv::SsnFailurePresenter.new(view_context: view_context)
-      render_failure('shared/_failure', presenter)
+    def handle_dupe_ssn_failure
+      idv_attempter.increment
+      failure_reason = if idv_attempter.exceeded?
+                         :fail
+                       else
+                         :warning
+                       end
+      idv_session.previous_profile_step_params = profile_params.to_h
+      redirect_to idv_session_failure_url(failure_reason)
     end
 
     def submit_proofing_attempt
