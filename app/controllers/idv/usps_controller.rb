@@ -40,9 +40,6 @@ module Idv
     private
 
     def success
-      profile_params.each do |key, value|
-        user_session['idv/doc_auth']['pii_from_doc'][key] = value
-      end
       resend_letter
       redirect_to idv_come_back_later_url
     end

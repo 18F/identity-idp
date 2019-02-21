@@ -89,4 +89,47 @@ describe Idv::UspsController do
       end
     end
   end
+
+  describe '#update' do
+    context 'resending a letter' do
+      let(:has_pending_profile) { true }
+      let(:pending_profile) { create(:profile) }
+      let(:address) do
+        {
+          address1: '123 Any St',
+          address2: 'Ste 456',
+          city: 'Anywhere',
+          state: 'KS',
+          zipcode: '66666',
+        }
+      end
+
+      before do
+        stub_sign_in(user)
+        decorated_user = stub_decorated_user_with_pending_profile(user)
+        stub_usps_mail_bounced(decorated_user)
+        allow(user.decorate).to receive(:pending_profile_requires_verification?).and_return(true)
+      end
+
+      it 'calls the UspsConfirmationMaker to send another letter and redirects' do
+        pii = { first_name: 'Samuel', last_name: 'Sampson' }
+        pii_cacher = instance_double(Pii::Cacher)
+        allow(pii_cacher).to receive(:fetch).and_return(pii)
+        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+
+        session[:sp] = { issuer: '123abc' }
+
+        usps_confirmation_maker = instance_double(UspsConfirmationMaker)
+        allow(UspsConfirmationMaker).to receive(:new).
+          with(pii: pii, issuer: '123abc', profile: pending_profile).
+          and_return(usps_confirmation_maker)
+
+        expect(usps_confirmation_maker).to receive(:perform)
+
+        put :update, params: { idv_form: address }
+
+        expect(response).to redirect_to idv_come_back_later_path
+      end
+    end
+  end
 end
