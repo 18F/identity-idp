@@ -902,7 +902,7 @@ production:
   # DIS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:DIS':
     agency_id: 15
-    friendly_name: 'DIS'
+    friendly_name: 'USAID - DIS'
     agency: 'USAID'
     logo: 'usaid.png'
     cert: 'usaid_prod'
@@ -916,7 +916,7 @@ production:
   # DIS STAGING
   'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:DIS-staging':
     agency_id: 15
-    friendly_name: 'DIS'
+    friendly_name: 'USAID-DIS-staging'
     agency: 'USAID'
     logo: 'usaid.png'
     cert: 'usaid_prod'
