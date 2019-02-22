@@ -44,6 +44,10 @@ es:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
       intro: El email de su cuenta de %{app} ha sido cambiado.
     help_link_text: Centro de Ayuda
+    new_device_sign_in:
+      help_html: <p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>
+      subject: Nuevo initio de sesion con su Login.gov cuenta
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
@@ -115,3 +119,4 @@ es:
       help: ''
       intro: No hemos podido enviar el correo a la dirección que proporcionó.
       subject: El correo enviado a su dirección no se pudo entregar
+

@@ -44,6 +44,10 @@ en:
         %{help_link} or %{contact_link}.
       intro: The email address for your %{app} account has been changed.
     help_link_text: Help Center
+    new_device_sign_in:
+      help_html: <p>Your Login.gov account was just used to sign in on a new device.</p><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>
+      subject: New sign-in with your Login.gov account
     password_changed:
       help: If you did not make this change, please visit the %{app} %{help_link}
         or %{contact_link}.
@@ -112,3 +116,4 @@ en:
       help: ''
       intro: We were unable to send mail to the address you provided.
       subject: Mail sent to your address was undeliverable
+

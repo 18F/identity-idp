@@ -70,7 +70,17 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     if device
       DeviceTracking::UpdateDevice.call(device, request.remote_ip)
     else
+      has_previous_devices = UserDecorator.new(user).has_devices
       device = create_device(user)
+      current_datetime = DateTime.now.strftime("%B %-d, %Y %H:%M")
+
+      # we don't want to alert the user the first time they log in
+      if has_previous_devices
+        UserMailer.new_device_sign_in(user.email,
+                                    current_datetime,
+                                    DeviceDecorator.new(device).last_sign_in_location_and_ip).deliver_now
+        SmsNewDeviceSignInNotifierJob.perform_now(phone: user.email)
+      end
     end
     device
   end

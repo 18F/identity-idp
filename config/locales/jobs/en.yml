@@ -21,3 +21,5 @@ en:
     sms_personal_key_sign_in_notifier_job:
       message: Your personal key was just used to sign into your %{app} account. If
         this wasn’t you, reset your password.
+    sms_new_device_sign_in_notifier_job:
+      message: Your Login.gov account was just used to sign in on a new device
