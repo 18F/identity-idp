@@ -66,6 +66,24 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'sign in from new device' do
+    let(:mail) {UserMailer.create_new_device_sign_in(user.email)}
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(t('user_mailer.new_device_sign_in.help_html'))
+    end
+  end
+
   describe 'personal_key_regenerated' do
     let(:mail) { UserMailer.personal_key_regenerated(user.email) }
 

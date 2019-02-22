@@ -8,6 +8,7 @@
 *.rbc
 *.sassc
 **.orig
+*.lock
 .bundle
 .byebug_history
 .coveralls.yml

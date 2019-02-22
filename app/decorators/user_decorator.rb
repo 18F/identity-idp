@@ -117,6 +117,10 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
     DeviceTracking::ListDevices.call(user.id, 0, MAX_RECENT_DEVICES).map(&:decorate)
   end
 
+  def has_devices
+    recent_devices.length > 0
+  end
+
   def connected_apps
     user.identities.order('created_at DESC').map(&:decorate)
   end
