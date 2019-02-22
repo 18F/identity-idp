@@ -177,6 +177,11 @@ feature 'LOA3 Single Sign On' do
 
           expect(current_path).to eq idv_usps_path
 
+          fill_out_address_form_fail
+          click_button(t('idv.buttons.mail.resend'))
+
+          expect(current_path).to eq idv_usps_path
+
           fill_out_address_form_ok
           click_button(t('idv.buttons.mail.resend'))
 
