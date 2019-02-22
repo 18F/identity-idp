@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'LOA3 Single Sign On' do
   include SamlAuthHelper
   include IdvHelper
+  include DocAuthHelper
 
   def perform_id_verification_with_usps_without_confirming_code(user)
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -18,6 +19,34 @@ feature 'LOA3 Single Sign On' do
     click_idv_continue
     click_on t('idv.form.activate_by_mail')
     click_on t('idv.buttons.mail.send')
+    fill_in :user_password, with: user.password
+    click_continue
+    click_acknowledge_personal_key
+    click_link t('idv.buttons.continue_plain')
+  end
+
+  def perform_id_verification_with_undeliverable_usps_without_confirming_code(user)
+    allow_any_instance_of(UserDecorator).to receive(:usps_mail_bounced?).and_return(true)
+    allow_any_instance_of(Idv::UspsController).to receive(:pii_to_h).and_return(
+      DocAuthHelper::ACUANT_RESULTS_TO_PII.stringify_keys,
+    )
+    allow_any_instance_of(UspsConfirmationMaker).to receive(:pii).and_return(
+      DocAuthHelper::ACUANT_RESULTS_TO_PII,
+    )
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+    saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+    visit saml_authn_request
+    click_link t('links.sign_in')
+    fill_in_credentials_and_submit(user.email, user.password)
+    click_submit_default
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
+    fill_out_idv_form_ok
+    click_idv_continue
+    click_idv_continue
+    click_on t('idv.form.activate_by_mail')
+    fill_out_address_form_ok
+    click_on t('idv.buttons.mail.resend')
     fill_in :user_password, with: user.password
     click_continue
     click_acknowledge_personal_key
@@ -70,7 +99,6 @@ feature 'LOA3 Single Sign On' do
       create(
         :profile,
         deactivation_reason: :verification_pending,
-        phone_confirmed: phone_confirmed,
         pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end
@@ -119,6 +147,40 @@ feature 'LOA3 Single Sign On' do
           click_button(t('idv.buttons.mail.resend'))
 
           expect(current_path).to eq(idv_come_back_later_path)
+        end
+      end
+
+      context 'provides an option to update address if undeliverable' do
+        it 'without signing out' do
+          user = create(:user, :signed_up)
+
+          allow_any_instance_of(UspsConfirmationMaker).to receive(:profile).and_return(profile)
+
+          perform_id_verification_with_undeliverable_usps_without_confirming_code(user)
+
+          expect(current_path).to eq account_path
+
+          click_link(t('account.index.verification.update_address'))
+
+          expect(current_path).to eq idv_usps_path
+        end
+
+        it 'after signing out' do
+          user = create(:user, :signed_up)
+
+          allow_any_instance_of(UspsConfirmationMaker).to receive(:profile).and_return(profile)
+
+          perform_id_verification_with_undeliverable_usps_without_confirming_code(user)
+          sign_out_user
+
+          sign_in_live_with_2fa(user)
+
+          expect(current_path).to eq idv_usps_path
+
+          fill_out_address_form_ok
+          click_button(t('idv.buttons.mail.resend'))
+
+          expect(current_path).to eq(idv_review_path)
         end
       end
     end

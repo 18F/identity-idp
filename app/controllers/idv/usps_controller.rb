@@ -40,6 +40,10 @@ module Idv
 
     private
 
+    def failure
+      redirect_to idv_usps_url
+    end
+
     def pii
       hash = {}
       update_hash_with_address(hash)
@@ -63,9 +67,7 @@ module Idv
     end
 
     def success(hash)
-      idv_session_settings(hash).each do |key, value|
-        user_session['idv'][key] = value
-      end
+      idv_session_settings(hash).each { |key, value| user_session['idv'][key] = value }
       resend_letter
       redirect_to idv_review_url
     end
@@ -120,9 +122,7 @@ module Idv
 
     def perform_resolution(pii_from_doc)
       idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
-      FormResponse.new(
-        success: idv_result[:success], errors: idv_result[:errors],
-      )
+      FormResponse.new(success: idv_result[:success], errors: idv_result[:errors])
     end
   end
 end
