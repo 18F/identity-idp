@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 module Idv
   class UspsController < ApplicationController
     include IdvSession
@@ -27,10 +28,10 @@ module Idv
       form_result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
       if form_result.success?
-        success
-      else
-        failure
+        result = perform_resolution(pii)
+        return success(pii) if result.success?
       end
+      failure
     end
 
     def usps_mail_service
@@ -39,9 +40,45 @@ module Idv
 
     private
 
-    def success
+    def pii
+      hash = {}
+      update_hash_with_address(hash)
+      update_hash_with_non_address_pii(hash)
+      hash
+    end
+
+    def update_hash_with_address(hash)
+      profile_params.each { |key, value| hash[key] = value }
+    end
+
+    def update_hash_with_non_address_pii(hash)
+      pii_h = pii_to_h
+      %w[first_name middle_name last_name dob phone ssn].each do |key|
+        hash[key] = pii_h[key]
+      end
+    end
+
+    def pii_to_h
+      JSON.parse(user_session[:decrypted_pii])
+    end
+
+    def success(hash)
+      idv_session_settings(hash).each do |key, value|
+        user_session['idv'][key] = value
+      end
       resend_letter
-      redirect_to idv_come_back_later_url
+      redirect_to idv_review_url
+    end
+
+    def idv_session_settings(hash)
+      { 'vendor_phone_confirmation': false,
+        'user_phone_confirmation': false,
+        'resolution_successful': 'phone',
+        'address_verification_mechanism': 'usps',
+        'profile_confirmation': true,
+        'params': hash,
+        'applicant': hash,
+        'uuid': current_user.uuid }
     end
 
     def confirm_mail_not_spammed
@@ -79,6 +116,13 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
+    end
+
+    def perform_resolution(pii_from_doc)
+      idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
+      FormResponse.new(
+        success: idv_result[:success], errors: idv_result[:errors],
+      )
     end
   end
 end
