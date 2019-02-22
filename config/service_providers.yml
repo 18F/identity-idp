@@ -899,7 +899,7 @@ production:
       - 'https://fmcsa.lms.dot.gov/openid-connect/dot_login'
     restrict_to_deploy_env: 'prod'
 
-  # DIS
+  # USAID - DIS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:DIS':
     agency_id: 15
     friendly_name: 'USAID - DIS'
@@ -913,7 +913,7 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
-  # DIS STAGING
+  # USAID - DIS STAGING
   'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:DIS-staging':
     agency_id: 15
     friendly_name: 'USAID-DIS-staging'
