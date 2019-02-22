@@ -25,3 +25,5 @@ fr:
     sms_personal_key_sign_in_notifier_job:
       message: Votre clé personnelle a été utilisée pour vous connecter à votre compte
         %{app}. Si ce n’était pas vous, changez votre mot de passe.
+    sms_new_device_sign_in_notifier_job:
+      message: Votre compte login.gov a été connecté sur un nouvel appareil

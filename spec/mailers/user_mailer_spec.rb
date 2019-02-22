@@ -67,9 +67,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'sign in from new device' do
-    date = 'Washington, DC'
-    location = 'February 25, 2019 15:02'
-    let(:mail) { UserMailer.new_device_sign_in(user.email, date, location) }
+    let(:mail) {UserMailer.create_new_device_sign_in(user.email)}
 
     it_behaves_like 'a system email'
 
@@ -82,9 +80,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html',
-                                     date: date, location: location)))
+      expect(mail.html_part.body).to have_content(t('user_mailer.new_device_sign_in.help_html'))
     end
   end
 
@@ -320,44 +316,6 @@ describe UserMailer, type: :mailer do
 
       expect(mail.html_part.body).to \
         have_content(strip_tags(I18n.t('user_mailer.doc_auth_link.message', sp_link: nil)))
-    end
-  end
-
-  describe 'expired letter' do
-    let(:mail) { UserMailer.letter_expired(email_address.email) }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.letter_expired.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_expired.info', link: APP_NAME)))
-    end
-  end
-
-  describe 'reminder letter' do
-    let(:mail) { UserMailer.letter_reminder(email_address.email) }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.letter_reminder.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
     end
   end
 

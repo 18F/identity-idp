@@ -66,12 +66,33 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def create_or_update_device(user)
-    cookie = cookies[:device]
-    device = DeviceTracking::ManageDevice.call(user, cookie, request.remote_ip, request.user_agent)
+    device = DeviceTracking::LookupDeviceForUser.call(user.id, cookies[:device])
+    if device
+      DeviceTracking::UpdateDevice.call(device, request.remote_ip)
+    else
+      has_previous_devices = UserDecorator.new(user).has_devices
+      device = create_device(user)
+      current_datetime = DateTime.now.strftime("%B %-d, %Y %H:%M")
 
-    device_cookie_uuid = device.cookie_uuid
+      # we don't want to alert the user the first time they log in
+      if has_previous_devices
+        UserMailer.new_device_sign_in(user.email,
+                                    current_datetime,
+                                    DeviceDecorator.new(device).last_sign_in_location_and_ip).deliver_now
+        SmsNewDeviceSignInNotifierJob.perform_now(phone: user.email)
+      end
+    end
+    device
+  end
 
-    cookies.permanent[:device] = device_cookie_uuid unless device_cookie_uuid == cookie
+  def create_device(user)
+    cookie_uuid = cookies[:device]
+    device = DeviceTracking::CreateDevice.call(user.id,
+                                               request.remote_ip,
+                                               request.user_agent,
+                                               cookie_uuid)
+    device_uuid = device.cookie_uuid
+    cookies.permanent[:device] = device_uuid unless device_uuid == cookie_uuid
     device
   end
 
