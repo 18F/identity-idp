@@ -15,6 +15,10 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
     user.email_addresses.first&.email
   end
 
+  def phone
+    user.phone_configuration_data.first&.phone
+  end
+
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
 
