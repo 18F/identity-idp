@@ -3,7 +3,6 @@ class SmsNewDeviceSignInNotifierJob < ApplicationJob
 
   # :reek:UtilityFunction
   def perform(phone:)
-    puts 'sending an SMS methinks'
     TwilioService::Utils.new.send_sms(
       to: phone,
       body: I18n.t(
