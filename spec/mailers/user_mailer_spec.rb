@@ -67,7 +67,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'sign in from new device' do
-    let(:mail) { UserMailer.create_new_device_sign_in(user.email) }
+    let(:mail) { UserMailer.new_device_sign_in(user.email) }
 
     it_behaves_like 'a system email'
 
