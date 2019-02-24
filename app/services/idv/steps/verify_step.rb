@@ -3,7 +3,7 @@ module Idv
     class VerifyStep < DocAuthBaseStep
       def call
         pii_from_doc = flow_session[:pii_from_doc]
-        # do resolution first to prevent ssn discovery by time. res time order greater then db call
+        # do resolution first to prevent ssn time/discovery. resolution time order > than db call
         result = perform_resolution(pii_from_doc)
         result = check_ssn(pii_from_doc) if result.success?
         summarize_result_and_throttle_failures(result)
