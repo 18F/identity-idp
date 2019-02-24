@@ -8,10 +8,6 @@ fr:
       start_over: Recommencer
       use_computer: Use your computer
       use_phone: Use your phone
-    errors:
-      state_id_fail: Pardon. Les informations de votre identifiant émis par l'état
-        téléchargé ne correspondent pas aux informations de votre numéro de sécurité
-        sociale.
     forms:
       address1: Address
       city: City
