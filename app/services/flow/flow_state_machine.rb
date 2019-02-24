@@ -85,7 +85,7 @@ module Flow
     end
 
     def next_step_is_url
-      next_step.index(':')
+      next_step.to_s.index(':')
     end
   end
 end
