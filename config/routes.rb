@@ -205,9 +205,13 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      get '/session' => 'sessions#new'
-      put '/session' => 'sessions#create'
-      get '/session/success' => 'sessions#success'
+      if FeatureManagement.doc_auth_exclusive?
+        get '/session', to: redirect('/verify')
+      else
+        get '/session' => 'sessions#new'
+        put '/session' => 'sessions#create'
+        get '/session/success' => 'sessions#success'
+      end
       get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'

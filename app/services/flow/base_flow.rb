@@ -8,14 +8,20 @@ module Flow
       @steps = steps.with_indifferent_access
       @actions = actions.with_indifferent_access
       @params = nil
+      @redirect = nil
       @flow_session = session
     end
 
     def next_step
+      return @redirect if @redirect
       step, _klass = steps.detect do |_step, klass|
         !@flow_session[klass.to_s]
       end
       step
+    end
+
+    def redirect_to(url)
+      @redirect = url
     end
 
     def handle(step, request, params)

@@ -3,28 +3,22 @@ module Idv
     class VerifyStep < DocAuthBaseStep
       def call
         pii_from_doc = flow_session[:pii_from_doc]
-        result = Idv::SsnForm.new(current_user).submit(ssn: pii_from_doc[:ssn])
-        if result.success?
-          success(pii_from_doc)
-        else
-          flow_session[:matcher_pii_from_doc] = pii_from_doc
-        end
+        # do resolution first to prevent ssn discovery by time. res time order greater then db call
+        result = perform_resolution(pii_from_doc)
+        result = check_ssn(pii_from_doc) if result.success?
+        summarize_result_and_throttle_failures(result)
       end
 
       private
 
-      def success(pii_from_doc)
-        result = perform_resolution(pii_from_doc)
-        if result.success?
-          step_successful(pii_from_doc)
-        else
-          flow_session[:matcher_pii_from_doc] = pii_from_doc
-        end
+      def summarize_result_and_throttle_failures(summary_result)
+        summary_result.success? ? summary_result : idv_failure(summary_result)
       end
 
-      def step_successful(pii_from_doc)
-        mark_step_complete(:doc_failed) # skip doc failed
-        save_legacy_state(pii_from_doc)
+      def check_ssn(pii_from_doc)
+        result = Idv::SsnForm.new(current_user).submit(ssn: pii_from_doc[:ssn])
+        save_legacy_state(pii_from_doc) if result.success?
+        result
       end
 
       def save_legacy_state(pii_from_doc)
