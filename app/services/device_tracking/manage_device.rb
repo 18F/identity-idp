@@ -3,18 +3,18 @@ module DeviceTracking
     # primary method: updates the usage time if it is not a new device, and calls create
     # if the device used to log in has not been used before and alerts the user via email
     # and sms about the new device in use
-    def self.call(user, device_hash, remote_ip, user_agent)
-      user_id = user.id
-      device = DeviceTracking::LookupDeviceForUser.call(user_id, device_hash)
+    # returns the existing, updated device or the new one just created
+    def self.call(user, hash, remote_ip, user_agent)
+      uid = user.id
+      device = DeviceTracking::LookupDeviceForUser.call(uid, hash)
 
-      device = if device
-                 DeviceTracking::UpdateDevice.call(device, remote_ip)
-               else
-                 DeviceTracking::CreateDevice.call(user_id, remote_ip, user_agent, device_hash)
-                 alert_user_of_new_device(user, device) if UserDecorator.new(user).devices?
-               end
-
-      device
+      if device
+        DeviceTracking::UpdateDevice.call(device, remote_ip)
+      else
+        new_device = DeviceTracking::CreateDevice.call(uid, remote_ip, user_agent, hash)
+        alert_user_of_new_device(user, new_device) if UserDecorator.new(user).devices?
+        new_device
+      end
     end
 
     # private
