@@ -327,7 +327,6 @@ GEM
       systemu (~> 2.6.2)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    maxminddb (0.1.22)
     memory_profiler (0.9.12)
     method_source (0.9.2)
     mime-types (3.2.2)
@@ -681,7 +680,6 @@ DEPENDENCIES
   lexisnexis!
   local_time
   lograge
-  maxminddb
   net-sftp
   newrelic_rpm
   overcommit
