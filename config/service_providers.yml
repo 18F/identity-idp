@@ -926,3 +926,19 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # Apprenticeship.gov
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dol:apprenticeship_gov':
+    agency_id: 14
+    friendly_name: 'Apprenticeship.gov'
+    agency: 'DOL'
+    logo: 'dol.svg'
+    cert: 'dol_apprentice_prod'
+    return_to_sp_url: 'https://www.apprenticeship.gov/dashboard'
+    acs_url: 'https://www.apprenticeship.gov/saml/consume'
+    sp_initiated_login_url: 'https://www.apprenticeship.gov/saml/drupal_login/apprenticeship_gov'
+    assertion_consumer_logout_service_url: 'https://www.apprenticeship.gov/saml/consume'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
