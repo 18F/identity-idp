@@ -210,8 +210,8 @@ Rails.application.routes.draw do
       else
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
-        get '/session/success' => 'sessions#success'
       end
+      get '/session/success' => 'sessions#success'
       get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'

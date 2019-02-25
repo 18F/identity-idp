@@ -1,12 +1,13 @@
 # :reek:TooManyMethods
 module Idv
-  class UspsController < ApplicationController
+  class UspsController < ApplicationController # rubocop:disable Metrics/ClassLength
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
+    before_action :max_attempts_reached, only: [:update]
 
     def index
       @presenter = UspsPresenter.new(current_user)
@@ -25,23 +26,25 @@ module Idv
     end
 
     def update
-      form_result = idv_form.submit(profile_params)
-      analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
-      if form_result.success?
-        result = perform_resolution(pii)
-        return success(pii) if result.success?
-      end
-      failure
+      result = submit_form_and_perform_resolution
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      result.success? ? resolution_success(pii) : failure
+    end
+
+    private
+
+    def submit_form_and_perform_resolution
+      result = idv_form.submit(profile_params)
+      result = perform_resolution(pii) if result.success?
+      result
     end
 
     def usps_mail_service
       @_usps_mail_service ||= Idv::UspsMail.new(current_user)
     end
 
-    private
-
     def failure
-      redirect_to idv_usps_url
+      redirect_to idv_usps_url unless performed?
     end
 
     def pii
@@ -66,7 +69,7 @@ module Idv
       JSON.parse(user_session[:decrypted_pii])
     end
 
-    def success(hash)
+    def resolution_success(hash)
       idv_session_settings(hash).each { |key, value| user_session['idv'][key] = value }
       resend_letter
       redirect_to idv_review_url
@@ -122,7 +125,35 @@ module Idv
 
     def perform_resolution(pii_from_doc)
       idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
-      FormResponse.new(success: idv_result[:success], errors: idv_result[:errors])
+      success = idv_result[:success]
+      throttle_failure unless success
+      form_response(idv_result)
+    end
+
+    def form_response(result)
+      FormResponse.new(success: success, errors: result[:errors])
+    end
+
+    def throttle_failure
+      attempter.increment
+      flash_error
+    end
+
+    def flash_error
+      flash[:error] = error_message
+      redirect_to idv_usps_url
+    end
+
+    def max_attempts_reached
+      flash_error if attempter.exceeded?
+    end
+
+    def error_message
+      I18n.t('idv.failure.sessions.' + (attempter.exceeded? ? 'fail' : 'heading'))
+    end
+
+    def attempter
+      @attempter ||= Idv::Attempter.new(idv_session.current_user)
     end
   end
 end
