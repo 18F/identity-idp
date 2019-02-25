@@ -10,9 +10,9 @@ module DeviceTracking
       alert_user = device.nil? && UserDecorator.new(user).devices?
 
       device = if device
-                   DeviceTracking::UpdateDevice.call(device, remote_ip)
+                 DeviceTracking::UpdateDevice.call(device, remote_ip)
                else
-                  DeviceTracking::CreateDevice.call(user_id, remote_ip, user_agent, device_hash)
+                 DeviceTracking::CreateDevice.call(user_id, remote_ip, user_agent, device_hash)
                end
 
       alert_user_of_new_device(user, device) if alert_user
