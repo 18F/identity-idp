@@ -205,8 +205,12 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      get '/session' => 'sessions#new'
-      put '/session' => 'sessions#create'
+      if FeatureManagement.doc_auth_exclusive?
+        get '/session', to: redirect('/verify')
+      else
+        get '/session' => 'sessions#new'
+        put '/session' => 'sessions#create'
+      end
       get '/session/success' => 'sessions#success'
       get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
       delete '/session' => 'sessions#destroy'
@@ -230,6 +234,7 @@ Rails.application.routes.draw do
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'
+        post '/usps' => 'usps#update'
       end
     end
 
