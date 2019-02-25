@@ -8,19 +8,19 @@ module Idv
       consume_step_params(step_params)
       self.idv_result = Idv::Agent.new(applicant).proof(:resolution, :state_id)
       increment_attempts_count unless failed_due_to_timeout_or_exception?
-      success = idv_result[:success]
-      update_idv_session if success
+      update_idv_session if success?
       FormResponse.new(
-        success: success, errors: idv_result[:errors],
+        success: success?, errors: idv_result[:errors],
         extra: extra_analytics_attributes
       )
     end
 
     def failure_reason
+      return if success?
       return :fail if attempter.exceeded?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
-      return :warning if idv_result[:success] != true
+      :warning
     end
 
     private
@@ -37,6 +37,17 @@ module Idv
 
     def increment_attempts_count
       attempter.increment
+    end
+
+    def success?
+      idv_result[:success] && ssn_is_unique?
+    end
+
+    def ssn_is_unique?
+      ssn = applicant[:ssn]
+      return false if ssn.nil?
+
+      DuplicateSsnFinder.new(ssn: ssn, user: idv_session.current_user).ssn_is_unique?
     end
 
     def failed_due_to_timeout_or_exception?
