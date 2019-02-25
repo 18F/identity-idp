@@ -68,7 +68,7 @@ describe UserMailer, type: :mailer do
 
   describe 'sign in from new device' do
     date = 'Washington, DC'
-    location =  'February 25, 2019 15:02'
+    location = 'February 25, 2019 15:02'
     let(:mail) { UserMailer.new_device_sign_in(user.email, date, location) }
 
     it_behaves_like 'a system email'
@@ -83,7 +83,8 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       puts mail.html_part.body
-      expect(mail.html_part.body).to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html', date: date, location: location)))
+      expect(mail.html_part.body)
+        .to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html', date: date, location: location)))
     end
   end
 

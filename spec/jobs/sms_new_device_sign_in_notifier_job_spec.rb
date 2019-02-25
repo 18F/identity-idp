@@ -24,7 +24,7 @@ describe SmsNewDeviceSignInNotifierJob do
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (703) 314-3141')
       expect(msg.body).
-        to eq(I18n.t('jobs.sms_new_device_sign_in_notifier_job.message', app: APP_NAME))
+          to eq(I18n.t('jobs.sms_new_device_sign_in_notifier_job.message', app: APP_NAME))
     end
   end
 end
