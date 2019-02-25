@@ -734,7 +734,7 @@ DEPENDENCIES
   webauthn
   webmock
   webpacker (~> 3.4)
-  xmlenc
+  xmlenc (~> 0.6)
   zonebie
   zxcvbn-js
 
