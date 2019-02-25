@@ -66,34 +66,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def create_or_update_device(user)
-    found_device = DeviceTracking::LookupDeviceForUser.call(user.id, cookies[:device])
-    has_previous_devices = UserDecorator.new(user).devices?
+    device = DeviceTracking::ManageDevice.call(user, cookies[:device], request.remote_ip, request.user_agent)
 
-    device = found_device ? DeviceTracking::UpdateDevice.call(found_device, request.remote_ip) : create_device(user)
-    if !found_device && has_previous_devices
-      alert_user_of_new_device(user, device)
-    end
+    # only reset the cookie if it's different
+    cookies.permanent[:device] =  device.cookie_uuid unless device.cookie_uuid == cookies[:device]
 
     device
-  end
-
-  def create_device(user)
-    cookie_uuid = cookies[:device]
-    device = DeviceTracking::CreateDevice.call(user.id,
-                                               request.remote_ip,
-                                               request.user_agent,
-                                               cookie_uuid)
-    device_uuid = device.cookie_uuid
-    cookies.permanent[:device] = device_uuid unless device_uuid == cookie_uuid
-    device
-  end
-
-  # all this device stuff needs its own service
-  def alert_user_of_new_device(user, device)
-      UserMailer.new_device_sign_in(user.email,
-                                    Time.zone.now.strftime('%B %-d, %Y %H:%M'),
-                                    DeviceDecorator.new(device).last_sign_in_location_and_ip).deliver_now
-      SmsNewDeviceSignInNotifierJob.perform_now(phone: MfaContext.new(user).phone_configurations.first&.phone)
   end
 
   def decorated_session
