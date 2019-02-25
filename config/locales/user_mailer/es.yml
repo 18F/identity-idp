@@ -48,12 +48,10 @@ es:
       call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
       intro: We were unable to send mail to the address you provided.
-      subject: Mail sent to your address was undeliverable
     letter_reminder:
       call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
       intro: We were unable to send mail to the address you provided.
-      subject: Mail sent to your address was undeliverable
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.

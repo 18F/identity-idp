@@ -49,12 +49,10 @@ fr:
       call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
       intro: We were unable to send mail to the address you provided.
-      subject: Mail sent to your address was undeliverable
     letter_reminder:
       call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
       intro: We were unable to send mail to the address you provided.
-      subject: Mail sent to your address was undeliverable
     password_changed:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
         de %{app} ou %{contact_link}.
