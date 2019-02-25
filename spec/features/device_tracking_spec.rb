@@ -30,15 +30,4 @@ describe 'Device tracking' do
       expect(page).to have_content(t('pages.page_not_found.header'))
     end
   end
-
-  context 'when a user logs in from a new device' do
-    it 'alerts the user their account is being used from a new device' do
-      expect { sign_up_with(user.email) }.
-          to change { ActionMailer::Base.deliveries.count }.by(1)
-
-      expect(last_email.html_part.body).to have_content(
-                                               t('user_mailer.signup_with_your_email.intro', app: APP_NAME),
-                                               )
-    end
-  end
 end

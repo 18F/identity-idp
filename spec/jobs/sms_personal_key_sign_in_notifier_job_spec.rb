@@ -23,8 +23,7 @@ describe SmsPersonalKeySignInNotifierJob do
 
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (202) 345-6789')
-      expect(msg.body).
-          to eq(I18n.t('jobs.sms_personal_key_sign_in_notifier_job.message', app: APP_NAME))
+      expect(msg.body).to eq(I18n.t('jobs.sms_personal_key_sign_in_notifier_job.message', app: APP_NAME))
     end
   end
 end
