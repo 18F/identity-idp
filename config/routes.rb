@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   post '/api/usps_upload' => 'usps_upload#create'
   post '/api/usps_download' => 'undeliverable_address#create'
+  post '/api/letter_reminders' => 'letter_reminders#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'

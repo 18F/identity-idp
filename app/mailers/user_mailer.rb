@@ -68,4 +68,12 @@ class UserMailer < ActionMailer::Base
     @application = application
     mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
   end
+
+  def letter_reminder(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+  end
+
+  def letter_expired(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+  end
 end
