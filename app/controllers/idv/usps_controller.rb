@@ -127,10 +127,10 @@ module Idv
       idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution)
       success = idv_result[:success]
       throttle_failure unless success
-      form_response(idv_result)
+      form_response(idv_result, success)
     end
 
-    def form_response(result)
+    def form_response(result, success)
       FormResponse.new(success: success, errors: result[:errors])
     end
 
