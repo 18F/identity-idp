@@ -76,50 +76,6 @@ describe Idv::ProfileForm do
     end
   end
 
-  describe 'ssn uniqueness' do
-    context 'when ssn is already taken by another profile' do
-      it 'is invalid' do
-        diff_user = create(:user)
-        create(:profile, pii: { ssn: ssn }, user: diff_user)
-
-        subject.submit(profile_attrs.merge(ssn: ssn))
-
-        expect(subject.valid?).to eq false
-        expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
-      end
-
-      it 'recognizes fingerprint regardless of HMAC key age' do
-        diff_user = create(:user)
-        create(:profile, pii: { ssn: ssn }, user: diff_user)
-        rotate_hmac_key
-
-        subject.submit(profile_attrs.merge(ssn: ssn))
-
-        expect(subject.valid?).to eq false
-        expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
-      end
-    end
-
-    context 'when ssn is already taken by same profile' do
-      it 'is valid' do
-        create(:profile, pii: { ssn: ssn }, user: user)
-
-        subject.submit(profile_attrs.merge(ssn: ssn))
-
-        expect(subject.valid?).to eq true
-      end
-
-      it 'recognizes fingerprint regardless of HMAC key age' do
-        create(:profile, pii: { ssn: ssn }, user: user)
-        rotate_hmac_key
-
-        subject.submit(profile_attrs.merge(ssn: ssn))
-
-        expect(subject.valid?).to eq true
-      end
-    end
-  end
-
   describe 'dob validity' do
     context 'when dob is not parse-able' do
       it 'is invalid' do

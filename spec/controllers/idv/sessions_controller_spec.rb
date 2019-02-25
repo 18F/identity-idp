@@ -87,13 +87,19 @@ describe Idv::SessionsController do
     it 'redirects to failure if the SSN exists' do
       create(:profile, pii: { ssn: '666-66-1234' })
 
+      context = { stages: [{ resolution: 'ResolutionMock' }, { state_id: 'StateIdMock' }] }
       result = {
         success: false,
-        errors: { ssn: [t('idv.errors.duplicate_ssn')] },
+        idv_attempts_exceeded: false,
+        errors: {},
+        ssn_is_unique: false,
+        vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, hash_including(success: true))
+      expect(@analytics).to receive(:track_event).ordered.
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
 
       post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
@@ -132,6 +138,7 @@ describe Idv::SessionsController do
         errors: {
           first_name: ['Unverified first name.'],
         },
+        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
@@ -154,6 +161,7 @@ describe Idv::SessionsController do
         success: true,
         idv_attempts_exceeded: false,
         errors: {},
+        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
