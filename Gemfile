@@ -63,7 +63,7 @@ gem 'user_agent_parser'
 gem 'valid_email'
 gem 'webauthn'
 gem 'webpacker', '~> 3.4'
-gem 'xmlenc'
+gem 'xmlenc', '~> 0.6'
 gem 'zxcvbn-js'
 
 group :development do
