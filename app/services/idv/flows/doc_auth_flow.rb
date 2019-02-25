@@ -13,7 +13,6 @@ module Idv
         mobile_back_image: Idv::Steps::MobileBackImageStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::VerifyStep,
-        doc_failed: Idv::Steps::DocFailedStep,
         doc_success: Idv::Steps::DocSuccessStep,
       }.freeze
 

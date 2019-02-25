@@ -15,10 +15,6 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
     user.email_addresses.first&.email
   end
 
-  def phone
-    user.phone_configuration_data.first&.phone
-  end
-
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
 
@@ -76,6 +72,11 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
 
   def identity_verified?
     user.active_profile.present?
+  end
+
+  def usps_mail_bounced?
+    return unless pending_profile
+    pending_profile&.usps_confirmation_codes&.order(created_at: :desc)&.first&.bounced_at
   end
 
   def active_profile_newer_than_pending_profile?

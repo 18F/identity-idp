@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'LOA3 Single Sign On' do
   include SamlAuthHelper
   include IdvHelper
+  include DocAuthHelper
 
   def perform_id_verification_with_usps_without_confirming_code(user)
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -18,6 +19,18 @@ feature 'LOA3 Single Sign On' do
     click_idv_continue
     click_on t('idv.form.activate_by_mail')
     click_on t('idv.buttons.mail.send')
+    fill_in :user_password, with: user.password
+    click_continue
+    click_acknowledge_personal_key
+    click_link t('idv.buttons.continue_plain')
+  end
+
+  def mock_usps_mail_bounced
+    allow_any_instance_of(UserDecorator).to receive(:usps_mail_bounced?).and_return(true)
+  end
+
+  def update_mailing_address
+    click_on t('idv.buttons.mail.resend')
     fill_in :user_password, with: user.password
     click_continue
     click_acknowledge_personal_key
@@ -69,7 +82,6 @@ feature 'LOA3 Single Sign On' do
       create(
         :profile,
         deactivation_reason: :verification_pending,
-        phone_confirmed: phone_confirmed,
         pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end
@@ -118,6 +130,51 @@ feature 'LOA3 Single Sign On' do
           click_button(t('idv.buttons.mail.resend'))
 
           expect(current_path).to eq(idv_come_back_later_path)
+        end
+      end
+
+      context 'provides an option to update address if undeliverable' do
+        it 'allows the user to update the address' do
+          user = create(:user, :signed_up)
+
+          perform_id_verification_with_usps_without_confirming_code(user)
+
+          expect(current_path).to eq account_path
+
+          mock_usps_mail_bounced
+          visit account_path
+          click_link(t('account.index.verification.update_address'))
+
+          expect(current_path).to eq idv_usps_path
+
+          fill_out_address_form_fail
+          click_on t('idv.buttons.mail.resend')
+
+          fill_out_address_form_ok
+          update_mailing_address
+        end
+
+        it 'throttles resolution' do
+          user = create(:user, :signed_up)
+
+          perform_id_verification_with_usps_without_confirming_code(user)
+
+          expect(current_path).to eq account_path
+
+          mock_usps_mail_bounced
+          visit account_path
+          click_link(t('account.index.verification.update_address'))
+
+          expect(current_path).to eq idv_usps_path
+          fill_out_address_form_resolution_fail
+          click_on t('idv.buttons.mail.resend')
+          expect(current_path).to eq idv_usps_path
+          expect(page).to have_content(t('idv.failure.sessions.heading'))
+
+          fill_out_address_form_resolution_fail
+          click_on t('idv.buttons.mail.resend')
+          expect(current_path).to eq idv_usps_path
+          expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail')))
         end
       end
     end

@@ -43,7 +43,7 @@ module DocAuthHelper
     fill_in 'doc_auth_ssn', with: '123-45-6666'
   end
 
-  def fill_out_ssn_form_with_known_bad_ssn
+  def fill_out_ssn_form_with_ssn_that_fails_resolution
     fill_in 'doc_auth_ssn', with: '123-45-6666'
   end
 
@@ -89,10 +89,6 @@ module DocAuthHelper
 
   def idv_doc_auth_verify_step
     idv_doc_auth_step_path(step: :verify)
-  end
-
-  def idv_doc_auth_doc_failed_step
-    idv_doc_auth_step_path(step: :doc_failed)
   end
 
   def idv_doc_auth_self_image_step
@@ -169,14 +165,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_doc_failed_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_verify_step(user)
-
-    allow_any_instance_of(Idv::Agent).to receive(:proof).
-      and_return(success: false, errors: {})
-    click_idv_continue
-  end
-
   def complete_doc_auth_steps_before_self_image_step(user = user_with_2fa)
     complete_doc_auth_steps_before_doc_success_step(user)
     click_idv_continue
@@ -216,6 +204,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def enable_doc_auth
     allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(true)
+    allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
   end
 
   def attach_image
@@ -234,6 +223,13 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     fill_in 'idv_form_city', with: 'Nowhere'
     select 'Virginia', from: 'idv_form_state'
     fill_in 'idv_form_zipcode', with: '66044'
+  end
+
+  def fill_out_address_form_resolution_fail
+    fill_in 'idv_form_address1', with: '123 Main St'
+    fill_in 'idv_form_city', with: 'Nowhere'
+    select 'Virginia', from: 'idv_form_state'
+    fill_in 'idv_form_zipcode', with: '00000'
   end
 
   def fill_out_address_form_fail
