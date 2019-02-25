@@ -225,6 +225,13 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     fill_in 'idv_form_zipcode', with: '66044'
   end
 
+  def fill_out_address_form_resolution_fail
+    fill_in 'idv_form_address1', with: '123 Main St'
+    fill_in 'idv_form_city', with: 'Nowhere'
+    select 'Virginia', from: 'idv_form_state'
+    fill_in 'idv_form_zipcode', with: '00000'
+  end
+
   def fill_out_address_form_fail
     fill_in 'idv_form_address1', with: '123 Main St'
     fill_in 'idv_form_city', with: 'Nowhere'
