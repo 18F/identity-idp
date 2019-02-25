@@ -45,13 +45,17 @@ en:
       intro: The email address for your %{app} account has been changed.
     help_link_text: Help Center
     letter_expired:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: The letter we sent to your address has a code that expired and can no
+        longer be used to complete the verification process.  Please sign into %{link}
+        and follow instructions.
+      subject: The letter we sent to your address has a code that has expired
     letter_reminder:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: When you receive the letter it will contain a secret code.  Use this code
+        to complete the verification process by signing into %{link} and following
+        instructions.
+      subject: We sent a letter to the address you have on file
     password_changed:
       help: If you did not make this change, please visit the %{app} %{help_link}
         or %{contact_link}.

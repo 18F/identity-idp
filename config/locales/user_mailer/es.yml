@@ -45,13 +45,17 @@ es:
       intro: El email de su cuenta de %{app} ha sido cambiado.
     help_link_text: Centro de Ayuda
     letter_expired:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: La carta que le enviamos a su dirección tiene un código que expiró y ya
+        no puede usarse para completar el proceso de verificación. Por favor inicie
+        sesión en %{link} y siga las instrucciones.
+      subject: La carta que le enviamos a su dirección tiene un código que ha caducado
     letter_reminder:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: Cuando recibas la carta contendrá un código secreto. Utilice este código
+        para completar el proceso de verificación iniciando sesión en %{link} y siguiendo
+        las instrucciones.
+      subject: Le enviamos una carta a la dirección que tiene archivada
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.

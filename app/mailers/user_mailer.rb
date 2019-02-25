@@ -69,11 +69,11 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
   end
 
-  def letter_reminder(email_address)
-    mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+  def letter_reminder(email)
+    mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
   end
 
-  def letter_expired(email_address)
-    mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+  def letter_expired(email)
+    mail(to: email, subject: t('user_mailer.letter_expired.subject'))
   end
 end

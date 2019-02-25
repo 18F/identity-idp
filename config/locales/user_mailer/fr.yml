@@ -46,13 +46,17 @@ fr:
       intro: L'adresse courriel de votre compte %{app} a été changée.
     help_link_text: Centre d'aide
     letter_expired:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: La lettre que nous avons envoyée à votre adresse a un code qui a expiré
+        et ne peut plus être utilisée pour terminer le processus de vérification.
+        Veuillez vous connecter à %{link} et suivez les instructions.
+      subject: La lettre que nous avons envoyée à votre adresse a un code qui a expiré
     letter_reminder:
-      call_to_action: Please sign in to login.gov and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
+      info: Lorsque vous recevez la lettre, celle-ci contient un code secret. Utilisez
+        ce code pour terminer le processus de vérification en vous connectant à %{link}
+        et en suivant les instructions.
+      subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier
     password_changed:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
         de %{app} ou %{contact_link}.

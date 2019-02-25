@@ -17,7 +17,7 @@ class ExpiredLetters
     <<~SQL
       bounced_at IS NULL AND
       letter_expired_sent_at IS NULL AND
-      created_at < :tvalue AND
+      created_at < :tvalue
     SQL
   end
 
@@ -25,7 +25,7 @@ class ExpiredLetters
     user = ucc.profile.user
     mark_sent(ucc)
     user.confirmed_email_addresses.each do |email_address|
-      UserMailer.letter_expired(email_address, arr).deliver_later
+      UserMailer.letter_expired(email_address.email).deliver_later
     end
   end
 
