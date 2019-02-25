@@ -10,6 +10,8 @@ fr:
     sms_doc_auth_link_job:
       message: 'You''ve requested to verify your identity on a mobile phone.  Please
         sign in to %{application}: %{sp_link}'
+    sms_new_device_sign_in_notifier_job:
+      message: Votre compte login.gov a été connecté sur un nouvel appareil
     sms_otp_sender_job:
       login_message: "%{code} est votre code de sécurité %{app}. Utilisez-le pour
         continuer à vous connecter à votre compte. Ce code expirera dans %{expiration}
@@ -23,5 +25,3 @@ fr:
     sms_personal_key_sign_in_notifier_job:
       message: Votre clé personnelle a été utilisée pour vous connecter à votre compte
         %{app}. Si ce n’était pas vous, changez votre mot de passe.
-    sms_new_device_sign_in_notifier_job:
-      message: Votre compte login.gov a été connecté sur un nouvel appareil

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SmsPersonalKeySignInNotifierJob do
+describe SmsNewDeviceSignInNotifierJob do
   include Features::ActiveJobHelper
 
   before do
@@ -10,10 +10,10 @@ describe SmsPersonalKeySignInNotifierJob do
   end
 
   describe '.perform' do
-    it 'sends a message about the personal key sign in to the user' do
+    it 'sends a message about signing in from a new device to the user' do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      described_class.perform_now(phone: '+1 (202) 345-6789')
+      described_class.perform_now(phone: '+1 (703) 314-3141')
 
       messages = FakeSms.messages
 
@@ -22,9 +22,9 @@ describe SmsPersonalKeySignInNotifierJob do
       msg = messages.first
 
       expect(msg.messaging_service_sid).to eq('fake_sid')
-      expect(msg.to).to eq('+1 (202) 345-6789')
+      expect(msg.to).to eq('+1 (703) 314-3141')
       expect(msg.body).
-        to eq(I18n.t('jobs.sms_personal_key_sign_in_notifier_job.message', app: APP_NAME))
+          to eq(I18n.t('jobs.sms_new_device_sign_in_notifier_job.message', app: APP_NAME))
     end
   end
 end

@@ -10,6 +10,8 @@ en:
     sms_doc_auth_link_job:
       message: 'You''ve requested to verify your identity on a mobile phone.  Please
         sign in to %{application}: %{sp_link}'
+    sms_new_device_sign_in_notifier_job:
+      message: Your Login.gov account was just used to sign in on a new device
     sms_otp_sender_job:
       login_message: "%{code} is your %{app} security code. Use this to continue signing
         in to your account. This code will expire in %{expiration} minutes."
@@ -21,5 +23,3 @@ en:
     sms_personal_key_sign_in_notifier_job:
       message: Your personal key was just used to sign into your %{app} account. If
         this wasn’t you, reset your password.
-    sms_new_device_sign_in_notifier_job:
-      message: Your Login.gov account was just used to sign in on a new device
