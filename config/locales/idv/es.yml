@@ -167,8 +167,10 @@ es:
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
       usps:
-        byline: Le enviaremos una carta con un código de confirmación a su dirección
-          verificada en el archivo.
+        address_on_file: Le enviaremos una carta con un código de confirmación a su
+          dirección verificada en el archivo.
+        new_address: We will mail a letter with a confirmation code to the address
+          you specify.
         resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:

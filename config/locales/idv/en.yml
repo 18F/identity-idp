@@ -160,8 +160,10 @@ en:
           data to make sure no one else can access it.
         success: Next, we'll need a phone number.
       usps:
-        byline: We will mail a letter with a confirmation code to your verified address
-          on file.
+        address_on_file: We will mail a letter with a confirmation code to your verified
+          address on file.
+        new_address: We will mail a letter with a confirmation code to the address
+          you specify.
         resend: Send me another letter
         success: It should arrive in 5 to 10 business days.
     review:
