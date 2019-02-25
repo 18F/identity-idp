@@ -87,7 +87,7 @@ describe Idv::SessionsController do
     it 'redirects to failure if the SSN exists' do
       create(:profile, pii: { ssn: '666-66-1234' })
 
-      context = { stages: [{ resolution: 'ResolutionMock' }, {:state_id=>"StateIdMock"}] }
+      context = { stages: [{ resolution: 'ResolutionMock' }, { state_id: 'StateIdMock' }] }
       result = {
         success: false,
         idv_attempts_exceeded: false,
