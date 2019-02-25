@@ -31,16 +31,16 @@ module Idv
       result.success? ? resolution_success(pii) : failure
     end
 
+    def usps_mail_service
+      @_usps_mail_service ||= Idv::UspsMail.new(current_user)
+    end
+
     private
 
     def submit_form_and_perform_resolution
       result = idv_form.submit(profile_params)
       result = perform_resolution(pii) if result.success?
       result
-    end
-
-    def usps_mail_service
-      @_usps_mail_service ||= Idv::UspsMail.new(current_user)
     end
 
     def failure
