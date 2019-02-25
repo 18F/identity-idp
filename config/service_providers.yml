@@ -938,7 +938,7 @@ production:
     acs_url: 'https://www.apprenticeship.gov/saml/consume'
     sp_initiated_login_url: 'https://www.apprenticeship.gov/saml/drupal_login/apprenticeship_gov'
     assertion_consumer_logout_service_url: 'https://www.apprenticeship.gov/saml/consume'
-    block_encryption: 'aes256-cbc'
+    block_encryption: 'none'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
