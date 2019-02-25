@@ -111,7 +111,7 @@ es:
       link_text: Ir a %{app}
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     undeliverable_address:
-      call_to_action: Por favor, inicie sesión en login.gov y siga las instrucciones.
+      call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
       help: ''
-      intro: No hemos podido enviar el correo a la dirección que proporcionó.
-      subject: El correo enviado a su dirección no se pudo entregar
+      intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
+      subject: La carta enviada a su dirección no se pudo entregar
