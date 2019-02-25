@@ -66,10 +66,15 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def create_or_update_device(user)
-    device = DeviceTracking::ManageDevice.call(user, cookies[:device], request.remote_ip, request.user_agent)
+    current_cookie_uuid = cookies[:device]
+    ip = request.remote_ip
+    agent = request.user_agent
+    device = DeviceTracking::ManageDevice.call(user, current_cookie_uuid, ip, agent)
+
+    device_cookie_uuid = device.cookie_uuid
 
     # only reset the cookie if it's different
-    cookies.permanent[:device] =  device.cookie_uuid unless device.cookie_uuid == cookies[:device]
+    cookies.permanent[:device] = device_cookie_uuid unless device_cookie_uuid == current_cookie_uuid
 
     device
   end
