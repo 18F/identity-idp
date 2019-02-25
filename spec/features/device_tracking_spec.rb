@@ -22,11 +22,23 @@ describe 'Device tracking' do
     end
   end
 
+
   context 'when visiting the page for a device that does not exist' do
     it 'renders a 404 error' do
       visit account_events_path(id: 'dne')
 
       expect(page).to have_content(t('pages.page_not_found.header'))
+    end
+  end
+
+  context 'when a user logs in from a new device' do
+    it 'alerts the user their account is being used from a new device' do
+      expect { sign_up_with(user.email) }.
+          to change { ActionMailer::Base.deliveries.count }.by(1)
+
+      expect(last_email.html_part.body).to have_content(
+                                               t('user_mailer.signup_with_your_email.intro', app: APP_NAME),
+                                               )
     end
   end
 end

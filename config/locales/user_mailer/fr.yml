@@ -46,8 +46,8 @@ fr:
       intro: L'adresse courriel de votre compte %{app} a été changée.
     help_link_text: Centre d'aide
     new_device_sign_in:
-      help_html: <p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>
+      help_html: "<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>"
       subject: Nouvelle connexion avec votre compte Login.gov
     letter_expired:
       help: ''

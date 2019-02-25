@@ -23,5 +23,3 @@ es:
     sms_personal_key_sign_in_notifier_job:
       message: Su clave personal solo se utilizó para iniciar sesión en su cuenta
         %{app}. Si no fue así, reinicie su contraseña.
-    sms_new_device_sign_in_notifier_job:
-      message: Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo
