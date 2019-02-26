@@ -1,6 +1,7 @@
 module DeviceTracking
   class ManageDevice
     # :reek:DuplicateMethodCall
+
     def self.call(user, hash, remote_ip, user_agent)
       user_has_multiple_devices = UserDecorator.new(user).devices?
       device = DeviceTracking::LookupDeviceForUser.call(user.id, hash)
