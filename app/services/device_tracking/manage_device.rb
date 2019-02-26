@@ -21,13 +21,14 @@ module DeviceTracking
     def self.alert_user_of_new_device(user, device)
       login_location = DeviceDecorator.new(device).last_sign_in_location_and_ip
       UserMailer.new_device_sign_in(user.email,
-                                    Time.zone.now.strftime('%B %-d, %Y %H:%M'),
+                                    device.last_used_at.strftime('%B %-d, %Y %H:%M'),
                                     login_location).deliver_now
 
       return unless FeatureManagement.send_new_device_sms?
 
-      SmsNewDeviceSignInNotifierJob.
-        perform_now(phone: MfaContext.new(user).phone_configurations.first&.phone)
+      user.phone_configurations.each do |phone_configuration|
+        SmsNewDeviceSignInNotifierJob.perform_now(phone: phone_configuration.phone)
+      end
     end
     private_class_method :alert_user_of_new_device
   end
