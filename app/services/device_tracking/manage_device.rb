@@ -5,15 +5,16 @@ module DeviceTracking
     # and sms about the new device in use
     # returns the existing, updated device or the new one just created
     # :reek:DuplicateMethodCall
+
     def self.call(user, hash, remote_ip, user_agent)
-      user_has_multiple_devise = UserDecorator.new(user).devices?
+      user_has_multiple_devices = UserDecorator.new(user).devices?
       device = DeviceTracking::LookupDeviceForUser.call(user.id, hash)
 
       if device
         DeviceTracking::UpdateDevice.call(device, remote_ip)
       else
         new_device = DeviceTracking::CreateDevice.call(user.id, remote_ip, user_agent, hash)
-        alert_user_of_new_device(user, new_device) if user_has_multiple_devise
+        alert_user_of_new_device(user, new_device) if user_has_multiple_devices
         new_device
       end
     end
