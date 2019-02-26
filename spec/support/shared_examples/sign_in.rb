@@ -171,8 +171,8 @@ shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
-shared_examples 'signing with while PIV/CAC enabled but not phone enabled' do |sp|
-  it 'does not allow bypassing setting up backup phone' do
+shared_examples 'signing with while PIV/CAC enabled but no other second factor' do |sp|
+  it 'does not allow bypassing setting up backup factor' do
     stub_piv_cac_service
 
     user = create(:user, :signed_up, :with_piv_or_cac)
@@ -191,6 +191,23 @@ shared_examples 'signing with while PIV/CAC enabled but not phone enabled' do |s
     visit_idp_from_sp_with_loa1(sp)
 
     expect(current_path).to eq account_recovery_setup_path
+  end
+
+  it 'does allow bypassing setting up backup factor if there is a factor other than phone' do
+    stub_piv_cac_service
+
+    user = create(:user, :with_piv_or_cac, :with_authentication_app)
+    MfaContext.new(user).phone_configurations.clear
+    visit_idp_from_sp_with_loa1(sp)
+    click_link t('links.sign_in')
+    fill_in_credentials_and_submit(user.email, user.password)
+    nonce = visit_login_two_factor_piv_cac_and_get_nonce
+    visit_piv_cac_service(login_two_factor_piv_cac_path,
+                          uuid: user.x509_dn_uuid,
+                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                          nonce: nonce)
+
+    expect(page).to have_current_path(sign_up_completed_path)
   end
 end
 

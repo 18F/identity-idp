@@ -63,6 +63,8 @@ class Analytics # rubocop:disable Metrics/ClassLength
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
+  IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
+  IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
@@ -90,6 +92,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
+  IDV_USPS_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze

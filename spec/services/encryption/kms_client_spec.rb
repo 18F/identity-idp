@@ -64,6 +64,12 @@ describe Encryption::KmsClient do
         expect(result).to eq(local_ciphertext)
       end
     end
+
+    it 'logs the context' do
+      expect(Encryption::KmsLogger).to receive(:log).with(:encrypt, encryption_context)
+
+      subject.encrypt(plaintext, encryption_context)
+    end
   end
 
   describe '#decrypt' do
@@ -110,6 +116,12 @@ describe Encryption::KmsClient do
           expect(result).to eq('plaintext')
         end
       end
+    end
+
+    it 'logs the context' do
+      expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
+
+      subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
 end

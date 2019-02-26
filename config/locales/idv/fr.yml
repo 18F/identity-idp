@@ -131,21 +131,12 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le
         moment.
       confirm: Vous avez crypté vos données vérifiées
-      dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez
-        déjà créé et vérifié un compte, mais avec une adresse courriel différente.
-      dupe_ssn2_html: Veuillez %{link} avec l'adresse courriel que vous avez utilisée
-        originalement.
-      dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
       hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
         retenter d'effectuer la vérification de votre identité dans %{hours} heures.
       jurisdiction:
         no_id: Je n'ai pas de carte d'identité officielle
         no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
           votre identité.
-        profile: Pour accéder à votre compte dans le futur, vous pouvez %{link}.
-        profile_link: voir votre compte ici
-        try_again: Faire une erreur? Vous pouvez %{link}.
-        try_again_link: réessayer
         unsupported_jurisdiction_failure: Nous travaillons dur pour ajouter plus d'états
           et espérons pouvoir bientôt prendre en charge %{state}.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
@@ -189,8 +180,10 @@ fr:
           crypte vos données pour vous assurer que personne ne peut y accéder.
         success: Ensuite, nous aurons besoin d'un numéro de téléphone.
       usps:
-        byline: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
+        address_on_file: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
           Celle-ci contient un code de confirmation.
+        new_address: We will mail a letter with a confirmation code to the address
+          you specify.
         resend: Envoyez-moi une autre lettre
         success: Elle devrait arriver dans 5 à 10 jours ouvrables.
     review:

@@ -40,10 +40,6 @@ queue_health_check_dead_interval_seconds: '60'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '30'
 
-# Configuration to probabilistically select the config.active_job.queue_adapter
-# Currently known options are: async, inline
-queue_adapter_weights: '{"inline": 1}'
-
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
@@ -123,7 +119,6 @@ development:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
-  aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   backup_codes_enabled: 'true'
@@ -211,7 +206,6 @@ development:
   use_kms: 'false'
   use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host: 'localhost'
@@ -251,7 +245,6 @@ production:
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
-  aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
   backup_codes_enabled: 'false'
@@ -327,7 +320,6 @@ production:
   use_kms: 'true'
   use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
   usps_download_sftp_host:
@@ -364,7 +356,6 @@ test:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
-  aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   backup_codes_enabled: 'true'
@@ -447,7 +438,6 @@ test:
   use_kms: 'false'
   use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host:

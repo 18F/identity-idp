@@ -1,3 +1,4 @@
+# :reek:UtilityFunction
 class AnonymousUser
   EMPTY_EMAIL_ADDRESS = OpenStruct.new(
     email: nil,
@@ -14,7 +15,7 @@ class AnonymousUser
   end
 
   def phone_configurations
-    []
+    PhoneConfiguration.none
   end
 
   def phone
@@ -22,11 +23,11 @@ class AnonymousUser
   end
 
   def webauthn_configurations
-    []
+    WebauthnConfiguration.none
   end
 
   def backup_code_configurations
-    []
+    BackupCodeConfiguration.none
   end
 
   def x509_dn_uuid; end
