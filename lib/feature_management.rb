@@ -109,4 +109,8 @@ class FeatureManagement
   def self.write_2lkms_passwords?
     Figaro.env.write_2lkms_passwords == 'true'
   end
+
+  def self.send_new_device_sms?
+    Figaro.env.send_new_device_sms == 'true'
+  end
 end
