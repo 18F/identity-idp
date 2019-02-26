@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 describe Encryption::PasswordVerifier do
-  describe '.digest' do
+  let(:password) { 'saltypickles' }
+  let(:user_uuid) { 'asdf-1234' }
+
+  describe '#digest' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters
       # The newrelic_rpm gem added a call to `SecureRandom.hex(8)` in
@@ -11,71 +14,111 @@ describe Encryption::PasswordVerifier do
       allow(SecureRandom).to receive(:hex) { salt }
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
-      digest = described_class.digest('saltypickles')
+      scrypt_salt = Figaro.env.scrypt_cost + OpenSSL::Digest::SHA256.hexdigest(salt)
+      scrypt_password = double(SCrypt::Password, digest: 'scrypted_password')
+      encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
 
-      uak = Encryption::UserAccessKey.new(password: 'saltypickles', salt: salt)
-      parsed_digest = JSON.parse(digest, symbolize_names: true)
-      uak.unlock(parsed_digest[:encryption_key])
+      expect(SCrypt::Engine).to receive(:hash_secret).
+        with(password, scrypt_salt, 32).
+        and_return('scrypted')
+      expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
 
-      expect(parsed_digest[:encrypted_password]).to eq(uak.encrypted_password)
-      expect(parsed_digest[:encryption_key]).to eq(uak.encryption_key)
-      expect(parsed_digest[:password_salt]).to eq(salt)
-      expect(parsed_digest[:password_cost]).to eq(uak.cost)
+      kms_client = Encryption::KmsClient.new
+      expect(kms_client).to receive(:encrypt).with(
+        encoded_scrypt_password,
+        'user_uuid' => user_uuid, 'context' => 'password-digest',
+      ).and_return('kms_ciphertext')
+      expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+
+      result = subject.digest(password: password, user_uuid: user_uuid)
+
+      expect(JSON.parse(result, symbolize_names: true)).to eq(
+        password_salt: salt,
+        password_cost: Figaro.env.scrypt_cost,
+        encrypted_password: 'kms_ciphertext',
+      )
+    end
+
+    context 'with 2lkms password digests disabled' do
+      before do
+        allow(Figaro.env).to receive(:write_2lkms_passwords).and_return(false)
+      end
+
+      it 'delegates to the UAK password encryptor' do
+        expect(Encryption::UakPasswordVerifier).to receive(:digest).
+          with(password).
+          and_return('uak ciphertext')
+
+        result = subject.digest(password: password, user_uuid: user_uuid)
+
+        expect(result).to eq('uak ciphertext')
+      end
     end
   end
 
-  describe '.verify' do
-    it 'returns true if the password matches' do
-      password = 'saltypickles'
+  describe '#verify' do
+    it 'returns true if the password does match' do
+      digest = subject.digest(password: password, user_uuid: user_uuid)
 
-      digest = described_class.digest(password)
-      result = described_class.verify(password: password, digest: digest)
+      result = subject.verify(digest: digest, password: password, user_uuid: user_uuid)
 
       expect(result).to eq(true)
     end
 
     it 'returns false if the password does not match' do
-      digest = described_class.digest('saltypickles')
-      result = described_class.verify(password: 'pepperpickles', digest: digest)
+      digest = subject.digest(password: password, user_uuid: user_uuid)
+
+      result = subject.verify(digest: digest, password: 'qwerty', user_uuid: user_uuid)
 
       expect(result).to eq(false)
     end
 
-    it 'returns false for nonsese' do
-      result = described_class.verify(password: 'saltypickles', digest: 'this is fake')
+    it 'returns false for nonsense' do
+      result = subject.verify(
+        digest: 'nonsense',
+        password: password,
+        user_uuid: user_uuid,
+      )
 
       expect(result).to eq(false)
     end
 
-    it 'allows verification of a legacy password with a 20 byte salt' do
-      # Legacy passwords had 20 bytes salts, which were SHA256 digested to get
-      # to a 32 byte salt (64 char hexdigest). This test verifies that the
-      # password verifier is capable of properly verifying those passwords
-      # using known values.
+    it 'allows verification of legacy UAK passwords' do
+      legacy_digest = Encryption::UakPasswordVerifier.digest(password)
 
-      password = 'saltypickles'
-      legacy_password_digest = {
-        encrypted_password: '6245274034d8d4dcc2d9930b431c4356aeaac9c7d0b7e2148ac19dcd12dfbc7a',
-        encryption_key: 'VUl6QFRZeQZ5XnZofXhTBGN3WABqdGZnamZTR30CeVl8c3paUWhyX2p
-        oegBqaFgAeVpfWWReZnhjd2pHZV1AX3wAQH1nW1hKY1t+BGd4agFnaF8AZFxASmd1SAV/ZXV
-        Kal1IUX50WAV7AFRpZ15hR1J4WANlZXZKZAB6BGYACQJSdURkYV1HA2JdanJRAFMEZQB+dGY
-        BVH5nWlhJZQNyflJnfgFqA2VJUV1IQ35dampVZVxbUwFmZWRZCWhSd0RyYwBEempnXFxmW3p
-        8UQJ+An10XGJ/eGphU1kJY1FdZgJmaHpaZF5pSWV3XH5hZUhbfEp5SWp4cgRlZGpZY2ZUemV
-        bBXhnaFRqfgBDBGZnREN/aFx4fnZbR1J0aQJmZ0ABVEoACXlZR1lUd3ZeeVpfWX54VF10Gg0
-        KZGA/XSt2L2YCbGMHYjNzXFBtDCUwMgdafV5RWA=='.gsub(/\s/, ''),
-        password_salt: 'u4KDouyiHwPgksKphAp1',
-        password_cost: '4000$8$4$',
-      }.to_json
+      good_match_result = subject.verify(
+        digest: legacy_digest,
+        password: password,
+        user_uuid: user_uuid,
+      )
 
-      result = described_class.verify(password: password, digest: legacy_password_digest)
+      expect(good_match_result).to eq(true)
 
-      expect(result).to eq(true)
+      bad_match_result = subject.verify(
+        digest: legacy_digest,
+        password: 'fake news',
+        user_uuid: user_uuid,
+      )
+
+      expect(bad_match_result).to eq(false)
     end
   end
 
-  it 'raises an encryption error when the password digest is nil' do
-    expect do
-      Encryption::PasswordVerifier::PasswordDigest.parse_from_string(nil)
-    end.to raise_error(Encryption::EncryptionError)
+  describe '#stale_digest?' do
+    it 'returns true if the digest is stale' do
+      digest = Encryption::UakPasswordVerifier.digest(password)
+
+      result = subject.stale_digest?(digest)
+
+      expect(result).to eq(true)
+    end
+
+    it 'returns false if the digest is fresh' do
+      digest = subject.digest(password: password, user_uuid: user_uuid)
+
+      result = subject.stale_digest?(digest)
+
+      expect(result).to eq(false)
+    end
   end
 end

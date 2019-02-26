@@ -28,24 +28,6 @@ describe Pii::Attributes do
     end
   end
 
-  describe '#new_from_encrypted' do
-    it 'inflates from encrypted string' do
-      orig_attrs = described_class.new_from_hash(first_name: 'Jane')
-      encrypted_pii = orig_attrs.encrypted(password)
-      pii_attrs = described_class.new_from_encrypted(encrypted_pii, password: password)
-
-      expect(pii_attrs.first_name).to eq 'Jane'
-    end
-
-    it 'allows deprecated attributes that are no longer added to the hash schema' do
-      deprecated_atts = described_class.new_from_hash(otp: '123abc')
-      encrypted_pii = deprecated_atts.encrypted(password)
-      pii_attrs = described_class.new_from_encrypted(encrypted_pii, password: password)
-
-      expect(pii_attrs[:otp]).to eq('123abc')
-    end
-  end
-
   describe '#new_from_json' do
     it 'inflates from JSON string' do
       pii_json = { first_name: 'Jane' }.to_json
@@ -57,15 +39,6 @@ describe Pii::Attributes do
     it 'returns all-nil object when passed blank JSON' do
       expect(described_class.new_from_json(nil)).to be_a Pii::Attributes
       expect(described_class.new_from_json('')).to be_a Pii::Attributes
-    end
-  end
-
-  describe '#encrypted' do
-    it 'returns the object as encrypted string' do
-      pii_attrs = described_class.new_from_hash(first_name: 'Jane')
-
-      encrypted = pii_attrs.encrypted(password)
-      expect(encrypted).to_not match 'Jane'
     end
   end
 

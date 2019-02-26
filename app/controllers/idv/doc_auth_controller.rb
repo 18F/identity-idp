@@ -1,5 +1,9 @@
 module Idv
   class DocAuthController < ApplicationController
+    before_action :confirm_two_factor_authenticated
+    before_action :redirect_if_mail_bounced
+    before_action :redirect_if_pending_profile
+
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
 
@@ -10,6 +14,12 @@ module Idv
       analytics_id: Analytics::DOC_AUTH,
     }.freeze
 
-    before_action :confirm_two_factor_authenticated
+    def redirect_if_mail_bounced
+      redirect_to idv_usps_url if current_user.decorate.usps_mail_bounced?
+    end
+
+    def redirect_if_pending_profile
+      redirect_to verify_account_url if current_user.decorate.pending_profile_requires_verification?
+    end
   end
 end

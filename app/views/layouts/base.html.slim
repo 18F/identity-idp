@@ -50,7 +50,6 @@ html lang="#{I18n.locale}" class='no-js'
 
   body class="#{Rails.env}-env site #{yield(:background_cls)}"
     .site-wrap
-      = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       - if FeatureManagement.fake_banner_mode?
         = render 'shared/fake_banner'
       - else
@@ -67,13 +66,12 @@ html lang="#{I18n.locale}" class='no-js'
 
     #session-timeout-cntnr
     - if current_user
-      = render 'shared/platform_authenticator'
+      / Render the JS snipped that collects platform authenticator analytics
+      div [data-platform-authenticator-enabled="true"]
+
       = auto_session_timeout_js
     - else
       = auto_session_expired_js
-
-    - if FeatureManagement.enable_i18n_mode?
-      == javascript_pack_tag 'i18n-mode'
 
     - if Figaro.env.participate_in_dap == 'true' && !session_with_trust?
       = render 'shared/dap_analytics'

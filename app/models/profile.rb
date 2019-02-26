@@ -34,29 +34,31 @@ class Profile < ApplicationRecord
   end
 
   def decrypt_pii(password)
-    Pii::Attributes.new_from_encrypted(
-      encrypted_pii,
-      password: password,
-    )
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+    Pii::Attributes.new_from_json(decrypted_json)
   end
 
   def recover_pii(personal_key)
-    Pii::Attributes.new_from_encrypted(
-      encrypted_pii_recovery,
-      password: personal_key,
-    )
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
+    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+    Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
 
   def encrypt_pii(pii, password)
     ssn = pii.ssn
     self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
-    self.encrypted_pii = pii.encrypted(password)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     encrypt_recovery_pii(pii)
   end
 
   def encrypt_recovery_pii(pii)
     personal_key = personal_key_generator.create
-    self.encrypted_pii_recovery = pii.encrypted(personal_key_generator.normalize(personal_key))
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(
+      personal_key_generator.normalize(personal_key),
+    )
+    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     @personal_key = personal_key
   end
 

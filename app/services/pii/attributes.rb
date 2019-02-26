@@ -18,12 +18,6 @@ module Pii
       attrs
     end
 
-    def self.new_from_encrypted(encrypted, password:)
-      encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-      decrypted = encryptor.decrypt(encrypted)
-      new_from_json(decrypted)
-    end
-
     def self.new_from_json(pii_json)
       return new if pii_json.blank?
       pii = JSON.parse(pii_json, symbolize_names: true)
@@ -33,11 +27,6 @@ module Pii
     def initialize(*args)
       super
       assign_all_members
-    end
-
-    def encrypted(password)
-      encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-      encryptor.encrypt(to_json)
     end
 
     def eql?(other)

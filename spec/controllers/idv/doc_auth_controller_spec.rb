@@ -12,11 +12,19 @@ describe Idv::DocAuthController do
     end
   end
 
-  before do
+  before do |example|
     enable_doc_auth
-    stub_sign_in
+    stub_sign_in unless example.metadata[:skip_sign_in]
     stub_analytics
     allow(@analytics).to receive(:track_event)
+  end
+
+  describe 'unauthenticated', :skip_sign_in do
+    it 'redirects to the root url' do
+      get :index
+
+      expect(response).to redirect_to root_url
+    end
   end
 
   describe '#index' do

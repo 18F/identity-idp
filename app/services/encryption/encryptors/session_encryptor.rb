@@ -5,12 +5,12 @@ module Encryption
 
       def encrypt(plaintext)
         aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
-        kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext)
+        kms_ciphertext = ContextlessKmsClient.new.encrypt(aes_ciphertext)
         encode(kms_ciphertext)
       end
 
       def decrypt(ciphertext)
-        aes_ciphertext = KmsClient.new.decrypt(decode(ciphertext))
+        aes_ciphertext = ContextlessKmsClient.new.decrypt(decode(ciphertext))
         aes_encryptor.decrypt(aes_ciphertext, aes_encryption_key)
       end
 

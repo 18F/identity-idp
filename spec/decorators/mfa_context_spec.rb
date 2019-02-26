@@ -60,19 +60,23 @@ describe MfaContext do
 
     describe '#webauthn_configurations' do
       context 'with no user' do
-        let(:user) {}
-
-        it 'is empty' do
+        it 'mirrors the user relationship' do
           expect(mfa.webauthn_configurations).to be_empty
         end
       end
     end
 
     describe '#backup_code_configurations' do
-      let(:user) {}
-
-      it 'is empty' do
+      it 'is empty if the user does not have backup codes' do
         expect(mfa.backup_code_configurations).to be_empty
+      end
+
+      it 'returns does not return unused backup codes' do
+        create_list(:backup_code_configuration, 5, user: user)
+        create_list(:backup_code_configuration, 5, user: user, used_at: 1.day.ago)
+        user.reload
+
+        expect(mfa.backup_code_configurations.length).to eq(5)
       end
     end
   end
@@ -180,6 +184,98 @@ describe MfaContext do
         hash = { phone: 2, webauthn: 2 }
 
         expect(count_hash).to eq hash
+      end
+    end
+
+    context 'with 1 phone and 10 backups codes' do
+      it 'returns 1 for phone and 10 for backup codes' do
+        user = create(:user, :signed_up)
+        create_list(:backup_code_configuration, 10, user: user)
+        count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
+        hash = { phone: 1, backup_codes: 10 }
+
+        expect(count_hash).to eq hash
+      end
+    end
+
+    context 'with 1 phone and 10 used backup codes' do
+      it 'returns 1 for phone and no backup codes' do
+        user = create(:user, :signed_up)
+        create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
+        count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
+        hash = { phone: 1 }
+
+        expect(count_hash).to eq hash
+      end
+    end
+  end
+
+  describe '#enabled_mfa_methods_count' do
+    context 'with 2 phones' do
+      it 'returns 2' do
+        user = create(:user, :signed_up)
+        create(:phone_configuration, user: user, phone: '+1 703-555-1213')
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with 2 webauthn tokens' do
+      it 'returns 2' do
+        user = create(:user)
+        create_list(:webauthn_configuration, 2, user: user)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and a webauthn token' do
+      it 'returns 2' do
+        user = create(:user, :signed_up)
+        create(:webauthn_configuration, user: user)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and 10 backup codes' do
+      it 'returns 2' do
+        user = create(:user, :signed_up)
+        create_list(:backup_code_configuration, 10, user: user)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and 10 used backup codes' do
+      it 'returns 1' do
+        user = create(:user, :signed_up)
+        create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(1)
+      end
+    end
+
+    context 'with a phone and a PIV/CAC' do
+      it 'returns 2' do
+        user = create(:user, :signed_up, :with_piv_or_cac)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and an auth app' do
+      it 'returns 2' do
+        user = create(:user, :signed_up, :with_authentication_app)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
       end
     end
   end
