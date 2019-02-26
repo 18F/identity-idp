@@ -16,7 +16,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def phone
-    user.phone_configuration_data.first&.phone
+    user.phone_configurations.first&.phone
   end
 
   def lockout_time_remaining_in_words

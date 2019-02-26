@@ -296,4 +296,14 @@ describe UserDecorator do
         to eq t('users.delete.bullet_2_loa3', app: APP_NAME)
     end
   end
+
+  describe '#phone' do
+    let(:user) { build_stubbed(:user, :signed_up) }
+    let(:user_decorator) { UserDecorator.new(user) }
+
+    it 'returns the correct first phone configured for the user' do
+      user.phone_configurations.reload
+      expect(user_decorator.phone).to eq('+1 202-555-1212')
+    end
+  end
 end
