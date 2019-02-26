@@ -127,6 +127,12 @@ describe Encryption::ContextlessKmsClient do
           expect(result).to eq(local_ciphertext)
         end
       end
+
+      it 'logs the encryption' do
+        expect(Encryption::KmsLogger).to receive(:log).with(:encrypt)
+
+        subject.encrypt(long_kms_plaintext)
+      end
     end
 
     describe '#decrypt' do
@@ -152,6 +158,12 @@ describe Encryption::ContextlessKmsClient do
 
           expect(result).to eq(local_plaintext)
         end
+      end
+
+      it 'logs the decryption' do
+        expect(Encryption::KmsLogger).to receive(:log).with(:decrypt)
+
+        subject.decrypt('KMSx' + kms_ciphertext)
       end
     end
 
