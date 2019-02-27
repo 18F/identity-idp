@@ -45,9 +45,22 @@ es:
       intro: El email de su cuenta de %{app} ha sido cambiado.
     help_link_text: Centro de Ayuda
     new_device_sign_in:
-      help_html: "<p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
+      help_html: <p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>
       subject: Nuevo initio de sesion con su Login.gov cuenta
+    letter_expired:
+      help: ''
+      info: La carta que le enviamos a su dirección tiene un código de confirmación
+        que ha caducado y ya no se puede utilizar para completar el proceso de verificación.
+        Para verificar su dirección y completar el proceso de verificación de identidad,
+        deberá iniciar sesión en %{link} y solicitar otra carta.
+      subject: El código de confirmación de tu dirección ha caducado
+    letter_reminder:
+      help: ''
+      info: La carta que está a punto de recibir contendrá un código de confirmación
+        que nos ayudará a verificar su dirección. Puede completar el proceso de verificación
+        de identidad iniciando sesión en %{link} e ingresando el código de confirmación.
+      subject: Le enviamos una carta a la dirección que tiene archivada
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
@@ -115,7 +128,7 @@ es:
       link_text: Ir a %{app}
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     undeliverable_address:
-      call_to_action: Por favor, inicie sesión en login.gov y siga las instrucciones.
+      call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
       help: ''
-      intro: No hemos podido enviar el correo a la dirección que proporcionó.
-      subject: El correo enviado a su dirección no se pudo entregar
+      intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
+      subject: La carta enviada a su dirección no se pudo entregar
