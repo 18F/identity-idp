@@ -324,6 +324,44 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'expired letter' do
+    let(:mail) { UserMailer.letter_expired(email_address.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.letter_expired.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.letter_expired.info', link: APP_NAME)))
+    end
+  end
+
+  describe 'reminder letter' do
+    let(:mail) { UserMailer.letter_reminder(email_address.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.letter_reminder.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
+    end
+  end
+
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end
