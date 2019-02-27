@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ExpiredLetters do
+describe SendExpiredLetterNotifications do
   let(:user) { create(:user) }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
@@ -12,8 +12,8 @@ describe ExpiredLetters do
         ucc.save
 
         after_the_letters_expire do
-          ExpiredLetters.new.call
-          notifications_sent = ExpiredLetters.new.call
+          SendExpiredLetterNotifications.new.call
+          notifications_sent = SendExpiredLetterNotifications.new.call
           expect(notifications_sent).to eq(0)
         end
       end
@@ -24,7 +24,7 @@ describe ExpiredLetters do
         ucc.save
 
         after_the_letters_expire do
-          notifications_sent = ExpiredLetters.new.call
+          notifications_sent = SendExpiredLetterNotifications.new.call
           expect(notifications_sent).to eq(0)
         end
       end
@@ -33,7 +33,7 @@ describe ExpiredLetters do
         create_ucc_for(profile)
 
         after_the_letters_expire do
-          notifications_sent = ExpiredLetters.new.call
+          notifications_sent = SendExpiredLetterNotifications.new.call
 
           expect(notifications_sent).to eq(1)
         end
@@ -44,7 +44,7 @@ describe ExpiredLetters do
       it 'does not send notifications' do
         create_ucc_for(profile)
 
-        notifications_sent = ExpiredLetters.new.call
+        notifications_sent = SendExpiredLetterNotifications.new.call
         expect(notifications_sent).to eq(0)
       end
     end

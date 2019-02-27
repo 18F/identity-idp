@@ -3,7 +3,7 @@ class ExpiredLettersController < ApplicationController
   before_action :authorize
 
   def update
-    count = ExpiredLetters.new.call
+    count = SendExpiredLetterNotifications.new.call
     analytics.track_event(Analytics::EXPIRED_LETTERS, event: :notifications, count: count)
     render plain: 'ok'
   end

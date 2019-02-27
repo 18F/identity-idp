@@ -15,8 +15,8 @@ describe ExpiredLettersController do
       end
 
       it 'logs the number of notifications sent in the analytics' do
-        service = instance_double(ExpiredLetters)
-        allow(ExpiredLetters).to receive(:new).and_return(service)
+        service = instance_double(SendExpiredLetterNotifications)
+        allow(SendExpiredLetterNotifications).to receive(:new).and_return(service)
         allow(service).to receive(:call).and_return(7)
 
         stub_analytics

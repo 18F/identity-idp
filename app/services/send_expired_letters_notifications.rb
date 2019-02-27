@@ -1,4 +1,4 @@
-class ExpiredLetters
+class SendExpiredLetterNotifications
   def call
     notifications_sent = 0
     UspsConfirmationCode.where(
