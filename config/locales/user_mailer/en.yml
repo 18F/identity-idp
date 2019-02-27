@@ -52,9 +52,8 @@ en:
       subject: The letter we sent to your address has a code that has expired
     letter_reminder:
       help: ''
-      info: When you receive the letter it will contain a secret code.  Use this code
-        to complete the verification process by signing into %{link} and following
-        instructions.
+      info: When you receive the letter it will contain a code.  Use this code to
+        complete the verification process by signing into %{link} and following instructions.
       subject: We sent a letter to the address you have on file
     password_changed:
       help: If you did not make this change, please visit the %{app} %{help_link}

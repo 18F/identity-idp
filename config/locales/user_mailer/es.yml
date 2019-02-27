@@ -52,8 +52,8 @@ es:
       subject: La carta que le enviamos a su dirección tiene un código que ha caducado
     letter_reminder:
       help: ''
-      info: Cuando recibas la carta contendrá un código secreto. Utilice este código
-        para completar el proceso de verificación iniciando sesión en %{link} y siguiendo
+      info: Cuando recibas la carta contendrá un código. Utilice este código para
+        completar el proceso de verificación iniciando sesión en %{link} y siguiendo
         las instrucciones.
       subject: Le enviamos una carta a la dirección que tiene archivada
     password_changed:
