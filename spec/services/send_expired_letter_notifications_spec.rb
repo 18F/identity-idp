@@ -7,9 +7,9 @@ describe SendExpiredLetterNotifications do
   describe '#call' do
     context 'after the letters expire' do
       it 'does not send notifications when the notifications were already sent' do
-        ucc = create_ucc_for(profile)
-        ucc.letter_expired_sent_at = Time.zone.now
-        ucc.save
+        usps_confirmation_code = create_ucc_for(profile)
+        usps_confirmation_code.letter_expired_sent_at = Time.zone.now
+        usps_confirmation_code.save
 
         after_the_letters_expire do
           SendExpiredLetterNotifications.new.call
@@ -19,9 +19,9 @@ describe SendExpiredLetterNotifications do
       end
 
       it 'does not send notifications when the letters bounced' do
-        ucc = create_ucc_for(profile)
-        ucc.bounced_at = Time.zone.now
-        ucc.save
+        usps_confirmation_code = create_ucc_for(profile)
+        usps_confirmation_code.bounced_at = Time.zone.now
+        usps_confirmation_code.save
 
         after_the_letters_expire do
           notifications_sent = SendExpiredLetterNotifications.new.call
