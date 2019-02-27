@@ -47,13 +47,13 @@ en:
     letter_expired:
       help: ''
       info: The letter we sent to your address has a code that expired and can no
-        longer be used to complete the verification process.  Please sign into %{link}
-        and follow instructions.
+        longer be used to complete the verification process.  To verify your identity
+        you will need to sign into %{link} and choose to send another letter.
       subject: The letter we sent to your address has a code that has expired
     letter_reminder:
       help: ''
-      info: When you receive the letter it will contain a code.  Use this code to
-        complete the verification process by signing into %{link} and following instructions.
+      info: When you receive the letter it will contain a code.  Verify your identity
+        by signing into %{link} and entering the code.
       subject: We sent a letter to the address you have on file
     password_changed:
       help: If you did not make this change, please visit the %{app} %{help_link}

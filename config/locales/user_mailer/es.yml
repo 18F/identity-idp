@@ -47,14 +47,13 @@ es:
     letter_expired:
       help: ''
       info: La carta que le enviamos a su dirección tiene un código que expiró y ya
-        no puede usarse para completar el proceso de verificación. Por favor inicie
-        sesión en %{link} y siga las instrucciones.
+        no puede usarse para completar el proceso de verificación. Para verificar
+        su identidad, deberá iniciar sesión en %{link} y elegir enviar otra carta.
       subject: La carta que le enviamos a su dirección tiene un código que ha caducado
     letter_reminder:
       help: ''
-      info: Cuando recibas la carta contendrá un código. Utilice este código para
-        completar el proceso de verificación iniciando sesión en %{link} y siguiendo
-        las instrucciones.
+      info: Cuando recibas la carta contendrá un código. Verifique su identidad iniciando
+        sesión en %{link} e ingresando el código.
       subject: Le enviamos una carta a la dirección que tiene archivada
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
