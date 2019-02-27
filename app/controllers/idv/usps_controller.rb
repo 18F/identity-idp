@@ -101,15 +101,19 @@ module Idv
     end
 
     def resend_letter
+      confirmation_maker_perform
+      send_reminder
+      return unless FeatureManagement.reveal_usps_code?
+      session[:last_usps_confirmation_code] = confirmation_maker.otp
+    end
+
+    def confirmation_maker_perform
       confirmation_maker = UspsConfirmationMaker.new(
         pii: Pii::Cacher.new(current_user, user_session).fetch,
         issuer: sp_session[:issuer],
         profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
-
-      return unless FeatureManagement.reveal_usps_code?
-      session[:last_usps_confirmation_code] = confirmation_maker.otp
     end
 
     def idv_form
@@ -154,6 +158,12 @@ module Idv
 
     def attempter
       @attempter ||= Idv::Attempter.new(idv_session.current_user)
+    end
+
+    def send_reminder
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.letter_reminder(email_address.email).deliver_later
+      end
     end
   end
 end
