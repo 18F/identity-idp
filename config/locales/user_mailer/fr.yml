@@ -47,15 +47,18 @@ fr:
     help_link_text: Centre d'aide
     letter_expired:
       help: ''
-      info: La lettre que nous avons envoyée à votre adresse a un code qui a expiré
-        et ne peut plus être utilisée pour terminer le processus de vérification.
-        Pour vérifier votre identité, vous devez vous connecter à %{link} et choisir
-        d'envoyer une autre lettre.
-      subject: La lettre que nous avons envoyée à votre adresse a un code qui a expiré
+      info: La lettre que nous avons postée à votre adresse contient un code de confirmation
+        arrivé à expiration et ne peut plus être utilisée pour terminer le processus
+        de vérification. Pour vérifier votre adresse et terminer le processus de vérification
+        de votre identité, vous devez vous connecter à %{link} et demander une autre
+        lettre.
+      subject: Votre code de confirmation d'adresse a expiré
     letter_reminder:
       help: ''
-      info: Lorsque vous recevez la lettre, celle-ci contient un code. Vérifiez votre
-        identité en vous connectant à %{link} et en entrant le code.
+      info: La lettre que vous êtes sur le point de recevoir contiendra un code de
+        confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
+        le processus de vérification d'identité en vous connectant à %{link} et en
+        entrant le code de confirmation.
       subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier
     password_changed:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
