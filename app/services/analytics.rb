@@ -62,6 +62,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
+  EXPIRED_LETTERS = 'Expired Letters'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
