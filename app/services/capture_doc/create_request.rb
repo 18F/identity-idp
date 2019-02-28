@@ -6,6 +6,7 @@ module CaptureDoc
       now = Time.zone.now
       if doc_capture
         doc_capture.update!(request_token: token, requested_at: now)
+        doc_capture
       else
         DocCapture.create(user_id: user_id, request_token: token, requested_at: now)
       end
