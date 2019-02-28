@@ -56,14 +56,12 @@ ActiveRecord::Schema.define(version: 20190225005651) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "code_fingerprint", default: "", null: false
     t.string "encrypted_code", default: "", null: false
-    t.boolean "used", default: false
+    t.string "code_fingerprint", default: "", null: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["code_fingerprint"], name: "index_backup_code_configurations_on_code_fingerprint"
-    t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
+    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
   end
 
   create_table "devices", force: :cascade do |t|
@@ -242,14 +240,6 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
-  create_table "user_photo_codes", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_photo_codes_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at"
@@ -307,8 +297,6 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "bounced_at"
-    t.datetime "letter_expired_sent_at"
-    t.index ["bounced_at", "letter_expired_sent_at", "created_at"], name: "index_ucc_expired_letters"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
