@@ -48,7 +48,6 @@ shared_examples 'sp requesting attributes' do |sp|
       click_on I18n.t('forms.buttons.continue')
       visit account_path
       first(:link, t('links.sign_out')).click
-      click_submit_default if sp == :saml # SAML SLO request
     end
 
     it 'does not require the user to verify attributes' do
