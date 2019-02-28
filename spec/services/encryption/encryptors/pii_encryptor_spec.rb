@@ -8,12 +8,12 @@ describe Encryption::Encryptors::PiiEncryptor do
 
   describe '#encrypt' do
     it 'returns encrypted text' do
-      ciphertext = subject.encrypt(plaintext)
+      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to_not match plaintext
     end
 
-    it 'uses the user access key encryptor to encrypt the plaintext' do
+    it 'uses layers KMS and AES to encrypt the plaintext' do
       salt = '0' * 64
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
@@ -30,15 +30,15 @@ describe Encryption::Encryptors::PiiEncryptor do
         with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
 
-      kms_client = instance_double(Encryption::KmsClient)
+      kms_client = instance_double(Encryption::ContextlessKmsClient)
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
       expect(kms_client).to receive(:encrypt).
-        with('aes_ciphertext').
+        with('aes_ciphertext', 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc').
         and_return('kms_ciphertext')
 
       expected_ciphertext = Base64.strict_encode64('kms_ciphertext')
 
-      ciphertext = subject.encrypt(plaintext)
+      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to eq({
         encrypted_data: expected_ciphertext,
@@ -50,17 +50,18 @@ describe Encryption::Encryptors::PiiEncryptor do
 
   describe '#decrypt' do
     it 'returns the original text' do
-      ciphertext = subject.encrypt(plaintext)
-      decrypted_ciphertext = subject.decrypt(ciphertext)
+      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      decrypted_ciphertext = subject.decrypt(ciphertext, user_uuid: 'uuid-123-abc')
 
       expect(decrypted_ciphertext).to eq(plaintext)
     end
 
     it 'requires the same password used for encrypt' do
-      ciphertext = subject.encrypt(plaintext)
+      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
       new_encryptor = described_class.new('This is not the passowrd')
 
-      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Encryption::EncryptionError
+      expect { new_encryptor.decrypt(ciphertext, user_uuid: 'uuid-123-abc') }.
+        to raise_error Encryption::EncryptionError
     end
 
     it 'uses layered AES and KMS to decrypt the contents' do
@@ -76,7 +77,7 @@ describe Encryption::Encryptors::PiiEncryptor do
       kms_client = instance_double(Encryption::KmsClient)
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
       expect(kms_client).to receive(:decrypt).
-        with('kms_ciphertext').
+        with('kms_ciphertext', 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc').
         and_return('aes_ciphertext')
 
       cipher = instance_double(Encryption::AesCipher)
@@ -89,7 +90,7 @@ describe Encryption::Encryptors::PiiEncryptor do
         encrypted_data: Base64.strict_encode64('kms_ciphertext'),
         salt: salt,
         cost: '800$8$1$',
-      }.to_json)
+      }.to_json, user_uuid: 'uuid-123-abc')
 
       expect(result).to eq(plaintext)
     end

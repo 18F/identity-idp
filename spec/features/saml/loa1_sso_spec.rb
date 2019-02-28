@@ -79,7 +79,6 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'user can view and confirm personal key during sign up', :js do
-      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
       code = 'ABC1-DEF2-GH13-JK14'
@@ -97,7 +96,6 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'coerces invalid characters into their Crockford Base32 equivalents', :js do
-      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       displayed_personal_key = '0000-1111-1111-1234'
       misread_personal_key = 'ooOO-iiII-llLL-1234'
 

@@ -1,4 +1,4 @@
-class UserDecorator
+class UserDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::DateHelper
 
   attr_reader :user
@@ -72,6 +72,11 @@ class UserDecorator
 
   def identity_verified?
     user.active_profile.present?
+  end
+
+  def usps_mail_bounced?
+    return unless pending_profile
+    pending_profile&.usps_confirmation_codes&.order(created_at: :desc)&.first&.bounced_at
   end
 
   def active_profile_newer_than_pending_profile?

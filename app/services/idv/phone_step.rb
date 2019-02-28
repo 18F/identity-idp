@@ -35,8 +35,17 @@ module Idv
 
     def normalized_phone
       @normalized_phone ||= begin
-        formatted_phone = PhoneFormatter.format(step_params[:phone])
+        formatted_phone = PhoneFormatter.format(phone_param)
         formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
+      end
+    end
+
+    def phone_param
+      step_phone = step_params[:phone]
+      if step_phone == 'other'
+        step_params[:other_phone]
+      else
+        step_phone
       end
     end
 

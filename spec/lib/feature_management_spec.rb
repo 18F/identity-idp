@@ -74,28 +74,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#enable_i18n_mode?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_i18n_mode).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.enable_i18n_mode?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_i18n_mode).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.enable_i18n_mode?).to eq(false)
-      end
-    end
-  end
-
   describe '#use_kms?' do
     context 'when enabled' do
       before do
@@ -126,28 +104,6 @@ describe 'FeatureManagement', type: :feature do
 
       it 'disables the feature' do
         expect(FeatureManagement.use_dashboard_service_providers?).to eq(false)
-      end
-    end
-  end
-
-  describe '#enable_identity_verification?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_identity_verification).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.enable_identity_verification?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:enable_identity_verification).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.enable_identity_verification?).to eq(false)
       end
     end
   end
@@ -406,50 +362,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#account_reset_enabled?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:account_reset_enabled).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.account_reset_enabled?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:account_reset_enabled).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.account_reset_enabled?).to eq(false)
-      end
-    end
-  end
-
-  describe '#webauthn_enabled?' do
-    context 'when enabled' do
-      before do
-        allow(Figaro.env).to receive(:webauthn_enabled).and_return('true')
-      end
-
-      it 'enables the feature' do
-        expect(FeatureManagement.webauthn_enabled?).to eq(true)
-      end
-    end
-
-    context 'when disabled' do
-      before do
-        allow(Figaro.env).to receive(:webauthn_enabled).and_return('false')
-      end
-
-      it 'disables the feature' do
-        expect(FeatureManagement.webauthn_enabled?).to eq(false)
-      end
-    end
-  end
-
   describe '#doc_auth_enabled?' do
     it 'returns true when Figaro setting is true' do
       allow(Figaro.env).to receive(:doc_auth_enabled) { 'true' }
@@ -475,20 +387,6 @@ describe 'FeatureManagement', type: :feature do
       allow(Figaro.env).to receive(:doc_auth_exclusive) { 'false' }
 
       expect(FeatureManagement.doc_auth_exclusive?).to eq(false)
-    end
-  end
-
-  describe '#platform_authenticator_enabled?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'true' }
-
-      expect(FeatureManagement.platform_authenticator_enabled?).to eq(true)
-    end
-
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:platform_authenticator_analytics_enabled) { 'false' }
-
-      expect(FeatureManagement.platform_authenticator_enabled?).to eq(false)
     end
   end
 

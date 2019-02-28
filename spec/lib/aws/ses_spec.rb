@@ -47,51 +47,5 @@ describe Aws::SES::Base do
         expect(options.key?(:retry_backoff)).to eq true
       end
     end
-
-    context 'with an ses region pool in the configuration' do
-      before do
-        allow(Figaro.env).to receive(:aws_ses_region_pool).
-          and_return('{ "us-fake-1": 5, "us-phony-2": 95 }')
-      end
-
-      it 'should build a region pool if the region pool does not exist' do
-        expected_pool = ['us-fake-1'] * 5 + ['us-phony-2'] * 95
-        described_class.region_pool = nil
-        subject.deliver!(mail)
-
-        expect(described_class.region_pool).to eq(expected_pool)
-      end
-
-      it 'should not build a new region pool if one does exist' do
-        expected_pool = ['us-fake-1', 'us-phony-2']
-        described_class.region_pool = expected_pool
-        subject.deliver!(mail)
-
-        expect(described_class.region_pool).to eq(expected_pool)
-      end
-
-      it 'should initialize the AWS client with a region selected from the region pool' do
-        described_class.region_pool = []
-
-        allow(described_class.region_pool).to receive(:sample).and_return('us-fake-1')
-        described_class.new.deliver!(mail)
-
-        expect(Aws::SES::Client).to have_received(:new) do |options|
-          expect(options[:region]).to eq 'us-fake-1'
-        end
-      end
-    end
-
-    context 'without an ses region in the configuration' do
-      it 'should initialize the AWS client without a region argument' do
-        allow(Figaro.env).to receive(:aws_ses_region_pool).and_return(nil)
-        Aws::SES::Base.new.deliver!(mail)
-
-        allow(Figaro.env).to receive(:aws_ses_region_pool).and_return('')
-        Aws::SES::Base.new.deliver!(mail)
-
-        expect(Aws::SES::Client).to have_received(:new).with(hash_excluding(:region)).twice
-      end
-    end
   end
 end

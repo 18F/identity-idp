@@ -90,12 +90,16 @@ es:
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
     please_reset_password:
-      call_to_action: Para seguir usando tu cuenta de login.gov, restablece tu contraseña
-        usando el siguiente enlace.
-      intro: Encontramos un problema con tu contraseña tras realizar una revisión
-        de seguridad de login.gov. Aunque no vimos ninguna actividad sospechosa en
-        tu cuenta de login.gov, hemos desactivado tu contraseña antigua. Restablece
-        tu contraseña para seguir usando login.gov.
+      additional_help_html: Si ha utilizado su contraseña de login.gov en otros sitios,
+        le pedimos que actualice estas contraseñas también. Si tiene preguntas, por
+        favor deje un mensaje para nuestro equipo en %{contact_url}, y le responderemos
+        en dos días hábiles.
+      call_to_action: Para retomar acceso a su cuenta en login.gov, tendrá que restablecer
+        su contraseña utilizando el enlace a continuación.
+      intro: Recientemente identificamos un problema de seguridad con su contraseña.
+        Hemos deshabilitado su contraseña para mantener su cuenta segura. Esto no
+        fue el resultado de un problema de seguridad con login.gov, sino un problema
+        con su contraseña que ha sido comprometida.
       subject: Restablece tu contraseña
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
@@ -107,7 +111,7 @@ es:
       link_text: Ir a %{app}
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     undeliverable_address:
-      call_to_action: Por favor, inicie sesión en login.gov y siga las instrucciones.
+      call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
       help: ''
-      intro: No hemos podido enviar el correo a la dirección que proporcionó.
-      subject: El correo enviado a su dirección no se pudo entregar
+      intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
+      subject: La carta enviada a su dirección no se pudo entregar
