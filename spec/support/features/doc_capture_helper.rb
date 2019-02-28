@@ -14,7 +14,6 @@ module DocCaptureHelper
 
   def complete_doc_capture_steps_before_capture_complete_step(user = user_with_2fa)
     complete_doc_capture_steps_before_mobile_back_image_step(user)
-    mock_assure_id_ok
     attach_image
     click_idv_continue
   end

@@ -12,6 +12,6 @@ feature 'capture complete step' do
 
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    expect(page).to have_content(t('doc_auth.forms.doc_success'))
+    expect(page).to have_content(t('doc_auth.headings.capture_complete'))
   end
 end
