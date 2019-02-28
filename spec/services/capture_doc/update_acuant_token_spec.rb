@@ -9,13 +9,15 @@ describe CaptureDoc::UpdateAcuantToken do
   it 'updates the token if the entry exists' do
     CaptureDoc::CreateRequest.call(user_id)
 
-    subject.call(user_id, token)
+    result = subject.call(user_id, token)
+    expect(result).to be_truthy
     expect(DocCapture.count).to eq(1)
-    expect(DocCapture.find_by(user_id).acuant_token).to eq(token)
+    expect(DocCapture.find_by(user_id: user_id).acuant_token).to eq(token)
   end
 
   it 'does not create an entry if one does not exist' do
-    subject.call(user_id, token)
+    result = subject.call(user_id, token)
+    expect(result).to be_falsey
 
     expect(DocCapture.count).to eq(0)
   end
