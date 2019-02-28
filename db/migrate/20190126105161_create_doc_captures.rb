@@ -1,7 +1,7 @@
 class CreateDocCaptures < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
-  def up
+  def change
     create_table :doc_captures do |t|
       t.integer :user_id, null: false
       t.string :request_token, null: false
@@ -11,8 +11,5 @@ class CreateDocCaptures < ActiveRecord::Migration[5.1]
     end
     add_index :doc_captures, %i[user_id], unique: true, using: :btree
     add_index :doc_captures, %i[request_token], unique: true, using: :btree
-  end
-  def down
-
   end
 end
