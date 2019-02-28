@@ -2,6 +2,7 @@ module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
       def call
+        CaptureDoc::CreateRequest.call(current_user.id)
         SmsDocAuthLinkJob.perform_now(
           phone: permit(:phone),
           link: link,

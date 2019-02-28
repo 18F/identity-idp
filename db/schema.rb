@@ -56,12 +56,14 @@ ActiveRecord::Schema.define(version: 20190225005651) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "encrypted_code", default: "", null: false
     t.string "code_fingerprint", default: "", null: false
+    t.string "encrypted_code", default: "", null: false
+    t.boolean "used", default: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
+    t.index ["code_fingerprint"], name: "index_backup_code_configurations_on_code_fingerprint"
+    t.index ["user_id"], name: "index_backup_code_configurations_on_user_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -85,6 +87,17 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_doc_auths_on_user_id"
+  end
+
+  create_table "doc_captures", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "request_token", null: false
+    t.datetime "requested_at", null: false
+    t.string "acuant_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_token"], name: "index_doc_captures_on_request_token", unique: true
+    t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
   end
 
   create_table "email_addresses", force: :cascade do |t|
@@ -227,6 +240,14 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "user_photo_codes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_photo_codes_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

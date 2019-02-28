@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_one :doc_capture, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
