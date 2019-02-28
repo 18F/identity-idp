@@ -29,4 +29,10 @@ module DocCaptureHelper
   def idv_capture_doc_capture_complete_step
     idv_capture_doc_step_path(step: :capture_complete)
   end
+
+  def mock_doc_captured(user_id)
+    doc_capture = CaptureDoc::CreateRequest.call(user_id)
+    doc_capture.acuant_token = 'foo'
+    doc_capture.save!
+  end
 end
