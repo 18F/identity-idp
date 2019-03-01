@@ -127,7 +127,6 @@ describe Users::SessionsController, devise: true do
       sign_in_as_user
 
       get :destroy
-
     end
   end
 
