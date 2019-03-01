@@ -1,11 +1,6 @@
 module DeviceTracking
   class ManageDevice
-    # primary method: updates the usage time if it is not a new device, and calls create
-    # if the device used to log in has not been used before and alerts the user via email
-    # and sms about the new device in use
-    # returns the existing, updated device or the new one just created
     # :reek:DuplicateMethodCall
-
     def self.call(user, hash, remote_ip, user_agent)
       user_has_multiple_devices = UserDecorator.new(user).devices?
       device = DeviceTracking::LookupDeviceForUser.call(user.id, hash)
