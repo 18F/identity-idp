@@ -12,7 +12,7 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit(request.protocol, params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
+      analytics.track_mfa_submit_event(result.to_h.merge(analytics_properties))
       if result.success?
         handle_valid_webauthn
       else

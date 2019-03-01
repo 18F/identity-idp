@@ -18,8 +18,8 @@ module TwoFactorAuthentication
     def create
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
-
+      analytics.track_mfa_submit_event(result.to_h)
+      
       handle_result(result)
     end
 

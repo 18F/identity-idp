@@ -13,6 +13,12 @@ class Analytics
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
+  def track_mfa_submit_event(attributes)
+    track_event(MULTI_FACTOR_AUTH, attributes)
+    success_int = (attributes.success ? 1 : 0)
+    post_ga_event('authenication', 'multi-factor-submit', success_int)
+  end
+
   private
 
   attr_reader :user, :request, :sp
@@ -43,6 +49,18 @@ class Analytics
       browser_bot: browser.bot?,
     }
   end
+
+  def post_ga_event(category, event_action)
+    host = "www.google-analytics.com/"
+
+    url = "/collect?v=1&tid=#{ga_uid}&cid-#{get_session_cid()}&t=event&ec=#{category}&ea=#{event_action}"
+
+    options = default_options.merge(
+      headers: accept_json,
+    )
+
+    post(url, options)
+  end
   # rubocop:enable Metrics/AbcSize
 
   def uuid
@@ -51,6 +69,45 @@ class Analytics
 
   def browser
     @browser ||= DeviceDetector.new(request.user_agent)
+  end
+
+  included do
+    include HTTParty
+  end
+
+  def post(url, options, &block)
+    handle_response(self.class.post(url, options), block)
+  end
+
+  def get_session_cid()
+    return "test"
+  end
+
+  private
+
+  ga_uid = UA-48605964-44
+
+  def handle_response(response, block)
+    return [false, response.message] unless success?(response)
+    handle_success(response, block)
+  end
+
+  def handle_success(response, block)
+    body = response.body
+    data = block ? block.call(body) : body
+    [true, data]
+  end
+
+  def success?(response)
+    response.code.between?(200, 299)
+  end
+
+  def accept_json
+    { 'Accept' => 'application/json' }
+  end
+
+  def content_type_json
+    { 'Content-Type' => 'application/json' }
   end
 
   # rubocop:disable Metrics/LineLength

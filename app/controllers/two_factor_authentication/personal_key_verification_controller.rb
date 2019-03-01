@@ -16,7 +16,7 @@ module TwoFactorAuthentication
       @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
       result = @personal_key_form.submit
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
+      analytics.track_mfa_submit_event(result.to_h)
 
       handle_result(result)
     end
