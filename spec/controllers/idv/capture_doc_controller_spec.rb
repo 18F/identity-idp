@@ -41,6 +41,16 @@ describe Idv::CaptureDocController do
       end
     end
 
+    context 'with an expired token' do
+      it 'redirects to the root url' do
+        Timecop.travel(Time.zone.now + 1.day) do
+          get :index, params: { token: token }
+        end
+
+        expect(response).to redirect_to root_url
+      end
+    end
+
     context 'with a good token' do
       it 'redirects to the first step' do
         get :index, params: { token: token }
