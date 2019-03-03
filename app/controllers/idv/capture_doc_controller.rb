@@ -1,7 +1,7 @@
 module Idv
   class CaptureDocController < ApplicationController
     include Flow::FlowStateMachine
-    before_action :set_user_from_token
+    before_action :ensure_user_id_in_session
 
     FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
@@ -10,11 +10,30 @@ module Idv
       analytics_id: Analytics::CAPTURE_DOC,
     }.freeze
 
-    def set_user_from_token
-      return if session[:capture_user_id]
-      user_id = CaptureDoc::FindUserId.call(params[:token])
-      redirect_to root_url and return unless user_id
-      session[:capture_user_id] = user_id
+    private
+
+    def ensure_user_id_in_session
+      return if session[:doc_capture_user_id]
+      result = CaptureDoc::ValidateRequestToken.new(token).call
+      analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
+      process_result(result)
+    end
+
+    def process_result(result)
+      if result.success?
+        session[:doc_capture_user_id] = result.extra[:for_user_id]
+      else
+        flash[:error] = t('errors.capture_doc.invalid_link')
+        redirect_to root_url
+      end
+    end
+
+    def session_or_token_user_id
+      session[:doc_capture_user_id] || CaptureDoc::FindUserId.call(params[:token])
+    end
+
+    def token
+      params[:token]
     end
   end
 end

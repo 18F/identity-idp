@@ -33,7 +33,7 @@ module Idv
       end
 
       def user_id_from_token
-        flow_session[:capture_user_id]
+        flow_session[:doc_capture_user_id]
       end
     end
   end
