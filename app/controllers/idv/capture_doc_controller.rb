@@ -28,10 +28,6 @@ module Idv
       end
     end
 
-    def session_or_token_user_id
-      session[:doc_capture_user_id] || CaptureDoc::FindUserId.call(params[:token])
-    end
-
     def token
       params[:token]
     end

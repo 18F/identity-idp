@@ -30,9 +30,5 @@ module Idv
     def capture_doc_request
       @capture_doc_request ||= DocCapture.find_by(request_token: token)
     end
-
-    def user
-      AnonymousUser.new
-    end
   end
 end
