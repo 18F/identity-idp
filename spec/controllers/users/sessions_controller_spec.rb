@@ -115,6 +115,21 @@ describe Users::SessionsController, devise: true do
     end
   end
 
+  describe 'GET /logout' do
+    it 'tracks a logout event' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with(
+        Analytics::LOGOUT_INITIATED,
+        sp_initiated: false,
+        oidc: false,
+      )
+
+      sign_in_as_user
+
+      get :destroy
+    end
+  end
+
   describe 'GET /timeout' do
     it 'signs the user out' do
       sign_in_as_user
