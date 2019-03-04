@@ -178,7 +178,7 @@ feature 'saml api' do
 
       it 'redirects to root' do
         Timecop.travel(Devise.timeout_in + 1.second)
-        visit destroy_user_session_url
+        visit api_saml_logout_url
         expect(page.current_path).to eq('/')
         Timecop.return
       end

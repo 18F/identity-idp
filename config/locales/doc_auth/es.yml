@@ -8,9 +8,6 @@ es:
       start_over: Comenzar de nuevo
       use_computer: Use your computer
       use_phone: Use your phone
-    errors:
-      state_id_fail: Lo siento. La información de su ID emitida por el estado no coincide
-        con la información de su número de seguro social.
     forms:
       address1: Address
       city: City

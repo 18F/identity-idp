@@ -48,7 +48,7 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
-      - 'gov.gsa.openidconnect.test://result/logout'
+      - 'gov.gsa.openidconnect.test://result/signout'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
@@ -237,6 +237,7 @@ production:
       - 'http://localhost:9292/auth/result'
       <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/result'
+      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
       <% end %>
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
@@ -566,6 +567,7 @@ production:
       - 'https://fmcsa.portal.dot.gov/openid-connect/dot_login'
       - 'https://portal.dot.gov/'
       - 'https://score.fmcsa.dot.gov/'
+      - 'https://score.fmcsa.dot.gov/openid-connect/dot_login'
     restrict_to_deploy_env: 'prod'
 
   # NGA GEOWorks Symphony
@@ -923,6 +925,22 @@ production:
     return_to_sp_url: 'https://dis-staging.usaid.gov'
     redirect_uris:
       - 'https://dis-identity-staging.usaid.gov/signin-oidc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # Apprenticeship.gov
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dol:apprenticeship_gov':
+    agency_id: 14
+    friendly_name: 'Apprenticeship.gov'
+    agency: 'DOL'
+    logo: 'dol.svg'
+    cert: 'dol_apprentice_prod'
+    return_to_sp_url: 'https://www.apprenticeship.gov/dashboard'
+    acs_url: 'https://www.apprenticeship.gov/saml/consume'
+    sp_initiated_login_url: 'https://www.apprenticeship.gov/saml/drupal_login/apprenticeship_gov'
+    assertion_consumer_logout_service_url: 'https://www.apprenticeship.gov/saml/consume'
+    block_encryption: 'none'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'

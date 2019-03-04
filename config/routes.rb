@@ -11,9 +11,7 @@ Rails.application.routes.draw do
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
-    match "/api/saml/logout#{suffix}" => 'saml_idp#logout',
-          via: %i[get post delete],
-          as: "destroy_user_session#{suffix}"
+    match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
 
@@ -28,6 +26,7 @@ Rails.application.routes.draw do
 
   post '/api/usps_upload' => 'usps_upload#create'
   post '/api/usps_download' => 'undeliverable_address#create'
+  post '/api/expired_letters' => 'expired_letters#update'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
@@ -46,6 +45,7 @@ Rails.application.routes.draw do
     devise_scope :user do
       get '/' => 'users/sessions#new', as: :new_user_session
       post '/' => 'users/sessions#create', as: :user_session
+      get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
 
       get '/account_reset/request' => 'account_reset/request#show'
@@ -205,8 +205,12 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      get '/session' => 'sessions#new'
-      put '/session' => 'sessions#create'
+      if FeatureManagement.doc_auth_exclusive?
+        get '/session', to: redirect('/verify')
+      else
+        get '/session' => 'sessions#new'
+        put '/session' => 'sessions#create'
+      end
       get '/session/success' => 'sessions#success'
       get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
       delete '/session' => 'sessions#destroy'
@@ -230,6 +234,7 @@ Rails.application.routes.draw do
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'
+        post '/usps' => 'usps#update'
       end
     end
 

@@ -4,6 +4,7 @@ feature 'doc auth verify step' do
   include IdvStepHelper
   include DocAuthHelper
 
+  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   before do
     enable_doc_auth
     complete_doc_auth_steps_before_verify_step
@@ -34,11 +35,11 @@ feature 'doc auth verify step' do
 
   it 'does not proceed to the next page if resolution fails' do
     complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_known_bad_ssn
+    fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
+    expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do
@@ -47,6 +48,32 @@ feature 'doc auth verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_doc_failed_step)
+    expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+  end
+
+  it 'throttles resolution' do
+    complete_doc_auth_steps_before_ssn_step
+    fill_out_ssn_form_with_ssn_that_fails_resolution
+    click_idv_continue
+    (max_attempts - 1).times do
+      click_idv_continue
+      expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+      visit idv_doc_auth_verify_step
+    end
+    click_idv_continue
+    expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
+  end
+
+  it 'throttles dup ssn' do
+    complete_doc_auth_steps_before_ssn_step
+    fill_out_ssn_form_with_duplicate_ssn
+    click_idv_continue
+    (max_attempts - 1).times do
+      click_idv_continue
+      expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+      visit idv_doc_auth_verify_step
+    end
+    click_idv_continue
+    expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
   end
 end
