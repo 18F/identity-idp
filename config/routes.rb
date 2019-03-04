@@ -11,9 +11,7 @@ Rails.application.routes.draw do
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
-    match "/api/saml/logout#{suffix}" => 'saml_idp#logout',
-          via: %i[get post delete],
-          as: "destroy_user_session#{suffix}"
+    match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
 
@@ -47,6 +45,7 @@ Rails.application.routes.draw do
     devise_scope :user do
       get '/' => 'users/sessions#new', as: :new_user_session
       post '/' => 'users/sessions#create', as: :user_session
+      get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
 
       get '/account_reset/request' => 'account_reset/request#show'

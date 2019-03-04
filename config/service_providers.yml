@@ -48,7 +48,7 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
-      - 'gov.gsa.openidconnect.test://result/logout'
+      - 'gov.gsa.openidconnect.test://result/signout'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
