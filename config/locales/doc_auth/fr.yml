@@ -38,42 +38,50 @@ fr:
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
-      camera_required: Your mobile phone must have a camera and a web browser
+      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
+        Web
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l'État. Lorsque vous avez terminé,
         cliquez ici pour continuer à vérifier votre identité.
-      take_picture: Use the camera on your mobile phone and upload images of your
-        ID.  We only use the images to verify your identity.
-      upload: We'll collect information about you by reading from your state-issued
-        ID.  We do not store images you upload.  We only verify your identity.
-      upload_from_computer: Upload images of your ID you have on your computer or
-        use a scanner to capture images of your ID
-      upload_from_phone: Upload pictures directly from your phone camera
-      upload_image: We only use your ID to verify your identity, and we will not save
-        any images.  We accept PDF, PNG, and JPG formats.
-      welcome: We verify your identity to make sure you are you--not someone pretending
-        to be you.  Verifying your identity also allows you to access services that
-        handle Personal Identifiable Information.
+      take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
+        des images de votre identifiant. Nous utilisons uniquement les images pour
+        vérifier votre identité.
+      upload: Nous collecterons des informations à votre sujet en lisant votre identifiant
+        émis par l'État Nous ne stockons pas les images que vous téléchargez. Nous
+        vérifions uniquement votre identité.
+      upload_from_computer: Téléchargez des images de votre identifiant que vous avez
+        sur votre ordinateur ou utilisez un scanner pour capturer des images de votre
+        identifiant
+      upload_from_phone: Téléchargez des images directement depuis l'appareil photo
+        de votre téléphone
+      upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
+        et nous n'enregistrerons aucune image. Nous acceptons les formats PDF, PNG
+        et JPG.
+      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
+        et non quelqu'un prétendant être vous. La vérification de votre identité vous
+        permet également d'accéder à des services traitant des informations personnelles
+        identifiables.
     instructions:
-      bullet1: Upload your ID
-      bullet2: Confirm your address
-      bullet3: Secure your account
-      bullet4: Account recovery
-      email_sent: Link sent to %{email}. Please check your desktop email and follow
-        instructions to verify your identity.
-      send_sms: We'll send a text message to your device with a link.  Follow that
-        link to your browser to take pictures of the front and back of your ID.
+      bullet1: Téléchargez votre identifiant
+      bullet2: Confirmez votre adresse
+      bullet3: Sécurise ton compte
+      bullet4: Récupération du compte
+      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
+        et suivez les instructions pour vérifier votre identité.
+      send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
+        ce lien vers votre navigateur pour prendre des photos du recto et du verso
+        de votre identifiant.
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
-      take_pic: 'For best results:'
-      take_pic1: Use a dark background
-      take_pic2: Take the photo on a flat surface
-      take_pic3: Do not use the flash on your camera
-      take_pic4: Use the landscape orientation
-      text1: along with your Social Security Number
-      text2: using a phone number or mailing address
-      text3: by re-entering your login.gov password
-      text4: make sure you always have access
-      welcome: 'What you''ll need to do:'
+      take_pic: 'Pour les meilleurs résultats:'
+      take_pic1: Utilisez un fond sombre
+      take_pic2: Prenez la photo sur une surface plane
+      take_pic3: Ne pas utiliser le flash sur votre appareil photo
+      take_pic4: Utilisez l'orientation paysage
+      text1: avec votre numéro de sécurité sociale
+      text2: en utilisant un numéro de téléphone ou une adresse postale
+      text3: en ressaisissant votre mot de passe login.gov
+      text4: assurez-vous d'avoir toujours accès
+      welcome: 'Ce que vous devez faire:'
     titles:
       doc_auth: Authentification de document
