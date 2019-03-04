@@ -1,22 +1,15 @@
 class RequestKeyManager
-  def self.read_key_file(key_file, passphrase)
-    OpenSSL::PKey::RSA.new(
-      File.read(key_file),
-      passphrase,
-    )
-  rescue OpenSSL::PKey::RSAError
-    raise OpenSSL::PKey::RSAError, "Failed to load #{key_file.inspect}. Bad passphrase?"
+  def self.read_key_file(key_file)
+    path = Rails.root.join('keys', key_file)
+    OpenSSL::PKey::RSA.new(File.read(path))
   end
   private_class_method :read_key_file
 
   cattr_accessor :public_key do
-    crt_file = Rails.root.join('certs', 'oidc.crt')
-    cert = OpenSSL::X509::Certificate.new(File.read(crt_file))
-    cert.public_key
+    read_key_file('oidc.pub')
   end
 
   cattr_accessor :private_key do
-    key_file = Rails.root.join('keys', 'oidc.key.enc')
-    read_key_file(key_file, Figaro.env.oidc_passphrase)
+    read_key_file('oidc.key')
   end
 end
