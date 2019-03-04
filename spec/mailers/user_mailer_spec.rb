@@ -82,7 +82,6 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      puts mail.html_part.body
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html',
                                      date: date, location: location)))
