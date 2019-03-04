@@ -178,7 +178,11 @@ feature 'saml api' do
 
       it 'redirects to root' do
         Timecop.travel(Devise.timeout_in + 1.second)
+<<<<<<< HEAD
         visit api_saml_logout_url
+=======
+        visit api_saml_logout2019_url
+>>>>>>> 128a614... Get rid of saml.crt
         expect(page.current_path).to eq('/')
         Timecop.return
       end

@@ -10,13 +10,13 @@ class RequestKeyManager
   private_class_method :read_key_file
 
   cattr_accessor :public_key do
-    crt_file = Rails.root.join('certs', 'saml.crt')
+    crt_file = Rails.root.join('certs', 'oidc.crt')
     cert = OpenSSL::X509::Certificate.new(File.read(crt_file))
     cert.public_key
   end
 
   cattr_accessor :private_key do
-    key_file = Rails.root.join('keys', 'saml.key.enc')
-    read_key_file(key_file, Figaro.env.saml_passphrase)
+    key_file = Rails.root.join('keys', 'oidc.key.enc')
+    read_key_file(key_file, Figaro.env.oidc_passphrase)
   end
 end

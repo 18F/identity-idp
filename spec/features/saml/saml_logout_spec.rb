@@ -77,7 +77,11 @@ feature 'SAML logout' do
         request = OneLogin::RubySaml::Logoutrequest.new
         visit request.create(settings)
 
+<<<<<<< HEAD
         expect(current_path).to eq(api_saml_logout_path)
+=======
+        expect(current_path).to eq(api_saml_logout2019_path)
+>>>>>>> 128a614... Get rid of saml.crt
         expect(page.driver.status_code).to eq(400)
 
         # The user should be signed in
@@ -91,7 +95,11 @@ feature 'SAML logout' do
     it 'logs the user out and redirects to the sign in page' do
       sign_in_and_2fa_user(user)
 
+<<<<<<< HEAD
       visit api_saml_logout_path
+=======
+      visit api_saml_logout2019_path
+>>>>>>> 128a614... Get rid of saml.crt
 
       expect(page).to have_content(t('devise.sessions.signed_out'))
       expect(page).to have_current_path(root_path)

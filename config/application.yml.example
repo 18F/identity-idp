@@ -166,6 +166,7 @@ development:
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
   newrelic_license_key: ''
+  oidc_passphrase: 'trust-but-verify'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '10'
@@ -190,7 +191,6 @@ development:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
-  saml_passphrase: 'trust-but-verify'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
@@ -287,6 +287,7 @@ production:
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
   newrelic_license_key: ''
+  oidc_passphrase:
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '10'
@@ -307,7 +308,6 @@ production:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs:
-  saml_passphrase:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
@@ -404,6 +404,7 @@ test:
   logins_per_email_and_ip_limit: '2'
   logins_per_email_and_ip_period: '60'
   max_mail_events: '2'
+  oidc_passphrase: 'trust-but-verify'
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'
   otp_valid_for: '10'
@@ -426,8 +427,7 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
-  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
-  saml_passphrase: 'trust-but-verify'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'

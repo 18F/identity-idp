@@ -22,8 +22,8 @@ module SamlAuthHelper
     settings.name_identifier_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth"
-    settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout"
+    settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth2019"
+    settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout2019"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -49,7 +49,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
   end
 
   def saml_test_sp_cert

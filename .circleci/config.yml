@@ -73,11 +73,13 @@ jobs:
           name: Test Setup
           command: |
             cp config/application.yml.example config/application.yml
-            cp certs/saml.crt.example certs/saml.crt
+            cp certs/oidc.crt.example certs/oidc.crt
             cp certs/saml2018.crt.example certs/saml2018.crt
+            cp certs/saml2019.crt.example certs/saml2019.crt
             cp certs/samlcloudhsm.crt.example certs/samlcloudhsm.crt
-            cp keys/saml.key.enc.example keys/saml.key.enc
+            cp keys/oidc.key.enc.example keys/oidc.key.enc
             cp keys/saml2018.key.enc.example keys/saml2018.key.enc
+            cp keys/saml2019.key.enc.example keys/saml2019.key.enc
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile
 
