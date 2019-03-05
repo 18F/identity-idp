@@ -81,7 +81,7 @@ shared_examples 'a saml endpoint' do
         [api_saml_auth_path, endpoint_suffix].join(''),
       )
       expect(logout_node.attributes['Location']).to include(
-        [destroy_user_session_path, endpoint_suffix].join(''),
+        [api_saml_logout_path, endpoint_suffix].join(''),
       )
     end
   end

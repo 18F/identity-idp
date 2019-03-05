@@ -13,7 +13,6 @@ class SamlIdpController < ApplicationController
   include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
-  before_action :validate_saml_logout_request, only: :logout
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
 
   def auth
@@ -30,13 +29,15 @@ class SamlIdpController < ApplicationController
   end
 
   def logout
-    prepare_saml_logout_response_and_request
+    raw_saml_request = params[:SAMLRequest]
+    return sign_out_with_flash if raw_saml_request.nil?
 
-    return handle_saml_logout_response if slo.successful_saml_response?
-    return finish_slo_at_idp if slo.finish_logout_at_idp?
-    return handle_saml_logout_request(name_id_user) if slo.valid_saml_request?
+    decode_request(raw_saml_request)
+    track_logout_event
 
-    generate_slo_request
+    return head(:bad_request) unless valid_saml_request?
+
+    handle_valid_sp_logout_request
   end
 
   private
@@ -44,15 +45,6 @@ class SamlIdpController < ApplicationController
   def confirm_user_is_authenticated_with_fresh_mfa
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
-  end
-
-  def validate_saml_logout_request(raw_saml_request = params[:SAMLRequest])
-    request_valid = saml_request_valid?(raw_saml_request)
-
-    track_logout_event(request_valid)
-    return unless raw_saml_request
-
-    head :bad_request unless request_valid
   end
 
   def saml_request_valid?(saml_request)
@@ -102,16 +94,5 @@ class SamlIdpController < ApplicationController
       locals: { action_url: action_url, message: message, type: type },
       layout: false,
     )
-  end
-
-  def track_logout_event(saml_request_valid)
-    saml_request = params[:SAMLRequest]
-    result = {
-      sp_initiated: saml_request.present?,
-      oidc: false,
-    }
-    result[:saml_request_valid] = saml_request_valid
-
-    analytics.track_event(Analytics::LOGOUT_INITIATED, result)
   end
 end

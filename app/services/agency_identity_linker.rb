@@ -19,14 +19,6 @@ class AgencyIdentityLinker
     Identity.where(criteria).first
   end
 
-  def self.sp_identity_from_uuid(uuid)
-    ai = AgencyIdentity.where(uuid: uuid).first
-    return Identity.where(uuid: uuid).first if ai.nil?
-    service_provider = ServiceProvider.where(agency_id: ai.agency_id).first
-    return unless service_provider
-    sp_identity_from_uuid_and_sp(ai.uuid, service_provider.issuer)
-  end
-
   private
 
   def find_or_create_agency_identity

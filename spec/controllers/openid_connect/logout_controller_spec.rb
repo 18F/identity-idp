@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe OpenidConnect::LogoutController do
   let(:state) { SecureRandom.hex }
   let(:code) { SecureRandom.uuid }
-  let(:post_logout_redirect_uri) { 'gov.gsa.openidconnect.test://result/logout' }
+  let(:post_logout_redirect_uri) { 'gov.gsa.openidconnect.test://result/signout' }
 
   let(:user) { build(:user) }
   let(:service_provider) { 'urn:gov:gsa:openidconnect:test' }
