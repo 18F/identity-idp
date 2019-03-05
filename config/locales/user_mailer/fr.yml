@@ -61,8 +61,8 @@ fr:
         entrant le code de confirmation.
       subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier
     new_device_sign_in:
-      help_html: "<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
+      help_html: <p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>
       subject: Nouvelle connexion avec votre compte Login.gov
     password_changed:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}

@@ -44,6 +44,10 @@ en:
         %{help_link} or %{contact_link}.
       intro: The email address for your %{app} account has been changed.
     help_link_text: Help Center
+    new_device_sign_in:
+      help_html: <p>Your Login.gov account was just used to sign in on a new device.</p><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>
+      subject: New sign-in with your Login.gov account
     letter_expired:
       help: ''
       info: The letter we mailed to your address has a confirmation code that has
@@ -57,10 +61,6 @@ en:
         helps us verify your address. You can complete the identity verification process
         by signing into %{link} and entering the confirmation code.
       subject: We mailed a letter to the address you have on file
-    new_device_sign_in:
-      help_html: "<p>Your Login.gov account was just used to sign in on a new device.</p><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
-      subject: New sign-in with your Login.gov account
     password_changed:
       help: If you did not make this change, please visit the %{app} %{help_link}
         or %{contact_link}.
@@ -125,7 +125,7 @@ en:
       link_text: Go to %{app}
       reset_password: If you can't remember your password, go to %{app} to reset it.
     undeliverable_address:
-      call_to_action: Please sign in to login.gov and follow instructions.
+      call_to_action: Please sign into %{link} and follow instructions.
       help: ''
-      intro: We were unable to send mail to the address you provided.
-      subject: Mail sent to your address was undeliverable
+      intro: We were unable to mail your letter to the address you provided.
+      subject: The letter sent to your address was undeliverable
