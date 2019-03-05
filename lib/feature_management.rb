@@ -102,14 +102,6 @@ class FeatureManagement
     Figaro.env.backup_codes_enabled == 'true'
   end
 
-  def self.use_kms_contexts?
-    Figaro.env.use_kms_contexts == 'true'
-  end
-
-  def self.write_2lkms_passwords?
-    Figaro.env.write_2lkms_passwords == 'true'
-  end
-
   def self.use_kms_context_for_sessions?
     Figaro.env.use_kms_context_for_sessions == 'true'
   end
