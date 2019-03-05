@@ -45,10 +45,6 @@ class FeatureManagement
     ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_disabled?
   end
 
-  def self.enable_i18n_mode?
-    Figaro.env.enable_i18n_mode == 'true'
-  end
-
   def self.enable_load_testing_mode?
     Figaro.env.enable_load_testing_mode == 'true'
   end
@@ -106,11 +102,7 @@ class FeatureManagement
     Figaro.env.backup_codes_enabled == 'true'
   end
 
-  def self.use_kms_contexts?
-    Figaro.env.use_kms_contexts == 'true'
-  end
-
-  def self.write_2lkms_passwords?
-    Figaro.env.write_2lkms_passwords == 'true'
+  def self.use_kms_context_for_sessions?
+    Figaro.env.use_kms_context_for_sessions == 'true'
   end
 end

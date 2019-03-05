@@ -1,4 +1,5 @@
 module Users
+  # rubocop:disable Metrics/ClassLength
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
 
@@ -215,4 +216,5 @@ module Users
       redirect_to url if url.present?
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

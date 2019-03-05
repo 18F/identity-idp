@@ -245,12 +245,6 @@ describe User do
         expect(user.last_identity.service_provider).to eq('last')
       end
     end
-
-    describe '#first_identity' do
-      it 'returns the first authenticated identity' do
-        expect(user.first_identity.service_provider).to eq('first')
-      end
-    end
   end
 
   context 'when user has multiple profiles' do

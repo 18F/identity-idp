@@ -1,9 +1,9 @@
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
-      def initialize(context)
+      def initialize(flow)
         @assure_id = nil
-        super(context, :doc_auth)
+        super(flow, :doc_auth)
       end
 
       private
@@ -27,7 +27,18 @@ module Idv
         Figaro.env.acuant_simulator == 'true'
       end
 
-      delegate :idv_session, to: :@context
+      def attempter
+        @attempter ||= Idv::Attempter.new(current_user)
+      end
+
+      def idv_failure(result)
+        attempter.increment
+        type = attempter.exceeded? ? :fail : :warning
+        redirect_to idv_session_failure_url(reason: type)
+        result
+      end
+
+      delegate :idv_session, to: :@flow
     end
   end
 end

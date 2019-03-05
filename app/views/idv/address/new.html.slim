@@ -1,0 +1,32 @@
+-title t('doc_auth.titles.doc_auth')
+
+h1.h3.my0 = t('doc_auth.headings.address')
+
+.mt3.mb3
+  = simple_form_for(:idv_form, url: idv_address_path, method: 'POST',
+          html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+
+    = f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'mb1' },
+            required: true, maxlength: 255
+    = f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255
+    = f.input :city, label: t('idv.form.city'), required: true, maxlength: 255
+
+    .clearfix.mxn1
+      .sm-col.sm-col-8.px1
+        = f.input :state, collection: us_states_territories,
+                label: t('idv.form.state'), required: true,
+                prompt: '- Select -'
+
+      .sm-col.sm-col-4.px1
+        / using :tel for mobile numeric keypad
+        = f.input :zipcode, as: :tel,
+                label: t('idv.form.zipcode'), required: true,
+                pattern: '(\d{5}([\-]\d{4})?)',
+                input_html: { class: 'zipcode' }
+
+    .mt0
+      button type='submit' class='btn btn-primary btn-wide mt2 sm-col-6 col-12'
+        = t('forms.buttons.continue')
+
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'

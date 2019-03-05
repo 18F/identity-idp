@@ -8,7 +8,7 @@ require 'io/console'
 # the program interactively asks for username, password (hidden), idp username,
 # and openssl.conf location
 
-class CloudhsmKeyGenerator
+class CloudhsmKeyGenerator # rubocop:disable Metrics/ClassLength
   KEY_MGMT_UTIL = '/opt/cloudhsm/bin/key_mgmt_util'.freeze
 
   def initialize

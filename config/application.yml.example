@@ -40,10 +40,6 @@ queue_health_check_dead_interval_seconds: '60'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '30'
 
-# Configuration to probabilistically select the config.active_job.queue_adapter
-# Currently known options are: async, inline
-queue_adapter_weights: '{"inline": 1}'
-
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
@@ -123,7 +119,6 @@ development:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
-  aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   backup_codes_enabled: 'true'
@@ -149,6 +144,7 @@ development:
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   exception_recipients: 'test1@test.com'
+  expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_disabled: 'true'
@@ -209,9 +205,8 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
-  use_kms_contexts: 'false'
+  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host: 'localhost'
@@ -223,7 +218,6 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
-  write_2lkms_passwords: 'false'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -251,7 +245,6 @@ production:
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
-  aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
   backup_codes_enabled: 'false'
@@ -269,6 +262,7 @@ production:
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   exception_recipients: 'user1@example.com,user2@example.com'
+  expired_letters_auth_token:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
@@ -325,9 +319,8 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
-  use_kms_contexts: 'false'
+  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '30'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
   usps_download_sftp_host:
@@ -339,7 +332,6 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
-  write_2lkms_passwords: 'false'
 
 test:
   aamva_cert_enabled: 'true'
@@ -364,7 +356,6 @@ test:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
-  aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   backup_codes_enabled: 'true'
@@ -389,6 +380,7 @@ test:
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   exception_recipients: 'test1@test.com'
+  expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'
@@ -445,9 +437,8 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
-  use_kms_contexts: 'true'
+  use_kms_context_for_sessions: 'true'
   usps_confirmation_max_days: '10'
-  enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
   usps_download_sftp_host:
@@ -459,4 +450,3 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
-  write_2lkms_passwords: 'true'

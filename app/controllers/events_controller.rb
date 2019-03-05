@@ -12,16 +12,27 @@ class EventsController < ApplicationController
       decorated_user: current_user.decorate,
     )
     device_and_events
-    render 'accounts/events/show'
+  rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
+    render_device_not_found
   end
 
   private
 
   def device_and_events
-    id = params[:id]
     user_id = current_user.id
-    @events = DeviceTracking::ListDeviceEvents.call(user_id, id, 0, EVENTS_PAGE_SIZE).
+    @events = DeviceTracking::ListDeviceEvents.call(user_id, device_id, 0, EVENTS_PAGE_SIZE).
               map(&:decorate)
-    @device = Device.find_by(user_id: user_id, id: id.to_i)
+    @device = Device.where(user_id: user_id).find(device_id)
+  end
+
+  def render_device_not_found
+    render 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+  end
+
+  def device_id
+    @device_id_param ||= begin
+      id = params[:id].try(:to_i)
+      id || 0
+    end
   end
 end

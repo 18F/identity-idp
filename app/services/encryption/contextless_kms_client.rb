@@ -7,11 +7,13 @@ module Encryption
     }.freeze
 
     def encrypt(plaintext)
+      KmsLogger.log(:encrypt)
       return encrypt_kms(plaintext) if FeatureManagement.use_kms?
       encrypt_local(plaintext)
     end
 
     def decrypt(ciphertext)
+      KmsLogger.log(:decrypt)
       return decrypt_kms(ciphertext) if use_kms?(ciphertext)
       decrypt_local(ciphertext)
     end

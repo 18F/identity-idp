@@ -1,28 +1,35 @@
 h1.h3.my0 = t('doc_auth.headings.welcome')
 p.mt-tiny.mb3 = t('doc_auth.info.welcome')
-h1.h3.my0 = t('doc_auth.instructions.welcome')
+h1.h3.mb2 = t('doc_auth.instructions.welcome')
 ul.list-reset
-  li.py2
-    .mr1.inline-block.circle.circle-number.bg-blue.white
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
       | 1
-    .h1.inline-block.bold = t('doc_auth.instructions.bullet1')
-    br
-    .ml3 = t('doc_auth.instructions.text1')
-  li.py2
-    .mr1.inline-block.circle.circle-number.bg-blue.white
+    .mr1.inline-block
+      .h1.inline-block.bold = t('doc_auth.instructions.bullet1')
+      br
+      = t('doc_auth.instructions.text1')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
       | 2
-    .h1.inline-block.bold = t('doc_auth.instructions.bullet2')
-    .ml3 = t('doc_auth.instructions.text2')
-  li.py2
-    .mr1.inline-block.circle.circle-number.bg-blue.white
+    .mr1.inline-block
+      .h1.inline-block.bold = t('doc_auth.instructions.bullet2')
+      br
+      = t('doc_auth.instructions.text2')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
       | 3
-    .h1.inline-block.bold = t('doc_auth.instructions.bullet3')
-    .ml3 = t('doc_auth.instructions.text3')
-  li.py2
-    .mr1.inline-block.circle.circle-number.bg-blue.white
-      | 3
-    .h1.inline-block.bold = t('doc_auth.instructions.bullet4')
-    .ml3 = t('doc_auth.instructions.text4')
+    .mr1.inline-block
+      .h1.inline-block.bold = t('doc_auth.instructions.bullet3')
+      br
+      = t('doc_auth.instructions.text3')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 4
+    .mr1.inline-block
+      .h1.inline-block.bold = t('doc_auth.instructions.bullet4')
+      br
+      = t('doc_auth.instructions.text4')
 = simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :welcome), method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
   br

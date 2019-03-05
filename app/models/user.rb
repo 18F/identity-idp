@@ -81,20 +81,13 @@ class User < ApplicationRecord
     confirmation_sent_at.present? && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
 
-  def first_identity
-    active_identities[0]
-  end
-
   def last_identity
-    active_identities[-1] || NullIdentity.new
+    identities.where.not(session_uuid: nil).order(last_authenticated_at: :desc).limit(1).first ||
+      NullIdentity.new
   end
 
   def active_identities
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
-  end
-
-  def multiple_identities?
-    active_identities.size > 1
   end
 
   def active_profile
