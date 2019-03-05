@@ -33,14 +33,14 @@ module Idv
         back_image_verified, data = assure_id.results
         return failure(data) unless back_image_verified
 
-        return [nil, data] if data['Result'] == 1
+        return [nil, data] if data['Result'] == BAD_RESULT
 
         failure_alerts(data)
       end
 
       def failure_alerts(data)
         failure(data['Alerts'].
-          reject { |res| res['Result'] == 2 }.
+          reject { |res| res['Result'] == FYI_RESULT }.
           map { |act| act['Actions'] })
       end
     end
