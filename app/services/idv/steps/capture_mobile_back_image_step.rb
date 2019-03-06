@@ -1,27 +1,20 @@
 module Idv
   module Steps
-    class BackImageStep < DocAuthBaseStep
+    class CaptureMobileBackImageStep < DocAuthBaseStep
       def call
         good, data = assure_id.post_back_image(image.read)
         return failure(data) unless good
 
-        failure_data, data = verify_back_image
+        failure_data, _data = verify_back_image
         return failure_data if failure_data
 
-        extract_pii_from_doc(data)
+        CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
       end
 
       private
 
       def form_submit
         Idv::ImageUploadForm.new(current_user).submit(permit(:image))
-      end
-
-      def extract_pii_from_doc(data)
-        pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
-          current_user.phone_configurations.first.phone,
-        )
-        flow_session[:pii_from_doc] = pii_from_doc
       end
 
       def verify_back_image
@@ -37,6 +30,10 @@ module Idv
         failure(data['Alerts'].
           reject { |res| res['Result'] == FYI_RESULT }.
           map { |act| act['Actions'] })
+      end
+
+      def user_id_from_token
+        flow_session[:doc_capture_user_id]
       end
     end
   end

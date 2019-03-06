@@ -58,6 +58,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'.freeze
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
+  CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze

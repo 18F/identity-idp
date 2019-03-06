@@ -1,8 +1,14 @@
 - title t('doc_auth.titles.doc_auth')
 
-= image_tag(asset_url('state-id-confirm@3x.png'),
-        alt: t('idv.titles.session.success'), width: 210)
+h1.h3.my0 = t('doc_auth.headings.text_message')
+br
+.clearfix.mxn1
+  .sm-col.sm-col-3.px1 = image_tag asset_url('idv/phone.png')
+  .sm-col.sm-col-9.px1.h1.h2.mb2.mt0.my0 = t('doc_auth.info.link_sent')
 
-h1.h3.mb2.mt3.my0 = t('doc_auth.info.link_sent')
-
+.mt0
+br
+= button_to(t('forms.buttons.continue'), idv_doc_auth_step_path(step: :link_sent), method: :put,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12')
+br
 = render 'start_over_or_cancel'
