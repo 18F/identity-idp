@@ -144,6 +144,7 @@ development:
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   exception_recipients: 'test1@test.com'
+  expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_disabled: 'true'
@@ -204,7 +205,6 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
-  use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -217,7 +217,6 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
-  write_2lkms_passwords: 'false'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -262,6 +261,7 @@ production:
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   exception_recipients: 'user1@example.com,user2@example.com'
+  expired_letters_auth_token:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
@@ -318,7 +318,6 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
-  use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
@@ -331,7 +330,6 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
-  write_2lkms_passwords: 'false'
 
 test:
   aamva_cert_enabled: 'true'
@@ -380,6 +378,7 @@ test:
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   exception_recipients: 'test1@test.com'
+  expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'
@@ -436,7 +435,6 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
-  use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -449,4 +447,3 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
-  write_2lkms_passwords: 'true'

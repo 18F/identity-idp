@@ -68,4 +68,12 @@ class UserMailer < ActionMailer::Base
     @application = application
     mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
   end
+
+  def letter_reminder(email)
+    mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
+  end
+
+  def letter_expired(email)
+    mail(to: email, subject: t('user_mailer.letter_expired.subject'))
+  end
 end

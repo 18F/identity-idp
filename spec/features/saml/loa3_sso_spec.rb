@@ -39,7 +39,6 @@ feature 'LOA3 Single Sign On' do
 
   def sign_out_user
     first(:link, t('links.sign_out')).click
-    click_submit_default
   end
 
   context 'First time registration' do
