@@ -144,6 +144,7 @@ development:
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
@@ -264,6 +265,7 @@ production:
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'user1@example.com,user2@example.com'
   expired_letters_auth_token:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
@@ -384,6 +386,7 @@ test:
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'

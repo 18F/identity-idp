@@ -14,7 +14,8 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def password_changed(email_address)
+  def password_changed(email_address, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
