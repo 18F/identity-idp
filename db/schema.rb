@@ -87,6 +87,17 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.index ["user_id"], name: "index_doc_auths_on_user_id"
   end
 
+  create_table "doc_captures", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "request_token", null: false
+    t.datetime "requested_at", null: false
+    t.string "acuant_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_token"], name: "index_doc_captures_on_request_token", unique: true
+    t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id"
     t.string "confirmation_token", limit: 255

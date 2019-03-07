@@ -9,7 +9,7 @@ en:
         cancel: %{cancel_link}'
     sms_doc_auth_link_job:
       message: 'You''ve requested to verify your identity on a mobile phone.  Please
-        sign in to %{application}: %{sp_link}'
+        take a picture of your state issued ID: %{link}'
     sms_new_device_sign_in_notifier_job:
       message: Your Login.gov account was just used to sign in on a new device
     sms_otp_sender_job:

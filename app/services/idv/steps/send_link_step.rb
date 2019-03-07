@@ -2,10 +2,11 @@ module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
       def call
+        capture_doc = CaptureDoc::CreateRequest.call(current_user.id)
         SmsDocAuthLinkJob.perform_now(
           phone: permit(:phone),
-          link: link,
-          app: app,
+          link: link(capture_doc.request_token),
+          app: 'login.gov',
         )
       end
 
@@ -15,16 +16,8 @@ module Idv
         Idv::PhoneForm.new(previous_params: {}, user: current_user).submit(permit(:phone))
       end
 
-      def link
-        identity&.return_to_sp_url || root_url
-      end
-
-      def app
-        identity&.friendly_name || 'login.gov'
-      end
-
-      def identity
-        current_user&.identities&.order('created_at DESC')&.limit(1)&.map(&:decorate)&.first
+      def link(token)
+        idv_capture_doc_step_url(step: :mobile_front_image, token: token)
       end
     end
   end
