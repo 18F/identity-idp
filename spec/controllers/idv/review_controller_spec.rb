@@ -320,9 +320,13 @@ describe Idv::ReviewController do
         end
 
         it 'creates an `account_verified` event once per confirmation' do
-          event_creator = instance_double(CreateVerifiedAccountEvent)
-          expect(CreateVerifiedAccountEvent).to receive(:new).and_return(event_creator)
-          expect(event_creator).to receive(:call)
+          expect(Event).to receive(:create).with(
+            hash_including(
+              user_id: user.id,
+              event_type: :account_verified,
+              ip: '0.0.0.0',
+            ),
+          )
 
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
         end

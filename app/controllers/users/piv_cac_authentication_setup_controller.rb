@@ -80,6 +80,7 @@ module Users
         subject: user_piv_cac_form.x509_dn,
         presented: true,
       )
+      create_user_event(:piv_cac_enabled)
       redirect_to next_step
     end
 
