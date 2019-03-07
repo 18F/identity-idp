@@ -28,6 +28,13 @@ shared_examples 'link sent step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
 
+    it 'proceeds to the next page if the user does not have a phone' do
+      complete_doc_auth_steps_before_link_sent_step(create(:user, :with_piv_or_cac))
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    end
+
     it 'does not proceed to the next page with invalid info' do
       allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
         and_return([false, ''])
