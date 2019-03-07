@@ -6,7 +6,6 @@ module Idv
 
     def call
       user.decorate.pending_profile&.activate
-      CreateVerifiedAccountEvent.new(user).call
     end
 
     private
