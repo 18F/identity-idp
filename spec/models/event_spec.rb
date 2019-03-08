@@ -12,4 +12,14 @@ describe Event do
       expect(event).to be_valid
     end
   end
+
+  it 'has a translation for every event type' do
+    missing_translations = Event.event_types.keys.select do |event_type|
+      translation = I18n.t("event_types.#{event_type}", raise: true)
+      translation.empty?
+    rescue I18n::MissingTranslationData
+      true
+    end
+    expect(missing_translations).to be_empty
+  end
 end
