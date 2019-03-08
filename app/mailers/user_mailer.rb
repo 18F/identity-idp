@@ -31,6 +31,12 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 
+  def new_device_sign_in(email, date, location)
+    @login_date = date
+    @login_location = location
+    mail(to: email, subject: t('user_mailer.new_device_sign_in.subject'))
+  end
+
   def personal_key_regenerated(email)
     mail(to: email, subject: t('user_mailer.personal_key_regenerated.subject'))
   end

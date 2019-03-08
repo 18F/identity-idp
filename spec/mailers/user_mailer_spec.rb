@@ -66,6 +66,28 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'sign in from new device' do
+    date = 'Washington, DC'
+    location = 'February 25, 2019 15:02'
+    let(:mail) { UserMailer.new_device_sign_in(user.email, date, location) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html',
+                                     date: date, location: location)))
+    end
+  end
+
   describe 'personal_key_regenerated' do
     let(:mail) { UserMailer.personal_key_regenerated(user.email) }
 
