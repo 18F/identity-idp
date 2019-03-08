@@ -19,7 +19,7 @@ module Idv
 
       def extract_pii_from_doc(data)
         pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
-          current_user.phone_configurations.first.phone,
+          current_user&.phone_configurations&.first&.phone,
         )
         flow_session[:pii_from_doc] = pii_from_doc
       end
