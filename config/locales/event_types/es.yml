@@ -7,6 +7,7 @@ es:
     authenticated_at_html: Sesión iniciada en %{service_provider_link}
     authenticator_disabled: La app de autenticación fue suspendida
     authenticator_enabled: App de autenticación permitido
+    backup_codes_added: Códigos de respaldo añadidos
     eastern_timestamp: "%{timestamp} (hora del Este)"
     email_changed: Email cambiado
     new_personal_key: Clave personal cambiado
