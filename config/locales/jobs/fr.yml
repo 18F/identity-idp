@@ -10,6 +10,8 @@ fr:
     sms_doc_auth_link_job:
       message: 'Vous avez demandé à vérifier votre identité sur un téléphone mobile.
         S''il vous plaît prendre une photo de votre identité émise par l''état: %{link}'
+    sms_new_device_sign_in_notifier_job:
+      message: Votre compte login.gov a été connecté sur un nouvel appareil
     sms_otp_sender_job:
       login_message: "%{code} est votre code de sécurité %{app}. Utilisez-le pour
         continuer à vous connecter à votre compte. Ce code expirera dans %{expiration}
