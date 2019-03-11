@@ -70,9 +70,30 @@ class MfaContext
     names.each_with_object(Hash.new(0)) { |name, count| count[name] += 1 }
   end
 
+  # retrns whether or not the user account is unphishable.  This is the
+  # combination of the account not having any phishable configurations
+  # and having at least one unphishable configurations.
+  def unphishable?
+    phishable_configuration_count == 0 && unphishable_configuration_count > 0
+  end
+
   private
 
   def enabled_two_factor_configuration_names
     two_factor_configurations.select(&:mfa_enabled?).map(&:friendly_name)
+  end
+
+  # Return number of configurations that are phishable.
+  def phishable_configuration_count
+    phone_configurations.to_a.select(&:mfa_enabled?).count +
+    (backup_code_configurations.any? ? 1 : 0) +
+    (auth_app_configuration.mfa_enabled? ? 1 : 0)
+  end
+
+  # Return number of configurations that are unphishable. These
+  # are the security key and PIV/CAC configurations.
+  def unphishable_configuration_count
+    webauthn_configurations.to_a.select(&:mfa_enabled?).count +
+    (piv_cac_configuration.mfa_enabled? ? 1 : 0)
   end
 end
