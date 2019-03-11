@@ -100,7 +100,7 @@ en:
       auth_app_info: Set up an authentication application to get your security code
         without providing a phone number
       backup_code: Backup Codes
-      backup_code_info: Recieve a pre-generated list of security codes to use when
+      backup_code_info: Receive a pre-generated list of security codes to use when
         signing in
       piv_cac: Government employees
       piv_cac_info: Use your PIV/CAC card to secure your account

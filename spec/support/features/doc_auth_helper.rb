@@ -175,6 +175,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_on t('doc_auth.buttons.use_phone')
   end
 
+  def complete_doc_auth_steps_before_link_sent_step(user = user_with_2fa)
+    complete_doc_auth_steps_before_send_link_step(user)
+    fill_out_doc_auth_phone_form_ok
+    click_idv_continue
+  end
+
   def complete_doc_auth_steps_before_email_sent_step(user = user_with_2fa)
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step(user)
@@ -237,5 +243,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     fill_in 'idv_form_city', with: 'Nowhere'
     select 'Virginia', from: 'idv_form_state'
     fill_in 'idv_form_zipcode', with: '1'
+  end
+
+  def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
+    fill_in :doc_auth_phone, with: phone
   end
 end

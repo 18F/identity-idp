@@ -22,7 +22,6 @@ class UserPivCacSetupForm
   def process_valid_submission
     attributes = { x509_dn_uuid: x509_dn_uuid, remember_device_revoked_at: Time.zone.now }
     UpdateUser.new(user: user, attributes: attributes).call
-    Event.create(user_id: user.id, event_type: :piv_cac_enabled)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'

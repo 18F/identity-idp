@@ -42,6 +42,7 @@ feature 'PIV/CAC Management' do
 
         user.reload
         expect(user.x509_dn_uuid).to eq uuid
+        expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
       end
 
       scenario 'displays error for a bad piv/cac' do
@@ -170,6 +171,7 @@ feature 'PIV/CAC Management' do
 
       user.reload
       expect(user.x509_dn_uuid).to be_nil
+      expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_disabled')
     end
   end
 

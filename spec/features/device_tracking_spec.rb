@@ -22,7 +22,7 @@ describe 'Device tracking' do
     end
   end
 
-  context 'when the device does not exist' do
+  context 'when visiting the page for a device that does not exist' do
     it 'renders a 404 error' do
       visit account_events_path(id: 'dne')
 
