@@ -22,10 +22,7 @@ class WebauthnSetupForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_attestation_response?(protocol)
-    if success
-      create_webauthn_configuration
-      create_user_event
-    end
+    create_webauthn_configuration if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -75,10 +72,6 @@ class WebauthnSetupForm
                                  credential_public_key: public_key,
                                  credential_id: id,
                                  name: name)
-  end
-
-  def create_user_event
-    Event.create(user_id: user.id, event_type: :webauthn_key_added)
   end
 
   def extra_analytics_attributes

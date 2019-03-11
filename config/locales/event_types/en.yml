@@ -7,6 +7,7 @@ en:
     authenticated_at_html: Signed in at %{service_provider_link}
     authenticator_disabled: Authenticator app disabled
     authenticator_enabled: Authenticator app enabled
+    backup_codes_added: Backup codes added
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
     new_personal_key: Personal key changed

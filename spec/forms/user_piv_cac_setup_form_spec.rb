@@ -29,8 +29,6 @@ describe UserPivCacSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(Event).to receive(:create).
-          with(user_id: user.id, event_type: :piv_cac_enabled)
         expect(form.submit).to eq result
         user.reload
         expect(TwoFactorAuthentication::PivCacPolicy.new(user).enabled?).to eq true
@@ -46,7 +44,6 @@ describe UserPivCacSetupForm do
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: {}, extra: extra).and_return(result)
-          expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
           expect(form.error_type).to eq 'user.piv_cac_associated'
@@ -63,7 +60,6 @@ describe UserPivCacSetupForm do
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: {}, extra: extra).and_return(result)
-          expect(Event).to_not receive(:create)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
@@ -80,7 +76,6 @@ describe UserPivCacSetupForm do
 
             expect(FormResponse).to receive(:new).
               with(success: false, errors: {}, extra: extra).and_return(result)
-            expect(Event).to_not receive(:create)
             expect(form.submit).to eq result
             expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
             expect(form.error_type).to eq 'piv_cac.already_associated'
@@ -101,7 +96,6 @@ describe UserPivCacSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
         expect(form.error_type).to eq 'token.bad'
@@ -121,7 +115,6 @@ describe UserPivCacSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.invalid'
       end
@@ -136,7 +129,6 @@ describe UserPivCacSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
       end

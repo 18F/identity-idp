@@ -90,7 +90,7 @@ piv_cac_email_domains: >-
     "restorethegulf.gov",
     "sba.gov", "sec.gov", "si.edu", "sss.gov", "state.gov", "stateoig.gov",
     "trade.gov", "truman.gov", "tsp.gov", "tva.gov",
-    "usadf.gov", "uscc.gov", "usccr.gov", "uscirf.gov",
+    "usadf.gov", "uscc.gov", "usccr.gov", "uscirf.gov", "usdoj.gov",
     "va.gov", "vef.gov"
   ]
 
@@ -139,6 +139,7 @@ development:
   disallow_all_web_crawlers: 'true'
   doc_auth_enabled: 'false'
   doc_auth_exclusive: 'false'
+  doc_capture_request_valid_for_minutes: '15'
   domain_name: 'localhost:3000'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
@@ -192,6 +193,7 @@ development:
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
+  send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   telephony_disabled: 'true'
@@ -205,7 +207,6 @@ development:
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
   use_kms_context_for_sessions: 'false'
-  use_kms_contexts: 'false'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -218,7 +219,6 @@ development:
   usps_upload_sftp_username: 'brady'
   usps_upload_sftp_password: 'test'
   usps_upload_token: '123ABC'
-  write_2lkms_passwords: 'false'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -258,6 +258,7 @@ production:
   disallow_all_web_crawlers: 'false'
   doc_auth_enabled: 'false'
   doc_auth_exclusive: 'false'
+  doc_capture_request_valid_for_minutes: '15'
   domain_name: 'login.gov'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
@@ -308,6 +309,7 @@ production:
   saml_endpoint_configs:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
+  send_new_device_sms: 'false'
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
   twilio_numbers: # Add JSON encoded array of phone numbers
@@ -320,7 +322,6 @@ production:
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
   use_kms_context_for_sessions: 'false'
-  use_kms_contexts: 'false'
   usps_confirmation_max_days: '30'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
@@ -333,7 +334,6 @@ production:
   usps_upload_sftp_username:
   usps_upload_sftp_password:
   usps_upload_token:
-  write_2lkms_passwords: 'false'
 
 test:
   aamva_cert_enabled: 'true'
@@ -378,6 +378,7 @@ test:
   disallow_all_web_crawlers: 'true'
   doc_auth_enabled: 'true'
   doc_auth_exclusive: 'false'
+  doc_capture_request_valid_for_minutes: '15'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -427,6 +428,7 @@ test:
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
+  send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   twilio_numbers: '["9999999999","2222222222"]'
@@ -439,7 +441,6 @@ test:
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
   use_kms_context_for_sessions: 'true'
-  use_kms_contexts: 'true'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -452,4 +453,3 @@ test:
   usps_upload_sftp_username: 'user'
   usps_upload_sftp_password: 'pass'
   usps_upload_token: 'test_token'
-  write_2lkms_passwords: 'true'

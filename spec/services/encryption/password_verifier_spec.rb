@@ -38,22 +38,6 @@ describe Encryption::PasswordVerifier do
         encrypted_password: 'kms_ciphertext',
       )
     end
-
-    context 'with 2lkms password digests disabled' do
-      before do
-        allow(Figaro.env).to receive(:write_2lkms_passwords).and_return(false)
-      end
-
-      it 'delegates to the UAK password encryptor' do
-        expect(Encryption::UakPasswordVerifier).to receive(:digest).
-          with(password).
-          and_return('uak ciphertext')
-
-        result = subject.digest(password: password, user_uuid: user_uuid)
-
-        expect(result).to eq('uak ciphertext')
-      end
-    end
   end
 
   describe '#verify' do

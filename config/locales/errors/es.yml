@@ -10,6 +10,12 @@ es:
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
       granted_token_missing: El enlace para eliminar tu cuenta de login.gov no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
+    capture_doc:
+      invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para
+        verificar su identidad en un teléfono móvil.
+      token_expired: token caducado
+      token_invalid: ficha invalida
+      token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
