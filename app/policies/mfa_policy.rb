@@ -11,9 +11,9 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
-  # Move counts to MfaContext.
   def unphishable?
-    mfa_user.unphishable?
+    mfa_user.phishable_configuration_count.zero? &&
+      mfa_user.unphishable_configuration_count.positive?
   end
 
   private

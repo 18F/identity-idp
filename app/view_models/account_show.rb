@@ -44,9 +44,9 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def phishable_status_partial
+  def unphishable_status_partial
     return 'shared/null' unless MfaPolicy.new(decorated_user.user).unphishable?
-    'accounts/phishable_status'
+    'accounts/unphishable_status'
   end
 
   def edit_action_partial
