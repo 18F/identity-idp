@@ -1,4 +1,4 @@
-class UserDecorator
+class UserDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::DateHelper
 
   attr_reader :user
@@ -74,6 +74,11 @@ class UserDecorator
     user.active_profile.present?
   end
 
+  def usps_mail_bounced?
+    return unless pending_profile
+    pending_profile&.usps_confirmation_codes&.order(created_at: :desc)&.first&.bounced_at
+  end
+
   def active_profile_newer_than_pending_profile?
     user.active_profile.activated_at >= pending_profile.created_at
   end
@@ -115,6 +120,10 @@ class UserDecorator
 
   def recent_devices
     DeviceTracking::ListDevices.call(user.id, 0, MAX_RECENT_DEVICES).map(&:decorate)
+  end
+
+  def devices?
+    !recent_devices.empty?
   end
 
   def connected_apps

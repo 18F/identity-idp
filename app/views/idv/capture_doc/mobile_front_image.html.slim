@@ -1,0 +1,25 @@
+- title t('doc_auth.titles.doc_auth')
+
+h1.h3.mb0 = t('doc_auth.headings.take_pic_front')
+
+h5.mt0 = t('doc_auth.instructions.take_pic')
+ul
+  li = t('doc_auth.instructions.take_pic1')
+  li = t('doc_auth.instructions.take_pic2')
+  li = t('doc_auth.instructions.take_pic3')
+  li = t('doc_auth.instructions.take_pic4')
+
+= simple_form_for(:doc_auth, url: idv_capture_doc_step_path(step: :mobile_front_image),
+  method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  .clearfix.mxn1
+    .sm-col.sm-col-8.px1
+      = f.input :image, label: false, as: 'file', required: true
+  div id= 'target'
+  br
+  .mt0
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'
+      = t('forms.buttons.continue')
+br
+
+= render 'idv/doc_auth/start_over_or_cancel'
+== javascript_pack_tag 'image-preview'

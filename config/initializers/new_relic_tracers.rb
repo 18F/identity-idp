@@ -66,6 +66,12 @@ Encryption::KmsClient.class_eval do
   add_method_tracer :encrypt, "Custom/#{name}/encrypt"
 end
 
+Encryption::ContextlessKmsClient.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+end
+
 TwilioService::Utils.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :place_call, "Custom/#{name}/place_call"

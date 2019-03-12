@@ -27,6 +27,8 @@ test:
     name: 'SEC'
   14:
     name: 'DOL'
+  15:
+    name: 'USAID'
 
 development:
   1:
@@ -57,6 +59,8 @@ development:
     name: 'SEC'
   14:
     name: 'DOL'
+  15:
+    name: 'USAID'
 
 production:
   1:
@@ -87,3 +91,5 @@ production:
     name: 'SEC'
   14:
     name: 'DOL'
+  15:
+    name: 'USAID'

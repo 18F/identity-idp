@@ -1,5 +1,5 @@
 module Users
-  class SessionsController < Devise::SessionsController
+  class SessionsController < Devise::SessionsController # rubocop:disable Metrics/ClassLength
     include ::ActionView::Helpers::DateHelper
     include SecureHeadersConcern
     include RememberDeviceConcern
@@ -28,6 +28,11 @@ module Users
 
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
+    end
+
+    def destroy
+      analytics.track_event(Analytics::LOGOUT_INITIATED, sp_initiated: false, oidc: false)
+      super
     end
 
     def active

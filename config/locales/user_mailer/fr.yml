@@ -45,6 +45,25 @@ fr:
         le %{help_link} de %{app} ou %{contact_link}.
       intro: L'adresse courriel de votre compte %{app} a été changée.
     help_link_text: Centre d'aide
+    letter_expired:
+      help: ''
+      info: La lettre que nous avons postée à votre adresse contient un code de confirmation
+        arrivé à expiration et ne peut plus être utilisée pour terminer le processus
+        de vérification. Pour vérifier votre adresse et terminer le processus de vérification
+        de votre identité, vous devez vous connecter à %{link} et demander une autre
+        lettre.
+      subject: Votre code de confirmation d'adresse a expiré
+    letter_reminder:
+      help: ''
+      info: La lettre que vous êtes sur le point de recevoir contiendra un code de
+        confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
+        le processus de vérification d'identité en vous connectant à %{link} et en
+        entrant le code de confirmation.
+      subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier
+    new_device_sign_in:
+      help_html: "<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>"
+      subject: Nouvelle connexion avec votre compte Login.gov
     password_changed:
       help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
         de %{app} ou %{contact_link}.
@@ -94,13 +113,16 @@ fr:
       intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
       subject: Nouveau numéro de téléphone
     please_reset_password:
-      call_to_action: Pour continuer à utiliser votre compte login.gov, veuillez réinitialiser
-        votre mot de passe en utilisant le lien ci-dessous.
-      intro: Au cours d'un examen de sécurité login.gov, nous avons identifié un problème
-        concernant votre mot de passe. Bien que nous n'ayons découvert aucune activité
-        suspecte sur votre compte login.gov, nous avons désactivé votre ancien mot
-        de passe et vous prions de bien vouloir en établir un nouveau pour continuer
-        à utiliser login.gov.
+      additional_help_html: Si vous avez utilisé votre mot de passe login.gov sur
+        d'autres sites internet, nous vous encourageons à mettre ces mots de passe
+        à jour également. Si vous avez des questions, veuillez laisser un message
+        à notre équipe sur %{contact_url} — nous répondrons sous deux jours ouvrables.
+      call_to_action: Pour accéder de nouveau à votre compte login.gov, vous allez
+        devoir réinitialiser votre mot de passe en utilisant le lien ci-dessous.
+      intro: Nous avons récemment identifié un problème de sécurité concernant votre
+        mot de passe. Nous avons désactivé ce dernier pour sécuriser votre compte.
+        Cela n'a pas été causé par un problème de sécurité sur login.gov mais par
+        la corruption de votre mot de passe.
       subject: Veuillez réinitialiser votre mot de passe
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
@@ -113,7 +135,7 @@ fr:
       reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
         %{app} pour le réinitialiser.
     undeliverable_address:
-      call_to_action: Veuillez vous connecter à login.gov et suivre les instructions.
+      call_to_action: Veuillez vous connecter à %{link} et suivre les instructions.
       help: ''
-      intro: Nous n'avons pas pu envoyer de courrier à l'adresse que vous avez fournie.
-      subject: Le courrier envoyé à votre adresse était non distribuable.
+      intro: Nous n'avons pas pu envoyer votre lettre à l'adresse que vous avez indiquée.
+      subject: La lettre envoyée à votre adresse était non livrable

@@ -124,7 +124,6 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
-      allow(FeatureManagement).to receive(:platform_authenticator_enabled?).and_return(false)
       allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
       allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
@@ -411,8 +410,8 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
-  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :saml
-  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :oidc
+  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
+  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :oidc
 
   context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly

@@ -14,6 +14,7 @@ describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:doc_auth) }
+    it { is_expected.to have_one(:doc_capture) }
   end
 
   it 'does not send an email when #create is called' do
@@ -243,12 +244,6 @@ describe User do
     describe '#last_identity' do
       it 'returns the most recently authenticated identity' do
         expect(user.last_identity.service_provider).to eq('last')
-      end
-    end
-
-    describe '#first_identity' do
-      it 'returns the first authenticated identity' do
-        expect(user.first_identity.service_provider).to eq('first')
       end
     end
   end

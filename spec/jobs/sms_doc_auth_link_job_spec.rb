@@ -37,7 +37,7 @@ describe SmsDocAuthLinkJob do
       expect(msg.body).
         to eq(I18n.t('jobs.sms_doc_auth_link_job.message',
                      application: 'login.gov',
-                     sp_link: root_url))
+                     link: root_url))
     end
   end
 end

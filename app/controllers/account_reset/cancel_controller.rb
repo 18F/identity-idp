@@ -1,7 +1,5 @@
 module AccountReset
   class CancelController < ApplicationController
-    before_action :check_feature_enabled
-
     def show
       return render :show unless token
 
@@ -26,10 +24,6 @@ module AccountReset
     end
 
     private
-
-    def check_feature_enabled
-      redirect_to root_url unless FeatureManagement.account_reset_enabled?
-    end
 
     def track_event(result)
       analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h)

@@ -80,6 +80,7 @@ module Users
     end
 
     def process_valid_webauthn
+      create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       redirect_to webauthn_setup_success_url
     end

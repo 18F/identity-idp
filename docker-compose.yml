@@ -11,9 +11,11 @@ services:
       DATABASE_URL: "postgres://postgres@db"
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
+      SMTP_HOST: 'mailcatcher'
     depends_on:
       - db
       - redis
+      - mailcatcher
   db:
     image: postgres
   redis:

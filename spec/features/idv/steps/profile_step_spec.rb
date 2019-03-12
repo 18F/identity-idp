@@ -72,6 +72,34 @@ feature 'idv profile step' do
     end
   end
 
+  context 'when an account exists with the same SSN' do
+    it 'renders a warning and locks the user out after 3 attempts' do
+      ssn = '123-45-6789'
+      create(:profile, ssn_signature: Pii::Fingerprinter.fingerprint(ssn))
+
+      start_idv_from_sp
+      complete_idv_steps_before_profile_step
+
+      2.times do
+        fill_out_idv_form_ok
+        fill_in :profile_ssn, with: ssn
+        click_continue
+
+        expect(page).to have_content(t('idv.failure.sessions.warning'))
+        expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+
+        click_on t('idv.failure.button.warning')
+      end
+
+      fill_out_idv_form_ok
+      fill_in :profile_ssn, with: ssn
+      click_continue
+
+      expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail')))
+      expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
+    end
+  end
+
   context 'cancelling IdV' do
     it_behaves_like 'cancel at idv step', :profile
     it_behaves_like 'cancel at idv step', :profile, :oidc
