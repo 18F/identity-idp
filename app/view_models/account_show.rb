@@ -1,5 +1,5 @@
 # :reek:TooManyMethods
-class AccountShow
+class AccountShow # rubocop:disable Metrics/ClassLength
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:)
@@ -34,7 +34,11 @@ class AccountShow
 
   def pending_profile_partial
     if decorated_user.pending_profile_requires_verification?
-      'accounts/pending_profile_usps'
+      if decorated_user.usps_mail_bounced?
+        'accounts/pending_profile_bounced_usps'
+      else
+        'accounts/pending_profile_usps'
+      end
     else
       'shared/null'
     end

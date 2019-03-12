@@ -17,7 +17,7 @@ which bundle
 export RAILS_ENV=production
 export MIGRATION_STATEMENT_TIMEOUT=60000
 
-bundle exec rake db:create db:migrate db:seed --trace
+bundle exec rake db:create db:migrate db:seed db:grant_readonly_access --trace
 
 set +x
 

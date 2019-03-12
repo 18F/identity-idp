@@ -29,20 +29,7 @@ describe WebauthnConfiguration do
 
   describe '#mfa_enabled?' do
     let(:mfa_enabled) { subject.mfa_enabled? }
-    context 'when webauthn enabled' do
-      before(:each) do
-        allow(FeatureManagement).to receive(:webauthn_enabled?).and_return(true)
-      end
 
-      it { expect(mfa_enabled).to be_truthy }
-    end
-
-    context 'when webauthn not enabled' do
-      before(:each) do
-        allow(FeatureManagement).to receive(:webauthn_enabled?).and_return(false)
-      end
-
-      it { expect(mfa_enabled).to be_falsey }
-    end
+    it { expect(mfa_enabled).to be_truthy }
   end
 end

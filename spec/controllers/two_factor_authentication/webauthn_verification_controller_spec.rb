@@ -3,12 +3,6 @@ require 'rails_helper'
 describe TwoFactorAuthentication::WebauthnVerificationController do
   include WebauthnVerificationHelper
 
-  describe 'before_actions' do
-    it 'includes appropriate before_actions' do
-      expect(subject).to have_actions(:before, :confirm_webauthn_enabled)
-    end
-  end
-
   describe 'when not signed in' do
     describe 'GET show' do
       it 'redirects to root url' do

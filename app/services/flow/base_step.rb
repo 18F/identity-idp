@@ -2,8 +2,8 @@ module Flow
   class BaseStep
     include Rails.application.routes.url_helpers
 
-    def initialize(context, name)
-      @context = context
+    def initialize(flow, name)
+      @flow = flow
       @form_response = nil
       @name = name
     end
@@ -17,6 +17,11 @@ module Flow
     def mark_step_complete(step = nil)
       klass = step.nil? ? self.class : steps[step]
       flow_session[klass.to_s] = true
+    end
+
+    def mark_step_incomplete(step = nil)
+      klass = step.nil? ? self.class : steps[step]
+      flow_session.delete(klass.to_s)
     end
 
     private
@@ -38,10 +43,14 @@ module Flow
       params.require(@name).permit(*args)
     end
 
-    def reset
-      @context.flow_session = {}
+    def redirect_to(url)
+      @flow.redirect_to(url)
     end
 
-    delegate :flow_session, :current_user, :params, :steps, :request, to: :@context
+    def reset
+      @flow.flow_session = {}
+    end
+
+    delegate :flow_session, :current_user, :params, :steps, :request, to: :@flow
   end
 end

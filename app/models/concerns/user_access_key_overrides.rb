@@ -8,9 +8,10 @@ module UserAccessKeyOverrides
   attr_reader :personal_key
 
   def valid_password?(password)
-    result = Encryption::PasswordVerifier.verify(
+    result = Encryption::PasswordVerifier.new.verify(
       password: password,
       digest: encrypted_password_digest,
+      user_uuid: uuid,
     )
     log_password_verification_failure unless result
     result
@@ -19,19 +20,26 @@ module UserAccessKeyOverrides
   def password=(new_password)
     @password = new_password
     return if @password.blank?
-    self.encrypted_password_digest = Encryption::PasswordVerifier.digest(@password)
+    self.encrypted_password_digest = Encryption::PasswordVerifier.new.digest(
+      password: @password,
+      user_uuid: uuid || generate_uuid,
+    )
   end
 
   def valid_personal_key?(normalized_personal_key)
-    Encryption::PasswordVerifier.verify(
+    Encryption::PasswordVerifier.new.verify(
       password: normalized_personal_key,
       digest: encrypted_recovery_code_digest,
+      user_uuid: uuid,
     )
   end
 
   def personal_key=(new_personal_key)
     return if new_personal_key.blank?
-    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.digest(new_personal_key)
+    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.new.digest(
+      password: new_personal_key,
+      user_uuid: uuid || generate_uuid,
+    )
   end
 
   # This is a devise method, which we are overriding. This should not be removed

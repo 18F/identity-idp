@@ -24,7 +24,6 @@ class UpdateUserPasswordForm
     update_user_password
     email_user_about_password_change
     encrypt_user_profile_if_active
-    increment_password_metrics
   end
 
   def update_user_password
@@ -43,10 +42,6 @@ class UpdateUserPasswordForm
     return if active_profile.blank?
 
     encryptor.call
-  end
-
-  def increment_password_metrics
-    PasswordMetricsIncrementer.new(password).increment_password_metrics
   end
 
   def encryptor

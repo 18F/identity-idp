@@ -10,7 +10,7 @@ feature 'doc auth success step' do
   end
 
   it 'is on the correct page' do
-    expect(page).to have_current_path(idv_doc_auth_doc_success_step)
+    expect(page).to have_current_path(idv_doc_auth_success_step)
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
   end
 

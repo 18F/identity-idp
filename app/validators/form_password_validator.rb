@@ -8,8 +8,7 @@ module FormPasswordValidator
     validates :password,
               presence: true,
               length: { in: Devise.password_length }
-
-    validate :strong_password, if: :password_strength_enabled?
+    validate :strong_password
   end
 
   private
@@ -45,10 +44,6 @@ module FormPasswordValidator
     feedback.map do |error|
       I18n.t("zxcvbn.feedback.#{i18n_key(error)}")
     end.join('. ').gsub(/\.\s*\./, '.')
-  end
-
-  def password_strength_enabled?
-    @enabled ||= FeatureManagement.password_strength_enabled?
   end
 
   def i18n_key(key)

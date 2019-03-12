@@ -2,9 +2,11 @@ module SamlIdpAuthConcern
   extend ActiveSupport::Concern
 
   included do
+    # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :store_saml_request, only: :auth
+    # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
   private
