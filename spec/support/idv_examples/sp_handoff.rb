@@ -110,7 +110,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_on I18n.t('forms.buttons.continue')
       visit account_path
       first(:link, t('links.sign_out')).click
-      click_submit_default if sp == :saml # SAML SLO request
     end
 
     it 'does not require idv or requested attribute verification and hands off successfully' do

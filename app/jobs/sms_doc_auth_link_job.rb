@@ -5,7 +5,7 @@ class SmsDocAuthLinkJob < ApplicationJob
   def perform(phone:, link:, app:)
     message = I18n.t(
       'jobs.sms_doc_auth_link_job.message',
-      sp_link: link,
+      link: link,
       application: app,
     )
     TwilioService::Utils.new.send_sms(

@@ -36,14 +36,9 @@ class ResetPasswordForm
   end
 
   def handle_valid_password
-    create_password_changed_event
     update_user
     mark_profile_inactive
     notify_user_of_password_change_via_email
-  end
-
-  def create_password_changed_event
-    Event.create(user_id: user.id, event_type: :password_changed)
   end
 
   def update_user

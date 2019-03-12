@@ -288,13 +288,15 @@ describe 'OpenID Connect' do
       state = SecureRandom.hex
 
       visit openid_connect_logout_path(
-        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/logout',
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
         state: state,
         id_token_hint: id_token,
       )
 
       current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-      expect(current_url_no_port).to eq("gov.gsa.openidconnect.test://result/logout?state=#{state}")
+      expect(current_url_no_port).to eq(
+        "gov.gsa.openidconnect.test://result/signout?state=#{state}",
+      )
 
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))

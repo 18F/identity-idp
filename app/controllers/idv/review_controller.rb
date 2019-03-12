@@ -72,6 +72,7 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
       idv_session.cache_encrypted_pii(password)
       idv_session.complete_session
+      create_user_event(:account_verified) if idv_session.phone_confirmed?
     end
 
     def valid_password?

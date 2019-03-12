@@ -35,6 +35,8 @@ module Features
     end
 
     def signin(email, password)
+      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
     end

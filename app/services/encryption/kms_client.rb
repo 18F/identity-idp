@@ -10,14 +10,14 @@ module Encryption
     }.freeze
 
     def encrypt(plaintext, encryption_context)
-      return ContextlessKmsClient.new.encrypt(plaintext) unless FeatureManagement.use_kms_contexts?
-
+      KmsLogger.log(:encrypt, encryption_context)
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
       encrypt_local(plaintext, encryption_context)
     end
 
     def decrypt(ciphertext, encryption_context)
       return decrypt_contextless_kms(ciphertext) if self.class.looks_like_contextless?(ciphertext)
+      KmsLogger.log(:decrypt, encryption_context)
       return decrypt_kms(ciphertext, encryption_context) if use_kms?(ciphertext)
       decrypt_local(ciphertext, encryption_context)
     end

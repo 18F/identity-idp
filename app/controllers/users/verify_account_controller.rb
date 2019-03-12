@@ -17,6 +17,7 @@ module Users
       @verify_account_form = build_verify_account_form
 
       if @verify_account_form.submit
+        create_user_event(:account_verified)
         flash[:success] = t('account.index.verification.success')
         redirect_to sign_up_completed_url
       else

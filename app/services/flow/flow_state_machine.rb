@@ -33,8 +33,8 @@ module Flow
       klass = self.class
       @name = klass.name.underscore.gsub('_controller', '')
       klass::FSM_SETTINGS.each { |key, value| instance_variable_set("@#{key}", value) }
-      user_session[@name] ||= {}
-      @flow = @flow.new(user_session, current_user, @name)
+      current_session[@name] ||= {}
+      @flow = @flow.new(current_session, current_user, @name)
     end
 
     def render_update(step, result)
@@ -50,7 +50,7 @@ module Flow
     end
 
     def move_to_next_step
-      user_session[@name] = flow.flow_session
+      current_session[@name] = flow.flow_session
       redirect_to_step(next_step)
     end
 
@@ -86,6 +86,10 @@ module Flow
 
     def next_step_is_url
       next_step.to_s.index(':')
+    end
+
+    def current_session
+      user_session || session
     end
   end
 end
