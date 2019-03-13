@@ -87,6 +87,21 @@ RSpec.describe OpenidConnectTokenForm do
           expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
         end
       end
+
+      context 'code is nil' do
+        before do
+          # Create an identity with a nil session uuid to make sure the form is not
+          # looking up an identity with a nil code and finding this one
+          create(:identity, session_uuid: nil)
+        end
+
+        let(:code) { nil }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
     end
 
     context 'private_key_jwt' do
