@@ -36,10 +36,31 @@ es:
         su cuenta, <u>%{cancel_account_reset}</u>.
       subject: Eliminar su cuenta
     contact_link_text: Contáctenos
+    doc_auth_link:
+      message: You've requested to verify your identity on a desktop computer.  Please
+        sign in to %{sp_link}
+      subject: Verify your identity on a desktop computer
     email_changed:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
       intro: El email de su cuenta de %{app} ha sido cambiado.
     help_link_text: Centro de Ayuda
+    letter_expired:
+      help: ''
+      info: La carta que le enviamos a su dirección tiene un código de confirmación
+        que ha caducado y ya no se puede utilizar para completar el proceso de verificación.
+        Para verificar su dirección y completar el proceso de verificación de identidad,
+        deberá iniciar sesión en %{link} y solicitar otra carta.
+      subject: El código de confirmación de tu dirección ha caducado
+    letter_reminder:
+      help: ''
+      info: La carta que está a punto de recibir contendrá un código de confirmación
+        que nos ayudará a verificar su dirección. Puede completar el proceso de verificación
+        de identidad iniciando sesión en %{link} e ingresando el código de confirmación.
+      subject: Le enviamos una carta a la dirección que tiene archivada
+    new_device_sign_in:
+      help_html: "<p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>"
+      subject: Nuevo initio de sesion con su Login.gov cuenta
     password_changed:
       help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
@@ -86,12 +107,16 @@ es:
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
     please_reset_password:
-      call_to_action: Para seguir usando tu cuenta de login.gov, restablece tu contraseña
-        usando el siguiente enlace.
-      intro: Encontramos un problema con tu contraseña tras realizar una revisión
-        de seguridad de login.gov. Aunque no vimos ninguna actividad sospechosa en
-        tu cuenta de login.gov, hemos desactivado tu contraseña antigua. Restablece
-        tu contraseña para seguir usando login.gov.
+      additional_help_html: Si ha utilizado su contraseña de login.gov en otros sitios,
+        le pedimos que actualice estas contraseñas también. Si tiene preguntas, por
+        favor deje un mensaje para nuestro equipo en %{contact_url}, y le responderemos
+        en dos días hábiles.
+      call_to_action: Para retomar acceso a su cuenta en login.gov, tendrá que restablecer
+        su contraseña utilizando el enlace a continuación.
+      intro: Recientemente identificamos un problema de seguridad con su contraseña.
+        Hemos deshabilitado su contraseña para mantener su cuenta segura. Esto no
+        fue el resultado de un problema de seguridad con login.gov, sino un problema
+        con su contraseña que ha sido comprometida.
       subject: Restablece tu contraseña
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
@@ -103,7 +128,7 @@ es:
       link_text: Ir a %{app}
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     undeliverable_address:
-      call_to_action: Por favor, inicie sesión en login.gov y siga las instrucciones.
+      call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
       help: ''
-      intro: No hemos podido enviar el correo a la dirección que proporcionó.
-      subject: El correo enviado a su dirección no se pudo entregar
+      intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
+      subject: La carta enviada a su dirección no se pudo entregar

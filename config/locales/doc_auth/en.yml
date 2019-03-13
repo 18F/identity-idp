@@ -2,27 +2,73 @@
 en:
   doc_auth:
     buttons:
+      change_address: change
+      change_ssn: change
+      get_started: Get started
       start_over: Start over
-    errors:
-      state_id_fail: Sorry. Information from your uploaded state-issued ID does not
-        match information for your social security number.
+      use_computer: Use your computer
+      use_phone: Use your phone
     forms:
+      address1: Address
+      city: City
       dob: Date of Birth
       doc_success: We've verified your social security number and state-issued ID.
-      entered_info: 'Information you entered:'
       first_name: First Name
       last_name: Last Name
-      option_1: 'Desktop computer users: You need a scanned copy of your id. If you
-        do not have one please sign in from a mobile phone.'
-      option_2: 'Mobile phone users: You can use your camera or photos from your camera
-        roll.'
       ssn: Social Security Number
-      state_id_info: 'Information from your uploaded state-issued ID:'
+      state: State
+      zip_code: Zip Code
     headings:
-      intro: To verify your identity, you'll need your social security number and
-        state-issued ID.
+      address: Mailing Address
+      capture_complete: We have verified your state issued ID
       ssn: Please enter your social security number.
-      upload_back: Please upload a photo of the back of your state-issued ID.
-      upload_front: Please upload a photo of the front of your state-issued ID.
+      take_pic_back: Take a picture of the back of your ID
+      take_pic_front: Take a picture of the front of your ID
+      take_picture: Take a picture with a phone
+      text_message: We sent a message to your phone
+      upload: How would you like to upload your state issued ID?
+      upload_back: Upload an image of the back of your state issued ID
+      upload_from_computer: Upload from your computer
+      upload_from_phone: Take a picture with a phone to upload your ID
+      upload_front: Upload an image of the front of your state issued ID
+      verify: Please verify your information
+      welcome: We need to verify your identity
+    info:
+      camera_required: Your mobile phone must have a camera and a web browser
+      link_sent: Please check your phone and follow instructions to take a picture
+        of your state issued ID. When you are done click continue here to finish verifying
+        your identity.
+      take_picture: Use the camera on your mobile phone and upload images of your
+        ID.  We only use the images to verify your identity.
+      upload: We'll collect information about you by reading from your state-issued
+        ID.  We do not store images you upload.  We only verify your identity.
+      upload_from_computer: Upload images of your ID you have on your computer or
+        use a scanner to capture images of your ID
+      upload_from_phone: Upload pictures directly from your phone camera
+      upload_image: We only use your ID to verify your identity, and we will not save
+        any images.  We accept PDF, PNG, and JPG formats.
+      welcome: We verify your identity to make sure you are you—not someone pretending
+        to be you.  Verifying your identity also allows you to access services that
+        handle Personal Identifiable Information.
+    instructions:
+      bullet1: Upload your ID
+      bullet2: Confirm your address
+      bullet3: Secure your account
+      bullet4: Account recovery
+      email_sent: Link sent to %{email}. Please check your desktop email and follow
+        instructions to verify your identity.
+      send_sms: We'll send a text message to your device with a link.  Follow that
+        link to your browser to take pictures of the front and back of your ID.
+      switch_back: Switch back to your computer to finish verifying your identity
+      take_pic: 'For best results:'
+      take_pic1: Use a dark background
+      take_pic2: Take the photo on a flat surface
+      take_pic3: Do not use the flash on your camera
+      take_pic4: Use the landscape orientation
+      text1: along with your Social Security Number
+      text2: using a phone number or mailing address
+      text3: by re-entering your login.gov password
+      text4: make sure you always have access
+      welcome: 'What you''ll need to do:'
     titles:
       doc_auth: Document Authentication

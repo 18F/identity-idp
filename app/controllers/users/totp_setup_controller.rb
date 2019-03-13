@@ -51,6 +51,7 @@ module Users
     end
 
     def process_valid_code
+      create_user_event(:authenticator_enabled)
       mark_user_as_fully_authenticated
       flash[:success] = t('notices.totp_configured')
       redirect_to url_after_entering_valid_code

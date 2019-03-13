@@ -66,6 +66,28 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'sign in from new device' do
+    date = 'Washington, DC'
+    location = 'February 25, 2019 15:02'
+    let(:mail) { UserMailer.new_device_sign_in(user.email, date, location) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html',
+                                     date: date, location: location)))
+    end
+  end
+
   describe 'personal_key_regenerated' do
     let(:mail) { UserMailer.personal_key_regenerated(user.email) }
 
@@ -235,7 +257,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(email_address) }
+    let(:mail) { UserMailer.please_reset_password(email_address.email, 'This is a test.') }
 
     it_behaves_like 'a system email'
 
@@ -253,6 +275,9 @@ describe UserMailer, type: :mailer do
 
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
+
+      expect(mail.html_part.body).
+        to have_content('This is a test.')
     end
   end
 
@@ -272,6 +297,67 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.undeliverable_address.intro')))
+    end
+  end
+
+  describe 'doc_auth_desktop_link_to_sp' do
+    let(:app) { 'login.gov' }
+    let(:link) { root_url }
+    let(:mail) { UserMailer.doc_auth_desktop_link_to_sp(email_address.email, app, link) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.doc_auth_link.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_link(app, href: link)
+
+      expect(mail.html_part.body).to \
+        have_content(strip_tags(I18n.t('user_mailer.doc_auth_link.message', sp_link: nil)))
+    end
+  end
+
+  describe 'expired letter' do
+    let(:mail) { UserMailer.letter_expired(email_address.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.letter_expired.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.letter_expired.info', link: APP_NAME)))
+    end
+  end
+
+  describe 'reminder letter' do
+    let(:mail) { UserMailer.letter_reminder(email_address.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.letter_reminder.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
     end
   end
 

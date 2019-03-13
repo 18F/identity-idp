@@ -36,8 +36,8 @@ class UndeliverableAddressNotifier
   end
 
   def process_code(otp)
-    ucc = usps_confirmation_code(otp)
-    ucc&.safe_update_bounced_at_and_send_notification
+    usps_confirmation_code = usps_confirmation_code(otp)
+    usps_confirmation_code&.safe_update_bounced_at_and_send_notification
   end
 
   def sftp_config

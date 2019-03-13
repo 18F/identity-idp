@@ -12,18 +12,26 @@ describe Idv::DocAuthController do
     end
   end
 
-  before do
+  before do |example|
     enable_doc_auth
-    stub_sign_in
+    stub_sign_in unless example.metadata[:skip_sign_in]
     stub_analytics
     allow(@analytics).to receive(:track_event)
+  end
+
+  describe 'unauthenticated', :skip_sign_in do
+    it 'redirects to the root url' do
+      get :index
+
+      expect(response).to redirect_to root_url
+    end
   end
 
   describe '#index' do
     it 'redirects to the first step' do
       get :index
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :front_image)
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
     end
   end
 
@@ -63,9 +71,9 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'front_image' }
+      result = { step: 'welcome' }
 
-      get :show, params: { step: 'front_image' }
+      get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result

@@ -6,88 +6,32 @@ describe SamlIdpController do
   render_views
 
   describe '/api/saml/logout' do
-    let(:user) { create(:user, :signed_up) }
-    before { sign_in user }
-
-    it 'clears session state' do
-      subject.session[:foo] = 'bar'
-      expect(subject.session[:foo]).to eq('bar')
-
-      delete :logout
-      expect(subject.session[:foo]).to be_nil
-    end
-
-    it 'tracks the event when idp-initiated' do
+    it 'tracks the event when idp initiated' do
       stub_analytics
-      result = { sp_initiated: false, oidc: false, saml_request_valid: false }
 
+      result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
       delete :logout
     end
 
-    it 'tracks the event when sp-initiated' do
+    it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
       stub_analytics
+
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
-
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
 
-    it 'tracks the event when sp-initiated and the saml request is not valid' do
+    it 'tracks the event when the saml request is invalid' do
       stub_analytics
-      result = { sp_initiated: true, oidc: false, saml_request_valid: false }
 
+      result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
       delete :logout, params: { SAMLRequest: 'foo' }
-    end
-  end
-
-  describe 'POST /api/saml/logout' do
-    context 'when there is an invalid SAML packet' do
-      let(:user) { create(:user, :signed_up) }
-
-      it 'responds with "400 Bad Request"' do
-        sign_in user
-
-        post :logout, params: { SAMLRequest: 'foo' }
-        expect(response.status).to eq(400)
-      end
-    end
-    context 'when SAML response is not successful' do
-      let(:user) { create(:user, :signed_up) }
-
-      it 'finishes SLO at the IdP' do
-        user.identities << Identity.create(
-          service_provider: 'foo',
-          last_authenticated_at: Time.zone.now,
-        )
-        sign_in user
-
-        post :logout, params: {
-          SAMLResponse: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4' \
-                        '8c2FtbDJwOkxvZ291dFJlc3BvbnNlIHhtbG5zOnNhbWwycD0idX' \
-                        'JuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnByb3RvY29sIiBEZ' \
-                        'XN0aW5hdGlvbj0iaHR0cHM6Ly9teWFjY291bnQudXNjaXMuZGhz' \
-                        'Lmdvdi9hcGkvc2FtbC9sb2dvdXQiIElEPSJhMzZkYWloNWNqYmo' \
-                        'zMWI5NDYwZGJiajNqZDQ2N2I0IiBJblJlc3BvbnNlVG89Il81Zj' \
-                        'dlYjU3MC01YjQ3LTRhMzAtYjUzNi0yY2YyOThhY2NmNmYiIElzc' \
-                        '3VlSW5zdGFudD0iMjAxNS0xMi0wMlQxNToyNzo0OS4zNzFaIiBW' \
-                        'ZXJzaW9uPSIyLjAiPjxzYW1sMjpJc3N1ZXIgeG1sbnM6c2FtbDI' \
-                        '9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb2' \
-                        '4iPmV4dGVybmFsYXBwX3ByXzMwYTwvc2FtbDI6SXNzdWVyPjxzY' \
-                        'W1sMnA6U3RhdHVzPjxzYW1sMnA6U3RhdHVzQ29kZSBWYWx1ZT0i' \
-                        'dXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnN0YXR1czpVbmt' \
-                        'ub3duUHJpbmNpcGFsIi8+PHNhbWwycDpTdGF0dXNNZXNzYWdlPk' \
-                        '5vIHVzZXIgaXMgbG9nZ2VkIGluPC9zYW1sMnA6U3RhdHVzTWVzc' \
-                        '2FnZT48L3NhbWwycDpTdGF0dXM+PC9zYW1sMnA6TG9nb3V0UmVz' \
-                        'cG9uc2U+',
-        }
-        expect(response).to redirect_to root_url
-      end
     end
   end
 

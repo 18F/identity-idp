@@ -40,7 +40,7 @@ module TwoFactorAuthentication
     end
 
     def next_step
-      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
         after_otp_verification_confirmation_url
       else
         account_recovery_setup_url

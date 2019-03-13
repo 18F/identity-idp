@@ -1,0 +1,26 @@
+- title t('doc_auth.titles.doc_auth')
+
+h1.h3 = t('doc_auth.headings.take_picture')
+
+p.mt-tiny.mb3 = t('doc_auth.info.take_picture')
+
+p.mt-tiny.mb3.bold = t('doc_auth.info.camera_required')
+
+p.mt-tiny.mb3 = t('doc_auth.instructions.send_sms')
+
+= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :send_link), method: 'PUT',
+        html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  .clearfix.mxn1
+    .sm-col.sm-col-8.px1
+      / using :tel for mobile numeric keypad
+      = f.label :phone, label: t('idv.form.phone'), class: 'bold'
+      = f.input :phone, required: true, input_html: { class: 'us-phone sm-col-8' }, label: false,
+          wrapper_html: { class: 'mr2' }
+
+  p.green.bold = flow_session[:error_message]
+
+  .mt0
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
+      = t('forms.buttons.continue')
+
+= render 'start_over_or_cancel'

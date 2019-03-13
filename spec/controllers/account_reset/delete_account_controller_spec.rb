@@ -93,14 +93,6 @@ describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq t('errors.account_reset.granted_token_expired')
     end
-
-    it 'redirects to root if feature is not enabled' do
-      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-
-      delete :delete
-
-      expect(response).to redirect_to root_url
-    end
   end
 
   describe '#show' do
@@ -148,14 +140,6 @@ describe AccountReset::DeleteAccountController do
       get :show
 
       expect(response).to render_template(:show)
-    end
-
-    it 'redirects to root if feature is not enabled' do
-      allow(FeatureManagement).to receive(:account_reset_enabled?).and_return(false)
-
-      get :show
-
-      expect(response).to redirect_to root_url
     end
   end
 end

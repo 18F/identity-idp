@@ -31,7 +31,8 @@ class AccountResetLambda
   end
 
   def now
-    Time.now.to_f
+    # TimeZone extensions do not apply when running in the lambda environment
+    Time.now.to_f # rubocop:disable Rails/TimeZone
   end
 end
 

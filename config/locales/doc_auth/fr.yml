@@ -2,32 +2,86 @@
 fr:
   doc_auth:
     buttons:
+      change_address: changement
+      change_ssn: changement
+      get_started: Commencer
       start_over: Recommencer
-    errors:
-      state_id_fail: Pardon. Les informations de votre identifiant émis par l'état
-        téléchargé ne correspondent pas aux informations de votre numéro de sécurité
-        sociale.
+      use_computer: Utilisez votre ordinateur
+      use_phone: Utilisez votre téléphone
     forms:
+      address1: Adresse
+      city: Ville
       dob: Date de naissance
       doc_success: Nous avons vérifié votre numéro de sécurité sociale et votre identifiant
         délivré par l'État.
-      entered_info: 'Informations que vous avez entrées:'
       first_name: Prénom
       last_name: Nom de famille
-      option_1: 'Utilisateurs d''ordinateur de bureau: Vous avez besoin d''une copie
-        numérisée de votre identifiant. Si vous n''en avez pas, connectez-vous à partir
-        d''un téléphone portable.'
-      option_2: 'Utilisateurs de téléphones mobiles: Vous pouvez utiliser votre appareil
-        photo ou des photos à partir de votre pellicule.'
       ssn: Numéro de sécurité sociale
-      state_id_info: 'Information from your uploaded state-issued ID:'
+      state: Etat
+      zip_code: Code postal
     headings:
-      intro: Pour vérifier votre identité, vous aurez besoin de votre numéro de sécurité
-        sociale et de votre identifiant délivré par l'État.
+      address: Adresse mail
+      capture_complete: Nous avons vérifié votre ID émis par l'état
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
+      take_pic_back: Prenez une photo au verso de votre identifiant
+      take_pic_front: Prenez une photo du recto de votre identifiant
+      take_picture: Prendre une photo avec un téléphone
+      text_message: Nous avons envoyé un message à votre téléphone
+      upload: Comment voudriez-vous télécharger votre ID émis par l'état?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
+      upload_from_computer: Télécharger depuis votre ordinateur
+      upload_from_phone: Prenez une photo avec un téléphone pour télécharger votre
+        identifiant
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
+      verify: S'il vous plaît vérifier vos informations
+      welcome: Nous devons vérifier votre identité
+    info:
+      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
+        Web
+      link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
+        prendre une photo de votre identité émise par l'État. Lorsque vous avez terminé,
+        cliquez ici pour continuer à vérifier votre identité.
+      take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
+        des images de votre identifiant. Nous utilisons uniquement les images pour
+        vérifier votre identité.
+      upload: Nous collecterons des informations à votre sujet en lisant votre identifiant
+        émis par l'État Nous ne stockons pas les images que vous téléchargez. Nous
+        vérifions uniquement votre identité.
+      upload_from_computer: Téléchargez des images de votre identifiant que vous avez
+        sur votre ordinateur ou utilisez un scanner pour capturer des images de votre
+        identifiant
+      upload_from_phone: Téléchargez des images directement depuis l'appareil photo
+        de votre téléphone
+      upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
+        et nous n'enregistrerons aucune image. Nous acceptons les formats PDF, PNG
+        et JPG.
+      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
+        et non quelqu'un prétendant être vous. La vérification de votre identité vous
+        permet également d'accéder à des services traitant des informations personnelles
+        identifiables.
+    instructions:
+      bullet1: Téléchargez votre identifiant
+      bullet2: Confirmez votre adresse
+      bullet3: Sécurise ton compte
+      bullet4: Récupération du compte
+      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
+        et suivez les instructions pour vérifier votre identité.
+      send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
+        ce lien vers votre navigateur pour prendre des photos du recto et du verso
+        de votre identifiant.
+      switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
+        identité
+      take_pic: 'Pour les meilleurs résultats:'
+      take_pic1: Utilisez un fond sombre
+      take_pic2: Prenez la photo sur une surface plane
+      take_pic3: Ne pas utiliser le flash sur votre appareil photo
+      take_pic4: Utilisez l'orientation paysage
+      text1: avec votre numéro de sécurité sociale
+      text2: en utilisant un numéro de téléphone ou une adresse postale
+      text3: en ressaisissant votre mot de passe login.gov
+      text4: assurez-vous d'avoir toujours accès
+      welcome: 'Ce que vous devez faire:'
     titles:
       doc_auth: Authentification de document

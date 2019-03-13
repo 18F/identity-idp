@@ -17,8 +17,6 @@ describe TotpSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(Event).to receive(:create).
-          with(user_id: user.id, event_type: :authenticator_enabled)
         expect(form.submit).to eq result
         expect(user.reload.totp_enabled?).to eq true
       end
@@ -35,7 +33,6 @@ describe TotpSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(user.reload.totp_enabled?).to eq false
       end
@@ -54,7 +51,6 @@ describe TotpSetupForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
         expect(user.reload.totp_enabled?).to eq false
       end

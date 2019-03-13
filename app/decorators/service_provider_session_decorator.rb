@@ -1,4 +1,4 @@
-class ServiceProviderSessionDecorator
+class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::TranslationHelper
 
   DEFAULT_LOGO = 'generic.svg'.freeze
