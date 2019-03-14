@@ -5,7 +5,7 @@ module Encryption
 
       def encrypt(plaintext)
         aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
-        kms_ciphertext = encrypt_with_kms(aes_ciphertext)
+        kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext, 'context' => 'session-encryption')
         encode(kms_ciphertext)
       end
 
@@ -17,14 +17,6 @@ module Encryption
       end
 
       private
-
-      def encrypt_with_kms(ciphertext)
-        if FeatureManagement.use_kms_context_for_sessions?
-          KmsClient.new.encrypt(ciphertext, 'context' => 'session-encryption')
-        else
-          ContextlessKmsClient.new.encrypt(ciphertext)
-        end
-      end
 
       def aes_encryptor
         AesEncryptor.new
