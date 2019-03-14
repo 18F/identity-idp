@@ -13,7 +13,7 @@ class EventsController < ApplicationController
     )
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
-    render_device_not_found
+    render_not_found
   end
 
   private
@@ -23,10 +23,6 @@ class EventsController < ApplicationController
     @events = DeviceTracking::ListDeviceEvents.call(user_id, device_id, 0, EVENTS_PAGE_SIZE).
               map(&:decorate)
     @device = Device.where(user_id: user_id).find(device_id)
-  end
-
-  def render_device_not_found
-    render 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
   def device_id

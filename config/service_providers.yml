@@ -248,6 +248,9 @@ production:
     redirect_uris:
       - 'http://localhost:9393/'
       - 'http://localhost:9393/auth/login-gov/callback'
+      - 'http://localhost:9393/auth/login-gov/callback/loa-1'
+      - 'http://localhost:9393/auth/login-gov/callback/loa-3'
+      - 'http://localhost:9393/auth/login-gov/logout'
 
   'urn:gov:gsa:openidconnect:sp:gin':
     agency: 'GSA'
