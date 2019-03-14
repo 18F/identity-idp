@@ -519,7 +519,9 @@ describe Users::ResetPasswordsController, devise: true do
   def stub_user_mailer(user)
     mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
     user.email_addresses.each do |email_address|
-      allow(UserMailer).to receive(:password_changed).with(email_address).and_return(mailer)
+      allow(UserMailer).to receive(:password_changed).
+        with(email_address, disavowal_token: instance_of(String)).
+        and_return(mailer)
     end
   end
 
