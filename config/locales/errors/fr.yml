@@ -10,6 +10,12 @@ fr:
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
       granted_token_missing: Le lien de suppression de votre compte login.gov n'est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre e-mail.
+    capture_doc:
+      invalid_link: Ce lien a expiré ou n'est pas valide. Veuillez demander un autre
+        lien pour vérifier votre identité sur un téléphone mobile.
+      token_expired: jeton expiré
+      token_invalid: jeton invalide
+      token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.

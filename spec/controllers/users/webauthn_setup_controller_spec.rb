@@ -129,11 +129,13 @@ describe Users::WebauthnSetupController do
   describe 'when signed in and account creation' do
     describe 'patch confirm' do
       it 'processes a valid webauthn and redirects to success page' do
-        user = build(:user)
+        user = create(:user)
         stub_sign_in(user)
 
         allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
-        expect(Event).to receive(:create).with(user_id: user.id, event_type: :webauthn_key_added)
+        expect(Event).to receive(:create).with(
+          hash_including(user_id: user.id, event_type: :webauthn_key_added, ip: '0.0.0.0'),
+        )
         controller.user_session[:webauthn_challenge] = challenge
 
         params = {

@@ -16,6 +16,7 @@ A Identity Management System powering login.gov.
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v8.x.x](https://nodejs.org)
+- [Yarn](https://yarnpkg.com/en/)
 
 #### Setting up and running the app
 

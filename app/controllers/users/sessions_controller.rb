@@ -30,6 +30,11 @@ module Users
       handle_valid_authentication
     end
 
+    def destroy
+      analytics.track_event(Analytics::LOGOUT_INITIATED, sp_initiated: false, oidc: false)
+      super
+    end
+
     def active
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now

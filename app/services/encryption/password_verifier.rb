@@ -34,8 +34,6 @@ module Encryption
     end
 
     def digest(password:, user_uuid:)
-      return UakPasswordVerifier.digest(password) unless FeatureManagement.write_2lkms_passwords?
-
       salt = SecureRandom.hex(32)
       cost = Figaro.env.scrypt_cost
       encrypted_password = encrypt_password(

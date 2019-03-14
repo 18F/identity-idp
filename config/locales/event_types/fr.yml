@@ -7,6 +7,7 @@ fr:
     authenticated_at_html: Connecté à %{service_provider_link}
     authenticator_disabled: Application d'authentification désactivée
     authenticator_enabled: Application d'authentification activée
+    backup_codes_added: Codes de sauvegarde ajoutés
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Adresse courriel modifiée
     new_personal_key: Clé personnelle modifié
