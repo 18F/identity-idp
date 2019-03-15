@@ -25,7 +25,9 @@ p.mt-tiny.mb3 = @presenter.info
   = f.button :submit, t('forms.buttons.continue')
 
 br
-- if @presenter.should_display_account_reset_or_cancel_link?
+- if @presenter.ial2?
+  p = @presenter.reverify_link
+- else
   p = @presenter.account_reset_or_cancel_link
 = render 'shared/cancel', link: destroy_user_session_path
 

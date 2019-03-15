@@ -7,6 +7,9 @@ fr:
       pending_html: Vous avez actuellement une demande en attente pour supprimer votre
         compte.  Il faut compter 24 heures à partir du moment où vous avez fait la
         demande pour terminer le processus.  Veuillez vérifier plus tard. %{cancel_link}
+      recover_html: If you can't use any of these security options above, you can
+        %{link}.
+      recover_link: reset your account
       successful_cancel: Je vous remercie. Votre demande de suppression de votre compte
         login.gov a été annulée.
       text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité ci-dessus,

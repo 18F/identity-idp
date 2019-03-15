@@ -50,6 +50,9 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
+      get '/account_reset/recover' => 'account_reset/recover#show'
+      post '/account_reset/recover' => 'account_reset/recover#create'
+      get '/account_reset/recover/email_sent' => 'account_reset/recover#email_sent'
       get '/account_reset/cancel' => 'account_reset/cancel#show'
       post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
@@ -231,6 +234,9 @@ Rails.application.routes.draw do
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
         put '/capture_doc/:step' => 'capture_doc#update'
+        get '/recovery' => 'recovery#index'
+        get '/recovery/:step' => 'recovery#show', as: :recovery_step
+        put '/recovery/:step' => 'recovery#update'
       end
     end
 

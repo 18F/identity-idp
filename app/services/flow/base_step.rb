@@ -51,6 +51,10 @@ module Flow
       @flow.flow_session = {}
     end
 
-    delegate :flow_session, :current_user, :params, :steps, :request, to: :@flow
+    # def user_session
+    #   @flow.session['warden.user.user.session']
+    # end
+
+    delegate :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
   end
 end

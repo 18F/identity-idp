@@ -42,13 +42,21 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     configurations.group_by(&:class).flat_map { |klass, set| klass.selection_presenters(set) }
   end
 
-  def should_display_account_reset_or_cancel_link?
+  def ial2?
     # IAL2 users should not be able to reset account to comply with AAL2 reqs
-    !current_user.decorate.identity_verified?
+    current_user.decorate.identity_verified?
   end
 
   def account_reset_or_cancel_link
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
+  end
+
+  def reverify_link
+    t('two_factor_authentication.account_reset.recover_html',
+      link: @view.link_to(
+        t('two_factor_authentication.account_reset.recover_link'),
+        account_reset_recover_path,
+      ))
   end
 
   private

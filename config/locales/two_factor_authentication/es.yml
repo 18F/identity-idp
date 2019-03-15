@@ -7,6 +7,9 @@ es:
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
         Se necesitan 24 horas desde el momento en que realizó la solicitud para completar
         el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+      recover_html: If you can't use any of these security options above, you can
+        %{link}.
+      recover_link: reset your account
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,

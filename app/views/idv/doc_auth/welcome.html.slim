@@ -30,7 +30,7 @@ ul.list-reset
       .h1.inline-block.bold = t('doc_auth.instructions.bullet4')
       br
       = t('doc_auth.instructions.text4')
-= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :welcome), method: 'PUT',
+= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
   br
   .mt0

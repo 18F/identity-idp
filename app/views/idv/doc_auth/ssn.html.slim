@@ -2,7 +2,7 @@
 
 h1.h3.my0 = t('doc_auth.headings.ssn')
 
-= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :ssn), method: 'PUT',
+= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
     .sm-col.sm-col-6.px1.mt2

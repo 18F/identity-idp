@@ -1,10 +1,13 @@
 - title t('doc_auth.titles.doc_auth')
 
-= image_tag(asset_url('state-id-confirm@3x.png'),
-        alt: t('idv.titles.session.success'), width: 210)
+= image_tag(asset_url('alert/success.svg'),
+        alt: t('forms.webauthn_setup.success_title'), width: 60)
 
-h1.h3.mb2.mt3.my0 = t('doc_auth.forms.doc_success')
-
+h1.h1.mb2.mt3.my0 = t('recover.reverify.email_confirmed')
+hr
+h1.h1.mb1.mt3.my0 = t('recover.reverify.reverify')
+= t('recover.reverify.instructions')
+br
 br
 = form_for('', url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
