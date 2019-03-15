@@ -6,11 +6,11 @@ module AccountReset
     before_action :confirm_user_verified
 
     def show
-      analytics.track_event(Analytics::ACCOUNT_RESET_VISIT)
+      analytics.track_event(Analytics::IAL2_RECOVERY_REQUEST_VISITED)
     end
 
     def create
-      analytics.track_event(Analytics::ACCOUNT_RESET, analytics_attributes)
+      analytics.track_event(Analytics::IAL2_RECOVERY_REQUEST, analytics_attributes)
       Recover::CreateRecoverRequest.call(current_user.id)
       send_notifications
       redirect_to account_reset_recover_email_sent_url
