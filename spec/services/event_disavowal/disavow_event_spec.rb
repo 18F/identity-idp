@@ -6,7 +6,7 @@ describe EventDisavowal::DisavowEvent do
       event = create(:event, disavowed_at: nil)
       described_class.new(event).call
 
-      expect(event.reload.disavowed_at).to be_within(1).of(Time.now)
+      expect(event.reload.disavowed_at).to be_within(1).of(Time.zone.now)
     end
   end
 end

@@ -1,5 +1,5 @@
 module Users
-  class ResetPasswordsController < Devise::PasswordsController
+  class ResetPasswordsController < Devise::PasswordsController # rubocop:disable Metrics/ClassLength
     include RecaptchaConcern
 
     def new
