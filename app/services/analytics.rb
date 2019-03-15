@@ -68,6 +68,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   EVENTS_VISIT = 'Events Page Visited'.freeze
   EXPIRED_LETTERS = 'Expired Letters'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
+  IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze

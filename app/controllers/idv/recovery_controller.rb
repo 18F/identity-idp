@@ -10,7 +10,7 @@ module Idv
       step_url: :idv_recovery_step_url,
       final_url: :account_url,
       flow: Idv::Flows::RecoveryFlow,
-      analytics_id: Analytics::CAPTURE_DOC,
+      analytics_id: Analytics::IAL2_RECOVERY,
       view: 'idv/doc_auth',
     }.freeze
 
