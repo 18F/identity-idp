@@ -99,7 +99,7 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_css('#session-timeout-msg')
+      expect(page).to have_css('#session-timeout-msg', wait: 5)
 
       time1 = page.text[/14:5[0-9]/]
       expect(page).to have_content(time1)
@@ -109,13 +109,13 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing' do
-      find_link(t('notices.timeout_warning.signed_in.continue')).click
+      find_link(t('notices.timeout_warning.signed_in.continue'), wait: 5).click
 
       expect(current_path).to eq account_path
     end
 
     scenario 'user has option to sign out' do
-      click_link(t('notices.timeout_warning.signed_in.sign_out'))
+      click_link(t('notices.timeout_warning.signed_in.sign_out'), wait: 5)
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
@@ -133,7 +133,7 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_css('#session-timeout-msg')
+      expect(page).to have_css('#session-timeout-msg', wait: 5)
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
@@ -148,6 +148,7 @@ feature 'Sign in' do
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes),
+        wait: 5,
       )
       expect(page).to have_field('Email', with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
