@@ -33,8 +33,6 @@ describe UpdateUserPasswordForm, type: :model do
 
     context 'when the password is valid' do
       it 'returns FormResponse with success: true' do
-        stub_email_delivery
-
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
@@ -43,8 +41,6 @@ describe UpdateUserPasswordForm, type: :model do
       end
 
       it 'updates the user' do
-        stub_email_delivery
-
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
           with(user: user, attributes: { password: 'salty new password' }).
@@ -63,8 +59,6 @@ describe UpdateUserPasswordForm, type: :model do
 
       it 'encrypts the active profile' do
         allow(user).to receive(:active_profile).and_return(profile)
-
-        stub_email_delivery
 
         encryptor = instance_double(ActiveProfileEncryptor)
         allow(ActiveProfileEncryptor).to receive(:new).
