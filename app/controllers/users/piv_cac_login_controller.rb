@@ -66,7 +66,7 @@ module Users
         presented: true,
       )
 
-      handle_valid_otp_and_then_redirect_to(next_step)
+      handle_valid_otp(next_step)
     end
 
     def next_step

@@ -63,23 +63,22 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     ).call
   end
 
-  def handle_valid_otp
-    handle_valid_otp_and_then_redirect_to(
-      after_otp_verification_confirmation_url,
-    )
+  def handle_valid_otp(next_url = nil)
+    handle_valid_otp_for_context
+    save_remember_device_preference
+    user_session.delete(:mfa_device_remembered)
+
+    next_url ||= after_otp_verification_confirmation_url
+    redirect_to next_url
+    reset_otp_session_data
   end
 
-  def handle_valid_otp_and_then_redirect_to(next_url)
+  def handle_valid_otp_for_context
     if authentication_context?
       handle_valid_otp_for_authentication_context
     elsif confirmation_context?
       handle_valid_otp_for_confirmation_context
     end
-    save_remember_device_preference
-    user_session.delete(:mfa_device_remembered)
-
-    redirect_to next_url
-    reset_otp_session_data
   end
 
   def two_factor_authentication_method
