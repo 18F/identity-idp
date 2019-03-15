@@ -85,15 +85,6 @@ module Users
       sp_session && sp_session_ial > 1 ? 2 : 1
     end
 
-    def request_is_from_sp?
-      sp_session && sp_session_ial
-    end
-
-    def prompt_for_password_url
-      user_session[:current_password_required] = true
-      user_password_confirm_url
-    end
-
     def process_invalid_submission
       flash[:error_type] = piv_cac_login_form.error_type
       redirect_to root_url
