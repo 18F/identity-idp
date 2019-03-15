@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 feature 'Sign in' do
+  before(:all) do
+    @original_capyabar_wait = Capybara.default_max_wait_time
+    Capybara.default_max_wait_time = 5
+  end
+
+  after(:all) do
+    Capybara.default_max_wait_time = @original_capyabar_wait
+  end
+
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
@@ -99,7 +108,7 @@ feature 'Sign in' do
     end
 
     scenario 'user sees warning before session times out' do
-      expect(page).to have_css('#session-timeout-msg', wait: 5)
+      expect(page).to have_css('#session-timeout-msg')
 
       time1 = page.text[/14:5[0-9]/]
       expect(page).to have_content(time1)
@@ -109,13 +118,13 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing' do
-      find_link(t('notices.timeout_warning.signed_in.continue'), wait: 5).click
+      find_link(t('notices.timeout_warning.signed_in.continue')).click
 
       expect(current_path).to eq account_path
     end
 
     scenario 'user has option to sign out' do
-      click_link(t('notices.timeout_warning.signed_in.sign_out'), wait: 5)
+      click_link(t('notices.timeout_warning.signed_in.sign_out'))
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
@@ -133,7 +142,7 @@ feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_css('#session-timeout-msg', wait: 5)
+      expect(page).to have_css('#session-timeout-msg')
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
