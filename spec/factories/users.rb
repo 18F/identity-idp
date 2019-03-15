@@ -129,7 +129,7 @@ FactoryBot.define do
 
     trait :with_personal_key do
       after :build do |user|
-        PersonalKeyGenerator.new(user).create
+        user.personal_key = RandomPhrase.new(num_words: 4).to_s
       end
     end
 
