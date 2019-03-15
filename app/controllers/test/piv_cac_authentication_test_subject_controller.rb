@@ -53,7 +53,11 @@ module Test
     end
 
     def with_nonce(data)
-      data.merge(nonce: user_session[:piv_cac_nonce])
+      data.merge(nonce: piv_session[:piv_cac_nonce])
+    end
+
+    def piv_session
+      user_session || session
     end
   end
 end

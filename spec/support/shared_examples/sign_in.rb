@@ -34,6 +34,12 @@ shared_examples 'signing in as LOA1 with personal key' do |sp|
   end
 end
 
+shared_examples 'signing in as LOA1 with piv/cac' do |sp|
+  it 'redirects to the SP after authenticating', email: true do
+    loa1_sign_in_with_piv_cac_goes_to_sp(sp)
+  end
+end
+
 shared_examples 'visiting 2fa when fully authenticated' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
@@ -79,6 +85,12 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
+  end
+end
+
+shared_examples 'signing in as LOA3 with piv/cac' do |sp|
+  it 'redirects to the SP after authenticating and getting the password', :email do
+    loa3_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 end
 
@@ -233,6 +245,52 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
 
     return unless sp == :oidc
 
+    redirect_uri = URI(current_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
+end
+
+def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
+  user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+  visit_idp_from_sp_with_loa1(sp)
+  click_link t('links.sign_in')
+
+  expect(page).to have_content(t('account.login.piv_cac_info.ial1'))
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  if sp == :saml
+    expect(current_url).to eq @saml_authn_request
+  elsif sp == :oidc
+    redirect_uri = URI(current_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
+end
+
+def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
+  stub_twilio_service
+  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+
+  visit_idp_from_sp_with_loa3(sp)
+  click_link t('links.sign_in')
+  expect(page).to have_content(t('account.login.piv_cac_info.ial2'))
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  # capture password before redirecting to SP
+  expect(current_url).to eq capture_password_url
+
+  fill_in_password_and_submit(user.password)
+
+  if sp == :saml
+    expect(current_url).to eq @saml_authn_request
+  elsif sp == :oidc
     redirect_uri = URI(current_url)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')

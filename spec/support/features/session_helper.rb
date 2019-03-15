@@ -49,8 +49,30 @@ module Features
       fill_in_credentials_and_submit(email, password)
     end
 
+    def signin_with_piv(user = user_with_piv_cac)
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user)
+    end
+
+    def fill_in_piv_cac_credentials_and_submit(user)
+      allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
+
+      stub_piv_cac_service
+      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
+      visit_piv_cac_service(current_url,
+                            nonce: nonce,
+                            uuid: user.x509_dn_uuid,
+                            subject: 'SomeIgnoredSubject')
+    end
+
     def fill_in_credentials_and_submit(email, password)
       fill_in 'user_email', with: email
+      fill_in 'user_password', with: password
+      click_button t('links.next')
+    end
+
+    def fill_in_password_and_submit(password)
       fill_in 'user_password', with: password
       click_button t('links.next')
     end
@@ -97,6 +119,11 @@ module Features
 
     def sign_in_user(user = create(:user))
       signin(user.email_addresses.first.email, user.password)
+      user
+    end
+
+    def sign_in_user_with_piv(user = user_with_piv_cac)
+      signin_with_piv(user)
       user
     end
 

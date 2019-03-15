@@ -1,17 +1,7 @@
-module TwoFactorAuthenticatable
+module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
-
-  included do
-    # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :authenticate_user
-    before_action :require_current_password, if: :current_password_required?
-    before_action :check_already_authenticated
-    before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
-    before_action :apply_secure_headers_override, only: %i[show create]
-    # rubocop:enable Rails/LexicallyScopedActionFilter
-  end
 
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
@@ -73,7 +63,7 @@ module TwoFactorAuthenticatable
     ).call
   end
 
-  def handle_valid_otp
+  def handle_valid_otp(next_url = after_otp_verification_confirmation_url)
     if authentication_context?
       handle_valid_otp_for_authentication_context
     elsif confirmation_context?
@@ -81,8 +71,9 @@ module TwoFactorAuthenticatable
     end
     save_remember_device_preference
     user_session.delete(:mfa_device_remembered)
+
+    redirect_to next_url
     reset_otp_session_data
-    redirect_to after_otp_verification_confirmation_url
   end
 
   def two_factor_authentication_method
@@ -121,12 +112,11 @@ module TwoFactorAuthenticatable
   end
 
   def handle_valid_otp_for_confirmation_context
-    user_session[:authn_at] = Time.zone.now
     assign_phone
   end
 
   def handle_valid_otp_for_authentication_context
-    mark_user_session_authenticated(:valid_2fa)
+    mark_user_session_authenticated
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
@@ -147,30 +137,20 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    send_phone_added_email
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.phone_changed(email_address).deliver_later
+    end
   end
 
   def phone_confirmed
     create_user_event(:phone_confirmed)
-    # If the user has MFA configured, then they are not adding a phone during sign up and are
-    # instead adding it outside the sign up flow
-    return unless MfaPolicy.new(current_user).sufficient_factors_enabled?
-    send_phone_added_email
-  end
-
-  def send_phone_added_email
-    event = create_user_event_with_disavowal(:phone_added, current_user)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.phone_added(email_address, disavowal_token: event.disavowal_token).deliver_later
-    end
   end
 
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
       attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
-                    phone_confirmed_at: Time.zone.now,
-                    otp_make_default_number: selected_otp_make_default_number },
+                    phone_confirmed_at: Time.zone.now },
     ).call
   end
 
@@ -188,38 +168,30 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_action_required?
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      !MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
+      policy.show_personal_key_after_initial_2fa_setup?
   end
 
   def after_otp_action_url
-    if @updating_existing_number
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+    if policy.show_personal_key_after_initial_2fa_setup?
+      sign_up_personal_key_url
+    elsif @updating_existing_number
       account_url
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      two_2fa_setup
+      account_url
     end
   end
 
-  def mark_user_session_authenticated(authentication_type)
+  def mark_user_session_authenticated
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
-    mark_user_session_authenticated_analytics(authentication_type)
-  end
-
-  def mark_user_session_authenticated_analytics(authentication_type)
-    analytics.track_event(
-      Analytics::USER_MARKED_AUTHED,
-      authentication_type: authentication_type,
-    )
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: 'authenticated',
-      method: authentication_type,
-      client_id: ga_cookie_client_id,
-    ).send_event
   end
 
   def direct_otp_code
@@ -234,21 +206,21 @@ module TwoFactorAuthenticatable
     user_session[:unconfirmed_phone] && confirmation_context?
   end
 
+  # rubocop:disable MethodLength
   def phone_view_data
-    { confirmation_for_phone_change: confirmation_for_phone_change?,
+    {
+      confirmation_for_phone_change: confirmation_for_phone_change?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
-      otp_make_default_number: selected_otp_make_default_number,
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      account_reset_token: account_reset_token }.merge(generic_data)
+      remember_device_available: true,
+      account_reset_token: account_reset_token,
+    }.merge(generic_data)
   end
-
-  def selected_otp_make_default_number
-    params&.dig(:otp_make_default_number)
-  end
+  # rubocop:enable MethodLength
 
   def account_reset_token
     current_user&.account_reset_request&.request_token
@@ -257,7 +229,8 @@ module TwoFactorAuthenticatable
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
+      user_email: current_user.email_addresses.first.email,
+      remember_device_available: false,
     }.merge(generic_data)
   end
 
@@ -291,7 +264,7 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if MfaPolicy.new(current_user).multiple_factors_enabled?
+    if MfaPolicy.new(current_user).two_factor_enabled?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -299,7 +272,7 @@ module TwoFactorAuthenticatable
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && MfaContext.new(current_user).phone_configurations.exists?
+    confirmation_context? && MfaPolicy.new(current_user).two_factor_enabled?
   end
 
   def presenter_for_two_factor_authentication_method
