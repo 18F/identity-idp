@@ -1,5 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
+    include AccountConfigurationConcern
+
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
     before_action :ensure_backup_codes_in_session, only: %i[create download]
@@ -15,7 +17,7 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-      redirect_to sign_up_personal_key_url
+      redirect_to next_step
     end
 
     def download

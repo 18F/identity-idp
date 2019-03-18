@@ -2,6 +2,7 @@ module Users
   class WebauthnSetupController < ApplicationController
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    include AccountConfigurationConcern
 
     def new
       result = WebauthnVisitForm.new.submit(params)
@@ -24,6 +25,7 @@ module Users
 
     def success
       @next_url = url_after_successful_webauthn_setup
+      redirect_to next_step
     end
 
     def delete
