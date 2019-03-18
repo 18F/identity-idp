@@ -106,7 +106,7 @@ group :test do
   gem 'rack-test'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
-  gem 'shoulda-matchers', '~> 3.0', require: false
+  gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'
   gem 'webmock'
   gem 'zonebie'
