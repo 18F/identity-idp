@@ -21,4 +21,6 @@ end
 require 'webmock/rspec'
 WebMock.disable_net_connect!(allow: [/localhost/, /127\.0\.0\.1/, /codeclimate.com/])
 
+require 'zonebie'
+Zonebie.quiet = true
 require 'zonebie/rspec'
