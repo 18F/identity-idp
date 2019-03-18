@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 feature 'Sign in' do
+  before(:all) do
+    @original_capyabar_wait = Capybara.default_max_wait_time
+    Capybara.default_max_wait_time = 5
+  end
+
+  after(:all) do
+    Capybara.default_max_wait_time = @original_capyabar_wait
+  end
+
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
@@ -148,6 +157,7 @@ feature 'Sign in' do
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes),
+        wait: 5,
       )
       expect(page).to have_field('Email', with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
