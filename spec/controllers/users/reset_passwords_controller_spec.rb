@@ -384,7 +384,7 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = build(:user, :signed_up, role: :user, email: 'test@example.com')
+        user = create(:user, :signed_up, role: :user, email: 'test@example.com')
 
         captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
