@@ -8,6 +8,9 @@ es:
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
       authentication_app: App de autenticación
+      backup_codes: Códigos de respaldo
+      backup_codes_exist: generado
+      backup_codes_no_exist: no generado
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Email

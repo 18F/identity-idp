@@ -106,6 +106,10 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/personal_key_item_heading'
   end
 
+  def backup_codes_action_partial
+    'accounts/actions/manage_backup_codes'
+  end
+
   def recent_event_partial
     'accounts/event_item'
   end
@@ -129,6 +133,14 @@ class AccountShow # rubocop:disable Metrics/ClassLength
       I18n.t('account.index.piv_cac_enabled')
     else
       I18n.t('account.index.piv_cac_disabled')
+    end
+  end
+
+  def backup_codes_content
+    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
+      I18n.t('account.index.backup_codes_exist')
+    else
+      I18n.t('account.index.backup_codes_no_exist')
     end
   end
 

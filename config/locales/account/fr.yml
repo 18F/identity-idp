@@ -8,6 +8,9 @@ fr:
       auth_app_disabled: non activée
       auth_app_enabled: activée
       authentication_app: Application d'authentification
+      backup_codes: Codes de sauvegarde
+      backup_codes_exist: généré
+      backup_codes_no_exist: non généré
       device: "%{browser} sur %{os}"
       dob: Date de naissance
       email: Adresse courriel

@@ -58,6 +58,12 @@ h1.hide = t('titles.account')
         name: render(@view_model.personal_key_item_partial),
         action: @view_model.personal_key_action_partial
 
+  - if TwoFactorAuthentication::BackupCodePolicy.new(current_user).visible?
+      = render 'account_item',
+        name: t('account.index.backup_codes'),
+        content: content_tag(:em, @view_model.backup_codes_content),
+        action: @view_model.backup_codes_action_partial
+
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
 .mb3.profile-info-box
