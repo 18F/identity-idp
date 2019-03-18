@@ -31,7 +31,10 @@ Rails.application.configure do
   config.lograge.enabled = true
 
   config.after_initialize do
-    Bullet.enable = true
+    # Having bullet enabled in the test environment causes issues with unit
+    # tests that may not make user of eager loaded values. We disable it by
+    # default here and then re-enable it in feature tests.
+    Bullet.enable = false
     Bullet.bullet_logger = true
     Bullet.raise = true
     Bullet.add_whitelist(

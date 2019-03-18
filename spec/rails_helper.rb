@@ -80,4 +80,10 @@ RSpec.configure do |config|
   config.before(:each, type: :feature) do
     allow_any_instance_of(Geocoder::Result::Test).to receive(:language=)
   end
+
+  config.around(:each, type: :feature) do |example|
+    Bullet.enable = true
+    example.run
+    Bullet.enable = false
+  end
 end
