@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AccountReset::RequestController do
-  let(:user) { build(:user, :with_authentication_app, :with_email) }
+  let(:user) { create(:user, :with_authentication_app, :with_email) }
   describe '#show' do
     it 'renders the page' do
       stub_sign_in_before_2fa(user)
@@ -54,7 +54,7 @@ describe AccountReset::RequestController do
 
     it 'logs sms user in the analytics' do
       TwilioService::Utils.telephony_service = FakeSms
-      user = build(:user, :signed_up, :with_email)
+      user = create(:user, :signed_up, :with_email)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
