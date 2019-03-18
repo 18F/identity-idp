@@ -2,6 +2,7 @@ module Users
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
+    include AccountConfigurationConcern
 
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated,
@@ -82,14 +83,6 @@ module Users
       )
       create_user_event(:piv_cac_enabled)
       redirect_to next_step
-    end
-
-    def next_step
-      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
-        account_url
-      else
-        account_recovery_setup_url
-      end
     end
 
     def piv_cac_enabled?

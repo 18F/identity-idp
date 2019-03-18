@@ -86,6 +86,16 @@ module Users
       TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
 
+=begin
+    def url_after_entering_valid_code
+      if sp_session[:loa3]
+        idv_jurisdiction_url
+      else
+        account_url
+      end
+    end
+=end
+
     def process_invalid_code
       flash[:error] = t('errors.invalid_totp')
       redirect_to authenticator_setup_url
