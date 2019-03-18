@@ -15,7 +15,7 @@ end
 Capybara.javascript_driver = :headless_chrome
 Chromedriver.set_version '2.38'
 
-#Capybara.server = :puma, { Silent: true }
+# Capybara.server = :puma, { Silent: true }
 
 Capybara.default_max_wait_time = 0.5
 Capybara::Screenshot.autosave_on_failure = false
