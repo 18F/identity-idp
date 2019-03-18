@@ -24,8 +24,7 @@ module Users
     end
 
     def success
-      @next_url = url_after_successful_webauthn_setup
-      redirect_to next_step
+      @next_url = next_step
     end
 
     def delete
@@ -87,15 +86,6 @@ module Users
       redirect_to webauthn_setup_success_url
     end
 
-    def url_after_successful_webauthn_setup
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
-
-      idv_jurisdiction_url
-    end
-
     def process_invalid_webauthn(form)
       if form.name_taken
         flash.now[:error] = t('errors.webauthn_setup.unique_name')
@@ -109,10 +99,6 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-    end
-
-    def user_already_has_a_personal_key?
-      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
 end
