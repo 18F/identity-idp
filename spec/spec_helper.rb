@@ -1,6 +1,5 @@
 require 'knapsack'
-
-Knapsack::Adapters::RSpecAdapter.bind if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
+Knapsack::Adapters::RSpecAdapter.bind
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
