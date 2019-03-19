@@ -3,7 +3,7 @@ module Idv
     class RecoverDocSuccessStep < DocAuthBaseStep
       def call
         pii_from_doc = session['idv/recovery']['pii_from_doc']
-        decrypted_pii = JSON.parse(session['decrypted_pii'])
+        decrypted_pii = JSON.parse(saved_pii)
         return unless pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
 
         mark_step_complete(:recover_fail)
@@ -12,6 +12,10 @@ module Idv
       end
 
       private
+
+      def saved_pii
+        session['decrypted_pii']
+      end
 
       def pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
         %w[first_name last_name dob ssn].each do |key|
