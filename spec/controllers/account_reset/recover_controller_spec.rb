@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AccountReset::RecoverController do
-  let(:user) { build(:user, :with_authentication_app, :with_email) }
+  let(:user) { create(:user, :with_authentication_app, :with_email) }
   before do
     allow_any_instance_of(UserDecorator).to receive(:identity_verified?).and_return(true)
   end
@@ -48,7 +48,7 @@ describe AccountReset::RecoverController do
         sms_phone: false,
         totp: true,
         piv_cac: false,
-        email_addresses: 0,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
@@ -58,7 +58,7 @@ describe AccountReset::RecoverController do
 
     it 'logs sms user in the analytics' do
       TwilioService::Utils.telephony_service = FakeSms
-      user = build(:user, :signed_up, :with_email)
+      user = create(:user, :signed_up, :with_email)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -67,7 +67,7 @@ describe AccountReset::RecoverController do
         sms_phone: true,
         totp: false,
         piv_cac: false,
-        email_addresses: 0,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
@@ -76,7 +76,7 @@ describe AccountReset::RecoverController do
     end
 
     it 'logs PIV/CAC user in the analytics' do
-      user = build(:user, :with_piv_or_cac, :with_email)
+      user = create(:user, :with_piv_or_cac, :with_email)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -85,7 +85,7 @@ describe AccountReset::RecoverController do
         sms_phone: false,
         totp: false,
         piv_cac: true,
-        email_addresses: 0,
+        email_addresses: 1,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
