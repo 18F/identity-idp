@@ -26,7 +26,7 @@ shared_examples 'recover step' do |simulate|
     it 'proceeds to the next page' do
       click_idv_continue
 
-      expect(page).to have_current_path(idv_recovery_welcome_step)
+      expect(page).to have_current_path(idv_recovery_upload_step)
     end
   end
 end

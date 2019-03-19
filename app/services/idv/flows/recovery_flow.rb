@@ -3,7 +3,6 @@ module Idv
     class RecoveryFlow < Flow::BaseFlow
       STEPS = {
         recover: Idv::Steps::RecoverStep,
-        welcome: Idv::Steps::WelcomeStep,
         upload: Idv::Steps::UploadStep,
         send_link: Idv::Steps::SendLinkStep,
         link_sent: Idv::Steps::LinkSentStep,
