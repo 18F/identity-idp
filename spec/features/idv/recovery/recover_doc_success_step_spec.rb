@@ -32,7 +32,7 @@ feature 'recovery doc success step' do
     expect(page).to have_current_path(account_path)
   end
 
-  it 'fails to re-verify if the document pii does not matche the saved pii' do
+  it 'fails to re-verify if the document pii does not match the saved pii' do
     allow_any_instance_of(Idv::Steps::RecoverDocSuccessStep).to receive(:saved_pii).
       and_return(bad_pii.to_json)
 
