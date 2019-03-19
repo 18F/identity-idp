@@ -15,6 +15,10 @@ en:
       verified_account: Verified Account
     account_recovery_setup:
       piv_cac_linked: Your PIV/CAC card is linked to your account
+      auth_app_linked: An authentication application is linked to your account
+      phone_linked: A phone is linked to your account
+      webauthn_linked: A security key is linked to your account
+      backup_codes_linked: Your backup codes have been set on your account
     add_info:
       phone: Add a phone number
     cancellations:

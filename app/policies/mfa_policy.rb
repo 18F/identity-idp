@@ -16,6 +16,10 @@ class MfaPolicy
       mfa_user.unphishable_configuration_count.positive?
   end
 
+  def more_than_two_factors_enabled?
+    mfa_user.enabled_mfa_methods_count > 2
+  end
+
   private
 
   attr_reader :mfa_user

@@ -26,7 +26,7 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
+      if current_user.totp_enabled? && MfaPolicy.new(current_user).more_than_two_factors_enabled?
         process_successful_disable
       end
       redirect_to account_url
