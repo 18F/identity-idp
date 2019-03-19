@@ -75,4 +75,8 @@ module RecoveryHelper
   def idv_recovery_success_step
     idv_recovery_step_path(step: :doc_success)
   end
+
+  def idv_recovery_fail_step
+    idv_recovery_step_path(step: :recover_fail)
+  end
 end
