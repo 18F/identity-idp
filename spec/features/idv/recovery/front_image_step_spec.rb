@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-shared_examples 'front image step' do |simulate|
+shared_examples 'recovery front image step' do |simulate|
   feature 'recovery front image step' do
     include IdvStepHelper
     include DocAuthHelper
@@ -40,6 +40,6 @@ shared_examples 'front image step' do |simulate|
 end
 
 feature 'recovery front image' do
-  it_behaves_like 'front image step', 'false'
-  it_behaves_like 'front image step', 'true'
+  it_behaves_like 'recovery front image step', 'false'
+  it_behaves_like 'recovery front image step', 'true'
 end

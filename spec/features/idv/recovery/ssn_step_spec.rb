@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth ssn step' do
+feature 'recovery ssn step' do
   include IdvStepHelper
   include DocAuthHelper
   include RecoveryHelper

@@ -27,6 +27,23 @@ module RecoveryHelper
     click_idv_continue
   end
 
+  def complete_recovery_steps_before_ssn_step(user = user_with_2fa)
+    complete_recovery_steps_before_back_image_step(user)
+    attach_image
+    click_idv_continue
+  end
+
+  def complete_recovery_steps_before_verify_step(user = user_with_2fa)
+    complete_recovery_steps_before_ssn_step(user)
+    fill_out_ssn_form_ok
+    click_idv_continue
+  end
+
+  def complete_recovery_steps_before_doc_success_step(user = user_with_2fa)
+    complete_recovery_steps_before_verify_step(user)
+    click_idv_continue
+  end
+
   def idv_recovery_recover_step(token)
     idv_recovery_step_path(step: :recover, token: token)
   end
@@ -49,5 +66,13 @@ module RecoveryHelper
 
   def idv_recovery_ssn_step
     idv_recovery_step_path(step: :ssn)
+  end
+
+  def idv_recovery_verify_step
+    idv_recovery_step_path(step: :verify)
+  end
+
+  def idv_recovery_success_step
+    idv_recovery_step_path(step: :doc_success)
   end
 end

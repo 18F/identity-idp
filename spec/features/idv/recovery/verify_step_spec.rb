@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth verify step' do
+feature 'recovery verify step' do
   include IdvStepHelper
   include DocAuthHelper
   include RecoveryHelper

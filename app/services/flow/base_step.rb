@@ -40,7 +40,7 @@ module Flow
     end
 
     def permit(*args)
-      params.require(@name).permit(*args)
+      params.require(:doc_auth).permit(*args)
     end
 
     def redirect_to(url)
@@ -50,10 +50,6 @@ module Flow
     def reset
       @flow.flow_session = {}
     end
-
-    # def user_session
-    #   @flow.session['warden.user.user.session']
-    # end
 
     delegate :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
   end
