@@ -48,7 +48,7 @@ describe AccountReset::RecoverController do
         sms_phone: false,
         totp: true,
         piv_cac: false,
-        email_addresses: 1,
+        email_addresses: 0,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
@@ -67,7 +67,7 @@ describe AccountReset::RecoverController do
         sms_phone: true,
         totp: false,
         piv_cac: false,
-        email_addresses: 1,
+        email_addresses: 0,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
@@ -85,7 +85,7 @@ describe AccountReset::RecoverController do
         sms_phone: false,
         totp: false,
         piv_cac: true,
-        email_addresses: 1,
+        email_addresses: 0,
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::IAL2_RECOVERY_REQUEST, attributes)
