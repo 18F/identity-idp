@@ -187,7 +187,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
     return if user_fully_authenticated?
 
-    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
+    return prompt_to_set_up_2fa unless !MfaPolicy.new(current_user).multiple_factors_enabled?
 
     prompt_to_enter_otp
   end

@@ -11,6 +11,10 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
+  def more_than_two_factors_enabled?
+    mfa_user.enabled_mfa_methods_count > 2
+  end
+
   private
 
   attr_reader :mfa_user
