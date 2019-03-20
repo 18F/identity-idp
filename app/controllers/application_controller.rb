@@ -65,6 +65,11 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
                  event_type: event_type)
   end
 
+  def create_user_event_with_disavowal(event_type, user = current_user)
+    event = create_user_event(event_type, user)
+    EventDisavowal::GenerateDisavowalToken.new(event).call
+  end
+
   def create_or_update_device(user)
     cookie = cookies[:device]
     device = DeviceTracking::ManageDevice.call(user, cookie, request.remote_ip, request.user_agent)

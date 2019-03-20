@@ -158,7 +158,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#sp_logo_url' do
     context 'service provider has a logo' do
       it 'returns the logo' do
-        sp_logo = 'real_logo.svg'
+        sp_logo = '18f.svg'
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
         subject = ServiceProviderSessionDecorator.new(
@@ -168,7 +168,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           service_provider_request: ServiceProviderRequest.new,
         )
 
-        expect(subject.sp_logo_url).to end_with("/sp-logos/#{sp_logo}")
+        expect(subject.sp_logo_url).to match(%r{sp-logos\/18f-[0-9a-f]+\.svg$})
       end
     end
 
