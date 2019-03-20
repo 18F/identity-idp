@@ -15,7 +15,7 @@ es:
         viejos códigos ya no funcionarán.
       new_login_codes: Generar nuevos códigos de inicio de sesión
       print: Impresión
-      regenerate: regenerar
+      regenerate: Regenerar
       subinfo: Cada código solo se puede utilizar una vez, una vez que se haya utilizado
         el décimo código, se le pedirá que descargue una nueva lista. Trate sus códigos
         de recuperación con el mismo nivel de atención como lo haría con su contraseña.
