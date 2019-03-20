@@ -104,7 +104,7 @@ describe SamlRequestValidator do
         SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
-          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
         )
 
         expect(FormResponse).to have_received(:new).
@@ -151,7 +151,7 @@ describe SamlRequestValidator do
         SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
-          nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+          nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         )
 
         expect(FormResponse).to have_received(:new).
