@@ -20,7 +20,7 @@ describe 'New device tracking' do
 
       expect(UserMailer).to have_received(:new_device_sign_in).
         with(
-          user.email,
+          user.email_addresses.first,
           device.last_used_at.strftime('%B %-d, %Y %H:%M'),
           'From United States (IP address: 127.0.0.1)',
         )
