@@ -105,7 +105,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with not authorized acr_values' do
+    context 'with no authorized acr_values' do
       let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
       let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
       it 'has errors' do
