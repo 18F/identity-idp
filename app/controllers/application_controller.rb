@@ -72,7 +72,9 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def create_or_update_device(user)
     cookie = cookies[:device]
-    device = DeviceTracking::ManageDevice.call(user, cookie, request.remote_ip, request.user_agent)
+    device = DeviceTracking::FindOrCreateDevice.call(
+      user, cookie, request.remote_ip, request.user_agent
+    )
 
     device_cookie_uuid = device.cookie_uuid
 
