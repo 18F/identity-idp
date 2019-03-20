@@ -59,7 +59,7 @@ shared_examples 'recovery back image step' do |simulate|
   end
 end
 
-feature 'revovery back image' do
+feature 'recovery back image' do
   it_behaves_like 'recovery back image step', 'false'
   it_behaves_like 'recovery back image step', 'true'
 end
