@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-shared_examples 'mobile back image step' do |simulate|
+shared_examples 'doc auth mobile back image step' do |simulate|
   feature 'doc auth mobile back image step' do
     include IdvStepHelper
     include DocAuthHelper
@@ -53,6 +53,6 @@ shared_examples 'mobile back image step' do |simulate|
 end
 
 feature 'doc auth back image' do
-  it_behaves_like 'mobile back image step', 'false'
-  it_behaves_like 'mobile back image step', 'true'
+  it_behaves_like 'doc auth mobile back image step', 'false'
+  it_behaves_like 'doc auth mobile back image step', 'true'
 end

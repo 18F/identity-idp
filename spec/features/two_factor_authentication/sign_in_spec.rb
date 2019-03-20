@@ -458,7 +458,7 @@ feature 'Two Factor Authentication' do
           signin(user.email, user.password)
 
           expect(page).to have_content t('titles.account_locked')
-          expect(page).to have_content(five_minute_countdown_regex)
+          expect(page).to have_content(five_minute_countdown_regex, wait: 2)
         end
       end
     end
@@ -646,7 +646,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
-      user = build(:user, :signed_up, otp_secret_key: secret)
+      user = create(:user, :signed_up, otp_secret_key: secret)
       otp = generate_totp_code(secret)
 
       Timecop.freeze do

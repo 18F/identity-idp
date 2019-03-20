@@ -165,7 +165,7 @@ describe MfaContext do
     end
 
     context 'with 1 phone and 2 webauthn configurations' do
-      let(:user) { build(:user, :signed_up) }
+      let(:user) { create(:user, :signed_up) }
 
       it 'returns 1 for phone and 2 for webauthn' do
         create_list(:webauthn_configuration, 2, user: user)

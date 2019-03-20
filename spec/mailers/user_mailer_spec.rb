@@ -26,7 +26,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'password_changed' do
-    let(:mail) { UserMailer.password_changed(email_address) }
+    let(:mail) { UserMailer.password_changed(email_address, disavowal_token: '123abc') }
 
     it_behaves_like 'a system email'
 
@@ -41,6 +41,9 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.password_changed.intro', app: APP_NAME),
+      )
+      expect(mail.html_part.body).to include(
+        '/events/disavow/123abc',
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -69,7 +72,7 @@ describe UserMailer, type: :mailer do
   describe 'sign in from new device' do
     date = 'Washington, DC'
     location = 'February 25, 2019 15:02'
-    let(:mail) { UserMailer.new_device_sign_in(user.email, date, location) }
+    let(:mail) { UserMailer.new_device_sign_in(email_address, date, location) }
 
     it_behaves_like 'a system email'
 
