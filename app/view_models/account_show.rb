@@ -1,4 +1,5 @@
 # :reek:TooManyMethods
+# :reek:RepeatedConditional
 class AccountShow # rubocop:disable Metrics/ClassLength
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
