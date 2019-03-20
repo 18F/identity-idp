@@ -13,6 +13,8 @@ describe CloudhsmKeySharer do
 
   describe '#share_saml_key' do
     it 'shares saml key and generates transcript' do
+      allow(Kernel).to receive(:puts)
+
       greenletters = mock_cloudhsm
 
       subject.share_saml_key

@@ -1,0 +1,17 @@
+- title t('titles.passwords.change')
+
+h1.h3.my0 = t('headings.passwords.change')
+= simple_form_for(@password_reset_from_disavowal_form,
+    url: events_disavowal_url,
+    html: { autocomplete: 'off',
+    method: :post,
+    role: 'form' }) do |f|
+  = f.input :disavowal_token, as: :hidden,
+    input_html: { value: @disavowal_token, name: :disavowal_token }
+  = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true
+  = render 'devise/shared/password_strength'
+  = f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'mb3'
+
+= render 'shared/password_accordion'
+
+== javascript_pack_tag 'pw-strength'
