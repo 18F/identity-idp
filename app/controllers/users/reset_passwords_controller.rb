@@ -125,7 +125,9 @@ module Users
     end
 
     def create_reset_event_and_send_notification
-      disavowal_token = create_user_event_with_disavowal(:password_changed, resource)
+      disavowal_token = create_user_event_with_disavowal(
+        :password_changed, resource
+      ).disavowal_token
       resource.confirmed_email_addresses.each do |email_address|
         UserMailer.password_changed(email_address, disavowal_token: disavowal_token).deliver_later
       end

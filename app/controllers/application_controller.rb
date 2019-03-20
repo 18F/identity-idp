@@ -68,6 +68,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def create_user_event_with_disavowal(event_type, user = current_user)
     event = create_user_event(event_type, user)
     EventDisavowal::GenerateDisavowalToken.new(event).call
+    event
   end
 
   def create_or_update_device(user)
