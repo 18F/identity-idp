@@ -53,6 +53,8 @@ describe DeviceTracking::AlertUserAboutNewDevice do
 
       it 'does not send any SMSs' do
         described_class.call(user, device)
+
+        expect(SmsNewDeviceSignInNotifierJob).to_not have_received(:perform_now)
       end
     end
   end
