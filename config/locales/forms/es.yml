@@ -5,6 +5,7 @@ es:
       legend: Selecciona una opción de autenticación secundaria
     backup_code:
       download: Descargar
+      generate: Generar
       info: Use códigos de inicio de sesión si no puede acceder a su teléfono para
         iniciar sesión
       instructions: Se le pedirá un código de inicio de sesión cada vez que inicie
@@ -14,6 +15,7 @@ es:
         viejos códigos ya no funcionarán.
       new_login_codes: Generar nuevos códigos de inicio de sesión
       print: Impresión
+      regenerate: regenerar
       subinfo: Cada código solo se puede utilizar una vez, una vez que se haya utilizado
         el décimo código, se le pedirá que descargue una nueva lista. Trate sus códigos
         de recuperación con el mismo nivel de atención como lo haría con su contraseña.
