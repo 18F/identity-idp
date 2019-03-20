@@ -77,10 +77,6 @@ RSpec.configure do |config|
     Capybara.use_default_driver
   end
 
-  config.before(:each, type: :feature) do
-    allow_any_instance_of(Geocoder::Result::Test).to receive(:language=)
-  end
-
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
     example.run

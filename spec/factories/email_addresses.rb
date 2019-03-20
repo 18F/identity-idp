@@ -3,7 +3,7 @@ FactoryBot.define do
 
   factory :email_address do
     confirmed_at { Time.zone.now }
-    email { 'jd@example.com' }
+    email { Faker::Internet.safe_email }
     user { association :user }
   end
 end
