@@ -9,11 +9,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def header_partial
-    if decorated_user.identity_verified?
-      'accounts/verified_header'
-    else
-      'accounts/header'
-    end
+    'accounts/header'
   end
 
   def personal_key_partial
@@ -44,9 +40,18 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def unphishable_status_partial
+  def badges_partial
+    'accounts/badges'
+  end
+
+  def unphishable_badge_partial
     return 'shared/null' unless MfaPolicy.new(decorated_user.user).unphishable?
-    'accounts/unphishable_status'
+    'accounts/unphishable_badge'
+  end
+
+  def verified_account_badge_partial
+    return 'shared/null' unless decorated_user.identity_verified?
+    'accounts/verified_account_badge'
   end
 
   def edit_action_partial

@@ -9,6 +9,7 @@
       span.sm-show
         = t('headings.account.login_info')
   = render partial: current_user.decorate.verified_account_partial
+  = render partial: view_model.unphishable_status_partial
 
 .px2.pb1.bold.h3.sm-hide.serif
   = t('headings.account.login_info')
