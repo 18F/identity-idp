@@ -33,9 +33,11 @@ class SamlRequestValidator
   end
 
   def authorized_authn_context
-    return if Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(authn_context)
-
-    errors.add(:authn_context, :unauthorized_authn_context)
+    if !Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(authn_context) ||
+       (authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF &&
+         service_provider.ial != 2)
+      errors.add(:authn_context, :unauthorized_authn_context)
+    end
   end
 
   def authorized_email_nameid_format
