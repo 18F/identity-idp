@@ -12,7 +12,6 @@ describe Idv::RecoveryController do
     end
   end
 
-
   before do |example|
     enable_doc_auth
     stub_sign_in unless example.metadata[:skip_sign_in]
