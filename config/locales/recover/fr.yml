@@ -2,21 +2,22 @@
 fr:
   recover:
     email:
-      confirm: Confirm your email
-      instructions: Confirming your email address will allow us to help you re-verify
-        that you are the owner of this account.  Please click the link below or copy
-        and paste the entire link into your browser.  This link will expire in 24
-        hours.
+      confirm: Confirmez votre email
+      instructions: Confirmer votre adresse e-mail nous permettra de vous aider à
+        vérifier à nouveau que vous êtes le propriétaire de ce compte. Veuillez cliquer
+        sur le lien ci-dessous ou copier et coller le lien en entier dans votre navigateur.
+        Ce lien expirera dans 15 minutes.
     request:
-      confirm_email: First, let's confirm your email address
-      email_sent: Link sent to %{email}. Please check your email and follow instructions
-        to re-verify your identity.
-      instructions: We'll send an email to the address we have on file for this account.
-        Once you receive the email, click the link inside to continue re-verifying
-        your account.
-      reverify: To reset your account, we'll need to re-verify your identity
+      confirm_email: D'abord, confirmons votre adresse email
+      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre courrier électronique
+        et suivez les instructions pour vérifier votre identité.
+      instructions: Nous enverrons un courrier électronique à l'adresse indiquée pour
+        ce compte.  Une fois l'e-mail reçu, cliquez sur le lien à l'intérieur pour
+        continuer à vérifier votre compte.
+      reverify: Pour réinitialiser votre compte, nous devons revérifier votre identité.
     reverify:
-      email_confirmed: We have confirmed your email address
-      fail: Recover fail
-      instructions: We want to make sure you, and only you, have access to your account
-      reverify: Next, let's re-verify your identity
+      email_confirmed: Nous avons confirmé votre adresse email
+      fail: Récupérer échouer
+      instructions: Nous voulons nous assurer que vous et seulement vous avez accès
+        à votre compte
+      reverify: Ensuite, revérifions votre identité

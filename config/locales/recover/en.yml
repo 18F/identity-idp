@@ -5,8 +5,8 @@ en:
       confirm: Confirm your email
       instructions: Confirming your email address will allow us to help you re-verify
         that you are the owner of this account.  Please click the link below or copy
-        and paste the entire link into your browser.  This link will expire in 24
-        hours.
+        and paste the entire link into your browser.  This link will expire in 15
+        minutes.
     request:
       confirm_email: First, let's confirm your email address
       email_sent: Link sent to %{email}. Please check your email and follow instructions

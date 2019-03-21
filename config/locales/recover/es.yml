@@ -2,21 +2,23 @@
 es:
   recover:
     email:
-      confirm: Confirm your email
-      instructions: Confirming your email address will allow us to help you re-verify
-        that you are the owner of this account.  Please click the link below or copy
-        and paste the entire link into your browser.  This link will expire in 24
-        hours.
+      confirm: Confirme su email
+      instructions: Confirmar su dirección de correo electrónico nos permitirá ayudarlo
+        a volver a verificar que usted es el propietario de esta cuenta. Haga clic
+        en el enlace de abajo o copie y pegue el enlace completo en su navegador.
+        Este enlace caducará en 15 minutos.
     request:
-      confirm_email: First, let's confirm your email address
-      email_sent: Link sent to %{email}. Please check your email and follow instructions
-        to re-verify your identity.
-      instructions: We'll send an email to the address we have on file for this account.
-        Once you receive the email, click the link inside to continue re-verifying
-        your account.
-      reverify: To reset your account, we'll need to re-verify your identity
+      confirm_email: Primero, confirmemos tu dirección de correo electrónico
+      email_sent: Enlace enviado a %{email}. Por favor revise su correo electrónico
+        y siga las instrucciones para volver a verificar su identidad.
+      instructions: Enviaremos un correo electrónico a la dirección que tenemos registrada
+        para esta cuenta.  Una vez que reciba el correo electrónico, haga clic en
+        el enlace que se encuentra dentro para continuar con la verificación de su
+        cuenta.
+      reverify: Para restablecer su cuenta, tendremos que volver a verificar su identidad
     reverify:
-      email_confirmed: We have confirmed your email address
-      fail: Recover fail
-      instructions: We want to make sure you, and only you, have access to your account
-      reverify: Next, let's re-verify your identity
+      email_confirmed: Hemos confirmado su dirección de correo electrónico
+      fail: Falla de recuperación
+      instructions: Queremos asegurarnos de que usted, y solo usted, tenga acceso
+        a su cuenta
+      reverify: A continuación, volvamos a verificar su identidad
