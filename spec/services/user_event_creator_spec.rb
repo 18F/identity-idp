@@ -32,8 +32,6 @@ describe UserEventCreator do
       it 'updates the device and creates an event' do
         event = subject.create_user_event(event_type, user)
 
-        expect(Event.count).to eq(1)
-        event = Event.first
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
         expect(event.device).to eq(device.reload)
@@ -50,8 +48,6 @@ describe UserEventCreator do
 
         event = subject.create_user_event(event_type, user)
 
-        expect(Event.count).to eq(1)
-        event = Event.first
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
         expect(event.device.id).to_not eq(device.reload.id)
@@ -78,8 +74,6 @@ describe UserEventCreator do
 
         event = subject.create_user_event(event_type, user)
 
-        expect(Event.count).to eq(1)
-        event = Event.first
         expect(event.event_type).to eq(event_type)
         expect(event.ip).to eq(ip_address)
         expect(event.device.last_ip).to eq(ip_address)
