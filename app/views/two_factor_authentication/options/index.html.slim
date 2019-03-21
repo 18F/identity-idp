@@ -25,7 +25,7 @@ p.mt-tiny.mb3 = @presenter.info
   = f.button :submit, t('forms.buttons.continue')
 
 br
-- if @presenter.ial2?
+- if @presenter.ial2? && !FeatureManagement.disallow_ial2_recovery?
   p = @presenter.reverify_link
 - else
   p = @presenter.account_reset_or_cancel_link

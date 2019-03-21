@@ -1,6 +1,5 @@
 module Idv
   class RecoveryController < ApplicationController
-    include TwoFactorAuthenticatable
     before_action :ensure_user_id_in_session
 
     include IdvSession # remove if we retire the non docauth LOA3 flow
@@ -17,7 +16,7 @@ module Idv
     private
 
     def ensure_user_id_in_session
-      return if session[:doc_capture_user_id]
+      return if session[:ial2_recovery_user_id]
       result = Recover::ValidateRequestToken.new(token).call
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
@@ -25,7 +24,7 @@ module Idv
 
     def process_result(result)
       if result.success?
-        session[:doc_capture_user_id] = result.extra[:for_user_id]
+        session[:ial2_recovery_user_id] = result.extra[:for_user_id]
       else
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
