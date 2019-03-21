@@ -18,7 +18,6 @@ module Idv
     def ensure_user_id_in_session
       return if session[:ial2_recovery_user_id]
       result = Recover::ValidateRequestToken.new(token).call
-      analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
     end
 
@@ -26,6 +25,8 @@ module Idv
       if result.success?
         session[:ial2_recovery_user_id] = result.extra[:for_user_id]
       else
+        # other analytics are logged automatically by the flow state machine
+        analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end
