@@ -1,6 +1,6 @@
 class UserEventCreator
   attr_reader :request, :current_user
-  
+
   def initialize(request, current_user)
     @request = request
     @current_user = current_user
@@ -24,14 +24,18 @@ class UserEventCreator
   private
 
   def create_or_update_device(user)
-    cookie = request.cookie_jar[:device]
+    cookie = cookies[:device]
     device = DeviceTracking::FindOrCreateDevice.call(
       user, cookie, request.remote_ip, request.user_agent
     )
 
     device_cookie_uuid = device.cookie_uuid
 
-    request.cookie_jar.permanent[:device] = device_cookie_uuid unless device_cookie_uuid == cookie
+    cookies.permanent[:device] = device_cookie_uuid unless device_cookie_uuid == cookie
     device
+  end
+
+  def cookies
+    request.cookie_jar
   end
 end
