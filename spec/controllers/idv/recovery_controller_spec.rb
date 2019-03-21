@@ -47,6 +47,17 @@ describe Idv::RecoveryController do
       end
     end
 
+    context 'with an expired token' do
+      it 'redirects to the root url' do
+        expired_token = Recover::CreateRecoverRequest.call(user.id).request_token
+        Timecop.travel(Time.zone.now + 1.day) do
+          get :index, params: { token: expired_token }
+        end
+
+        expect(response).to redirect_to root_url
+      end
+    end
+
     context 'with a good token' do
       it 'redirects to the first step' do
         get :index, params: { token: token }
