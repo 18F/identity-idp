@@ -22,7 +22,7 @@ describe Users::PasswordsController do
       end
 
       it 'calls UpdateUserPassword' do
-        stub_sign_in
+        stub_sign_in(create(:user))
         updater = instance_double(UpdateUserPasswordForm)
         password = 'strong password'
         allow(UpdateUserPasswordForm).to receive(:new).
@@ -32,7 +32,6 @@ describe Users::PasswordsController do
         allow(updater).to receive(:submit).and_return(response)
         personal_key = 'five random words for test'
         allow(updater).to receive(:personal_key).and_return(personal_key)
-        allow(controller).to receive(:create_user_event)
 
         params = { password: password }
         patch :update, params: { update_user_password_form: params }
@@ -43,9 +42,21 @@ describe Users::PasswordsController do
       end
 
       it 'creates a user Event for the password change' do
-        stub_sign_in
+        stub_sign_in(create(:user))
 
-        expect(controller).to receive(:create_user_event)
+        params = { password: 'salty new password' }
+        patch :update, params: { update_user_password_form: params }
+      end
+
+      it 'sends the user an email' do
+        user = create(:user)
+        mail = double
+        expect(mail).to receive(:deliver_later)
+        expect(UserMailer).to receive(:password_changed).
+          with(user.email_addresses.first, hash_including(:disavowal_token)).
+          and_return(mail)
+
+        stub_sign_in(user)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }

@@ -33,8 +33,6 @@ describe UpdateUserPasswordForm, type: :model do
 
     context 'when the password is valid' do
       it 'returns FormResponse with success: true' do
-        stub_email_delivery
-
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
@@ -43,8 +41,6 @@ describe UpdateUserPasswordForm, type: :model do
       end
 
       it 'updates the user' do
-        stub_email_delivery
-
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
           with(user: user, attributes: { password: 'salty new password' }).
@@ -55,16 +51,6 @@ describe UpdateUserPasswordForm, type: :model do
 
         expect(user_updater).to have_received(:call)
       end
-
-      it 'sends an email to notify of the password change' do
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        allow(UserMailer).to receive(:password_changed).
-          with(user.email_addresses.first).and_return(mailer)
-
-        subject.submit(params)
-
-        expect(mailer).to have_received(:deliver_later)
-      end
     end
 
     context 'when the user has an active profile' do
@@ -73,8 +59,6 @@ describe UpdateUserPasswordForm, type: :model do
 
       it 'encrypts the active profile' do
         allow(user).to receive(:active_profile).and_return(profile)
-
-        stub_email_delivery
 
         encryptor = instance_double(ActiveProfileEncryptor)
         allow(ActiveProfileEncryptor).to receive(:new).
@@ -89,20 +73,10 @@ describe UpdateUserPasswordForm, type: :model do
 
     context 'when the user does not have an active profile' do
       it 'does not call ActiveProfileEncryptor' do
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        expect(UserMailer).to receive(:password_changed).
-          with(user.email_addresses.first).and_return(mailer)
         expect(ActiveProfileEncryptor).to_not receive(:new)
 
         subject.submit(params)
       end
-    end
-  end
-
-  def stub_email_delivery
-    mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-    user.email_addresses.each do |email_address|
-      allow(UserMailer).to receive(:password_changed).with(email_address).and_return(mailer)
     end
   end
 end

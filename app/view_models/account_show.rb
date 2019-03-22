@@ -1,4 +1,5 @@
 # :reek:TooManyMethods
+# :reek:RepeatedConditional
 class AccountShow # rubocop:disable Metrics/ClassLength
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
@@ -9,11 +10,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def header_partial
-    if decorated_user.identity_verified?
-      'accounts/verified_header'
-    else
-      'accounts/header'
-    end
+    'accounts/header'
   end
 
   def personal_key_partial
@@ -42,6 +39,20 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     else
       'shared/null'
     end
+  end
+
+  def badges_partial
+    'accounts/badges'
+  end
+
+  def unphishable_badge_partial
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).unphishable?
+    'accounts/unphishable_badge'
+  end
+
+  def verified_account_badge_partial
+    return 'shared/null' unless decorated_user.identity_verified?
+    'accounts/verified_account_badge'
   end
 
   def edit_action_partial
@@ -116,6 +127,23 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/personal_key_item_heading'
   end
 
+  def backup_codes_partial
+    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
+      regenerate_backup_codes_partial
+    else
+      generate_backup_codes_partial
+    end
+  end
+
+  def regenerate_backup_codes_partial
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
+    'accounts/actions/regenerate_backup_codes'
+  end
+
+  def generate_backup_codes_partial
+    'accounts/actions/generate_backup_codes'
+  end
+
   def recent_event_partial
     'accounts/event_item'
   end
@@ -139,6 +167,14 @@ class AccountShow # rubocop:disable Metrics/ClassLength
       I18n.t('account.index.piv_cac_enabled')
     else
       I18n.t('account.index.piv_cac_disabled')
+    end
+  end
+
+  def backup_codes_content
+    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
+      I18n.t('account.index.backup_codes_exist')
+    else
+      I18n.t('account.index.backup_codes_no_exist')
     end
   end
 
