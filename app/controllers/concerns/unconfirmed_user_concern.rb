@@ -39,7 +39,7 @@ module UnconfirmedUserConcern
     EmailNotifier.new(@user).send_email_changed_email
   end
 
-  def after_confirmation_url_for(user)
+  def after_confirmation_url_for(_user)
     if !user_signed_in?
       new_user_session_url
     else

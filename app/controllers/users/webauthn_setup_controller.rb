@@ -23,16 +23,25 @@ module Users
     end
 
     def success
-      @next_url = complete_user_flow
+      @next_url = if !FeatureManagement.force_multiple_auth_methods? &&
+                     !TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
+                    sign_up_personal_key_url
+                  else
+                    complete_user_flow
+                  end
     end
 
     def delete
-      if MfaPolicy.new(current_user).more_than_two_factors_enabled?
+      if FeatureManagement.force_multiple_auth_methods? &&
+         MfaPolicy.new(current_user).more_than_two_factors_enabled?
+        handle_successful_delete
+      elsif MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
       else
         handle_failed_delete
       end
-      redirect_to account_url
+
+      redirect_to complete_user_flow
     end
 
     def show_delete

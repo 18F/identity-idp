@@ -12,8 +12,9 @@ module TwoFactorAuthentication
       configured?
     end
 
+    # :reek:UtilityFunction
     def visible?
-      true
+      !FeatureManagement.force_multiple_auth_methods?
     end
 
     private

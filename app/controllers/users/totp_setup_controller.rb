@@ -26,10 +26,15 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled? && MfaPolicy.new(current_user).more_than_two_factors_enabled?
-        process_successful_disable
+      if current_user.totp_enabled?
+        if FeatureManagement.force_multiple_auth_methods? &&
+           MfaPolicy.new(current_user).more_than_two_factors_enabled?
+          process_successful_disable
+        elsif MfaPolicy.new(current_user).multiple_factors_enabled?
+          process_successful_disable
+        end
       end
-      redirect_to account_url
+      redirect_to complete_user_flow
     end
 
     private
@@ -71,7 +76,12 @@ module Users
     end
 
     def url_after_entering_valid_code
-      return account_url
+      if !FeatureManagement.force_multiple_auth_methods? &&
+         !user_already_has_a_personal_key?
+        sign_up_personal_key_url
+      else
+        complete_user_flow
+      end
     end
 
     def user_already_has_a_personal_key?

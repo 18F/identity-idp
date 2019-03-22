@@ -15,7 +15,11 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-      redirect_to complete_user_flow
+      if FeatureManagement.force_multiple_auth_methods?
+        redirect_to complete_user_flow
+      else
+        redirect_to sign_up_personal_key_url
+      end
     end
 
     def download
