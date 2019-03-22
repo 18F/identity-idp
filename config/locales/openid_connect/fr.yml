@@ -4,6 +4,7 @@ fr:
     authorization:
       errors:
         bad_client_id: Mauvaise client_id
+        no_auth: Les acr_values ne sont pas autorisées
         no_valid_acr_values: Valeurs acr_values inacceptables trouvées
         no_valid_scope: Aucune étendue de données valide trouvée
         redirect_uri_invalid: redirect_uri est non valide

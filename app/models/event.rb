@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   belongs_to :user
   belongs_to :device
 
+  attr_accessor :disavowal_token
+
   enum event_type: {
     account_created: 1,
     phone_confirmed: 2,

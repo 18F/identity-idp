@@ -27,6 +27,7 @@ test:
     friendly_name: 'Test SP'
     cert: 'saml_test_sp'
     logo: 'generic.svg'
+    ial: 2
     attribute_bundle:
       - first_name
       - last_name
@@ -55,6 +56,18 @@ test:
     agency_id: 1
     uuid_priority: 20
     logo: 'generic.svg'
+    ial: 2
+
+  'urn:gov:gsa:openidconnect:test:loa1':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/logout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
@@ -64,6 +77,7 @@ test:
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
+    ial: 2
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
@@ -315,6 +329,7 @@ production:
     return_to_sp_url: 'https://onlinetest.rrb.gov/AA1/Login/login/RRBHome'
     block_encryption: 'aes256-cbc'
     cert: 'rrb_bos_pre_prod'
+    ial: 2
     attribute_bundle:
       - email
       - first_name
@@ -338,6 +353,7 @@ production:
     cert: 'rrb_benefit_connect_staging'
     redirect_uris:
       - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices/Account/SignInCallback'
+    ial: 2
     attribute_bundle:
       - email
       - first_name
@@ -759,6 +775,7 @@ production:
       - 'https://online.rrb.gov/AA1/login/login/RRBHome'
       - 'https://online.rrb.gov/AA1/login/login/SignInCallback'
     cert: 'rrb_bos_prod'
+    ial: 2
     attribute_bundle:
       - email
       - first_name

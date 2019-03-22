@@ -30,11 +30,18 @@ module Users
     end
 
     def handle_valid_password
-      create_user_event(:password_changed)
+      create_event_and_notify_user_about_password_change
       bypass_sign_in current_user
 
       flash[:personal_key] = @update_user_password_form.personal_key
       redirect_to account_url, notice: t('notices.password_changed')
+    end
+
+    def create_event_and_notify_user_about_password_change
+      disavowal_token = create_user_event_with_disavowal(:password_changed).disavowal_token
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.password_changed(email_address, disavowal_token: disavowal_token).deliver_later
+      end
     end
 
     def handle_invalid_password

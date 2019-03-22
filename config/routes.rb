@@ -112,6 +112,9 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
+    get '/events/disavow/:disavowal_token' => 'event_disavowal#new', as: :event_disavowal
+    post '/events/disavow/' => 'event_disavowal#create', as: :events_disavowal
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service

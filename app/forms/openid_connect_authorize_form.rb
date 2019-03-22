@@ -35,6 +35,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
+  validate :validate_privileges
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -134,6 +135,11 @@ class OpenidConnectAuthorizeForm
       error_description: errors.full_messages.join(' '),
       state: state,
     )
+  end
+
+  def validate_privileges
+    return unless loa3_requested? && service_provider.ial != 2
+    errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
   end
 end
 # rubocop:enable Metrics/ClassLength
