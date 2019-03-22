@@ -10,6 +10,7 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
+    before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
       link_identity_to_service_provider
@@ -92,6 +93,11 @@ module OpenidConnect
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
+    def prompt_for_password_if_ial2_request_and_pii_locked
+      return unless ial2_request? && identity_verified? && !has_decrypted_pii?
+      redirect_to capture_password_url
+    end
+
     def store_request
       ServiceProviderRequestHandler.new(
         url: request.original_url,
@@ -99,6 +105,18 @@ module OpenidConnect
         protocol_request: @authorize_form,
         protocol: FederatedProtocols::Oidc,
       ).call
+    end
+
+    def identity_verified?
+      UserDecorator.new(current_user).identity_verified?
+    end
+
+    def has_decrypted_pii?
+      user_session[:decrypted_pii].present?
+    end
+
+    def ial2_request?
+      sp_session && sp_session_ial > 1
     end
   end
 end
