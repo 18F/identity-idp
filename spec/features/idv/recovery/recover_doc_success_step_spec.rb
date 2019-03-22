@@ -24,20 +24,26 @@ feature 'recovery doc success step' do
   end
 
   it 'proceeds to the account page if the document pii matches the saved pii' do
-    allow_any_instance_of(Idv::Steps::RecoverDocSuccessStep).to receive(:saved_pii).
-      and_return(saved_pii.to_json)
-
+    mock_decrypted_pii_data_in_session(saved_pii)
     click_idv_continue
 
     expect(page).to have_current_path(account_path)
   end
 
   it 'fails to re-verify if the document pii does not match the saved pii' do
-    allow_any_instance_of(Idv::Steps::RecoverDocSuccessStep).to receive(:saved_pii).
-      and_return(bad_pii.to_json)
+    mock_decrypted_pii_data_in_session(bad_pii)
 
     click_idv_continue
 
     expect(page).to have_current_path(idv_recovery_fail_step)
+  end
+
+  def mock_decrypted_pii_data_in_session(decrypted_pii)
+    allow_any_instance_of(Idv::Flows::RecoveryFlow).to receive(:session).
+      and_wrap_original do |m, *args|
+      hash = m.call(*args)
+      hash['decrypted_pii'] = decrypted_pii.stringify_keys.to_json
+      hash
+    end
   end
 end
