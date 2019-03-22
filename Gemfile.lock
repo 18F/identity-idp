@@ -704,7 +704,6 @@ DEPENDENCIES
   rack-test
   rack-timeout
   rack_session_access
-  railroady
   rails (~> 5.1.3)
   rails-controller-testing
   rails-erd
