@@ -1,5 +1,6 @@
 class NullServiceProvider
   attr_accessor :issuer
+  attr_accessor :ial
 
   def initialize(issuer:)
     @issuer = issuer
