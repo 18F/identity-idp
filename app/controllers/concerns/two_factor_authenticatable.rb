@@ -174,6 +174,9 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
       account_url
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
+    elsif !FeatureManagement.force_multiple_auth_methods? &&
+          !TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
+      sign_up_personal_key_url
     else
       complete_user_flow
     end

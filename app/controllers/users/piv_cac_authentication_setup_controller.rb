@@ -103,8 +103,13 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      return redirect_to account_url unless piv_cac_enabled? &&
-                                            MfaPolicy.new(current_user).more_than_two_factors_enabled?
+      mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
+                         MfaPolicy.new(current_user).more_than_two_factors_enabled?
+                       else
+                         MfaPolicy.new(current_user).multiple_factors_enabled?
+                       end
+
+      redirect_to account_url unless piv_cac_enabled? && mfa_policy_met
     end
 
     def authorize_piv_cac_setup
