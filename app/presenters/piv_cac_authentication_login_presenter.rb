@@ -17,14 +17,10 @@ class PivCacAuthenticationLoginPresenter
   end
 
   def title
-    t('titles.piv_cac_setup.new')
+    t('titles.piv_cac_login.new')
   end
 
   def heading
-    t('headings.piv_cac_setup.new')
-  end
-
-  def description
-    t('forms.piv_cac_setup.piv_cac_intro_html')
+    t('headings.piv_cac_login.new')
   end
 end
