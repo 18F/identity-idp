@@ -5,7 +5,7 @@ class TotpVerificationForm
   end
 
   def submit
-    FormResponse.new(success: valid_totp_code?, errors: {}, extra: extra_analytics_attributes)
+    FormResponse.new(success: valid_totp_code?, errors: {}, extra: extra_analytics_attributes(params))
   end
 
   private
@@ -25,9 +25,10 @@ class TotpVerificationForm
     Devise.otp_length
   end
 
-  def extra_analytics_attributes
+  def extra_analytics_attributes(params)
     {
       multi_factor_auth_method: 'totp',
+      ga_client_id: params[:ga_client_id],
     }
   end
 end

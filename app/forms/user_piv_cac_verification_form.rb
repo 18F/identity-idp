@@ -10,7 +10,7 @@ class UserPivCacVerificationForm
   def submit
     success = valid? && valid_token?
 
-    FormResponse.new(success: success, errors: {})
+    FormResponse.new(success: success, errors: {}, extra_analytics_attributes(params))
   end
 
   private
@@ -65,5 +65,12 @@ class UserPivCacVerificationForm
       self.error_type = 'user.no_piv_cac_associated'
       false
     end
+  end
+
+  def extra_analytics_attributes(params)
+    {
+      multi_factor_auth_method: 'piv_cac',
+      ga_client_id: params[:ga_client_id],
+    }
   end
 end

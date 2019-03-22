@@ -20,7 +20,7 @@ class WebauthnVerificationForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_assertion_response?(protocol)
-    FormResponse.new(success: success, errors: errors.messages)
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes(params))
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -61,5 +61,12 @@ class WebauthnVerificationForm
   def public_key
     WebauthnConfiguration.
       where(user_id: user.id, credential_id: @credential_id).first.credential_public_key
+  end
+
+    def extra_analytics_attributes(params)
+    {
+      multi_factor_auth_method: 'webauthn',
+      ga_client_id: params[:ga_client_id],
+    }
   end
 end

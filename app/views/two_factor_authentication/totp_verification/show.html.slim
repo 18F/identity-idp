@@ -10,6 +10,7 @@ h1.h3.my0 = @presenter.header
     = text_field_tag :code, '', value: @code, required: true, autofocus: true,
       pattern: '[0-9]*', class: 'col-12 field monospace mfa', type: 'tel',
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length, autocomplete: 'off'
+    = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter

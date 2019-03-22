@@ -13,10 +13,16 @@ class Analytics # rubocop:disable Metrics/ClassLength
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
-  def track_mfa_submit_event(attributes)
+  def track_mfa_submit_event(attributes, method)
     track_event(MULTI_FACTOR_AUTH, attributes)
-    success_int = (attributes.success ? 1 : 0)
-    post_ga_event('authenication', 'multi-factor-submit', success_int)
+    mfa_event_type = (attributes.success ? 'success' : 'fail')
+
+    post_ga_event(
+      'authenication',
+      'multi+factor+#{mfa_event_type}',
+      attributes.event_properties.multi_factor_auth_method,
+      attributes.extra.ga_client_id
+    )
   end
 
   private
@@ -50,10 +56,10 @@ class Analytics # rubocop:disable Metrics/ClassLength
     }
   end
 
-  def post_ga_event(category, event_action)
+  def post_ga_event(category, event_action, method, client_id)
     host = "www.google-analytics.com/"
 
-    url = "/collect?v=1&tid=#{ga_uid}&cid-#{get_session_cid()}&t=event&ec=#{category}&ea=#{event_action}"
+    url = "/collect?v=1&tid=#{ga_uid}&cid-#{client_id}&t=event&ec=#{category}&ea=#{event_action}&el=#{method}"
 
     options = default_options.merge(
       headers: accept_json,
