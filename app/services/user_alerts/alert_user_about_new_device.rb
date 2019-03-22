@@ -1,4 +1,4 @@
-module DeviceTracking
+module UserAlerts
   class AlertUserAboutNewDevice
     def self.call(user, device, disavowal_token)
       send_emails(user, device, disavowal_token)
@@ -20,7 +20,7 @@ module DeviceTracking
 
     def self.send_sms_messages(user)
       return unless FeatureManagement.send_new_device_sms?
-      user.phone_configurations.each do |phone_configuration|
+      MfaContext.new(user).phone_configurations.each do |phone_configuration|
         SmsNewDeviceSignInNotifierJob.perform_now(phone: phone_configuration.phone)
       end
     end

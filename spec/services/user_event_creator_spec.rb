@@ -44,7 +44,7 @@ describe UserEventCreator do
       let(:device) { create(:device, cookie_uuid: existing_device_cookie) }
 
       it 'creates a device and creates an event' do
-        expect(DeviceTracking::AlertUserAboutNewDevice).to_not receive(:call)
+        expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:call)
 
         event = subject.create_user_event(event_type, user)
 
@@ -56,12 +56,12 @@ describe UserEventCreator do
       end
 
       it 'alerts the user if they have other devices' do
-        allow(DeviceTracking::AlertUserAboutNewDevice).to receive(:call)
+        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
         subject.create_user_event(event_type, user)
 
-        expect(DeviceTracking::AlertUserAboutNewDevice).to have_received(:call).
+        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
           with(user, user.events.first.device, instance_of(String))
       end
     end
@@ -70,7 +70,7 @@ describe UserEventCreator do
       let(:device) { nil }
 
       it 'creates a device and creates an event' do
-        expect(DeviceTracking::AlertUserAboutNewDevice).to_not receive(:call)
+        expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:call)
 
         event = subject.create_user_event(event_type, user)
 
@@ -81,12 +81,12 @@ describe UserEventCreator do
       end
 
       it 'alerts the user if they have other devices' do
-        allow(DeviceTracking::AlertUserAboutNewDevice).to receive(:call)
+        allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
         subject.create_user_event(event_type, user)
 
-        expect(DeviceTracking::AlertUserAboutNewDevice).to have_received(:call).
+        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
           with(user, user.events.first.device, instance_of(String))
       end
     end

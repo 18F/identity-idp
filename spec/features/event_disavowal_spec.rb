@@ -28,6 +28,17 @@ feature 'disavowing an action' do
     disavow_last_action_and_reset_password
   end
 
+  scenario 'disavowing a personal key sign in' do
+    allow(SmsPersonalKeySignInNotifierJob).to receive(:perform_now)
+
+    signin(user.email, user.password)
+    choose_another_security_option(:personal_key)
+    fill_in :personal_key_form_personal_key, with: user.personal_key
+    click_submit_default
+
+    disavow_last_action_and_reset_password
+  end
+
   scenario 'attempting to disavow an event with an invalid disavowal token' do
     visit event_disavowal_path(disavowal_token: 'this is a totally fake token')
 

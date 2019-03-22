@@ -50,7 +50,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'personal_key_sign_in' do
-    let(:mail) { UserMailer.personal_key_sign_in(user.email) }
+    let(:mail) { UserMailer.personal_key_sign_in(user.email, disavowal_token: 'asdf1234') }
 
     it_behaves_like 'a system email'
 
@@ -65,6 +65,9 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.personal_key_sign_in.intro'),
+      )
+      expect(mail.html_part.body).to include(
+        '/events/disavow/asdf1234',
       )
     end
   end

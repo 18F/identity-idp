@@ -15,7 +15,6 @@ class PersonalKeyForm
     @success = valid?
 
     reset_sensitive_fields unless success
-    send_personal_key_sign_in_notification if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -32,14 +31,5 @@ class PersonalKeyForm
 
   def reset_sensitive_fields
     self.personal_key = nil
-  end
-
-  def send_personal_key_sign_in_notification
-    user.confirmed_email_addresses.each do |email_address|
-      UserMailer.personal_key_sign_in(email_address.email).deliver_now
-    end
-    MfaContext.new(user).phone_configurations.each do |phone_configuration|
-      SmsPersonalKeySignInNotifierJob.perform_now(phone: phone_configuration.phone)
-    end
   end
 end
