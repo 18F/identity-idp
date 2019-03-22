@@ -56,10 +56,24 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     warden.user || AnonymousUser.new
   end
 
-  def user_event_creator
-    @user_event_creator ||= UserEventCreator.new(request, current_user)
+  def create_user_event(event_type, user = current_user)
+    return unless user&.id
+    device = create_or_update_device(user)
+    Event.create(user_id: user.id,
+                 device_id: device.id,
+                 ip: request.remote_ip,
+                 event_type: event_type)
   end
-  delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
+
+  def create_or_update_device(user)
+    cookie = cookies[:device]
+    device = DeviceTracking::ManageDevice.call(user, cookie, request.remote_ip, request.user_agent)
+
+    device_cookie_uuid = device.cookie_uuid
+
+    cookies.permanent[:device] = device_cookie_uuid unless device_cookie_uuid == cookie
+    device
+  end
 
   def decorated_session
     @_decorated_session ||= DecoratedSession.new(

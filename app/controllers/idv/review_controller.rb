@@ -1,7 +1,5 @@
 module Idv
   class ReviewController < ApplicationController
-    before_action :personal_key_confirmed
-
     include IdvStepConcern
     include PhoneConfirmation
 
@@ -42,7 +40,6 @@ module Idv
 
     def create
       init_profile
-      user_session[:need_personal_key_confirmation] = true
       redirect_to idv_confirmations_url
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
 
@@ -84,15 +81,6 @@ module Idv
 
     def password
       params.fetch(:user, {})[:password].presence
-    end
-
-    def personal_key_confirmed
-      return unless current_user.active_profile.present? && need_personal_key_confirmation?
-      redirect_to idv_confirmations_url
-    end
-
-    def need_personal_key_confirmation?
-      user_session[:need_personal_key_confirmation]
     end
   end
 end

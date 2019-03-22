@@ -13,7 +13,6 @@ module Idv
     end
 
     def update
-      user_session[:need_personal_key_confirmation] = false
       redirect_to next_step
     end
 

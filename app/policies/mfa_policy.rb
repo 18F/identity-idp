@@ -13,6 +13,7 @@ class MfaPolicy
 
   def more_than_two_factors_enabled?
     mfa_user.enabled_mfa_methods_count > 2
+  end
 
   def unphishable?
     mfa_user.phishable_configuration_count.zero? &&
