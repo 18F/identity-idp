@@ -1,8 +1,10 @@
 class PasswordCaptureController < ApplicationController
   include Ial2ProfileConcern
   include TwoFactorAuthenticatableMethods
+  include SecureHeadersConcern
 
   before_action :confirm_two_factor_authenticated
+  before_action :apply_secure_headers_override
 
   def new
     session[:password_attempts] ||= 0
