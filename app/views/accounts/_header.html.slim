@@ -1,14 +1,14 @@
-.clearfix.py2.sm-py0.mb2.bg-lightest-blue.sm-bg-none
-  .sm-col.sm-col-8
-    h2.h3.my0.mx2.center.sm-left-align
-      .sm-hide.regular.sans-serif.inline
-        span
-          = t('account.welcome')
-          ',
-        p.mb0.bold.truncate
+.clearfix.pt2.pb3.sm-py0.mb3.bg-lightest-blue.sm-bg-none
+  .sm-col.sm-col-4
+    h2.h3.m0.center.sm-left-align
+      span.regular.sans-serif.sm-hide
+        = t('account.welcome')
+        ',
+        span.bold
           = view_model.header_personalization
       span.sm-show
         = t('headings.account.login_info')
+  = render partial: view_model.badges_partial
 
 .px2.pb1.bold.h3.sm-hide.serif
   = t('headings.account.login_info')
