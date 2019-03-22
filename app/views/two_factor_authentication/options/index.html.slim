@@ -25,10 +25,11 @@ p.mt-tiny.mb3 = @presenter.info
   = f.button :submit, t('forms.buttons.continue')
 
 br
-- if @presenter.ial2? && !FeatureManagement.disallow_ial2_recovery?
-  p = @presenter.reverify_link
-- else
-  p = @presenter.account_reset_or_cancel_link
+- if @presenter.should_display_account_reset_or_cancel_link?
+  - if current_user.decorate.identity_verified?
+    p = @presenter.reverify_link
+  - else
+    p = @presenter.account_reset_or_cancel_link
 = render 'shared/cancel', link: destroy_user_session_path
 
 == javascript_pack_tag 'webauthn-unhide'
