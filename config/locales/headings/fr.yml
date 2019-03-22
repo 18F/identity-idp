@@ -11,6 +11,7 @@ fr:
       profile_info: Information du profil
       reactivate: Réactivez votre compte
       two_factor: Authentification à deux facteurs
+      unphishable: Incapable de phishing
       verified_account: Compte vérifié
     account_recovery_setup:
       piv_cac_linked: Votre carte PIV/CAC est liée à votre compte
