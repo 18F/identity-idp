@@ -6,9 +6,9 @@ module TwoFactorAuthentication
 
     def show
       @presenter = presenter_for_two_factor_authentication_method
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT, analytics_properties)
       return unless FeatureManagement.prefill_otp_codes?
       @code = ROTP::TOTP.new(current_user.otp_secret_key).now
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT, analytics_properties)
     end
 
     def create
