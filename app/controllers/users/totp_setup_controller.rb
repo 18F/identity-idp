@@ -71,30 +71,12 @@ module Users
     end
 
     def url_after_entering_valid_code
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
-      if policy.show_personal_key_after_initial_2fa_setup?
-        sign_up_personal_key_url
-      else
-        idv_jurisdiction_url
-      end
+      return account_url
     end
 
     def user_already_has_a_personal_key?
       TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
-
-=begin
-    def url_after_entering_valid_code
-      if sp_session[:loa3]
-        idv_jurisdiction_url
-      else
-        account_url
-      end
-    end
-=end
 
     def process_invalid_code
       flash[:error] = t('errors.invalid_totp')
