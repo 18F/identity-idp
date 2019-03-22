@@ -152,6 +152,15 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
   end
 
+  def complete_user_flow
+    if FeatureManagement.force_multiple_auth_methods? &&
+       !MfaPolicy.new(current_user).multiple_factors_enabled?
+      return account_recovery_setup_url
+    end
+
+    after_sign_in_path_for(current_user)
+  end
+
   def reauthn_param
     params[:reauthn]
   end
@@ -182,7 +191,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
     return if user_fully_authenticated?
 
-    return prompt_to_set_up_2fa unless !MfaPolicy.new(current_user).multiple_factors_enabled?
+    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
 
     prompt_to_enter_otp
   end

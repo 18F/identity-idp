@@ -77,11 +77,6 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/enable_totp'
   end
 
-  def webauthn_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).more_than_two_factors_enabled?
-    'accounts/actions/disable_piv_cac'
-  end
-
   def piv_cac_partial
     if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
       disable_piv_cac_partial
