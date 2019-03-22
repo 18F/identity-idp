@@ -152,6 +152,7 @@ development:
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency_id: 1
+    ial: 2
     redirect_uris:
       - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/'
@@ -246,6 +247,7 @@ production:
     agency: 'GSA'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra OIDC App'
+    ial: 2
     logo: '18f.svg'
     redirect_uris:
       - 'http://localhost:9292/auth/result'
