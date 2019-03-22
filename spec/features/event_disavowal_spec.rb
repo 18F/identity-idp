@@ -18,6 +18,16 @@ feature 'disavowing an action' do
     disavow_last_action_and_reset_password
   end
 
+  scenario 'disavowing a new device sign in' do
+    signin(user.email, user.password)
+    Capybara.reset_session!
+    visit root_path
+    OtpRequestsTracker.destroy_all # Prevent OTP rate limit from preventing sign in
+    signin(user.email, user.password)
+
+    disavow_last_action_and_reset_password
+  end
+
   scenario 'attempting to disavow an event with an invalid disavowal token' do
     visit event_disavowal_path(disavowal_token: 'this is a totally fake token')
 
