@@ -193,6 +193,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
+  REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
   BACKUP_CODE_CREATED = 'Backup Code Created'.freeze
   BACKUP_CODE_DELETED = 'Backup Code Delete'.freeze
   BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'.freeze
@@ -205,6 +206,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
   TWILIO_SMS_INBOUND_MESSAGE_RECEIVED = 'Twilio SMS Inbound Message Received'.freeze
   TWILIO_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'.freeze
+  USER_MARKED_AUTHED = 'User marked authenticated'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE = 'User registration: agency handoff complete'.freeze
   USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'.freeze

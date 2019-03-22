@@ -126,7 +126,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_authentication_context
-    mark_user_session_authenticated
+    mark_user_session_authenticated('valid-otp')
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
@@ -199,9 +199,11 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def mark_user_session_authenticated
+  def mark_user_session_authenticated(authenication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
+    properties.authenication_type = authenication_type
+    analytics.track_event(Analytics::USER_MARKED_AUTHED, properties)
   end
 
   def direct_otp_code
