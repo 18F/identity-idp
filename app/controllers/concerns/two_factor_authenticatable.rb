@@ -2,7 +2,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
-  include AccountConfigurationConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -171,25 +170,12 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_verification_confirmation_url
-    if after_otp_action_required?
-      after_otp_action_url
-    else
-      after_sign_in_path_for(current_user)
-    end
-  end
-
-  def after_otp_action_required?
-    decorated_user.password_reset_profile.present? ||
-      @updating_existing_number
-  end
-
-  def after_otp_action_url
     if @updating_existing_number
       account_url
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      next_step
+      complete_user_flow
     end
   end
 

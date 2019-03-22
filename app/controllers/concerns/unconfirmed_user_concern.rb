@@ -21,7 +21,7 @@ module UnconfirmedUserConcern
       end
     end
   end
-∏
+
   def process_valid_confirmation_token
     @confirmation_token = params[:confirmation_token]
     @forbidden_passwords = @user.email_addresses.flat_map do |email_address|

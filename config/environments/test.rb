@@ -28,7 +28,7 @@ Rails.application.configure do
   config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
 
   config.middleware.use RackSessionAccess::Middleware
-  config.lograge.enabled = true
+  config.lograge.enabled = false
 
   config.after_initialize do
     # Having bullet enabled in the test environment causes issues with unit

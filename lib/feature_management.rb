@@ -105,4 +105,8 @@ class FeatureManagement
   def self.send_new_device_sms?
     Figaro.env.send_new_device_sms == 'true'
   end
+
+  def self.force_multiple_auth_methods?
+    Figaro.env.force_multiple_auth_methods == 'true'
+  end
 end

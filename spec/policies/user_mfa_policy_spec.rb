@@ -37,4 +37,12 @@ describe MfaPolicy do
       it { expect(subject.unphishable?).to eq false }
     end
   end
+
+  context 'more than two mfa configuration' do
+    let(:user) { create(:user, :with_phone, :with_piv_or_cac, :with_webauthn) }
+
+    it { expect(subject.two_factor_enabled?).to eq true }
+    it { expect(subject.multiple_factors_enabled?).to eq true }
+    it { expect(subject.more_than_two_factors_enabled?).to eq true }
+  end
 end
