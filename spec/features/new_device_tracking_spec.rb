@@ -23,6 +23,7 @@ describe 'New device tracking' do
           user.email_addresses.first,
           device.last_used_at.strftime('%B %-d, %Y %H:%M'),
           'From United States (IP address: 127.0.0.1)',
+          instance_of(String),
         )
       expect(SmsNewDeviceSignInNotifierJob).to have_received(:perform_now).
         with(phone: user.phone_configurations.first.phone)
@@ -64,6 +65,7 @@ describe 'New device tracking' do
           user.email_addresses.first,
           device.last_used_at.strftime('%B %-d, %Y %H:%M'),
           'From United States (IP address: 127.0.0.1)',
+          instance_of(String),
         )
       expect(SmsNewDeviceSignInNotifierJob).to_not have_received(:perform_now)
     end
