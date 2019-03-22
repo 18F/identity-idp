@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 describe AccountShow do
-  describe '#header_partial' do
+  describe '#verified_partial' do
     context 'user has a verified identity' do
       it 'returns the verified header partial' do
         user = User.new
         allow(user).to receive(:identity_verified?).and_return(true)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-        expect(profile_index.header_partial).to eq 'accounts/verified_header'
+        expect(profile_index.verified_account_badge_partial).to eq 'accounts/verified_account_badge'
       end
     end
 
@@ -18,7 +18,7 @@ describe AccountShow do
         allow(user).to receive(:identity_verified?).and_return(false)
         profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-        expect(profile_index.header_partial).to eq 'accounts/header'
+        expect(profile_index.verified_account_badge_partial).to eq 'shared/null'
       end
     end
   end
