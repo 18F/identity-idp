@@ -10,7 +10,11 @@ class UserPivCacVerificationForm
   def submit
     success = valid? && valid_token?
 
-    FormResponse.new(success: success, errors: {}, extra_analytics_attributes(params))
+    FormResponse.new(
+      success: success,
+      errors: {},
+      extra_analytics_attributes(params),
+      )
   end
 
   private

@@ -8,7 +8,11 @@ class BackupCodeVerificationForm
 
   def submit(params)
     @backup_code = params[:backup_code]
-    FormResponse.new(success: valid_backup_code?, errors: {}, extra: extra_analytics_attributes(params))
+    FormResponse.new(
+      success: valid_backup_code?,
+      errors: {},
+      extra: extra_analytics_attributes(params),
+      )
   end
 
   attr_reader :user, :backup_code

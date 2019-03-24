@@ -5,7 +5,10 @@ class OtpVerificationForm
   end
 
   def submit
-    FormResponse.new(success: valid_direct_otp_code?, errors: {}, extra: extra_analytics_attributes(params))
+    FormResponse.new(
+      success: valid_direct_otp_code?,
+      errors: {},extra: extra_analytics_attributes(params),
+      )
   end
 
   private
@@ -25,7 +28,7 @@ class OtpVerificationForm
     Devise.direct_otp_length
   end
 
-    def extra_analytics_attributes(params)
+  def extra_analytics_attributes(params)
     {
       multi_factor_auth_method: 'otp_code',
       ga_client_id: params[:ga_client_id],

@@ -13,19 +13,17 @@ class Analytics # rubocop:disable Metrics/ClassLength
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
-  def track_mfa_submit_event(attributes, method)
+  def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes.success ? 'success' : 'fail')
 
     post_ga_event(
       'authenication',
-      'multi+factor+#{mfa_event_type}',
-      attributes.event_properties.multi_factor_auth_method,
-      attributes.extra.ga_client_id
+      "multi+factor+#{mfa_event_type}",
+      attributes.multi_factor_auth_method,
+      attributes.extra.ga_client_id,
     )
   end
-
-  private
 
   attr_reader :user, :request, :sp
 
@@ -42,7 +40,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
     }.merge!(browser_attributes)
   end
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disae Metrics/AbcSize
   def browser_attributes
     {
       user_agent: request.user_agent,
@@ -57,9 +55,11 @@ class Analytics # rubocop:disable Metrics/ClassLength
   end
 
   def post_ga_event(category, event_action, method, client_id)
-    host = "www.google-analytics.com/"
+    host = 'www.google-analytics.com/'
 
-    url = "/collect?v=1&tid=#{ga_uid}&cid-#{client_id}&t=event&ec=#{category}&ea=#{event_action}&el=#{method}"
+    url = "/collect?v=1&tid=#{ga_uid}"\
+    "&cid-#{client_id}&t=event&ec=#{category}"\
+    "&ea=#{event_action}&el=#{method}"
 
     options = default_options.merge(
       headers: accept_json,
@@ -85,13 +85,9 @@ class Analytics # rubocop:disable Metrics/ClassLength
     handle_response(self.class.post(url, options), block)
   end
 
-  def get_session_cid()
-    return "test"
-  end
-
   private
 
-  ga_uid = UA-48605964-44
+  ga_uid = 'UA-48605964-44'
 
   def handle_response(response, block)
     return [false, response.message] unless success?(response)

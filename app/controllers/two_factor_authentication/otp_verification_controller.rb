@@ -15,7 +15,7 @@ module TwoFactorAuthentication
       result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
       properties = result.to_h.merge(analytics_properties)
 
-      analytics.track_mfa_submit_event(properties, properties.multi_factor_auth_method)
+      analytics.track_mfa_submit_event(properties)
 
       if result.success?
         handle_valid_otp
