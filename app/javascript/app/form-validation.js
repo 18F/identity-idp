@@ -119,6 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const clientId = tracker.get('clientId');
         $('.ga-client-id').val(clientId);
       });
-    }); 
+    });
   }
 });

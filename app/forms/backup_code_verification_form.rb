@@ -12,7 +12,7 @@ class BackupCodeVerificationForm
       success: valid_backup_code?,
       errors: {},
       extra: extra_analytics_attributes(params),
-      )
+    )
   end
 
   attr_reader :user, :backup_code

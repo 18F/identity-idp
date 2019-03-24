@@ -8,7 +8,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id),
-      user_id: attributes[:user_id] || uuid,
+      user_id: attributes[:user_id] || user.uuid,
     }
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
@@ -66,11 +66,6 @@ class Analytics # rubocop:disable Metrics/ClassLength
     )
 
     post(url, options)
-  end
-  # rubocop:enable Metrics/AbcSize
-
-  def uuid
-    user.uuid
   end
 
   def browser

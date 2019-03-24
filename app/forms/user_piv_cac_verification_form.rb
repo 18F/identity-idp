@@ -13,7 +13,7 @@ class UserPivCacVerificationForm
     FormResponse.new(
       success: success,
       errors: {},
-      extra_analytics_attributes(params),
+      extra: extra_analytics_attributes(params),
       )
   end
 
