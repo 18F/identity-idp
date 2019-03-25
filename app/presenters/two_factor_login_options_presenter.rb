@@ -44,7 +44,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def should_display_account_reset_or_cancel_link?
     # IAL2 non-docauth users should not be able to reset account to comply with AAL2 reqs
-    !(current_user.decorate.identity_verified? && !FeatureManagement.doc_auth_enabled?)
+    !current_user.decorate.identity_verified? || FeatureManagement.doc_auth_enabled?
   end
 
   def account_reset_or_cancel_link
