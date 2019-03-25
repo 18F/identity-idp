@@ -76,7 +76,7 @@ piv_cac_email_domains: >-
     "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
     "bea.gov", "bis.doc.gov",
     "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
-    "dhs.gov", "doc.gov", "dol.gov", "dra.gov",
+    "dhs.gov", ".dhs.gov", "doc.gov", "dol.gov", "dra.gov",
     "eac.gov", "ed.gov", "eda.gov", "epa.gov",
     "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
     "gao.gov", "gpo.gov", "gsa.gov",

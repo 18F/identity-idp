@@ -32,9 +32,10 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 
-  def new_device_sign_in(email_address, date, location)
+  def new_device_sign_in(email_address, date, location, disavowal_token)
     @login_date = date
     @login_location = location
+    @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
   end
 
