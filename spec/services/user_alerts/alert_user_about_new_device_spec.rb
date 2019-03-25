@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DeviceTracking::AlertUserAboutNewDevice do
+describe UserAlerts::AlertUserAboutNewDevice do
   describe '#call' do
     before do
       allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)

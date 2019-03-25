@@ -28,7 +28,8 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
 
-  def personal_key_sign_in(email)
+  def personal_key_sign_in(email, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 

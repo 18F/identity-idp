@@ -90,7 +90,7 @@ FactoryBot.define do
 
     trait :with_personal_key do
       after :build do |user|
-        user.personal_key = RandomPhrase.new(num_words: 4).to_s
+        user.personal_key ||= RandomPhrase.new(num_words: 4).to_s
       end
     end
 
