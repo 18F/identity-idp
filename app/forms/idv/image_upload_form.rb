@@ -12,10 +12,6 @@ module Idv
       ActiveModel::Name.new(self, nil, 'Image')
     end
 
-    def initialize(user)
-      @user = user
-    end
-
     def submit(params)
       consume_params(params)
 

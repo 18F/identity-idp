@@ -85,4 +85,9 @@ class UserMailer < ActionMailer::Base
   def letter_expired(email)
     mail(to: email, subject: t('user_mailer.letter_expired.subject'))
   end
+
+  def confirm_email_and_reverify(email, account_recovery_request)
+    @token = account_recovery_request.request_token
+    mail(to: email.email, subject: t('recover.email.confirm'))
+  end
 end
