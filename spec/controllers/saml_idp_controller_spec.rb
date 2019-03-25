@@ -871,6 +871,8 @@ describe SamlIdpController do
     def stub_requested_attributes
       request_parser = instance_double(SamlRequestPresenter)
       service_provider = ServiceProvider.from_issuer('http://localhost:3000')
+      service_provider.ial = 2
+      service_provider.save
       expect(SamlRequestPresenter).to receive(:new).
         with(request: controller.saml_request, service_provider: service_provider).
         and_return(request_parser)

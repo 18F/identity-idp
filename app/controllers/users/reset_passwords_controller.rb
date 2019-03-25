@@ -1,5 +1,5 @@
 module Users
-  class ResetPasswordsController < Devise::PasswordsController
+  class ResetPasswordsController < Devise::PasswordsController # rubocop:disable Metrics/ClassLength
     include RecaptchaConcern
 
     def new
@@ -108,7 +108,7 @@ module Users
     end
 
     def handle_successful_password_reset
-      create_user_event(:password_changed, resource)
+      create_reset_event_and_send_notification
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
       redirect_to new_user_session_url
     end
@@ -122,6 +122,11 @@ module Users
       end
 
       render :edit
+    end
+
+    def create_reset_event_and_send_notification
+      event = create_user_event_with_disavowal(:password_changed, resource)
+      UserAlerts::AlertUserAboutPasswordChange.call(resource, event.disavowal_token)
     end
 
     def user_params

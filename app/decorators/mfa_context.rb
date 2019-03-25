@@ -70,6 +70,17 @@ class MfaContext
     names.each_with_object(Hash.new(0)) { |name, count| count[name] += 1 }
   end
 
+  def phishable_configuration_count
+    phone_configurations.to_a.select(&:mfa_enabled?).count +
+      (backup_code_configurations.any? ? 1 : 0) +
+      (auth_app_configuration.mfa_enabled? ? 1 : 0)
+  end
+
+  def unphishable_configuration_count
+    webauthn_configurations.to_a.select(&:mfa_enabled?).count +
+      (piv_cac_configuration.mfa_enabled? ? 1 : 0)
+  end
+
   private
 
   def enabled_two_factor_configuration_names

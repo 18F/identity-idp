@@ -22,19 +22,12 @@ class UpdateUserPasswordForm
 
   def process_valid_submission
     update_user_password
-    email_user_about_password_change
     encrypt_user_profile_if_active
   end
 
   def update_user_password
     attributes = { password: password }
     UpdateUser.new(user: user, attributes: attributes).call
-  end
-
-  def email_user_about_password_change
-    user.confirmed_email_addresses.each do |email_address|
-      UserMailer.password_changed(email_address).deliver_later
-    end
   end
 
   def encrypt_user_profile_if_active

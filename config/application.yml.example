@@ -76,7 +76,7 @@ piv_cac_email_domains: >-
     "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
     "bea.gov", "bis.doc.gov",
     "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
-    "dhs.gov", "doc.gov", "dol.gov", "dra.gov",
+    "dhs.gov", ".dhs.gov", "doc.gov", "dol.gov", "dra.gov",
     "eac.gov", "ed.gov", "eda.gov", "epa.gov",
     "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
     "gao.gov", "gpo.gov", "gsa.gov",
@@ -84,7 +84,7 @@ piv_cac_email_domains: >-
     "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
     "jusfc.gov", "justice.gov",
     "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
-    "nara.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
+    "nara.gov", "nasa.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
     "oig.doc.gov", "oig.hhs.gov", "opm.gov",
     "pclob.gov",
     "restorethegulf.gov",
@@ -144,6 +144,7 @@ development:
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
@@ -206,7 +207,6 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
-  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -263,6 +263,7 @@ production:
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'user1@example.com,user2@example.com'
   expired_letters_auth_token:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
@@ -321,7 +322,6 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
-  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '30'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
@@ -382,6 +382,7 @@ test:
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
@@ -440,7 +441,6 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
-  use_kms_context_for_sessions: 'true'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
