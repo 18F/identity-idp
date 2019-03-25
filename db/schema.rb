@@ -15,6 +15,16 @@ ActiveRecord::Schema.define(version: 20190306143757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "account_recovery_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "request_token", null: false
+    t.datetime "requested_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_token"], name: "index_account_recovery_requests_on_request_token", unique: true
+    t.index ["user_id"], name: "index_account_recovery_requests_on_user_id", unique: true
+  end
+
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "requested_at"
