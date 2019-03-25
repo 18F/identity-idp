@@ -1,10 +1,8 @@
 require 'rails_helper'
 
 describe AccountReset::RecoverController do
-  let(:user) { create(:user, :with_authentication_app, :with_email) }
-  before do
-    allow_any_instance_of(UserDecorator).to receive(:identity_verified?).and_return(true)
-  end
+  let(:profile) { build(:profile, :active, :verified) }
+  let(:user) { create(:user, :with_authentication_app, :with_email, profiles: [profile]) }
 
   describe '#show' do
     it 'renders the page' do
@@ -58,7 +56,7 @@ describe AccountReset::RecoverController do
 
     it 'logs sms user in the analytics' do
       TwilioService::Utils.telephony_service = FakeSms
-      user = create(:user, :signed_up, :with_email)
+      user = create(:user, :signed_up, :with_email, profiles: [profile])
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -76,7 +74,7 @@ describe AccountReset::RecoverController do
     end
 
     it 'logs PIV/CAC user in the analytics' do
-      user = create(:user, :with_piv_or_cac, :with_email)
+      user = create(:user, :with_piv_or_cac, :with_email, profiles: [profile])
       stub_sign_in_before_2fa(user)
 
       stub_analytics
