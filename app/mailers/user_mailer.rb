@@ -87,7 +87,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def confirm_email_and_reverify(email, account_recovery_request)
-    @token = account_recovery_request&.request_token
+    @token = account_recovery_request.request_token
     mail(to: email.email, subject: t('recover.email.confirm'))
   end
 end
