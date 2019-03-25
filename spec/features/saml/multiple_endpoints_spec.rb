@@ -19,7 +19,7 @@ shared_examples 'a saml endpoint' do
   end
 
   let(:endpoint_authn_request) { auth_request.create(endpoint_saml_settings) }
-  let(:endpoint_metadata_path) { [api_saml_metadata_path, endpoint_suffix].join('') }
+  let(:endpoint_metadata_path) { ['/api/saml/metadata', endpoint_suffix].join('') }
 
   context 'for an auth request' do
     it 'creates a valid auth request' do
@@ -78,10 +78,10 @@ shared_examples 'a saml endpoint' do
       logout_node = REXML::XPath.first(document, '//SingleLogoutService')
 
       expect(auth_node.attributes['Location']).to include(
-        [api_saml_auth_path, endpoint_suffix].join(''),
+        ['/api/saml/auth', endpoint_suffix].join(''),
       )
       expect(logout_node.attributes['Location']).to include(
-        [api_saml_logout_path, endpoint_suffix].join(''),
+        ['/api/saml/logout', endpoint_suffix].join(''),
       )
     end
   end

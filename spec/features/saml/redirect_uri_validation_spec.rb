@@ -7,7 +7,7 @@ describe 'redirect_uri validation' do
     it 'uses the return_to_sp_url URL and not the redirect_uri' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :signed_up)
-      visit api_saml_auth_path(
+      visit api_saml_auth2019_path(
         SAMLRequest: CGI.unescape(saml_request(saml_settings)), redirect_uri: 'http://evil.com',
       )
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')

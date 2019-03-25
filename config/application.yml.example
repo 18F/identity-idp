@@ -192,7 +192,6 @@ development:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
-  saml_passphrase: 'trust-but-verify'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   send_new_device_sms: 'true'
@@ -309,7 +308,6 @@ production:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs:
-  saml_passphrase:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   send_new_device_sms: 'false'
@@ -428,8 +426,7 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
-  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
-  saml_passphrase: 'trust-but-verify'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
   send_new_device_sms: 'true'
