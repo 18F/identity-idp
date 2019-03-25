@@ -1,0 +1,24 @@
+---
+es:
+  recover:
+    email:
+      confirm: Confirme su email
+      instructions: Confirmar su dirección de correo electrónico nos permitirá ayudarlo
+        a volver a verificar que usted es el propietario de esta cuenta. Haga clic
+        en el enlace de abajo o copie y pegue el enlace completo en su navegador.
+        Este enlace caducará en 15 minutos.
+    request:
+      confirm_email: Primero, confirmemos tu dirección de correo electrónico
+      email_sent: Enlace enviado a %{email}. Por favor revise su correo electrónico
+        y siga las instrucciones para volver a verificar su identidad.
+      instructions: Enviaremos un correo electrónico a la dirección que tenemos registrada
+        para esta cuenta.  Una vez que reciba el correo electrónico, haga clic en
+        el enlace que se encuentra dentro para continuar con la verificación de su
+        cuenta.
+      reverify: Para restablecer su cuenta, tendremos que volver a verificar su identidad
+    reverify:
+      email_confirmed: Hemos confirmado su dirección de correo electrónico
+      fail: Falla de recuperación
+      instructions: Queremos asegurarnos de que usted, y solo usted, tenga acceso
+        a su cuenta
+      reverify: A continuación, volvamos a verificar su identidad

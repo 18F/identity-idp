@@ -50,7 +50,7 @@ class UserEventCreator
 
   def send_new_device_notificaiton(user:, device:, event:)
     disavowal_token = EventDisavowal::GenerateDisavowalToken.new(event).call
-    DeviceTracking::AlertUserAboutNewDevice.call(user, device, disavowal_token)
+    UserAlerts::AlertUserAboutNewDevice.call(user, device, disavowal_token)
   end
 
   def create_event_for_device(event_type:, user:, device:)

@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :backup_code_configurations, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_one :doc_capture, dependent: :destroy
+  has_one :account_recovery_request, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

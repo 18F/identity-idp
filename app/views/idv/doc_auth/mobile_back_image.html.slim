@@ -9,7 +9,7 @@ ul
   li = t('doc_auth.instructions.take_pic3')
   li = t('doc_auth.instructions.take_pic4')
 
-= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :mobile_back_image), method: 'PUT',
+= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
     html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
     .sm-col.sm-col-9.px1
@@ -23,5 +23,5 @@ ul
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
       = t('forms.buttons.continue')
 
-= render 'start_over_or_cancel'
+= render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
