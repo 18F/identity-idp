@@ -19,6 +19,8 @@ fr:
       forgot: Réinitialisez le mot de passe de votre compte
     personal_key: Juste au cas
     phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
+    piv_cac_login:
+      new: Utilisez votre PIV / CAC pour vous connecter à votre compte
     piv_cac_setup:
       certificate:
         bad: Erreur de certificat PIV/CAC

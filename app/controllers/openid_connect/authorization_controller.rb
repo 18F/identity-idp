@@ -94,7 +94,7 @@ module OpenidConnect
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
-      return unless ial2_request? && identity_verified? && !has_decrypted_pii?
+      return unless pii_requested_but_locked?
       redirect_to capture_password_url
     end
 
@@ -107,16 +107,11 @@ module OpenidConnect
       ).call
     end
 
-    def identity_verified?
-      UserDecorator.new(current_user).identity_verified?
-    end
-
-    def has_decrypted_pii?
-      user_session[:decrypted_pii].present?
-    end
-
-    def ial2_request?
-      sp_session && sp_session_ial > 1
+    def pii_requested_but_locked?
+      FeatureManagement.allow_piv_cac_login? &&
+        sp_session && sp_session_ial > 1 &&
+        UserDecorator.new(current_user).identity_verified? &&
+        user_session[:decrypted_pii].blank?
     end
   end
 end
