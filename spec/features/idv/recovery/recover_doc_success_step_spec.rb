@@ -25,7 +25,7 @@ feature 'recovery doc success step' do
   end
 
   context 'document pii matches saved pii' do
-    it 'proceeds to the account page if the document pii matches the saved pii' do
+    it 'proceeds to the account page' do
       click_idv_continue
 
       expect(page).to have_current_path(account_path)
@@ -35,7 +35,7 @@ feature 'recovery doc success step' do
   context 'document pii does not match the saved pii' do
     let(:profile) { create(:profile, :active, :verified, user: user, pii: bad_pii) }
 
-    it 'fails to re-verify if the document pii does not match the saved pii' do
+    it 'fails to re-verify' do
       click_idv_continue
 
       expect(page).to have_current_path(idv_recovery_fail_step)
