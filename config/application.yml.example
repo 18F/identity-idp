@@ -76,7 +76,7 @@ piv_cac_email_domains: >-
     "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
     "bea.gov", "bis.doc.gov",
     "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
-    "dhs.gov", "doc.gov", "dol.gov", "dra.gov",
+    "dhs.gov", ".dhs.gov", "doc.gov", "dol.gov", "dra.gov",
     "eac.gov", "ed.gov", "eda.gov", "epa.gov",
     "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
     "gao.gov", "gpo.gov", "gsa.gov",
@@ -84,7 +84,7 @@ piv_cac_email_domains: >-
     "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
     "jusfc.gov", "justice.gov",
     "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
-    "nara.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
+    "nara.gov", "nasa.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
     "oig.doc.gov", "oig.hhs.gov", "opm.gov",
     "pclob.gov",
     "restorethegulf.gov",
@@ -144,10 +144,12 @@ development:
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
+  ial2_recovery_request_valid_for_minutes: '15'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: ''
   lexisnexis_account_id: 'test_account'
@@ -191,7 +193,6 @@ development:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
-  saml_passphrase: 'trust-but-verify'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
   send_new_device_sms: 'true'
@@ -207,7 +208,6 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
-  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'
@@ -264,11 +264,13 @@ production:
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'user1@example.com,user2@example.com'
   expired_letters_auth_token:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
+  ial2_recovery_request_valid_for_minutes: '15'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'sp1,sp2'
   lexisnexis_account_id: 'test_account'
@@ -308,7 +310,6 @@ production:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_endpoint_configs:
-  saml_passphrase:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
   send_new_device_sms: 'false'
@@ -323,7 +324,6 @@ production:
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
   use_kms: 'true'
-  use_kms_context_for_sessions: 'false'
   usps_confirmation_max_days: '30'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
@@ -384,10 +384,12 @@ test:
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
+  event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  ial2_recovery_request_valid_for_minutes: '15'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
   lexisnexis_account_id: 'test_account'
@@ -427,8 +429,7 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
-  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
-  saml_passphrase: 'trust-but-verify'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
   send_new_device_sms: 'true'
@@ -443,7 +444,6 @@ test:
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
   use_kms: 'false'
-  use_kms_context_for_sessions: 'true'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
   usps_download_sftp_directory: '/undeliverable'

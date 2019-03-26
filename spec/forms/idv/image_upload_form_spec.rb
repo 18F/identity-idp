@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadForm do
-  let(:user) { create(:user) }
-  let(:subject) { Idv::ImageUploadForm.new(user) }
+  let(:subject) { Idv::ImageUploadForm.new }
   let(:image_data) { 'abc' }
 
   describe '#submit' do

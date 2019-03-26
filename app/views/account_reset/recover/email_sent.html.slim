@@ -1,0 +1,6 @@
+- title t('doc_auth.titles.doc_auth')
+
+= image_tag(asset_url('check-email.svg'),
+        alt: t('idv.titles.session.success'), width: 96)
+
+h1.h3.mb2.mt3.my0 = t('recover.request.email_sent', email: current_user.email)

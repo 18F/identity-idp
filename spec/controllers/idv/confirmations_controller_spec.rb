@@ -175,6 +175,13 @@ describe Idv::ConfirmationsController do
 
         expect(response).to redirect_to account_path
       end
+
+      it 'clears need_personal_key_confirmation session state' do
+        subject.user_session[:need_personal_key_confirmation] = true
+        patch :update
+
+        expect(subject.user_session[:need_personal_key_confirmation]).to eq(false)
+      end
     end
 
     context 'user selected usps verification' do

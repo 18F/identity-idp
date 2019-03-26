@@ -12,5 +12,5 @@ table.hr
       | &nbsp;
 
 p == t('.help_html',
-        reset_password_url: forgot_password_url,
+        reset_password_url: event_disavowal_url(disavowal_token: @disavowal_token),
         account_url: account_url)

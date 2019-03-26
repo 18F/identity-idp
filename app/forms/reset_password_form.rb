@@ -38,7 +38,6 @@ class ResetPasswordForm
   def handle_valid_password
     update_user
     mark_profile_inactive
-    notify_user_of_password_change_via_email
   end
 
   def update_user
@@ -49,12 +48,6 @@ class ResetPasswordForm
 
   def mark_profile_inactive
     user.active_profile&.deactivate(:password_reset)
-  end
-
-  def notify_user_of_password_change_via_email
-    user.confirmed_email_addresses.each do |email_address|
-      UserMailer.password_changed(email_address).deliver_later
-    end
   end
 
   def extra_analytics_attributes
