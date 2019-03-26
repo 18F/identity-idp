@@ -28,4 +28,16 @@ feature 'doc auth send link step' do
 
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
   end
+
+  it 'does not proceed if twilio raises an error on the phone number' do
+    generic_exception = Twilio::REST::RestError.new(
+      '', FakeTwilioErrorResponse.new(123)
+    )
+    allow(SmsDocAuthLinkJob).to receive(:perform_now).and_raise(generic_exception)
+    fill_in :doc_auth_phone, with: '415-555-0199'
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_send_link_step)
+    expect(page).to have_content t('errors.messages.invalid_phone_number')
+  end
 end
