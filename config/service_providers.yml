@@ -152,6 +152,7 @@ development:
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency_id: 1
+    ial: 2
     redirect_uris:
       - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/'
@@ -184,29 +185,23 @@ development:
     redirect_uris:
       - 'http://localhost:4000/'
 
+# Here "production" really means in any EC2 deployed environment
+# (i.e. LoginGov::HostData.in_datacenter? == true)
+# To restrict to a particular EC2 environment like 'prod', 'staging', or 'dev',
+# use the restrict_to_deploy_env attribute. If no restriction is specified,
+# then by default the SP will be available in all envs except 'prod'.
+#
+# Production service providers must use `https://` for all URIs, and should not
+# use private IP addresses. They do not necessarily need to have an ATO for
+# LOA1/IAL1 data as long as it's clear to users that they are logging into a
+# test system.
+#
+# Service providers that are allowed to receive IAL2 data from the 'prod'
+# environment (i.e. `ial: 2`) must have an ATO for sensitive PII.
+#
 production:
-  'https://idp.dev.login.gov':
-    metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
-    acs_url: 'https://idp.dev.login.gov/test/saml/decode_assertion'
-    assertion_consumer_logout_service_url: 'https://idp.dev.login.gov/test/saml/decode_logoutresponse'
-    sp_initiated_login_url: 'https://idp.dev.login.gov/test/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'saml_test_sp'
-    logo: 'generic.svg'
-    agency: 'GSA'
-    friendly_name: 'Awesome test SP'
-    attribute_bundle:
-      - email
-
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
-    acs_url: 'http://localhost:4567/consume'
-    sp_initiated_login_url: 'http://localhost:4567/test/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'sp_sinatra_demo'
-    attribute_bundle:
-      - email
-
-  <% if LoginGov::Hostdata.in_datacenter? %>
+  <%# Currently we run the sample apps in sandbox environments only %>
+  <% if LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain == 'identitysandbox.gov' %>
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:<%= LoginGov::Hostdata.env %>':
     acs_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/consume'
     assertion_consumer_logout_service_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/slo_logout'
@@ -228,7 +223,6 @@ production:
     return_to_sp_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
     attribute_bundle:
       - email
-  <% end %>
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
     friendly_name: 'Dashboard'
@@ -246,34 +240,12 @@ production:
     agency: 'GSA'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra OIDC App'
+    ial: 2
     logo: '18f.svg'
     redirect_uris:
-      - 'http://localhost:9292/auth/result'
-      <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/result'
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
-      <% end %>
-
-  'urn:gov:gsa:openidconnect:sp:expressjs':
-    agency: 'GSA'
-    cert: 'sp_expressjs_demo'
-    friendly_name: 'Example OIDC Client (Express.js)'
-    logo: '18f.svg'
-    redirect_uris:
-      - 'http://localhost:9393/'
-      - 'http://localhost:9393/auth/login-gov/callback'
-      - 'http://localhost:9393/auth/login-gov/callback/loa-1'
-      - 'http://localhost:9393/auth/login-gov/callback/loa-3'
-      - 'http://localhost:9393/auth/login-gov/logout'
-
-  'urn:gov:gsa:openidconnect:sp:gin':
-    agency: 'GSA'
-    cert: 'sp_gin_demo'
-    friendly_name: 'Example OIDC Client (Gin)'
-    logo: '18f.svg'
-    redirect_uris:
-      - 'http://localhost:8080/'
-      - 'http://localhost:8080/auth/login-gov/callback'
+  <% end %>
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':

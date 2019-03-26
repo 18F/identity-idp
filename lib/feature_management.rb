@@ -108,5 +108,8 @@ class FeatureManagement
 
   def self.force_multiple_auth_methods?
     Figaro.env.force_multiple_auth_methods == 'true'
+
+  def self.disallow_ial2_recovery?
+    Figaro.env.disallow_ial2_recovery == 'true'
   end
 end

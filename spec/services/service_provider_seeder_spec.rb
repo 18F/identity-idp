@@ -90,8 +90,11 @@ RSpec.describe ServiceProviderSeeder do
             to be_present
 
           # restrict_to_deploy_env: nil
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra')).
-            to be_present
+          expect(
+            ServiceProvider.find_by(
+              issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service',
+            ),
+          ).to be_present
         end
       end
 
