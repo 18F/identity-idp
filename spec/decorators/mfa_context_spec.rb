@@ -165,7 +165,7 @@ describe MfaContext do
     end
 
     context 'with 1 phone and 2 webauthn configurations' do
-      let(:user) { build(:user, :signed_up) }
+      let(:user) { create(:user, :signed_up) }
 
       it 'returns 1 for phone and 2 for webauthn' do
         create_list(:webauthn_configuration, 2, user: user)
@@ -276,6 +276,42 @@ describe MfaContext do
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+  end
+
+  describe '#phishable_configuration_count' do
+    context 'without any phishable configs' do
+      it 'returns 0' do
+        user = create(:user, :with_piv_or_cac, :with_webauthn)
+        subject = described_class.new(user.reload)
+        expect(subject.phishable_configuration_count).to eq(0)
+      end
+    end
+
+    context 'with some phishable configs' do
+      it 'returns 2' do
+        user = create(:user, :signed_up, :with_authentication_app)
+        subject = described_class.new(user.reload)
+        expect(subject.phishable_configuration_count).to eq(2)
+      end
+    end
+  end
+
+  describe '#unphishable_configuration_count' do
+    context 'with PIV/CAC and webauthn configurations' do
+      it 'returns 2' do
+        user = create(:user, :with_piv_or_cac, :with_webauthn)
+        subject = described_class.new(user.reload)
+        expect(subject.unphishable_configuration_count).to eq(2)
+      end
+    end
+
+    context 'with no phishable configs' do
+      it 'returns 0' do
+        user = create(:user, :signed_up, :with_authentication_app)
+        subject = described_class.new(user.reload)
+        expect(subject.unphishable_configuration_count).to eq(0)
       end
     end
   end

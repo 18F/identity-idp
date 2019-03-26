@@ -1,5 +1,10 @@
-require 'knapsack'
-Knapsack::Adapters::RSpecAdapter.bind
+# Knapsack runs the tests across multiple nodes in CI. We do not need to run it
+# locally unless we are generating a report to help it figure out how to
+# distribute tests across nodes.
+if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
+  require 'knapsack'
+  Knapsack::Adapters::RSpecAdapter.bind
+end
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
@@ -21,4 +26,6 @@ end
 require 'webmock/rspec'
 WebMock.disable_net_connect!(allow: [/localhost/, /127\.0\.0\.1/, /codeclimate.com/])
 
+require 'zonebie'
+Zonebie.quiet = true
 require 'zonebie/rspec'

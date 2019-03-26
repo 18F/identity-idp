@@ -14,7 +14,7 @@ describe EmailNotifier do
 
     context 'when the user has changed and confirmed their new email' do
       it 'notifies the old email address of the email change' do
-        user = build(:user, :signed_up)
+        user = create(:user, :signed_up)
         old_email = user.email
         UpdateUser.new(user: user, attributes: { email: 'new@example.com' }).call
         user.confirm

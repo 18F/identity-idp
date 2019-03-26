@@ -40,7 +40,7 @@ module Flow
     end
 
     def permit(*args)
-      params.require(@name).permit(*args)
+      params.require(:doc_auth).permit(*args)
     end
 
     def redirect_to(url)
@@ -51,6 +51,6 @@ module Flow
       @flow.flow_session = {}
     end
 
-    delegate :flow_session, :current_user, :params, :steps, :request, to: :@flow
+    delegate :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
   end
 end

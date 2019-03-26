@@ -106,7 +106,7 @@ class FeatureManagement
     Figaro.env.send_new_device_sms == 'true'
   end
 
-  def self.use_kms_context_for_sessions?
-    Figaro.env.use_kms_context_for_sessions == 'true'
+  def self.disallow_ial2_recovery?
+    Figaro.env.disallow_ial2_recovery == 'true'
   end
 end

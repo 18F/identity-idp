@@ -14,7 +14,8 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def password_changed(email_address)
+  def password_changed(email_address, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
@@ -27,14 +28,16 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
 
-  def personal_key_sign_in(email)
+  def personal_key_sign_in(email, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 
-  def new_device_sign_in(email, date, location)
+  def new_device_sign_in(email_address, date, location, disavowal_token)
     @login_date = date
     @login_location = location
-    mail(to: email, subject: t('user_mailer.new_device_sign_in.subject'))
+    @disavowal_token = disavowal_token
+    mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
   end
 
   def personal_key_regenerated(email)
@@ -81,5 +84,10 @@ class UserMailer < ActionMailer::Base
 
   def letter_expired(email)
     mail(to: email, subject: t('user_mailer.letter_expired.subject'))
+  end
+
+  def confirm_email_and_reverify(email, account_recovery_request)
+    @token = account_recovery_request.request_token
+    mail(to: email.email, subject: t('recover.email.confirm'))
   end
 end

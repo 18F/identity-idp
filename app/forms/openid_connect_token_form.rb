@@ -29,10 +29,7 @@ class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-
-    session_expiration = Figaro.env.session_timeout_in_minutes.to_i.minutes.ago
-    @identity = Identity.where(session_uuid: code).
-                where('updated_at >= ?', session_expiration).first
+    @identity = find_identity_with_code
   end
 
   def submit
@@ -59,6 +56,14 @@ class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
   private
 
   attr_reader :identity
+
+  def find_identity_with_code
+    return if code.blank?
+
+    session_expiration = Figaro.env.session_timeout_in_minutes.to_i.minutes.ago
+    @identity = Identity.where(session_uuid: code).
+                where('updated_at >= ?', session_expiration).first
+  end
 
   def pkce?
     pkce_sp && (code_verifier.present? || identity.try(:code_challenge).present?)

@@ -50,6 +50,11 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
+      unless FeatureManagement.disallow_ial2_recovery?
+        get '/account_reset/recover' => 'account_reset/recover#show'
+        post '/account_reset/recover' => 'account_reset/recover#create'
+        get '/account_reset/recover/email_sent' => 'account_reset/recover#email_sent'
+      end
       get '/account_reset/cancel' => 'account_reset/cancel#show'
       post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
@@ -111,6 +116,9 @@ Rails.application.routes.draw do
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
+
+    get '/events/disavow/:disavowal_token' => 'event_disavowal#new', as: :event_disavowal
+    post '/events/disavow/' => 'event_disavowal#create', as: :events_disavowal
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
@@ -228,6 +236,11 @@ Rails.application.routes.draw do
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
         put '/capture_doc/:step' => 'capture_doc#update'
+        unless FeatureManagement.disallow_ial2_recovery?
+          get '/recovery' => 'recovery#index'
+          get '/recovery/:step' => 'recovery#show', as: :recovery_step
+          put '/recovery/:step' => 'recovery#update'
+        end
       end
     end
 

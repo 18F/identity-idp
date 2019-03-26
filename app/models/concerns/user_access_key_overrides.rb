@@ -35,6 +35,7 @@ module UserAccessKeyOverrides
   end
 
   def personal_key=(new_personal_key)
+    @personal_key = new_personal_key
     return if new_personal_key.blank?
     self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.new.digest(
       password: new_personal_key,

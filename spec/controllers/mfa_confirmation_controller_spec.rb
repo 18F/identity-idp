@@ -62,7 +62,7 @@ describe MfaConfirmationController do
   describe 'password attempts counter' do
     context 'max password attempts reached' do
       it 'signs the user out' do
-        user = build(:user, :signed_up)
+        user = create(:user, :signed_up)
         sign_in user
         session[:password_attempts] = 0
         stub_analytics

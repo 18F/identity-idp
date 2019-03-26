@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190225005651) do
+ActiveRecord::Schema.define(version: 20190306143757) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "account_recovery_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "request_token", null: false
+    t.datetime "requested_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_token"], name: "index_account_recovery_requests_on_request_token", unique: true
+    t.index ["user_id"], name: "index_account_recovery_requests_on_user_id", unique: true
+  end
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -119,7 +130,10 @@ ActiveRecord::Schema.define(version: 20190225005651) do
     t.datetime "updated_at", null: false
     t.integer "device_id"
     t.string "ip"
+    t.datetime "disavowed_at"
+    t.string "disavowal_token_fingerprint"
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
+    t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
