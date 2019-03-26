@@ -9,7 +9,7 @@ module Idv
             link: link(capture_doc.request_token),
             app: 'login.gov',
           )
-        rescue Twilio::REST::RestError
+        rescue Twilio::REST::RestError, PhoneVerification::VerifyError
           return failure(I18n.t('errors.messages.invalid_phone_number'))
         end
       end
