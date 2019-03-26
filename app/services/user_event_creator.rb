@@ -42,6 +42,7 @@ class UserEventCreator
     return event unless user_has_multiple_devices
 
     send_new_device_notificaiton(user: user, event: event, device: device)
+    event
   end
 
   def assign_device_cookie(device_cookie)

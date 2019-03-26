@@ -59,8 +59,9 @@ describe UserEventCreator do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
-        subject.create_user_event(event_type, user)
+        event = subject.create_user_event(event_type, user)
 
+        expect(event).to be_a(Event)
         expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
           with(user, user.events.first.device, instance_of(String))
       end
@@ -84,8 +85,9 @@ describe UserEventCreator do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
         create(:device, user: user)
 
-        subject.create_user_event(event_type, user)
+        event = subject.create_user_event(event_type, user)
 
+        expect(event).to be_a(Event)
         expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).
           with(user, user.events.first.device, instance_of(String))
       end
