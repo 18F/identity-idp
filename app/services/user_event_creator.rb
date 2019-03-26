@@ -30,20 +30,24 @@ class UserEventCreator
     create_event_for_device(event_type: event_type, user: user, device: device)
   end
 
-  # :reek:TooManyStatements
   def create_event_for_new_device(event_type:, user:)
     user_has_multiple_devices = UserDecorator.new(user).devices?
 
-    device = DeviceTracking::CreateDevice.call(
-      user.id, request.remote_ip, request.user_agent, cookies[:device]
-    )
-    assign_device_cookie(device.cookie_uuid)
-    event = create_event_for_device(event_type: event_type, user: user, device: device)
+    device = create_device_for_user(user)
+    event = create_event_for_device(device: device, event_type: event_type, user: user)
 
     return event unless user_has_multiple_devices
 
     send_new_device_notificaiton(user: user, event: event, device: device)
     event
+  end
+
+  def create_device_for_user(user)
+    device = DeviceTracking::CreateDevice.call(
+      user.id, request.remote_ip, request.user_agent, cookies[:device]
+    )
+    assign_device_cookie(device.cookie_uuid)
+    device
   end
 
   def assign_device_cookie(device_cookie)
