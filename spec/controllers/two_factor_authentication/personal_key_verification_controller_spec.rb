@@ -30,7 +30,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
   describe '#create' do
     context 'when the user enters a valid personal key' do
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa
+        sign_in_before_2fa(create(:user, :with_webauthn))
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(

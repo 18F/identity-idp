@@ -17,26 +17,6 @@ describe PersonalKeyForm do
         expect(form.submit).to eq result
         expect(user.reload.encrypted_recovery_code_digest).to eq old_code
       end
-
-      it 'sends an email and SMS notification to the user' do
-        user = create(
-          :user,
-          :with_phone,
-          email: 'jonny.hoops@gsa.gov',
-          with: { phone: '+1 (202) 345-6789' },
-        )
-        raw_code = PersonalKeyGenerator.new(user).create
-
-        personal_key_sign_in_mail = double
-        expect(personal_key_sign_in_mail).to receive(:deliver_now)
-        expect(UserMailer).to receive(:personal_key_sign_in).
-          with('jonny.hoops@gsa.gov').
-          and_return(personal_key_sign_in_mail)
-        expect(SmsPersonalKeySignInNotifierJob).to receive(:perform_now).
-          with(phone: '+1 (202) 345-6789')
-
-        PersonalKeyForm.new(user, raw_code).submit
-      end
     end
 
     context 'when the form is invalid' do

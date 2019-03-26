@@ -6,7 +6,7 @@
 h1.h3.mb2.mt3.my0 = t('doc_auth.forms.doc_success')
 
 br
-= form_for('', url: idv_doc_auth_step_path(step: :doc_success), method: 'PUT',
+= form_for('', url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   - f.simple_fields_for :doc_auth do
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'

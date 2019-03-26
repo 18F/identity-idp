@@ -23,34 +23,14 @@ describe Encryption::Encryptors::SessionEncryptor do
       expect(ciphertext).to eq(expected_ciphertext)
     end
 
-    context 'when use_kms_context_for_sessions is true' do
-      before do
-        allow(FeatureManagement).to receive(:use_kms_context_for_sessions?).and_return(true)
-      end
+    it 'sets an encryption context' do
+      client = instance_double(Encryption::KmsClient)
+      expect(client).to receive(:encrypt).with(
+        instance_of(String), 'context' => 'session-encryption'
+      ).and_return('kms_ciphertext')
+      allow(Encryption::KmsClient).to receive(:new).and_return(client)
 
-      it 'sets an encryption context' do
-        client = instance_double(Encryption::KmsClient)
-        expect(client).to receive(:encrypt).with(
-          instance_of(String), 'context' => 'session-encryption'
-        ).and_return('kms_ciphertext')
-        allow(Encryption::KmsClient).to receive(:new).and_return(client)
-
-        subject.encrypt(plaintext)
-      end
-    end
-
-    context 'when use_kms_context_for_sessions is false' do
-      before do
-        allow(FeatureManagement).to receive(:use_kms_context_for_sessions?).and_return(false)
-      end
-
-      it 'does not set an encryption context' do
-        client = instance_double(Encryption::ContextlessKmsClient)
-        expect(client).to receive(:encrypt).with(instance_of(String)).and_return('kms_ciphertext')
-        allow(Encryption::ContextlessKmsClient).to receive(:new).and_return(client)
-
-        subject.encrypt(plaintext)
-      end
+      subject.encrypt(plaintext)
     end
   end
 

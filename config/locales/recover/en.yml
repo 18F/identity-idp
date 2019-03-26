@@ -1,0 +1,22 @@
+---
+en:
+  recover:
+    email:
+      confirm: Confirm your email
+      instructions: Confirming your email address will allow us to help you re-verify
+        that you are the owner of this account.  Please click the link below or copy
+        and paste the entire link into your browser.  This link will expire in 15
+        minutes.
+    request:
+      confirm_email: First, let's confirm your email address
+      email_sent: Link sent to %{email}. Please check your email and follow instructions
+        to re-verify your identity.
+      instructions: We'll send an email to the address we have on file for this account.
+        Once you receive the email, click the link inside to continue re-verifying
+        your account.
+      reverify: To reset your account, we'll need to re-verify your identity
+    reverify:
+      email_confirmed: We have confirmed your email address
+      fail: Recover fail
+      instructions: We want to make sure you, and only you, have access to your account
+      reverify: Next, let's re-verify your identity

@@ -412,7 +412,7 @@ describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth?SAMLRequest=bang!'
+        head '/api/saml/auth2019?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -565,11 +565,11 @@ describe SamlIdpController do
           expect(element.name).to eq('X509Certificate')
         end
 
-        it 'includes saml.crt from the certs folder' do
+        it 'includes the saml cert from the certs folder' do
           element = signature.at('//ds:X509Certificate',
                                  ds: Saml::XML::Namespaces::SIGNATURE)
 
-          crt = File.read(Rails.root.join('certs', 'saml.crt'))
+          crt = File.read(Rails.root.join('certs', 'saml2019.crt'))
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
@@ -871,6 +871,8 @@ describe SamlIdpController do
     def stub_requested_attributes
       request_parser = instance_double(SamlRequestPresenter)
       service_provider = ServiceProvider.from_issuer('http://localhost:3000')
+      service_provider.ial = 2
+      service_provider.save
       expect(SamlRequestPresenter).to receive(:new).
         with(request: controller.saml_request, service_provider: service_provider).
         and_return(request_parser)

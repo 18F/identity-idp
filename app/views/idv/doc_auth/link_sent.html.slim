@@ -8,7 +8,7 @@ br
 
 .mt0
 br
-= button_to(t('forms.buttons.continue'), idv_doc_auth_step_path(step: :link_sent), method: :put,
+= button_to(t('forms.buttons.continue'), url_for, method: :put,
     class: 'btn btn-primary btn-wide sm-col-6 col-12')
 br
-= render 'start_over_or_cancel'
+= render 'idv/doc_auth/start_over_or_cancel'

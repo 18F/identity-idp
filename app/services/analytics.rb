@@ -62,9 +62,15 @@ class Analytics # rubocop:disable Metrics/ClassLength
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
+  EVENT_DISAVOWAL = 'Event disavowal visited'.freeze
+  EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
+  EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
   EXPIRED_LETTERS = 'Expired Letters'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
+  IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
+  IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
+  IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
