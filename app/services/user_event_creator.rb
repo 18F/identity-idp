@@ -30,6 +30,7 @@ class UserEventCreator
     create_event_for_device(event_type: event_type, user: user, device: device)
   end
 
+  # :reek:TooManyStatements
   def create_event_for_new_device(event_type:, user:)
     user_has_multiple_devices = UserDecorator.new(user).devices?
 
