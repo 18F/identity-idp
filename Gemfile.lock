@@ -357,6 +357,8 @@ GEM
       childprocess (~> 0.6, >= 0.6.3)
       iniparse (~> 1.4)
     parallel (1.14.0)
+    parallel_tests (2.28.0)
+      parallel
     parser (2.6.0.0)
       ast (~> 2.4.0)
     pg (1.1.4)
@@ -688,6 +690,7 @@ DEPENDENCIES
   net-sftp
   newrelic_rpm
   overcommit
+  parallel_tests
   pg
   phonelib
   pkcs11
@@ -696,6 +699,7 @@ DEPENDENCIES
   pry-byebug
   pry-doc
   pry-rails
+  psych
   puma
   rack-attack
   rack-cors
