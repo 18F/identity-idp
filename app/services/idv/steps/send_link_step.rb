@@ -3,11 +3,15 @@ module Idv
     class SendLinkStep < DocAuthBaseStep
       def call
         capture_doc = CaptureDoc::CreateRequest.call(current_user.id)
-        SmsDocAuthLinkJob.perform_now(
-          phone: permit(:phone),
-          link: link(capture_doc.request_token),
-          app: 'login.gov',
-        )
+        begin
+          SmsDocAuthLinkJob.perform_now(
+            phone: permit(:phone),
+            link: link(capture_doc.request_token),
+            app: 'login.gov',
+          )
+        rescue Twilio::REST::RestError, PhoneVerification::VerifyError
+          return failure(I18n.t('errors.messages.invalid_phone_number'))
+        end
       end
 
       private
