@@ -20,7 +20,7 @@ shared_examples 'remember device' do
   it 'requires 2FA on sign in after phone number is changed' do
     user = remember_device_and_sign_out_user
 
-    Timecop.trave(5.seconds.from_now) do
+    Timecop.travel(5.seconds.from_now) do
       sign_in_user(user)
       visit manage_phone_path
       fill_in 'user_phone_form_phone', with: '7032231000'
