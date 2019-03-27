@@ -1,8 +1,7 @@
 require 'rails_helper'
 
-feature 'Remembering a 2FA device' do
+feature 'Remembering a phone' do
   include IdvHelper
-  include SamlAuthHelper
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
@@ -23,7 +22,6 @@ feature 'Remembering a 2FA device' do
     end
 
     it_behaves_like 'remember device'
-    it_behaves_like 'remember device after being idle on sign in page'
   end
 
   context 'sign up' do
@@ -58,7 +56,7 @@ feature 'Remembering a 2FA device' do
 
     it_behaves_like 'remember device'
 
-    it 'requires the user to confirm the new phone number' do
+    it 'requires the user to confirm a new phone number' do
       user = user_with_2fa
       sign_in_user(user)
       check :remember_device
@@ -90,23 +88,6 @@ feature 'Remembering a 2FA device' do
 
     it 'requires 2FA and does not offer the option to remember device' do
       expect(current_path).to eq(idv_otp_verification_path)
-      expect(page).to_not have_content(
-        t('forms.messages.remember_device'),
-      )
-    end
-  end
-
-  context 'totp' do
-    let(:user) do
-      user = build(:user, :signed_up, password: 'super strong password')
-      @secret = user.generate_totp_secret
-      UpdateUser.new(user: user, attributes: { otp_secret_key: @secret }).call
-      user
-    end
-
-    it 'does not offer the option to remember device' do
-      sign_in_user(user)
-      expect(current_path).to eq(login_two_factor_authenticator_path)
       expect(page).to_not have_content(
         t('forms.messages.remember_device'),
       )
