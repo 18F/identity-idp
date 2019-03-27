@@ -20,19 +20,18 @@ shared_examples 'remember device' do
   it 'requires 2FA on sign in after phone number is changed' do
     user = remember_device_and_sign_out_user
 
-    # Ensure that at least 1 second has passed since last `remember device`
-    sleep(1)
+    Timecop.trave(5.seconds.from_now) do
+      sign_in_user(user)
+      visit manage_phone_path
+      fill_in 'user_phone_form_phone', with: '7032231000'
+      click_button t('forms.buttons.submit.confirm_change')
+      click_submit_default
+      first(:link, t('links.sign_out')).click
 
-    sign_in_user(user)
-    visit manage_phone_path
-    fill_in 'user_phone_form_phone', with: '7032231000'
-    click_button t('forms.buttons.submit.confirm_change')
-    click_submit_default
-    first(:link, t('links.sign_out')).click
+      sign_in_user(user)
 
-    sign_in_user(user)
-
-    expect_mfa_to_be_required_for_user(user)
+      expect_mfa_to_be_required_for_user(user)
+    end
   end
 
   it 'requires 2FA on sign in for another user' do
