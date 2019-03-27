@@ -13,26 +13,25 @@ shared_examples 'remember device' do
     Timecop.travel days_to_travel do
       sign_in_user(user)
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect_mfa_to_be_required_for_user(user)
     end
   end
 
   it 'requires 2FA on sign in after phone number is changed' do
     user = remember_device_and_sign_out_user
 
-    # Ensure that at least 1 second has passed since last `remember device`
-    sleep(1)
+    Timecop.travel(5.seconds.from_now) do
+      sign_in_user(user)
+      visit manage_phone_path
+      fill_in 'user_phone_form_phone', with: '7032231000'
+      click_button t('forms.buttons.submit.confirm_change')
+      click_submit_default
+      first(:link, t('links.sign_out')).click
 
-    sign_in_user(user)
-    visit manage_phone_path
-    fill_in 'user_phone_form_phone', with: '7032231000'
-    click_button t('forms.buttons.submit.confirm_change')
-    click_submit_default
-    first(:link, t('links.sign_out')).click
+      sign_in_user(user)
 
-    sign_in_user(user)
-
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect_mfa_to_be_required_for_user(user)
+    end
   end
 
   it 'requires 2FA on sign in for another user' do
@@ -42,7 +41,7 @@ shared_examples 'remember device' do
 
     # Sign in as second user and expect otp confirmation
     sign_in_user(second_user)
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect_mfa_to_be_required_for_user(user)
 
     # Setup remember device as second user
     check :remember_device
@@ -53,7 +52,7 @@ shared_examples 'remember device' do
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect_mfa_to_be_required_for_user(user)
   end
 
   it 'redirects to an SP from the sign in page' do
@@ -82,37 +81,22 @@ shared_examples 'remember device' do
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
-end
 
-shared_examples 'remember device after being idle on sign in page' do
-  it 'redirects to the OIDC SP even though session is deleted' do
-    # We want to simulate a user that has already visited an OIDC SP and that
-    # has checked "remember me for 30 days", such that the next URL the app will
-    # redirect to after signing in with email and password is the SP redirect
-    # URI.
-    user = remember_device_and_sign_out_user
-    IdentityLinker.new(
-      user, 'urn:gov:gsa:openidconnect:sp:server'
-    ).link_identity(verified_attributes: %w[email])
+  def expect_mfa_to_be_required_for_user(user)
+    expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
+                      login_two_factor_piv_cac_path
+                    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
+                      login_two_factor_webauthn_path
+                    elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
+                      login_two_factor_authenticator_path
+                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+                      login_two_factor_backup_code_path
+                    elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                    end
 
-    visit_idp_from_sp_with_loa1(:oidc)
-    request_id = ServiceProviderRequest.last.uuid
-    click_link t('links.sign_in')
-
-    Timecop.travel(Devise.timeout_in + 1.minute) do
-      # Simulate being idle on the sign in page long enough for the session to
-      # be deleted from Redis, but since Redis doesn't respect Timecop, we need
-      # to expire the session manually.
-      session_store.send(:destroy_session_from_sid, session_cookie.value)
-      # Simulate refreshing the page with JS to avoid a CSRF error
-      visit new_user_session_url(request_id: request_id)
-
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654/auth/result'))
-
-      fill_in_credentials_and_submit(user.email, user.password)
-
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
-    end
+    expect(page).to have_current_path(expected_path)
+    visit account_path
+    expect(page).to have_current_path(expected_path)
   end
 end
