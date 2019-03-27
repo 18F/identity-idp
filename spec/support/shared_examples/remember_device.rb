@@ -85,16 +85,16 @@ shared_examples 'remember device' do
 
   def expect_mfa_to_be_required_for_user(user)
     expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
-      login_two_factor_piv_cac_path
-    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-      login_two_factor_webauthn_path
-    elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
-      login_two_factor_authenticator_path
-    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
-      login_two_factor_backup_code_path
-    elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
-    end
+                      login_two_factor_piv_cac_path
+                    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
+                      login_two_factor_webauthn_path
+                    elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
+                      login_two_factor_authenticator_path
+                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+                      login_two_factor_backup_code_path
+                    elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                    end
 
     expect(page).to have_current_path(expected_path)
     visit account_path
