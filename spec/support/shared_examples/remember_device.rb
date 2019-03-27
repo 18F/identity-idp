@@ -13,7 +13,7 @@ shared_examples 'remember device' do
     Timecop.travel days_to_travel do
       sign_in_user(user)
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect_mfa_to_be_required_for_user(user)
     end
   end
 
@@ -32,7 +32,7 @@ shared_examples 'remember device' do
 
     sign_in_user(user)
 
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect_mfa_to_be_required_for_user(user)
   end
 
   it 'requires 2FA on sign in for another user' do
@@ -42,7 +42,7 @@ shared_examples 'remember device' do
 
     # Sign in as second user and expect otp confirmation
     sign_in_user(second_user)
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect_mfa_to_be_required_for_user(user)
 
     # Setup remember device as second user
     check :remember_device
@@ -53,7 +53,7 @@ shared_examples 'remember device' do
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
-    expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    expect_mfa_to_be_required_for_user(user)
   end
 
   it 'redirects to an SP from the sign in page' do
@@ -81,5 +81,23 @@ shared_examples 'remember device' do
     sign_in_user(user)
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
+  end
+
+  def expect_mfa_to_be_required_for_user(user)
+    expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
+      login_two_factor_piv_cac_path
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
+      login_two_factor_webauthn_path
+    elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
+      login_two_factor_authenticator_path
+    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+      login_two_factor_backup_code_path
+    elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+    end
+
+    expect(page).to have_current_path(expected_path)
+    visit account_path
+    expect(page).to have_current_path(expected_path)
   end
 end
