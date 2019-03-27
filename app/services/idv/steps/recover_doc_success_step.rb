@@ -7,6 +7,7 @@ module Idv
         return unless pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
 
         mark_step_complete(:recover_fail)
+        flash[:success] = I18n.t('recover.reverify.success')
         redirect_to account_url
         session['need_two_factor_authentication'] = false
       end
