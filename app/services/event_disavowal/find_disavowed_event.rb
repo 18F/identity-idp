@@ -7,9 +7,11 @@ module EventDisavowal
     end
 
     def call
+      # Use `#all` here instead of `#first` to avoid setting a 'LIMIT 1' to the
+      # postgres query which causes it to run slowly.
       @event ||= Event.where(
         disavowal_token_fingerprint: disavowal_token_fingerprints,
-      ).first
+      ).all[0]
     end
 
     private
