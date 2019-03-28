@@ -14,7 +14,7 @@ module Idv
       private
 
       def form_submit
-        Idv::ImageUploadForm.new(current_user).submit(permit(:image))
+        Idv::ImageUploadForm.new.submit(permit(:image))
       end
 
       def verify_back_image

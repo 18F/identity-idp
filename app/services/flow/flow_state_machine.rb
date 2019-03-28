@@ -57,7 +57,7 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      render template: "#{@name}/#{step}", locals: { flow_session: flow_session }
+      render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
     end
 
     def ensure_correct_step
