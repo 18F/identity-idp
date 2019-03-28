@@ -240,7 +240,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
     {
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email_addresses.first.email,
-      remember_device_available: false,
+      remember_device_available: true,
     }.merge(generic_data)
   end
 
