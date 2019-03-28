@@ -22,12 +22,11 @@ p == @presenter.phone_number_message
     { otp_delivery_preference: @presenter.otp_delivery_preference, resend: true }),
       class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
       form_class: 'inline-block')
-  - if @presenter.remember_device_available?
-    inline-block.span style="white-space:nowrap;"
-      = check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1'
-      = label_tag 'remember_device',
-        t('forms.messages.remember_device'),
-        class: 'blue'
+  inline-block.span style="white-space:nowrap;"
+    = check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1'
+    = label_tag 'remember_device',
+      t('forms.messages.remember_device'),
+      class: 'blue'
 br
 - if @presenter.update_phone_link.present?
     br
