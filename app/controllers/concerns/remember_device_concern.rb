@@ -42,7 +42,7 @@ module RememberDeviceConcern
 
   def handle_valid_remember_device_cookie
     user_session[:mfa_device_remembered] = true
-    mark_user_session_authenticated('device-remembered')
+    mark_user_session_authenticated(:device_remembered)
     analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
     analytics.post_ga_event('authenication', 'device-remembered', '', '')
     bypass_sign_in current_user

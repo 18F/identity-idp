@@ -40,7 +40,11 @@ class Analytics # rubocop:disable Metrics/ClassLength
     }.merge!(browser_attributes)
   end
 
-  # rubocop:disae Metrics/AbcSize
+  def browser
+      @browser ||= DeviceDetector.new(request.user_agent)
+  end
+
+  # rubocop:disable Metrics/AbcSize
   def browser_attributes
     {
       user_agent: request.user_agent,
