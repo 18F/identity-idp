@@ -82,9 +82,9 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   def disable_totp_partial
     decked_user = decorated_user.user
     mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
-                       MfaPolicy.new(current_user).more_than_two_factors_enabled?
+                       MfaPolicy.new(decked_user).more_than_two_factors_enabled?
                      else
-                       MfaPolicy.new(current_user).multiple_factors_enabled?
+                       MfaPolicy.new(decked_user).multiple_factors_enabled?
                      end
     if mfa_policy_met
       return 'shared/null'

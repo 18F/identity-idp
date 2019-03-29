@@ -17,7 +17,7 @@ module Users
       create_user_event(:backup_codes_added)
 
       if FeatureManagement.force_multiple_auth_methods?
-        redirect_to complete_user_flow
+        redirect_to enforce_mfa_policy
       else
         redirect_to sign_up_personal_key_url
       end

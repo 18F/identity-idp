@@ -27,7 +27,7 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        redirect_to complete_user_flow
+        redirect_to enforce_mfa_policy
       end
     end
 

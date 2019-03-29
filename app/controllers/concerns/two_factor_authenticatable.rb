@@ -178,7 +178,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
           !TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
       sign_up_personal_key_url
     else
-      complete_user_flow
+      enforce_mfa_policy
     end
   end
 

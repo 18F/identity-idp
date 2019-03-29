@@ -36,7 +36,7 @@ module Users
       if current_user.totp_enabled? && mfa_policy_met
         process_successful_disable
       end
-      redirect_to complete_user_flow
+      redirect_to enforce_mfa_policy
     end
 
     private
@@ -90,7 +90,7 @@ module Users
          !user_already_has_a_personal_key?
         sign_up_personal_key_url
       else
-        complete_user_flow
+        enforce_mfa_policy
       end
     end
 

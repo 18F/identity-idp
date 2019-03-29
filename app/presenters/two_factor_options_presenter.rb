@@ -58,7 +58,8 @@ class TwoFactorOptionsPresenter
   end
 
   def totp_option
-    if TwoFactorAuthentication::AuthAppPolicy.new(current_user).available?
+    if TwoFactorAuthentication::AuthAppPolicy.new(current_user).available? &&
+       !TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured?
       [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
     else
       []
@@ -68,13 +69,16 @@ class TwoFactorOptionsPresenter
   def piv_cac_option
     policy = TwoFactorAuthentication::PivCacPolicy.new(current_user)
     return [] if policy.enabled?
-    return [] unless policy.available? || service_provider&.piv_cac_available?(current_user)
+    return [] unless policy.available? ||
+                     service_provider&.piv_cac_available?(current_user) ||
+                     policy.configured?
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 
   def backup_code_option
     policy = TwoFactorAuthentication::BackupCodePolicy.new(current_user)
-    return [TwoFactorAuthentication::BackupCodeSelectionPresenter.new] if policy.available?
+    return [TwoFactorAuthentication::BackupCodeSelectionPresenter.new] if policy.available? &&
+                                                                          !policy.enabled?
     []
   end
 end
