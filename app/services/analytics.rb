@@ -16,7 +16,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   # :reek:FeatureEnvy
   def track_mfa_submit_event(attributes, ga_client_id)
     track_event(MULTI_FACTOR_AUTH, attributes)
-    mfa_event_type = (attributes.success ? 'success' : 'fail')
+    mfa_event_type = (attributes[:success] ? 'success' : 'fail')
 
     GoogleAnalyticsMeasurement.new(
       category: 'authenication',
