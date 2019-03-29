@@ -23,9 +23,9 @@ module Idv
 
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow
 
-      def initialize(session, current_user, name)
+      def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(STEPS, ACTIONS, session[name], current_user)
+        super(controller, STEPS, ACTIONS, session[name])
       end
 
       def self.session_idv(session)
