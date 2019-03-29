@@ -21,3 +21,6 @@ fr:
       instructions: Nous voulons nous assurer que vous et seulement vous avez accès
         à votre compte
       reverify: Ensuite, revérifions votre identité
+      success: Vous avez bien récupéré votre compte. Pour éviter de devoir récupérer
+        votre compte à l'avenir, veuillez ajouter une autre option de sécurité parmi
+        les options d'authentification à deux facteurs ci-dessous.
