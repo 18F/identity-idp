@@ -6,10 +6,15 @@ h1.h3.my0 = @presenter.header
   = render @presenter.reauthn_hidden_field_partial
   = label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'),
     class: 'block bold'
-  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+  .col-12.sm-col-5.mb1.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag :code, '', value: @code, required: true, autofocus: true,
       pattern: '[0-9]*', class: 'col-12 field monospace mfa', type: 'tel',
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length, autocomplete: 'off'
+  .border.border-light-blue.rounded-lg.py1.mt2.mb4.sm-my2.col-12.sm-col-7
+    = check_box_tag 'remember_device', true, false, class: 'mr1 ml2'
+    = label_tag 'remember_device',
+      t('forms.messages.remember_device'),
+      class: 'blue mr2'
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter
