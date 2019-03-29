@@ -15,6 +15,7 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
 
+  #todo clara account recovery here should be handled by a before_action
   def auth
     link_identity_from_session_data
     capture_analytics

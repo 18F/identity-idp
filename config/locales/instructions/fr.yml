@@ -16,7 +16,7 @@ fr:
           heading: Ne disposez-vous pas de votre clé personnelle ?
         with_key: Vous n'avez pas votre clé personnelle?
     account_recovery_setup:
-      piv_cac_next_step: Nous devons ensuite vous permettre de récupérer votre compte.
+      secondary_method_next_step: Nous devons ensuite vous permettre de récupérer votre compte.
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.

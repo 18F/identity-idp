@@ -32,10 +32,12 @@ module Users
     end
 
     def delete
-      if FeatureManagement.force_multiple_auth_methods? &&
-         MfaPolicy.new(current_user).more_than_two_factors_enabled?
-        handle_successful_delete
-      elsif MfaPolicy.new(current_user).multiple_factors_enabled?
+      mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
+                         MfaPolicy.new(current_user).more_than_two_factors_enabled?
+                       else
+                         MfaPolicy.new(current_user).multiple_factors_enabled?
+                       end
+      if mfa_policy_met
         handle_successful_delete
       else
         handle_failed_delete

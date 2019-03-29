@@ -81,10 +81,13 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def disable_totp_partial
     decked_user = decorated_user.user
-    if FeatureManagement.force_multiple_auth_methods?
-      return 'shared/null' unless MfaPolicy.new(decked_user).more_than_two_factors_enabled?
-    else
-      return 'shared/null' unless MfaPolicy.new(decked_user).multiple_factors_enabled?
+    mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
+                       MfaPolicy.new(current_user).more_than_two_factors_enabled?
+                     else
+                       MfaPolicy.new(current_user).multiple_factors_enabled?
+                     end
+    if mfa_policy_met
+      return 'shared/null'
     end
     'accounts/actions/disable_totp'
   end
@@ -103,10 +106,11 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def disable_piv_cac_partial
     decked_user = decorated_user.user
-    if FeatureManagement.force_multiple_auth_methods?
-      return 'shared/null' unless MfaPolicy.new(decked_user).more_than_two_factors_enabled?
-    else
-      return 'shared/null' unless MfaPolicy.new(decked_user).multiple_factors_enabled?
+    if (FeatureManagement.force_multiple_auth_methods? &&
+      !MfaPolicy.new(decked_user).more_than_two_factors_enabled?) ||
+      (!FeatureManagement.force_multiple_auth_methods? &&
+        !MfaPolicy.new(decked_user).multiple_factors_enabled?)
+      return 'shared/null'
     end
     'accounts/actions/disable_piv_cac'
   end

@@ -34,17 +34,9 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context
-      redirect_to next_step
+      redirect_to complete_user_flow
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
-    end
-
-    def next_step
-      if MfaPolicy.new(current_user).multiple_factors_enabled?
-        after_otp_verification_confirmation_url
-      else
-        account_recovery_setup_url
-      end
     end
 
     def handle_invalid_piv_cac

@@ -35,18 +35,8 @@ module UnconfirmedUserConcern
     create_user_event(:email_changed, @user)
 
     flash[:success] = t('devise.confirmations.confirmed')
-    redirect_to after_confirmation_url_for(@user)
+    redirect_to complete_user_flow
     EmailNotifier.new(@user).send_email_changed_email
-  end
-
-  def after_confirmation_url_for(user)
-    if !user_signed_in?
-      new_user_session_url
-    elsif MfaPolicy.new(user).two_factor_enabled?
-      account_url
-    else
-      two_factor_options_url
-    end
   end
 
   def process_unsuccessful_confirmation

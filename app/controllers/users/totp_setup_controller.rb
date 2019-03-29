@@ -26,13 +26,13 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled?
-        if FeatureManagement.force_multiple_auth_methods? &&
-           MfaPolicy.new(current_user).more_than_two_factors_enabled?
-          process_successful_disable
-        elsif MfaPolicy.new(current_user).multiple_factors_enabled?
-          process_successful_disable
-        end
+      mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
+                         MfaPolicy.new(current_user).more_than_two_factors_enabled?
+                       else
+                         MfaPolicy.new(current_user).multiple_factors_enabled?
+                       end
+      if current_user.totp_enabled? && mfa_policy_met
+        process_successful_disable
       end
       redirect_to complete_user_flow
     end
