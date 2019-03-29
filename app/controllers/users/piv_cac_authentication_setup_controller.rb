@@ -81,7 +81,7 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
-      redirect_to complete_user_flow
+      redirect_to enforce_mfa_policy
     end
 
     def piv_cac_enabled?

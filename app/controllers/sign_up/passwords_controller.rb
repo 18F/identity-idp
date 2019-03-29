@@ -69,7 +69,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to complete_user_flow
+      redirect_to enforce_mfa_policy
     end
   end
 end

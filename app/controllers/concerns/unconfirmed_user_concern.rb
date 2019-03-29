@@ -35,7 +35,7 @@ module UnconfirmedUserConcern
     create_user_event(:email_changed, @user)
 
     flash[:success] = t('devise.confirmations.confirmed')
-    redirect_to complete_user_flow
+    redirect_to enforce_mfa_policy
     EmailNotifier.new(@user).send_email_changed_email
   end
 

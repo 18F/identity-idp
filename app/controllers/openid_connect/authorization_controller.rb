@@ -12,11 +12,10 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
+    before_action :redirect_to_two_factor_options_url, unless: :auth_methods_satisfied?
 
-    #todo clara account recovery here should be handled by a before_action
     def index
       link_identity_to_service_provider
-      return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_multiple_mfa_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       handle_successful_handoff

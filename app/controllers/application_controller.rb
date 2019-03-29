@@ -139,7 +139,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
   end
 
-  def complete_user_flow
+  def enforce_mfa_policy
     if !auth_methods_satisfied?
       return two_factor_options_url
     end
@@ -172,7 +172,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def user_fully_authenticated?
     !reauthn? &&
       user_signed_in? &&
-      #todo Clara this should be removed -> auth_methods_satisfied? &&
       is_fully_authenticated?
   end
 

@@ -27,7 +27,7 @@ module Users
                      !TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
                     sign_up_personal_key_url
                   else
-                    complete_user_flow
+                    enforce_mfa_policy
                   end
     end
 
@@ -43,7 +43,7 @@ module Users
         handle_failed_delete
       end
 
-      redirect_to complete_user_flow
+      redirect_to enforce_mfa_policy
     end
 
     def show_delete
