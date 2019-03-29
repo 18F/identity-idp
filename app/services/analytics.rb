@@ -13,6 +13,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
+  # :reek:FeatureEnvy
   def track_mfa_submit_event(attributes, ga_client_id)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes.success ? 'success' : 'fail')
@@ -57,6 +58,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
       browser_bot: browser.bot?,
     }
   end
+  # rubocop:enable Metrics/AbcSize
 
   # rubocop:disable Metrics/LineLength
   ACCOUNT_RESET = 'Account Reset'.freeze

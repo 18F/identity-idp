@@ -36,12 +36,12 @@ class WebauthnVerificationForm
   private
 
   attr_reader :success,
-    :user,
-    :challenge,
-    :authenticator_data,
-    :client_data_json,
-    :signature,
-    :ga_client_id
+              :user,
+              :challenge,
+              :authenticator_data,
+              :client_data_json,
+              :signature,
+              :ga_client_id
 
   def consume_parameters(params)
     @authenticator_data = params[:authenticator_data]

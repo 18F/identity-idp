@@ -1,11 +1,10 @@
 class GoogleAnalyticsMeasurement
-  GA_HOST = 'www.google-analytics.com'.freeze
-  GA_COLLECT_ENDPOINT = '/collect'.freeze
+  GA_ENDPOINT = 'https://www.google-analytics.com/collect'.freeze
 
   attr_reader :category, :event_action, :method, :client_id
 
   cattr_accessor :adapter do
-    Faraday.new(url: GA_HOST) do |faraday|
+    Faraday.new(url: GA_ENDPOINT) do |faraday|
       faraday.adapter :typhoeus
     end
   end
@@ -19,7 +18,6 @@ class GoogleAnalyticsMeasurement
 
   def send_event
     adapter.post do |request|
-      request.url GA_VERIFY_ENDPOINT
       request.body = request_body
     end
   end

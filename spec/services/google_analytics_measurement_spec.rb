@@ -27,7 +27,7 @@ describe GoogleAnalyticsMeasurement do
         cid: client_id,
       }
 
-      url = GoogleAnalyticsMeasurement::GA_HOST + GoogleAnalyticsMeasurement::GA_COLLECT_ENDPOINT
+      url = GoogleAnalyticsMeasurement::GA_ENDPOINT
       request = stub_request(:post, url).
                 with(body: expected_req_body).
                 to_return(body: '')
