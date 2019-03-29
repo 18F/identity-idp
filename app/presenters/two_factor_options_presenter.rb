@@ -13,11 +13,19 @@ class TwoFactorOptionsPresenter
   end
 
   def heading
-    t('two_factor_authentication.two_factor_choice')
+    if FeatureManagement.force_multiple_auth_methods?
+      t('headings.account_recovery_setup.secondary_method')
+    else
+      t('two_factor_authentication.two_factor_choice')
+    end
   end
 
   def info
-    t('two_factor_authentication.two_factor_choice_intro')
+    if FeatureManagement.force_multiple_auth_methods?
+      t('instructions.account_recovery_setup.secondary_method_next_step')
+    else
+      t('two_factor_authentication.two_factor_choice_intro')
+    end
   end
 
   def label

@@ -81,15 +81,7 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
-      redirect_to next_step
-    end
-
-    def next_step
-      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
-        account_url
-      else
-        account_recovery_setup_url
-      end
+      redirect_to complete_user_flow
     end
 
     def piv_cac_enabled?

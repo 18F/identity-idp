@@ -131,6 +131,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   # purposefully overrides the devise method with the same name
   def after_sign_in_path_for(_user)
+    return new_user_session_url unless user_signed_in?
     user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
   end
 
@@ -139,9 +140,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def complete_user_flow
-    if FeatureManagement.force_multiple_auth_methods? &&
-       !MfaPolicy.new(current_user).multiple_factors_enabled?
-      return account_recovery_setup_url
+    if !auth_methods_satisfied?
+      return two_factor_options_url
     end
 
     after_sign_in_path_for(current_user)
@@ -162,9 +162,18 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     redirect_back fallback_location: new_user_session_url
   end
 
+  def auth_methods_satisfied?
+    return (FeatureManagement.force_multiple_auth_methods? &&
+      MfaPolicy.new(current_user).multiple_factors_enabled?) ||
+      (!FeatureManagement.force_multiple_auth_methods? &&
+        MfaPolicy.new(current_user).two_factor_enabled?)
+  end
+
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? &&
-      MfaPolicy.new(current_user).two_factor_enabled? && is_fully_authenticated?
+    !reauthn? &&
+      user_signed_in? &&
+      #todo Clara this should be removed -> auth_methods_satisfied? &&
+      is_fully_authenticated?
   end
 
   def reauthn?
@@ -177,13 +186,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
     return if user_fully_authenticated?
 
-    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
+    redirect_to two_factor_options_url unless auth_methods_satisfied?
 
-    prompt_to_enter_otp
-  end
-
-  def prompt_to_set_up_2fa
-    redirect_to two_factor_options_url
   end
 
   def prompt_to_enter_otp

@@ -14,7 +14,7 @@ es:
       unphishable: Incapaz de phish
       verified_account: Cuenta verificada
     account_recovery_setup:
-      piv_cac_linked: Tu tarjeta PIV/CAC está vinculada a tu cuenta
+      secondary_method: Permita otro método de autenticación
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
