@@ -15,7 +15,7 @@ class UserPivCacVerificationForm
       success: success,
       errors: {},
       extra: extra_analytics_attributes(params),
-      )
+    )
   end
 
   private
