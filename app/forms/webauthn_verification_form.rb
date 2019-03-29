@@ -20,7 +20,6 @@ class WebauthnVerificationForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_assertion_response?(protocol)
-    @ga_client_id = params[:ga_client_id]
     FormResponse.new(
       success: success,
       errors: errors.messages,
@@ -40,9 +39,8 @@ class WebauthnVerificationForm
               :challenge,
               :authenticator_data,
               :client_data_json,
-              :signature,
-              :ga_client_id
-
+              :signature
+  
   def consume_parameters(params)
     @authenticator_data = params[:authenticator_data]
     @client_data_json = params[:client_data_json]
@@ -77,7 +75,6 @@ class WebauthnVerificationForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'webauthn',
-      ga_client_id: :ga_client_id,
     }
   end
 end

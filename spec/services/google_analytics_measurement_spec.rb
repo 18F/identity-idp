@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe GoogleAnalyticsMeasurement do
   describe '#new' do
-    let(:category) { 'authenication' }
+    let(:category) { 'authentication' }
     let(:event_action) { 'mfa' }
     let(:method) { 'webAuthn' }
     let(:client_id) { 'a68f8374-0970-4c18-92d9-d18ed63ed430' }
@@ -13,12 +13,12 @@ describe GoogleAnalyticsMeasurement do
         event_action: event_action,
         method: method,
         client_id: client_id,
-      ).send_event
+      )
     end
 
     it 'sends a properly formatted request' do
       expected_req_body = {
-        v: 1,
+        v: '1',
         tid: Figaro.env.ga_uid,
         t: 'event',
         c: category,

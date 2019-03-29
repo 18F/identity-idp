@@ -4,12 +4,11 @@ class TotpVerificationForm
     @code = code
   end
 
-  def submit(params)
-    @ga_client_id = params[:ga_client_id]
+  def submit
     FormResponse.new(
       success: valid_totp_code?,
       errors: {},
-      extra: extra_analytics_attributes(params),
+      extra: extra_analytics_attributes,
     )
   end
 
@@ -33,7 +32,6 @@ class TotpVerificationForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'totp',
-      ga_client_id: ga_client_id,
     }
   end
 end

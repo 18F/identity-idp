@@ -7,9 +7,8 @@ class UserPivCacVerificationForm
   validates :nonce, presence: true
   validates :user, presence: true
 
-  def submit(params)
+  def submit
     success = valid? && valid_token?
-    @ga_client_id = params[:ga_client_id]
 
     FormResponse.new(
       success: success,
@@ -75,7 +74,6 @@ class UserPivCacVerificationForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'piv_cac',
-      ga_client_id: ga_client_id,
     }
   end
 end
