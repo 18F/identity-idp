@@ -209,7 +209,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      remember_device_available: true,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
   end
@@ -223,7 +222,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
     {
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email_addresses.first.email,
-      remember_device_available: false,
     }.merge(generic_data)
   end
 

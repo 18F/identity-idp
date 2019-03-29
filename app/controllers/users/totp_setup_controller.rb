@@ -1,5 +1,7 @@
 module Users
   class TotpSetupController < ApplicationController
+    include RememberDeviceConcern
+
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
@@ -58,6 +60,7 @@ module Users
     def process_valid_code
       create_user_event(:authenticator_enabled)
       mark_user_as_fully_authenticated
+      save_remember_device_preference
       flash[:success] = t('notices.totp_configured')
       redirect_to url_after_entering_valid_code
       user_session.delete(:new_totp_secret)

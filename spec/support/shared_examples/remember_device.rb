@@ -3,7 +3,7 @@ shared_examples 'remember device' do
     user = remember_device_and_sign_out_user
     sign_in_user(user)
 
-    expect(current_path).to eq(account_path)
+    expect(page).to have_current_path(account_path)
   end
 
   it 'requires 2FA on sign in after expiration' do
@@ -24,7 +24,7 @@ shared_examples 'remember device' do
 
     # Sign in as second user and expect otp confirmation
     sign_in_user(second_user)
-    expect_mfa_to_be_required_for_user(user)
+    expect_mfa_to_be_required_for_user(second_user)
 
     # Setup remember device as second user
     check :remember_device
@@ -35,7 +35,7 @@ shared_examples 'remember device' do
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
-    expect_mfa_to_be_required_for_user(user)
+    expect_mfa_to_be_required_for_user(first_user)
   end
 
   it 'redirects to an SP from the sign in page' do
@@ -66,6 +66,7 @@ shared_examples 'remember device' do
   end
 
   def expect_mfa_to_be_required_for_user(user)
+    user.reload
     expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
                       login_two_factor_piv_cac_path
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?

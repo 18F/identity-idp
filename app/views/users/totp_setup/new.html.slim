@@ -42,6 +42,11 @@ ul.list-reset
           .col.col-6.sm-col-5.px1
             = submit_tag t('forms.buttons.submit.default'),
               class: 'col-12 btn btn-primary align-top'
+        .border.border-light-blue.rounded-lg.px2.py1.mt3
+          = check_box_tag 'remember_device', true, false, class: 'mr1'
+          = label_tag 'remember_device',
+            t('forms.messages.remember_device'),
+            class: 'blue mt-1p'
 
 = render 'shared/cancel_or_back_to_options'
 
