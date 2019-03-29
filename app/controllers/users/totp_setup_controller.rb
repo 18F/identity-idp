@@ -66,8 +66,15 @@ module Users
     def process_successful_disable
       analytics.track_event(Analytics::TOTP_USER_DISABLED)
       create_user_event(:authenticator_disabled)
-      UpdateUser.new(user: current_user, attributes: { otp_secret_key: nil }).call
+      revoke_remember_device
       flash[:success] = t('notices.totp_disabled')
+    end
+
+    def revoke_remember_device
+      UpdateUser.new(
+        user: current_user,
+        attributes: { otp_secret_key: nil, remember_device_revoked_at: Time.zone.now },
+      ).call
     end
 
     def mark_user_as_fully_authenticated
