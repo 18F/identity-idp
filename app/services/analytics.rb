@@ -13,16 +13,16 @@ class Analytics # rubocop:disable Metrics/ClassLength
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
-  def track_mfa_submit_event(attributes)
+  def track_mfa_submit_event(attributes, ga_client_id)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes.success ? 'success' : 'fail')
 
     GoogleAnalyticsMeasurement.new(
       category: 'authenication',
       event_action: "multi+factor+#{mfa_event_type}",
-      method: attributes.multi_factor_auth_method,
-      client_id: attributes.extra.ga_client_id,
-    )
+      method: attributes[:multi_factor_auth_method],
+      client_id: ga_client_id,
+    ).send_event
   end
 
   attr_reader :user, :request, :sp
