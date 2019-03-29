@@ -15,9 +15,9 @@ module TwoFactorAuthentication
     def create
       @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
       result = @personal_key_form.submit
-      result.event_properties.multi_factor_auth_method = 'personal_key'
+      analytics_hash = result.to_h.merge(multi_factor_auth_method: 'personal-key')
 
-      analytics.track_mfa_submit_event(result.to_h)
+      analytics.track_mfa_submit_event(analytics_hash, params[:ga_client_id])
 
       handle_result(result)
     end
