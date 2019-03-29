@@ -17,11 +17,11 @@ class Analytics # rubocop:disable Metrics/ClassLength
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes.success ? 'success' : 'fail')
 
-    post_ga_event(
-      'authenication',
-      "multi+factor+#{mfa_event_type}",
-      attributes.multi_factor_auth_method,
-      attributes.extra.ga_client_id,
+    GoogleAnalyticsMeasurement.new(
+      category: 'authenication',
+      event_action: "multi+factor+#{mfa_event_type}",
+      method: attributes.multi_factor_auth_method,
+      client_id: attributes.extra.ga_client_id,
     )
   end
 
@@ -56,59 +56,6 @@ class Analytics # rubocop:disable Metrics/ClassLength
       browser_device_type: browser.device_type,
       browser_bot: browser.bot?,
     }
-  end
-
-  def post_ga_event(category, event_action, method, client_id)
-    host = 'www.google-analytics.com/'
-
-    url = "/collect?v=1&tid=#{ga_uid}"\
-    "&cid-#{client_id}&t=event&ec=#{category}"\
-    "&ea=#{event_action}&el=#{method}"
-
-    options = default_options.merge(
-      headers: accept_json,
-    )
-
-    post(url, options)
-  end
-
-  def browser
-    @browser ||= DeviceDetector.new(request.user_agent)
-  end
-
-  included do
-    include HTTParty
-  end
-
-  def post(url, options, &block)
-    handle_response(self.class.post(url, options), block)
-  end
-
-  private
-
-  ga_uid = 'UA-48605964-44'
-
-  def handle_response(response, block)
-    return [false, response.message] unless success?(response)
-    handle_success(response, block)
-  end
-
-  def handle_success(response, block)
-    body = response.body
-    data = block ? block.call(body) : body
-    [true, data]
-  end
-
-  def success?(response)
-    response.code.between?(200, 299)
-  end
-
-  def accept_json
-    { 'Accept' => 'application/json' }
-  end
-
-  def content_type_json
-    { 'Content-Type' => 'application/json' }
   end
 
   # rubocop:disable Metrics/LineLength
