@@ -15,12 +15,9 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-
-      if FeatureManagement.force_multiple_auth_methods?
-        redirect_to enforce_mfa_policy
-      else
-        redirect_to sign_up_personal_key_url
-      end
+      revoke_remember_device
+      FeatureManagement.force_multiple_auth_methods? ? redirect_to enforce_mfa_policy :
+                                                       redirect_to sign_up_personal_key_url
     end
 
     def download
