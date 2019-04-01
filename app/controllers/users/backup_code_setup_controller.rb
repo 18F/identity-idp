@@ -16,8 +16,15 @@ module Users
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
       revoke_remember_device
-      redirect_to FeatureManagement.force_multiple_auth_methods? ? enforce_mfa_policy :
-                                                       sign_up_personal_key_url
+      redirect_to url_based_on_mfa_policy
+    end
+
+    def url_based_on_mfa_policy
+      if FeatureManagement.force_multiple_auth_methods?
+        enforce_mfa_policy
+      else
+        sign_up_personal_key_url
+      end
     end
 
     def download
