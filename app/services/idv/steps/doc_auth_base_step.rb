@@ -51,12 +51,6 @@ module Idv
         failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
-      def failure_alerts(data)
-        failure(data['Alerts'].
-          reject { |res| res['Result'] == FYI_RESULT }.
-          map { |act| act['Actions'] })
-      end
-
       def extract_pii_from_doc(data)
         pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
           current_user&.phone_configurations&.first&.phone,
