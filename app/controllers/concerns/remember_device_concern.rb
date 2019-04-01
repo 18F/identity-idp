@@ -55,7 +55,7 @@ module RememberDeviceConcern
       category: 'authenication',
       event_action: 'device-remembered',
       method: '',
-      client_id: params[ga_client_id],
+      client_id: params[:ga_client_id],
     ).send_end
   end
 
