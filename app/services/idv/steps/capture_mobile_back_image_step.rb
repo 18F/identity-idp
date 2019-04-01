@@ -23,7 +23,8 @@ module Idv
 
         return [nil, data] if data['Result'] == GOOD_RESULT
 
-        failure_alerts(data)
+        mark_step_incomplete(:mobile_front_image)
+        failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
       def failure_alerts(data)
