@@ -20,6 +20,11 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 2
   end
 
+  def oversufficient_methods_enabled?
+    return mfa_user.more_than_two_factors_enabled? if FeatureManagement.force_multiple_auth_methods?
+    mfa_user.multiple_factors_enabled?
+  end
+
   private
 
   attr_reader :mfa_user

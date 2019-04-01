@@ -113,8 +113,4 @@ class FeatureManagement
   def self.disallow_ial2_recovery?
     Figaro.env.disallow_ial2_recovery == 'true'
   end
-
-  def self.disallow_ial2_recovery?
-    Figaro.env.disallow_ial2_recovery == 'true'
-  end
 end

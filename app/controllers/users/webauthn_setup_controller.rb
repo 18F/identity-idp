@@ -15,11 +15,7 @@ module Users
       form = WebauthnSetupForm.new(current_user, user_session)
       result = form.submit(request.protocol, params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
-      if result.success?
-        process_valid_webauthn
-      else
-        process_invalid_webauthn(form)
-      end
+      result.success? ? process_valid_webauthn : process_invalid_webauthn(form)
     end
 
     def success
@@ -32,12 +28,7 @@ module Users
     end
 
     def delete
-      mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
-                         MfaPolicy.new(current_user).more_than_two_factors_enabled?
-                       else
-                         MfaPolicy.new(current_user).multiple_factors_enabled?
-                       end
-      if mfa_policy_met
+      if MfaPolicy.new(current_user).oversufficient_methods_enabled?
         handle_successful_delete
       else
         handle_failed_delete
@@ -97,12 +88,12 @@ module Users
     end
 
     def url_after_successful_webauthn_setup
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
-
-      idv_jurisdiction_url
+      if !FeatureManagement.force_multiple_auth_methods? &&
+         !TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
+        sign_up_personal_key_url
+      else
+        enforce_mfa_policy
+      end
     end
 
     def process_invalid_webauthn(form)
@@ -118,10 +109,6 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-    end
-
-    def user_already_has_a_personal_key?
-      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
 end

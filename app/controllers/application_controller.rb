@@ -140,9 +140,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def enforce_mfa_policy
-    if !auth_methods_satisfied?
-      return two_factor_options_url
-    end
+    return two_factor_options_url unless auth_methods_satisfied?
 
     after_sign_in_path_for(current_user)
   end
@@ -162,9 +160,13 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     redirect_back fallback_location: new_user_session_url
   end
 
+  def multiple_auth_methods_required_and_met?
+    FeatureManagement.force_multiple_auth_methods? &&
+      MfaPolicy.new(current_user).multiple_factors_enabled?
+  end
+
   def auth_methods_satisfied?
-    return (FeatureManagement.force_multiple_auth_methods? &&
-      MfaPolicy.new(current_user).multiple_factors_enabled?) ||
+    multiple_auth_methods_required_and_met? ||
       (!FeatureManagement.force_multiple_auth_methods? &&
         MfaPolicy.new(current_user).two_factor_enabled?)
   end
@@ -186,7 +188,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     return if user_fully_authenticated?
 
     redirect_to two_factor_options_url unless auth_methods_satisfied?
-
   end
 
   def prompt_to_enter_otp
