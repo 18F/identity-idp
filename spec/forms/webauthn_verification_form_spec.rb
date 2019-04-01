@@ -22,7 +22,7 @@ describe WebauthnVerificationForm do
           credential_id: credential_id,
         }
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: { multi_factor_auth_method: :webauthn }).
+          with(success: true, errors: {}, extra: { multi_factor_auth_method: 'webauthn' }).
           and_return(result)
         expect(subject.submit(protocol, params)).to eq result
       end
@@ -38,7 +38,7 @@ describe WebauthnVerificationForm do
           credential_id: credential_id,
         }
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: :webauthn }).
+          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'webauthn' }).
           and_return(result)
         expect(subject.submit(protocol, params)).to eq result
       end
