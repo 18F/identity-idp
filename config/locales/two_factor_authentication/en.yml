@@ -116,3 +116,6 @@ en:
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
+    webauthn_verified:
+      header: Security key verified
+      info: We have verified your security key. Click continue to sign in.
