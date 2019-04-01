@@ -106,7 +106,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
-        get :show, params: { token: 'good-token' }
+        get :show, params: { token: 'good-token', ga_client_id: 'abc-cool-town-5' }
       end
     end
 
@@ -184,7 +184,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        get :show, params: { token: 'bad-token' }
+        get :show, params: { token: 'bad-token', ga_client_id: 'abc-cool-town-5' }
       end
     end
 

@@ -186,6 +186,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
+          ga_client_id: 'abc-cool-town-5',
         }
       end
 
