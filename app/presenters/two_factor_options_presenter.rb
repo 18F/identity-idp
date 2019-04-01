@@ -75,6 +75,7 @@ class TwoFactorOptionsPresenter
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 
+  # :reek:FeatureEnvy
   def backup_code_option
     policy = TwoFactorAuthentication::BackupCodePolicy.new(current_user)
     return [TwoFactorAuthentication::BackupCodeSelectionPresenter.new] if policy.available? &&

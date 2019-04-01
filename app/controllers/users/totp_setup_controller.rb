@@ -28,14 +28,8 @@ module Users
     end
 
     def disable
-      mfa_policy_met = if FeatureManagement.force_multiple_auth_methods?
-                         MfaPolicy.new(current_user).more_than_two_factors_enabled?
-                       else
-                         MfaPolicy.new(current_user).multiple_factors_enabled?
-                       end
-      if current_user.totp_enabled? && mfa_policy_met
-        process_successful_disable
-      end
+      process_successful_disable if current_user.totp_enabled? &&
+                                    MfaPolicy.new(current_user).oversufficient_methods_enabled?
       redirect_to enforce_mfa_policy
     end
 
