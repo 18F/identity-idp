@@ -17,7 +17,7 @@ module TwoFactorAuthentication
       result = @personal_key_form.submit
       analytics_hash = result.to_h.merge(multi_factor_auth_method: 'personal-key')
 
-      analytics.track_mfa_submit_event(analytics_hash, params[:ga_client_id])
+      Analytics::track_mfa_submit_event(analytics_hash, params[:ga_client_id])
 
       handle_result(result)
     end
