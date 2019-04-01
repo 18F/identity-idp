@@ -40,6 +40,7 @@ module Flow
     def render_update(step, result)
       redirect_to next_step and return if next_step_is_url
       move_to_next_step and return if result.success?
+      ensure_correct_step and return
       set_error_and_render(step, result)
     end
 
