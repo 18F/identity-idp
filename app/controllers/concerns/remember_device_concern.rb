@@ -52,7 +52,7 @@ module RememberDeviceConcern
   def handle_valid_remember_device_analytics
     analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
     GoogleAnalyticsMeasurement.new(
-      category: 'authenication',
+      category: 'authentication',
       event_action: 'device-remembered',
       method: '',
       client_id: params[:ga_client_id],

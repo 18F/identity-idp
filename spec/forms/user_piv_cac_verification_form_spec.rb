@@ -29,7 +29,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+            with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
             and_return(result)
           expect(form.submit).to eq result
           expect(form.error_type).to eq 'user.no_piv_cac_associated'
@@ -43,7 +43,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+            with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
             and_return(result)
           expect(form.submit).to eq result
           expect(form.error_type).to eq 'user.piv_cac_mismatch'
@@ -58,7 +58,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: true, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+            with(success: true, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
             and_return(result)
           expect(form.submit).to eq result
         end
@@ -72,7 +72,7 @@ describe UserPivCacVerificationForm do
             result = instance_double(FormResponse)
 
             expect(FormResponse).to receive(:new).
-              with(success: false, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+              with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
               and_return(result)
             expect(Event).to_not receive(:create)
             expect(form.submit).to eq result
@@ -92,7 +92,7 @@ describe UserPivCacVerificationForm do
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
           and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result
@@ -107,7 +107,7 @@ describe UserPivCacVerificationForm do
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: :piv_cac }).
+          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac' }).
           and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result

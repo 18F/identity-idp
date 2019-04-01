@@ -19,7 +19,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')
 
     GoogleAnalyticsMeasurement.new(
-      category: 'authenication',
+      category: 'authentication',
       event_action: "multi+factor+#{mfa_event_type}",
       method: attributes[:multi_factor_auth_method],
       client_id: ga_client_id,

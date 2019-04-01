@@ -87,8 +87,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties, nil)
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
@@ -136,8 +134,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties, nil)
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params: { code: '12345', otp_delivery_preference: 'sms' }

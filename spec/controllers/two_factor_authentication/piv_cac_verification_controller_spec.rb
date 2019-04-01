@@ -85,17 +85,23 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
+
         attributes = {
-          success: true,
-          errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+
+        submit_attributes = {
+          success: true,
+          errors: {},
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+        }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(attributes, '')
+          with(submit_attributes, '')
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -160,16 +166,21 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         stub_analytics
 
         attributes = {
-          success: false,
-          errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+
+        submit_attributes = {
+          success: true,
+          errors: {},
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+        }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(attributes, '')
+          with(submit_attributes, '')
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)

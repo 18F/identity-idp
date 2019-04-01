@@ -199,12 +199,12 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def mark_user_session_authenticated(authenication_type)
+  def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
     analytics.track_event(
       Analytics::USER_MARKED_AUTHED,
-      authenication_type: authenication_type,
+      authentication_type: authentication_type,
     )
   end
 

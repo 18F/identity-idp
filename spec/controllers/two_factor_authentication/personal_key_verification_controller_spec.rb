@@ -34,14 +34,14 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'personal key' },
+          success: true, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
         )
         allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
 
         stub_analytics
-        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal key' }
+        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal-key' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash, nil)
@@ -73,7 +73,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' },
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
         )
         allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, '').and_return(form)
@@ -93,7 +93,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' },
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
         )
         allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
@@ -118,7 +118,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         properties = {
           success: false,
           errors: {},
-          multi_factor_auth_method: 'personal key',
+          multi_factor_auth_method: 'personal-key',
         }
 
         stub_analytics
