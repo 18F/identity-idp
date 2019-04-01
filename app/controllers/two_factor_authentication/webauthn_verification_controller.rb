@@ -16,14 +16,18 @@ module TwoFactorAuthentication
         result.to_h.merge(analytics_properties),
         params[:ga_client_id],
       )
+      handle_webauthn_result(result)
+    end
+
+    private
+
+    def handle_webauthn_result(result)
       if result.success?
         handle_valid_webauthn
       else
         handle_invalid_webauthn
       end
     end
-
-    private
 
     def handle_valid_webauthn
       handle_valid_otp_for_authentication_context
