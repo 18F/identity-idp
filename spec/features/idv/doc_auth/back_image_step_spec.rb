@@ -46,8 +46,10 @@ shared_examples 'back image step' do |simulate|
         and_return([true, assure_id_results_with_result_2])
       attach_image
       click_idv_continue
+      return if simulate # simulator only returns good status currently
 
-      expect(page).to have_current_path(idv_doc_auth_back_image_step) unless simulate
+      expect(page).to have_current_path(idv_doc_auth_front_image_step)
+      expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
     end
   end
 end
