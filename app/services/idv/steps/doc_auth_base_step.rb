@@ -41,6 +41,33 @@ module Idv
         result
       end
 
+      def verify_back_image(reset_step)
+        back_image_verified, data = assure_id.results
+        return failure(data) unless back_image_verified
+
+        return [nil, data] if data['Result'] == GOOD_RESULT
+
+        mark_step_incomplete(reset_step)
+        failure(I18n.t('errors.doc_auth.general_error'), data)
+      end
+
+      def failure_alerts(data)
+        failure(data['Alerts'].
+          reject { |res| res['Result'] == FYI_RESULT }.
+          map { |act| act['Actions'] })
+      end
+
+      def extract_pii_from_doc(data)
+        pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
+          current_user&.phone_configurations&.first&.phone,
+          )
+        flow_session[:pii_from_doc] = pii_from_doc
+      end
+
+      def user_id_from_token
+        flow_session[:doc_capture_user_id]
+      end
+
       delegate :idv_session, to: :@flow
     end
   end
