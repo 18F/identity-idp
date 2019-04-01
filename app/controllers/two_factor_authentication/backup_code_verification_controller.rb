@@ -24,8 +24,11 @@ module TwoFactorAuthentication
 
     private
 
-    def all_codes_used
-      return if current_user.backup_code_configurations.unused.any?
+    def all_codes_used?
+      current_user.backup_code_configurations.unused.any?
+    end
+
+    def handle_last_code
       BackupCodeGenerator.new(current_user).delete_existing_codes
       redirect_to backup_code_setup_url
     end
@@ -51,7 +54,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        return if all_codes_used
+        return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
         handle_invalid_backup_code

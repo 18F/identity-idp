@@ -74,6 +74,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
       before do
         sign_in_before_2fa
 
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+
         properties = {
           success: false,
           errors: {},
@@ -81,15 +83,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
         }
-
         stub_analytics
-
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties, 'abc-cool-town-5')
 
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
-
-        post :create, params: { code: '12345', otp_delivery_preference: 'sms', ga_client_id: 'abc-cool-town-5' }
+        post :create, params:
+        { code: '12345',
+          otp_delivery_preference: 'sms',
+          ga_client_id: 'abc-cool-town-5' }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -136,7 +137,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, params: { code: '12345', otp_delivery_preference: 'sms', ga_client_id: 'abc-cool-town-5' }
+        post :create, params:
+        { code: '12345',
+          otp_delivery_preference: 'sms',
+          ga_client_id: 'abc-cool-town-5' }
       end
     end
 
@@ -288,6 +292,16 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
+            properties = {
+              success: true,
+              errors: {},
+              confirmation_for_phone_change: true,
+              context: 'confirmation',
+              multi_factor_auth_method: 'sms',
+            }
+
+            expect(@analytics).to receive(:track_event).
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
             controller.user_session[:phone_id] = \
               MfaContext.new(subject.current_user).phone_configurations.last.id
             post(
@@ -305,16 +319,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'tracks the update event and notifies via email about number change' do
-            properties = {
-              success: true,
-              errors: {},
-              confirmation_for_phone_change: true,
-              context: 'confirmation',
-              multi_factor_auth_method: 'sms',
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
             subject.current_user.email_addresses.each do |email_address|

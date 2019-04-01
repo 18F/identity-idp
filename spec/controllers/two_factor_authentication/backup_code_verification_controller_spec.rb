@@ -37,7 +37,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
           with(analytics_hash, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: 'valid_2fa')
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: payload
       end
