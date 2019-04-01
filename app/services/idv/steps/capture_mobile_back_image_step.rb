@@ -21,7 +21,7 @@ module Idv
         back_image_verified, data = assure_id.results
         return failure(data) unless back_image_verified
 
-        return [nil, data] if data['Result'] == BAD_RESULT
+        return [nil, data] if data['Result'] == GOOD_RESULT
 
         failure_alerts(data)
       end

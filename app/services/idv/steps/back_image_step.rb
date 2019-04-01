@@ -28,7 +28,7 @@ module Idv
         back_image_verified, data = assure_id.results
         return failure(data) unless back_image_verified
 
-        return [nil, data] if data['Result'] == BAD_RESULT
+        return [nil, data] if data['Result'] == GOOD_RESULT
 
         mark_step_incomplete(:front_image)
         failure(I18n.t('errors.doc_auth.general_error'), data)

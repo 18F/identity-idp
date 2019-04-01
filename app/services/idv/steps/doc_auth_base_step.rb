@@ -1,7 +1,7 @@
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
-      BAD_RESULT = 1
+      GOOD_RESULT = 1
       FYI_RESULT = 2
 
       def initialize(flow)
