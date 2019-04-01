@@ -79,6 +79,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     super
   end
 
+  def enforce_mfa_policy
+    return two_factor_options_url unless auth_methods_satisfied?
+
+    after_sign_in_path_for(current_user)
+  end
+
   private
 
   # These attributes show up in New Relic traces for all requests.
@@ -137,12 +143,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def signed_in_url
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
-  end
-
-  def enforce_mfa_policy
-    return two_factor_options_url unless auth_methods_satisfied?
-
-    after_sign_in_path_for(current_user)
   end
 
   def reauthn_param
