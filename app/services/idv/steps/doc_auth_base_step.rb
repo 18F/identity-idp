@@ -41,7 +41,7 @@ module Idv
         result
       end
 
-      def verify_back_image(reset_step)
+      def verify_back_image(reset_step:)
         back_image_verified, data = assure_id.results
         return failure(data) unless back_image_verified
 

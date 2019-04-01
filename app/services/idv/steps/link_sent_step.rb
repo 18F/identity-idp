@@ -5,7 +5,7 @@ module Idv
         dac = DocCapture.find_by(user_id: current_user.id)
         flow_session[:instance_id] = dac.acuant_token
 
-        failure_data, data = verify_back_image(:send_link)
+        failure_data, data = verify_back_image(reset_step: :send_link)
         return failure_data if failure_data
 
         extract_pii_from_doc(data)
