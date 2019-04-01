@@ -50,6 +50,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           client_data_json: client_data_json,
           signature: signature,
           credential_id: credential_id,
+          ga_client_id: 'abc-cool-town-5',
         }
       end
       before do
@@ -76,7 +77,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
                    success: true }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result, nil)
+          with(result, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)

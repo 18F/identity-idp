@@ -85,11 +85,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, nil)
+          with(properties, 'abc-cool-town-5')
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+        post :create, params: { code: '12345', otp_delivery_preference: 'sms', ga_client_id: 'abc-cool-town-5' }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -132,11 +132,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, nil)
+          with(properties, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+        post :create, params: { code: '12345', otp_delivery_preference: 'sms', ga_client_id: 'abc-cool-town-5' }
       end
     end
 
@@ -151,6 +151,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
+          ga_client_id: 'abc-cool-town-5',
         }
 
         expect(response).to redirect_to account_path
@@ -178,7 +179,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, nil)
+          with(properties, 'abc-cool-town-5')
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 

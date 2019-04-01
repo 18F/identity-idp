@@ -101,7 +101,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           multi_factor_auth_method: 'piv_cac',
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(submit_attributes, nil)
+          with(submit_attributes, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -174,16 +174,14 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
 
         submit_attributes = {
-          success: true,
+          success: false,
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(submit_attributes, nil)
+          with(submit_attributes, 'abc-cool-town-5')
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         get :show, params: { token: 'bad-token' }

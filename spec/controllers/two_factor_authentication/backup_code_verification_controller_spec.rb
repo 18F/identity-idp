@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::BackupCodeVerificationController do
   let(:backup_code) { { backup_code: 'foo' } }
-  let(:payload) { { backup_code_verification_form: backup_code } }
+  let(:payload) { { backup_code_verification_form: backup_code, ga_client_id: 'abc-cool-town-5' } }
 
   describe '#show' do
     it 'tracks the page visit' do
@@ -34,10 +34,10 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, nil)
+          with(analytics_hash, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: 'valid_2fa')
 
         post :create, params: payload
       end
@@ -95,7 +95,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, nil)
+          with(properties, 'abc-cool-town-5')
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
