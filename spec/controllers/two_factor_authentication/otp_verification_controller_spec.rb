@@ -85,7 +85,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, '')
+          with(properties, nil)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -134,7 +134,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, '')
+          with(properties, nil)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -181,8 +181,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         stub_analytics
 
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(properties, nil)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH, properties)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,

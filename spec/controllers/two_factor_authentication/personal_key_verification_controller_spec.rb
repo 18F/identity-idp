@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal key' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, '')
+          with(analytics_hash, nil)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -124,7 +124,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, '')
+          with(properties, nil)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params: payload

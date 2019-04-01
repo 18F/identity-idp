@@ -36,7 +36,10 @@ describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
         }
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(attributes, nil)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: { code: generate_totp_code(@secret) }
       end

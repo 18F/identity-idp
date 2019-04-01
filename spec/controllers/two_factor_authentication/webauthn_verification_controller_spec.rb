@@ -76,7 +76,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
                    success: true }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result, '')
+          with(result, nil)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)

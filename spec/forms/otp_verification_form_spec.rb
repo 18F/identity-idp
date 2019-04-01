@@ -12,7 +12,7 @@ describe OtpVerificationForm do
         allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}).
+          with(success: true, errors: {}, extra: { multi_factor_auth_method: :otp_code }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -26,7 +26,7 @@ describe OtpVerificationForm do
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}).
+          with(success: false, errors: {}, extra: { multi_factor_auth_method: :otp_code }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -43,7 +43,7 @@ describe OtpVerificationForm do
           allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}).
+            with(success: false, errors: {}, extra: { multi_factor_auth_method: :otp_code }).
             and_return(result)
           expect(form.submit).to eq result
         end
