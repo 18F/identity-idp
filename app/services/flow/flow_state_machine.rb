@@ -21,7 +21,7 @@ module Flow
 
     def update
       step = params[:step]
-      result = flow.handle(step, request, params)
+      result = flow.handle(step)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
       flow_finish and return unless next_step
       render_update(step, result)
@@ -34,7 +34,7 @@ module Flow
       @name = klass.name.underscore.gsub('_controller', '')
       klass::FSM_SETTINGS.each { |key, value| instance_variable_set("@#{key}", value) }
       current_session[@name] ||= {}
-      @flow = @flow.new(current_session, current_user, @name)
+      @flow = @flow.new(self, current_session, @name)
     end
 
     def render_update(step, result)

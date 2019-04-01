@@ -15,6 +15,7 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
+      revoke_remember_device
       if FeatureManagement.force_multiple_auth_methods?
         redirect_to enforce_mfa_policy
       else
@@ -43,6 +44,12 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+    end
+
+    def revoke_remember_device
+      UpdateUser.new(
+        user: current_user, attributes: { remember_device_revoked_at: Time.zone.now },
+      ).call
     end
 
     def two_factor_enabled?

@@ -13,6 +13,5 @@ module Encryption
     def self.logger
       @logger ||= Logger.new('log/kms.log')
     end
-    private_class_method :logger
   end
 end

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe RememberDeviceCookie do
-  let(:phone_confirmed_at) { 90.days.ago }
-  let(:user) { create(:user, :with_phone, with: { confirmed_at: phone_confirmed_at }) }
+  let(:remember_device_revoked_at) { nil }
+  let(:user) { create(:user, :with_phone, remember_device_revoked_at: remember_device_revoked_at) }
   let(:created_at) { Time.zone.now }
 
   subject { described_class.new(user_id: user.id, created_at: created_at) }
@@ -90,11 +90,18 @@ describe RememberDeviceCookie do
       end
     end
 
-    context 'when the user has changed their phone since creating the token' do
+    context 'when the user revoked remember device after creating the token' do
       let(:created_at) { 5.days.ago }
-      let(:phone_confirmed_at) { 4.days.ago }
+      let(:remember_device_revoked_at) { 4.days.ago }
 
       it { expect(subject).to eq(false) }
+    end
+
+    context 'when the user revoked remember device before creating the token' do
+      let(:created_at) { 5.days.ago }
+      let(:remember_device_revoked_at) { 6.days.ago }
+
+      it { expect(subject).to eq(true) }
     end
   end
 end

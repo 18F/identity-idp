@@ -71,8 +71,7 @@ Dir.chdir APP_ROOT do
   run 'bin/rake db:reset'
   run 'bin/rake db:environment:set'
   run 'bin/rake dev:prime'
-  run 'bin/rake db:create RAILS_ENV=test'
-  run 'bin/rake db:reset RAILS_ENV=test'
+  run 'bin/rake parallel:setup'
 
   puts "\n== Cleaning up old assets =="
   run "rake assets:clobber"
