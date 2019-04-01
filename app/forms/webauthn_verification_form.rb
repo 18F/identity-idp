@@ -40,7 +40,7 @@ class WebauthnVerificationForm
               :authenticator_data,
               :client_data_json,
               :signature
-  
+
   def consume_parameters(params)
     @authenticator_data = params[:authenticator_data]
     @client_data_json = params[:client_data_json]

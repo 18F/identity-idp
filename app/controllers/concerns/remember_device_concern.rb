@@ -56,7 +56,7 @@ module RememberDeviceConcern
       event_action: 'device-remembered',
       method: '',
       client_id: params[:ga_client_id],
-    ).send_end
+    ).send_event
   end
 
   def remember_device_cookie_expiration
