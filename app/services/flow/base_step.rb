@@ -30,9 +30,9 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
-    def failure(message)
+    def failure(message, extra = {})
       flow_session[:error_message] = message
-      FormResponse.new(success: false, errors: { message: message })
+      FormResponse.new(success: false, errors: { message: message }, extra: extra)
     end
 
     def flow_params
@@ -51,6 +51,6 @@ module Flow
       @flow.flow_session = {}
     end
 
-    delegate :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
+    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
   end
 end

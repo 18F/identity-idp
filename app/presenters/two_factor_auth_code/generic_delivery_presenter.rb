@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :code_value, :remember_device_available
+    attr_reader :code_value
 
     def initialize(data:, view:)
       data.each do |key, value|
@@ -32,10 +32,6 @@ module TwoFactorAuthCode
       else
         'shared/null'
       end
-    end
-
-    def remember_device_available?
-      remember_device_available
     end
 
     private

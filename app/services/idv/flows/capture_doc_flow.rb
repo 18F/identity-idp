@@ -11,8 +11,8 @@ module Idv
         reset: Idv::Actions::ResetAction,
       }.freeze
 
-      def initialize(session, current_user, _name)
-        super(STEPS, ACTIONS, session, current_user)
+      def initialize(controller, session, _name)
+        super(controller, STEPS, ACTIONS, session)
       end
     end
   end
