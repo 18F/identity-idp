@@ -2,11 +2,17 @@ require 'rails_helper'
 
 describe RecurringJob::UndeliverableAddressController do
   describe '#create' do
+    before do
+      # Prevent the controller action from actually trying to open an SFTP
+      # connection in the shared examples
+      allow(Net::SFTP).to receive(:start)
+    end
+
     it_behaves_like 'a recurring job controller', Figaro.env.usps_download_token
 
     context 'with a valid token' do
       before do
-        headers(Figaro.env.usps_download_token)
+        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.usps_download_token
       end
 
       it 'returns triggers undeliverable address notifications' do
