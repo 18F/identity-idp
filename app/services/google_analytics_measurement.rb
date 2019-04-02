@@ -27,7 +27,7 @@ class GoogleAnalyticsMeasurement
   def request_body
     {
       v: 1,
-      tid: Figaro.env.ga_uid,
+      tid: Figaro.env.google_analytics_key,
       t: :event,
       c: category,
       ea: event_action,

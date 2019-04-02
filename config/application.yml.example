@@ -147,7 +147,6 @@ development:
   event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
-  ga_uid: 'UA-48605964-44'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_disabled: 'true'
@@ -268,7 +267,6 @@ production:
   event_disavowal_expiration_hours: '240'
   exception_recipients: 'user1@example.com,user2@example.com'
   expired_letters_auth_token:
-  ga_uid: 'UA-48605964-44'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
@@ -389,7 +387,6 @@ test:
   event_disavowal_expiration_hours: '240'
   exception_recipients: 'test1@test.com'
   expired_letters_auth_token: 'abc123'
-  ga_uid: 'UA-48605964-44'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'

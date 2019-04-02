@@ -19,7 +19,7 @@ describe GoogleAnalyticsMeasurement do
     it 'sends a properly formatted request' do
       expected_req_body = {
         v: '1',
-        tid: Figaro.env.ga_uid,
+        tid: Figaro.env.google_analytics_key,
         t: 'event',
         c: category,
         ea: event_action,

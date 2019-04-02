@@ -25,7 +25,7 @@ module TwoFactorAuthentication
     private
 
     def all_codes_used?
-      current_user.backup_code_configurations.unused.any?
+      current_user.backup_code_configurations.unused.none?
     end
 
     def handle_last_code
