@@ -36,6 +36,28 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash, 'abc-cool-town-5')
 
+        post :create, params: payload
+      end
+
+      it 'tracks the valid authentication event when there are exisitng codes' do
+        user = build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        BackupCodeGenerator.new(user).create
+        stub_sign_in_before_2fa(user)
+
+        form = instance_double(BackupCodeVerificationForm)
+        response = FormResponse.new(
+          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
+        )
+        allow(BackupCodeVerificationForm).to receive(:new).
+          with(subject.current_user).and_return(form)
+        allow(form).to receive(:submit).and_return(response)
+
+        stub_analytics
+        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
+
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(analytics_hash, 'abc-cool-town-5')
+
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
