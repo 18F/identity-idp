@@ -1,5 +1,5 @@
 class StateIdMock < Proofer::Base
-  SUPPORTED_JURISDICTIONS = %w[
+  SUPPORTED_STATES = %w[
     AR AZ CO DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM PA RI
     SC SD TX VA VT WA WI WY
   ].freeze
