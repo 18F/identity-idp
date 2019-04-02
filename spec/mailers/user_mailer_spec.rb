@@ -50,7 +50,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'personal_key_sign_in' do
-    let(:mail) { UserMailer.personal_key_sign_in(user.email) }
+    let(:mail) { UserMailer.personal_key_sign_in(user.email, disavowal_token: 'asdf1234') }
 
     it_behaves_like 'a system email'
 
@@ -66,13 +66,17 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.personal_key_sign_in.intro'),
       )
+      expect(mail.html_part.body).to include(
+        '/events/disavow/asdf1234',
+      )
     end
   end
 
   describe 'sign in from new device' do
     date = 'Washington, DC'
     location = 'February 25, 2019 15:02'
-    let(:mail) { UserMailer.new_device_sign_in(email_address, date, location) }
+    disavowal_token = 'asdf1234'
+    let(:mail) { UserMailer.new_device_sign_in(email_address, date, location, disavowal_token) }
 
     it_behaves_like 'a system email'
 
@@ -86,8 +90,12 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.new_device_sign_in.help_html',
+        to have_content(strip_tags(t('user_mailer.new_device_sign_in.info_html',
                                      date: date, location: location)))
+      expect(mail.html_part.body).to include(
+        '/events/disavow/asdf1234',
+      )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 

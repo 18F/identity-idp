@@ -9,7 +9,7 @@ ul
   li = t('doc_auth.instructions.take_pic3')
   li = t('doc_auth.instructions.take_pic4')
 
-= simple_form_for(:doc_auth, url: idv_doc_auth_step_path(step: :mobile_front_image), method: 'PUT',
+= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
     .sm-col.sm-col-8.px1
@@ -21,5 +21,5 @@ ul
       = t('forms.buttons.continue')
 br
 
-= render 'start_over_or_cancel'
+= render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'

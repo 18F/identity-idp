@@ -15,7 +15,7 @@ h1.h3.my0 = t('doc_auth.headings.verify')
   .right = button_to(t('doc_auth.buttons.change_ssn'), idv_doc_auth_step_path(step: :redo_ssn),
     method: :put, class: 'btn btn-link')
   = "#{t('doc_auth.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}"
-  .mt4 = button_to(t('forms.buttons.continue'), idv_doc_auth_step_path(step: :verify), method: :put,
+  .mt4 = button_to(t('forms.buttons.continue'), url_for, method: :put,
     class: 'btn btn-primary btn-wide sm-col-6 col-12')
 
-= render 'start_over_or_cancel'
+= render 'idv/doc_auth/start_over_or_cancel'

@@ -39,7 +39,6 @@ Figaro.require_keys(
   'remember_device_expiration_hours_aal_1',
   'remember_device_expiration_hours_aal_2',
   'saml_endpoint_configs',
-  'saml_passphrase',
   'scrypt_cost',
   'secret_key_base',
   'session_encryption_key',

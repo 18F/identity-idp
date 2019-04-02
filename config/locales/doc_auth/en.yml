@@ -46,7 +46,7 @@ en:
         use a scanner to capture images of your ID
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
-        any images.  We accept PDF, PNG, and JPG formats.
+        any images.  We accept BMP, PNG, TIFF, and JPG formats.
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity also allows you to access services that
         handle Personal Identifiable Information.

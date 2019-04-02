@@ -3,11 +3,10 @@ module Flow
     attr_accessor :flow_session
     attr_reader :steps, :actions, :current_user, :params, :request
 
-    def initialize(steps, actions, session, current_user)
-      @current_user = current_user
+    def initialize(controller, steps, actions, session)
+      @controller = controller
       @steps = steps.with_indifferent_access
       @actions = actions.with_indifferent_access
-      @params = nil
       @redirect = nil
       @flow_session = session
     end
@@ -24,12 +23,10 @@ module Flow
       @redirect = url
     end
 
-    def handle(step, request, params)
+    def handle(step)
       @flow_session[:error_message] = nil
       handler = steps[step] || actions[step]
       return failure("Unhandled step #{step}") unless handler
-      @params = params
-      @request = request
       wrap_send(handler)
     end
 
@@ -46,5 +43,7 @@ module Flow
       obj.mark_step_complete if response.success?
       response
     end
+
+    delegate :flash, :session, :current_user, :params, :request, to: :@controller
   end
 end

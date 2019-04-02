@@ -30,7 +30,8 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        create_user_event(:personal_key_used)
+        event = create_user_event_with_disavowal(:personal_key_used)
+        UserAlerts::AlertUserAboutPersonalKeySignIn.call(current_user, event.disavowal_token)
         generate_new_personal_key
         handle_valid_otp
       else

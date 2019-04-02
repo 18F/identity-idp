@@ -21,7 +21,7 @@ module Flow
 
     def update
       step = params[:step]
-      result = flow.handle(step, request, params)
+      result = flow.handle(step)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
       flow_finish and return unless next_step
       render_update(step, result)
@@ -34,12 +34,13 @@ module Flow
       @name = klass.name.underscore.gsub('_controller', '')
       klass::FSM_SETTINGS.each { |key, value| instance_variable_set("@#{key}", value) }
       current_session[@name] ||= {}
-      @flow = @flow.new(current_session, current_user, @name)
+      @flow = @flow.new(self, current_session, @name)
     end
 
     def render_update(step, result)
       redirect_to next_step and return if next_step_is_url
       move_to_next_step and return if result.success?
+      ensure_correct_step and return
       set_error_and_render(step, result)
     end
 
@@ -57,7 +58,7 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      render template: "#{@name}/#{step}", locals: { flow_session: flow_session }
+      render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
     end
 
     def ensure_correct_step

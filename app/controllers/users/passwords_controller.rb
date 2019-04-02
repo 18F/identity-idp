@@ -38,10 +38,8 @@ module Users
     end
 
     def create_event_and_notify_user_about_password_change
-      disavowal_token = create_user_event_with_disavowal(:password_changed).disavowal_token
-      current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.password_changed(email_address, disavowal_token: disavowal_token).deliver_later
-      end
+      event = create_user_event_with_disavowal(:password_changed)
+      UserAlerts::AlertUserAboutPasswordChange.call(current_user, event.disavowal_token)
     end
 
     def handle_invalid_password

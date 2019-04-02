@@ -1,0 +1,26 @@
+---
+fr:
+  recover:
+    email:
+      confirm: Confirmez votre email
+      instructions: Confirmer votre adresse e-mail nous permettra de vous aider à
+        vérifier à nouveau que vous êtes le propriétaire de ce compte. Veuillez cliquer
+        sur le lien ci-dessous ou copier et coller le lien en entier dans votre navigateur.
+        Ce lien expirera dans 15 minutes.
+    request:
+      confirm_email: D'abord, confirmons votre adresse email
+      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre courrier électronique
+        et suivez les instructions pour vérifier votre identité.
+      instructions: Nous enverrons un courrier électronique à l'adresse indiquée pour
+        ce compte.  Une fois l'e-mail reçu, cliquez sur le lien à l'intérieur pour
+        continuer à vérifier votre compte.
+      reverify: Pour réinitialiser votre compte, nous devons revérifier votre identité.
+    reverify:
+      email_confirmed: Nous avons confirmé votre adresse email
+      fail: Récupérer échouer
+      instructions: Nous voulons nous assurer que vous et seulement vous avez accès
+        à votre compte
+      reverify: Ensuite, revérifions votre identité
+      success: Vous avez bien récupéré votre compte. Pour éviter de devoir récupérer
+        votre compte à l'avenir, veuillez ajouter une autre option de sécurité parmi
+        les options d'authentification à deux facteurs ci-dessous.

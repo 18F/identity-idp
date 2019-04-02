@@ -38,8 +38,11 @@ Vagrantfile
 /config/application.yml
 /config/aws.yml
 /geo_data/*
+/keys/*.key
+/keys/*.pub
 /keys/*.key.enc
 !/keys/*.key.enc.example
+!/keys/saml_test_sp.key
 /keys/equifax_rsa
 /keys/equifax_gpg.pub.bin
 /keys/equifax_rsa.pub
@@ -73,4 +76,5 @@ saml_*.shr
 /public/packs-test
 /node_modules
 yarn-debug.log*
+yarn-error.log*
 .yarn-integrity

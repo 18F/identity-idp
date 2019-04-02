@@ -17,6 +17,10 @@ fr:
       token_invalid: jeton invalide
       token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
+    doc_auth:
+      general_error: Votre identité émise par l'état n'a pas pu être vérifiée. S'il
+        vous plaît essayez de télécharger des images différentes en commençant par
+        le devant de votre ID émis par l'État.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
