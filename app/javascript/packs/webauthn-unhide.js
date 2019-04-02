@@ -1,5 +1,7 @@
+const WebAuthn = require('../app/webauthn');
+
 function unhideWebauthn() {
-  if (navigator && navigator.credentials && navigator.credentials.create) {
+  if (WebAuthn.isWebAuthnEnabled()) {
     const elem = document.getElementById('select_webauthn');
     if (elem) {
       elem.classList.remove('hidden');
