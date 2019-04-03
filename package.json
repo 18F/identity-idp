@@ -28,7 +28,9 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "atob": "^2.1.2",
     "babel-eslint": "^7.2.3",
+    "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
     "eslint": "^3.19.0",
