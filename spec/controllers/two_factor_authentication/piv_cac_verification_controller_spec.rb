@@ -85,15 +85,28 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
+
         attributes = {
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+
+        submit_attributes = {
           success: true,
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
         }
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(submit_attributes, 'abc-cool-town-5')
 
-        get :show, params: { token: 'good-token' }
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+
+        get :show, params: { token: 'good-token', ga_client_id: 'abc-cool-town-5' }
       end
     end
 
@@ -153,16 +166,25 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         stub_analytics
 
         attributes = {
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+
+        submit_attributes = {
           success: false,
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
         }
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(submit_attributes, 'abc-cool-town-5')
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        get :show, params: { token: 'bad-token' }
+        get :show, params: { token: 'bad-token', ga_client_id: 'abc-cool-town-5' }
       end
     end
 

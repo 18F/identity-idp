@@ -12,15 +12,22 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit(request.protocol, params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
+      analytics.track_mfa_submit_event(
+        result.to_h.merge(analytics_properties),
+        params[:ga_client_id],
+      )
+      handle_webauthn_result(result)
+    end
+
+    private
+
+    def handle_webauthn_result(result)
       if result.success?
         handle_valid_webauthn
       else
         handle_invalid_webauthn
       end
     end
-
-    private
 
     def handle_valid_webauthn
       handle_valid_otp_for_authentication_context
