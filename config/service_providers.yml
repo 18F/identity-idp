@@ -921,6 +921,36 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # USAID - Identity (identity.usaid.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:identity':
+    agency_id: 15
+    friendly_name: 'USAID - Identity'
+    agency: 'USAID'
+    logo: 'usaid.png'
+    cert: 'usaid_identity_prod'
+    return_to_sp_url: 'https://www.usaid.gov'
+    redirect_uris:
+      -  'https://identity.usaid.gov/core/logingov/signin-oidc'
+    attribute_bundle:
+      - email
+    ial: 1
+    restrict_to_deploy_env: 'prod'
+
+  # USAID - Identity - Staging (identity-staging.usaid.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:identity-staging':
+    agency_id: 15
+    friendly_name: 'USAID - Identity - Staging'
+    agency: 'USAID'
+    logo: 'usaid.png'
+    cert: 'usaid_identity_prod'
+    return_to_sp_url: 'https://www.usaid.gov'
+    redirect_uris:
+      -  'https://identity-staging.usaid.gov/core/logingov/signin-oidc'
+    attribute_bundle:
+      - email
+    ial: 1
+    restrict_to_deploy_env: 'prod'
+
   # Apprenticeship.gov
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dol:apprenticeship_gov':
     agency_id: 14
