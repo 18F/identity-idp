@@ -28,7 +28,7 @@ module Idv
     attr_accessor :idv_session, :step_params, :idv_result
 
     def consume_step_params(params)
-      step_params[state_id_jurisdiction] = params[:state]
+      step_params[:state_id_jurisdiction] = params[:state]
     end
 
     def applicant
