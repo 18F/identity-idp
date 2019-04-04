@@ -9,7 +9,6 @@ fr:
         send: Envoyer une lettre
       send_confirmation_code: Continuer
     cancel:
-      modal_header: Souhaitez-vous vraiment annuler?
       warnings:
         warning_1: Nous ne serons pas en mesure de vérifier votre identité
         warning_2: Nous ne conserverons aucune information relative à votre nom, votre
