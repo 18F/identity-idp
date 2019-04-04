@@ -23,8 +23,6 @@ describe 'sign_up/passwords/new.html.slim' do
   end
 
   it 'includes a form to cancel account creation' do
-    link = t('links.cancel_account_creation')
-
-    expect(rendered).to have_selector("input[value='#{link}']")
+    expect(rendered).to have_link(t('links.cancel_account_creation'))
   end
 end
