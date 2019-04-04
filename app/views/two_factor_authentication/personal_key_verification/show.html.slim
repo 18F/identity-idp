@@ -6,6 +6,7 @@ p.mt-tiny.mb0 = t('two_factor_authentication.personal_key_prompt')
 = simple_form_for(@personal_key_form, url: login_two_factor_personal_key_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key
+  = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary'
 
 = render 'shared/fallback_links', presenter: @presenter

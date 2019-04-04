@@ -42,10 +42,21 @@ module RememberDeviceConcern
 
   def handle_valid_remember_device_cookie
     user_session[:mfa_device_remembered] = true
-    mark_user_session_authenticated
+    mark_user_session_authenticated(:device_remembered)
+    handle_valid_remember_device_analytics
     bypass_sign_in current_user
     redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data
+  end
+
+  def handle_valid_remember_device_analytics
+    analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
+    GoogleAnalyticsMeasurement.new(
+      category: 'authentication',
+      event_action: 'device-remembered',
+      method: '',
+      client_id: params[:ga_client_id],
+    ).send_event
   end
 
   def remember_device_cookie_expiration
