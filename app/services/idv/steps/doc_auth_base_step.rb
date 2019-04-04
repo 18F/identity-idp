@@ -88,7 +88,7 @@ module Idv
       end
 
       def test_credentials?
-        FeatureManagment.allow_doc_auth_test_credentials? && image.content_type == 'text/plain'
+        FeatureManagement.allow_doc_auth_test_credentials? && image.content_type == 'text/plain'
       end
 
       delegate :idv_session, to: :@flow
