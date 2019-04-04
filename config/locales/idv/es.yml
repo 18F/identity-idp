@@ -9,6 +9,7 @@ es:
         send: Enviar una carta
       send_confirmation_code: Continuar
     cancel:
+      modal_header: "¿Está seguro que desea cancelar?"
       warnings:
         warning_1: No podremos verificar tu identidad
         warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número
