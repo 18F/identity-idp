@@ -22,7 +22,7 @@ feature 'Canceling Account Creation' do
       click_link t('sign_up.registrations.create_account')
       submit_form_with_valid_email
       click_confirmation_link_in_email('test@test.com')
-      click_button t('links.cancel_account_creation')
+      click_link t('links.cancel_account_creation')
 
       expect(current_url).to eq sign_up_cancel_url
 
@@ -37,7 +37,7 @@ feature 'Canceling Account Creation' do
       submit_form_with_valid_email
       click_confirmation_link_in_email('test@test.com')
       previous_url = current_url
-      click_button t('links.cancel_account_creation')
+      click_link t('links.cancel_account_creation')
 
       expect(current_url).to eq sign_up_cancel_url
 

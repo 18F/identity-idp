@@ -14,7 +14,6 @@ h1.h3.my0 = t('two_factor_authentication.webauthn_header_text')
   = hidden_field_tag :signature, '', id: 'signature'
   = hidden_field_tag :client_data_json, '', id: 'client_data_json'
   = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
-
   #webauthn-auth-in-progress
     .spinner[id='spinner']
       .col-12.center.mb2

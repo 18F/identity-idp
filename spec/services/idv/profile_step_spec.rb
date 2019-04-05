@@ -14,6 +14,7 @@ describe Idv::ProfileStep do
       city: 'Somewhere',
       state: 'VA',
       zipcode: '66044',
+      state_id_jurisdiction: 'VA',
       state_id_number: '123abc',
       state_id_type: 'drivers_license',
     }

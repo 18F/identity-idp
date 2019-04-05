@@ -1,3 +1,6 @@
+# :reek:TooManyMethods
+# :reek:RepeatedConditional
+
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -42,7 +45,7 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        back_image_verified, data = assure_id.results
+        back_image_verified, data = assure_id_results
         return failure(data) unless back_image_verified
 
         return [nil, data] if data['Result'] == GOOD_RESULT
@@ -52,14 +55,40 @@ module Idv
       end
 
       def extract_pii_from_doc(data)
-        pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
+        flow_session[:pii_from_doc] = test_credentials? ? pii_from_test_doc : parse_pii(data)
+      end
+
+      def pii_from_test_doc
+        YAML.safe_load(image.read)['document'].symbolize_keys
+      end
+
+      def parse_pii(data)
+        Idv::Utils::PiiFromDoc.new(data).call(
           current_user&.phone_configurations&.first&.phone,
         )
-        flow_session[:pii_from_doc] = pii_from_doc
       end
 
       def user_id_from_token
         flow_session[:doc_capture_user_id]
+      end
+
+      def assure_id_results
+        return [true, { 'Result' => GOOD_RESULT }] if test_credentials?
+        assure_id.results
+      end
+
+      def post_back_image
+        return [true, ''] if test_credentials?
+        assure_id.post_back_image(image.read)
+      end
+
+      def post_front_image
+        return [true, ''] if test_credentials?
+        assure_id.post_front_image(image.read)
+      end
+
+      def test_credentials?
+        FeatureManagement.allow_doc_auth_test_credentials? && image.content_type == 'text/x-yaml'
       end
 
       delegate :idv_session, to: :@flow
