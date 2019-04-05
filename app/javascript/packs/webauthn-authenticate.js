@@ -19,6 +19,6 @@ function webauthn() {
     document.getElementById('signature').value = result.signature;
     webauthnInProgressContainer.classList.add('hidden');
     webauthnSuccessContainer.classList.remove('hidden');
-  })
+  });
 }
 document.addEventListener('DOMContentLoaded', webauthn);
