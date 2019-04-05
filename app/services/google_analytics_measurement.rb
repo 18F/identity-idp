@@ -20,6 +20,8 @@ class GoogleAnalyticsMeasurement
     adapter.post do |request|
       request.body = request_body
     end
+  rescue Faraday::ConnectionFailed => err
+    NewRelic::Agent.notice_error(err)
   end
 
   private
