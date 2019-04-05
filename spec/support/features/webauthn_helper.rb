@@ -70,7 +70,7 @@ module WebAuthnHelper
   end
 
   def credential_public_key
-    <<~HEREDOC.gsub("\n", '')
+    <<~HEREDOC.delete("\n")
       pQECAyYgASFYIK13HTAGHERhmNxxkecMx0B+rTnzavDiu4yu1rXZltqOIlgg4AMQhEwL7gBzOs
       C7v0RAsYGjjeVmhGnag75HsrwruOA=
     HEREDOC
