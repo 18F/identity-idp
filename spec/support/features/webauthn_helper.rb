@@ -70,7 +70,10 @@ module WebAuthnHelper
   end
 
   def credential_public_key
-    'BK13HTAGHERhmNxxkecMx0B+rTnzavDiu4yu1rXZltqO4AMQhEwL7gBzOsC7v0RAsYGjjeVmhGnag75HsrwruOA='
+    <<~HEREDOC.gsub("\n", '')
+      pQECAyYgASFYIK13HTAGHERhmNxxkecMx0B+rTnzavDiu4yu1rXZltqOIlgg4AMQhEwL7gBzOs
+      C7v0RAsYGjjeVmhGnag75HsrwruOA=
+    HEREDOC
   end
 
   def attestation_object
@@ -79,7 +82,7 @@ module WebAuthnHelper
       zzuoMdl2NBAAAAcAAAAAAAAAAAAAAAAAAAAAAAQLn4YFvuWwlaNTeJRgn0x4wX49WdBA/Lk4+K
       srOFic5IGbpxxG8d4sbnNZCxukExnrOpYPoW10R87VYeHog16C6lAQIDJiABIVggrXcdMAYcRG
       GY3HGR5wzHQH6tOfNq8OK7jK7WtdmW2o4iWCDgAxCETAvuAHM6wLu/RECxgaON5WaEadqDvkey
-      vCu44A=='
+      vCu44A==
     HEREDOC
   end
 
