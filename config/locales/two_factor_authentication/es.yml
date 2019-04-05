@@ -121,3 +121,6 @@ es:
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad
+    webauthn_verified:
+      header: Clave de seguridad verificada
+      info: Hemos verificado su clave de seguridad. Haga clic en continuar para iniciar sesión.
