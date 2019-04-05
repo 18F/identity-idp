@@ -24,12 +24,16 @@ Rails.application.routes.draw do
         as: :voice_otp,
         defaults: { format: :xml }
 
-  post '/api/usps_upload' => 'usps_upload#create'
-  post '/api/usps_download' => 'undeliverable_address#create'
-  post '/api/expired_letters' => 'expired_letters#update'
-
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+
+  # Routes that are triggered by lambda functions to initiate recurring jobs
+  scope module: :recurring_job do
+    post '/api/account_reset/send_notifications' => 'send_account_reset_notifications#create'
+    post '/api/expired_letters' => 'expired_letters#create'
+    post '/api/usps_download' => 'undeliverable_address#create'
+    post '/api/usps_upload' => 'usps_upload#create'
+  end
 
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
@@ -61,7 +65,6 @@ Rails.application.routes.draw do
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
-      post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
