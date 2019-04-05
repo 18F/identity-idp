@@ -32,10 +32,6 @@ module WebAuthnHelper
     first('#submit-button', visible: false).click
   end
 
-  def mock_submit_without_pressing_button_on_hardware_key_on_verification
-    first('#submit-button', visible: false).click
-  end
-
   def mock_press_button_on_hardware_key_on_verification
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
@@ -45,8 +41,6 @@ module WebAuthnHelper
     set_hidden_field('authenticator_data', authenticator_data)
     set_hidden_field('signature', signature)
     set_hidden_field('client_data_json', verification_client_data_json)
-
-    first('#submit-button', visible: false).click
   end
 
   def set_hidden_field(id, value)

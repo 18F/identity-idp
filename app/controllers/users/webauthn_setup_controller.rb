@@ -1,5 +1,7 @@
 module Users
   class WebauthnSetupController < ApplicationController
+    include RememberDeviceConcern
+
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
@@ -89,6 +91,7 @@ module Users
     def process_valid_webauthn
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
+      save_remember_device_preference
       redirect_to webauthn_setup_success_url
     end
 

@@ -14,19 +14,32 @@ h1.h3.my0 = t('two_factor_authentication.webauthn_header_text')
   = hidden_field_tag :signature, '', id: 'signature'
   = hidden_field_tag :client_data_json, '', id: 'client_data_json'
   = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
-  = submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden'
-.spinner[id='spinner']
-  .col-12.center
-    = image_tag(asset_url('spinner.gif'),
-            srcset: asset_url('spinner@2x.gif'),
-            height: 144,
-            width: 144,
-            alt: '')
-h2.h4.half-center = t('forms.webauthn_setup.instructions_title')
-p.half-center = t('forms.webauthn_setup.login_text')
+  #webauthn-auth-in-progress
+    .spinner[id='spinner']
+      .col-12.center.mb2
+        = image_tag(asset_url('spinner.gif'),
+                srcset: asset_url('spinner@2x.gif'),
+                height: 144,
+                width: 144,
+                alt: '')
+    h2.h4.half-center = t('forms.webauthn_setup.instructions_title')
+    p.half-center = t('forms.webauthn_setup.login_text')
+    = render 'shared/fallback_links', presenter: @presenter
+  #webauthn-auth-successful.hidden
+    .col-12.center.mb2
+      = image_tag(asset_url('webauthn-verified.svg'),
+        height: 144,
+        width: 144,
+        alt: '')
+    h2.h4.half-center.mt3 = t('two_factor_authentication.webauthn_verified.header')
+    p.half-center = t('two_factor_authentication.webauthn_verified.info')
+    .border.border-light-blue.rounded-lg.px2.py1.mt3
+      = check_box_tag 'remember_device', true, false, class: 'mr1'
+      = label_tag 'remember_device',
+        t('forms.messages.remember_device'),
+        class: 'blue mt-1p'
+    = submit_tag t('forms.buttons.continue'), class: 'btn btn-primary sm-col-6 col-12 btn-wide my3'
 
-br
-= render 'shared/fallback_links', presenter: @presenter
 = render 'shared/cancel', link: @presenter.cancel_link
 
 == javascript_pack_tag 'clipboard'
