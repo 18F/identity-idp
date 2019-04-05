@@ -16,7 +16,7 @@ module Idv
       end
 
       def upload_front_image
-        success, message = assure_id.post_front_image(image.read)
+        success, message = post_front_image
         return failure(message) unless success
       end
     end
