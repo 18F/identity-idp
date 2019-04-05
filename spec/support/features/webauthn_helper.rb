@@ -1,26 +1,50 @@
-module WebauthnHelper
-  def mock_challenge
+module WebAuthnHelper
+  def mock_webauthn_setup_challenge
     allow(WebAuthn).to receive(:credential_creation_options).and_return(
-      challenge: challenge.pack('c*'),
+      challenge: webauthn_challenge.pack('c*'),
     )
   end
 
-  def fill_in_nickname_and_click_continue
-    fill_in 'name', with: 'mykey'
+  def mock_webauthn_verification_challenge
+    allow(WebAuthn).to receive(:credential_request_options).and_return(
+      challenge: webauthn_challenge.pack('c*'),
+    )
   end
 
-  def mock_submit_without_pressing_button_on_hardware_key
+  def fill_in_nickname_and_click_continue(nickname: 'mykey')
+    fill_in 'name', with: nickname
+  end
+
+  def mock_submit_without_pressing_button_on_hardware_key_on_setup
     first('#submit-button', visible: false).click
   end
 
-  def mock_press_button_on_hardware_key
+  def mock_press_button_on_hardware_key_on_setup
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 
     # simulate javascript that is triggered when the hardware key button is pressed
-
+    set_hidden_field('webauthn_id', webauthn_id)
+    set_hidden_field('webauthn_public_key', webauthn_public_key)
     set_hidden_field('attestation_object', attestation_object)
-    set_hidden_field('client_data_json', client_data_json)
+    set_hidden_field('client_data_json', setup_client_data_json)
+
+    first('#submit-button', visible: false).click
+  end
+
+  def mock_submit_without_pressing_button_on_hardware_key_on_verification
+    first('#submit-button', visible: false).click
+  end
+
+  def mock_press_button_on_hardware_key_on_verification
+    # this is required because the domain is embedded in the supplied attestation object
+    allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
+
+    # simulate javascript that is triggered when the hardware key button is pressed
+    set_hidden_field('credential_id', credential_id)
+    set_hidden_field('authenticator_data', authenticator_data)
+    set_hidden_field('signature', signature)
+    set_hidden_field('client_data_json', verification_client_data_json)
 
     first('#submit-button', visible: false).click
   end
@@ -33,34 +57,65 @@ module WebauthnHelper
     'http://'
   end
 
+  def webauthn_challenge
+    [130, 189, 118, 175, 4, 84, 80, 118, 106, 163, 161, 68, 35, 246, 37, 2]
+  end
+
+  def webauthn_id
+    'ufhgW+5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg+hbXRHztVh4eiDXoLg=='
+  end
+
+  def webauthn_public_key
+    'ufhgW-5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg-hbXRHztVh4eiDXoLg'
+  end
+
+  def credential_public_key
+    <<~HEREDOC.delete("\n")
+      pQECAyYgASFYIK13HTAGHERhmNxxkecMx0B+rTnzavDiu4yu1rXZltqOIlgg4AMQhEwL7gBzOs
+      C7v0RAsYGjjeVmhGnag75HsrwruOA=
+    HEREDOC
+  end
+
   def attestation_object
     <<~HEREDOC
-      o2NmbXRoZmlkby11MmZnYXR0U3RtdKJjc2lnWEcwRQIhALPWZKH5+O5MbcTX/si5CWbYExXTgRGmZ3BYDHEQ0zM2AiBLZ
-      rHCEXeifub4u0QT2CsIzNF0JfZ42BjI7SLzd33FXGN4NWOBWQLCMIICvjCCAaagAwIBAgIEdIb9wjANBgkqhkiG9w0BAQ
-      sFADAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8
-      yMDUwMDkwNDAwMDAwMFowbzELMAkGA1UEBhMCU0UxEjAQBgNVBAoMCVl1YmljbyBBQjEiMCAGA1UECwwZQXV0aGVudGlj
-      YXRvciBBdHRlc3RhdGlvbjEoMCYGA1UEAwwfWXViaWNvIFUyRiBFRSBTZXJpYWwgMTk1NTAwMzg0MjBZMBMGByqGSM49A
-      gEGCCqGSM49AwEHA0IABJVd8633JH0xde/9nMTzGk6HjrrhgQlWYVD7OIsuX2Unv1dAmqWBpQ0KxS8YRFwKE1SKE1PIpO
-      WacE5SO8BN6+2jbDBqMCIGCSsGAQQBgsQKAgQVMS4zLjYuMS40LjEuNDE0ODIuMS4xMBMGCysGAQQBguUcAgEBBAQDAgU
-      gMCEGCysGAQQBguUcAQEEBBIEEPigEfOMCk0VgAYXER+e3H0wDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQsFAAOCAQEA
-      MVxIgOaaUn44Zom9af0KqG9J655OhUVBVW+q0As6AIod3AH5bHb2aDYakeIyyBCnnGMHTJtuekbrHbXYXERIn4aKdkPSK
-      lyGLsA/A+WEi+OAfXrNVfjhrh7iE6xzq0sg4/vVJoywe4eAJx0fS+Dl3axzTTpYl71Nc7p/NX6iCMmdik0pAuYJegBcTc
-      kE3AoYEg4K99AM/JaaKIblsbFh8+3LxnemeNf7UwOczaGGvjS6UzGVI0Odf9lKcPIwYhuTxM5CaNMXTZQ7xq4/yTfC3kP
-      WtE4hFT34UJJflZBiLrxG4OsYxkHw/n5vKgmpspB3GfYuYTWhkDKiE8CYtyg87mhhdXRoRGF0YVjESZYN5YgOjGh0NBcP
-      ZHZgW4/krrmihjLHmVzzuoMdl2NBAAAAAAAAAAAAAAAAAAAAAAAAAAAAQKqDS1W7h4/KNbFPClTaqeglJdkHUe6OWQIZo
-      5iJsTY+Aomll+hR+iMpbRxiKuuK3pYDcJ0dg3Gk2/zXB+4o+LalAQIDJiABIVggH/apoWRf+cr+ViGgqizMcQFz3WTsQA
-      Q+bgj5ZDl+d1giWCA+Q7Uff+TEiSLXuT/OtsPil4gRy1ITS4tv8m6n1JLYlw==
+      o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjESZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmV
+      zzuoMdl2NBAAAAcAAAAAAAAAAAAAAAAAAAAAAAQLn4YFvuWwlaNTeJRgn0x4wX49WdBA/Lk4+K
+      srOFic5IGbpxxG8d4sbnNZCxukExnrOpYPoW10R87VYeHog16C6lAQIDJiABIVggrXcdMAYcRG
+      GY3HGR5wzHQH6tOfNq8OK7jK7WtdmW2o4iWCDgAxCETAvuAHM6wLu/RECxgaON5WaEadqDvkey
+      vCu44A==
     HEREDOC
   end
 
-  def client_data_json
+  def setup_client_data_json
     <<~HEREDOC
-      eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwI
-      iwidHlwZSI6IndlYmF1dGhuLmNyZWF0ZSJ9
+      eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
+      FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVt
+      cGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgiLCJvcmlnaW4iOiJodHRwOi8vbG9jYW
+      xob3N0OjMwMDAiLCJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIn0=
     HEREDOC
   end
 
-  def challenge
-    [130, 189, 118, 175, 4, 84, 80, 118, 106, 163, 161, 68, 35, 246, 37, 2]
+  def verification_client_data_json
+    <<~HEREDOC
+      eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
+      FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVt
+      cGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgiLCJvcmlnaW4iOiJodHRwOi8vbG9jYW
+      xob3N0OjMwMDAiLCJ0eXBlIjoid2ViYXV0aG4uZ2V0In0=
+    HEREDOC
+  end
+
+  def credential_id
+    webauthn_id
+  end
+
+  def authenticator_data
+    'SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2MBAAAAcQ=='
+  end
+
+  def signature
+    <<~HEREDOC
+      MEYCIQC7VHQpZasv8URBC/VYKWcuv4MrmV82UfsESKTGgV3r+QIhAO8iAduYC7XDHJjpKkrSKb
+      B3/YJKhlr2AA5uw59+aFzk
+    HEREDOC
   end
 end

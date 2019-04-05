@@ -14,6 +14,7 @@ h1.h3.my0 = t('two_factor_authentication.webauthn_header_text')
   = hidden_field_tag :signature, '', id: 'signature'
   = hidden_field_tag :client_data_json, '', id: 'client_data_json'
   = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
+  = submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden'
 .spinner[id='spinner']
   .col-12.center
     = image_tag(asset_url('spinner.gif'),
