@@ -121,4 +121,5 @@ fr:
     webauthn_header_text: Présentez votre clé de sécurité
     webauthn_verified:
       header: Clé de sécurité vérifiée
-      info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous connecter.
+      info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous
+        connecter.
