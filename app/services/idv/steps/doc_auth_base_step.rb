@@ -88,7 +88,8 @@ module Idv
       end
 
       def test_credentials?
-        FeatureManagement.allow_doc_auth_test_credentials? && image.content_type == 'text/x-yaml'
+        FeatureManagement.allow_doc_auth_test_credentials? &&
+          ['text/x-yaml', 'text/plain'].index(image.content_type)
       end
 
       delegate :idv_session, to: :@flow
