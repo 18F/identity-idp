@@ -297,7 +297,6 @@ GEM
     ice_nine (0.11.2)
     iniparse (1.4.4)
     io-like (0.3.0)
-    ipaddr (1.2.2)
     jaro_winkler (1.5.2)
     jmespath (1.4.0)
     json (2.2.0)
@@ -353,7 +352,6 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     openssl (2.1.2)
-      ipaddr
     orm_adapter (0.5.0)
     overcommit (0.47.0)
       childprocess (~> 0.6, >= 0.6.3)
@@ -361,7 +359,7 @@ GEM
     parallel (1.17.0)
     parallel_tests (2.28.0)
       parallel
-    parser (2.6.2.0)
+    parser (2.6.2.1)
       ast (~> 2.4.0)
     pg (1.1.4)
     phonelib (0.6.31)
@@ -750,7 +748,7 @@ DEPENDENCIES
   zxcvbn-js
 
 RUBY VERSION
-   ruby 2.6.2p47
+   ruby 2.5.4p155
 
 BUNDLED WITH
    1.17.3
