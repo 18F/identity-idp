@@ -101,7 +101,7 @@ module Idv
     end
 
     def resend_letter
-      confirmation_maker_perform
+      confirmation_maker = confirmation_maker_perform
       send_reminder
       return unless FeatureManagement.reveal_usps_code?
       session[:last_usps_confirmation_code] = confirmation_maker.otp
@@ -114,6 +114,7 @@ module Idv
         profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
+      confirmation_maker
     end
 
     def idv_form
