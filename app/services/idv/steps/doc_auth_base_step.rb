@@ -79,18 +79,54 @@ module Idv
 
       def post_back_image
         return [true, ''] if test_credentials?
-        assure_id.post_back_image(image.read)
+        throttle_post_back_image
       end
 
       def post_front_image
         return [true, ''] if test_credentials?
+        throttle_post_front_image
+      end
+
+      def throttle_post_front_image
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
         assure_id.post_front_image(image.read)
+        increment_attempts
+      end
+
+      def throttle_post_back_image
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
+        assure_id.post_back_image(image.read)
+        increment_attempts
       end
 
       def test_credentials?
         return false unless flow_params
         FeatureManagement.allow_doc_auth_test_credentials? &&
           ['text/x-yaml', 'text/plain'].include?(image.content_type)
+      end
+
+      def increment_attempts
+        Throttler::Increment.new(user_id, acuant_throttle).call
+      end
+
+      def throttled?
+        Throttler::IsThrottled.new(user_id, acuant_throttle).call(max_attempts, delay_in_minutes)
+      end
+
+      def max_attempts
+        (Figaro.env.acuant_max_attempts || 3).to_i
+      end
+
+      def delay_in_minutes
+        (Figaro.env.acuant_attempt_window_in_minutes || 86_400).to_i
+      end
+
+      def user_id
+        current_user.id
+      end
+
+      def acuant_throttle
+        Throttler::ThrottleTypes::IDV_ACUANT
       end
 
       delegate :idv_session, to: :@flow

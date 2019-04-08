@@ -15,6 +15,9 @@
 # Make sure any new entries you add are enclosed in single quotes.
 # Figaro requires all values to be explicit strings.
 
+acuant_max_attempts: '10'
+acuant_attempt_window_in_minutes: '86400'
+
 email_from: 'no-reply@login.gov'
 idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
