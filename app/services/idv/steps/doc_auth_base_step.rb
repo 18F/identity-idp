@@ -89,14 +89,14 @@ module Idv
 
       def throttle_post_front_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
-        assure_id.post_front_image(image.read)
         increment_attempts
+        assure_id.post_front_image(image.read)
       end
 
       def throttle_post_back_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
-        assure_id.post_back_image(image.read)
         increment_attempts
+        assure_id.post_back_image(image.read)
       end
 
       def test_credentials?
