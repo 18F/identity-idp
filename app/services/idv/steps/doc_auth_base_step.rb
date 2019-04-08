@@ -122,7 +122,7 @@ module Idv
       end
 
       def user_id
-        current_user.id
+        current_user ? current_user.id : user_id_from_token
       end
 
       def acuant_throttle
