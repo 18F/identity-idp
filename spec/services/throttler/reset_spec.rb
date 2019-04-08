@@ -12,7 +12,7 @@ describe Throttler::Reset do
                     throttle_type: throttle_type,
                     attempts: max_attempts,
                     attempted_at: Time.zone.now)
-    result = subject.call
+    subject.call
 
     expect(throttle.attempts).to eq(0)
   end
