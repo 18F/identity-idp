@@ -80,7 +80,7 @@ piv_cac_email_domains: >-
     "eac.gov", "ed.gov", "eda.gov", "epa.gov",
     "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
     "gao.gov", "gpo.gov", "gsa.gov",
-    "heritageabroad.gov", "hq.doe.gov", "hud.gov", "hudoig.gov",
+    "heritageabroad.gov", ".doe.gov", "hud.gov", "hudoig.gov",
     "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
     "jusfc.gov", "justice.gov",
     "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
