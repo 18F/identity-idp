@@ -16,6 +16,7 @@ module Users
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
       revoke_remember_device
+      flash[:success] = t('notices.backup_codes_configured')
       redirect_to url_based_on_mfa_policy
     end
 

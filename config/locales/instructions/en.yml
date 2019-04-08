@@ -14,7 +14,7 @@ en:
           heading: Don't have your personal key?
         with_key: Do you have your personal key?
     account_recovery_setup:
-      secondary_method_next_step: Next we need to give you a way to recover your account.
+      secondary_method_next_step: Adding multiple authentication methods to your account ensures you will be able to access your account when you do not have access to your first authentication option.
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
     go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app

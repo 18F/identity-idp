@@ -20,9 +20,18 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 2
   end
 
+  def multiple_auth_methods_required_and_met?
+    FeatureManagement.force_multiple_auth_methods? && multiple_factors_enabled?
+  end
+
+  def auth_methods_satisfied?
+    multiple_auth_methods_required_and_met? ||
+      (!FeatureManagement.force_multiple_auth_methods? && two_factor_enabled?)
+  end
+
   def oversufficient_methods_enabled?
-    return mfa_user.more_than_two_factors_enabled? if FeatureManagement.force_multiple_auth_methods?
-    mfa_user.multiple_factors_enabled?
+    return more_than_two_factors_enabled? if FeatureManagement.force_multiple_auth_methods?
+    multiple_factors_enabled?
   end
 
   private

@@ -8,7 +8,7 @@ class AuthAppConfiguration
   end
 
   def mfa_enabled?
-    user&.otp_secret_key.present?
+    user&.try(:otp_secret_key) && user&.otp_secret_key.present?
   end
 
   def selection_presenters

@@ -102,6 +102,7 @@ en:
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
+      secondary_method: Select an additional method to secure your account
     verify_profile:
       instructions: Enter the ten-character code in the letter we sent you.
       name: Confirmation code

@@ -96,7 +96,7 @@ en:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code
     two_factor_choice: Secure your account
-    two_factor_choice_intro: login.gov makes sure you can access your account by adding
+    two_factor_choice_intro: login.gov makes sure only you can access your account by adding
       a second layer of security.
     two_factor_choice_options:
       auth_app: Authentication application

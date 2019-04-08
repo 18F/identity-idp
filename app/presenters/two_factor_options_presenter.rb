@@ -13,7 +13,8 @@ class TwoFactorOptionsPresenter
   end
 
   def heading
-    if FeatureManagement.force_multiple_auth_methods?
+    if FeatureManagement.force_multiple_auth_methods? &&
+       MfaContext.new(current_user).enabled_mfa_methods_count == 1
       t('headings.account_recovery_setup.secondary_method')
     else
       t('two_factor_authentication.two_factor_choice')
@@ -21,7 +22,8 @@ class TwoFactorOptionsPresenter
   end
 
   def info
-    if FeatureManagement.force_multiple_auth_methods?
+    if FeatureManagement.force_multiple_auth_methods? &&
+       MfaContext.new(current_user).enabled_mfa_methods_count == 1
       t('instructions.account_recovery_setup.secondary_method_next_step')
     else
       t('two_factor_authentication.two_factor_choice_intro')
@@ -29,7 +31,12 @@ class TwoFactorOptionsPresenter
   end
 
   def label
-    t('forms.two_factor_choice.legend') + ':'
+    if FeatureManagement.force_multiple_auth_methods? &&
+      MfaContext.new(current_user).enabled_mfa_methods_count == 1
+      t('forms.two_factor_choice.secondary_method') + ':'
+    else
+      t('forms.two_factor_choice.legend') + ':'
+    end
   end
 
   def options

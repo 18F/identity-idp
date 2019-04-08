@@ -182,7 +182,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     reauthn.present? && reauthn == 'true'
   end
 
-  def confirm_two_factor_authenticated
+  #TODO remove the param
+  def confirm_two_factor_authenticated(id = nil)
     authenticate_user!(force: true)
 
     return if user_fully_authenticated?

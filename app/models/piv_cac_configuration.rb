@@ -8,7 +8,7 @@ class PivCacConfiguration
   end
 
   def mfa_enabled?
-    user&.x509_dn_uuid.present?
+    user&.try(:x509_dn_uuid) && user&.x509_dn_uuid.present?
   end
 
   def mfa_confirmed?(proposed_uuid)

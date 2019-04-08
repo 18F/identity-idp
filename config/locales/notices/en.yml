@@ -2,6 +2,7 @@
 en:
   notices:
     account_reactivation: Great! You have your personal key.
+    backup_codes_configured: Backup codes configured.
     dap_participation: We participate in the US government’s analytics program. See
       the data at analytics.usa.gov.
     forgot_password:
@@ -14,6 +15,7 @@ en:
         link: create a new account
         text_html: Or, %{link} using a different email address.
     password_changed: You changed your password.
+    phone_configured: You enabled a phone.
     piv_cac_configured: PIV/CAC card linked successfully.
     piv_cac_disabled: PIV/CAC card unlinked successfully.
     resend_confirmation_email:

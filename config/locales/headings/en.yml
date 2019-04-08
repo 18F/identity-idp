@@ -14,7 +14,7 @@ en:
       unphishable: Unphishable
       verified_account: Verified Account
     account_recovery_setup:
-      secondary_method: Enable another authentication method
+      secondary_method: Add a backup authentication method
     add_info:
       phone: Add a phone number
     cancellations:

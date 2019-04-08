@@ -8,7 +8,7 @@ class MfaContext
   end
 
   def phone_configurations
-    if user.present?
+    if user.present? && user.try(:phone_configurations)
       user.phone_configurations
     else
       PhoneConfiguration.none
@@ -21,7 +21,7 @@ class MfaContext
   end
 
   def webauthn_configurations
-    if user.present?
+    if user.present? && user.try(:webauthn_configurations)
       user.webauthn_configurations
     else
       WebauthnConfiguration.none
@@ -29,7 +29,7 @@ class MfaContext
   end
 
   def backup_code_configurations
-    if user.present?
+    if user.present? && user.try(:backup_code_configurations)
       user.backup_code_configurations.unused
     else
       BackupCodeConfiguration.none
