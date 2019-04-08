@@ -94,6 +94,7 @@ feature 'taking an action that revokes remember device' do
 
       sign_in_user(user)
       click_on t('forms.backup_code.regenerate')
+      click_link t('account.index.backup_code_confirm_regenerate')
       click_continue
       first(:link, t('links.sign_out')).click
 

@@ -10,6 +10,8 @@ module Users
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
     end
 
+    def edit; end
+
     def create
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
       mark_user_as_fully_authenticated
