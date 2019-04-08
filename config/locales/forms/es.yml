@@ -104,6 +104,7 @@ es:
       try_again: Use otro número de teléfono.
     two_factor_choice:
       legend: Seleccione una opción para proteger su cuenta
+      secondary_method: Seleccione una opción adicional para proteger su cuenta
     verify_profile:
       instructions: Ingrese el código de 10 caracteres que le enviamos en la carta.
       name: Código de confirmación

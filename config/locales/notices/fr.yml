@@ -2,6 +2,7 @@
 fr:
   notices:
     account_reactivation: Excellent! Vous avez votre clé personnelle.
+    backup_codes_configured: Vous avez activé les codes de sauvegarde.
     dap_participation: Nous participons au programme d'analytique du gouvernement
       des États-Unis. Consultez les données à analytics.usa.gov.
     forgot_password:
@@ -15,6 +16,7 @@ fr:
         link: Créer un nouveau compte
         text_html: Ou, %{link} en utilisant une adresse courriel différente.
     password_changed: Vous avez changé votre mot de passe.
+    phone_configured: Vous avez activé un téléphone.
     piv_cac_configured: Carte PIV/CAC liée avec succès.
     piv_cac_disabled: Carte PIV/CAC dissociée avec succès.
     resend_confirmation_email:
