@@ -166,6 +166,7 @@ Rails.application.routes.draw do
     if FeatureManagement.backup_codes_enabled?
       get '/backup_code_setup' => 'users/backup_code_setup#index'
       patch '/backup_code_setup' => 'users/backup_code_setup#create'
+      get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
       get '/backup_code_download' => 'users/backup_code_setup#download'
     end
 
