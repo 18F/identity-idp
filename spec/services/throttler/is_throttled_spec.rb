@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Throttler::IsThrottled do
   let(:user_id) { 1 }
-  let(:throttle_type) { Throttler::ThrottleTypes::IDV_ACUANT }
+  let(:throttle_type) { :idv_acuant }
   let(:subject) { described_class.new(user_id, throttle_type) }
   let(:throttle) { Throttle.all.first }
   let(:max_attempts) { 3 }

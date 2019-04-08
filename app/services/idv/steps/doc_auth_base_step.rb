@@ -106,11 +106,11 @@ module Idv
       end
 
       def increment_attempts
-        Throttler::Increment.new(user_id, acuant_throttle).call
+        Throttler::Increment.new(user_id, :idv_acuant).call
       end
 
       def throttled?
-        Throttler::IsThrottled.new(user_id, acuant_throttle).call(max_attempts, delay_in_minutes)
+        Throttler::IsThrottled.new(user_id, :idv_acuant).call(max_attempts, delay_in_minutes)
       end
 
       def max_attempts
@@ -123,10 +123,6 @@ module Idv
 
       def user_id
         current_user ? current_user.id : user_id_from_token
-      end
-
-      def acuant_throttle
-        Throttler::ThrottleTypes::IDV_ACUANT
       end
 
       delegate :idv_session, to: :@flow
