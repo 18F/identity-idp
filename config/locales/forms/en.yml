@@ -20,8 +20,7 @@ en:
         same level of attention as you would your password.
       subtitle: Your backup codes
       title: Backup Codes
-      warn: Download, print, or write down your personal security codes. Your original
-        backup
+      warn: Download, print, or write down your personal security codes.
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of backup
         codes. Your original backup codes will no longer be valid.
