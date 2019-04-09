@@ -5,7 +5,7 @@ module Idv
         capture_doc = CaptureDoc::CreateRequest.call(current_user.id)
         begin
           SmsDocAuthLinkJob.perform_now(
-            phone: permit(:phone),
+            phone: permit(:phone)[:phone],
             link: link(capture_doc.request_token),
             app: 'login.gov',
           )
