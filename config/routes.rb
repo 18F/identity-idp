@@ -24,12 +24,16 @@ Rails.application.routes.draw do
         as: :voice_otp,
         defaults: { format: :xml }
 
-  post '/api/usps_upload' => 'usps_upload#create'
-  post '/api/usps_download' => 'undeliverable_address#create'
-  post '/api/expired_letters' => 'expired_letters#update'
-
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+
+  # Routes that are triggered by lambda functions to initiate recurring jobs
+  scope module: :recurring_job do
+    post '/api/account_reset/send_notifications' => 'send_account_reset_notifications#create'
+    post '/api/expired_letters' => 'expired_letters#create'
+    post '/api/usps_download' => 'undeliverable_address#create'
+    post '/api/usps_upload' => 'usps_upload#create'
+  end
 
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
@@ -61,7 +65,6 @@ Rails.application.routes.draw do
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
-      post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
@@ -117,8 +120,8 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account_recovery_setup' => 'account_recovery_setup#index'
 
-    get '/events/disavow/:disavowal_token' => 'event_disavowal#new', as: :event_disavowal
-    post '/events/disavow/' => 'event_disavowal#create', as: :events_disavowal
+    get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
+    post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
@@ -163,6 +166,7 @@ Rails.application.routes.draw do
     if FeatureManagement.backup_codes_enabled?
       get '/backup_code_setup' => 'users/backup_code_setup#index'
       patch '/backup_code_setup' => 'users/backup_code_setup#create'
+      get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
       get '/backup_code_download' => 'users/backup_code_setup#download'
     end
 

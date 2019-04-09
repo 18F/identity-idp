@@ -18,15 +18,17 @@ module TwoFactorAuthentication
     def create
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
-
+      analytics.track_mfa_submit_event(result.to_h, params[:ga_client_id])
       handle_result(result)
     end
 
     private
 
-    def all_codes_used
-      return if current_user.backup_code_configurations.unused.any?
+    def all_codes_used?
+      current_user.backup_code_configurations.unused.none?
+    end
+
+    def handle_last_code
       BackupCodeGenerator.new(current_user).delete_existing_codes
       redirect_to backup_code_setup_url
     end
@@ -52,7 +54,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        return if all_codes_used
+        return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
         handle_invalid_backup_code

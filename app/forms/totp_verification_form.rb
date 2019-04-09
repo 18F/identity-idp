@@ -5,7 +5,11 @@ class TotpVerificationForm
   end
 
   def submit
-    FormResponse.new(success: valid_totp_code?, errors: {}, extra: extra_analytics_attributes)
+    FormResponse.new(
+      success: valid_totp_code?,
+      errors: {},
+      extra: extra_analytics_attributes,
+    )
   end
 
   private

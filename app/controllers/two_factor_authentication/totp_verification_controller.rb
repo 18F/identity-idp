@@ -8,12 +8,13 @@ module TwoFactorAuthentication
       @presenter = presenter_for_two_factor_authentication_method
       return unless FeatureManagement.prefill_otp_codes?
       @code = ROTP::TOTP.new(current_user.otp_secret_key).now
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT)
     end
 
     def create
       result = TotpVerificationForm.new(current_user, params[:code].strip).submit
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
+      analytics.track_mfa_submit_event(result.to_h, params[:ga_client_id])
 
       if result.success?
         handle_valid_otp

@@ -20,3 +20,6 @@ en:
       fail: Recover fail
       instructions: We want to make sure you, and only you, have access to your account
       reverify: Next, let's re-verify your identity
+      success: You have successfully recovered your account.  To prevent having to
+        recover your account in the future, please add another security option from
+        the two-factor authentication options below.
