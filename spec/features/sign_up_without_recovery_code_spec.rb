@@ -9,6 +9,15 @@ shared_examples 'not issuing a personal key on sign up' do
     user = sign_up_and_set_password
     choose_and_confirm_mfa
 
+    # Whenever the backup mfa policy is in place, this can be uncommented to test
+    # that backup MFA is required to be setup
+    # expect(page).to have_current_path(two_factor_options_path)
+    #
+    # select_2fa_option('sms')
+    # fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    # click_send_security_code
+    # click_submit_default
+
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
@@ -17,6 +26,18 @@ shared_examples 'not issuing a personal key on sign up' do
   it 'does not issue a personal key on sp sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
+
+    # Whenever the backup mfa policy is in place, this can be uncommented to test
+    # that backup MFA is required to be setup
+    # expect(page).to have_current_path(two_factor_options_path)
+    #
+    # select_2fa_option('sms')
+    # fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    # click_send_security_code
+    # click_submit_default
+
+    expect(page).to have_current_path(sign_up_completed_path)
+
     click_button t('forms.buttons.continue')
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
@@ -50,12 +71,12 @@ feature 'signing up without being issues a personal key' do
   include WebAuthnHelper
 
   before do
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     allow(Figaro.env).to receive(:personal_key_assignment_disabled).and_return('true')
   end
 
   context 'sms sign up' do
     def choose_and_confirm_mfa
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
