@@ -6,9 +6,7 @@ module UserNavigationConcern
   #TODO clara rename this?
   def url_after_success
     policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-    binding.pry
     return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
-    binding.pry
     successful_path
 
     #TODO clara we should have a specific call out that directs users to the idv views vs be the default
@@ -42,9 +40,7 @@ module UserNavigationConcern
   end
 
   def successful_path
-    binding.pry
-    return two_factor_options_url unless MfaPolicy.new(user: current_user).auth_methods_satisfied?
-    binding.pry
+    return two_factor_options_url unless MfaPolicy.new(current_user).auth_methods_satisfied?
     after_sign_in_path_for(current_user)
   end
 
