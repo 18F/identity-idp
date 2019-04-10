@@ -24,7 +24,7 @@ Dir.chdir APP_ROOT do
   ]
 
   puts "== Copying application.yml =="
-  run "cp config/application.yml.example config/application.yml"
+  run "cp config/application.yml.default config/application.yml"
 
   puts "\n== Installing dependencies =="
   run "bundle check || bundle install --without deploy production"
