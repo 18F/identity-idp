@@ -94,6 +94,7 @@ feature 'taking an action that revokes remember device' do
 
       sign_in_user(user)
       click_on t('forms.backup_code.regenerate')
+      click_link t('account.index.backup_code_confirm_regenerate')
       click_continue
       first(:link, t('links.sign_out')).click
 
@@ -118,10 +119,10 @@ feature 'taking an action that revokes remember device' do
                       login_two_factor_webauthn_path
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
-                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
-                      login_two_factor_backup_code_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
                       login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+                      login_two_factor_backup_code_path
                     end
 
     expect(page).to have_current_path(expected_path)

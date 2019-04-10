@@ -10,6 +10,7 @@ h1.h3.my0 = @presenter.header
     = text_field_tag :code, '', value: @code, required: true, autofocus: true,
       pattern: '[0-9]*', class: 'col-12 field monospace mfa', type: 'tel',
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length, autocomplete: 'off'
+    = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
   .border.border-light-blue.rounded-lg.py1.mt2.mb4.sm-my2.col-12.sm-col-7
     = check_box_tag 'remember_device', true, false, class: 'mr1 ml2'
     = label_tag 'remember_device',

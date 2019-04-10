@@ -546,6 +546,19 @@ production:
     restrict_to_deploy_env: 'prod'
     piv_cac: true
 
+  # NGA ROME
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:rome-prod':
+    agency_id: 5
+    friendly_name: 'GEOWorks ROME'
+    agency: 'NGA'
+    logo: 'nga-rome.png'
+    cert: 'nga_rome_prod'
+    return_to_sp_url: 'https://rome.geogeo.xyz'
+    redirect_uris:
+      - 'https://rome.geogeo.xyz/callback'
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
   # DOT
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:login':
     agency_id: 6
@@ -932,7 +945,7 @@ production:
     acs_url: 'https://www.apprenticeship.gov/saml/consume'
     sp_initiated_login_url: 'https://www.apprenticeship.gov/saml/drupal_login/apprenticeship_gov'
     assertion_consumer_logout_service_url: 'https://www.apprenticeship.gov/saml/consume'
-    block_encryption: 'none'
+    block_encryption: 'aes256-cbc'
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'

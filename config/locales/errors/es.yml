@@ -17,6 +17,10 @@ es:
       token_invalid: ficha invalida
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
+    doc_auth:
+      general_error: Su identificación emitida por el estado no pudo ser verificada.
+        Por favor, intente cargar diferentes imágenes comenzando con el frente de
+        su identificación emitida por el estado.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

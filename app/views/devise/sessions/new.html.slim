@@ -11,6 +11,7 @@ h1.h3.my0 = decorated_session.new_session_heading
   = f.input :email, label: t('account.index.email'), required: true, input_html: { class: 'mb4' }
   = f.input :password, label: t('account.index.password'), required: true
   = f.input :request_id, as: :hidden, input_html: { value: request_id }
+  = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
   div
     = f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3'
 
