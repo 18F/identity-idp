@@ -63,7 +63,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def pending_profile
-    user.profiles.verification_pending.order(created_at: :desc).take
+    user.profiles.verification_pending.order(created_at: :desc).first
   end
 
   def identity_not_verified?
