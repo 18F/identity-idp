@@ -130,6 +130,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
+    #TODO clara
+    return new_user_session_url unless user_signed_in?
     user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
   end
 

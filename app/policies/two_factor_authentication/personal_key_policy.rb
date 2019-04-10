@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def visible?
-      true
+      !FeatureManagement.personal_key_assignment_disabled?
     end
 
     private
