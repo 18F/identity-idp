@@ -64,7 +64,7 @@ module Idv
 
       def parse_pii(data)
         Idv::Utils::PiiFromDoc.new(data).call(
-          current_user&.phone_configurations&.first&.phone,
+          current_user&.phone_configurations&.take&.phone,
         )
       end
 

@@ -17,10 +17,9 @@ module AccountResetHealthChecker
 
   # @api private
   def find_request_not_serviced_within_26_hours
-    records = AccountResetRequest.where(
+    AccountResetRequest.where(
       sql, tvalue: Time.zone.now - Figaro.env.account_reset_wait_period_days.to_i.days - 2.hours
-    ).order('requested_at ASC').limit(1)
-    records.first
+    ).order('requested_at ASC').first
   end
 
   def sql

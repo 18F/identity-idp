@@ -12,7 +12,7 @@ module AccountReset
     def create
       analytics.track_event(Analytics::ACCOUNT_RESET, analytics_attributes)
       AccountReset::CreateRequest.new(current_user).call
-      flash[:email] = current_user.email_addresses.first.email
+      flash[:email] = current_user.email_addresses.take.email
       redirect_to account_reset_confirm_request_url
     end
 

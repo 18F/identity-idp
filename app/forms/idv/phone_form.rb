@@ -51,7 +51,7 @@ module Idv
 
       return PhoneFormatter.format(input_phone) if input_phone.present?
 
-      user_phone = MfaContext.new(user).phone_configurations.first&.phone
+      user_phone = MfaContext.new(user).phone_configurations.take&.phone
       return unless Phonelib.valid_for_country?(user_phone, 'US')
       PhoneFormatter.format(user_phone)
     end

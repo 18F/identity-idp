@@ -36,6 +36,6 @@ class Identity < ApplicationRecord
   end
 
   def email
-    user.email_addresses.first&.email
+    user.email_addresses.take&.email
   end
 end

@@ -16,7 +16,7 @@ class MfaContext
   end
 
   def phone_configuration(id = nil)
-    return phone_configurations.first if id.blank?
+    return phone_configurations.take if id.blank?
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 

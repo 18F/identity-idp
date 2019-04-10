@@ -12,7 +12,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def email
-    user.email_addresses.first&.email
+    user.email_addresses.take&.email
   end
 
   def lockout_time_remaining_in_words
@@ -40,7 +40,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def masked_two_factor_phone_number
-    masked_number(MfaContext.new(user).phone_configurations.first&.phone)
+    masked_number(MfaContext.new(user).phone_configurations.take&.phone)
   end
 
   def active_identity_for(service_provider)
@@ -63,7 +63,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def pending_profile
-    user.profiles.verification_pending.order(created_at: :desc).first
+    user.profiles.verification_pending.order(created_at: :desc).take
   end
 
   def identity_not_verified?

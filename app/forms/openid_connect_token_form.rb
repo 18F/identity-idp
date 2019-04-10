@@ -62,7 +62,8 @@ class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
 
     session_expiration = Figaro.env.session_timeout_in_minutes.to_i.minutes.ago
     @identity = Identity.where(session_uuid: code).
-                where('updated_at >= ?', session_expiration).first
+                where('updated_at >= ?', session_expiration).
+                order(updated_at: :desc).first
   end
 
   def pkce?
