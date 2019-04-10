@@ -215,8 +215,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   def unconfirmed_phone?
     user_session[:unconfirmed_phone] && confirmation_context?
   end
-
-  # rubocop:disable MethodLength
   def phone_view_data
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
