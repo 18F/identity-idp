@@ -69,17 +69,17 @@ describe Idv::UspsController do
       end
 
       it 'calls the UspsConfirmationMaker to send another letter and redirects' do
-        resend_letter(otp: false)
+        expect_resend_letter_to_send_letter_and_redirect(otp: false)
       end
 
       it 'calls UspsConfirmationMaker to send another letter with reveal_usps_code on' do
         allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
-        resend_letter(otp: true)
+        expect_resend_letter_to_send_letter_and_redirect(otp: true)
       end
     end
   end
 
-  def resend_letter(otp:)
+  def expect_resend_letter_to_send_letter_and_redirect(otp:)
     pii = { first_name: 'Samuel', last_name: 'Sampson' }
     pii_cacher = instance_double(Pii::Cacher)
     allow(pii_cacher).to receive(:fetch).and_return(pii)
