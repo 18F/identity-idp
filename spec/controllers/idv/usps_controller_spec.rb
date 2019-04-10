@@ -69,24 +69,34 @@ describe Idv::UspsController do
       end
 
       it 'calls the UspsConfirmationMaker to send another letter and redirects' do
-        pii = { first_name: 'Samuel', last_name: 'Sampson' }
-        pii_cacher = instance_double(Pii::Cacher)
-        allow(pii_cacher).to receive(:fetch).and_return(pii)
-        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+        resend_letter(otp: false)
+      end
 
-        session[:sp] = { issuer: '123abc' }
-
-        usps_confirmation_maker = instance_double(UspsConfirmationMaker)
-        allow(UspsConfirmationMaker).to receive(:new).
-          with(pii: pii, issuer: '123abc', profile: pending_profile).
-          and_return(usps_confirmation_maker)
-
-        expect(usps_confirmation_maker).to receive(:perform)
-
-        put :create
-
-        expect(response).to redirect_to idv_come_back_later_path
+      it 'calls UspsConfirmationMaker to send another letter with reveal_usps_code on' do
+        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
+        resend_letter(otp: true)
       end
     end
+  end
+
+  def resend_letter(otp:)
+    pii = { first_name: 'Samuel', last_name: 'Sampson' }
+    pii_cacher = instance_double(Pii::Cacher)
+    allow(pii_cacher).to receive(:fetch).and_return(pii)
+    allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+
+    session[:sp] = { issuer: '123abc' }
+
+    usps_confirmation_maker = instance_double(UspsConfirmationMaker)
+    allow(UspsConfirmationMaker).to receive(:new).
+      with(pii: pii, issuer: '123abc', profile: pending_profile).
+      and_return(usps_confirmation_maker)
+
+    expect(usps_confirmation_maker).to receive(:perform)
+    expect(usps_confirmation_maker).to receive(:otp) if otp
+
+    put :create
+
+    expect(response).to redirect_to idv_come_back_later_path
   end
 end
