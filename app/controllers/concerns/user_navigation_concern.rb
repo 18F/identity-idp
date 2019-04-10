@@ -16,18 +16,6 @@ module UserNavigationConcern
   def after_otp_verification_confirmation_url
     policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
 
-    if decorated_user.password_reset_profile.present? ||
-      @updating_existing_number ||
-      policy.show_personal_key_after_initial_2fa_setup?
-      after_otp_action_url
-    else
-      after_sign_in_path_for(current_user)
-    end
-  end
-
-  def after_otp_action_url
-    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
     if policy.show_personal_key_after_initial_2fa_setup?
       sign_up_personal_key_url
     elsif @updating_existing_number
@@ -35,7 +23,7 @@ module UserNavigationConcern
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      account_url
+      successful_path
     end
   end
 
