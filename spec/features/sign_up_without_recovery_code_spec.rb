@@ -113,13 +113,21 @@ feature 'signing up without being issues a personal key' do
     it_behaves_like 'not issuing a personal key on sign up'
   end
 
-  # context 'piv/cac sign up' do
-  #   def choose_and_confirm_mfa
-  #     set_up_2fa_with_piv_cac
-  #   end
+  context 'piv/cac sign up' do
+    before do
+      allow(PivCacService).to receive(:piv_cac_available_for_email?).and_return(true)
+    end
 
-  #   it_behaves_like 'not issuing a personal key on sign up'
-  # end
+    def choose_and_confirm_mfa
+      set_up_2fa_with_piv_cac
+      select_2fa_option('sms')
+      fill_in 'user_phone_form[phone]', with: '202-555-1111'
+      click_send_security_code
+      click_submit_default
+    end
+
+    it_behaves_like 'not issuing a personal key on sign up'
+  end
 
   context 'webauthn sign up' do
     before do
