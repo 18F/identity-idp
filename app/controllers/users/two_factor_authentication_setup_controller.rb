@@ -4,7 +4,6 @@ module Users
     include Authorizable
 
     before_action :authenticate_user
-    before_action :authorize_user
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
