@@ -37,7 +37,7 @@ class AnonymousUser
   def email; end
 
   def email_addresses
-    [EMPTY_EMAIL_ADDRESS]
+    EmailAddress.none
   end
 
   def confirmed_at
