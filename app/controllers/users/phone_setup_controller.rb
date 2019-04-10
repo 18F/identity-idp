@@ -5,7 +5,6 @@ module Users
     include Authorizable
 
     before_action :authenticate_user
-    before_action :authorize_user
     before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def index
