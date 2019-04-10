@@ -88,6 +88,7 @@ module Idv
       end
 
       def test_credentials?
+        return false unless flow_params
         FeatureManagement.allow_doc_auth_test_credentials? &&
           ['text/x-yaml', 'text/plain'].include?(image.content_type)
       end
