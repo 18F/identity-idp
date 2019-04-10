@@ -9,14 +9,12 @@ shared_examples 'not issuing a personal key on sign up' do
     user = sign_up_and_set_password
     choose_and_confirm_mfa
 
-    # Whenever the backup mfa policy is in place, this can be uncommented to test
-    # that backup MFA is required to be setup
-    # expect(page).to have_current_path(two_factor_options_path)
-    #
-    # select_2fa_option('sms')
-    # fill_in 'user_phone_form[phone]', with: '202-555-1111'
-    # click_send_security_code
-    # click_submit_default
+    expect(page).to have_current_path(two_factor_options_path)
+
+    select_2fa_option('sms')
+    fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    click_send_security_code
+    click_submit_default
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
@@ -27,14 +25,12 @@ shared_examples 'not issuing a personal key on sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
 
-    # Whenever the backup mfa policy is in place, this can be uncommented to test
-    # that backup MFA is required to be setup
-    # expect(page).to have_current_path(two_factor_options_path)
-    #
-    # select_2fa_option('sms')
-    # fill_in 'user_phone_form[phone]', with: '202-555-1111'
-    # click_send_security_code
-    # click_submit_default
+    expect(page).to have_current_path(two_factor_options_path)
+
+    select_2fa_option('sms')
+    fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    click_send_security_code
+    click_submit_default
 
     expect(page).to have_current_path(sign_up_completed_path)
 
@@ -120,10 +116,6 @@ feature 'signing up without being issues a personal key' do
 
     def choose_and_confirm_mfa
       set_up_2fa_with_piv_cac
-      select_2fa_option('sms')
-      fill_in 'user_phone_form[phone]', with: '202-555-1111'
-      click_send_security_code
-      click_submit_default
     end
 
     it_behaves_like 'not issuing a personal key on sign up'
