@@ -17,6 +17,7 @@ shared_examples 'not issuing a personal key on sign up' do
   it 'does not issue a personal key on sp sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
+    click_button t('forms.buttons.continue')
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
