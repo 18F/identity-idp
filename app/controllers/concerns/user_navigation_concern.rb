@@ -23,13 +23,16 @@ module UserNavigationConcern
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      successful_path
+      return successful_path
     end
   end
 
   def successful_path
-    return two_factor_options_url unless MfaPolicy.new(current_user).auth_methods_satisfied?
-    after_sign_in_path_for(current_user)
+    if !MfaPolicy.new(current_user).auth_methods_satisfied?
+      two_factor_options_url
+    else
+      after_sign_in_path_for(current_user)
+    end
   end
 
   def user_already_has_a_personal_key?
