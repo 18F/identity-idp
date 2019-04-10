@@ -9,8 +9,8 @@ shared_examples 'not issuing a personal key on sign up' do
     user = sign_up_and_set_password
     choose_and_confirm_mfa
 
-    expect(page).to have_content(t('titles.account'))
     expect(page).to have_current_path(account_path)
+    expect(page).to have_content(t('titles.account'))
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
   end
 
@@ -92,13 +92,13 @@ feature 'signing up without being issues a personal key' do
     it_behaves_like 'not issuing a personal key on sign up'
   end
 
-  context 'piv/cac sign up' do
-    def choose_and_confirm_mfa
-      set_up_2fa_with_piv_cac
-    end
+  # context 'piv/cac sign up' do
+  #   def choose_and_confirm_mfa
+  #     set_up_2fa_with_piv_cac
+  #   end
 
-    it_behaves_like 'not issuing a personal key on sign up'
-  end
+  #   it_behaves_like 'not issuing a personal key on sign up'
+  # end
 
   context 'webauthn sign up' do
     before do
