@@ -1,5 +1,8 @@
-class Analytics # rubocop:disable Metrics/ClassLength
-  def initialize(user:, request:, sp:)
+# rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/AbcSize
+class Analytics
+  # :reek:ControlParameter
+  def initialize(user:, request:, sp:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
@@ -45,7 +48,6 @@ class Analytics # rubocop:disable Metrics/ClassLength
     @browser ||= DeviceDetector.new(request.user_agent)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def browser_attributes
     {
       user_agent: request.user_agent,
@@ -58,7 +60,6 @@ class Analytics # rubocop:disable Metrics/ClassLength
       browser_bot: browser.bot?,
     }
   end
-  # rubocop:enable Metrics/AbcSize
 
   # rubocop:disable Metrics/LineLength
   ACCOUNT_RESET = 'Account Reset'.freeze
@@ -171,5 +172,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
   WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
-  # rubocop:enable Metrics/LineLength
 end
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/LineLength
+# rubocop:enable Metrics/ClassLength
