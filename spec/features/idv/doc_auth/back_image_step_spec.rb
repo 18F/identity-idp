@@ -53,7 +53,7 @@ shared_examples 'back image step' do |simulate|
       expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant and allows attempts after the attempt window' do
       (max_attempts / 2).times do
         attach_image
         click_idv_continue
