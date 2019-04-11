@@ -22,6 +22,11 @@ div
     = text_field_tag :name, '', required: true, id: 'nickname',
           class: 'block col-12 field monospace', size: 16, maxlength: 20,
           'aria-labelledby': 'totp-label'
+    .border.border-light-blue.rounded-lg.px2.py1.mt3
+      = check_box_tag 'remember_device', true, false, class: 'mr1'
+      = label_tag 'remember_device',
+        t('forms.messages.remember_device'),
+        class: 'blue mt-1p'
     = submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden'
   br
   = link_to t('forms.webauthn_setup.continue'), '#', method: :get,

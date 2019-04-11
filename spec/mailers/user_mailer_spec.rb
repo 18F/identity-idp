@@ -43,7 +43,7 @@ describe UserMailer, type: :mailer do
         t('user_mailer.password_changed.intro', app: APP_NAME),
       )
       expect(mail.html_part.body).to include(
-        '/events/disavow/123abc',
+        '/events/disavow?disavowal_token=123abc',
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -67,7 +67,7 @@ describe UserMailer, type: :mailer do
         t('user_mailer.personal_key_sign_in.intro'),
       )
       expect(mail.html_part.body).to include(
-        '/events/disavow/asdf1234',
+        '/events/disavow?disavowal_token=asdf1234',
       )
     end
   end
@@ -93,7 +93,7 @@ describe UserMailer, type: :mailer do
         to have_content(strip_tags(t('user_mailer.new_device_sign_in.info_html',
                                      date: date, location: location)))
       expect(mail.html_part.body).to include(
-        '/events/disavow/asdf1234',
+        '/events/disavow?disavowal_token=asdf1234',
       )
       expect_email_body_to_have_help_and_contact_links
     end

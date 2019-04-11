@@ -36,9 +36,12 @@ describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
         }
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(attributes, 'abc-cool-town-5')
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
-        post :create, params: { code: generate_totp_code(@secret) }
+        post :create, params: { code: generate_totp_code(@secret), ga_client_id: 'abc-cool-town-5' }
       end
     end
 
@@ -78,10 +81,11 @@ describe TwoFactorAuthentication::TotpVerificationController do
           multi_factor_auth_method: 'totp',
         }
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(attributes, 'abc-cool-town-5')
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, params: { code: '12345' }
+        post :create, params: { code: '12345', ga_client_id: 'abc-cool-town-5' }
       end
     end
 

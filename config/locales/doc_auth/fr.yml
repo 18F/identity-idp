@@ -55,8 +55,8 @@ fr:
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
-        et nous n'enregistrerons aucune image. Nous acceptons les formats PDF, PNG
-        et JPG.
+        et nous n'enregistrerons aucune image. Nous acceptons les formats BMP, PNG,
+        TIFF et JPG.
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
         permet également d'accéder à des services traitant des informations personnelles

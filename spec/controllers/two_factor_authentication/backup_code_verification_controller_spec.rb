@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::BackupCodeVerificationController do
   let(:backup_code) { { backup_code: 'foo' } }
-  let(:payload) { { backup_code_verification_form: backup_code } }
+  let(:payload) { { backup_code_verification_form: backup_code, ga_client_id: 'abc-cool-town-5' } }
 
   describe '#show' do
     it 'tracks the page visit' do
@@ -33,8 +33,33 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_analytics
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(analytics_hash, 'abc-cool-town-5')
+
+        post :create, params: payload
+      end
+
+      it 'tracks the valid authentication event when there are exisitng codes' do
+        user = build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        BackupCodeGenerator.new(user).create
+        stub_sign_in_before_2fa(user)
+
+        form = instance_double(BackupCodeVerificationForm)
+        response = FormResponse.new(
+          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
+        )
+        allow(BackupCodeVerificationForm).to receive(:new).
+          with(subject.current_user).and_return(form)
+        allow(form).to receive(:submit).and_return(response)
+
+        stub_analytics
+        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
+
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(analytics_hash, 'abc-cool-town-5')
+
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: payload
       end
@@ -91,7 +116,9 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(properties, 'abc-cool-town-5')
+
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params: payload

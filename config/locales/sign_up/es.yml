@@ -1,16 +1,8 @@
 ---
 es:
   sign_up:
-    buttons:
-      cancel: Cancelar y borrar su información
-      continue: Continuar la creación de cuenta
     cancel:
-      modal_header: "¿Está seguro de que desea cancelar?"
       success: Su cuenta ha sido eliminada. No guardamos su información.
       warning_header: Si cancela ahora
-      warning_points:
-      - No tendrá una cuenta de login.gov
-      - No guardaremos un registro de su email, contraseña y número de teléfono
-      - No podrá acceder de forma segura a su información a través de login.gov
     registrations:
       create_account: Crear una cuenta

@@ -34,7 +34,8 @@ class RememberDeviceCookie
 
   def valid_for_user?(user:, expiration_interval:)
     return false if user.id != user_id
-    return false if user_has_changed_phone?(user)
+    remember_device_revoked_at = user.remember_device_revoked_at
+    return false if remember_device_revoked_at.present? && revoked?(remember_device_revoked_at)
     return false if expired?(expiration_interval)
     true
   end
@@ -45,9 +46,7 @@ class RememberDeviceCookie
     created_at < interval.ago
   end
 
-  def user_has_changed_phone?(user)
-    MfaContext.new(user).phone_configurations.any? do |phone_configuration|
-      phone_configuration.confirmed_at.to_i > created_at.to_i
-    end
+  def revoked?(remember_device_revoked_at)
+    created_at < remember_device_revoked_at
   end
 end

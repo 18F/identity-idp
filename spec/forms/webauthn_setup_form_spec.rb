@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe WebauthnSetupForm do
-  include WebauthnHelper
+  include WebAuthnHelper
 
   let(:user) { create(:user) }
-  let(:user_session) { { webauthn_challenge: challenge } }
+  let(:user_session) { { webauthn_challenge: webauthn_challenge } }
   let(:subject) { WebauthnSetupForm.new(user, user_session) }
 
   describe '#submit' do
@@ -14,7 +14,7 @@ describe WebauthnSetupForm do
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
-          client_data_json: client_data_json,
+          client_data_json: setup_client_data_json,
           name: 'mykey',
         }
         extra_attributes = {
@@ -33,7 +33,7 @@ describe WebauthnSetupForm do
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
-          client_data_json: client_data_json,
+          client_data_json: setup_client_data_json,
           name: 'mykey',
         }
         extra_attributes = {
@@ -53,7 +53,7 @@ describe WebauthnSetupForm do
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
-          client_data_json: client_data_json,
+          client_data_json: setup_client_data_json,
           name: 'mykey',
         }
         extra_attributes = {

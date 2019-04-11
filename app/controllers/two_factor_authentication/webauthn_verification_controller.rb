@@ -12,7 +12,16 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit(request.protocol, params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
+      analytics.track_mfa_submit_event(
+        result.to_h.merge(analytics_properties),
+        params[:ga_client_id],
+      )
+      handle_webauthn_result(result)
+    end
+
+    private
+
+    def handle_webauthn_result(result)
       if result.success?
         handle_valid_webauthn
       else
@@ -20,10 +29,9 @@ module TwoFactorAuthentication
       end
     end
 
-    private
-
     def handle_valid_webauthn
       handle_valid_otp_for_authentication_context
+      save_remember_device_preference
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
