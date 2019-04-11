@@ -2,6 +2,7 @@ module TwoFactorAuthentication
   class PivCacVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include PivCacConcern
+    include UserNavigationConcern
 
     before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
@@ -38,17 +39,9 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context
-      redirect_to next_step
+      redirect_to successful_path
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
-    end
-
-    def next_step
-      if MfaPolicy.new(current_user).multiple_factors_enabled?
-        after_otp_verification_confirmation_url
-      else
-        account_recovery_setup_url
-      end
     end
 
     def handle_invalid_piv_cac
