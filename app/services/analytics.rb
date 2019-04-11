@@ -6,6 +6,7 @@ class Analytics
     @user = user
     @request = request
     @sp = sp
+    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
   end
 
   def track_event(event, attributes = {})
@@ -29,11 +30,7 @@ class Analytics
     ).send_event
   end
 
-  attr_reader :user, :request, :sp
-
-  def ahoy
-    @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
-  end
+  attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
     {
