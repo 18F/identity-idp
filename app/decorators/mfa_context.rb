@@ -59,7 +59,8 @@ class MfaContext
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
       (piv_cac_configuration.mfa_enabled? ? 1 : 0) +
-      (auth_app_configuration.mfa_enabled? ? 1 : 0)
+      (auth_app_configuration.mfa_enabled? ? 1 : 0) +
+      (personal_key_configuration.mfa_enabled? ? 1 : 0)
   end
   # rubocop:enable Metrics/AbcSize
 
