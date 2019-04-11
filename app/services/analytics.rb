@@ -1,4 +1,5 @@
-class Analytics # rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/ClassLength
+class Analytics
   def initialize(user:, request:, sp:, ahoy: nil)
     @user = user
     @request = request
@@ -42,6 +43,7 @@ class Analytics # rubocop:disable Metrics/ClassLength
     @browser ||= DeviceDetector.new(request.user_agent)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def browser_attributes
     {
       user_agent: request.user_agent,
