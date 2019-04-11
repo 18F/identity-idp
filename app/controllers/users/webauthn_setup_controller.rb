@@ -110,6 +110,5 @@ module Users
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
     end
-
   end
 end

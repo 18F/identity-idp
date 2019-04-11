@@ -164,5 +164,4 @@ describe Users::PhoneSetupController do
       )
     end
   end
-
 end

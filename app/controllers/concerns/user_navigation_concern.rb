@@ -1,16 +1,10 @@
-#TODO clara rename this?
 module UserNavigationConcern
   extend ActiveSupport::Concern
 
-
-  #TODO clara rename this?
   def url_after_success
     policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
     return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
     successful_path
-
-    #TODO clara we should have a specific call out that directs users to the idv views vs be the default
-    #idv_jurisdiction_url
   end
 
   def after_otp_verification_confirmation_url
