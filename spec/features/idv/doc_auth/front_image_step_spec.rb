@@ -6,7 +6,7 @@ shared_examples 'front image step' do |simulate|
     include DocAuthHelper
 
     let(:user) { user_with_2fa }
-    let(:max_retries) { 3 }
+    let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
     before do
       allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
       enable_doc_auth
@@ -35,8 +35,8 @@ shared_examples 'front image step' do |simulate|
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_retries)
-      max_retries.times do
+      allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      max_attempts.times do
         attach_image
         click_idv_continue
 

@@ -355,6 +355,8 @@ test:
   acuant_facial_match_license_key: ''
   acuant_facial_match_url: 'https://example.com'
   acuant_simulator: 'false'
+  acuant_max_attempts: '4'
+  acuant_attempt_window_in_minutes: '86400'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)

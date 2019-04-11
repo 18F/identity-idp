@@ -106,19 +106,11 @@ module Idv
       end
 
       def increment_attempts
-        Throttler::Increment.new(user_id, :idv_acuant).call
+        Throttler::Increment.call(user_id, :idv_acuant)
       end
 
       def throttled?
-        Throttler::IsThrottled.new(user_id, :idv_acuant).call(max_attempts, delay_in_minutes)
-      end
-
-      def max_attempts
-        (Figaro.env.acuant_max_attempts || 3).to_i
-      end
-
-      def delay_in_minutes
-        (Figaro.env.acuant_attempt_window_in_minutes || 86_400).to_i
+        Throttler::IsThrottled.call(user_id, :idv_acuant)
       end
 
       def user_id

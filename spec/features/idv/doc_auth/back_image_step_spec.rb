@@ -5,10 +5,12 @@ shared_examples 'back image step' do |simulate|
     include IdvStepHelper
     include DocAuthHelper
 
+    let(:user) { user_with_2fa }
+    let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
     before do
       allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
       enable_doc_auth
-      complete_doc_auth_steps_before_back_image_step
+      complete_doc_auth_steps_before_back_image_step(user)
       mock_assure_id_ok
     end
 
@@ -49,6 +51,29 @@ shared_examples 'back image step' do |simulate|
 
       expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
       expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
+    end
+
+    it 'throttles calls to acuant and allows retry after the attempt window' do
+      (max_attempts / 2).times do
+        attach_image
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_ssn_step)
+        click_on t('doc_auth.buttons.start_over')
+        complete_doc_auth_steps_before_back_image_step(user)
+      end
+
+      attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_front_image_step)
+
+      Timecop.travel((Figaro.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
+        complete_doc_auth_steps_before_back_image_step(user)
+        attach_image
+        click_idv_continue
+        expect(page).to have_current_path(idv_doc_auth_back_image_step)
+      end
     end
   end
 end

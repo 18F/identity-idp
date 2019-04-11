@@ -1,16 +1,15 @@
 module Throttler
   class FindOrCreate
-    def initialize(user_id, throttle_type)
-      @user_id = user_id
-      @throttle_type = throttle_type
+    def self.call(user_id, throttle_type)
+      throttle = Throttle.find_or_create_by(user_id: user_id, throttle_type: throttle_type)
+      reset_if_expired(throttle)
     end
 
-    def call
-      Throttle.find_or_create_by(user_id: user_id, throttle_type: throttle_type)
+    def self.reset_if_expired(throttle)
+      return throttle unless throttle.expired? && throttle.attempts.zero?
+      throttle.update(attempts: 0)
+      throttle
     end
-
-    private
-
-    attr_accessor :user_id, :throttle_type
+    private_class_method :reset_if_expired
   end
 end

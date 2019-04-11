@@ -1,17 +1,9 @@
 module Throttler
   class Reset
-    def initialize(user_id, throttle_type)
-      @user_id = user_id
-      @throttle_type = throttle_type
+    def self.call(user_id, throttle_type)
+      throttle = Throttle.find_or_create_by(user_id: user_id, throttle_type: throttle_type)
+      throttle.update(attempts: 0)
+      throttle
     end
-
-    def call
-      throttler = FindOrCreate.new(user_id, throttle_type).call
-      throttler.update(attempts: 0)
-    end
-
-    private
-
-    attr_accessor :user_id, :throttle_type
   end
 end
