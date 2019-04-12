@@ -104,7 +104,9 @@ feature 'backup mfa setup on sign up' do
     it_behaves_like 'setting up backup mfa on sign up'
   end
 
-  context 'piv/cac sign up' do
+  # We will need to flip these back on once we drop the recovery setup on
+  # PIV/CAC to apply that flow to every method
+  xcontext 'piv/cac sign up' do
     before do
       allow(PivCacService).to receive(:piv_cac_available_for_email?).and_return(true)
     end

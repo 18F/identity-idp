@@ -22,7 +22,7 @@ module UserNavigationConcern
   end
 
   def successful_path
-    if !MfaPolicy.new(current_user).auth_methods_satisfied?
+    if !MfaPolicy.new(current_user).two_factor_enabled?
       two_factor_options_url
     else
       after_sign_in_path_for(current_user)
