@@ -16,25 +16,6 @@ class MfaPolicy
       mfa_user.unphishable_configuration_count.positive?
   end
 
-  def multiple_auth_methods_required_and_met?
-    FeatureManagement.personal_key_assignment_disabled? &&
-      multiple_factors_enabled?
-  end
-
-  def more_than_two_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 2
-  end
-
-  def oversufficient_methods_enabled?
-    return more_than_two_factors_enabled? if FeatureManagement.personal_key_assignment_disabled?
-    multiple_factors_enabled?
-  end
-
-  def auth_methods_satisfied?
-    multiple_auth_methods_required_and_met? ||
-      (!FeatureManagement.personal_key_assignment_disabled? && two_factor_enabled?)
-  end
-
   private
 
   attr_reader :mfa_user
