@@ -18,6 +18,8 @@ en:
       token_missing: token missing
     confirm_password_incorrect: Incorrect password.
     doc_auth:
+      acuant_throttle: To prevent abuse we limit the amount of times you can attempt
+        to validate a document.  Please try again later.
       general_error: Your state issued ID could not be verified.  Please try uploading
         different images starting with the front of your state issued ID.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
