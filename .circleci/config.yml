@@ -72,7 +72,7 @@ jobs:
       - run:
           name: Test Setup
           command: |
-            cp config/application.yml.example config/application.yml
+            cp config/application.yml.default config/application.yml
             cp keys/oidc.key.example keys/oidc.key
             cp keys/oidc.pub.example keys/oidc.pub
             cp certs/saml2018.crt.example certs/saml2018.crt
