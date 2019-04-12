@@ -12,9 +12,8 @@ module TwoFactorAuthentication
       configured?
     end
 
-    # :reek:UtilityFunction
     def visible?
-      !FeatureManagement.personal_key_assignment_disabled?
+      enabled?
     end
 
     private
