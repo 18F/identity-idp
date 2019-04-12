@@ -18,6 +18,8 @@ fr:
       token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     doc_auth:
+      acuant_throttle: To prevent abuse we limit the amount of times you can attempt
+        to validate a document.  Please try again later.
       general_error: Votre identité émise par l'état n'a pas pu être vérifiée. S'il
         vous plaît essayez de télécharger des images différentes en commençant par
         le devant de votre ID émis par l'État.
