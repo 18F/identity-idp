@@ -16,6 +16,7 @@ describe User do
     it { is_expected.to have_one(:doc_auth) }
     it { is_expected.to have_one(:doc_capture) }
     it { is_expected.to have_one(:account_recovery_request) }
+    it { is_expected.to have_many(:throttles) }
   end
 
   it 'does not send an email when #create is called' do

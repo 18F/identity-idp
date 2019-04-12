@@ -18,5 +18,4 @@ h1.h3.my0 = t('doc_auth.headings.ssn')
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
       = t('forms.buttons.continue')
 
-.mt2.pt1.border-top
-  = link_to t('links.cancel'), idv_cancel_path, class: 'h5'
+= render 'idv/doc_auth/start_over_or_cancel'

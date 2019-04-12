@@ -49,7 +49,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   attr_writer :analytics
 
   def analytics
-    @analytics ||= Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer)
+    @analytics ||=
+      Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer, ahoy: ahoy)
   end
 
   def analytics_user
