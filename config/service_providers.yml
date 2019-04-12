@@ -364,6 +364,9 @@ production:
       - 'https://ttp.cbp.dhs.gov'
       - 'https://ttp.cbp.dhs.gov/login'
       - 'https://ttp.cbp.dhs.gov/login?logout=logout&undefined'
+      - 'https://ttp.dhs.gov'
+      - 'https://ttp.dhs.gov/login'
+      - 'https://ttp.dhs.gov/login?logout=logout&undefined'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
   # CBP ROAM (formerly OARS)

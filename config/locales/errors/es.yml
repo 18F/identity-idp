@@ -18,6 +18,8 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
+      acuant_throttle: To prevent abuse we limit the amount of times you can attempt
+        to validate a document.  Please try again later.
       general_error: Su identificación emitida por el estado no pudo ser verificada.
         Por favor, intente cargar diferentes imágenes comenzando con el frente de
         su identificación emitida por el estado.
