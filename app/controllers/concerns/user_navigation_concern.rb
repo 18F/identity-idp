@@ -17,7 +17,7 @@ module UserNavigationConcern
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      return successful_path
+      return after_sign_in_path_for(current_user)
     end
   end
 end
