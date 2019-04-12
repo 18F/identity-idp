@@ -9,7 +9,9 @@ shared_examples 'setting up backup mfa on sign up' do
     user = sign_up_and_set_password
     choose_and_confirm_mfa
 
-    expect_back_mfa_setup_to_be_required
+    ## This can be uncommented once the backup MFA policy is enforced. For now,
+    ## it checks that the personal key issuance is skipped
+    # expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
@@ -20,7 +22,9 @@ shared_examples 'setting up backup mfa on sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
 
-    expect_back_mfa_setup_to_be_required
+    ## This can be uncommented once the backup MFA policy is enforced. For now,
+    ## it checks that the personal key issuance is skipped
+    # expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(sign_up_completed_path)
 
