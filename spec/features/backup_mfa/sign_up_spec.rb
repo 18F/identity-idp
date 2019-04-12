@@ -4,33 +4,23 @@
 
 require 'rails_helper'
 
-shared_examples 'not issuing a personal key on sign up' do
-  it 'does not issue a personal key on direct sign up' do
+shared_examples 'setting up backup mfa on sign up' do
+  it 'requires backup mfa on direct sign up' do
     user = sign_up_and_set_password
     choose_and_confirm_mfa
 
-    expect(page).to have_current_path(two_factor_options_path)
-
-    select_2fa_option('sms')
-    fill_in 'user_phone_form[phone]', with: '202-555-1111'
-    click_send_security_code
-    click_submit_default
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
   end
 
-  it 'does not issue a personal key on sp sign up' do
+  it 'requires backup mfa on sp sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
 
-    expect(page).to have_current_path(two_factor_options_path)
-
-    select_2fa_option('sms')
-    fill_in 'user_phone_form[phone]', with: '202-555-1111'
-    click_send_security_code
-    click_submit_default
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(sign_up_completed_path)
 
@@ -40,30 +30,31 @@ shared_examples 'not issuing a personal key on sign up' do
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
   end
 
+  def expect_back_mfa_setup_to_be_required
+    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+
+    visit account_path
+
+    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+
+    select_2fa_option('sms')
+    fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    click_send_security_code
+    click_submit_default
+  end
+
   def visit_idp_from_sp_and_sign_up
     email = Faker::Internet.safe_email
-    visit openid_connect_authorize_path(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: SecureRandom.hex,
-      prompt: 'select_account',
-      nonce: SecureRandom.hex,
-    )
-    click_on t('sign_up.registrations.create_account')
-    fill_in :user_email, with: email
-    click_submit_default
-    open_last_email
-    click_email_link_matching(/confirmation_token/)
-    fill_in 'password_form_password', with: 'salty pickles'
-    click_button t('forms.buttons.continue')
+    visit_idp_from_sp_with_loa1(:oidc)
+    confirm_email_and_password(email)
     User.find_with_email(email)
   end
 end
 
-feature 'signing up without being issues a personal key' do
+feature 'backup mfa setup on sign up' do
+  include SamlAuthHelper
   include WebAuthnHelper
 
   before do
@@ -79,7 +70,7 @@ feature 'signing up without being issues a personal key' do
       click_submit_default
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 
   context 'voice sign up' do
@@ -91,7 +82,7 @@ feature 'signing up without being issues a personal key' do
       click_submit_default
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 
   context 'totp sign up' do
@@ -106,7 +97,7 @@ feature 'signing up without being issues a personal key' do
       generate_totp_code(secret)
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 
   context 'piv/cac sign up' do
@@ -118,7 +109,7 @@ feature 'signing up without being issues a personal key' do
       set_up_2fa_with_piv_cac
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 
   context 'webauthn sign up' do
@@ -133,7 +124,7 @@ feature 'signing up without being issues a personal key' do
       click_button t('forms.buttons.continue')
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 
   context 'backup code sign up' do
@@ -142,6 +133,6 @@ feature 'signing up without being issues a personal key' do
       click_continue
     end
 
-    it_behaves_like 'not issuing a personal key on sign up'
+    it_behaves_like 'setting up backup mfa on sign up'
   end
 end
