@@ -4,7 +4,7 @@ module UserNavigationConcern
   def url_after_success
     policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
     return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
-    successful_path
+    after_sign_in_path_for(current_user)
   end
 
   def after_otp_verification_confirmation_url
@@ -17,7 +17,7 @@ module UserNavigationConcern
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      return after_sign_in_path_for(current_user)
+      return successful_path
     end
   end
 end
