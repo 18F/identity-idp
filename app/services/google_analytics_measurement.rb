@@ -21,7 +21,7 @@ class GoogleAnalyticsMeasurement
       request.body = request_body
     end
   rescue Faraday::ConnectionFailed => err
-    Rails.logger.info err.inspect
+    NewRelic::Agent.notice_error(err)
   end
 
   private
