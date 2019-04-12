@@ -221,6 +221,7 @@ production:
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
+    ial: 2
     attribute_bundle:
       - email
 
