@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def visible?
-      true
+      enabled?
     end
 
     private

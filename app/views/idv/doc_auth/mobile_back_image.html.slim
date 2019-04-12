@@ -15,7 +15,7 @@ ul
     .sm-col.sm-col-9.px1
       = f.input :image, label: false, as: 'file', required: true
 
-  p = flow_session[:error_message]
+  p.red.bold = flow_session[:error_message]
 
   div id= 'target'
   br
