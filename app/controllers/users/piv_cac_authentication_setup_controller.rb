@@ -5,7 +5,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated,
-                  if: :two_factor_enabled?,
+                  if: :multiple_factors_enabled?,
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
@@ -50,10 +50,6 @@ module Users
     def render_error
       @presenter = PivCacAuthenticationSetupErrorPresenter.new(error: flash[:error_type])
       render :error
-    end
-
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def process_piv_cac_setup

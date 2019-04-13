@@ -35,7 +35,7 @@ module ApplicationHelper
 
   def user_signing_up?
     params[:confirmation_token].present? || (
-      current_user && !MfaPolicy.new(current_user).two_factor_enabled?
+      current_user && !MfaPolicy.new(current_user).multiple_factors_enabled?
     )
   end
 
@@ -54,7 +54,7 @@ module ApplicationHelper
 
   def user_verifying_identity?
     return unless current_user
-    sp_session && sp_session[:loa3] && MfaPolicy.new(current_user).two_factor_enabled?
+    sp_session && sp_session[:loa3] && multiple_factors_enabled?
   end
 
   def sign_up_or_idv_no_js_link
