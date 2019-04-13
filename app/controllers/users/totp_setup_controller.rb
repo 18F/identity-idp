@@ -86,7 +86,7 @@ module Users
       policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
 
       if policy.show_personal_key_after_initial_2fa_setup?
-        sign_up_personal_key_url
+        after_multiple_2fa_sign_up
       else
         idv_jurisdiction_url
       end

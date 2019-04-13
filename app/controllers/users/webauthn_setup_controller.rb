@@ -99,7 +99,7 @@ module Users
       return account_url if user_already_has_a_personal_key?
 
       policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return sign_up_personal_key_url if policy.show_personal_key_after_initial_2fa_setup?
+      return after_multiple_2fa_sign_up if policy.show_personal_key_after_initial_2fa_setup?
 
       idv_jurisdiction_url
     end

@@ -18,7 +18,7 @@ module Users
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
       revoke_remember_device
-      redirect_to sign_up_personal_key_url
+      redirect_to after_multiple_2fa_sign_up
     end
 
     def download
