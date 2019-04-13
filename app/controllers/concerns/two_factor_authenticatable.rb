@@ -199,14 +199,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def two_2fa_setup
-    if MfaPolicy.new(current_user).multiple_factors_enabled?
-      after_multiple_2fa_sign_up
-    else
-      two_factor_options_path
-    end
-  end
-
   def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now

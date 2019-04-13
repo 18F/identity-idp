@@ -72,7 +72,7 @@ feature 'remember device sp expiration' do
     click_send_security_code
     check :remember_device
     click_submit_default
-    click_acknowledge_personal_key
+    # click_acknowledge_personal_key
     first(:link, t('links.sign_out')).click
     user_record
   end

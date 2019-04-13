@@ -9,7 +9,6 @@ module SpAuthHelper
     submit_form_with_valid_password
     set_up_2fa_with_valid_phone
     click_submit_default
-    click_acknowledge_personal_key
     click_on t('forms.buttons.continue')
     visit sign_out_url
     User.find_with_email(email)
@@ -31,7 +30,6 @@ module SpAuthHelper
     click_idv_continue
     fill_in :user_password, with: user.password
     click_continue
-    click_acknowledge_personal_key
     expect(page).to have_current_path(sign_up_completed_path)
     click_on t('forms.buttons.continue')
     visit sign_out_url

@@ -138,6 +138,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
   end
 
+  def two_2fa_setup
+    if MfaPolicy.new(current_user).multiple_factors_enabled?
+      after_multiple_2fa_sign_up
+    else
+      two_factor_options_path
+    end
+  end
+
   def after_multiple_2fa_sign_up
     if session[:sp]
       sign_up_completed_url
