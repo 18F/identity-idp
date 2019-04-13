@@ -6,7 +6,7 @@ module Users
 
     before_action :authenticate_user
     before_action :authorize_user
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user, nil)
@@ -32,10 +32,6 @@ module Users
     def delivery_preference
       MfaContext.new(current_user).phone_configurations.first&.delivery_preference ||
         current_user.otp_delivery_preference
-    end
-
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def user_phone_form_params

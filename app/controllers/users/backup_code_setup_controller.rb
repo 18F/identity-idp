@@ -1,7 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
     before_action :ensure_backup_codes_in_session, only: %i[create download]
 
     def index
@@ -48,10 +48,6 @@ module Users
       UpdateUser.new(
         user: current_user, attributes: { remember_device_revoked_at: Time.zone.now },
       ).call
-    end
-
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def generator

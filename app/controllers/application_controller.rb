@@ -165,7 +165,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def user_fully_authenticated?
     !reauthn? && user_signed_in? &&
-      MfaPolicy.new(current_user).two_factor_enabled? && is_fully_authenticated?
+      multiple_factors_enabled? && is_fully_authenticated?
   end
 
   def reauthn?
@@ -178,7 +178,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
     return if user_fully_authenticated?
 
-    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
+    return prompt_to_set_up_2fa unless multiple_factors_enabled?
 
     prompt_to_enter_otp
   end
@@ -189,6 +189,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
+  end
+
+  def multiple_factors_enabled?
+    MfaPolicy.new(current_user).multiple_factors_enabled?
   end
 
   def skip_session_expiration

@@ -3,7 +3,7 @@ module Users
     include RememberDeviceConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
 
     def new
       result = WebauthnVisitForm.new.submit(params)
@@ -82,10 +82,6 @@ module Users
     def save_challenge_in_session
       credential_creation_options = ::WebAuthn.credential_creation_options
       user_session[:webauthn_challenge] = credential_creation_options[:challenge].bytes.to_a
-    end
-
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def process_valid_webauthn
