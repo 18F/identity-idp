@@ -95,7 +95,7 @@ describe MfaContext do
     end
 
     context 'with phone configuration' do
-      let(:user) { build(:user, :signed_up) }
+      let(:user) { build(:user, :with_phone) }
 
       it 'returns 1 for phone' do
         hash = { phone: 1 }
@@ -145,7 +145,7 @@ describe MfaContext do
     end
 
     context 'with authentication app and phone configurations' do
-      let(:user) { build(:user, :with_authentication_app, :signed_up) }
+      let(:user) { build(:user, :with_authentication_app, :with_phone) }
 
       it 'returns 1 for each' do
         hash = { phone: 1, auth_app: 1 }
@@ -155,7 +155,7 @@ describe MfaContext do
     end
 
     context 'with PIV/CAC and phone configurations' do
-      let(:user) { build(:user, :with_piv_or_cac, :signed_up) }
+      let(:user) { build(:user, :with_piv_or_cac, :with_phone) }
 
       it 'returns 1 for each' do
         hash = { phone: 1, piv_cac: 1 }
@@ -165,7 +165,7 @@ describe MfaContext do
     end
 
     context 'with 1 phone and 2 webauthn configurations' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :with_phone) }
 
       it 'returns 1 for phone and 2 for webauthn' do
         create_list(:webauthn_configuration, 2, user: user)
@@ -177,7 +177,7 @@ describe MfaContext do
 
     context 'with 2 phones and 2 webauthn configurations' do
       it 'returns 2 for each' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create(:phone_configuration, user: user, phone: '+1 703-555-1213')
         create_list(:webauthn_configuration, 2, user: user)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
@@ -189,7 +189,7 @@ describe MfaContext do
 
     context 'with 1 phone and 10 backups codes' do
       it 'returns 1 for phone and 10 for backup codes' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
         hash = { phone: 1, backup_codes: 10 }
@@ -200,7 +200,7 @@ describe MfaContext do
 
     context 'with 1 phone and 10 used backup codes' do
       it 'returns 1 for phone and no backup codes' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
         hash = { phone: 1 }
@@ -213,7 +213,7 @@ describe MfaContext do
   describe '#enabled_mfa_methods_count' do
     context 'with 2 phones' do
       it 'returns 2' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create(:phone_configuration, user: user, phone: '+1 703-555-1213')
         subject = described_class.new(user.reload)
 
@@ -233,7 +233,7 @@ describe MfaContext do
 
     context 'with a phone and a webauthn token' do
       it 'returns 2' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create(:webauthn_configuration, user: user)
         subject = described_class.new(user.reload)
 
@@ -243,7 +243,7 @@ describe MfaContext do
 
     context 'with a phone and 10 backup codes' do
       it 'returns 2' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user)
         subject = described_class.new(user.reload)
 
@@ -253,7 +253,7 @@ describe MfaContext do
 
     context 'with a phone and 10 used backup codes' do
       it 'returns 1' do
-        user = create(:user, :signed_up)
+        user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
         subject = described_class.new(user.reload)
 
@@ -263,7 +263,7 @@ describe MfaContext do
 
     context 'with a phone and a PIV/CAC' do
       it 'returns 2' do
-        user = create(:user, :signed_up, :with_piv_or_cac)
+        user = create(:user, :with_phone, :with_piv_or_cac)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -272,7 +272,7 @@ describe MfaContext do
 
     context 'with a phone and an auth app' do
       it 'returns 2' do
-        user = create(:user, :signed_up, :with_authentication_app)
+        user = create(:user, :with_phone, :with_authentication_app)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -291,7 +291,7 @@ describe MfaContext do
 
     context 'with some phishable configs' do
       it 'returns 2' do
-        user = create(:user, :signed_up, :with_authentication_app)
+        user = create(:user, :with_phone, :with_authentication_app)
         subject = described_class.new(user.reload)
         expect(subject.phishable_configuration_count).to eq(2)
       end
@@ -309,7 +309,7 @@ describe MfaContext do
 
     context 'with no phishable configs' do
       it 'returns 0' do
-        user = create(:user, :signed_up, :with_authentication_app)
+        user = create(:user, :with_phone, :with_authentication_app)
         subject = described_class.new(user.reload)
         expect(subject.unphishable_configuration_count).to eq(0)
       end
