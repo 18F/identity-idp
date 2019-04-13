@@ -8,7 +8,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     let(:configuration) { user.phone_configurations.first }
 
     context 'with only a single mfa method' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :with_phone) }
 
       it 'returns failure' do
         expect(result.success?).to eq false
@@ -29,7 +29,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     end
 
     context 'with multiple mfa methods available' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
       it 'returns success' do
         expect(result.success?).to eq true
@@ -54,7 +54,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     end
 
     context 'with no phone configuration' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
       let(:configuration) { nil }
 
       it 'returns success' do
@@ -76,7 +76,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     end
 
     context 'with a phone of a different user' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
       let(:configuration) { other_user.phone_configurations.first }
       let(:other_user) { create(:user, :signed_up) }
 
