@@ -7,6 +7,8 @@ module SpAuthHelper
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
+    select_2fa_option('backup_code')
+    click_continue
     set_up_2fa_with_valid_phone
     click_submit_default
     click_on t('forms.buttons.continue')
