@@ -78,42 +78,6 @@ feature 'LOA1 Single Sign On' do
       )
     end
 
-    it 'user can view and confirm personal key during sign up', :js do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = create(:user, :with_phone)
-      code = 'ABC1-DEF2-GH13-JK14'
-      stub_personal_key(user: user, code: code)
-
-      loa1_sp_session
-      sign_in_and_require_viewing_personal_key(user)
-      expect(current_path).to eq sign_up_personal_key_path
-
-      click_on(t('forms.buttons.continue'))
-      enter_personal_key_words_on_modal(code)
-      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-
-      expect(current_path).to eq sign_up_completed_path
-    end
-
-    it 'coerces invalid characters into their Crockford Base32 equivalents', :js do
-      displayed_personal_key = '0000-1111-1111-1234'
-      misread_personal_key = 'ooOO-iiII-llLL-1234'
-
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = create(:user, :with_phone)
-      stub_personal_key(user: user, code: displayed_personal_key)
-
-      loa1_sp_session
-      sign_in_and_require_viewing_personal_key(user)
-      expect(current_path).to eq sign_up_personal_key_path
-
-      click_on(t('forms.buttons.continue'))
-      enter_personal_key_words_on_modal(misread_personal_key)
-      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-
-      expect(current_path).to eq sign_up_completed_path
-    end
-
     it 'after session timeout, signing in takes user back to SP' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
@@ -232,29 +196,5 @@ feature 'LOA1 Single Sign On' do
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
-  end
-
-  def sign_in_and_require_viewing_personal_key(user)
-    login_as(user, scope: :user, run_callbacks: false)
-    Warden.on_next_request do |proxy|
-      session = proxy.env['rack.session']
-      session['warden.user.user.session'] = {
-        'need_two_factor_authentication' => true,
-      }
-    end
-
-    visit account_path
-    click_submit_default
-  end
-
-  def stub_personal_key(user:, code:)
-    generator = instance_double(PersonalKeyGenerator)
-    allow(PersonalKeyGenerator).to receive(:new).with(user).and_return(generator)
-    allow(generator).to receive(:create).and_return(code)
-    code
-  end
-
-  def enter_personal_key_words_on_modal(code)
-    fill_in 'personal_key', with: code
   end
 end
