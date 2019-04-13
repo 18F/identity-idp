@@ -67,6 +67,8 @@ feature 'remember device sp expiration' do
   let(:user) do
     user_record = sign_up_and_set_password
     user_record.password = Features::SessionHelper::VALID_PASSWORD
+    select_2fa_option('backup_code')
+    click_continue
     select_2fa_option('sms')
     fill_in :user_phone_form_phone, with: '2025551212'
     click_send_security_code

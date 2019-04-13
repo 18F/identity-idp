@@ -4,7 +4,6 @@ shared_examples 'csrf error when acknowledging personal key' do |sp|
     register_user
     allow_any_instance_of(SignUp::PersonalKeysController).
       to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
-    click_acknowledge_personal_key
 
     expect(current_path).to eq new_user_session_path
     expect(page).to have_content t('errors.invalid_authenticity_token')
@@ -16,7 +15,6 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
     Capybara.current_session.driver.header('Accept-Language', 'es')
     visit_idp_from_sp_with_loa1(sp)
     register_user
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -38,7 +36,6 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   it 'redirects to the SP', email: true do
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_authenticator_app
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -71,7 +68,6 @@ shared_examples 'creating an LOA3 account using authenticator app for 2FA' do |s
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -104,7 +100,6 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     expect(page).to have_current_path account_recovery_setup_path
 
     configure_backup_phone
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -143,7 +138,6 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).

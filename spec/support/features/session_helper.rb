@@ -387,6 +387,8 @@ module Features
 
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
+      select_2fa_option('backup_code')
+      click_continue
       set_up_2fa_with_valid_phone
       click_submit_default
       User.find_with_email(email)
