@@ -68,6 +68,7 @@ shared_examples 'creating an LOA3 account using authenticator app for 2FA' do |s
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
+    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -122,6 +123,8 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_loa3(sp)
     confirm_email_and_password('test@test.com')
+    select_2fa_option('backup_code')
+    click_continue
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
@@ -138,6 +141,7 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
+    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
