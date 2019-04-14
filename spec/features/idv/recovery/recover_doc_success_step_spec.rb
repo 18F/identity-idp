@@ -5,7 +5,7 @@ feature 'recovery doc success step' do
   include DocAuthHelper
   include RecoveryHelper
 
-  let(:user) { create(:user, :with_phone) }
+  let(:user) { create(:user, :signed_up, :with_phone) }
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
   let(:saved_pii) { DocAuthHelper::ACUANT_RESULTS_TO_PII.merge(ssn: good_ssn) }

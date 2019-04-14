@@ -421,14 +421,13 @@ module Features
     def register_user_with_piv_cac(email = 'test@test.com')
       allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
-
+      set_up_2fa_with_backup_code
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
         t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
 
       set_up_2fa_with_piv_cac
-      set_up_2fa_with_backup_code
     end
 
     def set_up_2fa_with_backup_code
