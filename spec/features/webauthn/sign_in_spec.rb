@@ -15,7 +15,7 @@ feature 'webauthn sign in' do
     )
   end
   let(:user) do
-    create(:user, :with_personal_key, webauthn_configurations: [webauthn_configuration])
+    create(:user, :with_backup_code, webauthn_configurations: [webauthn_configuration])
   end
 
   it 'allows the user to sign in if webauthn is successful' do
