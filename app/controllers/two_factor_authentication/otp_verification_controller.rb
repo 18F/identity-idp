@@ -2,7 +2,7 @@ module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :confirm_two_factor_enabled
+    before_action :confirm_multiple_factors_enabled
     before_action :confirm_voice_capability, only: [:show]
 
     def show
@@ -24,18 +24,14 @@ module TwoFactorAuthentication
 
     private
 
-    def confirm_two_factor_enabled
+    def confirm_multiple_factors_enabled
       return if confirmation_context? || phone_enabled?
 
-      if two_factor_enabled? && !phone_enabled? && user_signed_in?
+      if multiple_factors_enabled? && !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
       redirect_to phone_setup_url
-    end
-
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
     end
 
     def phone_enabled?
