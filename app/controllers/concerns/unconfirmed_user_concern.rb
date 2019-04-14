@@ -42,7 +42,7 @@ module UnconfirmedUserConcern
   def after_confirmation_url_for(user)
     if !user_signed_in?
       new_user_session_url
-    elsif MfaPolicy.new(user).two_factor_enabled?
+    elsif MfaPolicy.new(user).multiple_factors_enabled?
       account_url
     else
       two_factor_options_url
