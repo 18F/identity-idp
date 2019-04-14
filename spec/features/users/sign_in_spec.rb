@@ -466,7 +466,7 @@ feature 'Sign in' do
 
   context 'user is totp_enabled but not phone_enabled' do
     before do
-      user = create(:user, :with_authentication_app)
+      user = create(:user, :with_authentication_app, :with_backup_code)
       signin(user.email, user.password)
     end
 
