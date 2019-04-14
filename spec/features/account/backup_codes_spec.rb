@@ -19,7 +19,7 @@ feature 'Backup codes' do
   end
 
   context 'without backup codes just phone' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
     it 'does not show backup code section' do
       expect(page).to have_content(t('account.index.backup_codes_no_exist'))
@@ -27,7 +27,7 @@ feature 'Backup codes' do
   end
 
   context 'user clicks generate backup codes' do
-    let(:user) { create(:user, :with_piv_or_cac) }
+    let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
     it 'user can click generate backup codes' do
       click_link t('forms.backup_code.generate'), href: backup_code_setup_path

@@ -6,7 +6,7 @@ describe Users::TotpSetupController, devise: true do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        [:confirm_two_factor_authenticated, if: :two_factor_enabled?],
+        [:confirm_two_factor_authenticated, if: :multiple_factors_enabled?],
       )
     end
   end
@@ -184,8 +184,8 @@ describe Users::TotpSetupController, devise: true do
           patch :confirm, params: { code: generate_totp_code(secret) }
         end
 
-        it 'redirects to personal key page with a success message' do
-          expect(response).to redirect_to(sign_up_personal_key_url)
+        it 'redirects to setup another factor with a success message' do
+          expect(response).to redirect_to(two_factor_options_url)
           expect(flash[:success]).to eq t('notices.totp_configured')
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
