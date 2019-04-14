@@ -404,6 +404,7 @@ module Features
 
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
+      set_up_2fa_with_backup_code
       set_up_2fa_with_authenticator_app
     end
 
@@ -427,6 +428,12 @@ module Features
       )
 
       set_up_2fa_with_piv_cac
+      set_up_2fa_with_backup_code
+    end
+
+    def set_up_2fa_with_backup_code
+      select_2fa_option('backup_code')
+      click_continue
     end
 
     def set_up_2fa_with_piv_cac

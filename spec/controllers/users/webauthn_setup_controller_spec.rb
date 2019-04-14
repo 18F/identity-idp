@@ -8,7 +8,7 @@ describe Users::WebauthnSetupController do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        [:confirm_two_factor_authenticated, if: :two_factor_enabled?],
+        [:confirm_two_factor_authenticated, if: :multiple_factors_enabled?],
       )
     end
   end
@@ -69,7 +69,7 @@ describe Users::WebauthnSetupController do
         result = {
           success: true,
           errors: {},
-          mfa_method_counts: { auth_app: 1, phone: 1 },
+          mfa_method_counts: { auth_app: 1, backup_codes: 10, phone: 1 },
           multi_factor_auth_method: 'webauthn',
         }
         expect(@analytics).to receive(:track_event).
@@ -95,7 +95,7 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the delete in analytics' do
-        result = { success: true, mfa_method_counts: { auth_app: 1, phone: 1 } }
+        result = { success: true, mfa_method_counts: { auth_app: 1, backup_codes: 10, phone: 1 } }
         expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
 
         delete :delete, params: { id: webauthn_configuration.id }

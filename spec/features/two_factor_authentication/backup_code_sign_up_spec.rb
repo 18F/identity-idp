@@ -3,6 +3,12 @@ require 'rails_helper'
 feature 'sign up with backup code' do
   it 'works' do
     sign_up_and_set_password
+
+    select_2fa_option('sms')
+    fill_in 'user_phone_form_phone', with: '202-555-1212'
+    click_send_security_code
+    click_submit_default
+
     select_2fa_option('backup_code')
 
     expect(current_path).to eq backup_code_setup_path

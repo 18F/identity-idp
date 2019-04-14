@@ -127,6 +127,7 @@ feature 'Sign Up' do
 
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
+    set_up_2fa_with_backup_code
     set_up_2fa_with_authenticator_app
 
     expect(page).to have_current_path account_path
@@ -181,7 +182,7 @@ feature 'Sign Up' do
   describe 'user is partially authenticated and phone 2fa is not configured' do
     context 'with piv/cac enabled' do
       let(:user) do
-        create(:user, :with_piv_or_cac)
+        create(:user, :with_piv_or_cac, :with_backup_code)
       end
 
       before(:each) do

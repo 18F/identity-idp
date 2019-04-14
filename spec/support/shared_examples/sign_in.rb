@@ -230,14 +230,6 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   enter_personal_key(personal_key: old_personal_key)
   click_submit_default
 
-  expect(page).to have_current_path(manage_personal_key_path)
-  if sp == :oidc
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-  end
-
-  click_acknowledge_personal_key
-
   expect(current_url).to eq @saml_authn_request if sp == :saml
 
   return unless sp == :oidc

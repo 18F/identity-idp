@@ -92,7 +92,7 @@ module Users
     end
 
     def url_after_successful_webauthn_setup
-      return account_url if user_already_has_a_personal_key?
+      return two_2fa_setup if user_already_has_a_personal_key?
 
       policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
       return two_2fa_setup if policy.show_personal_key_after_initial_2fa_setup?
