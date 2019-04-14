@@ -175,7 +175,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
   it 'does not allow bypassing setting up backup factor' do
     stub_piv_cac_service
 
-    user = create(:user, :signed_up, :with_piv_or_cac)
+    user = create(:user, :with_piv_or_cac)
     MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
     click_link t('links.sign_in')
