@@ -311,6 +311,7 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
+      set_up_2fa_with_backup_code
       set_up_2fa_with_valid_phone
 
       expect(page).to have_css('img[src*=sp-logos]')
