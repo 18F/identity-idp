@@ -190,7 +190,7 @@ describe Users::PhonesController do
           configuration_owner: user.uuid,
           configuration_present: true,
           errors: {},
-          mfa_method_counts: { piv_cac: 1 },
+          mfa_method_counts: { backup_codes: 10, piv_cac: 1 },
           success: true }
       end
 
