@@ -33,6 +33,11 @@ production database. See #2127 for an example when a migration caused deployment
 issues. In that case, all the migration did was add a new column and an index to
 the Users table, which might seem innocuous.
 
+- [ ] When fetching a single record from the database, `#take` is used instead
+of `#first` unless there is an `#order` call on the ActiveRecord relations.
+This prevents ActiveRecord from sorting by primary key which can result in slow
+queries.
+
 ### Encryption
 
 - [ ] The changes are compatible with data that was encrypted with the old code.
