@@ -55,7 +55,7 @@ describe 'Account Reset Request: Delete Account', email: true do
   end
 
   context 'as an LOA1 user without a phone' do
-    let(:user) { create(:user, :with_authentication_app) }
+    let(:user) { create(:user, :with_backup_code, :with_authentication_app) }
 
     it 'does not tell the user that an SMS was sent to their registered phone' do
       signin(user_email, user.password)
