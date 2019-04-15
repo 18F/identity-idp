@@ -186,11 +186,11 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
 
-    expect(current_path).to eq account_recovery_setup_path
+    expect(current_path).to eq two_factor_options_path
 
     visit_idp_from_sp_with_loa1(sp)
 
-    expect(current_path).to eq account_recovery_setup_path
+    expect(current_path).to eq two_factor_options_path
   end
 
   it 'does allow bypassing setting up backup factor if there is a factor other than phone' do

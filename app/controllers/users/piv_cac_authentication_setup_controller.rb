@@ -84,7 +84,7 @@ module Users
       if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
         account_url
       else
-        account_recovery_setup_url
+        two_factor_options_url
       end
     end
 

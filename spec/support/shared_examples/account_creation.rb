@@ -80,13 +80,12 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_piv_cac
 
-    expect(page).to have_current_path(account_recovery_setup_path)
-    expect(page).to have_content t('instructions.account_recovery_setup.piv_cac_next_step')
+    expect(page).to have_current_path(two_factor_options_path)
 
     select_2fa_option('sms')
     click_link t('two_factor_authentication.choose_another_option')
 
-    expect(page).to have_current_path account_recovery_setup_path
+    expect(page).to have_current_path(two_factor_options_path)
 
     configure_backup_phone
 
