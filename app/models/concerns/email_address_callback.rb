@@ -20,7 +20,7 @@ module EmailAddressCallback
   private
 
   def update_email_address_record
-    email_addresses.first.update!(
+    email_addresses.take.update!(
       encrypted_email: encrypted_email,
       confirmation_token: confirmation_token,
       confirmed_at: confirmed_at,

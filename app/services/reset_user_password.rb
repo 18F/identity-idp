@@ -13,6 +13,6 @@ class ResetUserPassword
 
   def reset_user_password_and_log_event
     user.update!(password: SecureRandom.hex(8))
-    Kernel.puts "Password for user with email #{user.email_addresses.first.email} has been reset"
+    Kernel.puts "Password for user with email #{user.email_addresses.take.email} has been reset"
   end
 end
