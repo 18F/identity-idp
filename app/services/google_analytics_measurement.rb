@@ -17,7 +17,6 @@ class GoogleAnalyticsMeasurement
   end
 
   def send_event
-    warn request_body
     adapter.post do |request|
       request.body = request_body
     end
