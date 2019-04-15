@@ -6,7 +6,7 @@ class RackRequestParser
   end
 
   def values_to_check
-    param_values + ahoy_headers + ahoy_cookies
+    param_values + ahoy_headers + ahoy_cookies + [host_header]
   end
 
   private
@@ -41,5 +41,9 @@ class RackRequestParser
 
   def ahoy_visitor_cookie
     request.cookies['ahoy_visitor']
+  end
+
+  def host_header
+    request.fetch_header('HTTP_HOST') { '' }
   end
 end

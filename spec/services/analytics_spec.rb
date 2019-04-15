@@ -26,7 +26,12 @@ describe Analytics do
     it 'identifies the user and sends the event to the backend' do
       user = build_stubbed(:user, uuid: '123')
 
-      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: 'http://localhost:3000')
+      analytics = Analytics.new(
+        user: user,
+        request: FakeRequest.new,
+        sp: 'http://localhost:3000',
+        ahoy: ahoy,
+      )
 
       analytics_hash = {
         event_properties: {},
@@ -47,6 +52,7 @@ describe Analytics do
         user: current_user,
         request: FakeRequest.new,
         sp: 'http://localhost:3000',
+        ahoy: ahoy,
       )
 
       analytics_hash = {
@@ -62,7 +68,7 @@ describe Analytics do
 
     it 'uses the DeviceDetector gem to parse the user agent' do
       user = build_stubbed(:user, uuid: '123')
-      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: nil)
+      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: nil, ahoy: ahoy)
 
       browser = instance_double(DeviceDetector)
       allow(DeviceDetector).to receive(:new).and_return(browser)
