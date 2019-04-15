@@ -67,7 +67,7 @@ module TwoFactorAuthentication
 
     def handle_valid_backup_code
       handle_valid_otp_for_authentication_context
-      redirect_to two_factor_options_path
+      redirect_to manage_personal_key_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
     end
