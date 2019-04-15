@@ -114,8 +114,6 @@ feature 'Sign Up' do
     end
   end
 
-  it_behaves_like 'csrf error when acknowledging personal key', :saml
-  it_behaves_like 'csrf error when acknowledging personal key', :oidc
   it_behaves_like 'creating an account with the site in Spanish', :saml
   it_behaves_like 'creating an account with the site in Spanish', :oidc
 

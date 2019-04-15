@@ -1,15 +1,3 @@
-shared_examples 'csrf error when acknowledging personal key' do |sp|
-  it 'redirects to sign in page', email: true do
-    visit_idp_from_sp_with_loa1(sp)
-    register_user
-    allow_any_instance_of(SignUp::PersonalKeysController).
-      to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
-
-    expect(current_path).to eq new_user_session_path
-    expect(page).to have_content t('errors.invalid_authenticity_token')
-  end
-end
-
 shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
