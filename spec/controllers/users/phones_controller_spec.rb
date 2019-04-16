@@ -155,8 +155,8 @@ describe Users::PhonesController do
         { configuration_id: user.phone_configurations.first.id,
           configuration_owner: user.uuid,
           configuration_present: true,
-          errors: { user: ['must have multiple MFA configurations'] },
-          mfa_method_counts: { phone: 1 },
+          errors: { user: ['must have 3 or more MFA configurations'] },
+          mfa_method_counts: { backup_codes: 10, phone: 1 },
           success: false }
       end
 
