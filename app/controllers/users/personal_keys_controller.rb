@@ -28,7 +28,7 @@ module Users
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
       create_user_event(:new_personal_key)
       send_new_personal_key_notification
-      redirect_to manage_personal_key_url
+      redirect_to two_2fa_setup
     end
 
     private
