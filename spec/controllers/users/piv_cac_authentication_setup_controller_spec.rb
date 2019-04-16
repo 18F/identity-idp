@@ -169,6 +169,7 @@ describe Users::PivCacAuthenticationSetupController do
 
         it 'does not remove the piv/cac association if it is the last mfa method' do
           user.phone_configurations.destroy_all
+          user.backup_code_configurations.destroy_all
 
           delete :delete
 
