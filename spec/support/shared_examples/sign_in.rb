@@ -229,6 +229,7 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   choose_another_security_option('personal_key')
   enter_personal_key(personal_key: old_personal_key)
   click_submit_default
+  click_continue
 
   expect(current_url).to eq @saml_authn_request if sp == :saml
 
