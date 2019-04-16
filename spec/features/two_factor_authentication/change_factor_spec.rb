@@ -6,7 +6,8 @@ feature 'Changing authentication factor' do
 
     before do
       user # Sign up the user
-      Timecop.travel (Figaro.env.reauthn_window.to_i + 1).seconds.from_now
+      reauthn_date = (Figaro.env.reauthn_window.to_i + 1).seconds.from_now
+      Timecop.travel reauthn_date
     end
 
     after do
