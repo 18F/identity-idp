@@ -26,11 +26,8 @@ module Features
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
-      select_2fa_option('sms')
-      fill_in 'user_phone_form_phone', with: '202-555-1213'
-      click_send_security_code
-      click_submit_default
-
+      select_2fa_option('backup_code')
+      click_continue
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code

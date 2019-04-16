@@ -122,6 +122,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_confirmation_context
+    user_session[:authn_at] = Time.zone.now
     assign_phone
   end
 
