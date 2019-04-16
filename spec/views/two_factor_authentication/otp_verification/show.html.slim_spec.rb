@@ -41,7 +41,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     it 'allows the user to cancel and delete their account' do
       render
-      expect(rendered).to have_selector("form[action='/users'][method='post']")
+      expect(rendered).to have_link(t('links.cancel_account_creation'))
     end
 
     context 'OTP copy' do

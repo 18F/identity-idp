@@ -2,7 +2,7 @@ module Idv
   module Steps
     class BackImageStep < DocAuthBaseStep
       def call
-        good, data = assure_id.post_back_image(image.read)
+        good, data = post_back_image
         return failure(data) unless good
 
         failure_data, data = verify_back_image(reset_step: :front_image)

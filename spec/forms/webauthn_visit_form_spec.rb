@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe WebauthnVisitForm do
-  include WebauthnHelper
-
   let(:subject) { WebauthnVisitForm.new }
 
   describe '#submit' do

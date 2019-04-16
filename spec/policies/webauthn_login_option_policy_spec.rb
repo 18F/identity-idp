@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::WebauthnPolicy do
-  include WebauthnVerificationHelper
+  include WebAuthnHelper
 
   let(:subject) { described_class.new(user) }
 
@@ -15,7 +15,12 @@ describe TwoFactorAuthentication::WebauthnPolicy do
     context 'with a webauthn configured' do
       let(:user) { create(:user) }
       before do
-        create_webauthn_configuration(user)
+        create(
+          :webauthn_configuration,
+          user: user,
+          credential_id: credential_id,
+          credential_public_key: credential_public_key,
+        )
       end
 
       it 'returns a truthy value' do

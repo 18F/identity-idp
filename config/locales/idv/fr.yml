@@ -3,15 +3,12 @@ fr:
   idv:
     buttons:
       cancel: Annuler et retourner à votre profil
-      continue: Continuer la vérification d'identité
       continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
       send_confirmation_code: Continuer
     cancel:
-      modal_header: Souhaitez-vous vraiment annuler?
-      warning_header: Si vous annulez maintenant
       warnings:
         warning_1: Nous ne serons pas en mesure de vérifier votre identité
         warning_2: Nous ne conserverons aucune information relative à votre nom, votre

@@ -22,6 +22,11 @@ fr:
       subtitle: Vos codes de sauvegarde
       title: Codes de sauvegarde
       warn: Téléchargez, imprimez ou notez vos codes de sécurité personnels.
+    backup_code_regenerate:
+      caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
+        ensemble de codes de sauvegarde. Vos codes de sauvegarde d'origine ne seront
+        plus valides.
+      confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     buttons:
       back: Retour
       cancel: Oui, annuler

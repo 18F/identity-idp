@@ -11,7 +11,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
     click_link t('links.cancel')
 
-    expect(page).to have_content(t('idv.cancel.modal_header'))
+    expect(page).to have_content(t('headings.cancellations.prompt'))
     expect(current_path).to eq(idv_cancel_path)
 
     click_on t('links.go_back')
@@ -30,7 +30,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       click_link t('links.cancel')
 
-      expect(page).to have_content(t('idv.cancel.modal_header'))
+      expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
 
       click_on t('forms.buttons.cancel')
@@ -52,7 +52,7 @@ shared_examples 'cancel at idv step' do |step, sp|
     it 'shows a cancellation message with option to cancel and reset idv', if: sp.nil? do
       click_link t('links.cancel')
 
-      expect(page).to have_content(t('idv.cancel.modal_header'))
+      expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
 
       click_on t('forms.buttons.cancel')

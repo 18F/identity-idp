@@ -114,11 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
       }
-      // eslint-disable-next-line no-undef
-      ga(function (tracker) {
-        const clientId = tracker.get('clientId');
-        $('.ga-client-id').val(clientId);
-      });
+      if (typeof ga === 'function') {
+        // eslint-disable-next-line no-undef
+        ga(function (tracker) {
+          const clientId = tracker.get('clientId');
+          const gaClientIdInput = document.getElementById('ga_client_id');
+          gaClientIdInput.value = clientId;
+        });
+      }
     });
   }
 });

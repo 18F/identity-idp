@@ -124,12 +124,12 @@ end
 
 shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
   it 'does not prompt for recovery code before IdV flow', email: true do
-    mock_challenge
+    mock_webauthn_setup_challenge
     visit_idp_from_sp_with_loa3(sp)
     confirm_email_and_password('test@test.com')
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
-    mock_press_button_on_hardware_key
+    mock_press_button_on_hardware_key_on_setup
     expect(current_path).to eq webauthn_setup_success_path
     click_button t('forms.buttons.continue')
     fill_out_idv_jurisdiction_ok

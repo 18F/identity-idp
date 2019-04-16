@@ -60,7 +60,7 @@ feature 'disavowing an action' do
   end
 
   scenario 'attempting to reset a password after having already disavowed an action' do
-    disavow_link_regex = %r{/events/disavow/[^\"]*}
+    disavow_link_regex = %r{/events/disavow\?disavowal_token=[^\"]*}
 
     perform_disavowable_password_reset
     email = open_last_email

@@ -213,6 +213,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
   end
 
+  def enable_test_credentials
+    allow(FeatureManagement).to receive(:allow_doc_auth_test_credentials?).and_return(true)
+  end
+
   def attach_image
     attach_file 'doc_auth_image', 'app/assets/images/logo.png'
   end

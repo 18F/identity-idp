@@ -6,7 +6,7 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      redirect_on_non_phone || redirect_on_phone || redirect_on_nothing_enabled
+      non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
     rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception, action: 'show')
     end
@@ -191,13 +191,12 @@ module Users
       redirect_to two_factor_options_url
     end
 
-    def redirect_on_phone
+    def phone_redirect
       return unless phone_enabled?
       validate_otp_delivery_preference_and_send_code
       true
     end
 
-    # rubocop:disable Metrics/AbcSize
     def redirect_url
       if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url
@@ -205,13 +204,15 @@ module Users
         login_two_factor_webauthn_url
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
-      elsif TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?
-        login_two_factor_backup_code_url
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
-    def redirect_on_non_phone
+    def backup_code_redirect
+      return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?
+      redirect_to login_two_factor_backup_code_url
+    end
+
+    def non_phone_redirect
       url = redirect_url
       redirect_to url if url.present?
     end

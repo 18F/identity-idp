@@ -1,3 +1,6 @@
+# :reek:TooManyMethods
+# :reek:RepeatedConditional
+
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -42,7 +45,7 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        back_image_verified, data = assure_id.results
+        back_image_verified, data = assure_id_results
         return failure(data) unless back_image_verified
 
         return [nil, data] if data['Result'] == GOOD_RESULT
@@ -52,14 +55,66 @@ module Idv
       end
 
       def extract_pii_from_doc(data)
-        pii_from_doc = Idv::Utils::PiiFromDoc.new(data).call(
-          current_user&.phone_configurations&.first&.phone,
+        flow_session[:pii_from_doc] = test_credentials? ? pii_from_test_doc : parse_pii(data)
+      end
+
+      def pii_from_test_doc
+        YAML.safe_load(image.read)['document'].symbolize_keys
+      end
+
+      def parse_pii(data)
+        Idv::Utils::PiiFromDoc.new(data).call(
+          current_user&.phone_configurations&.take&.phone,
         )
-        flow_session[:pii_from_doc] = pii_from_doc
       end
 
       def user_id_from_token
         flow_session[:doc_capture_user_id]
+      end
+
+      def assure_id_results
+        return [true, { 'Result' => GOOD_RESULT }] if test_credentials?
+        assure_id.results
+      end
+
+      def post_back_image
+        return [true, ''] if test_credentials?
+        throttle_post_back_image
+      end
+
+      def post_front_image
+        return [true, ''] if test_credentials?
+        throttle_post_front_image
+      end
+
+      def throttle_post_front_image
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
+        increment_attempts
+        assure_id.post_front_image(image.read)
+      end
+
+      def throttle_post_back_image
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
+        increment_attempts
+        assure_id.post_back_image(image.read)
+      end
+
+      def test_credentials?
+        return false unless flow_params
+        FeatureManagement.allow_doc_auth_test_credentials? &&
+          ['text/x-yaml', 'text/plain'].include?(image.content_type)
+      end
+
+      def increment_attempts
+        Throttler::Increment.call(user_id, :idv_acuant)
+      end
+
+      def throttled?
+        Throttler::IsThrottled.call(user_id, :idv_acuant)
+      end
+
+      def user_id
+        current_user ? current_user.id : user_id_from_token
       end
 
       delegate :idv_session, to: :@flow

@@ -221,6 +221,7 @@ production:
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
+    ial: 2
     attribute_bundle:
       - email
 
@@ -364,6 +365,9 @@ production:
       - 'https://ttp.cbp.dhs.gov'
       - 'https://ttp.cbp.dhs.gov/login'
       - 'https://ttp.cbp.dhs.gov/login?logout=logout&undefined'
+      - 'https://ttp.dhs.gov'
+      - 'https://ttp.dhs.gov/login'
+      - 'https://ttp.dhs.gov/login?logout=logout&undefined'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
   # CBP ROAM (formerly OARS)
@@ -543,6 +547,19 @@ production:
       - 'https://mage.nga-geoworks.org/auth/login-gov/callback/loa-1'
       - 'https://mage.nga-geoworks.io/auth/login-gov/callback/loa-1'
       - 'https://mage.ngageoworks.io/auth/login-gov/callback/loa-1'
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
+  # NGA ROME
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:rome-prod':
+    agency_id: 5
+    friendly_name: 'GEOWorks ROME'
+    agency: 'NGA'
+    logo: 'nga-rome.png'
+    cert: 'nga_rome_prod'
+    return_to_sp_url: 'https://rome.geogeo.xyz'
+    redirect_uris:
+      - 'https://rome.geogeo.xyz/callback'
     restrict_to_deploy_env: 'prod'
     piv_cac: true
 

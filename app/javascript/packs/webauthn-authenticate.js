@@ -5,6 +5,10 @@ function webauthn() {
   if (!WebAuthn.isWebAuthnEnabled()) {
     window.location.href = '/login/two_factor/options';
   }
+
+  const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress');
+  const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
+
   WebAuthn.verifyWebauthnDevice({
     userChallenge: document.getElementById('user_challenge').value,
     credentialIds: document.getElementById('credential_ids').value,
@@ -13,7 +17,8 @@ function webauthn() {
     document.getElementById('authenticator_data').value = result.authenticatorData;
     document.getElementById('client_data_json').value = result.clientDataJSON;
     document.getElementById('signature').value = result.signature;
-    document.getElementById('webauthn_form').submit();
+    webauthnInProgressContainer.classList.add('hidden');
+    webauthnSuccessContainer.classList.remove('hidden');
   });
 }
 document.addEventListener('DOMContentLoaded', webauthn);
