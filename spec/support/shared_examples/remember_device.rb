@@ -61,7 +61,7 @@ shared_examples 'remember device' do
       to(include('form-action \'self\' http://localhost:7654'))
 
     sign_in_user(user)
-    click_continue
+
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
