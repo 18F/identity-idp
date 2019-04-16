@@ -6,6 +6,8 @@ class Utf8Sanitizer
     @app = app
   end
 
+  # :reek:DuplicateMethodCall
+  # :reek:TooManyStatements
   def call(env)
     parser = RackRequestParser.new(Rack::Request.new(env))
     values_to_check = parser.values_to_check
