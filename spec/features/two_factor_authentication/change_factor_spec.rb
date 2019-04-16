@@ -2,7 +2,16 @@ require 'rails_helper'
 
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
-    let!(:user) { sign_up_and_2fa_loa1_user }
+    let(:user) { sign_up_and_2fa_loa1_user }
+
+    before do
+      user # Sign up the user
+      Timecop.travel (Figaro.env.reauthn_window.to_i + 1).seconds.from_now
+    end
+
+    after do
+      Timecop.return
+    end
 
     scenario 'editing password' do
       visit manage_password_path
