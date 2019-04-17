@@ -73,7 +73,7 @@ module TwoFactorAuthentication
       if current_user.decorate.identity_verified?
         redirect_to manage_personal_key_url
       else
-        redirect_to after_sign_in_path_for(current_user)
+        redirect_to two_2fa_setup
       end
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
