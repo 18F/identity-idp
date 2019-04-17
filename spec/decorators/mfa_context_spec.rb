@@ -273,6 +273,16 @@ describe MfaContext do
     context 'with a phone and an auth app' do
       it 'returns 2' do
         user = create(:user, :with_phone, :with_authentication_app)
+        user.update!(encrypted_recovery_code_digest: nil)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and a personal key' do
+      it 'returns 2' do
+        user = create(:user, :with_phone, :with_personal_key)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
