@@ -1,7 +1,3 @@
-# Once personal keys are entirely retired and the backup mfa method policy
-# is in place, this spec file can become the spec file for the backup code
-# policy
-
 require 'rails_helper'
 
 shared_examples 'setting up backup mfa on sign up' do
