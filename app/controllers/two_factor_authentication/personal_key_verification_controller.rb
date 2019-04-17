@@ -70,7 +70,11 @@ module TwoFactorAuthentication
 
     def handle_valid_otp
       handle_valid_otp_for_authentication_context
-      redirect_to manage_personal_key_url
+      if current_user.decorate.identity_verified?
+        redirect_to manage_personal_key_url
+      else
+        redirect_to after_sign_in_path_for(current_user)
+      end
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
     end
