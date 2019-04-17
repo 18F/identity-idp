@@ -149,7 +149,7 @@ describe Users::PhonesController do
     end
 
     context 'user has only a phone' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :with_phone, :with_backup_code) }
 
       let(:extra_analytics) do
         { configuration_id: user.phone_configurations.first.id,
