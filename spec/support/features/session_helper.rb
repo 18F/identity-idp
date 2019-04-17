@@ -49,7 +49,7 @@ module Features
     end
 
     def sign_up
-      user = create(:user, :unconfirmed)
+      user = create(:user, :unconfirmed, :with_backup_code)
       confirm_last_user
       user
     end
