@@ -897,6 +897,22 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # DOT - FMCSA National Registry (Appian)
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:FMCSANationalRegistryProdSAML:FMCSANationalRegistryProdApp':
+    agency_id: 6
+    friendly_name: 'FMCSA National Registry'
+    agency: 'DOT'
+    logo: 'dot.svg'
+    cert: 'fmcsa_prod'
+    return_to_sp_url: 'https://nationalregistry-fmcsa.appiancloud.com'
+    acs_url: 'https://nationalregistry-fmcsa.appiancloud.com/suite/saml/AssertionConsumer'
+    sp_initiated_login_url: 'https://nationalregistry-fmcsa.appiancloud.com'
+    assertion_consumer_logout_service_url: 'https://nationalregistry-fmcsa.appiancloud.com/suite/saml/LogoutConsumer'
+    attribute_bundle:
+      - email
+    ial: 1
+    restrict_to_deploy_env: 'prod'
+
   # DOT – LMS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:lms':
     agency_id: 6
