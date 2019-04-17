@@ -87,6 +87,7 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
+    click_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
