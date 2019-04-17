@@ -70,7 +70,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user signed up' do
       before do
-        user = build_stubbed(:user, :signed_up, personal_key: '1')
+        user = create(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         render
       end
@@ -87,7 +87,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user is reauthenticating' do
       before do
-        user = build_stubbed(:user, :signed_up, personal_key: '1')
+        user = create(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         allow(@presenter).to receive(:reauthn).and_return(true)
         render
@@ -109,7 +109,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user is changing phone number' do
       it 'provides a cancel link to return to profile' do
-        user = build_stubbed(:user, :signed_up, personal_key: '1')
+        user = create(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         data = presenter_data.merge(confirmation_for_phone_change: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
