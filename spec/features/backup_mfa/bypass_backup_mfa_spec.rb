@@ -12,7 +12,7 @@ shared_examples 'preventing backup mfa bypass' do
     expect(page).to have_current_path(mfa_path_for_user(user))
     visit phone_setup_path
     expect(page).to have_current_path(mfa_path_for_user(user))
-    visit authenticator_setup
+    visit authenticator_setup_path
     expect(page).to have_current_path(mfa_path_for_user(user))
     visit webauthn_setup_path
     expect(page).to have_current_path(mfa_path_for_user(user))
