@@ -142,7 +142,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     if MfaPolicy.new(current_user).multiple_factors_enabled?
       after_multiple_2fa_sign_up
     else
-      two_factor_options_path
+      two_factor_options_url
     end
   end
 
