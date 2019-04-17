@@ -88,14 +88,6 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
 
-    expect(current_path).to eq manage_personal_key_path
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
-
-    click_acknowledge_personal_key
-
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
       redirect_uri = URI(current_url)
