@@ -4,12 +4,12 @@ module Users
     include PivCacConcern
 
     before_action :authenticate_user!
+    before_action :check_two_mfa_bypass, only: :new
     before_action :confirm_two_factor_authenticated,
                   if: :multiple_factors_enabled?,
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
-    before_action :check_two_mfa_bypass, only: :new
 
     def new
       if params.key?(:token)
