@@ -142,7 +142,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     if MfaPolicy.new(current_user).multiple_factors_enabled?
       after_multiple_2fa_sign_up
     else
-      user_session[:no_mfa_bypass] = true if MfaPolicy.new(current_user).two_factor_enabled?
       two_factor_options_url
     end
   end
@@ -237,34 +236,4 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       exception_class: exception.class.name,
     }
   end
-
-  def check_two_mfa_bypass
-    return unless current_user
-    return if no_bypass || MfaPolicy.new(current_user).multiple_factors_enabled?
-    redirect_to authorization_url
-  end
-
-  def no_bypass
-    user_session && user_session[:no_mfa_bypass]
-  end
-
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/AbcSize
-  def authorization_url
-    if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
-      login_two_factor_piv_cac_url
-    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-      login_two_factor_webauthn_url
-    elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
-      login_two_factor_authenticator_url
-    elsif TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
-      login_two_factor_url(otp_delivery_preference: :sms, reauthn: false)
-    elsif TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?
-      login_two_factor_backup_code_url
-    else
-      login_two_factor_personal_key_url
-    end
-  end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
 end

@@ -1,7 +1,6 @@
 module Users
   class BackupCodeSetupController < ApplicationController
     before_action :authenticate_user!
-    before_action :check_two_mfa_bypass
     before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
     before_action :ensure_backup_codes_in_session, only: %i[create download]
 

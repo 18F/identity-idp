@@ -6,7 +6,6 @@ module Users
 
     before_action :authenticate_user
     before_action :authorize_user
-    before_action :check_two_mfa_bypass
     before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
 
     def index
