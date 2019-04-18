@@ -50,6 +50,8 @@ module Features
     end
 
     def signin_with_piv(user = user_with_piv_cac)
+      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)

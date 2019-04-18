@@ -69,8 +69,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session.delete(:mfa_device_remembered)
 
     next_url ||= after_otp_verification_confirmation_url
-    redirect_to next_url
     reset_otp_session_data
+    redirect_to next_url
   end
 
   def handle_valid_otp_for_context
@@ -121,7 +121,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_authentication_context
-    mark_user_session_authenticated
+    mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
@@ -194,9 +194,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def mark_user_session_authenticated
+  def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
+    analytics.track_event(
+      Analytics::USER_MARKED_AUTHED,
+      authentication_type: authentication_type,
+    )
   end
 
   def direct_otp_code
@@ -211,7 +215,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session[:unconfirmed_phone] && confirmation_context?
   end
 
-  # rubocop:disable MethodLength
   def phone_view_data
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
@@ -221,11 +224,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      remember_device_available: true,
       account_reset_token: account_reset_token,
     }.merge(generic_data)
   end
-  # rubocop:enable MethodLength
 
   def account_reset_token
     current_user&.account_reset_request&.request_token
@@ -234,8 +235,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def authenticator_view_data
     {
       two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.first.email,
-      remember_device_available: false,
+      user_email: current_user.email_addresses.take.email,
     }.merge(generic_data)
   end
 

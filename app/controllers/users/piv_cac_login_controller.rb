@@ -59,7 +59,7 @@ module Users
       user = piv_cac_login_form.user
       sign_in(:user, user)
 
-      mark_user_session_authenticated
+      mark_user_session_authenticated(:piv_cac)
 
       save_piv_cac_information(
         subject: piv_cac_login_form.x509_dn,
@@ -90,9 +90,13 @@ module Users
       redirect_to root_url
     end
 
-    def mark_user_session_authenticated
+    def mark_user_session_authenticated(authentication_type)
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+      analytics.track_event(
+        Analytics::USER_MARKED_AUTHED,
+        authentication_type: authentication_type,
+      )
     end
   end
 end
