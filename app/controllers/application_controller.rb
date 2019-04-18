@@ -239,8 +239,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def check_two_mfa_bypass
-    return if user_session[:no_mfa_bypass] || MfaPolicy.new(current_user).multiple_factors_enabled?
+    return if no_bypass || MfaPolicy.new(current_user).multiple_factors_enabled?
     redirect_to auth_url
+  end
+
+  def no_bypass
+    user_session && user_session[:no_mfa_bypass]
   end
 
   # rubocop:disable Metrics/MethodLength
