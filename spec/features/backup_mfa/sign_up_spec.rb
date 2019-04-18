@@ -59,7 +59,6 @@ feature 'backup mfa setup on sign up' do
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(Figaro.env).to receive(:personal_key_assignment_disabled).and_return('true')
   end
 
   context 'sms sign up' do

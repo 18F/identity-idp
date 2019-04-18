@@ -221,6 +221,7 @@ production:
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
+    ial: 2
     attribute_bundle:
       - email
 
@@ -935,6 +936,36 @@ production:
       - 'https://dis-identity-staging.usaid.gov/signin-oidc'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # USAID - Identity (identity.usaid.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:identity':
+    agency_id: 15
+    friendly_name: 'USAID - Identity'
+    agency: 'USAID'
+    logo: 'usaid.png'
+    cert: 'usaid_identity_prod'
+    return_to_sp_url: 'https://www.usaid.gov'
+    redirect_uris:
+      -  'https://identity.usaid.gov/core/logingov/signin-oidc'
+    attribute_bundle:
+      - email
+    ial: 1
+    restrict_to_deploy_env: 'prod'
+
+  # USAID - Identity - Staging (identity-staging.usaid.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:USAID:identity-staging':
+    agency_id: 15
+    friendly_name: 'USAID - Identity - Staging'
+    agency: 'USAID'
+    logo: 'usaid.png'
+    cert: 'usaid_identity_prod'
+    return_to_sp_url: 'https://www.usaid.gov'
+    redirect_uris:
+      -  'https://identity-staging.usaid.gov/core/logingov/signin-oidc'
+    attribute_bundle:
+      - email
+    ial: 1
     restrict_to_deploy_env: 'prod'
 
   # Apprenticeship.gov
