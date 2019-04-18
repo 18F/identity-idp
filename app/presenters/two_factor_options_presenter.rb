@@ -9,18 +9,26 @@ class TwoFactorOptionsPresenter
   end
 
   def title
+    # i18n-tasks-use t("titles.two_factor_setup")
+    # i18n-tasks-use t("titles.two_factor_recovery_setup")
     t("titles.two_factor_#{recovery}setup")
   end
 
   def heading
+    # i18n-tasks-use t("two_factor_authentication.two_factor_choice")
+    # i18n-tasks-use t("two_factor_authentication.two_factor_recovery_choice")
     t("two_factor_authentication.two_factor_#{recovery}choice")
   end
 
   def info
+    # i18n-tasks-use t("two_factor_authentication.two_factor_choice_intro")
+    # i18n-tasks-use t("two_factor_authentication.two_factor_recovery_choice_intro")
     t("two_factor_authentication.two_factor_#{recovery}choice_intro")
   end
 
   def label
+    # i18n-tasks-use t("forms.two_factor_choice.legend")
+    # i18n-tasks-use t("forms.two_factor_recovery_choice.legend")
     t("forms.two_factor_#{recovery}choice.legend") + ':'
   end
 
