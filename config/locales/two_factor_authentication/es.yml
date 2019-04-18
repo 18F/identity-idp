@@ -118,6 +118,9 @@ es:
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
+    two_factor_recovery_choice: Proporcionar una forma de recuperar su cuenta
+    two_factor_recovery_choice_intro: login.gov se asegura de que pueda acceder a
+      su cuenta si pierde el acceso a su método de autenticación de dos factores.
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad

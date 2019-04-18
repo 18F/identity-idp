@@ -3,6 +3,10 @@ class MfaPolicy
     @mfa_user = MfaContext.new(user)
   end
 
+  def no_factors_enabled?
+    mfa_user.enabled_mfa_methods_count == 0
+  end
+
   def two_factor_enabled?
     mfa_user.two_factor_configurations.any?(&:mfa_enabled?)
   end
