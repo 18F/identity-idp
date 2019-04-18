@@ -54,7 +54,7 @@ module RememberDeviceConcern
     GoogleAnalyticsMeasurement.new(
       category: 'authentication',
       event_action: 'device-remembered',
-      method: '',
+      method: 'same-device',
       client_id: params[:ga_client_id],
     ).send_event
   end
