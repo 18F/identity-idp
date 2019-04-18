@@ -63,6 +63,17 @@ feature 'Password recovery via personal key' do
     enter_personal_key(personal_key: personal_key)
     click_submit_default
 
+    expect(current_path).to eq manage_personal_key_path
+
+    new_personal_key = scrape_personal_key
+    click_acknowledge_personal_key
+
+    expect(current_path).to eq reactivate_account_path
+
+    reactivate_profile(new_password, new_personal_key)
+
+    expect(page).to_not have_content t('errors.messages.personal_key_incorrect')
+    expect(page).to have_content t('idv.messages.personal_key')
     expect(page).to have_current_path(account_path)
   end
 

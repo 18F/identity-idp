@@ -70,7 +70,7 @@ module TwoFactorAuthentication
 
     def handle_valid_otp
       handle_valid_otp_for_authentication_context
-      if current_user.decorate.identity_verified?
+      if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       else
         redirect_to two_2fa_setup
