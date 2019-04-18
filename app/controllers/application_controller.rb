@@ -239,8 +239,9 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def check_two_mfa_bypass
+    return unless current_user
     return if no_bypass || MfaPolicy.new(current_user).multiple_factors_enabled?
-    redirect_to auth_url
+    redirect_to authorization_url
   end
 
   def no_bypass
@@ -249,8 +250,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/AbcSize
-  def auth_url
-    return unless current_user
+  def authorization_url
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
       login_two_factor_piv_cac_url
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
