@@ -283,7 +283,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && MfaPolicy.new(current_user).multiple_factors_enabled?
+    confirmation_context? && MfaPolicy.new(current_user).three_or_more_factors_enabled?
   end
 
   def presenter_for_two_factor_authentication_method
