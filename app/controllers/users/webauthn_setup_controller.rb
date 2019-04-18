@@ -1,9 +1,10 @@
 module Users
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
+    include MfaSetupConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
+    before_action :confirm_user_authenticated_for_2fa_setup
 
     def new
       result = WebauthnVisitForm.new.submit(params)

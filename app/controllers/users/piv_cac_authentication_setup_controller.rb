@@ -2,10 +2,10 @@ module Users
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
+    include MfaSetupConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated,
-                  if: :multiple_factors_enabled?,
+    before_action :confirm_user_authenticated_for_2fa_setup,
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete

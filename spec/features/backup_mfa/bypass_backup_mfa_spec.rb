@@ -55,6 +55,7 @@ end
 describe 'attempting to bypass backup mfa setup' do
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+    allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('9999')
   end
 
   context 'with a phone' do

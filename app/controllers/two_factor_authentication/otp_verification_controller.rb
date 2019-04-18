@@ -14,7 +14,6 @@ module TwoFactorAuthentication
     def create
       result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
       post_analytics(result)
-
       if result.success?
         handle_valid_otp
       else

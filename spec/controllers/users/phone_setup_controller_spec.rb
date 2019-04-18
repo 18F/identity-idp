@@ -169,7 +169,7 @@ describe Users::PhoneSetupController do
   describe '#authorize_user' do
     context 'when the user is fully authenticated and phone enabled' do
       it 'redirects to account url' do
-        user = build_stubbed(:user, :signed_up)
+        user = build_stubbed(:user, :signed_up, :with_authentication_app)
         stub_sign_in(user)
 
         get :index

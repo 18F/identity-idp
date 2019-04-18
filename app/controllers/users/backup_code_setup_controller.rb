@@ -1,7 +1,9 @@
 module Users
   class BackupCodeSetupController < ApplicationController
+    include MfaSetupConcern
+
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
+    before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[create download]
 
     def index
