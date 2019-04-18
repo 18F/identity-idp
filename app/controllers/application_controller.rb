@@ -250,6 +250,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/AbcSize
   def auth_url
+    return unless current_user
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
       login_two_factor_piv_cac_url
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
