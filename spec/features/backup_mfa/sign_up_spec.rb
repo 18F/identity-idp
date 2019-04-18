@@ -32,12 +32,12 @@ shared_examples 'setting up backup mfa on sign up' do
 
   def expect_back_mfa_setup_to_be_required
     expect(page).to have_current_path(two_factor_options_path)
-    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+    expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
 
     visit account_path
 
     expect(page).to have_current_path(two_factor_options_path)
-    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+    expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
 
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
