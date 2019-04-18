@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  before_action :check_two_mfa_bypass
   before_action :confirm_two_factor_authenticated
 
   layout 'card_wide'

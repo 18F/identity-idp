@@ -9,6 +9,7 @@ module Users
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
+    before_action :check_two_mfa_bypass, only: :new
 
     def new
       if params.key?(:token)

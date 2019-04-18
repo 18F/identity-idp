@@ -4,6 +4,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated, if: :multiple_factors_enabled?
+    before_action :check_two_mfa_bypass
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
