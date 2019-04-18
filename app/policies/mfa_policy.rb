@@ -4,7 +4,7 @@ class MfaPolicy
   end
 
   def no_factors_enabled?
-    mfa_user.enabled_mfa_methods_count == 0
+    mfa_user.enabled_mfa_methods_count.zero?
   end
 
   def two_factor_enabled?
