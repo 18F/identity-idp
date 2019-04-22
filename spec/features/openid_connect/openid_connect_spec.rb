@@ -323,7 +323,7 @@ describe 'OpenID Connect' do
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end

@@ -251,7 +251,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sp_request_id = ServiceProviderRequest.last.uuid
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
 
       click_sign_in_from_landing_page_then_click_create_account
 
@@ -327,7 +327,7 @@ module Features
     end
 
     def visit_landing_page_and_click_create_account_with_request_id(request_id)
-      visit sign_up_start_url(request_id: request_id)
+      visit new_user_session_url(request_id: request_id)
       click_link t('sign_up.registrations.create_account')
     end
 

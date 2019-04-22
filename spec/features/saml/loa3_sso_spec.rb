@@ -57,7 +57,7 @@ feature 'LOA3 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_path).to match sign_up_start_path
+      expect(current_path).to match new_user_session_path
       expect(page).to have_content(sp_content)
       expect(page).to have_css('.accordion-header-controls',
                                text: t('devise.registrations.start.accordion'))

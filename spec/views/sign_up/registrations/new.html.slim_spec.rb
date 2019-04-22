@@ -64,7 +64,7 @@ describe 'sign_up/registrations/new.html.slim' do
         return_to_sp_url: 'www.awesomeness.com',
       )
       view_context = ActionController::Base.new.view_context
-      allow(view_context).to receive(:sign_up_start_url).
+      allow(view_context).to receive(:new_user_session_url).
         and_return('https://www.example.com/sign_up/start')
       @decorated_session = DecoratedSession.new(
         sp: @sp,

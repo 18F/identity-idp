@@ -22,7 +22,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
-  config.lograge.enabled = true
+  config.lograge.enabled = false
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
 

@@ -36,7 +36,7 @@ describe 'redirect_uri validation' do
 
   context 'when redirect_uri is present in params but the request is not from an SP' do
     it 'does not provide a link to the redirect_uri' do
-      visit sign_up_start_path(request_id: '123', redirect_uri: 'evil.com')
+      visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
 
       expect(page).to_not have_link t('links.back_to_sp')
 
@@ -50,7 +50,7 @@ describe 'redirect_uri validation' do
     it 'does not provide a link to the new redirect_uri' do
       state = SecureRandom.hex
       visit_idp_from_sp_with_loa1_with_valid_redirect_uri(state: state)
-      visit sign_up_start_path(request_id: '123', redirect_uri: 'evil.com')
+      visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
       expect(page).

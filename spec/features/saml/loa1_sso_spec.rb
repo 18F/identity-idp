@@ -61,7 +61,7 @@ feature 'LOA1 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_url).to match sign_up_start_path
+      expect(current_url).to match new_user_session_path
       expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.accordion-header')
     end
@@ -229,7 +229,7 @@ feature 'LOA1 Single Sign On' do
       sp = ServiceProvider.from_issuer('http://localhost:3000')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end
