@@ -50,7 +50,7 @@ en:
       verified: You have verified your identity with %{app}
     totp_setup:
       new: Set up two-factor authentication
-    two_factor_recovery_setup: Two-factor authentication recovery setup
+    two_factor_recovery_setup: Add a backup authentication method
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email
     verify_profile: Activate your account

@@ -113,9 +113,10 @@ en:
       voice_info: Get your security code via phone call
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
-    two_factor_recovery_choice: Provide a way to recover your account
-    two_factor_recovery_choice_intro: login.gov makes sure you can access your account
-      if you lose access to your two-factor authentication method.
+    two_factor_recovery_choice: Add a backup authentication method
+    two_factor_recovery_choice_intro: Adding multiple authentication methods to your
+      account ensures you will be able to access your account when you do not have
+      access to your first authentication option.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key

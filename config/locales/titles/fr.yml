@@ -50,8 +50,7 @@ fr:
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
       new: Configurer l'authentification à deux facteurs
-    two_factor_recovery_setup: Configuration de la récupération de l'authentification
-      à deux facteurs
+    two_factor_recovery_setup: Ajouter une méthode d'authentification de sauvegarde
     two_factor_setup: Configuration de l'authentification à deux facteurs
     verify_email: Consultez vos courriels
     verify_profile: Activez votre compte
