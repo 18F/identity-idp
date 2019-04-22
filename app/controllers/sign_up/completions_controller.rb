@@ -80,8 +80,7 @@ module SignUp
     def analytics_attributes(page_occurence)
       { loa3: sp_session[:loa3],
         service_provider_name: decorated_session.sp_name,
-        page_occurence: page_occurence,
-      }
+        page_occurence: page_occurence }
     end
 
     def track_completion(last_page)
