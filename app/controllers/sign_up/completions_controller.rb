@@ -96,6 +96,5 @@ module SignUp
         client_id: ga_client_id,
       ).send_event
     end
-
   end
 end
