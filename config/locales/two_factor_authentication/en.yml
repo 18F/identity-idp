@@ -69,6 +69,11 @@ en:
       sms: Text message (SMS)
       title: How should we send you a code?
       voice: Phone call
+    otp_make_default_number:
+      title: Make this your default phone number?
+      instruction: Please check the box below if you want this to be the default phone 
+        number you receive text messages or phone calls.
+      label: Default phone number
     personal_key_fallback:
       question: Don't have your personal key?
     personal_key_header_text: Enter your personal key

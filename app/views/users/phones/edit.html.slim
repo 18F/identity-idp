@@ -16,6 +16,7 @@ h1.h3.my0 = t('headings.edit_info.phone')
     = f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' }
   = render 'users/shared/otp_delivery_preference_selection'
+  = render 'users/shared/otp_make_default_number'
   = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'btn-wide'
 - if MfaPolicy.new(current_user).multiple_factors_enabled? && @user_phone_form.phone.present?
   br

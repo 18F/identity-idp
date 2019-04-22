@@ -16,6 +16,7 @@ h1.h3.my0 = t('headings.add_info.phone')
     = f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' }
   = render 'users/shared/otp_delivery_preference_selection'
+  = render 'users/shared/otp_make_default_number'
   = f.button :submit, t('forms.buttons.continue'), class: 'btn-wide'
 = render 'shared/cancel', link: account_path
 

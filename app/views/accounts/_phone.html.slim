@@ -7,9 +7,12 @@
         = link_to t('account.index.phone_add'), add_phone_path
   - MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
     .p2.col.col-12.border-top.border-blue-light.account-list-item
-      .col.col-8.sm-6.truncate
-        = phone_configuration.phone
-      .col.col-4.sm-6.right-align
+      .col.col-8
+        .col.col-12.sm-col-6
+          = phone_configuration.phone
+        .col.col-12.sm-col-6.truncate
+          = present(phone_configuration).default_msg
+      .col.col-4.right-align
         = render @view_model.manage_action_partial,
           path: manage_phone_url(id: phone_configuration.id),
           name: t('account.index.phone')

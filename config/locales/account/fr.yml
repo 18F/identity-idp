@@ -18,6 +18,7 @@ fr:
       login: Information de connexion
       password: Mot de passe
       phone: Numéro de téléphone
+      default: défaut
       phone_add: "+ Ajouter un téléphone"
       piv_cac_card: Carte PIV/CAC
       piv_cac_disabled: désactivée
