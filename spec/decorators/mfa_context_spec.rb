@@ -280,11 +280,11 @@ describe MfaContext do
     end
 
     context 'with a phone and a personal key' do
-      it 'returns 2' do
+      it 'returns 1' do
         user = create(:user, :with_phone, :with_personal_key)
         subject = described_class.new(user.reload)
 
-        expect(subject.enabled_mfa_methods_count).to eq(2)
+        expect(subject.enabled_mfa_methods_count).to eq(1)
       end
     end
   end
