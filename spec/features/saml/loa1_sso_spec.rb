@@ -199,7 +199,7 @@ feature 'LOA1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/es/\?request_id=.+})
     end
   end
 
@@ -208,11 +208,11 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
   end
 

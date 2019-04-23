@@ -222,11 +222,11 @@ describe 'OpenID Connect' do
     it 'displays the branded page' do
       visit_idp_from_sp_with_loa1
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
       visit_idp_from_sp_with_loa1
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
   end
 
