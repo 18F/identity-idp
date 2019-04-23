@@ -68,7 +68,7 @@ feature 'Internationalization' do
         click_link t('i18n.locale.en')
       end
 
-      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
+      expect(page).to have_content t('forms.registration.labels.email', locale: 'en')
       expect(page).to have_content t('i18n.language', locale: 'en')
     end
   end
