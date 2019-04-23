@@ -21,7 +21,6 @@ en:
     privacy_policy: Privacy & security
     resend: Resend
     reverify: Please verify your identity again.
-    sign_in: Sign in
     sign_out: Sign out
     two_factor_authentication:
       get_another_code: Get another code
