@@ -199,7 +199,7 @@ feature 'LOA1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/es\?request_id=.+})
     end
   end
 

@@ -58,8 +58,6 @@ feature 'LOA3 Single Sign On' do
 
       expect(current_path).to match new_user_session_path
       expect(page).to have_content(sp_content)
-      expect(page).to have_css('.accordion-header-controls',
-                               text: t('devise.registrations.start.accordion'))
     end
 
     it 'shows user the start page with a link back to the SP' do
