@@ -216,12 +216,12 @@ RSpec.describe ServiceProviderSessionDecorator do
 
     before do
       allow(view_context).to receive(:new_user_session_url).
-        and_return('https://www.example.com/sign_up/start')
+        and_return('https://www.example.com/')
     end
 
     it 'returns view_context.new_user_session_url' do
       expect(decorator.cancel_link_url).
-        to eq 'https://www.example.com/sign_up/start'
+        to eq 'https://www.example.com/'
     end
   end
 

@@ -1,9 +1,13 @@
 - title t('titles.visitors.index')
 - request_id = params[:request_id] || sp_session[:request_id]
 
-= render 'shared/sp_alert'
+.center
+  = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
 
-h1.h3.my0 = decorated_session.new_session_heading
+  = render decorated_session.registration_heading
+
+  = render 'shared/sp_alert'
+
 = simple_form_for(resource,
                   as: resource_name,
                   url: session_path(resource_name),
@@ -15,9 +19,6 @@ h1.h3.my0 = decorated_session.new_session_heading
   div
     = f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3'
 
-p.my3
-  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
-
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right.mxn1
@@ -25,3 +26,6 @@ p.my3
       class: 'px1'
     = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
       class: 'px1 border-left border-silver'
+
+p.my3
+  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'

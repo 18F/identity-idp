@@ -513,7 +513,7 @@ describe 'OpenID Connect' do
       expect(current_path).to eq(redirs_to)
       return
     end
-    expect(current_path).to eq('/sign_up/start')
+    expect(current_path).to eq('/')
 
     user ||= create(:profile, :active, :verified,
                     pii: { first_name: 'John', ssn: '111223333' }).user
