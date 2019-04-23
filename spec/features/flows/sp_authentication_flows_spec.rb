@@ -18,7 +18,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
           context 'when choosing Create Account' do
             before do
-              click_link t('sign_up.registrations.create_account')
+              click_link t('links.create_account')
             end
 
             it 'prompts for email address' do
@@ -196,7 +196,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
           context 'when choosing Create Account' do
             before do
-              click_link t('sign_up.registrations.create_account')
+              click_link t('links.create_account')
             end
 
             it 'prompts for email address' do

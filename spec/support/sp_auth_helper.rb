@@ -3,7 +3,7 @@ module SpAuthHelper
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     email = 'test@test.com'
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('sign_up.registrations.create_account')
+    click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password

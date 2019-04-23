@@ -328,7 +328,7 @@ module Features
 
     def visit_landing_page_and_click_create_account_with_request_id(request_id)
       visit new_user_session_url(request_id: request_id)
-      click_link t('sign_up.registrations.create_account')
+      click_link t('links.create_account')
     end
 
     def submit_form_with_invalid_email
@@ -395,7 +395,7 @@ module Features
 
     def confirm_email_and_password(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      find_link(t('sign_up.registrations.create_account')).click
+      find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
