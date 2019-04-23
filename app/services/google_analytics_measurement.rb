@@ -31,7 +31,7 @@ class GoogleAnalyticsMeasurement
       v: 1,
       tid: Figaro.env.google_analytics_key,
       t: :event,
-      c: category,
+      ec: category,
       ea: event_action,
       el: method,
       cid: client_id,

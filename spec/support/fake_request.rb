@@ -10,4 +10,12 @@ class FakeRequest
   def host
     'fake_host'
   end
+
+  def headers
+    'fake_headers'
+  end
+
+  def cookies
+    'fake_cookies'
+  end
 end

@@ -76,7 +76,7 @@ module Deploy
     end
 
     def example_application_yaml_path
-      File.join(root, 'config/application.yml.example')
+      File.join(root, 'config/application.yml.default')
     end
 
     def result_yaml_path

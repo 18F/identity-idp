@@ -9,7 +9,7 @@ PORT ?= 3000
 
 all: check
 
-setup $(CONFIG): config/application.yml.example
+setup $(CONFIG): config/application.yml.default
 	bin/setup
 
 fast_setup:

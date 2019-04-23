@@ -68,7 +68,7 @@ module TwoFactorAuthentication
     def piv_cac_view_data
       {
         two_factor_authentication_method: two_factor_authentication_method,
-        user_email: current_user.email_addresses.first.email,
+        user_email: current_user.email_addresses.take.email,
       }.merge(generic_data)
     end
 
