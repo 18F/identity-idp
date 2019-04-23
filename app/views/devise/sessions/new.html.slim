@@ -29,3 +29,5 @@
 
 p.my3
   = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
+- if loa3_requested?
+  = render 'sign_up/registrations/required_pii_accordion'

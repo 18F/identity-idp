@@ -105,6 +105,10 @@ fr:
         state_id_card: Identification d'état
       state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
+    index:
+      id:
+        need_html: Si vous créez un compte, vous aurez besoin d'un <strong>identifiant
+          actuel émis par l'état</strong>.
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.

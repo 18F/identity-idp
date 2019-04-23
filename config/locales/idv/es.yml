@@ -98,6 +98,10 @@ es:
         state_id_card: Identificación del estado
       state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
+    index:
+      id:
+        need_html: Si está creando una cuenta, necesitará una <strong>identificación
+          emitida por el estado actual</strong>.
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.

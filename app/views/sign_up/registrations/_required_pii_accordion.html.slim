@@ -1,0 +1,33 @@
+p.clearfix
+  = image_tag(asset_url('get-started/ID.svg'),
+          size: '40', alt: '', class: 'mt-tiny col col-1')
+  span.col.col-11.pl2 = t('idv.index.id.need_html')
+
+.mt2
+  = accordion('you-will-need', t('devise.registrations.start.accordion')) do
+    p.clearfix
+      = image_tag(asset_url('get-started/email-password.svg'),
+          size: '40', alt: '', class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_1_html')
+    p.clearfix
+      = image_tag(asset_url('get-started/2FA.svg'), size: '40', alt: '',
+        class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_2_html')
+    p.clearfix
+      = image_tag(asset_url('get-started/personal-details.svg'),
+          size: '40', alt: '', class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_3_html')
+    p.clearfix
+      = image_tag(asset_url('get-started/personal-details.svg'),
+          size: '40', alt: '', class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_4_html')
+    p.clearfix
+      = image_tag(asset_url('get-started/financial.svg'),
+        size: '40', alt: '', class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_5_html')
+    p.clearfix
+      = image_tag(asset_url('p-key.svg'), size: '40', alt: '', class: 'mt-tiny col col-1')
+      span.col.col-11.pl2 = t('devise.registrations.start.bullet_6_html')
+    p.mb3 = link_to t('devise.registrations.start.learn_more'),
+      MarketingSite.help_url,
+      target: '_blank'
