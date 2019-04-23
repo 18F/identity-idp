@@ -271,8 +271,6 @@ describe 'OpenID Connect' do
 
       visit_idp_from_sp_with_loa1(state: state)
 
-      click_link t('links.sign_in')
-
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
       expect(page).to have_link(
@@ -311,13 +309,11 @@ describe 'OpenID Connect' do
       user = create(:user, :signed_up)
 
       visit_idp_from_sp_with_loa1
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       visit destroy_user_session_url
 
       visit_idp_from_sp_with_loa1
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')

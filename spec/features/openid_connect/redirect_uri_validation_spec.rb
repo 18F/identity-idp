@@ -95,7 +95,6 @@ describe 'redirect_uri validation' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1_with_valid_redirect_uri
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue
@@ -128,7 +127,6 @@ describe 'redirect_uri validation' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1_with_second_valid_redirect_uri
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue

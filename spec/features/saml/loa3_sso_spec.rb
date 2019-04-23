@@ -9,7 +9,6 @@ feature 'LOA3 Single Sign On' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     visit saml_authn_request
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
     fill_out_idv_jurisdiction_ok

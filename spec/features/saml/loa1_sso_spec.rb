@@ -41,7 +41,6 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue
@@ -223,7 +222,6 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
 
       visit authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('http://localhost:3000')

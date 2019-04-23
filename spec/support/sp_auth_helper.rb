@@ -19,7 +19,6 @@ module SpAuthHelper
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     user = create(:user, :signed_up)
     visit_idp_from_sp_with_loa3(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
     fill_out_idv_jurisdiction_ok

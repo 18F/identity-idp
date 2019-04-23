@@ -44,7 +44,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     it 'requires idv and hands off successfully' do
       visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
       sign_in_user(user)
       click_submit_default
 
@@ -82,7 +81,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     it 'does not require verification and hands off successfully' do
       visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
       sign_in_user(user)
       click_submit_default
 
@@ -100,7 +98,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     before do
       visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
       sign_in_user(user)
       click_submit_default
       fill_out_idv_jurisdiction_ok
@@ -114,7 +111,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     it 'does not require idv or requested attribute verification and hands off successfully' do
       visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
       sign_in_user(user)
 
       expect_csp_headers_to_be_present if sp == :oidc

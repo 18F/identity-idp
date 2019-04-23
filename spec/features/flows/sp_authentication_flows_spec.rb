@@ -269,7 +269,6 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
           context 'when choosing to sign in' do
             before do
               @user = create(:user, :signed_up)
-              click_link t('links.sign_in')
             end
 
             context 'with valid credentials entered' do

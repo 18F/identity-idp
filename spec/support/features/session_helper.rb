@@ -322,13 +322,12 @@ module Features
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
-      click_link t('links.sign_in')
       click_link t('links.create_account')
     end
 
     def visit_landing_page_and_click_create_account_with_request_id(request_id)
       visit new_user_session_url(request_id: request_id)
-      click_link t('links.create_account')
+      click_link t('sign_up.registrations.create_account')
     end
 
     def submit_form_with_invalid_email
@@ -443,7 +442,6 @@ module Features
 
     def sign_in_via_branded_page(user)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
     end
