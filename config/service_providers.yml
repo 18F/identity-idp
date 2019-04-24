@@ -609,6 +609,38 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # A DoD system that allows tsps to manage moves.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:adminmovemilprod':
+    agency_id: 8
+    friendly_name: 'admin.move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://admin.move.mil'
+    redirect_uris:
+      - 'https://admin.move.mil'
+      - 'https://admin.move.mil/auth/login-gov/callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
+  # A DoD system that allows tsps to manage moves.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
+    agency_id: 8
+    friendly_name: 'tsp.move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://tsp.move.mil'
+    redirect_uris:
+      - 'https://tsp.move.mil'
+      - 'https://tsp.move.mil/auth/login-gov/callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
   # Office Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:officemovemilprod':
     agency_id: 8
@@ -719,22 +751,6 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.opa.mycbp://result'
     restrict_to_deploy_env: 'prod'
-
-  # A DoD system that allows tsps to manage moves.
-  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
-    agency_id: 8
-    friendly_name: 'tsp.move.mil'
-    agency: 'DOD'
-    logo: 'move_mil.svg'
-    cert: 'move_mil_prod'
-    return_to_sp_url: 'https://tsp.move.mil'
-    redirect_uris:
-      - 'https://tsp.move.mil'
-      - 'https://tsp.move.mil/auth/login-gov/callback'
-    attribute_bundle:
-      - email
-    restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # Forest Service Open Forest Permits
   'urn:gov:gsa:open-id-connect:sp:sso:usda-forestservice:epermit-prod':
