@@ -32,6 +32,7 @@ module Users
       @presenter = PhoneSetupPresenter.new(delivery_preference)
       if @user_phone_form.submit(user_params).success?
         process_updates
+        set_default_phone
         bypass_sign_in current_user
       else
         render :edit
@@ -62,11 +63,18 @@ module Users
     end
 
     def user_params
-      params.require(:user_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
+      params.require(:user_phone_form).permit(:phone, :international_code, :otp_delivery_preference, :otp_make_default_number, :made_default_at)
     end
 
     def delivery_preference
       phone_configuration&.delivery_preference || current_user.otp_delivery_preference
+    end
+
+    def set_default_phone
+      if user_params['otp_make_default_number'].present?
+        phone_configuration.made_default_at = Time.zone.now
+        phone_configuration.save
+      end
     end
 
     def process_updates

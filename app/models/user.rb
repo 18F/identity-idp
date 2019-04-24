@@ -97,6 +97,10 @@ class User < ApplicationRecord
     @_active_profile ||= profiles.verified.find(&:active?)
   end
 
+  def default_phone_configuration
+    self.phone_configurations.order('made_default_at DESC NULLS LAST, id DESC').first
+  end
+
   # To send emails asynchronously via ActiveJob.
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later

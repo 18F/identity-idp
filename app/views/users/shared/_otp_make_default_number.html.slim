@@ -5,7 +5,7 @@
       = t('two_factor_authentication.otp_make_default_number.instruction')
     label.btn-border.col-8
       .checkbox
-        = check_box_tag 'user_phone_form[otp_make_default_number]', :default, true,
-          class: :otp_make_default_number_sms
+        = check_box_tag 'user_phone_form[otp_make_default_number]',
+          :otp_make_default_number, @user_phone_form.otp_make_default_number
         span.indicator
         = t('two_factor_authentication.otp_make_default_number.label')
