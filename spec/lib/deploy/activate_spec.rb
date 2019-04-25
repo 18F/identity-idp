@@ -55,12 +55,12 @@ describe Deploy::Activate do
       expect(File.exist?(File.join(config_dir, 'application.yml'))).to eq(true)
     end
 
-    it 'merges the application.yml from s3 over the application.yml.example' do
+    it 'merges the application.yml from s3 over the application.yml.default' do
       subject.run
 
       combined_application_yml = YAML.load_file(File.join(config_dir, 'application.yml'))
 
-      # top-level key from application.yml.example
+      # top-level key from application.yml.default
       expect(combined_application_yml['recovery_code_length']).to eq('4')
       # overridden production key from s3
       expect(combined_application_yml['production']['usps_confirmation_max_days']).to eq('5')

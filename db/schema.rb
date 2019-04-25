@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190306143757) do
+ActiveRecord::Schema.define(version: 20190407103634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,14 @@ ActiveRecord::Schema.define(version: 20190306143757) do
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "throttles", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "throttle_type", null: false
+    t.datetime "attempted_at"
+    t.integer "attempts", default: 0
+    t.index ["user_id", "throttle_type"], name: "index_throttles_on_user_id_and_throttle_type"
   end
 
   create_table "users", force: :cascade do |t|

@@ -118,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // eslint-disable-next-line no-undef
         ga(function (tracker) {
           const clientId = tracker.get('clientId');
-          $('.ga-client-id').val(clientId);
+          const gaClientIdInput = document.getElementById('ga_client_id');
+          gaClientIdInput.value = clientId;
         });
       }
     });

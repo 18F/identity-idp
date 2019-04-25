@@ -49,7 +49,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   attr_writer :analytics
 
   def analytics
-    @analytics ||= Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer)
+    @analytics ||=
+      Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer, ahoy: ahoy)
   end
 
   def analytics_user
@@ -130,6 +131,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
+    # return new_user_session_url unless user_signed_in?
     user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
   end
 

@@ -113,4 +113,8 @@ class FeatureManagement
   def self.allow_doc_auth_test_credentials?
     Figaro.env.allow_doc_auth_test_credentials == 'true'
   end
+
+  def self.personal_key_assignment_disabled?
+    Figaro.env.personal_key_assignment_disabled == 'true'
+  end
 end

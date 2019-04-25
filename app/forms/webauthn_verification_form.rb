@@ -69,7 +69,7 @@ class WebauthnVerificationForm
 
   def public_key
     WebauthnConfiguration.
-      where(user_id: user.id, credential_id: @credential_id).first.credential_public_key
+      where(user_id: user.id, credential_id: @credential_id).take.credential_public_key
   end
 
   def extra_analytics_attributes
