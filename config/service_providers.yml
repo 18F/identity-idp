@@ -670,7 +670,7 @@ production:
     agency_id: 6
     friendly_name: 'Delphi eInvoicing'
     logo: 'dot.svg'
-    cert: 'dot_einvoicing_prod.crt'
+    cert: 'dot_einvoicing_prod'
     acs_url: 'https://einvoice.esc.gov:4443/oam/server/fed/sp/sso'
     return_to_sp_url: 'https://einvoice.esc.gov:4443'
     block_encryption: 'aes256-cbc'
