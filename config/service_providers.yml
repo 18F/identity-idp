@@ -664,6 +664,20 @@ production:
       - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/LoginHandler'
     restrict_to_deploy_env: 'prod'
 
+  # DOT Delphi eInvoicing
+  'SP:EINVOICE_DCC_PROD':
+    agency: 'DOT'
+    agency_id: 6
+    friendly_name: 'Delphi eInvoicing'
+    logo: 'dot.svg'
+    cert: 'dot_einvoicing_prod.crt'
+    acs_url: 'https://einvoice.esc.gov:4443/oam/server/fed/sp/sso'
+    return_to_sp_url: 'https://einvoice.esc.gov:4443'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
   # SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam':
     agency_id: 9
