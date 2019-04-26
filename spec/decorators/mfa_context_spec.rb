@@ -280,7 +280,17 @@ describe MfaContext do
     end
 
     context 'with a phone and a personal key' do
+      it 'returns 2' do
+        user = create(:user, :with_phone, :with_personal_key)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with a phone and a personal key and personal key retired' do
       it 'returns 1' do
+        allow(Figaro.env).to receive(:personal_key_retired).and_return('true')
         user = create(:user, :with_phone, :with_personal_key)
         subject = described_class.new(user.reload)
 

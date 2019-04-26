@@ -96,6 +96,7 @@ describe 'webauthn management' do
 
       sign_in_and_2fa_user(user)
       PhoneConfiguration.first.update(mfa_enabled: false)
+      user.backup_code_configurations.destroy_all
 
       visit account_path
 
