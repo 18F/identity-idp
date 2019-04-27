@@ -40,6 +40,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 
     visit login_two_factor_options_path
 
+    click_continue
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc

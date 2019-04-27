@@ -29,7 +29,7 @@ feature 'legacy passwords' do
     )
   end
 
-  scenario 'signing in with a personal key digested by the uak verifier updates the digest' do
+  scenario 'signing in with a personal key digested by the uak verifier make the digest nil' do
     stub_twilio_service
 
     user = create(:user, :signed_up)
@@ -47,9 +47,7 @@ feature 'legacy passwords' do
     click_submit_default
     user.reload
 
-    expect(
-      Encryption::PasswordVerifier.new.stale_digest?(user.encrypted_recovery_code_digest),
-    ).to eq(false)
+    expect(user.encrypted_recovery_code_digest).to be_nil
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do
