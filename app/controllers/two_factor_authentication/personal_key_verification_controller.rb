@@ -42,12 +42,18 @@ module TwoFactorAuthentication
     def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
       if password_reset_profile.present?
         re_encrypt_profile_recovery_pii
+      elsif decorated_user.identity_verified?
+        user_session[:personal_key] = PersonalKeyGenerator.new(current_user).create
       else
-        current_user.personal_key = nil
-        current_user.encrypted_recovery_code_digest = nil
-        current_user.save!
-        user_session.delete(:personal_key)
+        remove_personal_key
       end
+    end
+
+    def remove_personal_key
+      current_user.personal_key = nil
+      current_user.encrypted_recovery_code_digest = nil
+      current_user.save!
+      user_session.delete(:personal_key)
     end
 
     def re_encrypt_profile_recovery_pii
