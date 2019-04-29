@@ -23,6 +23,8 @@
     == '&nbsp;&nbsp;&nbsp;&nbsp;'
     = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
       class: 'px1'
+    br
+    br
 
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
@@ -32,5 +34,5 @@
 br
 - if loa3_requested?
   = render 'sign_up/registrations/required_pii_accordion'
-p.my3
+p.my1
   = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
