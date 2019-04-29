@@ -298,7 +298,7 @@ describe 'OpenID Connect' do
 
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))
-      expect(page).to have_content(t('forms.registration.labels.email'))
+      expect(page).to have_content(t('headings.sign_in_without_sp'))
     end
   end
 

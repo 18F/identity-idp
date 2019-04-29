@@ -4,7 +4,7 @@ feature 'Internationalization' do
   context 'visit homepage with no locale set' do
     it 'displays a header in the default locale' do
       visit root_path
-      expect(page).to have_content t('forms.registration.labels.email', locale: 'en')
+      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
     end
   end
 
@@ -18,7 +18,7 @@ feature 'Internationalization' do
       let(:locale) { :en }
 
       it 'displays a translated header to the user' do
-        expect(page).to have_content t('forms.registration.labels.email', locale: 'en')
+        expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
       end
     end
 
@@ -26,7 +26,7 @@ feature 'Internationalization' do
       let(:locale) { :es }
 
       it 'displays a translated header to the user' do
-        expect(page).to have_content t('forms.registration.labels.email', locale: 'es')
+        expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
       end
     end
 
@@ -38,7 +38,7 @@ feature 'Internationalization' do
       end
 
       it 'it falls back to the locale set in header' do
-        expect(page).to have_content t('forms.registration.labels.email', locale: 'es')
+        expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
       end
     end
   end
@@ -47,7 +47,7 @@ feature 'Internationalization' do
     it 'displays header in the default locale' do
       visit '/'
 
-      expect(page).to have_content t('forms.registration.labels.email', locale: 'en')
+      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
     end
 
     it 'allows user to manually toggle language from dropdown menu', js: true do
@@ -60,7 +60,7 @@ feature 'Internationalization' do
         end
       end
 
-      expect(page).to have_content t('forms.registration.labels.email', locale: 'es')
+      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
       expect(page).to have_content t('i18n.language', locale: 'es')
 
       within(:css, '.i18n-desktop-toggle') do
@@ -68,7 +68,7 @@ feature 'Internationalization' do
         click_link t('i18n.locale.en')
       end
 
-      expect(page).to have_content t('forms.registration.labels.email', locale: 'en')
+      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
       expect(page).to have_content t('i18n.language', locale: 'en')
     end
   end
@@ -77,7 +77,7 @@ feature 'Internationalization' do
     it 'displays a translated header to the user' do
       visit '/es/'
 
-      expect(page).to have_content t('forms.registration.labels.email', locale: 'es')
+      expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
     end
   end
 
