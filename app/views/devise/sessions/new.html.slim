@@ -1,12 +1,14 @@
 - title t('titles.visitors.index')
 - request_id = params[:request_id] || sp_session[:request_id]
 
-.center
-  = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
+- if request_id
+  .center
+    = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
 
-  = render decorated_session.registration_heading
-
-  = render 'shared/sp_alert'
+    = render decorated_session.registration_heading
+- else
+  h1.h3.my0 = decorated_session.new_session_heading
+= render 'shared/sp_alert'
 
 = simple_form_for(resource,
                   as: resource_name,
