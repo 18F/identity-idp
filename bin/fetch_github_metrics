@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/github_metrics/pr_age_reporter'
+
+GithubMetrics::PrAgeReporter.new.call
