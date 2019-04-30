@@ -20,18 +20,15 @@ fr:
     doc_auth:
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
-      general_error_html: Votre identité émise par l'état n'a pas pu être vérifiée. S'il
-        vous plaît essayez de télécharger des images différentes en commençant par
-        le devant de votre ID émis par l'État.<br/><br/>
-        <p>If you are using a camera please ensure you&#58;<ul>
-        <li>Make sure you are in a well-lit area</li>
-        <li>Damaged barcodes may fail identification</li>
-        <li>The ID represents 80% of the overall image</li>
-        <li>Images are clear (not blurry) and in focus</li>
-        <li>No glare, shadow, or reflection is present</li>
-        <li>The ID stands out from the background</li>
-        <li>Use a solid color background</li>
-        <li>Background is visible around the document</li></ul></p>
+      general_error_html: Votre identité émise par l'état n'a pas pu être vérifiée.
+        S'il vous plaît essayez de télécharger des images différentes en commençant
+        par le devant de votre ID émis par l'État.<br/><br/> <p>If you are using a
+        camera please ensure you&#58;<ul> <li>Make sure you are in a well-lit area</li>
+        <li>Damaged barcodes may fail identification</li> <li>The ID represents 80%
+        of the overall image</li> <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow, or reflection is present</li> <li>The ID stands out
+        from the background</li> <li>Use a solid color background</li> <li>Background
+        is visible around the document</li></ul></p>
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.

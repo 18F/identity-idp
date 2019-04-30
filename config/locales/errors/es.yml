@@ -22,16 +22,13 @@ es:
         to validate a document.  Please try again later.
       general_error_html: Su identificación emitida por el estado no pudo ser verificada.
         Por favor, intente cargar diferentes imágenes comenzando con el frente de
-        su identificación emitida por el estado. <br/><br/>
-        <p>If you are using a camera please ensure you&#58;<ul>
-        <li>Make sure you are in a well-lit area</li>
-        <li>Damaged barcodes may fail identification</li>
-        <li>The ID represents 80% of the overall image</li>
-        <li>Images are clear (not blurry) and in focus</li>
-        <li>No glare, shadow, or reflection is present</li>
-        <li>The ID stands out from the background</li>
-        <li>Use a solid color background</li>
-        <li>Background is visible around the document</li></ul></p>
+        su identificación emitida por el estado. <br/><br/> <p>If you are using a
+        camera please ensure you&#58;<ul> <li>Make sure you are in a well-lit area</li>
+        <li>Damaged barcodes may fail identification</li> <li>The ID represents 80%
+        of the overall image</li> <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow, or reflection is present</li> <li>The ID stands out
+        from the background</li> <li>Use a solid color background</li> <li>Background
+        is visible around the document</li></ul></p>
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
