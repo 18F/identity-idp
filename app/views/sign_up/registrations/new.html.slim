@@ -4,15 +4,16 @@
 
 h1.h3.my0 = t('headings.registrations.enter_email')
 
-= simple_form_for(@register_user_email_form,
-    html: { autocomplete: 'off', role: 'form' },
-    url: sign_up_register_path) do |f|
-  = f.input :email, label: t('forms.registration.labels.email'), required: true
-  = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id }
-  = render 'shared/recaptcha'
-  p.mt1
-    = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
-
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'
+.mb4
+  = simple_form_for(@register_user_email_form,
+      html: { autocomplete: 'off', role: 'form' },
+      url: sign_up_register_path) do |f|
+    = f.input :email, label: t('forms.registration.labels.email'), required: true
+    = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id }
+    = render 'shared/recaptcha'
+    = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'
 
 = render 'shared/cancel', link: decorated_session.cancel_link_url
+
+p.mt2
+  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
