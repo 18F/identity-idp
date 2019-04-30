@@ -51,7 +51,7 @@ module Idv
         return [nil, data] if data['Result'] == GOOD_RESULT
 
         mark_step_incomplete(reset_step)
-        failure(I18n.t('errors.doc_auth.general_error'), data)
+        failure(I18n.t('errors.doc_auth.general_error_html'), data)
       end
 
       def extract_pii_from_doc(data)
