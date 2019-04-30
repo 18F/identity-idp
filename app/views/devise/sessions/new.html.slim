@@ -28,11 +28,11 @@
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
 
-.mxn1.my2
+.mxn1.my1
   = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
     class: 'px1'
-br
+
 - if loa3_requested?
   = render 'sign_up/registrations/required_pii_accordion'
-.my1
+.mt3
   = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
