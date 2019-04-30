@@ -1,18 +1,24 @@
+# rubocop:disable Rails/Date, Rails/TimeZone, Rails/Output
 require 'octokit'
 require 'date'
 
 module GithubMetrics
   class PrAgeReporter
+    attr_reader :tot
+
+    # rubocop:disable Metrics/AbcSize
     def call
-      numerator = 0; denominator = 0;
+      numerator = 0
       sprint_pull_requests.each do |pr|
         pr_open_seconds = (pr.closed_at || pr.merged_at || Time.now).to_i - pr.created_at.to_i
         numerator += pr_open_seconds
-        denominator += 1.0
         puts "'#{pr.title}' open for #{seconds_to_hours(pr_open_seconds)} hours"
       end
-      puts "Average: #{seconds_to_hours(numerator / denominator)} hours"
+      puts "Average: #{seconds_to_hours(numerator / sprint_pull_requests.count.to_f)} hours"
     end
+    # rubocop:enable Metrics/AbcSize
+
+    private
 
     def sprint_start
       @sprint_start ||= begin
@@ -27,6 +33,7 @@ module GithubMetrics
       (sprint_start + 14).to_time
     end
 
+    # :reek:FeatureEnvy
     def pr_open_in_current_sprint?(pr)
       closed_at_or_current_time = pr.closed_at || pr.merged_at || Time.now
       return true if pr.created_at > sprint_start || closed_at_or_current_time > sprint_start
@@ -48,3 +55,4 @@ module GithubMetrics
     end
   end
 end
+# rubocop:enable Rails/Date, Rails/TimeZone, Rails/Output
