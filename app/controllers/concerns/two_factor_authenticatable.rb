@@ -197,8 +197,8 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def grab_ga_client_id
-    return false unless request.cookie
-    ga_cookie = request.cookie['_ga'] if request.cookie("_ga")
+    return false unless request.cookies
+    ga_cookie = request.cookies['_ga'] if request.cookies("_ga")
     ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
     return ga_client_id[0] if ga_client_id
     false
