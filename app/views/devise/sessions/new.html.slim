@@ -25,9 +25,12 @@
       = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
         class: 'pl1'
 
-.clearfix.pt1.border-top
-  = render decorated_session.return_to_service_provider_partial
-
+- if request_id
+  .clearfix.pt1.border-top
+    = render decorated_session.return_to_service_provider_partial
+- else
+  .border-top
+  
 .mxn1.my1
   = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
     class: 'px1'
