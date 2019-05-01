@@ -60,7 +60,7 @@ module RememberDeviceConcern
   end
 
   def grab_ga_client_id
-    ga_cookie = request.cookie['_ga']
+    ga_cookie = request.cookie['_ga'] if request.cookie
     ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
     return ga_client_id[0] if ga_client_id
     false
