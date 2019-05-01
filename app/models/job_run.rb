@@ -1,0 +1,2 @@
+class JobRun < ApplicationRecord
+end
