@@ -20,8 +20,9 @@ en:
     doc_auth:
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
-      general_error_html: Your state issued ID could not be verified.  Please try
-        using different images starting with the front of your state issued ID.<br/><br/>
+      general_error: Your state issued ID could not be verified.  Please try
+        using different images starting with the front of your state issued ID.
+      general_info: |-
         <p>If you are using a camera please ensure you&#58;<ul> <li>Make sure you
         are in a well-lit area</li> <li>Damaged barcodes may fail identification</li>
         <li>The ID represents 80% of the overall image</li> <li>Images are clear (not

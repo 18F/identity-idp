@@ -32,6 +32,7 @@ module Flow
 
     def failure(message, extra = {})
       flow_session[:error_message] = message
+      flow_session[:extra_message] = extra[:extra] unless extra.empty?
       FormResponse.new(success: false, errors: { message: message }, extra: extra)
     end
 

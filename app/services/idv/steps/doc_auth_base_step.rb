@@ -46,12 +46,13 @@ module Idv
 
       def verify_back_image(reset_step:)
         back_image_verified, data = assure_id_results
+        data[:extra] = I18n.t('errors.doc_auth.general_info')
         return failure(data) unless back_image_verified
 
         return [nil, data] if data['Result'] == GOOD_RESULT
 
         mark_step_incomplete(reset_step)
-        failure(I18n.t('errors.doc_auth.general_error_html'), data)
+        failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
       def extract_pii_from_doc(data)

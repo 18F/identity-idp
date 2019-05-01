@@ -14,7 +14,8 @@ ul
   .clearfix.mxn1
     .sm-col.sm-col-8.px1
       = f.input :image, label: false, as: 'file', required: true
-  p.red.bold == flow_session[:error_message]
+  div.alert.alert-error = flow_session[:error_message]
+  div.alert.alert-notice == flow_session[:extra_message]
   div id= 'target'
   br
   .mt0
