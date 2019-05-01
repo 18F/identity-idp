@@ -1005,7 +1005,7 @@ production:
   'urn:gov:gsa:openidconnect.profiles:sp:sso:usgs:isb_keycloak':
     agency_id: 16
     friendly_name: 'ScienceBase Login'
-    agency: 'USGS'
+    agency: 'DOI'
     logo: 'usgs.svg'
     return_to_sp_url: 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
     redirect_uris:
