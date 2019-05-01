@@ -1000,3 +1000,21 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # DOI - USGS / CHS - ISB Keycloak server.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:usgs:isb_keycloak':
+    agency_id: 16
+    friendly_name: 'ScienceBase Login'
+    agency: 'USGS'
+    logo: 'usgs.svg'
+    return_to_sp_url: 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+    redirect_uris:
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint/logout_response'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/protocol/openid-connect/logout'
+    cert: 'usgs_prod'
+    attribute_bundle:
+      - email
+    ial: 1
+    restrict_to_deploy_env: 'prod'
