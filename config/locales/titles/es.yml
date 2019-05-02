@@ -42,7 +42,6 @@ es:
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta
-      start: Empezar
     sign_up:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó su cuenta

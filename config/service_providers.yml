@@ -99,6 +99,7 @@ development:
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
     block_encryption: 'aes256-cbc'
     cert: 'sp_sinatra_demo'
+    ial: 2
     attribute_bundle:
       - email
 
