@@ -15,16 +15,19 @@ namespace :job_runs do
         # Check this datetime.  If now > 7pm, insert a new record
         if jr.blank? && Time.zone.now.hour > 19
           jr = JobRun.new
-          # jr.host =
-          # jr.pid =
+          jr.host = Socket.gethostname
+          jr.pid = Process.pid
           jr.start_time = Time.zone.now
-          # jr.job_name =
+          jr.job_name = 'Send GPO Letters'
 
           # Insert record
           jr.save
 
           # Run actual uploader task
           UspsConfirmationUploader.new.run
+
+          jr.finish_time = Time.zone.now
+          jr.update
         end
       end
       # ActiveRecord::Base.connection.execute(sql_lock)
