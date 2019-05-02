@@ -242,31 +242,6 @@ describe SignUp::RegistrationsController, devise: true do
     end
   end
 
-  describe '#show' do
-    it 'tracks page visit' do
-      stub_analytics
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_INTRO_VISIT)
-
-      get :show, params: { request_id: 'foo' }
-    end
-
-    it 'cannot be viewed by signed in users' do
-      stub_sign_in
-
-      get :show
-
-      expect(response).to redirect_to account_path
-    end
-
-    it 'redirects to sign_up_email_path if request_id param is missing' do
-      get :show
-
-      expect(response).to redirect_to sign_up_email_path
-    end
-  end
-
   def mock_captcha(enabled:, present:, valid:)
     allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(enabled)
     allow_any_instance_of(SignUp::RegistrationsController).to receive(:verify_recaptcha).

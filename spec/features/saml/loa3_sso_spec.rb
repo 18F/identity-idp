@@ -9,7 +9,6 @@ feature 'LOA3 Single Sign On' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     visit saml_authn_request
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
     fill_out_idv_jurisdiction_ok
@@ -57,10 +56,8 @@ feature 'LOA3 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_path).to match sign_up_start_path
+      expect(current_path).to match new_user_session_path
       expect(page).to have_content(sp_content)
-      expect(page).to have_css('.accordion-header-controls',
-                               text: t('devise.registrations.start.accordion'))
     end
 
     it 'shows user the start page with a link back to the SP' do
