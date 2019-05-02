@@ -55,16 +55,15 @@ module RememberDeviceConcern
       category: 'authentication',
       event_action: 'device-remembered',
       method: 'same-device',
-      client_id: ga_client_id,
+      client_id: grab_ga_client_id,
     ).send_event
   end
 
   def grab_ga_client_id
-    return false unless request.cookies
-    ga_cookie = request.cookies['_ga'] if request.cookies("_ga")
+    ga_cookie = request.cookies['_ga']
+    return if ga_cookie.blank?
     ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
     return ga_client_id[0] if ga_client_id
-    false
   end
 
   def remember_device_cookie_expiration
