@@ -53,7 +53,6 @@ shared_examples 'verification step max attempts' do |step, sp|
 
       Timecop.travel reattempt_interval do
         visit_idp_from_sp_with_loa3(:oidc)
-        click_link t('links.sign_in')
         sign_in_live_with_2fa(user)
 
         expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))

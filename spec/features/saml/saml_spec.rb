@@ -13,7 +13,7 @@ feature 'saml api' do
       it 'directs users to the start page' do
         visit authnrequest_get
 
-        expect(current_path).to eq sign_up_start_path
+        expect(current_path).to eq new_user_session_path
       end
 
       it 'prompts the user to enter OTP' do

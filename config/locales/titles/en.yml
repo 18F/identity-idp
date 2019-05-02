@@ -42,7 +42,6 @@ en:
     reactivate_account: Reactivate your account
     registrations:
       new: Sign up for a account
-      start: Get started
     sign_up:
       completion_html: You have %{accent} with %{app}
       loa1: created your account
