@@ -11,6 +11,7 @@ en:
       backup_code_confirm_regenerate: Yes, regenerate codes
       backup_codes_exist: generated
       backup_codes_no_exist: not generated
+      default: default
       device: "%{browser} on %{os}"
       dob: Date of birth
       email: Email address
@@ -18,7 +19,6 @@ en:
       login: Login Information
       password: Password
       phone: Phone number
-      default: default
       phone_add: "+ Add phone"
       piv_cac_card: PIV/CAC Card
       piv_cac_disabled: not enabled

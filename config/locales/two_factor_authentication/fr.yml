@@ -72,10 +72,11 @@ fr:
       title: Comment devrions-nous vous envoyer un code?
       voice: Appel téléphonique
     otp_make_default_number:
-      title: Faites-en votre numéro de téléphone par défaut?
-      instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le téléphone
-        par défaut. numéro que vous recevez des messages texte ou des appels téléphoniques.
+      instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
+        téléphone par défaut. numéro que vous recevez des messages texte ou des appels
+        téléphoniques.
       label: Numéro de téléphone par défaut
+      title: Faites-en votre numéro de téléphone par défaut?
     personal_key_fallback:
       question: Vous n'avez pas votre clé personnelle?
     personal_key_header_text: Entrez votre clé personnelle

@@ -74,10 +74,10 @@ es:
       title: "¿Cómo deberíamos enviarle un código?"
       voice: Llamada telefónica
     otp_make_default_number:
-      title: ¿Es este tu número de teléfono predeterminado?
       instruction: Marque la casilla a continuación si desea que este sea el teléfono
         predeterminado número que recibe mensajes de texto o llamadas telefónicas.
       label: Número de teléfono predeterminado
+      title: "¿Es este tu número de teléfono predeterminado?"
     personal_key_fallback:
       question: "¿No tiene su clave personal?"
     personal_key_header_text: Ingrese su clave personal

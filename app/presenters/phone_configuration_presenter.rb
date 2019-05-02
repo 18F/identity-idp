@@ -9,6 +9,7 @@ class PhoneConfigurationPresenter
   end
 
   def default_msg
-    t('account.index.default') if @phone_configuration == @view.current_user.default_phone_configuration
+    t('account.index.default') if
+      @phone_configuration == @view.current_user.default_phone_configuration
   end
 end

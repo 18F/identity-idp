@@ -5,7 +5,8 @@ class UserPhoneForm
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference, :otp_make_default_number, :phone_configuration
+  attr_accessor :phone, :international_code, :otp_delivery_preference,
+                :otp_make_default_number, :phone_configuration
 
   def initialize(user, phone_configuration)
     self.user = user
