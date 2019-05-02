@@ -500,9 +500,7 @@ feature 'Sign in' do
 
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1(:saml)
-      click_link t('links.sign_in')
       visit_idp_from_sp_with_loa1(:oidc)
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue

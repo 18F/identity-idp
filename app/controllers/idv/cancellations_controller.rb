@@ -16,6 +16,14 @@ module Idv
       @presenter = CancellationConfirmationPresenter.new
       idv_session = user_session[:idv]
       idv_session&.clear
+      reset_doc_auth
+    end
+
+    private
+
+    def reset_doc_auth
+      user_session.delete('idv/doc_auth')
+      user_session['idv'] = { params: {}, step_attempts: { phone: 0 } }
     end
   end
 end

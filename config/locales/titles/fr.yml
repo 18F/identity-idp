@@ -42,7 +42,6 @@ fr:
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte
-      start: Démarrer
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé votre compte
