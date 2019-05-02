@@ -441,7 +441,7 @@ describe SamlIdpController do
 
       it 'redirects the user to the SP landing page with the request_id in the params' do
         sp_request_id = ServiceProviderRequest.last.uuid
-        expect(response).to redirect_to sign_up_start_path(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
       end
     end
 
