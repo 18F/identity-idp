@@ -65,9 +65,12 @@ describe 'devise/sessions/new.html.slim' do
     it 'displays a custom header' do
       render
 
-      expect(rendered).to have_content(
-        t('headings.sign_in_with_sp', sp: 'Awesome Application!'),
-      )
+      sp_content = [
+        'Awesome Application!',
+        t('headings.create_account_with_sp.sp_text'),
+      ].join(' ')
+
+      expect(rendered).to have_content(sp_content)
     end
 
     it 'displays a back to sp link' do

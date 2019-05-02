@@ -45,7 +45,7 @@ describe UsersController do
       delete :destroy
 
       expect(response).
-        to redirect_to sign_up_start_path(request_id: 'foo')
+        to redirect_to new_user_session_path(request_id: 'foo')
     end
 
     it 'tracks the event in analytics when referer is nil' do
