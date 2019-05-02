@@ -41,7 +41,6 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue
@@ -61,7 +60,7 @@ feature 'LOA1 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_url).to match sign_up_start_path
+      expect(current_url).to match new_user_session_path
       expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.accordion-header')
     end
@@ -164,7 +163,7 @@ feature 'LOA1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/es\?request_id=.+})
     end
   end
 
@@ -173,11 +172,11 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
   end
 
@@ -187,13 +186,12 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
 
       visit authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('http://localhost:3000')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end

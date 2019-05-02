@@ -5,7 +5,6 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
     user = create(:user, :signed_up)
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
 
     if sp == :oidc
@@ -58,7 +57,6 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
     visit_idp_from_sp_with_loa3(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
@@ -139,7 +137,6 @@ shared_examples 'signing in with wrong credentials' do |sp|
 
       visit_idp_from_sp_with_loa1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
@@ -155,7 +152,6 @@ shared_examples 'signing in with wrong credentials' do |sp|
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
@@ -172,7 +168,6 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     user = create(:user, :with_piv_or_cac)
     MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
@@ -193,7 +188,6 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     user = create(:user, :with_piv_or_cac, :with_authentication_app)
     MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
@@ -218,7 +212,6 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
   old_personal_key = PersonalKeyGenerator.new(user).create
   visit_idp_from_sp_with_loa1(sp)
-  click_link t('links.sign_in')
   fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
   choose_another_security_option('personal_key')
   enter_personal_key(personal_key: old_personal_key)

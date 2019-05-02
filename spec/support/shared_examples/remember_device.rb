@@ -55,7 +55,6 @@ shared_examples 'remember device' do
     ).link_identity(verified_attributes: %w[email])
 
     visit oidc_url
-    click_link t('links.sign_in')
 
     expect(page.response_headers['Content-Security-Policy']).
       to(include('form-action \'self\' http://localhost:7654'))
