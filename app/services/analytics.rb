@@ -29,6 +29,13 @@ class Analytics
     ).send_event
   end
 
+  def grab_ga_client_id
+    ga_cookie = request.cookies['_ga']
+    return if ga_cookie.blank?
+    ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
+    return ga_client_id[0] if ga_client_id
+  end
+
   attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes

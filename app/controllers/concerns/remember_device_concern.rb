@@ -55,16 +55,11 @@ module RememberDeviceConcern
       category: 'authentication',
       event_action: 'device-remembered',
       method: 'same-device',
-      client_id: grab_ga_client_id,
+      client_id: analytics.grab_ga_client_id,
     ).send_event
   end
 
-  def grab_ga_client_id
-    ga_cookie = request.cookies['_ga']
-    return if ga_cookie.blank?
-    ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
-    return ga_client_id[0] if ga_client_id
-  end
+
 
   def remember_device_cookie_expiration
     Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours.from_now

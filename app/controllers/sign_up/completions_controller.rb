@@ -10,7 +10,7 @@ module SignUp
     def show
       @view_model = view_model
       if show_completions_page?
-        track_agency_handoff(
+        track_completion_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         )
       else
@@ -83,7 +83,7 @@ module SignUp
         page_occurence: page_occurence }
     end
 
-    def track_completion(last_page)
+    def track_completion_event(last_page)
       analytics.track_event(
         Analytics::USER_REGISTRATION_COMPLETE,
         service_provider_attributes(last_page),
@@ -92,7 +92,7 @@ module SignUp
         category: 'registration',
         event_action: 'completion',
         method: last_page,
-        client_id: ga_client_id,
+        client_id: analytics.grab_ga_client_id,
       ).send_event
     end
   end
