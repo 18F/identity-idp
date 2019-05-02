@@ -23,16 +23,16 @@ en:
       general_error: Your state issued ID could not be verified.  Please try using
         different images starting with the front of your state issued ID.
       general_info: |-
-        <div class="bold">Si está utilizando una cámara, asegúrese de</div>
+        <div class="bold">If you are using a camera please ensure</div>
         <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
-        <li class="mxn3">Estás en una zona bien iluminada</li>
-        <li class="mxn3">Su identificación no tiene ningún código de barras dañado</li>
-        <li class="mxn3">La identificación representa el 80% de la imagen general</li>
-        <li class="mxn3">Las imágenes son claras (no borrosas) y enfocadas</li>
-        <li class="mxn3">No hay reflejos, sombras o reflejos</li>
-        <li class="mxn3">La identificación se destaca del fondo</li>
-        <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
-        <li class="mxn3">El fondo es visible detrás del documento</li>
+        <li class="mxn3">You are in a well-lit area</li>
+        <li class="mxn3">Your ID does not have any damaged barcodes</li>
+        <li class="mxn3">The ID represents 80% of the overall image</li>
+        <li class="mxn3">Images are clear (not blurry) and in focus</li>
+        <li class="mxn3">No glare, shadow, or reflection is present</li>
+        <li class="mxn3">The ID stands out from the background</li>
+        <li class="mxn3">The background behind your ID is a solid color</li>
+        <li class="mxn3">Background is visible behind the document</li>
         </ul>
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.

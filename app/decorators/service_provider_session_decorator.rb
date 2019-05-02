@@ -100,7 +100,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def cancel_link_url
-    view_context.sign_up_start_url(request_id: sp_session[:request_id])
+    view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
 
   def failure_to_proof_url
