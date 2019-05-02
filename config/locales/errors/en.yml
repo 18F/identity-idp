@@ -24,7 +24,7 @@ en:
         using different images starting with the front of your state issued ID.
       general_info: |-
         <div class="bold">Si está utilizando una cámara, asegúrese de</div>
-        <ul class="mxn2 mt1 pl3 mb1">
+        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
         <li class="mxn3">Estás en una zona bien iluminada</li>
         <li class="mxn3">Su identificación no tiene ningún código de barras dañado</li>
         <li class="mxn3">La identificación representa el 80% de la imagen general</li>

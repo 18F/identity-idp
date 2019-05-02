@@ -25,7 +25,7 @@ es:
         su identificación emitida por el estado.
       general_info: |-
         <div class="bold">If you are using a camera please ensure</div>
-        <ul class="mxn2 mt1 pl3 mb1">
+        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
         <li class="mxn3">You are in a well-lit area</li>
         <li class="mxn3">Your ID does not have any damaged barcodes</li>
         <li class="mxn3">The ID represents 80% of the overall image</li>
