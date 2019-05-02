@@ -24,7 +24,6 @@ describe 'signing in with remember device and idling on the sign in page' do
 
     visit_idp_from_sp_with_loa1(:oidc)
     request_id = ServiceProviderRequest.last.uuid
-    click_link t('links.sign_in')
 
     Timecop.travel(Devise.timeout_in + 1.minute) do
       # Simulate being idle on the sign in page long enough for the session to

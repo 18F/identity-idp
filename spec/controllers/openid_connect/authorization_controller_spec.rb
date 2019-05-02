@@ -182,7 +182,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         action
         sp_request_id = ServiceProviderRequest.last.uuid
 
-        expect(response).to redirect_to sign_up_start_url(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
       end
 
       it 'sets sp information in the session' do
