@@ -15,7 +15,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
   end
 
   scenario 'new user start registration page' do
-    visit sign_up_start_path
+    visit new_user_session_path
 
     expect(page).to be_accessible
   end

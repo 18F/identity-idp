@@ -12,5 +12,3 @@ p = t('forms.webauthn_setup.success_text')
 
 = button_to(t('forms.buttons.continue'), @next_url, method: :get,
     class: 'btn btn-primary btn-wide sm-col-6 col-12')
-
-= render 'shared/cancel', link: destroy_user_session_path
