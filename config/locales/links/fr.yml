@@ -12,6 +12,7 @@ fr:
     contact: Contact
     copy: Copier
     create_account: Créer un compte
+    create_helper: Vous n'avez pas de compte?
     go_back: Retourner
     help: Aide
     my_account: mon compte
@@ -21,7 +22,6 @@ fr:
     privacy_policy: Confidentialité et sécurité
     resend: Renvoyer
     reverify: Veuillez vérifier votre identité de nouveau.
-    sign_in: Connexion
     sign_out: Déconnexion
     two_factor_authentication:
       get_another_code: Obtenir un autre code
