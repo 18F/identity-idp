@@ -46,7 +46,7 @@ module Idv
 
       def verify_back_image(reset_step:)
         back_image_verified, data = assure_id_results
-        data[:extra] = I18n.t('errors.doc_auth.general_info')
+        data = data.merge(extra: I18n.t('errors.doc_auth.general_info'))
         return failure(data) unless back_image_verified
 
         return [nil, data] if data['Result'] == GOOD_RESULT
