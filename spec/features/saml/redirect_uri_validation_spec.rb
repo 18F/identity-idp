@@ -15,7 +15,6 @@ describe 'redirect_uri validation' do
       expect(page).
         to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
 
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue

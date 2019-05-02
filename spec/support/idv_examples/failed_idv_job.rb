@@ -7,7 +7,6 @@ shared_examples 'failed idv job' do |step|
 
   before do
     visit_idp_from_sp_with_loa3(:oidc)
-    click_link t('links.sign_in')
     complete_idv_steps_before_step(step)
   end
 

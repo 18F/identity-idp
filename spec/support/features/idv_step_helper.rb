@@ -10,7 +10,6 @@ module IdvStepHelper
   def start_idv_from_sp(sp = :oidc)
     if sp.present?
       visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
     else
       visit root_path
     end
