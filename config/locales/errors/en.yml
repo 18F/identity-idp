@@ -20,8 +20,8 @@ en:
     doc_auth:
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
-      general_error: Your state issued ID could not be verified.  Please try
-        using different images starting with the front of your state issued ID.
+      general_error: Your state issued ID could not be verified.  Please try using
+        different images starting with the front of your state issued ID.
       general_info: |-
         <div class="bold">Si está utilizando una cámara, asegúrese de</div>
         <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
