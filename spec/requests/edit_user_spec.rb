@@ -13,7 +13,9 @@ describe 'user edits their account', email: true do
   context 'user changes email address' do
     before do
       sign_in_user(user)
-      put manage_email_path, params: { update_user_email_form: { email: 'new_email@example.com' } }
+
+      path = manage_email_path(id: user.email_addresses.take.id)
+      put path, params: { update_user_email_form: { email: 'new_email@example.com' } }
     end
 
     it 'displays a notice informing the user their email has been confirmed when user confirms' do
@@ -55,7 +57,8 @@ describe 'user edits their account', email: true do
         expect(attributes.keys).to match_array keys
       end
 
-      put manage_email_path, params: params, headers: headers
+      path = manage_email_path(id: user.email_addresses.take.id)
+      put path, params: params, headers: headers
 
       expect(response.status).to eq 400
     end

@@ -6,6 +6,7 @@ describe Users::EmailsController do
 
   describe '#update' do
     let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+    let(:email_address) { user.email_addresses.first }
     let(:second_user) { create(:user, :signed_up, email: 'another@example.com') }
     let(:new_email) { 'new_email@example.com' }
 
@@ -23,7 +24,10 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, params: { update_user_email_form: { email: new_email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: new_email },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -48,7 +52,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: '' } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: '' },
+        }
 
         expect(user.reload.email).to be_present
         expect(@analytics).to have_received(:track_event).
@@ -70,7 +77,10 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, params: { update_user_email_form: { email: second_user.email.upcase } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: second_user.email.upcase },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -95,7 +105,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: invalid_email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: invalid_email },
+        }
 
         expect(user.reload.email).not_to eq invalid_email
         expect(@analytics).to have_received(:track_event).
@@ -117,7 +130,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: user.email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: user.email },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty
@@ -128,7 +144,10 @@ describe Users::EmailsController do
 
     it 'renders edit if email is a Hash' do
       stub_sign_in(user)
-      put :update, params: { update_user_email_form: { email: { foo: 'bar' } } }
+      put :update, params: {
+        id: email_address.id,
+        update_user_email_form: { email: { foo: 'bar' } },
+      }
 
       expect(response).to render_template(:edit)
     end

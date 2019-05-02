@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.slim' do
-  let(:user) { build(:user, :signed_up, :with_email) }
+  let(:user) { create(:user, :signed_up, :with_email) }
   let(:decorated_user) { user.decorate }
 
   before do
@@ -37,7 +37,7 @@ describe 'accounts/show.html.slim' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { build(:user, :signed_up, :with_email, otp_secret_key: '123') }
+    let(:user) { create(:user, :signed_up, :with_email, otp_secret_key: '123') }
 
     before do
       assign(
