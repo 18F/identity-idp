@@ -75,7 +75,7 @@ module TwoFactorAuthentication
         analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
       end
 
-      analytics.track_mfa_submit_event(properties, grab_ga_client_id)
+      analytics.track_mfa_submit_event(properties, analytics.grab_ga_client_id)
     end
 
     def analytics_properties
