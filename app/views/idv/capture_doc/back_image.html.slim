@@ -10,7 +10,7 @@ h1.h3.my0 = t('doc_auth.headings.upload_back')
   .clearfix.mxn1
     .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true
-  - if !flow_session[:error_message].nil?
+  - unless flow_session[:error_message].nil?
     .alert.alert-error = flow_session[:error_message]
     .alert.alert-notice == flow_session[:notice]
   .mb4 id= 'target'
