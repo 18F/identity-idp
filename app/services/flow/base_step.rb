@@ -30,9 +30,11 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
-    def failure(message, extra = {})
+    def failure(message, extra = nil)
       flow_session[:error_message] = message
-      FormResponse.new(success: false, errors: { message: message }, extra: extra)
+      hash = { success: false, errors: { message: message } }
+      hash[:extra] = extra unless extra.nil?
+      FormResponse.new(hash)
     end
 
     def flow_params
