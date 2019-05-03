@@ -86,7 +86,7 @@ module SignUp
     def track_completion_event(last_page)
       analytics.track_event(
         Analytics::USER_REGISTRATION_COMPLETE,
-        service_provider_attributes(last_page),
+        new_service_provider_attributes(last_page),
       )
       GoogleAnalyticsMeasurement.new(
         category: 'registration',
