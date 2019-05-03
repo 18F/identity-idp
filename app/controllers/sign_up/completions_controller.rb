@@ -15,7 +15,6 @@ module SignUp
           analytics_attributes(''),
         )
       else
-        track_completion_event('account-page')
         return_to_account
       end
     end
@@ -60,7 +59,7 @@ module SignUp
     end
 
     def return_to_account
-      track_completion_event('account')
+      track_completion_event('account-page')
       redirect_to account_url
     end
 
