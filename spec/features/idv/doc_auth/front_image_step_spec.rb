@@ -59,7 +59,7 @@ shared_examples 'front image step' do |simulate|
       end
     end
 
-    it 'catches network connection errors' do
+    it 'catches network connection errors on post_front_image' do
       allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_front_image).
         and_raise(Faraday::ConnectionFailed.new('error'))
 
@@ -72,8 +72,34 @@ shared_examples 'front image step' do |simulate|
       end
     end
 
-    it 'catches network timeout errors' do
+    it 'catches network connection errors on results' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+        and_raise(Faraday::ConnectionFailed.new('error'))
+
+      attach_image
+      click_idv_continue
+
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_front_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+    end
+
+    it 'catches network timeout errors on post_front_image' do
       allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_front_image).
+        and_raise(Faraday::TimeoutError)
+
+      attach_image
+      click_idv_continue
+
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_front_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+    end
+
+    it 'catches network timeout errors on results' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
         and_raise(Faraday::TimeoutError)
 
       attach_image
