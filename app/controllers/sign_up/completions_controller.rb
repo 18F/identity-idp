@@ -11,9 +11,9 @@ module SignUp
       @view_model = view_model
       if show_completions_page?
         analytics.track_event(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        analytics_attributes(''),
-      )
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+          analytics_attributes(''),
+        )
       else
         track_completion_event('account-page')
         return_to_account
