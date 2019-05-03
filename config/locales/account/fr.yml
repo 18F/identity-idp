@@ -27,7 +27,7 @@ fr:
           de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver
           votre profil.
         link: Réactivez votre profil maintenant.
-      sign_in_location_and_ip: "{ip} (adresse IP probablement située dans %{location})"
+      sign_in_location_and_ip: "%{ip} (adresse IP probablement située dans %{location})"
       ssn: Numéro d'assurance sociale
       unknown_location: lieu inconnu
       verification:
