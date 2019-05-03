@@ -1,9 +1,13 @@
 class JobRun < ApplicationRecord
+  validates :host, presence: true
   validates :pid, presence: true
 
   after_initialize :set_default_values
 
-  # Acquire exclusive read/write lock on whole table
+  # Run code with an exclusive read/write lock on the whole job_run table
+  #
+  # @yield Calls the provided block while the lock is held
+  #
   def self.with_lock
     raise ArgumentError, 'Must pass block' unless block_given?
 
@@ -11,16 +15,16 @@ class JobRun < ApplicationRecord
       connection.execute(
         "LOCK #{table_name} IN ACCESS EXCLUSIVE MODE",
       )
-      # Yield to caller block
+      # Yield to caller block with the lock held
       yield
     end
   end
 
   private
 
+  # Set default attributes for the model
   def set_default_values
-    Rails.logger.warn("Setting defaults")
-    self.host = Socket.gethostname
-    self.pid = Process.pid
+    self.host ||= Socket.gethostname
+    self.pid ||= Process.pid
   end
 end
