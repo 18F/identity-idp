@@ -33,7 +33,7 @@ module Flow
     def failure(message, extra = nil)
       flow_session[:error_message] = message
       hash = { success: false, errors: { message: message } }
-      hash.merge!(extra: extra) unless extra.nil?
+      hash[:extra] = extra unless extra.nil?
       FormResponse.new(hash)
     end
 
