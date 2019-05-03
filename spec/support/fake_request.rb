@@ -1,7 +1,7 @@
 class FakeRequest
   attr_accessor :cookies
 
-  def initialize(cookies = {test:'fake_cookies'})
+  def initialize(cookies = { test: 'fake_cookies' })
     @cookies = cookies
   end
 

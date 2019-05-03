@@ -100,28 +100,25 @@ describe Analytics do
       client_id = analytics.grab_ga_client_id
 
       expect(client_id).to be_nil
-
     end
 
     it 'returns nil if there is a ga cookie but is not formatted properly ' do
       user = build_stubbed(:user, uuid: '123')
-      request = FakeRequest.new({_ga: 'GA1.4.33333A3333.2!!!!!#$$%'})
+      request = FakeRequest.new(_ga: 'GA1.4.33333A3333.2!!!!!#$$%')
       analytics = Analytics.new(
         user: user,
         request: request,
         sp: 'http://localhost:3000',
         ahoy: ahoy,
       )
-    
       client_id = analytics.grab_ga_client_id
 
       expect(client_id).to be_nil
-
     end
 
     it 'returns a ga_client_id string if there is a valid cookie' do
       user = build_stubbed(:user, uuid: '123')
-      request = FakeRequest.new({_ga: 'GA1.4.3333333333.1142002911'})
+      request = FakeRequest.new(_ga: 'GA1.4.3333333333.1142002911')
 
       analytics = Analytics.new(
         user: user,
