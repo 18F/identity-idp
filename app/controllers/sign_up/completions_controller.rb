@@ -10,10 +10,12 @@ module SignUp
     def show
       @view_model = view_model
       if show_completions_page?
-        track_completion_event(
-          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        )
+        analytics.track_event(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+        analytics_attributes(''),
+      )
       else
+        track_completion_event('account-page')
         return_to_account
       end
     end
@@ -86,7 +88,7 @@ module SignUp
     def track_completion_event(last_page)
       analytics.track_event(
         Analytics::USER_REGISTRATION_COMPLETE,
-        new_service_provider_attributes(last_page),
+        analytics_attributes(last_page),
       )
       GoogleAnalyticsMeasurement.new(
         category: 'registration',
