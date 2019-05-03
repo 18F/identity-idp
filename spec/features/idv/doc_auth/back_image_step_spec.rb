@@ -91,7 +91,7 @@ shared_examples 'back image step' do |simulate|
 
     it 'catches network timeout errors' do
       allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
-        and_raise(Faraday::Faraday::TimeoutError)
+        and_raise(Faraday::TimeoutError)
 
       attach_image
       click_idv_continue
