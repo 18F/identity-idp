@@ -1,5 +1,4 @@
 class FakeRequest
-  attr_accessor :cookies
 
   def remote_ip
     '127.0.0.1'
