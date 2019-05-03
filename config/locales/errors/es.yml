@@ -18,7 +18,8 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
-      acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas. Por favor, inténtelo de nuevo más tarde.
+      acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
+        Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
       general_error: Su identificación emitida por el estado no pudo ser verificada.
