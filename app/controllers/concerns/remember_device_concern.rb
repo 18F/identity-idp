@@ -59,8 +59,6 @@ module RememberDeviceConcern
     ).send_event
   end
 
-
-
   def remember_device_cookie_expiration
     Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours.from_now
   end
