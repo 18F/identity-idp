@@ -1,10 +1,6 @@
 class FakeRequest
   attr_accessor :cookies
 
-  def initialize(cookies = { test: 'fake_cookies' })
-    @cookies = cookies
-  end
-
   def remote_ip
     '127.0.0.1'
   end
@@ -19,5 +15,9 @@ class FakeRequest
 
   def headers
     'fake_headers'
+  end
+
+  def cookies
+    'fake_cookies'
   end
 end

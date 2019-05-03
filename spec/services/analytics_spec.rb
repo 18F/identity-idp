@@ -86,13 +86,14 @@ describe Analytics do
     end
   end
 
-  describe '#grab_ga_client_di' do
+  describe '#grab_ga_client_id' do
     it 'returns nil if there is not a ga cookie' do
       user = build_stubbed(:user, uuid: '123')
-
+      request = FakeRequest.new
+      allow(request).to receive(:cookies).and_return({})
       analytics = Analytics.new(
         user: user,
-        request: FakeRequest.new,
+        request: request,
         sp: 'http://localhost:3000',
         ahoy: ahoy,
       )
@@ -104,7 +105,8 @@ describe Analytics do
 
     it 'returns nil if there is a ga cookie but is not formatted properly ' do
       user = build_stubbed(:user, uuid: '123')
-      request = FakeRequest.new(_ga: 'GA1.4.33333A3333.2!!!!!#$$%')
+      request = FakeRequest.new
+      allow(request).to receive(:cookies).and_return(_ga: 'GA1.4.33333A3333.2!!!!!#$$%')
       analytics = Analytics.new(
         user: user,
         request: request,
@@ -118,7 +120,8 @@ describe Analytics do
 
     it 'returns a ga_client_id string if there is a valid cookie' do
       user = build_stubbed(:user, uuid: '123')
-      request = FakeRequest.new(_ga: 'GA1.4.3333333333.1142002911')
+      request = FakeRequest.new
+      allow(request).to receive(:cookies).and_return(_ga: 'GA1.4.3333333333.1142002911')
 
       analytics = Analytics.new(
         user: user,
