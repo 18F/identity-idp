@@ -23,7 +23,7 @@ describe 'New device tracking' do
           user.email_addresses.first,
           device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
             strftime('%B %-d, %Y %H:%M Eastern Time'),
-          'From United States (IP address: 127.0.0.1)',
+          'From 127.0.0.1 (IP address potentially located in United States)',
           instance_of(String),
         )
       expect(SmsNewDeviceSignInNotifierJob).to have_received(:perform_now).
@@ -66,7 +66,7 @@ describe 'New device tracking' do
           user.email_addresses.first,
           device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
             strftime('%B %-d, %Y %H:%M Eastern Time'),
-          'From United States (IP address: 127.0.0.1)',
+          'From 127.0.0.1 (IP address potentially located in United States)',
           instance_of(String),
         )
       expect(SmsNewDeviceSignInNotifierJob).to_not have_received(:perform_now)
