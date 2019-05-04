@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190407103634) do
+ActiveRecord::Schema.define(version: 20190502143706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,6 +158,22 @@ ActiveRecord::Schema.define(version: 20190407103634) do
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
+  end
+
+  create_table "job_runs", force: :cascade do |t|
+    t.string "host", null: false
+    t.string "pid", null: false
+    t.datetime "finish_time"
+    t.string "job_name", null: false
+    t.string "result"
+    t.string "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_job_runs_on_created_at"
+    t.index ["error"], name: "index_job_runs_on_error"
+    t.index ["finish_time"], name: "index_job_runs_on_finish_time"
+    t.index ["host"], name: "index_job_runs_on_host"
+    t.index ["job_name"], name: "index_job_runs_on_job_name"
   end
 
   create_table "otp_requests_trackers", force: :cascade do |t|

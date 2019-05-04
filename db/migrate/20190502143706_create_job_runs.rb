@@ -6,12 +6,15 @@ class CreateJobRuns < ActiveRecord::Migration[5.1]
       t.datetime :finish_time
       t.string :job_name, null: false
       t.string :result
-      t.boolean :errored
+      t.string :error
 
       t.timestamps
     end
+
+    add_index :job_runs, :created_at
+    add_index :job_runs, :error
+    add_index :job_runs, :finish_time
     add_index :job_runs, :host
-    add_index :job_runs, [:job_name, :created_at, :finish_time]
-    add_index :job_runs, [:created_at, :errored]
+    add_index :job_runs, :job_name
   end
 end

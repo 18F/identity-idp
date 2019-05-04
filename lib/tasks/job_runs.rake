@@ -1,6 +1,6 @@
 namespace :job_runs do
   task run: :environment do
-    puts 'Calling job runner'
+    warn 'Calling job runner. See rails log for output.'
 
     JobRunner::Runner.run
   end
