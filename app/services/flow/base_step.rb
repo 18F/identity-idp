@@ -35,7 +35,7 @@ module Flow
       form_response_params = { success: false, errors: { message: message } }
       if extra.present?
         flow_session[:notice] = extra[:notice]
-        form_resposne[:extra] = extra unless extra.nil?
+        form_response_params[:extra] = extra unless extra.nil?
       end
       FormResponse.new(form_response_params)
     end
