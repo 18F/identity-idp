@@ -45,9 +45,9 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        back_image_verified, data = assure_id_results
+        back_image_verified, data, analytics_hash = assure_id_results
         data[:notice] = I18n.t('errors.doc_auth.general_info')
-        return failure(data) unless back_image_verified
+        return failure(data, analytics_hash) unless back_image_verified
 
         return [nil, data] if data['Result'] == GOOD_RESULT
 
@@ -75,7 +75,7 @@ module Idv
 
       def assure_id_results
         return [true, { 'Result' => GOOD_RESULT }] if test_credentials?
-        assure_id.results
+        rescue_network_errors { assure_id.results }
       end
 
       def post_back_image
@@ -91,13 +91,13 @@ module Idv
       def throttle_post_front_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
         increment_attempts
-        assure_id.post_front_image(image.read)
+        rescue_network_errors { assure_id.post_front_image(image.read) }
       end
 
       def throttle_post_back_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
         increment_attempts
-        assure_id.post_back_image(image.read)
+        rescue_network_errors { assure_id.post_back_image(image.read) }
       end
 
       def test_credentials?
@@ -116,6 +116,17 @@ module Idv
 
       def user_id
         current_user ? current_user.id : user_id_from_token
+      end
+
+      def rescue_network_errors
+        yield
+      rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
+        NewRelic::Agent.notice_error(exception)
+        [
+          false,
+          I18n.t('errors.doc_auth.acuant_network_error'),
+          { acuant_network_error: exception.message },
+        ]
       end
 
       delegate :idv_session, to: :@flow

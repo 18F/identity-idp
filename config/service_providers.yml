@@ -697,6 +697,20 @@ production:
       - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/LoginHandler'
     restrict_to_deploy_env: 'prod'
 
+  # DOT Delphi eInvoicing
+  'SP:EINVOICE_DCC_PROD':
+    agency: 'DOT'
+    agency_id: 6
+    friendly_name: 'Delphi eInvoicing'
+    logo: 'dot.svg'
+    cert: 'dot_einvoicing_prod'
+    acs_url: 'https://einvoice.esc.gov:4443/oam/server/fed/sp/sso'
+    return_to_sp_url: 'https://einvoice.esc.gov:4443'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
   # SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam':
     agency_id: 9
@@ -1015,4 +1029,22 @@ production:
     block_encryption: 'aes256-cbc'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # DOI - USGS / CHS - ISB Keycloak server.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:usgs:isb_keycloak':
+    agency_id: 16
+    friendly_name: 'ScienceBase Login'
+    agency: 'DOI'
+    logo: 'usgs.svg'
+    return_to_sp_url: 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+    redirect_uris:
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint/logout_response'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/protocol/openid-connect/logout'
+    cert: 'usgs_prod'
+    attribute_bundle:
+      - email
+    ial: 1
     restrict_to_deploy_env: 'prod'
