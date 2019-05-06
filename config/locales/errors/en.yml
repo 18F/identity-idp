@@ -22,8 +22,20 @@ en:
         try again later.
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
-      general_error: Your state issued ID could not be verified.  Please try uploading
+      general_error: Your state issued ID could not be verified.  Please try using
         different images starting with the front of your state issued ID.
+      general_info: |-
+        <div class="bold">If you are using a camera please ensure</div>
+        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
+        <li class="mxn3">You are in a well-lit area</li>
+        <li class="mxn3">Your ID does not have any damaged barcodes</li>
+        <li class="mxn3">The ID represents 80% of the overall image</li>
+        <li class="mxn3">Images are clear (not blurry) and in focus</li>
+        <li class="mxn3">No glare, shadow, or reflection is present</li>
+        <li class="mxn3">The ID stands out from the background</li>
+        <li class="mxn3">The background behind your ID is a solid color</li>
+        <li class="mxn3">Background is visible behind the document</li>
+        </ul>
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You've entered too many incorrect passwords. You
