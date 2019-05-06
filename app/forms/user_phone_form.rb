@@ -14,9 +14,7 @@ class UserPhoneForm
     if phone_configuration.nil?
       self.otp_delivery_preference = user.otp_delivery_preference
     else
-      self.phone = phone_configuration.phone
-      self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
-      self.otp_delivery_preference = phone_configuration.delivery_preference
+      prefill_form(phone_configuration)
     end
     self.otp_make_default_number = true if phone_configuration == user.default_phone_configuration
   end
@@ -39,6 +37,12 @@ class UserPhoneForm
   private
 
   attr_accessor :user, :submitted_phone
+
+  def prefill_form(phone_configuration)
+    self.phone = phone_configuration.phone
+    self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
+    self.otp_delivery_preference = phone_configuration.delivery_preference
+  end
 
   def extra_analytics_attributes
     {
