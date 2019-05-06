@@ -66,9 +66,9 @@ describe ApplicationHelper do
 
   describe '#present' do
     it 'infers the presenter class name from the object being passed in' do
-      ActionView::TestCase::TestControllerPresenter = nil
-      allow(ActionView::TestCase::TestControllerPresenter)
-        .to receive(:new).and_return('TestControllerPresenter')
+      stub_const 'ActionView::TestCase::TestControllerPresenter', Class.new
+      allow(ActionView::TestCase::TestControllerPresenter).to receive(:new)
+        .and_return('TestControllerPresenter')
       expect(helper.present(controller)).to eq('TestControllerPresenter')
     end
   end
