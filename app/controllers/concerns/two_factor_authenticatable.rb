@@ -202,10 +202,20 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
+    mark_user_session_authenticated_analytics(authentication_type)
+  end
+
+  def mark_user_session_authenticated_analytics(authentication_type)
     analytics.track_event(
       Analytics::USER_MARKED_AUTHED,
       authentication_type: authentication_type,
     )
+    GoogleAnalyticsMeasurement.new(
+      category: 'authentication',
+      event_action: 'authenticated',
+      method: authentication_type,
+      client_id: analytics.grab_ga_client_id,
+    ).send_event
   end
 
   def direct_otp_code

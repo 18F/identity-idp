@@ -16,8 +16,8 @@ module Idv
       end
 
       def upload_front_image
-        success, message = post_front_image
-        return failure(message) unless success
+        success, message, analytics_hash = post_front_image
+        return failure(message, analytics_hash) unless success
       end
     end
   end
