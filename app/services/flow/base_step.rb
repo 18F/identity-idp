@@ -30,11 +30,15 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
+    # :reek:FeatureEnvy
     def failure(message, extra = nil)
       flow_session[:error_message] = message
-      hash = { success: false, errors: { message: message } }
-      hash[:extra] = extra unless extra.nil?
-      FormResponse.new(hash)
+      form_response_params = { success: false, errors: { message: message } }
+      if extra.present?
+        flow_session[:notice] = extra[:notice]
+        form_response_params[:extra] = extra unless extra.nil?
+      end
+      FormResponse.new(form_response_params)
     end
 
     def flow_params

@@ -51,6 +51,7 @@ shared_examples 'doc auth mobile back image step' do |simulate|
 
       expect(page).to have_current_path(idv_doc_auth_mobile_front_image_step) unless simulate
       expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
+      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
     end
   end
 end
