@@ -98,7 +98,7 @@ class User < ApplicationRecord
   end
 
   def default_phone_configuration
-    phone_configurations.order('made_default_at DESC NULLS LAST, id DESC').first
+    phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
   # To send emails asynchronously via ActiveJob.

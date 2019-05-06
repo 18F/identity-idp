@@ -75,6 +75,7 @@ module Users
 
     def set_default_phone
       return if user_params['otp_make_default_number'].blank?
+      user_session[:phone_id] = phone_configuration.id
       phone_configuration.made_default_at = Time.zone.now
       phone_configuration.save
     end
