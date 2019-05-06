@@ -145,7 +145,10 @@ module Rack
   end
 end
 
-ActiveSupport::Notifications.subscribe('rack.attack') do |_name, _start, _finish, _request_id, req|
+ActiveSupport::Notifications.subscribe(
+  'rack.attack'
+) do |_name, _start, _finish, _request_id, payload|
+  req = payload[:req]
   user = req.env['warden'].user || AnonymousUser.new
   analytics = Analytics.new(user: user, request: req, sp: nil)
   analytics.track_event(Analytics::RATE_LIMIT_TRIGGERED, type: req.env['rack.attack.matched'])
