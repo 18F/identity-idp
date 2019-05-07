@@ -7,27 +7,6 @@ feature 'View personal key' do
 
   before { stub_twilio_service }
 
-  context 'during sign up' do
-    scenario 'refreshing personal key page displays the same key and does not notify the user' do
-      sign_up_and_view_personal_key
-
-      personal_key = scrape_personal_key
-
-      # The user should not receive an SMS and an email
-      expect(UserMailer).to_not receive(:personal_key_regenerated)
-      expect(SmsPersonalKeyRegenerationNotifierJob).to_not receive(:perform_now)
-
-      visit sign_up_personal_key_path
-
-      expect(current_path).to eq(sign_up_personal_key_path)
-      expect(scrape_personal_key).to eq(personal_key)
-
-      click_acknowledge_personal_key
-
-      expect(current_path).to eq(account_path)
-    end
-  end
-
   context 'after sign up' do
     context 'regenerating personal key' do
       scenario 'displays new code and notifies the user' do

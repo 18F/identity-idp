@@ -1,10 +1,10 @@
 module Users
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
-    include UserNavigationConcern
+    include MfaSetupConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_user_authenticated_for_2fa_setup
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
@@ -29,7 +29,7 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
+      if current_user.totp_enabled? && MfaPolicy.new(current_user).three_or_more_factors_enabled?
         process_successful_disable
       end
       redirect_to account_url
@@ -37,13 +37,9 @@ module Users
 
     private
 
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
-    end
-
     def track_event
       properties = {
-        user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
+        user_signed_up: multiple_factors_enabled?,
         totp_secret_present: new_totp_secret.present?,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
@@ -58,7 +54,7 @@ module Users
       mark_user_as_fully_authenticated
       save_remember_device_preference
       flash[:success] = t('notices.totp_configured')
-      redirect_to url_after_success
+      redirect_to url_after_entering_valid_code
       user_session.delete(:new_totp_secret)
     end
 
@@ -79,6 +75,22 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+    end
+
+    def url_after_entering_valid_code
+      return account_url if user_already_has_a_personal_key?
+
+      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+      if policy.show_personal_key_after_initial_2fa_setup?
+        two_2fa_setup
+      else
+        idv_jurisdiction_url
+      end
+    end
+
+    def user_already_has_a_personal_key?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
 
     def process_invalid_code
