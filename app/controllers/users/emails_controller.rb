@@ -25,8 +25,9 @@ module Users
     private
 
     def authorize_user_to_edit_email
-      return render_not_found if email_address.nil?
       return render_not_found if email_address.user != current_user
+    rescue ActiveRecord::RecordNotFound
+      render_not_found
     end
 
     def email_address

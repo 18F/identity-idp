@@ -4,6 +4,34 @@ describe Users::EmailsController do
   include Features::LocalizationHelper
   include Features::MailerHelper
 
+  describe '#edit' do
+    context 'the user attempts to edit the email of another user' do
+      it 'renders a 404' do
+        user = create(:user)
+        second_user = create(:user)
+        email_address = second_user.email_addresses.first
+
+        stub_sign_in(user)
+
+        put :edit, params: { id: email_address.id }
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'the user attempts to edit an email that does not exist' do
+      it 'renders a 404' do
+        user = create(:user)
+
+        stub_sign_in(user)
+
+        put :edit, params: { id: 9999 }
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe '#update' do
     let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
     let(:email_address) { user.email_addresses.first }
@@ -139,6 +167,34 @@ describe Users::EmailsController do
         expect(flash.keys).to be_empty
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)
+      end
+    end
+
+    context 'the user submits the form with an invalid id' do
+      it 'renders a 404' do
+        stub_sign_in(user)
+
+        put :update, params: {
+          id: 9999,
+          update_user_email_form: { email: 'shouldnotchange@example.com' },
+        }
+
+        expect(response.status).to eq(404)
+        expect(user.reload.email).to_not eq('shouldnotchange@example.com')
+      end
+    end
+
+    context 'the user submits the form with the id of another user' do
+      it 'renders a 404' do
+        stub_sign_in(user)
+
+        put :update, params: {
+          id: second_user.email_addresses.first.id,
+          update_user_email_form: { email: 'shouldnotchange@example.com' },
+        }
+
+        expect(response.status).to eq(404)
+        expect(user.reload.email).to_not eq('shouldnotchange@example.com')
       end
     end
 
