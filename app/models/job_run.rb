@@ -21,7 +21,7 @@ class JobRun < ApplicationRecord
   end
 
   # @param [Time] since
-  def self.find_recent_errors(since:)
+  def self.find_recent_errors(since)
     where('error IS NOT NULL').where('created_at >= ?', since).order(:created_at)
   end
 
