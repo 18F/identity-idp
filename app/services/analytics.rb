@@ -29,6 +29,16 @@ class Analytics
     ).send_event
   end
 
+  def grab_ga_client_id
+    return if ga_cookie.blank?
+    ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
+    return ga_client_id[1] if ga_client_id
+  end
+
+  def ga_cookie
+    request.cookies[:_ga]
+  end
+
   attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
@@ -154,8 +164,8 @@ class Analytics
   TWILIO_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'.freeze
   USER_MARKED_AUTHED = 'User marked authenticated'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
-  USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE = 'User registration: agency handoff complete'.freeze
   USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'.freeze
+  USER_REGISTRATION_COMPLETE = 'User registration: complete'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'.freeze
   USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'.freeze

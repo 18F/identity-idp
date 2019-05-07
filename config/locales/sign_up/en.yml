@@ -4,5 +4,3 @@ en:
     cancel:
       success: Your account has been deleted. We did not save your information.
       warning_header: If you cancel now
-    registrations:
-      create_account: Create an account

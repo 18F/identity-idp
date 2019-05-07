@@ -195,7 +195,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
       and_return([true, ''])
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
-      and_return([true, ACUANT_RESULTS])
+      and_return([true, ACUANT_RESULTS.dup])
     allow_any_instance_of(Idv::Acuant::AssureId).to receive(:face_image).and_return([true, ''])
     allow_any_instance_of(Idv::Acuant::FacialMatch).to receive(:call).
       and_return([true, { 'FacialMatch' => 1 }])
