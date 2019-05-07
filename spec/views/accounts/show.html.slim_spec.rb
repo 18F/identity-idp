@@ -157,7 +157,7 @@ describe 'accounts/show.html.slim' do
 
     context 'user has no phone' do
       let(:user) do
-        record = build(:user, :signed_up, :with_piv_or_cac, :with_email)
+        record = create(:user, :signed_up, :with_piv_or_cac)
         record.phone_configurations = []
         record
       end

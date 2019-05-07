@@ -65,7 +65,7 @@ describe Users::EmailsController do
 
     context "user changes email to another user's email address" do
       it 'lets user know they need to confirm their new email' do
-        stub_sign_in
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
