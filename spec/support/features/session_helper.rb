@@ -26,11 +26,12 @@ module Features
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
+      select_2fa_option('backup_code')
+      click_continue
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       click_submit_default
-      click_acknowledge_personal_key
       user
     end
 
@@ -48,7 +49,7 @@ module Features
     end
 
     def sign_up
-      user = create(:user, :unconfirmed)
+      user = create(:user, :unconfirmed, :with_backup_code)
       confirm_last_user
       user
     end
@@ -310,6 +311,7 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
+      set_up_2fa_with_backup_code
       set_up_2fa_with_valid_phone
 
       expect(page).to have_css('img[src*=sp-logos]')
@@ -317,8 +319,6 @@ module Features
       click_submit_default
 
       # expect(page).to have_css('img[src*=sp-logos]')
-
-      click_acknowledge_personal_key
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -387,6 +387,8 @@ module Features
 
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
+      select_2fa_option('backup_code')
+      click_continue
       set_up_2fa_with_valid_phone
       click_submit_default
       User.find_with_email(email)
@@ -402,6 +404,7 @@ module Features
 
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
+      set_up_2fa_with_backup_code
       set_up_2fa_with_authenticator_app
     end
 
@@ -418,13 +421,17 @@ module Features
     def register_user_with_piv_cac(email = 'test@test.com')
       allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
-
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
         t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
 
       set_up_2fa_with_piv_cac
+    end
+
+    def set_up_2fa_with_backup_code
+      select_2fa_option('backup_code')
+      click_continue
     end
 
     def set_up_2fa_with_piv_cac

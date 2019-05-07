@@ -2,7 +2,6 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
-  include UserNavigationConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -122,6 +121,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_confirmation_context
+    user_session[:authn_at] = Time.zone.now
     assign_phone
   end
 
@@ -167,6 +167,36 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   def reset_otp_session_data
     user_session.delete(:unconfirmed_phone)
     user_session[:context] = 'authentication'
+  end
+
+  def after_otp_verification_confirmation_url
+    if after_otp_action_required?
+      after_otp_action_url
+    else
+      after_sign_in_path_for(current_user)
+    end
+  end
+
+  def after_otp_action_required?
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+    decorated_user.password_reset_profile.present? ||
+      @updating_existing_number ||
+      policy.show_personal_key_after_initial_2fa_setup?
+  end
+
+  def after_otp_action_url
+    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+
+    if policy.show_personal_key_after_initial_2fa_setup?
+      two_2fa_setup
+    elsif @updating_existing_number
+      account_url
+    elsif decorated_user.password_reset_profile.present?
+      reactivate_account_url
+    else
+      account_url
+    end
   end
 
   def mark_user_session_authenticated(authentication_type)
@@ -254,7 +284,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if MfaPolicy.new(current_user).two_factor_enabled?
+    if MfaPolicy.new(current_user).multiple_factors_enabled?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -262,7 +292,7 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && MfaPolicy.new(current_user).two_factor_enabled?
+    confirmation_context? && MfaContext.new(current_user).phone_configurations.exists?
   end
 
   def presenter_for_two_factor_authentication_method

@@ -18,7 +18,7 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: true,
         errors: {},
-        mfa_method_counts: { webauthn: 2, phone: 2 },
+        mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
         account_age_in_days: 0,
       }
       expect(@analytics).

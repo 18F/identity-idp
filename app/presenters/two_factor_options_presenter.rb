@@ -9,19 +9,19 @@ class TwoFactorOptionsPresenter
   end
 
   def title
-    t('titles.two_factor_setup')
+    t("titles.two_factor_#{recovery}setup")
   end
 
   def heading
-    t('two_factor_authentication.two_factor_choice')
+    t("two_factor_authentication.two_factor_#{recovery}choice")
   end
 
   def info
-    t('two_factor_authentication.two_factor_choice_intro')
+    t("two_factor_authentication.two_factor_#{recovery}choice_intro")
   end
 
   def label
-    t('forms.two_factor_choice.legend') + ':'
+    t("forms.two_factor_#{recovery}choice.legend") + ':'
   end
 
   def options
@@ -29,6 +29,14 @@ class TwoFactorOptionsPresenter
   end
 
   private
+
+  def recovery
+    no_factors_enabled? ? '' : 'recovery_'
+  end
+
+  def no_factors_enabled?
+    MfaPolicy.new(current_user).no_factors_enabled?
+  end
 
   def phone_options
     if TwoFactorAuthentication::PhonePolicy.new(current_user).available?

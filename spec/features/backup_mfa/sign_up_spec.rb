@@ -1,17 +1,15 @@
-# Once personal keys are entirely retired and the backup mfa method policy
-# is in place, this spec file can become the spec file for the backup code
-# policy
-
 require 'rails_helper'
 
 shared_examples 'setting up backup mfa on sign up' do
   it 'requires backup mfa on direct sign up' do
-    user = sign_up_and_set_password
+    user = create(:user, :unconfirmed)
+    confirm_last_user
+    fill_in 'password_form_password', with: 'salty pickles'
+    click_button t('forms.buttons.continue')
+
     choose_and_confirm_mfa
 
-    ## This can be uncommented once the backup MFA policy is enforced. For now,
-    ## it checks that the personal key issuance is skipped
-    # expect_back_mfa_setup_to_be_required
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
@@ -22,9 +20,7 @@ shared_examples 'setting up backup mfa on sign up' do
     user = visit_idp_from_sp_and_sign_up
     choose_and_confirm_mfa
 
-    ## This can be uncommented once the backup MFA policy is enforced. For now,
-    ## it checks that the personal key issuance is skipped
-    # expect_back_mfa_setup_to_be_required
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(sign_up_completed_path)
 
@@ -36,12 +32,12 @@ shared_examples 'setting up backup mfa on sign up' do
 
   def expect_back_mfa_setup_to_be_required
     expect(page).to have_current_path(two_factor_options_path)
-    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+    expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
 
     visit account_path
 
     expect(page).to have_current_path(two_factor_options_path)
-    expect(page).to have_content t('two_factor_authentication.two_factor_choice')
+    expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
 
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
@@ -63,7 +59,6 @@ feature 'backup mfa setup on sign up' do
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(Figaro.env).to receive(:personal_key_assignment_disabled).and_return('true')
   end
 
   context 'sms sign up' do
@@ -104,9 +99,7 @@ feature 'backup mfa setup on sign up' do
     it_behaves_like 'setting up backup mfa on sign up'
   end
 
-  # We will need to flip these back on once we drop the recovery setup on
-  # PIV/CAC to apply that flow to every method
-  xcontext 'piv/cac sign up' do
+  context 'piv/cac sign up' do
     before do
       allow(PivCacService).to receive(:piv_cac_available_for_email?).and_return(true)
     end

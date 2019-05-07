@@ -149,14 +149,14 @@ describe Users::PhonesController do
     end
 
     context 'user has only a phone' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :with_phone, :with_backup_code) }
 
       let(:extra_analytics) do
         { configuration_id: user.phone_configurations.first.id,
           configuration_owner: user.uuid,
           configuration_present: true,
-          errors: { user: ['must have multiple MFA configurations'] },
-          mfa_method_counts: { phone: 1 },
+          errors: { user: ['must have 3 or more MFA configurations'] },
+          mfa_method_counts: { backup_codes: 10, phone: 1 },
           success: false }
       end
 
@@ -190,7 +190,7 @@ describe Users::PhonesController do
           configuration_owner: user.uuid,
           configuration_present: true,
           errors: {},
-          mfa_method_counts: { piv_cac: 1 },
+          mfa_method_counts: { backup_codes: 10, piv_cac: 1 },
           success: true }
       end
 
