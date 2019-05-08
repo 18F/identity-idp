@@ -756,10 +756,10 @@ production:
       - 'https://fossil.energy.gov/fergas-fe/#/notice/15'
     restrict_to_deploy_env: 'prod'
 
-  # MY CBP
+  # myCBP
   'urn:gov:dhs.cbp.opa.mycbp:openidconnect:prod':
     agency_id: 1
-    friendly_name: 'MyCBP'
+    friendly_name: 'myCBP'
     agency: 'DHS'
     logo: 'mycbp.png'
     return_to_sp_url: 'gov.dhs.cbp.opa.mycbp://result'
