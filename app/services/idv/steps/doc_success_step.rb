@@ -5,6 +5,8 @@ module Idv
         step_successful
       end
 
+      private
+
       def step_successful
         save_doc_auth
         flow_session[:image_verification_data] = {}
