@@ -1,6 +1,7 @@
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'rack_session_access/capybara'
+require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
@@ -13,7 +14,7 @@ Capybara.register_driver :headless_chrome do |app|
                                  desired_capabilities: capabilities
 end
 Capybara.javascript_driver = :headless_chrome
-Chromedriver.set_version '2.38'
+Webdrivers.cache_time = 86_400
 
 Capybara.server = :puma, { Silent: true }
 
