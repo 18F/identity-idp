@@ -105,6 +105,14 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
+  scenario 'add phone page' do
+    sign_in_and_2fa_user
+
+    visit add_phone_path
+
+    expect(page).to be_accessible
+  end
+
   scenario 'edit phone page' do
     sign_in_and_2fa_user
 

@@ -11,7 +11,7 @@
         .col.col-12.sm-col-6.account-list-item
           = phone_configuration.phone
         .col.col-12.sm-col-6.truncate
-          = present(phone_configuration).default_msg
+          = PhoneConfigurationDecorator.new(phone_configuration).default_msg
       .col.col-4.right-align
         = render @view_model.manage_action_partial,
           path: manage_phone_url(id: phone_configuration.id),
