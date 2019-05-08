@@ -27,7 +27,9 @@ shared_examples 'back image step' do |simulate|
     end
 
     it 'proceeds to the next page if the user does not have a phone' do
-      complete_doc_auth_steps_before_back_image_step(create(:user, :with_piv_or_cac))
+      complete_doc_auth_steps_before_back_image_step(
+        create(:user, :with_authentication_app, :with_piv_or_cac),
+      )
       attach_image
       click_idv_continue
 

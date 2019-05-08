@@ -30,7 +30,6 @@ describe 'Remembering a TOTP device' do
       fill_in :code, with: totp_secret_from_page
       check :remember_device
       click_submit_default
-      click_acknowledge_personal_key
       first(:link, t('links.sign_out')).click
       user
     end

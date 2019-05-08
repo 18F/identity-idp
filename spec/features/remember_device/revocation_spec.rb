@@ -87,7 +87,7 @@ feature 'taking an action that revokes remember device' do
   end
 
   context 'backup codes' do
-    let(:user) { create(:user, :signed_up, :with_backup_code) }
+    let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
     it 'revokes remember device when regenerated' do
       sign_with_remember_device_and_sign_out

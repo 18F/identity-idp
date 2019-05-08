@@ -2,7 +2,7 @@ module AccountReset
   class RequestController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :confirm_two_factor_enabled
+    before_action :confirm_multiple_factors_enabled
     before_action :confirm_user_not_verified
 
     def show
@@ -18,8 +18,8 @@ module AccountReset
 
     private
 
-    def confirm_two_factor_enabled
-      return if MfaPolicy.new(current_user).two_factor_enabled?
+    def confirm_multiple_factors_enabled
+      return if multiple_factors_enabled?
 
       redirect_to two_factor_options_url
     end

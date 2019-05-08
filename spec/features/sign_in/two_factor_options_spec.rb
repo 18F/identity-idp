@@ -85,7 +85,7 @@ describe '2FA options when signing in' do
 
   context 'when the user only has TOTP configured' do
     it 'only displays TOTP and Personal key' do
-      user = create(:user, :with_authentication_app)
+      user = create(:user, :with_authentication_app, :with_personal_key)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -165,7 +165,7 @@ describe '2FA options when signing in' do
 
   context 'when the user only has TOTP and PIV/CAC configured' do
     it 'only displays PIV/CAC, TOTP, and Personal key' do
-      user = create(:user, :with_authentication_app, :with_piv_or_cac)
+      user = create(:user, :with_authentication_app, :with_piv_or_cac, :with_personal_key)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -249,7 +249,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_selector("#two_factor_options_form_selection_voice_#{second_id}", count: 1)
       expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 1)
-      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
+      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 1)
       expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 0)
