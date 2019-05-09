@@ -9,16 +9,16 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   # These are SPs that are migrating users and require special help messages
   CUSTOM_SP_ALERTS = {
     'CBP Trusted Traveler Programs' => {
-        i18n_name: 'trusted_traveler',
-        learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
-        exclude_paths: ['/sign_up/enter_email'],
-      },
+      i18n_name: 'trusted_traveler',
+      learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
+      exclude_paths: ['/sign_up/enter_email'],
+    },
     'FMCSA National Registry' => {
-        i18n_name: 'fmcsa_natl_registry',
-        learn_more: 'https://login.gov/help/',
-        exclude_paths: [],
-      }
-    }.freeze
+      i18n_name: 'fmcsa_natl_registry',
+      learn_more: 'https://login.gov/help/',
+      exclude_paths: [],
+    },
+  }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
