@@ -12,6 +12,24 @@ en:
         body: Please create a login.gov account using the same email address you use
           for %{sp_name}
       header: First time here from %{sp_name}?
+    fmcsa_natl_registry:
+      account_page:
+        body: |-
+          If you do not have a Login.gov account, you must create one to access the
+          National Registry. To do so, select "Create an account" and use the same
+          email address that is your primary email address for your National Registry
+          account.
+      body_html: |-
+        If you do not have a Login.gov account, you must create one to access the
+        National Registry. To do so, select "Create an account" and use the same
+        email address that is your primary email address for your National Registry
+        account.
+      create_account_link: create a login.gov account
+      create_account_page:
+        body: |-
+          Reminder: please use the same email address as your primary email address
+          for your National Registry account when creating your Login.gov account.
+      header: First time here from %{sp_name}?
     learn_more: Learn more.
     trusted_traveler:
       account_page:
@@ -22,18 +40,3 @@ en:
       create_account_page:
         body: ''
       header: Coming from Trusted Traveler Programs?
-
-    # FMCSA national registry
-    fmcsa_natl_registry:
-      account_page:
-        body: |
-          If you do not have a Login.gov account, you must create one to access the
-          National Registry. To do so, select "Create an account" and be sure to
-          use the same email address that is your primary email address for your
-          National Registry account.
-      create_account_page:
-        body: |
-          Reminder: please be sure to use the same email address that is your
-          primary email address for your National Registry account when creating
-          your Login.gov account.
-      header: First time here from %{sp_name}?
