@@ -16,7 +16,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     'FMCSA National Registry' => {
       i18n_name: 'fmcsa_natl_registry',
       learn_more: 'https://login.gov/help/',
-      exclude_paths: ['/es','/fr'],
+      exclude_paths: ['/es', '/fr'],
     },
   }.freeze
 
