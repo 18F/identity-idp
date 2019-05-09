@@ -2,7 +2,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::TranslationHelper
 
   DEFAULT_LOGO = 'generic.svg'.freeze
-  CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs'].freeze
+  CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs',
+                           'FMCSA National Registry'].freeze
   DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
 
   # These are SPs that are migrating users and require special help messages
@@ -11,6 +12,11 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
       i18n_name: 'trusted_traveler',
       learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
       exclude_paths: ['/sign_up/enter_email'],
+    },
+    'FMCSA National Registry' => {
+      i18n_name: 'fmcsa_natl_registry',
+      learn_more: 'https://login.gov/help/',
+      exclude_paths: ['/es', '/fr'],
     },
   }.freeze
 
