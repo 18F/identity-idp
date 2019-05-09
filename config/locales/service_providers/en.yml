@@ -32,7 +32,8 @@ en:
           use the same email address that is your primary email address for your
           National Registry account.
       create_account_page:
-        body: Reminder! Please be sure to use the same email address that is your
+        body: |
+          Reminder: please be sure to use the same email address that is your
           primary email address for your National Registry account when creating
           your Login.gov account.
       header: First time here from %{sp_name}?
