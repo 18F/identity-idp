@@ -29,7 +29,7 @@ en:
         body: |-
           Reminder: please use the same email address as your primary email address
           for your National Registry account when creating your Login.gov account.
-      header: First time here from %{sp_name}?
+      header: First time here from FMCSA National Registry?
     learn_more: Learn more.
     trusted_traveler:
       account_page:
