@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe JobRunner::JobExecutor do
+describe JobRunner::CallbackExecutor do
   describe '#execute_job' do
     let(:job_run) { create(:job_run) }
 
@@ -26,10 +26,12 @@ describe JobRunner::JobExecutor do
     end
 
     context 'when the job fails' do
+      let(:error) do
+        runtime_error = RuntimeError.new('test')
+        allow(runtime_error).to receive(:inspect).and_return('test error inspected')
+        runtime_error
+      end
       let(:job_configuration) do
-        error = RuntimeError.new('test')
-        allow(error).to receive(:inspect).and_return('test error inspected')
-
         JobRunner::JobConfiguration.new(
           name: 'Send GPO letter',
           interval: 5 * 60,
@@ -44,6 +46,12 @@ describe JobRunner::JobExecutor do
         expect(job_run.reload.result).to eq(nil)
         expect(job_run.error).to eq('test error inspected')
         expect(job_run.finish_time).to be_within(1.second).of(Time.zone.now)
+      end
+
+      it 'reports the error to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(error)
+
+        subject.execute_job
       end
     end
   end

@@ -6,7 +6,6 @@ class JobRun < ApplicationRecord
 
   def self.with_lock
     raise ArgumentError, 'Must pass block' unless block_given?
-
     transaction do
       connection.execute(
         "LOCK #{connection.quote_table_name(table_name)} IN ACCESS EXCLUSIVE MODE",
@@ -26,14 +25,6 @@ class JobRun < ApplicationRecord
     where(job_name: job_name).where(finish_time: nil).where(error: nil).
       where('created_at < ?', timeout_threshold).
       find_each(&:mark_as_timed_out)
-  end
-
-  def finished?
-    finished_time.present?
-  end
-
-  def timed_out?
-    error == 'Timeout'
   end
 
   def mark_as_timed_out

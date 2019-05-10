@@ -28,5 +28,11 @@ describe JobRunner::JobRunNeededResolver do
 
       it { expect(subject.new_job_needs_to_run?).to eq(true) }
     end
+
+    context 'a job with a different name has been run within the interval' do
+      let!(:job_run) { create(:job_run, created_at: 4.minutes.ago, job_name: 'different job') }
+
+      it { expect(subject.new_job_needs_to_run?).to eq(true) }
+    end
   end
 end
