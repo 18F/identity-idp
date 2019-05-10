@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 module JobRunner
   class LockReferee
     attr_reader :job_configuration
