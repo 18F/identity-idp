@@ -44,7 +44,7 @@ describe JobRunner::Runner do
         expect(first_job.result).to eq('test job 1 result')
 
         second_job = JobRun.find_by(job_name: 'test job 2')
-        expect(second_job.created_at).to eq(previous_job_start)
+        expect(second_job.created_at).to be_within(1.second).of(previous_job_start)
       end
     end
 
@@ -66,7 +66,7 @@ describe JobRunner::Runner do
         expect(timed_out_job.result).to eq(nil)
         expect(timed_out_job.finish_time).to eq(nil)
         expect(timed_out_job.error).to eq('Timeout')
-        expect(timed_out_job.created_at).to eq(timed_out_job_start)
+        expect(timed_out_job.created_at).to be_within(1.second).of(timed_out_job_start)
 
         expect(second_job.result).to eq('test job 2 result')
       end
