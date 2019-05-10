@@ -5,10 +5,10 @@ module JobRunner
     attr_reader :timeout
     attr_reader :callback
 
-    def initialize(name:, interval:, timeout: 1.year, callback:)
+    def initialize(name:, interval:, timeout: nil, callback:)
       @name = name
       @interval = interval
-      @timeout = timeout
+      @timeout = timeout || interval
       @callback = callback
     end
 
