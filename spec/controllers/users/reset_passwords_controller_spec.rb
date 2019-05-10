@@ -300,7 +300,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)
@@ -326,14 +325,13 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = create(:user, :signed_up, role: :user, email: 'test@example.com')
+        user = create(:user, :signed_up, email: 'test@example.com')
 
         captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: true,
           active_profile: false,
         }.merge(captcha_h)
@@ -354,14 +352,13 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = create(:user, :unconfirmed, role: :user)
+        user = create(:user, :unconfirmed)
 
         captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)
@@ -393,7 +390,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: true,
           active_profile: true,
         }.merge(captcha_h)
@@ -416,7 +412,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)
