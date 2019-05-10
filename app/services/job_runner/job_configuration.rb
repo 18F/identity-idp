@@ -5,6 +5,7 @@ module JobRunner
     attr_reader :timeout
     attr_reader :callback
 
+    # :reek:ControlParameter
     def initialize(name:, interval:, timeout: nil, callback:)
       @name = name
       @interval = interval
