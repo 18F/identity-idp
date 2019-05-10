@@ -27,7 +27,7 @@ feature 'idv phone step' do
     end
 
     it 'allows a user without a phone number to continue' do
-      user = create(:user, otp_secret_key: '123abc')
+      user = create(:user, :with_authentication_app, :with_backup_code, otp_secret_key: '123abc')
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
 

@@ -41,7 +41,6 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       click_continue
@@ -61,7 +60,7 @@ feature 'LOA1 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_url).to match sign_up_start_path
+      expect(current_url).to match new_user_session_path
       expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.accordion-header')
     end
@@ -76,42 +75,6 @@ feature 'LOA1 Single Sign On' do
       expect(page).to have_link(
         t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: cancel_callback_url
       )
-    end
-
-    it 'user can view and confirm personal key during sign up', :js do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = create(:user, :with_phone)
-      code = 'ABC1-DEF2-GH13-JK14'
-      stub_personal_key(user: user, code: code)
-
-      loa1_sp_session
-      sign_in_and_require_viewing_personal_key(user)
-      expect(current_path).to eq sign_up_personal_key_path
-
-      click_on(t('forms.buttons.continue'))
-      enter_personal_key_words_on_modal(code)
-      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-
-      expect(current_path).to eq sign_up_completed_path
-    end
-
-    it 'coerces invalid characters into their Crockford Base32 equivalents', :js do
-      displayed_personal_key = '0000-1111-1111-1234'
-      misread_personal_key = 'ooOO-iiII-llLL-1234'
-
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = create(:user, :with_phone)
-      stub_personal_key(user: user, code: displayed_personal_key)
-
-      loa1_sp_session
-      sign_in_and_require_viewing_personal_key(user)
-      expect(current_path).to eq sign_up_personal_key_path
-
-      click_on(t('forms.buttons.continue'))
-      enter_personal_key_words_on_modal(misread_personal_key)
-      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-
-      expect(current_path).to eq sign_up_completed_path
     end
 
     it 'after session timeout, signing in takes user back to SP' do
@@ -200,7 +163,7 @@ feature 'LOA1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/es\?request_id=.+})
     end
   end
 
@@ -209,11 +172,11 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
       visit authn_request
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
   end
 
@@ -223,38 +186,13 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
 
       visit authn_request
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('http://localhost:3000')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
-  end
-
-  def sign_in_and_require_viewing_personal_key(user)
-    login_as(user, scope: :user, run_callbacks: false)
-    Warden.on_next_request do |proxy|
-      session = proxy.env['rack.session']
-      session['warden.user.user.session'] = {
-        'need_two_factor_authentication' => true,
-      }
-    end
-
-    visit account_path
-    click_submit_default
-  end
-
-  def stub_personal_key(user:, code:)
-    generator = instance_double(PersonalKeyGenerator)
-    allow(PersonalKeyGenerator).to receive(:new).with(user).and_return(generator)
-    allow(generator).to receive(:create).and_return(code)
-    code
-  end
-
-  def enter_personal_key_words_on_modal(code)
-    fill_in 'personal_key', with: code
   end
 end

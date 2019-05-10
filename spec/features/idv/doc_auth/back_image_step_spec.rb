@@ -27,7 +27,9 @@ shared_examples 'back image step' do |simulate|
     end
 
     it 'proceeds to the next page if the user does not have a phone' do
-      complete_doc_auth_steps_before_back_image_step(create(:user, :with_piv_or_cac))
+      complete_doc_auth_steps_before_back_image_step(
+        create(:user, :with_authentication_app, :with_piv_or_cac),
+      )
       attach_image
       click_idv_continue
 
@@ -51,6 +53,7 @@ shared_examples 'back image step' do |simulate|
 
       expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
       expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
+      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
     end
 
     it 'throttles calls to acuant and allows attempts after the attempt window' do
@@ -73,6 +76,32 @@ shared_examples 'back image step' do |simulate|
         attach_image
         click_idv_continue
         expect(page).to have_current_path(idv_doc_auth_back_image_step)
+      end
+    end
+
+    it 'catches network connection errors' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
+        and_raise(Faraday::ConnectionFailed.new('error'))
+
+      attach_image
+      click_idv_continue
+
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_back_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+    end
+
+    it 'catches network timeout errors' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
+        and_raise(Faraday::TimeoutError)
+
+      attach_image
+      click_idv_continue
+
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_back_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
   end

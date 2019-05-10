@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
+= render 'idv/doc_auth/front_of_state_id_image'
+
 h1.h3.mb0 = t('doc_auth.headings.take_pic_front')
 
 h5.mt0 = t('doc_auth.instructions.take_pic')
@@ -14,7 +16,11 @@ ul
   .clearfix.mxn1
     .sm-col.sm-col-8.px1
       = f.input :image, label: false, as: 'file', required: true
-  p.red.bold = flow_session[:error_message]
+
+  - unless flow_session[:error_message].nil?
+    .alert.alert-error = flow_session[:error_message]
+    .alert.alert-notice == flow_session[:notice]
+
   div id= 'target'
   br
   .mt0

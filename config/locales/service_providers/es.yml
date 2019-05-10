@@ -13,6 +13,14 @@ es:
         body: Por favor crea un login.gov cuenta usando la misma dirección de correo
           electrónico que utiliza para %{sp_name}.
       header: "¿Ha venido de %{sp_name}?"
+    fmcsa_natl_registry:
+      account_page:
+        body: ''
+      body_html: ''
+      create_account_link: ''
+      create_account_page:
+        body: ''
+      header: ''
     learn_more: Obtenga más información.
     trusted_traveler:
       account_page:

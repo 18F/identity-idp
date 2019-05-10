@@ -8,7 +8,7 @@ shared_examples 'recovery back image step' do |simulate|
 
     let(:user) { create(:user) }
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
-    let(:user_no_phone) { create(:user, :with_piv_or_cac) }
+    let(:user_no_phone) { create(:user, :with_authentication_app, :with_piv_or_cac) }
     let(:profile) { build(:profile, :active, :verified, user: user_no_phone, pii: { ssn: '1234' }) }
 
     before do |example|
@@ -56,6 +56,7 @@ shared_examples 'recovery back image step' do |simulate|
 
       expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
       expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
+      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
     end
   end
 end

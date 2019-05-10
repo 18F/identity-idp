@@ -679,10 +679,6 @@ feature 'Two Factor Authentication' do
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(user.reload.encrypted_recovery_code_digest).not_to be_nil
-
-      click_acknowledge_personal_key
-
       expect(current_path).to eq account_path
     end
   end

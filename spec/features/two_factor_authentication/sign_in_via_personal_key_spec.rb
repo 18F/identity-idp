@@ -16,7 +16,6 @@ feature 'Signing in via one-time use personal key' do
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: raw_key)
     click_submit_default
-    click_acknowledge_personal_key
 
     expect(user.reload.encrypted_recovery_code_digest).to_not eq old_key
     expect(current_path).to eq account_path

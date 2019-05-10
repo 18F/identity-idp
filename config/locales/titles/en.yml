@@ -42,7 +42,6 @@ en:
     reactivate_account: Reactivate your account
     registrations:
       new: Sign up for a account
-      start: Get started
     sign_up:
       completion_html: You have %{accent} with %{app}
       loa1: created your account
@@ -50,6 +49,7 @@ en:
       verified: You have verified your identity with %{app}
     totp_setup:
       new: Set up two-factor authentication
+    two_factor_recovery_setup: Add a backup authentication method
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email
     verify_profile: Activate your account

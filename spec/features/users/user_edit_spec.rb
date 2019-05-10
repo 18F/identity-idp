@@ -74,7 +74,7 @@ feature 'User edit' do
     end
 
     scenario 'delete not an option if no other mfa configured' do
-      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq true
 
       expect(page).to_not have_button(t('forms.buttons.delete'))
     end
@@ -88,7 +88,7 @@ feature 'User edit' do
         expect(page).to have_button(t('forms.phone.buttons.delete'))
         click_button t('forms.phone.buttons.delete')
         expect(page).to have_current_path(account_path)
-        expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
+        expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq true
         expect(page).to have_content t('event_types.phone_removed')
       end
     end

@@ -3,13 +3,14 @@ module SpAuthHelper
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     email = 'test@test.com'
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('sign_up.registrations.create_account')
+    click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
+    select_2fa_option('backup_code')
+    click_continue
     set_up_2fa_with_valid_phone
     click_submit_default
-    click_acknowledge_personal_key
     click_on t('forms.buttons.continue')
     visit sign_out_url
     User.find_with_email(email)
@@ -19,7 +20,6 @@ module SpAuthHelper
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     user = create(:user, :signed_up)
     visit_idp_from_sp_with_loa3(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
     fill_out_idv_jurisdiction_ok

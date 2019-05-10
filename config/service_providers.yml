@@ -610,6 +610,38 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # A DoD system that allows tsps to manage moves.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:adminmovemilprod':
+    agency_id: 8
+    friendly_name: 'admin.move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://admin.move.mil'
+    redirect_uris:
+      - 'https://admin.move.mil'
+      - 'https://admin.move.mil/auth/login-gov/callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
+  # A DoD system that allows tsps to manage moves.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
+    agency_id: 8
+    friendly_name: 'tsp.move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://tsp.move.mil'
+    redirect_uris:
+      - 'https://tsp.move.mil'
+      - 'https://tsp.move.mil/auth/login-gov/callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true
+
   # Office Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:officemovemilprod':
     agency_id: 8
@@ -663,6 +695,20 @@ production:
       - 'https://nr-1.fmcsa.dot.gov:443/'
       - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/'
       - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/LoginHandler'
+    restrict_to_deploy_env: 'prod'
+
+  # DOT Delphi eInvoicing
+  'SP:EINVOICE_DCC_PROD':
+    agency: 'DOT'
+    agency_id: 6
+    friendly_name: 'Delphi eInvoicing'
+    logo: 'dot.svg'
+    cert: 'dot_einvoicing_prod'
+    acs_url: 'https://einvoice.esc.gov:4443/oam/server/fed/sp/sso'
+    return_to_sp_url: 'https://einvoice.esc.gov:4443'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
     restrict_to_deploy_env: 'prod'
 
   # SAM – System for Award Management
@@ -720,22 +766,6 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.opa.mycbp://result'
     restrict_to_deploy_env: 'prod'
-
-  # A DoD system that allows tsps to manage moves.
-  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
-    agency_id: 8
-    friendly_name: 'tsp.move.mil'
-    agency: 'DOD'
-    logo: 'move_mil.svg'
-    cert: 'move_mil_prod'
-    return_to_sp_url: 'https://tsp.move.mil'
-    redirect_uris:
-      - 'https://tsp.move.mil'
-      - 'https://tsp.move.mil/auth/login-gov/callback'
-    attribute_bundle:
-      - email
-    restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # Forest Service Open Forest Permits
   'urn:gov:gsa:open-id-connect:sp:sso:usda-forestservice:epermit-prod':
@@ -999,4 +1029,22 @@ production:
     block_encryption: 'aes256-cbc'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # DOI - USGS / CHS - ISB Keycloak server.
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:usgs:isb_keycloak':
+    agency_id: 16
+    friendly_name: 'ScienceBase Login'
+    agency: 'DOI'
+    logo: 'usgs.svg'
+    return_to_sp_url: 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+    redirect_uris:
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/account'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/broker/login-gov/endpoint/logout_response'
+      - 'https://www.sciencebase.gov/auth/realms/ScienceBase/protocol/openid-connect/logout'
+    cert: 'usgs_prod'
+    attribute_bundle:
+      - email
+    ial: 1
     restrict_to_deploy_env: 'prod'
