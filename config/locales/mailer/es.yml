@@ -9,8 +9,6 @@ es:
           una cuenta vinculada a esta dirección de correo electrónico. Si desea configurar
           una nueva cuenta vinculada a este correo electrónico, confirme su dirección
           de correo electrónico a continuación.
-        reset_requested: Su cuenta de %{app} ha sido restablecida por un representante
-          de soporte técnico. Para continuar, debe confirmar su email.
         unconfirmed: Gracias por crear una cuenta.
       footer: Este enlace expira en %{confirmation_period}.
       header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
