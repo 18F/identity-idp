@@ -50,7 +50,6 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes
 
-
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil)
   end
