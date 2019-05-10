@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
+= render 'idv/doc_auth/front_of_state_id_image'
+
 h1.h3.my0 = t('doc_auth.headings.upload_front')
 
 = t('doc_auth.info.upload_image')
@@ -8,7 +10,11 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
   .clearfix.mxn1
     .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true
-  p.red.bold = flow_session[:error_message]
+
+  - unless flow_session[:error_message].nil?
+    .alert.alert-error = flow_session[:error_message]
+    .alert.alert-notice == flow_session[:notice]
+
   .mb4 id= 'target'
   .mt2
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'

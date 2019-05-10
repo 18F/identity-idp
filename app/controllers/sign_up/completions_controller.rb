@@ -10,20 +10,18 @@ module SignUp
     def show
       @view_model = view_model
       if show_completions_page?
-        track_agency_handoff(
+        analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+          analytics_attributes(''),
         )
       else
-        redirect_to account_url
+        return_to_account
       end
     end
 
     def update
-      track_agency_handoff(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-      )
-      update_verified_attributes
-      clear_verify_attributes_sessions
+      track_completion_event('agency-page')
+      handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
@@ -32,6 +30,11 @@ module SignUp
     end
 
     private
+
+    def handle_verified_attributes
+      update_verified_attributes
+      clear_verify_attributes_sessions
+    end
 
     def show_completions_page?
       service_providers = sp_session[:issuer].present? || @view_model.user_has_identities?
@@ -55,8 +58,9 @@ module SignUp
       sp_session[:loa3] == true
     end
 
-    def service_provider_attributes
-      { loa3: sp_session[:loa3], service_provider_name: decorated_session.sp_name }
+    def return_to_account
+      track_completion_event('account-page')
+      redirect_to account_url
     end
 
     def decider
@@ -74,11 +78,23 @@ module SignUp
       redirect_to new_user_session_url
     end
 
-    def track_agency_handoff(analytic)
+    def analytics_attributes(page_occurence)
+      { loa3: sp_session[:loa3],
+        service_provider_name: decorated_session.sp_name,
+        page_occurence: page_occurence }
+    end
+
+    def track_completion_event(last_page)
       analytics.track_event(
-        analytic,
-        service_provider_attributes,
+        Analytics::USER_REGISTRATION_COMPLETE,
+        analytics_attributes(last_page),
       )
+      GoogleAnalyticsMeasurement.new(
+        category: 'registration',
+        event_action: 'completion',
+        method: last_page,
+        client_id: analytics.grab_ga_client_id,
+      ).send_event
     end
   end
 end

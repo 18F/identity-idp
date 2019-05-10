@@ -18,11 +18,25 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
+      acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
+        Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: To prevent abuse we limit the amount of times you can attempt
         to validate a document.  Please try again later.
       general_error: Su identificación emitida por el estado no pudo ser verificada.
         Por favor, intente cargar diferentes imágenes comenzando con el frente de
         su identificación emitida por el estado.
+      general_info: |-
+        <div class="bold">Si está utilizando una cámara, asegúrese de</div>
+        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
+        <li class="mxn3">Estás en una zona bien iluminada</li>
+        <li class="mxn3">Su identificación no tiene ningún código de barras dañado</li>
+        <li class="mxn3">La identificación representa el 80% de la imagen general</li>
+        <li class="mxn3">Las imágenes son claras (no borrosas) y enfocadas</li>
+        <li class="mxn3">No hay reflejos, sombras o reflejos</li>
+        <li class="mxn3">La identificación se destaca del fondo</li>
+        <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
+        <li class="mxn3">El fondo es visible detrás del documento</li>
+        </ul>
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

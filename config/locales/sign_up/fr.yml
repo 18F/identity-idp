@@ -4,5 +4,3 @@ fr:
     cancel:
       success: Le dossier contenant votre information a été effacé
       warning_header: Si vous annulez maintenant
-    registrations:
-      create_account: Créer un compte
