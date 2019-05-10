@@ -15,10 +15,6 @@ class JobRun < ApplicationRecord
     end
   end
 
-  def self.find_recent_errors(since)
-    where('error IS NOT NULL').where('created_at >= ?', since).order(:created_at)
-  end
-
   def self.clean_up_timeouts(job_name:, timeout_threshold:)
     # Find all runs that did not finish and don't have an error recorded that
     # are older than the timeout threshold.

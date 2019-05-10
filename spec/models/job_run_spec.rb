@@ -1,25 +1,6 @@
 require 'rails_helper'
 
 describe JobRun do
-  describe '.find_recent_errors' do
-    it 'returns jobs with recent errors' do
-      since = 2.days.ago
-      recent_jobs_with_errors = create_list(
-        :job_run, 5,
-        error: 'This is recent',
-        created_at: 1.day.ago
-      )
-
-      # Create some old jobs with errors that should not appear
-      create_list(:job_run, 5, error: 'This is recent', created_at: 3.days.ago)
-      # Create jobs without errors that should not appear
-      create_list(:job_run, 5)
-
-      results = JobRun.find_recent_errors(since)
-      expect(results).to eq(recent_jobs_with_errors)
-    end
-  end
-
   describe '.clean_up_timeouts' do
     it 'marks old unfinished jobs as timed out' do
       finished_job = create(:job_run, finish_time: 1.minute.ago, result: 'Ok')
