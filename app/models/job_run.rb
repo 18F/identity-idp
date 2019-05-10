@@ -4,10 +4,6 @@ class JobRun < ApplicationRecord
 
   after_initialize :set_default_values
 
-  # Run code with an exclusive read/write lock on the whole job_run table
-  #
-  # @yield Calls the provided block while the lock is held
-  #
   def self.with_lock
     raise ArgumentError, 'Must pass block' unless block_given?
 
@@ -20,7 +16,6 @@ class JobRun < ApplicationRecord
     end
   end
 
-  # @param [Time] since
   def self.find_recent_errors(since)
     where('error IS NOT NULL').where('created_at >= ?', since).order(:created_at)
   end
@@ -33,7 +28,14 @@ class JobRun < ApplicationRecord
       find_each(&:mark_as_timed_out)
   end
 
-  # Mark this JobRun as having timed out by setting its error to "Timeout"
+  def finished?
+    finished_time.present?
+  end
+
+  def timed_out?
+    error == 'Timeout'
+  end
+
   def mark_as_timed_out
     unless error.nil? && finish_time.nil? && result.nil?
       raise ArgumentError, 'Job does not appear to have timed out'
@@ -50,7 +52,6 @@ class JobRun < ApplicationRecord
 
   private
 
-  # Set default attributes for the model
   def set_default_values
     self.host ||= Socket.gethostname
     self.pid ||= Process.pid
