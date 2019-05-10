@@ -2,17 +2,23 @@ require 'rails_helper'
 
 feature 'sign in with any email address' do
   scenario 'signing in any email address' do
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
     user = create(:user, :signed_up)
-    user_email = user.email_addresses.first.email
+    create(:email_address, user: user)
 
-    signin(user_email, user.password)
+    email1, email2 = user.reload.email_addresses.map(&:email)
 
-    user_email = create(:email_address)
+    signin(email1, user.password)
+    click_submit_default
 
-    user.email_addresses << user_email
+    expect(page).to have_current_path(account_path)
 
-    user.reload.email_addresses.map(&:email)
+    first(:link, t('links.sign_out')).click
 
-    signin(user_email, user.password)
+    signin(email2, user.password)
+    click_submit_default
+
+    expect(page).to have_current_path(account_path)
   end
 end
