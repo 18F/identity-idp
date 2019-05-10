@@ -7,13 +7,13 @@ describe JobRunner::Runner do
       name: 'test job 1',
       interval: 5 * 60,
       timeout: 60,
-      callback: ->{ 'test job 1 result' }
+      callback: -> { 'test job 1 result' },
     )
     configurations << JobRunner::JobConfiguration.new(
       name: 'test job 2',
       interval: 60 * 60,
       timeout: 60 * 30,
-      callback: ->{ 'test job 2 result' }
+      callback: -> { 'test job 2 result' },
     )
     allow(described_class).to receive(:configurations).and_return(configurations)
   end
