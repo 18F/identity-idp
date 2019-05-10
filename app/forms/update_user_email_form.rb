@@ -2,19 +2,20 @@ class UpdateUserEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
-  attr_reader :email, :user
+  attr_reader :email, :user, :email_address
 
   def persisted?
     true
   end
 
-  def initialize(user)
+  def initialize(user, email_address)
     @user = user
-    self.email = @user.email_addresses.take&.email
+    @email_address = email_address
+    @email = email_address.email
   end
 
   def submit(params)
-    self.email = params[:email]
+    @email = params[:email]
 
     if valid_form?
       @success = true
@@ -31,7 +32,7 @@ class UpdateUserEmailForm
   end
 
   def email_changed?
-    valid? && email != @user.email_addresses.take&.email
+    valid? && email != email_address.email
   end
 
   private

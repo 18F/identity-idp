@@ -143,8 +143,8 @@ Rails.application.routes.draw do
 
     get '/forgot_password' => 'forgot_password#show'
 
-    get '/manage/email' => 'users/emails#edit'
-    match '/manage/email' => 'users/emails#update', via: %i[patch put]
+    get '/manage/email/:id' => 'users/emails#edit', as: :manage_email
+    match '/manage/email/:id' => 'users/emails#update', via: %i[patch put]
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
     get '/add/phone' => 'users/phones#add'
