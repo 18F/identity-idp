@@ -1,0 +1,13 @@
+.clearfix.border-top.border-blue-light
+  .p2.col.col-12
+    .col.col-6.bold
+      = t('account.index.email')
+- MfaContext.new(current_user).webauthn_configurations.each do |cfg|
+  .p2.col.col-12.border-top.border-blue-light.account-list-item
+    .col.col-8.sm-6.truncate
+      = cfg.name
+    .col.col-4.sm-6.right-align
+      = link_to_if(MfaPolicy.new(current_user).multiple_factors_enabled?,
+        t('account.index.webauthn_delete'), webauthn_setup_delete_path(id: cfg.id),
+        method: :get, class: 'btn btn-link')
+  .clearfix

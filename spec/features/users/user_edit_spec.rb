@@ -8,14 +8,14 @@ feature 'User edit' do
 
     before do
       sign_in_and_2fa_user(user)
-      visit manage_email_path
+      visit manage_email_path(id: user.email_addresses.take.id)
     end
 
     scenario 'user is not able to submit form without entering an email' do
       fill_in 'Email', with: ''
       click_button 'Update'
 
-      expect(page).to have_current_path manage_email_path
+      expect(page).to have_current_path manage_email_path(id: user.email_addresses.take.id)
     end
 
     scenario 'user receives confirmation message at new address' do
@@ -97,7 +97,7 @@ feature 'User edit' do
   context "user A accesses create password page with user B's email change token" do
     it "redirects to user A's account page", email: true do
       sign_in_and_2fa_user(user)
-      visit manage_email_path
+      visit manage_email_path(id: user.email_addresses.take.id)
       fill_in 'Email', with: 'user_b_new_email@test.com'
       click_button 'Update'
       confirmation_link = parse_email_for_link(last_email, /confirmation_token/)
