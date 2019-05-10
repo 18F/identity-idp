@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190407103634) do
+ActiveRecord::Schema.define(version: 20190510202920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -277,10 +277,8 @@ ActiveRecord::Schema.define(version: 20190407103634) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email", limit: 255
-    t.integer "role"
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
-    t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0
