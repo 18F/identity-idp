@@ -1,13 +1,7 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[
-    encrypted_password password_salt password_cost encryption_key
-    recovery_code recovery_cost recovery_salt
-    encrypted_phone phone_confirmed_at
-  ]
+  self.ignored_columns = %w[role reset_requested_at]
 
   include NonNullUuid
-
-  after_validation :set_default_role, if: :new_record?
 
   devise(
     :confirmable,
@@ -30,7 +24,6 @@ class User < ApplicationRecord
   include UserEncryptedAttributeOverrides
   include EmailAddressCallback
 
-  enum role: { user: 0, tech: 1, admin: 2 }
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
   has_one_time_password
@@ -56,10 +49,6 @@ class User < ApplicationRecord
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
   attr_accessor :asserted_attributes
-
-  def set_default_role
-    self.role ||= :user
-  end
 
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil)

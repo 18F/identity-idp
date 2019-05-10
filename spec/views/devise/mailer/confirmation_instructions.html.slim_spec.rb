@@ -70,21 +70,4 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
       ),
     )
   end
-
-  it 'mentions resetting the account when account has been reset by tech support' do
-    user = build_stubbed(:user, reset_requested_at: Time.zone.now)
-    presenter = ConfirmationEmailPresenter.new(user, self)
-    assign(:resource, user)
-    assign(:first_sentence, presenter.first_sentence)
-    render
-
-    expect(rendered).to have_content(
-      I18n.t(
-        'mailer.confirmation_instructions.first_sentence.reset_requested',
-        app: APP_NAME,
-      ),
-    )
-
-    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
-  end
 end

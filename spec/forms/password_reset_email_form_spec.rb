@@ -14,7 +14,6 @@ describe PasswordResetEmailForm do
 
         extra = {
           user_id: user.uuid,
-          role: user.role,
           confirmed: true,
           active_profile: false,
         }
@@ -32,7 +31,6 @@ describe PasswordResetEmailForm do
       it 'returns hash with properties about the event and the nonexistent user' do
         extra = {
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }
@@ -53,7 +51,6 @@ describe PasswordResetEmailForm do
 
         extra = {
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }
@@ -75,7 +72,6 @@ describe PasswordResetEmailForm do
 
         extra = {
           user_id: user.uuid,
-          role: user.role,
           confirmed: true,
           active_profile: false,
           recaptcha_valid: true,
@@ -101,7 +97,6 @@ describe PasswordResetEmailForm do
 
         extra = {
           user_id: user.uuid,
-          role: user.role,
           confirmed: true,
           active_profile: false,
           recaptcha_valid: false,
