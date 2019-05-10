@@ -222,11 +222,11 @@ describe 'OpenID Connect' do
     it 'displays the branded page' do
       visit_idp_from_sp_with_loa1
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
       visit_idp_from_sp_with_loa1
 
-      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
   end
 
@@ -271,8 +271,6 @@ describe 'OpenID Connect' do
 
       visit_idp_from_sp_with_loa1(state: state)
 
-      click_link t('links.sign_in')
-
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
       expect(page).to have_link(
@@ -311,19 +309,17 @@ describe 'OpenID Connect' do
       user = create(:user, :signed_up)
 
       visit_idp_from_sp_with_loa1
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
       visit destroy_user_session_url
 
       visit_idp_from_sp_with_loa1
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end
@@ -517,7 +513,7 @@ describe 'OpenID Connect' do
       expect(current_path).to eq(redirs_to)
       return
     end
-    expect(current_path).to eq('/sign_up/start')
+    expect(current_path).to eq('/')
 
     user ||= create(:profile, :active, :verified,
                     pii: { first_name: 'John', ssn: '111223333' }).user

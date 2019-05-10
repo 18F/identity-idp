@@ -17,7 +17,7 @@ module TwoFactorAuthentication
       result = @personal_key_form.submit
       analytics_hash = result.to_h.merge(multi_factor_auth_method: 'personal-key')
 
-      analytics.track_mfa_submit_event(analytics_hash, params[:ga_client_id])
+      analytics.track_mfa_submit_event(analytics_hash, analytics.grab_ga_client_id)
 
       handle_result(result)
     end
@@ -32,19 +32,28 @@ module TwoFactorAuthentication
       if result.success?
         event = create_user_event_with_disavowal(:personal_key_used)
         UserAlerts::AlertUserAboutPersonalKeySignIn.call(current_user, event.disavowal_token)
-        generate_new_personal_key
+        generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
         handle_valid_otp
       else
         handle_invalid_otp(type: 'personal_key')
       end
     end
 
-    def generate_new_personal_key
+    def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
       if password_reset_profile.present?
         re_encrypt_profile_recovery_pii
-      else
+      elsif decorated_user.identity_verified?
         user_session[:personal_key] = PersonalKeyGenerator.new(current_user).create
+      else
+        remove_personal_key
       end
+    end
+
+    def remove_personal_key
+      current_user.personal_key = nil
+      current_user.encrypted_recovery_code_digest = nil
+      current_user.save!
+      user_session.delete(:personal_key)
     end
 
     def re_encrypt_profile_recovery_pii
@@ -70,7 +79,11 @@ module TwoFactorAuthentication
 
     def handle_valid_otp
       handle_valid_otp_for_authentication_context
-      redirect_to manage_personal_key_url
+      if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
+        redirect_to manage_personal_key_url
+      else
+        redirect_to two_2fa_setup
+      end
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
     end

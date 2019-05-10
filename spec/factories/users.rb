@@ -101,7 +101,6 @@ FactoryBot.define do
     end
 
     trait :with_authentication_app do
-      with_personal_key
       otp_secret_key { ROTP::Base32.random_base32 }
     end
 
@@ -116,6 +115,7 @@ FactoryBot.define do
     trait :signed_up do
       with_phone
       with_personal_key
+      with_backup_code
     end
 
     trait :unconfirmed do

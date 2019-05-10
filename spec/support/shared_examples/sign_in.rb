@@ -5,7 +5,6 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
     user = create(:user, :signed_up)
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
 
     if sp == :oidc
@@ -40,6 +39,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 
     visit login_two_factor_options_path
 
+    click_continue
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -57,7 +57,6 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
     visit_idp_from_sp_with_loa3(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
@@ -87,14 +86,7 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
-
-    expect(current_path).to eq manage_personal_key_path
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
-
-    click_acknowledge_personal_key
+    click_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
@@ -145,7 +137,6 @@ shared_examples 'signing in with wrong credentials' do |sp|
 
       visit_idp_from_sp_with_loa1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
@@ -161,7 +152,6 @@ shared_examples 'signing in with wrong credentials' do |sp|
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
-      click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
@@ -175,10 +165,9 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
   it 'does not allow bypassing setting up backup factor' do
     stub_piv_cac_service
 
-    user = create(:user, :signed_up, :with_piv_or_cac)
+    user = create(:user, :with_piv_or_cac)
     MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
@@ -186,11 +175,11 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
 
-    expect(current_path).to eq account_recovery_setup_path
+    expect(current_path).to eq two_factor_options_path
 
     visit_idp_from_sp_with_loa1(sp)
 
-    expect(current_path).to eq account_recovery_setup_path
+    expect(current_path).to eq two_factor_options_path
   end
 
   it 'does allow bypassing setting up backup factor if there is a factor other than phone' do
@@ -199,7 +188,6 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     user = create(:user, :with_piv_or_cac, :with_authentication_app)
     MfaContext.new(user).phone_configurations.clear
     visit_idp_from_sp_with_loa1(sp)
-    click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
@@ -224,19 +212,11 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
   old_personal_key = PersonalKeyGenerator.new(user).create
   visit_idp_from_sp_with_loa1(sp)
-  click_link t('links.sign_in')
   fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
   choose_another_security_option('personal_key')
   enter_personal_key(personal_key: old_personal_key)
   click_submit_default
-
-  expect(page).to have_current_path(manage_personal_key_path)
-  if sp == :oidc
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-  end
-
-  click_acknowledge_personal_key
+  click_continue
 
   expect(current_url).to eq @saml_authn_request if sp == :saml
 

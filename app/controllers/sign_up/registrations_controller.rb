@@ -5,13 +5,6 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
-    before_action :skip_session_expiration, only: [:show]
-
-    def show
-      return redirect_to sign_up_email_url if params[:request_id].blank?
-
-      analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
-    end
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new

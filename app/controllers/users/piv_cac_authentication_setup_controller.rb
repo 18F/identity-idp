@@ -2,10 +2,10 @@ module Users
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
+    include MfaSetupConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated,
-                  if: :two_factor_enabled?,
+    before_action :confirm_user_authenticated_for_2fa_setup,
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
@@ -52,10 +52,6 @@ module Users
       render :error
     end
 
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
-    end
-
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
@@ -88,7 +84,7 @@ module Users
       if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
         account_url
       else
-        account_recovery_setup_url
+        two_factor_options_url
       end
     end
 
@@ -104,7 +100,8 @@ module Users
 
     def authorize_piv_cac_disable
       return redirect_to account_url unless piv_cac_enabled? &&
-                                            MfaPolicy.new(current_user).multiple_factors_enabled?
+                                            MfaPolicy.new(current_user).
+                                            three_or_more_factors_enabled?
     end
 
     def authorize_piv_cac_setup

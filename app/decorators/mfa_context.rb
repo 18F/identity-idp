@@ -59,7 +59,8 @@ class MfaContext
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
       (piv_cac_configuration.mfa_enabled? ? 1 : 0) +
-      (auth_app_configuration.mfa_enabled? ? 1 : 0)
+      (auth_app_configuration.mfa_enabled? ? 1 : 0) +
+      personal_key_method_count
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -82,6 +83,11 @@ class MfaContext
   end
 
   private
+
+  def personal_key_method_count
+    return 0 if Figaro.env.personal_key_retired == 'true'
+    (personal_key_configuration.mfa_enabled? ? 1 : 0)
+  end
 
   def enabled_two_factor_configuration_names
     two_factor_configurations.select(&:mfa_enabled?).map(&:friendly_name)

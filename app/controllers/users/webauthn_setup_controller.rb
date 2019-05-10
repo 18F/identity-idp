@@ -1,10 +1,10 @@
 module Users
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
-    include UserNavigationConcern
+    include MfaSetupConcern
 
     before_action :authenticate_user!
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_user_authenticated_for_2fa_setup
 
     def new
       result = WebauthnVisitForm.new.submit(params)
@@ -26,7 +26,7 @@ module Users
     end
 
     def success
-      @next_url = url_after_success
+      @next_url = url_after_successful_webauthn_setup
     end
 
     def delete
@@ -85,15 +85,20 @@ module Users
       user_session[:webauthn_challenge] = credential_creation_options[:challenge].bytes.to_a
     end
 
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
-    end
-
     def process_valid_webauthn
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       save_remember_device_preference
       redirect_to webauthn_setup_success_url
+    end
+
+    def url_after_successful_webauthn_setup
+      return two_2fa_setup if user_already_has_a_personal_key?
+
+      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
+      return two_2fa_setup if policy.show_personal_key_after_initial_2fa_setup?
+
+      idv_jurisdiction_url
     end
 
     def process_invalid_webauthn(form)
@@ -109,6 +114,10 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+    end
+
+    def user_already_has_a_personal_key?
+      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
 end

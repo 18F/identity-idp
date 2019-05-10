@@ -75,6 +75,7 @@ group :development do
   gem 'derailed'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
+  gem 'octokit'
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
@@ -98,7 +99,6 @@ group :test do
   gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot'
   gem 'capybara-selenium'
-  gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
@@ -110,6 +110,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'
+  gem 'webdrivers', '~> 3.0'
   gem 'webmock'
   gem 'zonebie'
 end

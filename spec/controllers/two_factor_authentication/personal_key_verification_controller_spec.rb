@@ -53,7 +53,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
     end
 
-    it 'generates a new personal key after the user signs in with their old one' do
+    it 'does not generate a new personal key after the user signs in with their old one' do
       user = create(:user)
       raw_key = PersonalKeyGenerator.new(user).create
       old_key = user.reload.encrypted_recovery_code_digest
@@ -61,7 +61,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       post :create, params: { personal_key_form: { personal_key: raw_key } }
       user.reload
 
-      expect(user.encrypted_recovery_code_digest).to_not be_nil
+      expect(user.encrypted_recovery_code_digest).to be_nil
       expect(user.encrypted_recovery_code_digest).to_not eq old_key
     end
 

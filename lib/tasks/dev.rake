@@ -84,6 +84,29 @@ namespace :dev do
     end
   end
 
+  desc 'Create a user with multiple emails and output the emails and passwords'
+  task create_multiple_email_user: :environment do
+    emails = [
+      "testuser#{SecureRandom.hex(8)}@example.com",
+      "testuser#{SecureRandom.hex(8)}@example.com",
+    ]
+    user = User.create!(
+      confirmed_at: Time.zone.now,
+      confirmation_sent_at: 5.minutes.ago,
+      email: emails.first,
+      password: 'salty pickles',
+      personal_key: RandomPhrase.new(num_words: 4).to_s,
+    )
+    user.phone_configurations.create!(
+      phone_configuration_data(user, num: 1234),
+    )
+    user.email_addresses.create!(
+      confirmed_at: Time.zone.now,
+      email: emails.last,
+    )
+    warn "Emails: #{emails.join(', ')}\nPassword: salty pickles"
+  end
+
   def setup_user(user, args)
     user.encrypted_email = args[:ee].encrypted
     user.skip_confirmation!

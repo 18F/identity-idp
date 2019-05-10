@@ -1,9 +1,15 @@
 - title t('titles.visitors.index')
 - request_id = params[:request_id] || sp_session[:request_id]
 
+- if decorated_session.sp_name
+  .center
+    = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
+
+    = render decorated_session.registration_heading
+- else
+  h1.h3.my0 = decorated_session.new_session_heading
 = render 'shared/sp_alert'
 
-h1.h3.my0 = decorated_session.new_session_heading
 = simple_form_for(resource,
                   as: resource_name,
                   url: session_path(resource_name),
@@ -11,17 +17,24 @@ h1.h3.my0 = decorated_session.new_session_heading
   = f.input :email, label: t('account.index.email'), required: true, input_html: { class: 'mb4' }
   = f.input :password, label: t('account.index.password'), required: true
   = f.input :request_id, as: :hidden, input_html: { value: request_id }
-  = hidden_field_tag 'ga_client_id', '', class: 'ga-client-id'
-  div
-    = f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3'
+  .mb3
+    = f.button :submit, t('links.next'), class: 'col-12 btn-wide mb2'
+    .create-box.bg-light-blue.center.py1.rounded-lg
+      = t('links.create_helper')
+      = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
+        class: 'pl1'
 
-p.my3
+- if decorated_session.sp_name
+  .clearfix.pt1.border-top
+    = render decorated_session.return_to_service_provider_partial
+- else
+  .border-top
+
+.mxn1.my1
+  = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
+    class: 'px1'
+
+- if loa3_requested?
+  = render 'sign_up/registrations/required_pii_accordion'
+.mt3
   = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
-
-.clearfix.pt1.border-top
-  = render decorated_session.return_to_service_provider_partial
-  .sm-col-right.mxn1
-    = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
-      class: 'px1'
-    = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
-      class: 'px1 border-left border-silver'

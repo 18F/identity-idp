@@ -21,7 +21,7 @@ module TwoFactorAuthentication
       result = piv_cac_verfication_form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
-        params[:ga_client_id],
+        analytics.grab_ga_client_id,
       )
       if result.success?
         handle_valid_piv_cac
@@ -47,7 +47,7 @@ module TwoFactorAuthentication
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         after_otp_verification_confirmation_url
       else
-        account_recovery_setup_url
+        two_factor_options_url
       end
     end
 

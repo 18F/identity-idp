@@ -19,9 +19,9 @@ describe 'totp management' do
   end
 
   context 'when totp is the only mfa method' do
-    let(:user) { create(:user, :with_authentication_app) }
+    let(:user) { create(:user, :with_authentication_app, :with_backup_code) }
 
-    it 'does not shot the user the option to disable their totp app' do
+    it 'does not show the user the option to disable their totp app' do
       sign_in_and_2fa_user(user)
 
       expect(page).to have_content(t('account.index.authentication_app'))

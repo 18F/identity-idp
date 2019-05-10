@@ -13,7 +13,7 @@ describe 'user signs in partially and visits openid_connect/authorize' do
   it 'prompts the user to 2FA if prompt is login' do
     openid_test('login')
     sp_request_id = ServiceProviderRequest.last.uuid
-    expect(response).to redirect_to sign_up_start_path(request_id: sp_request_id)
+    expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
   end
 
   it 'prompts the user to 2FA if prompt is not given' do
