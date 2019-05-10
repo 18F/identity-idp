@@ -265,7 +265,7 @@ feature 'Password Recovery' do
 
     before do
       sign_in_and_2fa_user(user)
-      visit manage_email_path
+      visit manage_email_path(id: user.email_addresses.take.id)
     end
 
     it 'receives password reset message at original address' do
