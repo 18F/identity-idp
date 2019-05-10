@@ -5,14 +5,15 @@ class UpdateUser
   end
 
   def call
-    result = user.update!(attributes.except(:phone_id, :phone, :phone_confirmed_at))
+    result = user.update!(attributes.except(:phone_id, :phone, :phone_confirmed_at,
+                                            :otp_make_default_number))
     manage_phone_configuration
     result
   end
 
   private
 
-  attr_reader :user, :attributes
+  attr_reader :user, :attributes, :include_phone_configuration_update
 
   def manage_phone_configuration
     if attributes[:phone_id].present?
@@ -23,7 +24,7 @@ class UpdateUser
   end
 
   def update_phone_configuration
-    MfaContext.new(user).phone_configuration(attributes[:phone_id]).update!(phone_attributes)
+    phone_configuration.update!(phone_attributes)
   end
 
   def create_phone_configuration
@@ -40,7 +41,22 @@ class UpdateUser
       phone: attributes[:phone],
       confirmed_at: attributes[:phone_confirmed_at],
       delivery_preference: attribute(:otp_delivery_preference),
+      made_default_at: made_default_at_date,
     }.delete_if { |_, value| value.nil? }
+  end
+
+  def made_default_at_date
+    return present_made_default_at if attributes[:otp_make_default_number].blank?
+    Time.zone.now
+  end
+
+  def present_made_default_at
+    phone_configuration.made_default_at if attributes[:phone_id].present?
+    nil
+  end
+
+  def phone_configuration
+    MfaContext.new(user).phone_configuration(attributes[:phone_id])
   end
 
   # This returns the named attribute if it's included in the changes, even if

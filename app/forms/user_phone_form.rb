@@ -16,7 +16,6 @@ class UserPhoneForm
     else
       prefill_form(phone_configuration)
     end
-    self.otp_make_default_number = true if phone_configuration == user.default_phone_configuration
   end
 
   def submit(params)
@@ -30,8 +29,11 @@ class UserPhoneForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def phone_changed?
-    formatted_user_phone != phone
+  def phone_config_changed?
+    return true if formatted_user_phone != phone
+    return true if phone_configuration&.delivery_preference != otp_delivery_preference
+    return true if otp_make_default_number && !default_phone_configuration?
+    false
   end
 
   private
@@ -42,6 +44,7 @@ class UserPhoneForm
     self.phone = phone_configuration.phone
     self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
     self.otp_delivery_preference = phone_configuration.delivery_preference
+    self.otp_make_default_number = true if default_phone_configuration?
   end
 
   def extra_analytics_attributes
@@ -58,9 +61,15 @@ class UserPhoneForm
       country_code: international_code,
     )
 
-    tfa_prefs = params[:otp_delivery_preference]
+    delivery_prefs = params[:otp_delivery_preference]
+    default_prefs = params[:otp_make_default_number]
 
-    self.otp_delivery_preference = tfa_prefs if tfa_prefs
+    self.otp_delivery_preference = delivery_prefs if delivery_prefs
+    self.otp_make_default_number = true if default_prefs
+  end
+
+  def default_phone_configuration?
+    phone_configuration == user.default_phone_configuration
   end
 
   def update_remember_device_revoked_at

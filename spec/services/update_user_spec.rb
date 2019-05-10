@@ -41,5 +41,69 @@ describe UpdateUser do
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
       end
     end
+
+    context 'when creating a new phone' do
+      let(:user) { create(:user) }
+      let(:confirmed_at) { 1.day.ago.change(usec: 0) }
+      let(:attributes) do
+        {
+          phone: '+1 222 333-4444',
+          phone_confirmed_at: confirmed_at,
+          otp_delivery_preference: 'voice',
+        }
+      end
+
+      context 'when phone is set as default' do
+        it 'updates made_default_at timestamp with current date and time' do
+          attributes[:otp_make_default_number] = true
+          UpdateUser.new(user: user, attributes: attributes).call
+          phone_configuration = user.phone_configurations.reload.first
+          expect(phone_configuration.made_default_at).to be_within(1.second).of Time.zone.now
+        end
+      end
+
+      context 'when phone is not set as default' do
+        it 'updates made_default_at with nil value' do
+          attributes[:otp_make_default_number] = nil
+          UpdateUser.new(user: user, attributes: attributes).call
+          phone_configuration = user.phone_configurations.reload.first
+          expect(phone_configuration.made_default_at).to eq nil
+        end
+      end
+    end
+
+    context 'when updating an existing phone' do
+      let(:user) { create(:user) }
+      let(:phone_configuration) { create(:phone_configuration, user: user) }
+      let(:confirmed_at) { 1.day.ago.change(usec: 0) }
+      let(:attributes) do
+        {
+          phone_id: phone_configuration.id,
+          phone: '+1 222 333-4444',
+          phone_confirmed_at: confirmed_at,
+          otp_delivery_preference: 'sms',
+        }
+      end
+
+      context 'when phone is set as default' do
+        it 'updates made_default_at timestamp with current date and time' do
+          attributes[:otp_make_default_number] = true
+          UpdateUser.new(user: user, attributes: attributes).call
+          phone_configuration.reload
+          expect(phone_configuration.made_default_at).to be_within(1.second).of Time.zone.now
+        end
+      end
+
+      context 'when phone is not set as default' do
+        it 'updates made_default_at timestamp with current made_default_at date and time' do
+          attributes[:otp_make_default_number] = nil
+          original_made_default_at = Time.zone.now - 2.days
+          phone_configuration.update_attributes(made_default_at: original_made_default_at)
+          UpdateUser.new(user: user, attributes: attributes).call
+          phone_configuration.reload
+          expect(phone_configuration.made_default_at).to eq original_made_default_at
+        end
+      end
+    end
   end
 end

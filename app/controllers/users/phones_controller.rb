@@ -32,7 +32,6 @@ module Users
       @presenter = PhoneSetupPresenter.new(delivery_preference)
       if @user_phone_form.submit(user_params).success?
         process_updates
-        set_default_phone
         bypass_sign_in current_user
       else
         render :edit
@@ -73,16 +72,9 @@ module Users
       phone_configuration&.delivery_preference || current_user.otp_delivery_preference
     end
 
-    def set_default_phone
-      return if user_params['otp_make_default_number'].blank?
-      user_session[:phone_id] = phone_configuration.id
-      phone_configuration.made_default_at = Time.zone.now
-      phone_configuration.save
-    end
-
     def process_updates
       form = @user_phone_form
-      if form.phone_changed?
+      if form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
         confirm_phone
       else
@@ -93,7 +85,8 @@ module Users
     def confirm_phone
       flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
       prompt_to_confirm_phone(id: user_session[:phone_id], phone: @user_phone_form.phone,
-                              selected_delivery_method: @user_phone_form.otp_delivery_preference)
+                              selected_delivery_method: @user_phone_form.otp_delivery_preference,
+                              selected_default_number: @user_phone_form.otp_make_default_number)
     end
 
     def handle_successful_delete
