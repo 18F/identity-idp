@@ -31,6 +31,29 @@ FactoryBot.define do
       end
     end
 
+    trait :with_multiple_emails do
+      after(:build) do |user, _evaluator|
+        until user.email_addresses.many?
+          user.email_addresses << build(
+            :email_address,
+            email: Faker::Internet.safe_email,
+            confirmed_at: user.confirmed_at,
+            user_id: -1,
+          )
+        end
+      end
+      after(:stub) do |user, _evaluator|
+        until user.email_addresses.many?
+          user.email_addresses << build(
+            :email_address,
+            email: Faker::Internet.safe_email,
+            confirmed_at: user.confirmed_at,
+            user_id: -1,
+          )
+        end
+      end
+    end
+
     trait :with_webauthn do
       after(:build) do |user, evaluator|
         next unless user.webauthn_configurations.empty?
@@ -102,6 +125,14 @@ FactoryBot.define do
 
     trait :with_authentication_app do
       otp_secret_key { ROTP::Base32.random_base32 }
+    end
+
+    trait :admin do
+      role { :admin }
+    end
+
+    trait :tech_support do
+      role { :tech }
     end
 
     trait :signed_up do
