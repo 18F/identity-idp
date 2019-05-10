@@ -28,9 +28,7 @@ class JobRun < ApplicationRecord
   end
 
   def mark_as_timed_out
-    unless error.nil? && finish_time.nil? && result.nil?
-      raise ArgumentError, 'Job does not appear to have timed out'
-    end
+    return unless error.nil? && finish_time.nil? && result.nil?
 
     Rails.logger.debug("#{self.class.name}: Marking job #{id} as timed out")
     NewRelic::Agent.notice_error("JobRun timed out: #{inspect}")
