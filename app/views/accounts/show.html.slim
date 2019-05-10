@@ -20,7 +20,7 @@ h1.hide = t('titles.account')
   = render 'account_item',
     name: t('account.index.email'),
     content: current_user.email_addresses.first.email,
-    path: manage_email_path,
+    path: manage_email_path(id: current_user.email_addresses.first.id),
     action: @view_model.edit_action_partial
 
   = render 'account_item',

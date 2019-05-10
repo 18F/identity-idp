@@ -1,13 +1,14 @@
 module Users
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
+    before_action :authorize_user_to_edit_email
 
     def edit
-      @update_user_email_form = UpdateUserEmailForm.new(current_user)
+      @update_user_email_form = UpdateUserEmailForm.new(current_user, email_address)
     end
 
     def update
-      @update_user_email_form = UpdateUserEmailForm.new(current_user)
+      @update_user_email_form = UpdateUserEmailForm.new(current_user, email_address)
 
       result = @update_user_email_form.submit(user_params)
 
@@ -22,6 +23,16 @@ module Users
     end
 
     private
+
+    def authorize_user_to_edit_email
+      return render_not_found if email_address.user != current_user
+    rescue ActiveRecord::RecordNotFound
+      render_not_found
+    end
+
+    def email_address
+      EmailAddress.find(params[:id])
+    end
 
     def user_params
       params.require(:update_user_email_form).permit(:email)
