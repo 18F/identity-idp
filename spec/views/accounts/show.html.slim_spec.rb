@@ -207,8 +207,8 @@ describe 'accounts/show.html.slim' do
       render
 
       expect(rendered).to have_link(
-                            t('account.index.email_add'), href: add_email_path
-                          )
+        t('account.index.email_add'), href: add_email_path
+      )
     end
 
     it 'shows one email if the user has only one email' do
