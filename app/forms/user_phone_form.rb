@@ -5,7 +5,8 @@ class UserPhoneForm
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference, :phone_configuration
+  attr_accessor :phone, :international_code, :otp_delivery_preference,
+                :otp_make_default_number, :phone_configuration
 
   def initialize(user, phone_configuration)
     self.user = user
@@ -13,10 +14,9 @@ class UserPhoneForm
     if phone_configuration.nil?
       self.otp_delivery_preference = user.otp_delivery_preference
     else
-      self.phone = phone_configuration.phone
-      self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
-      self.otp_delivery_preference = phone_configuration.delivery_preference
+      prefill_phone_number(phone_configuration)
     end
+    self.otp_make_default_number = true if default_phone_configuration?
   end
 
   def submit(params)
@@ -30,13 +30,31 @@ class UserPhoneForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def phone_changed?
-    formatted_user_phone != phone
+  def delivery_preference_sms?
+    return true if phone_configuration.blank?
+    phone_configuration&.delivery_preference == 'sms'
+  end
+
+  def delivery_preference_voice?
+    phone_configuration&.delivery_preference == 'voice'
+  end
+
+  def phone_config_changed?
+    return true if formatted_user_phone != phone
+    return true if phone_configuration&.delivery_preference != otp_delivery_preference
+    return true if otp_make_default_number && !default_phone_configuration?
+    false
   end
 
   private
 
   attr_accessor :user, :submitted_phone
+
+  def prefill_phone_number(phone_configuration)
+    self.phone = phone_configuration.phone
+    self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
+    self.otp_delivery_preference = phone_configuration.delivery_preference
+  end
 
   def extra_analytics_attributes
     {
@@ -52,9 +70,15 @@ class UserPhoneForm
       country_code: international_code,
     )
 
-    tfa_prefs = params[:otp_delivery_preference]
+    delivery_prefs = params[:otp_delivery_preference]
+    default_prefs = params[:otp_make_default_number]
 
-    self.otp_delivery_preference = tfa_prefs if tfa_prefs
+    self.otp_delivery_preference = delivery_prefs if delivery_prefs
+    self.otp_make_default_number = true if default_prefs
+  end
+
+  def default_phone_configuration?
+    phone_configuration == user.default_phone_configuration
   end
 
   def update_remember_device_revoked_at

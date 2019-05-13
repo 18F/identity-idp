@@ -11,6 +11,7 @@ es:
       backup_code_confirm_regenerate: Sí, regenerar códigos.
       backup_codes_exist: generado
       backup_codes_no_exist: no generado
+      default: defecto
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Email
