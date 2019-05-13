@@ -69,8 +69,12 @@ class User < ApplicationRecord
     # See https://github.com/18F/identity-idp/pull/452 for more details.
   end
 
+  def confirmed?
+    email_addresses.where.not(confirmed_at: nil).any?
+  end
+
   def confirmation_period_expired?
-    confirmation_sent_at.present? && confirmation_sent_at.utc <= self.class.confirm_within.ago
+    super
   end
 
   def last_identity
