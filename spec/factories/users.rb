@@ -127,14 +127,6 @@ FactoryBot.define do
       otp_secret_key { ROTP::Base32.random_base32 }
     end
 
-    trait :admin do
-      role { :admin }
-    end
-
-    trait :tech_support do
-      role { :tech }
-    end
-
     trait :signed_up do
       with_phone
       with_personal_key
