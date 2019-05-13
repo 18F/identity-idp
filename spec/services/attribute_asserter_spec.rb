@@ -157,7 +157,8 @@ describe AttributeAsserter do
         end
 
         it 'does not create a getter function for LOA1 attributes' do
-          expect(user.asserted_attributes[:email][:getter]).to eq :email
+          expected_email = EmailContext.new(user).last_sign_in_email_address.email
+          expect(user.asserted_attributes[:email][:getter].call(user)).to eq expected_email
         end
 
         it 'gets UUID (MBUN) from Service Provider' do
