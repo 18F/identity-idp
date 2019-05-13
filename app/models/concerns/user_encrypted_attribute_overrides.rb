@@ -5,16 +5,21 @@ module UserEncryptedAttributeOverrides
     # override this Devise method to support our use of encrypted_email
     def find_first_by_auth_conditions(tainted_conditions, _opts = {})
       email = tainted_conditions[:email]
-      return find_with_email(email) if email
+      return find_with_confirmed_email(email) if email.present?
 
       find_by(tainted_conditions)
     end
 
     # :reek:UtilityFunction
     def find_with_email(email)
-      email = EmailAddress.where.not(confirmed_at: nil).find_with_email(email) ||
-              EmailAddress.where(confirmed_at: nil).find_with_email(email)
-      email&.user
+      email_address = EmailAddress.where.not(confirmed_at: nil).find_with_email(email) ||
+                      EmailAddress.where(confirmed_at: nil).find_with_email(email)
+      email_address&.user
+    end
+
+    def find_with_confirmed_email(email)
+      email_address = EmailAddress.where.not(confirmed_at: nil).find_with_email(email)
+      email_address&.user
     end
   end
 
