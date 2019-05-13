@@ -3,10 +3,6 @@ module Users
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email
 
-    def add; end
-
-    def create; end
-
     def edit
       @update_user_email_form = UpdateUserEmailForm.new(current_user, email_address)
     end

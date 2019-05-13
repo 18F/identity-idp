@@ -14,7 +14,6 @@ es:
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Email
-      email_add: "+ Añadir email"
       full_name: Nombre completo
       login: Información para iniciar sesión
       password: Contraseña
