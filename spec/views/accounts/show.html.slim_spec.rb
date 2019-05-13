@@ -202,7 +202,7 @@ describe 'accounts/show.html.slim' do
 
       expect(view).to render_template(partial: '_emails')
     end
-    
+
     it 'shows one email if the user has only one email' do
       expect(user.email_addresses.size).to eq(1)
     end
