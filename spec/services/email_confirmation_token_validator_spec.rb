@@ -48,7 +48,7 @@ describe EmailConfirmationTokenValidator do
 
     context 'confirmation token has already been used' do
       it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user)
+        user = create(:user)
         user.errors.add(:email, :already_confirmed)
 
         response = instance_double(FormResponse)
