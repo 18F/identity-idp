@@ -101,7 +101,8 @@ describe UpdateUser do
           phone_configuration.update(made_default_at: original_made_default_at)
           UpdateUser.new(user: user, attributes: attributes).call
           phone_configuration.reload
-          expect(phone_configuration.made_default_at).to eq original_made_default_at
+          expect(phone_configuration.made_default_at).
+            to be_within(1.second).of original_made_default_at
         end
       end
     end
