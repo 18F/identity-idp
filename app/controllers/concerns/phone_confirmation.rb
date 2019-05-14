@@ -12,9 +12,9 @@ module PhoneConfirmation
 
   private
 
-  def otp_delivery_method(id, phone, selected_delivery_method)
+  def otp_delivery_method(_id, phone, selected_delivery_method)
     return :sms if PhoneNumberCapabilities.new(phone).sms_only?
     return selected_delivery_method if selected_delivery_method.present?
-      current_user.otp_delivery_preference
+    current_user.otp_delivery_preference
   end
 end
