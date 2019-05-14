@@ -14,6 +14,20 @@ feature 'Sign Up' do
     end
   end
 
+  context 'and set up voice as 2FA' do
+    scenario 'first making sure this works' do
+      sign_in_user
+      select_2fa_option('voice')
+      fill_in 'user_phone_form[phone]', with: '202-555-1212'
+      click_send_security_code
+      click_submit_default
+      fill_in 'code', with: '777777'
+      click_button 'Submit'
+      expect(page).to have_current_path(two_factor_options_path)
+    end
+  end
+
+
   context 'user cancels sign up on email screen' do
     before do
       visit sign_up_email_path
