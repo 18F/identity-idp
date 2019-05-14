@@ -56,6 +56,15 @@ class UserPhoneForm
     self.otp_delivery_preference = phone_configuration.delivery_preference
   end
 
+  def ingest_phone_number(params)
+    self.international_code = params[:international_code]
+    self.submitted_phone = params[:phone]
+    self.phone = PhoneFormatter.format(
+      submitted_phone,
+      country_code: international_code,
+    )
+  end
+
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
@@ -63,12 +72,7 @@ class UserPhoneForm
   end
 
   def ingest_submitted_params(params)
-    self.international_code = params[:international_code]
-    self.submitted_phone = params[:phone]
-    self.phone = PhoneFormatter.format(
-      submitted_phone,
-      country_code: international_code,
-    )
+    ingest_phone_number(params)
 
     delivery_prefs = params[:otp_delivery_preference]
     default_prefs = params[:otp_make_default_number]
