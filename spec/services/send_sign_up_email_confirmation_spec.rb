@@ -35,7 +35,7 @@ describe SendSignUpEmailConfirmation do
       email_address = user.email_addresses.first
       expect(email_address.email).to eq(user.email)
       expect(email_address.confirmation_token).to eq(confirmation_token)
-      expect(email_address.confirmation_sent_at).to be_within(1.second).of(Time.zone.now)
+      expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
       expect(email_address.confirmed_at).to eq(nil)
     end
 
@@ -43,14 +43,53 @@ describe SendSignUpEmailConfirmation do
       subject.call(request_id: request_id)
 
       expect(user.confirmation_token).to eq(confirmation_token)
-      expect(user.confirmation_sent_at).to be_within(1.second).of(Time.zone.now)
+      expect(user.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
       expect(user.confirmed_at).to eq(nil)
     end
 
     context 'when the user already has a confirmation token' do
-      it 'regenerates a token if the token is expired'
+      let(:user) do
+        create(:user, confirmation_token: 'old-token', confirmation_sent_at: 5.minutes.ago)
+      end
 
-      it 'does not regenerate a token if the token is expired'
+      it 'regenerates a token if the token is expired' do
+        user.update!(confirmation_sent_at: 10.days.ago)
+        user.email_addresses.first.update!(
+          confirmation_token: user.confirmation_token,
+          confirmation_sent_at: user.confirmation_sent_at,
+        )
+
+        mail = double
+        expect(mail).to receive(:deliver_later)
+        expect(CustomDeviseMailer). to receive(:confirmation_instructions).with(
+          user, confirmation_token, instance_of(Hash)
+        ).and_return(mail)
+
+        subject.call
+
+        email_address = user.email_addresses.first
+        expect(email_address.confirmation_token).to eq(confirmation_token)
+        expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
+      end
+
+      it 'does not regenerate a token if the token is not expired' do
+        user.email_addresses.first.update!(
+          confirmation_token: user.confirmation_token,
+          confirmation_sent_at: user.confirmation_sent_at,
+        )
+
+        mail = double
+        expect(mail).to receive(:deliver_later)
+        expect(CustomDeviseMailer). to receive(:confirmation_instructions).with(
+          user, 'old-token', instance_of(Hash)
+        ).and_return(mail)
+
+        subject.call
+
+        email_address = user.email_addresses.first
+        expect(email_address.confirmation_token).to eq('old-token')
+        expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(5.minutes.ago)
+      end
     end
   end
 end
