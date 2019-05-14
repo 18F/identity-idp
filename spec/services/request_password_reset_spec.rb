@@ -5,8 +5,17 @@ describe RequestPasswordReset do
     context 'when the user is not found' do
       it 'sends the account registration email' do
         email = 'nonexistent@example.com'
-        expect_any_instance_of(User).to receive(:send_custom_confirmation_instructions).
-          with(nil, I18n.t('mailer.confirmation_instructions.first_sentence.forgot_password'))
+
+        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
+        expect(send_sign_up_email_confirmation).to receive(:call).with(
+          hash_including(
+            instructions: I18n.t('mailer.confirmation_instructions.first_sentence.forgot_password'),
+          ),
+        )
+        expect(SendSignUpEmailConfirmation).to receive(:new).and_return(
+          send_sign_up_email_confirmation,
+        )
+
         RequestPasswordReset.new(email).perform
         expect(User.find_with_email(email)).to be_present
       end

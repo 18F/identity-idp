@@ -28,7 +28,7 @@ class ResendEmailConfirmationForm
   def send_confirmation_email_if_necessary
     return unless valid? && user.persisted? && !user.confirmed?
 
-    user.send_custom_confirmation_instructions(request_id)
+    SendSignUpEmailConfirmation.new(user).call(request_id: request_id)
   end
 
   def extra_analytics_attributes
