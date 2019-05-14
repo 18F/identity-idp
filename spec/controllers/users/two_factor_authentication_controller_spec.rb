@@ -217,7 +217,8 @@ describe Users::TwoFactorAuthenticationController do
 
         (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
           get :send_code, params: {
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: nil },
           }
         end
 
@@ -268,7 +269,8 @@ describe Users::TwoFactorAuthenticationController do
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                         otp_make_default_number: nil },
         }
       end
     end
