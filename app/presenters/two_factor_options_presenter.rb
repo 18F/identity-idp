@@ -58,7 +58,8 @@ class TwoFactorOptionsPresenter
   end
 
   def totp_option
-    if TwoFactorAuthentication::AuthAppPolicy.new(current_user).available?
+    policy = TwoFactorAuthentication::AuthAppPolicy.new(current_user)
+    if available_and_not_enabled?(policy)
       [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
     else
       []
@@ -74,7 +75,14 @@ class TwoFactorOptionsPresenter
 
   def backup_code_option
     policy = TwoFactorAuthentication::BackupCodePolicy.new(current_user)
-    return [TwoFactorAuthentication::BackupCodeSelectionPresenter.new] if policy.available?
-    []
+    if available_and_not_enabled?(policy)
+      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
+    else
+      []
+    end
+  end
+
+  def available_and_not_enabled?(policy)
+    policy.available? && !policy.enabled?
   end
 end
