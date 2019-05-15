@@ -3,9 +3,10 @@ module PushNotificationsHelper
     web_push(push_to_url, payload)
   end
 
-  def jwt_data(push_to_url)
+  def jwt_data(push_to_url, payload)
     Base64.strict_encode64({ 'aud': push_to_url,
                              'exp': (Time.zone.now + 12.hours).to_i,
+                             'payload': payload.to_json,
                              'sub': 'mailto:partners@login.gov' }.to_json)
   end
 
@@ -15,13 +16,12 @@ module PushNotificationsHelper
   end
 
   def signature(payload)
-    JWT.encode({ iat: Time.zone.now.to_i, payload: payload },
-               RequestKeyManager.private_key,
-               'RS256')
+    JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
   end
 
   def web_push(push_to_url, payload)
-    "WebPush #{jwt_info}.#{jwt_data(push_to_url)}.#{signature(payload)}"
+    unsigned_token = "#{jwt_info}.#{jwt_data(push_to_url, payload)}"
+    "WebPush #{unsigned_token}.#{signature(unsigned_token)}"
   end
 
   def headers(push_url, payload)
