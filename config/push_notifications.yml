@@ -1,0 +1,20 @@
+test:
+  'SAM':
+    agency_id: 5
+    types: account_delete
+    host: localhost
+    port: 9292
+
+development:
+  'Example Sinatra App':
+    agency_id: 1
+    types: account_delete
+    host: localhost
+    port: 9292
+
+production:
+  'SAM':
+    agency_id: 5
+    types: account_delete
+    host: localhost
+    port: 9292

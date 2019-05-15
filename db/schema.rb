@@ -206,6 +206,13 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "push_account_deletes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "agency_id", null: false
+    t.string "uuid", null: false
+    t.index ["created_at"], name: "index_push_account_deletes_on_created_at"
+  end
+
   create_table "remote_settings", force: :cascade do |t|
     t.string "name", null: false
     t.string "url", null: false
@@ -255,6 +262,7 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.boolean "piv_cac", default: false
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
+    t.string "push_notification_url"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
