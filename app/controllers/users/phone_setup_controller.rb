@@ -22,7 +22,15 @@ module Users
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
       if result.success?
-        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+        existing_phone_idx = MfaContext.new(current_user).phone_configurations.map(&:phone)
+                               .index(@user_phone_form.phone)
+
+        if !existing_phone_idx.nil?
+          flash[:error] = t('errors.messages.phone_duplicate')
+          redirect_to phone_setup_url
+        else
+          prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+        end
       else
         render :index
       end
