@@ -72,13 +72,13 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'email_confirmation_instructins' do
+  describe 'email_confirmation_instructions' do
     let(:instructions) { 'do the things' }
     let(:request_id) { '1234-abcd' }
     let(:token) { 'asdf123' }
 
     let(:mail) do
-      UserMailer.email_confirmation_instructins(
+      UserMailer.email_confirmation_instructions(
         user,
         user.email,
         token,
