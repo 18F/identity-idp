@@ -27,11 +27,11 @@ module Users
     private
 
     def handle_create_success(phone)
-      if MfaContext.new(current_user).phone_exists?(phone)
+      if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
+        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+      else
         flash[:error] = t('errors.messages.phone_duplicate')
         redirect_to phone_setup_url
-      else
-        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
       end
     end
 
