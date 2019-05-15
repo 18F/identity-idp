@@ -9,6 +9,9 @@ class UserMailer < ActionMailer::Base
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
   end
 
+  # :reek:ControlParameter
+  # :reek:LongParameterList
+  # :reek:TooManyStatements
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     presenter = ConfirmationEmailPresenter.new(user, view_context)
     @first_sentence = instructions || presenter.first_sentence
