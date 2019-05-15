@@ -21,22 +21,19 @@ module Users
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
-      if result.success?
-        existing_phone_idx = MfaContext.new(current_user).phone_configurations.map(&:phone)
-                               .index(@user_phone_form.phone)
-
-        if !existing_phone_idx.nil?
-          flash[:error] = t('errors.messages.phone_duplicate')
-          redirect_to phone_setup_url
-        else
-          prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
-        end
-      else
-        render :index
-      end
+      result.success? ? handle_create_success(@user_phone_form.phone) : (render :index)
     end
 
     private
+
+    def handle_create_success(phone)
+      if MfaContext.new(current_user).phone_exists?(phone)
+        flash[:error] = t('errors.messages.phone_duplicate')
+        redirect_to phone_setup_url
+      else
+        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+      end
+    end
 
     def delivery_preference
       MfaContext.new(current_user).phone_configurations.take&.delivery_preference ||
