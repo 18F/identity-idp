@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'OTP delivery selection' do
-
   context 'set up voice as 2FA' do
     before do
       sign_in_user
