@@ -25,8 +25,6 @@ fr:
         pour continuer.
       unconfirmed: Vous devez confirmer votre adresse courriel avant de continuer.
     mailer:
-      confirmation_instructions:
-        subject: Confirmez votre adresse courriel
       password_updated:
         subject: Votre mot de passe a été modifié
       reset_password_instructions:

@@ -94,7 +94,7 @@ ignore_missing:
 ## any unused translations would fail erroneously.
 ignore_unused:
   - 'devise.failure.*'
-  - 'devise.mailer.confirmation_instructions.subject'
+  - 'devise.user_mailer.email_confirmation_instructions.subject'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
   - 'datetime.dotiw.two_words_connector'

@@ -53,9 +53,12 @@ class SendSignUpEmailConfirmation
   end
 
   def send_confirmation_email(request_id, instructions)
-    # TODO Move this into the user mailer and test it propery
-    CustomDeviseMailer.confirmation_instructions(
-      user, confirmation_token, request_id: request_id, instructions: instructions
+    UserMailer.email_confirmation_instructions(
+      user,
+      email_address.email,
+      confirmation_token,
+      request_id: request_id,
+      instructions: instructions,
     ).deliver_later
   end
 

@@ -9,7 +9,7 @@ describe RequestPasswordReset do
         send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
         expect(send_sign_up_email_confirmation).to receive(:call).with(
           hash_including(
-            instructions: I18n.t('mailer.confirmation_instructions.first_sentence.forgot_password'),
+            instructions: I18n.t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password'),
           ),
         )
         expect(SendSignUpEmailConfirmation).to receive(:new).and_return(

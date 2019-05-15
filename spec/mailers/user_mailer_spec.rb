@@ -72,6 +72,24 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'email_confirmation_instructins' do
+    let(:instructions) { 'do the things' }
+    let(:request_id) { '1234-abcd' }
+    let(:token) { 'asdf123' }
+
+    let(:mail) do
+      UserMailer.email_confirmation_instructins(
+        user,
+        user.email,
+        token,
+        request_id: request_id,
+        instructions: instructions,
+      )
+    end
+
+    it_behaves_like 'a system email'
+  end
+
   describe 'sign in from new device' do
     date = 'Washington, DC'
     location = 'February 25, 2019 15:02'
