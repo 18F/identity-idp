@@ -15,8 +15,8 @@ module PushNotificationsHelper
                              'alg': 'RS256' }.to_json)
   end
 
-  def signature(payload)
-    JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+  def signature(unsigned_token)
+    JWT.encode(unsigned_token, RequestKeyManager.private_key, 'RS256')
   end
 
   def web_push(push_to_url, payload)
