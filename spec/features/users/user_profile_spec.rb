@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'User profile' do
   include IdvHelper
   include PersonalKeyHelper
+  include PushNotificationsHelper
 
   context 'account status badges' do
     before do
@@ -19,6 +20,9 @@ feature 'User profile' do
   end
 
   context 'loa1 user clicks the delete account button' do
+    let(:push_notification_url) { 'http://localhost/push_notifications' }
+    let(:payload) { { uuid: '1234' } }
+
     it 'deletes the account and signs the user out with a flash message' do
       user = sign_in_and_2fa_user
       user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
@@ -33,6 +37,26 @@ feature 'User profile' do
       expect(current_path).to eq root_path
       expect(User.count).to eq 0
       expect(AgencyIdentity.count).to eq 0
+    end
+
+    it 'deletes the account and pushes notifications if push_notifications_enabled is true' do
+      allow(Figaro.env).to receive(:push_notifications_enabled).and_return('true')
+
+      user = sign_in_and_2fa_user
+      user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
+      visit account_path
+
+      click_link(t('account.links.delete_account'))
+
+      Timecop.travel(Time.zone.now) do
+        request = stub_request(:post, push_notification_url).
+                  with(headers: headers(push_notification_url, payload)).
+                  with(body: '').
+                  to_return(body: '')
+
+        click_button t('users.delete.actions.delete')
+        expect(request).to have_been_requested
+      end
     end
   end
 
