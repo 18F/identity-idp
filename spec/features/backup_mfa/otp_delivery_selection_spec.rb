@@ -16,10 +16,10 @@ feature 'OTP delivery selection' do
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('sms')
       expect(page).to have_content t('titles.phone_setup.sms')
-      fill_in 'user_phone_form[phone]', with: '202-555-1212'
+      fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.sms.number_message',
-                                     number: '+1 202-555-1212',
+                                     number: '+1 202-555-1213',
                                      expiration: Figaro.env.otp_valid_for))
     end
   end
@@ -39,10 +39,10 @@ feature 'OTP delivery selection' do
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('voice')
       expect(page).to have_content t('titles.phone_setup.voice')
-      fill_in 'user_phone_form[phone]', with: '202-555-1212'
+      fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.voice.number_message',
-                                     number: '+1 202-555-1212',
+                                     number: '+1 202-555-1213',
                                      expiration: Figaro.env.otp_valid_for))
     end
   end
