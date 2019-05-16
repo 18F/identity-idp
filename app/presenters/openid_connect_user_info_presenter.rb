@@ -11,7 +11,7 @@ class OpenidConnectUserInfoPresenter
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
-      email: identity.email,
+      email: email_from_sp_identity(identity),
       email_verified: true,
     }.
            merge(x509_attributes).
@@ -24,6 +24,10 @@ class OpenidConnectUserInfoPresenter
 
   def uuid_from_sp_identity(identity)
     AgencyIdentityLinker.new(identity).link_identity.uuid
+  end
+
+  def email_from_sp_identity(identity)
+    EmailContext.new(identity.user).last_sign_in_email_address.email
   end
 
   # rubocop:disable Metrics/AbcSize

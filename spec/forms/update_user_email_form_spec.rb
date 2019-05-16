@@ -112,7 +112,7 @@ describe UpdateUserEmailForm do
           email_changed: false,
         }
 
-        expect(user).to_not receive(:send_custom_confirmation_instructions)
+        expect(SendSignUpEmailConfirmation).to_not receive(:new)
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(email: 'taken@gmail.com')).to eq result
