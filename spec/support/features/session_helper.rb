@@ -54,6 +54,12 @@ module Features
       user
     end
 
+    def sign_up_with_backup_codes
+      user = create(:user, :unconfirmed, :with_backup_code)
+      confirm_last_user
+      user
+    end
+
     def begin_sign_up_with_sp_and_loa(loa3:)
       user = create(:user)
       login_as(user, scope: :user, run_callbacks: false)
@@ -70,6 +76,13 @@ module Features
 
     def sign_up_and_set_password
       user = sign_up
+      fill_in 'password_form_password', with: VALID_PASSWORD
+      click_button t('forms.buttons.continue')
+      user
+    end
+
+    def sign_up_with_backup_codes_and_set_password
+      user = sign_up_with_backup_codes
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
