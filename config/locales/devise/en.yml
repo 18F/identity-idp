@@ -22,8 +22,6 @@ en:
       unauthenticated: Your session has expired. Please sign in again to continue.
       unconfirmed: You need to confirm your email address before continuing.
     mailer:
-      confirmation_instructions:
-        subject: Confirm your email
       password_updated:
         subject: Your password has been changed
       reset_password_instructions:

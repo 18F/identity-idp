@@ -9,6 +9,19 @@ class UserMailer < ActionMailer::Base
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
   end
 
+  # :reek:ControlParameter
+  # :reek:LongParameterList
+  # :reek:TooManyStatements
+  def email_confirmation_instructions(user, email, token, request_id:, instructions:)
+    presenter = ConfirmationEmailPresenter.new(user, view_context)
+    @first_sentence = instructions || presenter.first_sentence
+    @confirmation_period = presenter.confirmation_period
+    @request_id = request_id
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.email_confirmation_instructions.subject'))
+  end
+
   def signup_with_your_email(email)
     @root_url = root_url(locale: locale_url_param)
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))

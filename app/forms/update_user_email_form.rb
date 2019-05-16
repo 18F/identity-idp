@@ -57,6 +57,6 @@ class UpdateUserEmailForm
 
   def update_user_email
     UpdateUser.new(user: @user, attributes: { email: email }).call
-    @user.send_custom_confirmation_instructions
+    SendSignUpEmailConfirmation.new(user).call
   end
 end

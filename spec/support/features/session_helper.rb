@@ -366,7 +366,7 @@ module Features
 
     def click_confirmation_link_in_email(email)
       open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
     end
 
     def submit_form_with_invalid_password
