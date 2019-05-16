@@ -13,6 +13,16 @@ feature 'sign up with backup code' do
     expect(current_path).to eq two_factor_options_path
   end
 
+  it 'is not available for selection as backup auth method once it is chosen as primary' do
+    sign_up_and_set_password
+
+    select_2fa_option('backup_code')
+
+    click_on 'Continue'
+
+    expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
+  end
+
   it 'works for each code and refreshes the codes on the last one' do
     user = create(:user, :signed_up, :with_authentication_app, :with_backup_code)
     old_codes = user.backup_code_configurations.map(&:code)

@@ -79,8 +79,4 @@ class TwoFactorOptionsPresenter
       []
     end
   end
-
-  def available_and_not_enabled?(policy)
-    policy.available? && !policy.enabled?
-  end
 end

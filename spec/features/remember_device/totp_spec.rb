@@ -23,6 +23,17 @@ describe 'Remembering a TOTP device' do
   end
 
   context 'sign up' do
+    it 'does not allow choosing totp as backup auth method after it is used as primary' do
+      sign_up_and_set_password
+
+      select_2fa_option('auth_app')
+      secret = find('#qr-code').text
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
+    end
+
     def remember_device_and_sign_out_user
       user = sign_up_with_backup_codes_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
