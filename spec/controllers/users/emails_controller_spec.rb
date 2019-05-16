@@ -59,7 +59,7 @@ describe Users::EmailsController do
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
-        expect(response).to render_template('devise/mailer/confirmation_instructions')
+        expect(response).to render_template('user_mailer/email_confirmation_instructions')
         expect(user.reload.email).to eq 'old_email@example.com'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)

@@ -8,7 +8,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:identity) do
     build(:identity,
           rails_session_id: rails_session_id,
-          user: build(:user, :with_email),
+          user: create(:user, :with_email),
           scope: scope)
   end
 
@@ -43,7 +43,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         let(:identity) do
           build(:identity,
                 rails_session_id: rails_session_id,
-                user: build(:user, :with_piv_or_cac),
+                user: create(:user, :with_piv_or_cac),
                 scope: scope)
         end
 

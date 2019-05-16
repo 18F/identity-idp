@@ -2,18 +2,6 @@
 es:
   mailer:
     about: Acerca de %{app}
-    confirmation_instructions:
-      first_sentence:
-        confirmed: "¿Desea cambiar su email?"
-        forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
-          una cuenta vinculada a esta dirección de correo electrónico. Si desea configurar
-          una nueva cuenta vinculada a este correo electrónico, confirme su dirección
-          de correo electrónico a continuación.
-        unconfirmed: Gracias por crear una cuenta.
-      footer: Este enlace expira en %{confirmation_period}.
-      header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
-        completo en su navegador."
-      link_text: Confirmar el correo
     email_change_notice:
       subject: Cambie su email
     email_reuse_notice:
