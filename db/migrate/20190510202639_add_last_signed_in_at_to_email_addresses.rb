@@ -5,7 +5,7 @@ class AddLastSignedInAtToEmailAddresses < ActiveRecord::Migration[5.1]
     add_column :email_addresses, :last_sign_in_at, :datetime
     add_index(
       :email_addresses,
-      :last_sign_in_at,
+      [:user_id, :last_sign_in_at],
       order: { last_sign_in_at: :desc },
       algorithm: :concurrently,
     )
