@@ -21,7 +21,11 @@ module Users
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
-      result.success? ? handle_create_success(@user_phone_form.phone) : (render :index)
+      if result.success?
+        handle_create_success(@user_phone_form.phone)
+      else
+        render :index
+      end
     end
 
     private
