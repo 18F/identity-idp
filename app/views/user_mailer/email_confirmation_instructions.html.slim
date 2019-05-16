@@ -1,5 +1,5 @@
-p.lead == t('mailer.confirmation_instructions.header', intro: @first_sentence) + ' ' + \
-  t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
+p.lead == t('user_mailer.email_confirmation_instructions.header', intro: @first_sentence) + ' ' + \
+  t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @confirmation_period)
 
 table.button.expanded.large.radius
   tbody
@@ -10,7 +10,7 @@ table.button.expanded.large.radius
             tr
               td
                 center
-                  = link_to t('mailer.confirmation_instructions.link_text'), \
+                  = link_to t('user_mailer.email_confirmation_instructions.link_text'), \
                     sign_up_create_email_confirmation_url(_request_id: \
                     @request_id, confirmation_token: @token, locale: @locale), \
                     target: '_blank', \

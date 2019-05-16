@@ -37,8 +37,12 @@ end
 User.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+end
+
+SendSignUpEmailConfirmation.class_eval do
+  include ::NewRelic::Agent::MethodTracer
   add_method_tracer(
-    :send_custom_confirmation_instructions, "Custom/#{name}/send_custom_confirmation_instructions"
+    :call, "Custom/#{name}/call"
   )
 end
 

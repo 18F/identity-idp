@@ -89,6 +89,7 @@ module Users
       sign_in(resource_name, resource)
       cache_active_profile
       create_user_event(:sign_in_before_2fa)
+      update_last_sign_in_at_on_email
       redirect_to user_two_factor_authentication_url
     end
 
@@ -136,6 +137,11 @@ module Users
           analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
         end
       end
+    end
+
+    def update_last_sign_in_at_on_email
+      email_address = current_user.email_addresses.find_with_email(params[:user][:email])
+      email_address.update!(last_sign_in_at: Time.zone.now)
     end
 
     def user_signed_in_and_not_locked_out?(user)
