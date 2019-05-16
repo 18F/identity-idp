@@ -13,7 +13,7 @@ class UpdateUser
 
   private
 
-  attr_reader :user, :attributes, :include_phone_configuration_update
+  attr_reader :user, :attributes
 
   def manage_phone_configuration
     if attributes[:phone_id].present?
@@ -46,11 +46,11 @@ class UpdateUser
   end
 
   def made_default_at_date
-    return present_made_default_at if attributes[:otp_make_default_number].blank?
+    return current_made_default_at if attributes[:otp_make_default_number].blank?
     Time.zone.now
   end
 
-  def present_made_default_at
+  def current_made_default_at
     phone_configuration.made_default_at if attributes[:phone_id].present?
     nil
   end

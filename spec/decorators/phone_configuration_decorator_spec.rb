@@ -8,11 +8,11 @@ describe PhoneConfigurationDecorator do
                                                  made_default_at: Time.zone.now)
   end
 
-  describe '#default_msg' do
+  describe '#default_number_message' do
     it 'returns the default message for default_phone_configuration' do
       decorator = PhoneConfigurationDecorator.new(@phone_config)
 
-      expect(decorator.default_msg).to eq t('account.index.default')
+      expect(decorator.default_number_message).to eq t('account.index.default')
     end
   end
 end
