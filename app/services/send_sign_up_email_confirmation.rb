@@ -30,7 +30,7 @@ class SendSignUpEmailConfirmation
   # :reek:DuplicateMethodCall
   def email_address
     @email_address ||= begin
-      raise handle_multiple_email_address_error if user.email_addresses.count > 1
+      handle_multiple_email_address_error if user.email_addresses.count > 1
       user.email_addresses.take
     end
   end

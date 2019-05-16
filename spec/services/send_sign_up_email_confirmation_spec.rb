@@ -34,7 +34,7 @@ describe SendSignUpEmailConfirmation do
       subject.call(request_id: request_id, instructions: instructions)
     end
 
-    it 'creates updates the confirmation values on the email address for the user' do
+    it 'updates the confirmation values on the email address for the user' do
       subject.call(request_id: request_id)
 
       expect(user.reload.email_addresses.count).to eq(1)
