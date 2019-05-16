@@ -17,11 +17,7 @@ h1.hide = t('titles.account')
   .bg-lightest-blue.py1.px2.h6.caps
     = t('account.index.login')
     = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1'
-  = render 'account_item',
-    name: t('account.index.email'),
-    content: current_user.email_addresses.first.email,
-    path: manage_email_path,
-    action: @view_model.edit_action_partial
+  = render 'emails'
 
   = render 'account_item',
     name: t('account.index.password'),

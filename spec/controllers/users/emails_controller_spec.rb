@@ -4,8 +4,37 @@ describe Users::EmailsController do
   include Features::LocalizationHelper
   include Features::MailerHelper
 
+  describe '#edit' do
+    context 'the user attempts to edit the email of another user' do
+      it 'renders a 404' do
+        user = create(:user)
+        second_user = create(:user)
+        email_address = second_user.email_addresses.first
+
+        stub_sign_in(user)
+
+        put :edit, params: { id: email_address.id }
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'the user attempts to edit an email that does not exist' do
+      it 'renders a 404' do
+        user = create(:user)
+
+        stub_sign_in(user)
+
+        put :edit, params: { id: 9999 }
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe '#update' do
     let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+    let(:email_address) { user.email_addresses.first }
     let(:second_user) { create(:user, :signed_up, email: 'another@example.com') }
     let(:new_email) { 'new_email@example.com' }
 
@@ -23,11 +52,14 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, params: { update_user_email_form: { email: new_email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: new_email },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
-        expect(response).to render_template('devise/mailer/confirmation_instructions')
+        expect(response).to render_template('user_mailer/email_confirmation_instructions')
         expect(user.reload.email).to eq 'old_email@example.com'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)
@@ -48,7 +80,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: '' } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: '' },
+        }
 
         expect(user.reload.email).to be_present
         expect(@analytics).to have_received(:track_event).
@@ -58,7 +93,7 @@ describe Users::EmailsController do
 
     context "user changes email to another user's email address" do
       it 'lets user know they need to confirm their new email' do
-        stub_sign_in
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -70,7 +105,10 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, params: { update_user_email_form: { email: second_user.email.upcase } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: second_user.email.upcase },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -95,7 +133,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: invalid_email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: invalid_email },
+        }
 
         expect(user.reload.email).not_to eq invalid_email
         expect(@analytics).to have_received(:track_event).
@@ -117,7 +158,10 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, params: { update_user_email_form: { email: user.email } }
+        put :update, params: {
+          id: email_address.id,
+          update_user_email_form: { email: user.email },
+        }
 
         expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty
@@ -126,9 +170,40 @@ describe Users::EmailsController do
       end
     end
 
+    context 'the user submits the form with an invalid id' do
+      it 'renders a 404' do
+        stub_sign_in(user)
+
+        put :update, params: {
+          id: 9999,
+          update_user_email_form: { email: 'shouldnotchange@example.com' },
+        }
+
+        expect(response.status).to eq(404)
+        expect(user.reload.email).to_not eq('shouldnotchange@example.com')
+      end
+    end
+
+    context 'the user submits the form with the id of another user' do
+      it 'renders a 404' do
+        stub_sign_in(user)
+
+        put :update, params: {
+          id: second_user.email_addresses.first.id,
+          update_user_email_form: { email: 'shouldnotchange@example.com' },
+        }
+
+        expect(response.status).to eq(404)
+        expect(user.reload.email).to_not eq('shouldnotchange@example.com')
+      end
+    end
+
     it 'renders edit if email is a Hash' do
       stub_sign_in(user)
-      put :update, params: { update_user_email_form: { email: { foo: 'bar' } } }
+      put :update, params: {
+        id: email_address.id,
+        update_user_email_form: { email: { foo: 'bar' } },
+      }
 
       expect(response).to render_template(:edit)
     end

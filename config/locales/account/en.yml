@@ -13,11 +13,11 @@ en:
       backup_codes_no_exist: not generated
       device: "%{browser} on %{os}"
       dob: Date of birth
-      email: Email address
+      email: Email addresses
       full_name: Full name
       login: Login Information
       password: Password
-      phone: Phone number
+      phone: Phone numbers
       phone_add: "+ Add phone"
       piv_cac_card: PIV/CAC Card
       piv_cac_disabled: not enabled

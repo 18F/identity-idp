@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 describe UpdateUserEmailForm do
-  subject { UpdateUserEmailForm.new(build(:user, :with_email, email: ' OLD@example.com ')) }
+  let(:user) { build(:user, :with_email, email: ' OLD@example.com ') }
+  let(:email_address) { user.email_addresses.first }
+
+  subject { UpdateUserEmailForm.new(user, email_address) }
 
   it_behaves_like 'email validation'
   it_behaves_like 'email normalization', ' OLD@example.com '
@@ -25,7 +28,7 @@ describe UpdateUserEmailForm do
     context "when the user attempts to change their email to another user's email" do
       it 'sends an email alerting the other user' do
         user = create(:user, email: 'old@example.com')
-        subject = UpdateUserEmailForm.new(user)
+        subject = UpdateUserEmailForm.new(user, user.email_addresses.first)
         _second_user = create(:user, :signed_up, email: 'another@example.com')
         mailer = instance_double(ActionMailer::MessageDelivery)
         result = instance_double(FormResponse)
@@ -50,7 +53,7 @@ describe UpdateUserEmailForm do
     context 'when the user changes their email to a nonexistent email' do
       it "updates the user's unconfirmed_email" do
         user = create(:user, email: 'old@example.com')
-        subject = UpdateUserEmailForm.new(user)
+        subject = UpdateUserEmailForm.new(user, user.email_addresses.first)
         result = instance_double(FormResponse)
         extra = {
           email_already_exists: false,
@@ -101,7 +104,7 @@ describe UpdateUserEmailForm do
     context 'when email is same as current email' do
       it 'it does not send an email' do
         user = create(:user, :signed_up, email: 'taken@gmail.com')
-        form = UpdateUserEmailForm.new(user)
+        form = UpdateUserEmailForm.new(user, user.email_addresses.first)
 
         result = instance_double(FormResponse)
         extra = {
@@ -109,7 +112,7 @@ describe UpdateUserEmailForm do
           email_changed: false,
         }
 
-        expect(user).to_not receive(:send_custom_confirmation_instructions)
+        expect(SendSignUpEmailConfirmation).to_not receive(:new)
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(email: 'taken@gmail.com')).to eq result

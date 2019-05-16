@@ -90,9 +90,10 @@ feature 'Accessibility on pages that require authentication', :js do
   end
 
   scenario 'edit email page' do
-    sign_in_and_2fa_user
+    user = create(:user)
+    sign_in_and_2fa_user(user)
 
-    visit manage_email_path
+    visit manage_email_path(id: user.email_addresses.take.id)
 
     expect(page).to be_accessible
   end

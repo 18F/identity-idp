@@ -1,0 +1,14 @@
+.clearfix.border-top.border-blue-light
+  .p2.col.col-12
+    .col.col-6.bold
+      = t('account.index.email')
+    .right-align.col.col-6
+      .btn.btn-account-action.rounded-lg.bg-light-blue
+  - current_user.email_addresses.each do |email|
+    .p2.col.col-12.border-top.border-blue-light.account-list-item
+      .col.col-8.sm-6.truncate
+        = email.email
+      .col.col-4.sm-6.right-align
+        = render @view_model.manage_action_partial,
+          path: manage_email_url(id: email.id),
+          name: t('account.index.email')
