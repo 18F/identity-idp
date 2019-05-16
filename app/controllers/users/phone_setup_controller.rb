@@ -40,8 +40,7 @@ module Users
     end
 
     def delivery_preference
-      MfaContext.new(current_user).phone_configurations.take&.delivery_preference ||
-        current_user.otp_delivery_preference
+      current_user.otp_delivery_preference
     end
 
     def user_phone_form_params
