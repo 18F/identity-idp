@@ -24,7 +24,9 @@ feature 'managing email address' do
       user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
 
-      expect(find('div', text: user.email_addresses.first.email, match: :first)).to have_content t('forms.buttons.manage')
+      allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
+      expect(find('div', text: user.email_addresses.first.email, match: :first)).
+        to have_content t('forms.buttons.manage')
     end
   end
 end
