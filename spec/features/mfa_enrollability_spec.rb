@@ -7,17 +7,26 @@ describe 'TOTP enrollability' do
 
   let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
-  context 'sign up' do
-    it 'does not allow choosing totp as backup auth method after it is used as primary' do
-      sign_up_and_set_password
+  it 'is not available for selection as backup auth method once it is chosen as primary' do
+    sign_up_and_set_password
 
-      select_2fa_option('auth_app')
-      secret = find('#qr-code').text
-      fill_in 'code', with: generate_totp_code(secret)
-      click_button 'Submit'
+    select_2fa_option('backup_code')
 
-      expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
-    end
+    click_on 'Continue'
+
+    expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
+    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
+  end
+
+  it 'does not allow choosing totp as backup auth method after it is used as primary' do
+    sign_up_and_set_password
+
+    select_2fa_option('auth_app')
+    secret = find('#qr-code').text
+    fill_in 'code', with: generate_totp_code(secret)
+    click_button 'Submit'
+
+    expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
+    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
   end
 end
