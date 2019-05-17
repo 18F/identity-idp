@@ -182,6 +182,8 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.datetime "confirmed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "made_default_at"
+    t.index ["made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at_and_created_at"
     t.index ["user_id"], name: "index_phone_configurations_on_user_id"
   end
 
