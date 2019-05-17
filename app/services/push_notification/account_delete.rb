@@ -8,9 +8,14 @@ module PushNotification
 
     def push_notify(push_to_url, uuid, agency_id)
       payload = { uuid: uuid }
-      post_to_push_notification_url(push_to_url, payload)
+      result = post_to_push_notification_url(push_to_url, payload)
+      handle_failure("status=#{response.status}", agency_id, uuid) unless result.success?
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
-      Rails.logger.error "Push message failed #{exception.message}"
+      handle_failure(exception.message, agency_id, uuid)
+    end
+
+    def handle_failure(message, agency_id, uuid)
+      Rails.logger.error "Push message failed #{message}"
       PushAccountDelete.create(created_at: Time.zone.now, agency_id: agency_id, uuid: uuid)
     end
 
@@ -25,25 +30,17 @@ module PushNotification
       end
     end
 
-    def signature(unsigned_token)
-      JWT.encode(unsigned_token, RequestKeyManager.private_key, 'RS256')
+    def web_push(push_to_url, push_data_hash)
+      payload = jwt_data(push_to_url, push_data_hash)
+      token = JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+      "WebPush #{token}"
     end
 
-    def web_push(push_to_url, payload)
-      unsigned_token = "#{jwt_info}.#{jwt_data(push_to_url, payload)}"
-      "WebPush #{unsigned_token}.#{signature(unsigned_token)}"
-    end
-
-    def jwt_data(push_to_url, payload)
-      Base64.strict_encode64({ 'aud': push_to_url,
-                               'exp': (Time.zone.now + 12.hours).to_i,
-                               'payload': payload.to_json,
-                               'sub': 'mailto:partners@login.gov' }.to_json)
-    end
-
-    def jwt_info
-      Base64.strict_encode64({ 'typ': 'JWT',
-                               'alg': 'RS256' }.to_json)
+    def jwt_data(push_to_url, push_data_hash)
+      { 'aud': push_to_url,
+        'exp': (Time.zone.now + 12.hours).to_i,
+        'payload': push_data_hash,
+        'sub': 'mailto:partners@login.gov' }
     end
 
     def push_notification_sps

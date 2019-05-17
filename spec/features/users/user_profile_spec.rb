@@ -50,7 +50,7 @@ feature 'User profile' do
 
       Timecop.travel(Time.zone.now) do
         request = stub_request(:post, push_notification_url).
-                  with(headers: headers(push_notification_url, payload)).
+                  with(headers: push_notification_headers(push_notification_url, payload)).
                   with(body: '').
                   to_return(body: '')
 

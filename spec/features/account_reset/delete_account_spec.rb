@@ -77,7 +77,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       Timecop.travel(Time.zone.now + 2.days) do
         request = stub_request(:post, push_notification_url).
-                  with(headers: headers(push_notification_url, payload)).
+                  with(headers: push_notification_headers(push_notification_url, payload)).
                   with(body: '').
                   to_return(body: '')
 

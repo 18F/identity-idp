@@ -3,28 +3,20 @@ module PushNotificationsHelper
     web_push(push_to_url, payload)
   end
 
-  def jwt_data(push_to_url, payload)
-    Base64.strict_encode64({ 'aud': push_to_url,
-                             'exp': (Time.zone.now + 12.hours).to_i,
-                             'payload': payload.to_json,
-                             'sub': 'mailto:partners@login.gov' }.to_json)
+  def jwt_data(push_to_url, push_data_hash)
+    { 'aud': push_to_url,
+      'exp': (Time.zone.now + 12.hours).to_i,
+      'payload': push_data_hash,
+      'sub': 'mailto:partners@login.gov' }
   end
 
-  def jwt_info
-    Base64.strict_encode64({ 'typ': 'JWT',
-                             'alg': 'RS256' }.to_json)
+  def web_push(push_to_url, push_data_hash)
+    payload = jwt_data(push_to_url, push_data_hash)
+    token = JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+    "WebPush #{token}"
   end
 
-  def signature(unsigned_token)
-    JWT.encode(unsigned_token, RequestKeyManager.private_key, 'RS256')
-  end
-
-  def web_push(push_to_url, payload)
-    unsigned_token = "#{jwt_info}.#{jwt_data(push_to_url, payload)}"
-    "WebPush #{unsigned_token}.#{signature(unsigned_token)}"
-  end
-
-  def headers(push_url, payload)
+  def push_notification_headers(push_url, payload)
     {
       'Authorization' => authorization_header(push_url, payload),
       'Content-Length' => '0',

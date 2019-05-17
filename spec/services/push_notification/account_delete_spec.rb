@@ -17,7 +17,7 @@ describe PushNotification::AccountDelete do
   it 'sends updates to one subscriber' do
     Timecop.freeze(Time.zone.now) do
       request = stub_request(:post, push_notification_url).
-                with(headers: headers(push_notification_url, payload)).
+                with(headers: push_notification_headers(push_notification_url, payload)).
                 with(body: '').
                 to_return(body: '')
 
@@ -34,12 +34,12 @@ describe PushNotification::AccountDelete do
 
     Timecop.freeze(Time.zone.now) do
       request = stub_request(:post, push_notification_url).
-                with(headers: headers(push_notification_url, payload)).
+                with(headers: push_notification_headers(push_notification_url, payload)).
                 with(body: '').
                 to_return(body: '')
 
       request2 = stub_request(:post, push_notification_url2).
-                 with(headers: headers(push_notification_url2, payload)).
+                 with(headers: push_notification_headers(push_notification_url2, payload)).
                  with(body: '').
                  to_return(body: '')
 
@@ -60,12 +60,12 @@ describe PushNotification::AccountDelete do
 
     Timecop.freeze(Time.zone.now) do
       request = stub_request(:post, push_notification_url).
-                with(headers: headers(push_notification_url, payload)).
+                with(headers: push_notification_headers(push_notification_url, payload)).
                 with(body: '').
                 to_return(body: '')
 
       request2 = stub_request(:post, push_notification_url2).
-                 with(headers: headers(push_notification_url2, payload2)).
+                 with(headers: push_notification_headers(push_notification_url2, payload2)).
                  with(body: '').
                  to_return(body: '')
 
