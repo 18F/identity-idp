@@ -76,9 +76,22 @@ describe PushNotification::AccountDelete do
     end
   end
 
-  it 'writes failures to the retry table' do
+  it 'writes failures to the retry table on connection errors' do
     allow_any_instance_of(PushNotification::AccountDelete).
       to receive(:post_to_push_notification_url).and_raise(Faraday::ConnectionFailed.new('error'))
+
+    subject.call(user_id)
+
+    expect(PushAccountDelete.count).to eq(1)
+    push_account_delete = PushAccountDelete.first
+    expect(push_account_delete.uuid).to eq('1234')
+    expect(push_account_delete.agency_id).to eq(1)
+    expect(push_account_delete.created_at).to be_present
+  end
+
+  it 'writes failures to the retry table on bad status' do
+    allow_any_instance_of(PushNotification::AccountDelete).
+      to receive(:post_to_push_notification_url).and_return(Faraday::Response.new(status: 400))
 
     subject.call(user_id)
 
