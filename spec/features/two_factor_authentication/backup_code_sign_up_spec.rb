@@ -21,6 +21,7 @@ feature 'sign up with backup code' do
     click_on 'Continue'
 
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
+    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
   end
 
   it 'works for each code and refreshes the codes on the last one' do

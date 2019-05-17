@@ -32,6 +32,7 @@ describe 'Remembering a TOTP device' do
       click_button 'Submit'
 
       expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
+      expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
     end
 
     def remember_device_and_sign_out_user
