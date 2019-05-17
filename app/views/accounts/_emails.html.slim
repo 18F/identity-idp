@@ -12,4 +12,4 @@
         - unless FeatureManagement.email_addition_enabled?
           = render @view_model.manage_action_partial,
             path: manage_email_url(id: email.id),
-            name: t('account.index.email')
+            name: ''
