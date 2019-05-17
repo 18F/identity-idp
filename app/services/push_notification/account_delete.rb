@@ -51,17 +51,10 @@ module PushNotification
       agency_id_to_uuid_hash = agency_id_to_uuid(user_id)
       agency_ids = agency_id_to_uuid_hash.keys
       push_notification_sps.each do |sp|
-        send_update_to_subscriber(sp.agency_id,
-                                  sp.push_notification_url,
-                                  agency_ids,
-                                  agency_id_to_uuid_hash)
+        agency_id = sp.agency_id
+        next unless agency_ids.index(agency_id)
+        push_notify(sp.push_notification_url, agency_id_to_uuid_hash[agency_id], agency_id)
       end
-    end
-
-    def send_update_to_subscriber(agency_id, push_url, agency_ids, agency_id_to_uuid_hash)
-      return unless agency_ids.index(agency_id)
-      uuid = agency_id_to_uuid_hash[agency_id]
-      push_notify(push_url, uuid, agency_id)
     end
 
     def agency_id_to_uuid(user_id)
