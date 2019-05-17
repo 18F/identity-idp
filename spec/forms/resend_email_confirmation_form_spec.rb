@@ -22,7 +22,13 @@ describe ResendEmailConfirmationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.user).to receive(:send_custom_confirmation_instructions).with(request_id)
+
+        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
+        expect(send_sign_up_email_confirmation).to receive(:call).with(request_id: request_id)
+        expect(SendSignUpEmailConfirmation).to receive(:new).with(
+          subject.user,
+        ).and_return(send_sign_up_email_confirmation)
+
         expect(subject.submit).to eq result
         expect(subject.email).to eq user.email
       end
@@ -38,7 +44,8 @@ describe ResendEmailConfirmationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.user).to_not receive(:send_custom_confirmation_instructions)
+
+        expect(SendSignUpEmailConfirmation).to_not receive(:new)
         expect(subject.submit).to eq result
       end
     end
@@ -56,7 +63,7 @@ describe ResendEmailConfirmationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.user).to_not receive(:send_custom_confirmation_instructions)
+        expect(SendSignUpEmailConfirmation).to_not receive(:new)
         expect(subject.submit).to eq result
       end
     end
@@ -74,7 +81,7 @@ describe ResendEmailConfirmationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.user).to_not receive(:send_custom_confirmation_instructions).with(request_id)
+        expect(SendSignUpEmailConfirmation).to_not receive(:new)
         expect(subject.submit).to eq result
         expect(subject.email).to eq user.email
       end

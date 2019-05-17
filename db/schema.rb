@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190407103634) do
+ActiveRecord::Schema.define(version: 20190512200157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,8 +118,10 @@ ActiveRecord::Schema.define(version: 20190407103634) do
     t.string "encrypted_email", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_sign_in_at"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
+    t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
@@ -303,7 +305,6 @@ ActiveRecord::Schema.define(version: 20190407103634) do
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"
