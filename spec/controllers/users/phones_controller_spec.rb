@@ -32,7 +32,8 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: true },
           ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -77,7 +78,8 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: true },
           ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -243,7 +245,8 @@ describe Users::PhonesController do
         MfaContext.new(user).phone_configurations.reload.first.phone,
       ).to_not eq '+1 202-555-4321'
       expect(response).to redirect_to(otp_send_path(otp_delivery_selection_form:
-                                                      { otp_delivery_preference: 'sms' }))
+                                                      { otp_delivery_preference: 'sms',
+                                                        otp_make_default_number: nil }))
       expect(subject.user_session[:context]).to eq 'confirmation'
     end
   end

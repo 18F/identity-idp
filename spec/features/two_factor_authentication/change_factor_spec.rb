@@ -86,9 +86,12 @@ feature 'Changing authentication factor' do
       fill_in 'Phone', with: unsupported_phone
       click_button t('forms.buttons.submit.confirm_change')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+      expect(current_path).to eq manage_phone_path
+      expect(page).to have_content t(
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'Bahamas',
+      )
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_now)
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
 
