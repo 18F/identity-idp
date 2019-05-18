@@ -79,7 +79,6 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
     end
