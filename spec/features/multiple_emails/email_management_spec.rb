@@ -19,12 +19,12 @@ feature 'managing email address' do
     end
   end
 
-  context 'allows management of email address' do
+  context 'when adding emails is disabled' do
     before do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(false)
     end
 
-    it 'if adding emails is not enabled' do
+    it 'displays the links for allowing the user to manage their email addresses' do
       user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
 
@@ -32,12 +32,12 @@ feature 'managing email address' do
     end
   end
 
-  context 'does not allow management of email address' do
+  context 'when adding emails is enabled' do
     before do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
     end
 
-    it 'if adding emails is enabled' do
+    it 'does not display the links for allowing the user to manage their email addresses' do
       user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
 
