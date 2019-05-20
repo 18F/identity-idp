@@ -19,11 +19,8 @@ class DeleteUserEmailForm
 
   def email_address_destroyed
     return false if @user.email_addresses.count <= 1
-    if email_address.destroy != false
-      user.email_addresses.reload
-      true
-    else
-      false
-    end
+    return false if email_address.destroy == false
+    user.email_addresses.reload
+    true
   end
 end
