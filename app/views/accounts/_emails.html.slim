@@ -12,7 +12,7 @@
         = render @view_model.manage_action_partial,
           path: manage_email_url(id: email.id),
           name: t('account.index.email')
-        - if current_user.email_addresses.count > 1
+        - if EmailPolicy.new(current_user).can_delete_email?
           ' &nbsp; &nbsp;
           = render @view_model.delete_action_partial,
             path: manage_email_confirm_delete_url(id: email.id)
