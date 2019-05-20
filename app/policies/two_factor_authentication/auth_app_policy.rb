@@ -20,6 +20,10 @@ module TwoFactorAuthentication
       true
     end
 
+    def enrollable?
+      available? && !enabled?
+    end
+
     private
 
     attr_reader :user
