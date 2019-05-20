@@ -18,4 +18,30 @@ feature 'managing email address' do
       expect(page).to have_content(email2)
     end
   end
+
+  context 'allows management of email address' do
+    before do
+      allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(false)
+    end
+
+    it 'if adding emails is not enabled' do
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+
+      expect(page).to have_content("#{user.email_addresses.first.email}\nManage")
+    end
+  end
+
+  context 'does not allow management of email address' do
+    before do
+      allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
+    end
+
+    it 'if adding emails is enabled' do
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+
+      expect(page).to have_content("#{user.email_addresses.first.email}\nPassword")
+    end
+  end
 end
