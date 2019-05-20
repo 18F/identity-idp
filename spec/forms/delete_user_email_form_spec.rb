@@ -6,9 +6,10 @@ describe DeleteUserEmailForm do
       let(:user) { create(:user, :with_email, email: 'test@example.com ') }
       let(:email_address) { user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
+      let!(:result) { form.submit }
 
-      it 'raises an error' do
-        expect { form.submit }.to raise_error('cannot delete last email address')
+      it 'returns success' do
+        expect(result.success?).to eq false
       end
 
       it 'leaves the last email alone' do

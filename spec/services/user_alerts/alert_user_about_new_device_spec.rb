@@ -17,6 +17,7 @@ describe UserAlerts::AlertUserAboutNewDevice do
     end
 
     it 'sends an email to all confirmed email addresses' do
+      user.email_addresses.destroy_all
       confirmed_email_addresses = create_list(:email_address, 2, user: user)
       create(:email_address, user: user, confirmed_at: nil)
 
@@ -24,7 +25,7 @@ describe UserAlerts::AlertUserAboutNewDevice do
 
       described_class.call(user, device, disavowal_token)
 
-      expect(UserMailer).to have_received(:new_device_sign_in).exactly(3).times
+      expect(UserMailer).to have_received(:new_device_sign_in).twice
       expect(UserMailer).to have_received(:new_device_sign_in).
         with(confirmed_email_addresses[0],
              instance_of(String),

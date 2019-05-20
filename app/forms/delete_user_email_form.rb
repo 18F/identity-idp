@@ -11,18 +11,18 @@ class DeleteUserEmailForm
   end
 
   def submit
-    success = email_address.blank? || valid? && email_address_destroyed
+    success = valid? && email_address_destroyed
     FormResponse.new(success: success, errors: errors.messages)
   end
 
   private
 
   def email_address_destroyed
+    return false if @user.email_addresses.count <= 1
     if email_address.destroy != false
       user.email_addresses.reload
       true
     else
-      errors.add(:email_address, :not_destroyed, message: 'cannot remove email')
       false
     end
   end

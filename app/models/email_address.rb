@@ -8,11 +8,6 @@ class EmailAddress < ApplicationRecord
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
 
-  def destroy
-    raise 'cannot delete last email address' unless user.email_addresses.count > 1
-    super
-  end
-
   def email=(email)
     set_encrypted_attribute(name: :email, value: email)
     self.email_fingerprint = email.present? ? encrypted_attributes[:email].fingerprint : ''
