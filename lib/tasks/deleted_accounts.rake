@@ -1,5 +1,6 @@
 namespace :deleted_accounts do
   task :report, %i[service_provider days_ago] => [:environment] do |_task, args|
+    ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
     puts 'last_authenticated_at, identity_uuid'
     days_ago = args[:days_ago].to_i
     rows = DeletedAccountsReport.call(args[:service_provider], args[:days_ago])
