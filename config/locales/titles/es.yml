@@ -9,6 +9,7 @@ es:
     confirmations:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
+      delete: Por favor confirmar
     edit_info:
       email: Edite su email
       password: Edite su contraseña

@@ -32,4 +32,21 @@ describe EmailAddress do
       end
     end
   end
+
+  describe 'deleting an email address' do
+    it 'does not delete the users last email address' do
+      user = create(:user, :with_email, email: 'test@example.com ')
+      email_address = user.email_addresses.first
+      expect { email_address.destroy! }.
+        to raise_error('cannot delete last email address')
+    end
+
+    it 'deletes when multiple email addresses exist for user' do
+      user = create(:user, :signed_up, :with_multiple_emails)
+      email_address = user.email_addresses.first
+      email_address.destroy!
+      deleted_email = user.email_addresses.reload.where(id: email_address.id)
+      expect(deleted_email).to be_empty
+    end
+  end
 end

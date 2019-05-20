@@ -23,3 +23,4 @@ fr:
     usps_mail_sent: Lettre envoyée
     webauthn_key_added: Clé de sécurité ajoutée
     webauthn_key_removed: Clé de sécurité retirée
+    email_deleted: Adresse e-mail supprimée

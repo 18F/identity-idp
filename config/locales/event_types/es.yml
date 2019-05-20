@@ -23,3 +23,4 @@ es:
     usps_mail_sent: Carta enviada
     webauthn_key_added: Clave de seguridad de hardware añadido
     webauthn_key_removed: Clave de seguridad de hardware eliminada
+    email_deleted: Dirección de correo electrónico eliminada

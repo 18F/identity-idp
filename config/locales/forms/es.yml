@@ -36,12 +36,16 @@ es:
       edit: Editar
       enable: Permitir
       manage: Administrar
+      delete: Borrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
+    email:
+      buttons:
+        delete: Eliminar correo electrónico
     confirmation:
       show_hdr: Crear una contraseña segura
     example: 'ejemplo:'

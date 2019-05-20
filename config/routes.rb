@@ -145,6 +145,9 @@ Rails.application.routes.draw do
 
     get '/manage/email/:id' => 'users/emails#edit', as: :manage_email
     match '/manage/email/:id' => 'users/emails#update', via: %i[patch put]
+    delete '/manage/email/:id' => 'users/emails#delete'
+    get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
+        as: :manage_email_confirm_delete
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
     get '/add/phone' => 'users/phones#add'
@@ -264,5 +267,5 @@ Rails.application.routes.draw do
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
   # will be ignored.
-  match '*path', via: :all, to: 'pages#page_not_found'
+  # match '*path', via: :all, to: 'pages#page_not_found'
 end

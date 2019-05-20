@@ -9,6 +9,7 @@ en:
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password
+      delete: Please confirm
     edit_info:
       email: Edit your email address
       password: Edit your password

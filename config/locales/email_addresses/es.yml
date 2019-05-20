@@ -1,0 +1,7 @@
+---
+es:
+  email_addresses:
+    delete:
+      failure: No se puede eliminar esta dirección de correo electrónico.
+      success: La dirección de correo electrónico ha sido eliminada.
+      confirm: ¿Estas seguro que quieres borrarlo %{email}?
