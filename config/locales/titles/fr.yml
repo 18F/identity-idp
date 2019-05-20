@@ -7,9 +7,9 @@ fr:
     add_info:
       phone: Ajouter un numéro de téléphone
     confirmations:
+      delete: Veuillez confirmer
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
-      delete: Veuillez confirmer
     edit_info:
       email: Modifier votre adresse courriel
       password: Modifier votre mot de passe

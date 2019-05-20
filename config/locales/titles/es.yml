@@ -7,9 +7,9 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     confirmations:
+      delete: Por favor confirmar
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
-      delete: Por favor confirmar
     edit_info:
       email: Edite su email
       password: Edite su contraseña

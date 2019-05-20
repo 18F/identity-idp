@@ -32,22 +32,22 @@ es:
       back: Atrás
       cancel: Sí, cancelar
       continue: Continuar
+      delete: Borrar
       disable: Suspender
       edit: Editar
       enable: Permitir
       manage: Administrar
-      delete: Borrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
+    confirmation:
+      show_hdr: Crear una contraseña segura
     email:
       buttons:
         delete: Eliminar correo electrónico
-    confirmation:
-      show_hdr: Crear una contraseña segura
     example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador

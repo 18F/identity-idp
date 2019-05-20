@@ -31,22 +31,22 @@ fr:
       back: Retour
       cancel: Oui, annuler
       continue: Continuer
+      delete: Effacer
       disable: Désactiver
       edit: Modifier
       enable: Activer
       manage: Administrer
-      delete: Effacer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
       submit:
         confirm_change: Confirmer le changement
         default: Soumettre
         update: Mettre à jour
+    confirmation:
+      show_hdr: Créez un mot de passe fort
     email:
       buttons:
         delete: Supprimer l'email
-    confirmation:
-      show_hdr: Créez un mot de passe fort
     example: 'exemple:'
     messages:
       remember_device: Enregistrer ce navigateur

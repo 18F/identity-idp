@@ -29,22 +29,22 @@ en:
       back: Back
       cancel: Yes, cancel
       continue: Continue
+      delete: Delete
       disable: Disable
       edit: Edit
       enable: Enable
       manage: Manage
-      delete: Delete
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send code
       submit:
         confirm_change: Confirm change
         default: Submit
         update: Update
+    confirmation:
+      show_hdr: Create a strong password
     email:
       buttons:
         delete: Delete email address
-    confirmation:
-      show_hdr: Create a strong password
     example: 'example:'
     messages:
       remember_device: Remember this browser
