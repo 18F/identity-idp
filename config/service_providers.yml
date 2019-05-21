@@ -937,7 +937,7 @@ production:
     agency: 'DOT'
     logo: 'dot.svg'
     cert: 'fmcsa_prod'
-    return_to_sp_url: 'https://nationalregistry-fmcsa.appiancloud.com'
+    return_to_sp_url: 'https://nationalregistry.fmcsa.dot.gov'
     acs_url: 'https://nationalregistry-fmcsa.appiancloud.com/suite/saml/AssertionConsumer'
     sp_initiated_login_url: 'https://nationalregistry-fmcsa.appiancloud.com'
     assertion_consumer_logout_service_url: 'https://nationalregistry-fmcsa.appiancloud.com/suite/saml/LogoutConsumer'
