@@ -145,9 +145,7 @@ Rails.application.routes.draw do
 
     get '/manage/email/:id' => 'users/emails#edit', as: :manage_email
     match '/manage/email/:id' => 'users/emails#update', via: %i[patch put]
-    if FeatureManagement.email_deletion_enabled?
-      delete '/manage/email/:id' => 'users/emails#delete'
-    end
+    delete '/manage/email/:id' => 'users/emails#delete' if FeatureManagement.email_deletion_enabled?
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
     get '/manage/password' => 'users/passwords#edit'
