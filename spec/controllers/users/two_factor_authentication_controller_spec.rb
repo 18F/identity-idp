@@ -123,7 +123,7 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when the user has already set up 2FA' do
       it 'sends OTP via otp_delivery_preference and prompts for OTP' do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
 
         get :show
 
@@ -217,7 +217,8 @@ describe Users::TwoFactorAuthenticationController do
 
         (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
           get :send_code, params: {
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: nil },
           }
         end
 
@@ -268,7 +269,8 @@ describe Users::TwoFactorAuthenticationController do
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         get :send_code, params: {
-          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                         otp_make_default_number: nil },
         }
       end
     end
