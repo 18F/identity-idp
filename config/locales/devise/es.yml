@@ -23,8 +23,6 @@ es:
       unauthenticated: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
       unconfirmed: Debe confirmar su email antes de continuar.
     mailer:
-      confirmation_instructions:
-        subject: Confirme su email
       password_updated:
         subject: Su contraseña ha sido cambiada.
       reset_password_instructions:

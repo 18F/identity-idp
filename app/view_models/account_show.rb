@@ -63,6 +63,10 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/manage_action_button'
   end
 
+  def delete_action_partial
+    'accounts/actions/delete_action_button'
+  end
+
   def pii_partial
     if decrypted_pii.present?
       'accounts/pii'

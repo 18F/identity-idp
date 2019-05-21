@@ -44,6 +44,19 @@ fr:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
         le %{help_link} de %{app} ou %{contact_link}.
       intro: L'adresse courriel de votre compte %{app} a été changée.
+    email_confirmation_instructions:
+      first_sentence:
+        confirmed: Vous tentez de changer votre adresse courriel?
+        forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
+          compte login.gov, mais nous ne possédons pas de compte associé à cette adresse
+          courriel. Si vous souhaitez créer un nouveau compte associé à cette adresse
+          courriel, confirmez votre adresse courriel ci-dessous.
+        unconfirmed: Merci d'avoir créé un compte.
+      footer: Ce lien expirera dans %{confirmation_period}.
+      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
+        le lien complet dans votre navigateur."
+      link_text: Confirmez votre adresse email
+      subject: Confirmez votre adresse courriel
     help_link_text: Centre d'aide
     letter_expired:
       help: ''

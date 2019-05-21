@@ -31,6 +31,7 @@ fr:
       back: Retour
       cancel: Oui, annuler
       continue: Continuer
+      delete: Effacer
       disable: Désactiver
       edit: Modifier
       enable: Activer
@@ -43,6 +44,9 @@ fr:
         update: Mettre à jour
     confirmation:
       show_hdr: Créez un mot de passe fort
+    email:
+      buttons:
+        delete: Supprimer l'email
     example: 'exemple:'
     messages:
       remember_device: Enregistrer ce navigateur

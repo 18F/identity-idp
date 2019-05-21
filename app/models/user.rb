@@ -48,6 +48,8 @@ class User < ApplicationRecord
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 
+  skip_callback :create, :before, :generate_confirmation_token
+
   attr_accessor :asserted_attributes
 
   def confirmed_email_addresses
@@ -88,6 +90,10 @@ class User < ApplicationRecord
 
   def active_profile
     @_active_profile ||= profiles.verified.find(&:active?)
+  end
+
+  def default_phone_configuration
+    phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
   # To send emails asynchronously via ActiveJob.
@@ -132,14 +138,5 @@ class User < ApplicationRecord
   # If we didn't disable it, the user would receive two confirmation emails.
   def send_confirmation_instructions
     # no-op
-  end
-
-  def send_custom_confirmation_instructions(id = nil, instructions = nil)
-    generate_confirmation_token! unless @raw_confirmation_token
-
-    opts = pending_reconfirmation? ? { to: unconfirmed_email, request_id: id } : { request_id: id }
-    opts[:first_sentence] = instructions if instructions
-    send_devise_notification(:confirmation_instructions,
-                             @raw_confirmation_token, opts)
   end
 end

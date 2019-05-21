@@ -10,6 +10,7 @@ fr:
     backup_codes_added: Codes de sauvegarde ajoutés
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Adresse courriel modifiée
+    email_deleted: Adresse e-mail supprimée
     new_personal_key: Clé personnelle modifié
     password_changed: Mot de passe modifié
     personal_key_used: Clé personnelle utilisée pour la connexion

@@ -351,4 +351,34 @@ describe User do
       expect(user.authenticatable_salt).to eq(salt)
     end
   end
+
+  context 'when a user has multiple phone_configurations' do
+    before do
+      @user = create(:user, email: 'test1@test.com')
+      @phone_config1 = create(:phone_configuration, user: @user,
+                                                    phone: '+1 111 111 1111',
+                                                    created_at: Time.zone.now - 3.days,
+                                                    made_default_at: nil)
+      @phone_config2 = create(:phone_configuration, user: @user,
+                                                    phone: '+1 222 222 2222',
+                                                    created_at: Time.zone.now - 2.days,
+                                                    made_default_at: nil)
+      @phone_config3 = create(:phone_configuration, user: @user,
+                                                    phone: '+1 333 333 3333',
+                                                    created_at: Time.zone.now - 1.day,
+                                                    made_default_at: nil)
+    end
+
+    describe '#default_phone_configuration' do
+      it 'returns earliest created phone_configuration when no default set' do
+        expect(@user.default_phone_configuration.phone).to eq('+1 111 111 1111')
+      end
+
+      it 'returns the latest default phone_configuration' do
+        @phone_config3.update(made_default_at: Time.zone.now - 2.days)
+        @phone_config2.update(made_default_at: Time.zone.now - 1.day)
+        expect(@user.default_phone_configuration.phone).to eq('+1 222 222 2222')
+      end
+    end
+  end
 end

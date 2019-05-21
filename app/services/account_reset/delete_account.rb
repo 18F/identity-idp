@@ -34,11 +34,17 @@ module AccountReset
 
     def handle_successful_submission
       notify_user_via_email_of_deletion
+      send_push_notifications
       destroy_user
     end
 
     def destroy_user
       user.destroy!
+    end
+
+    def send_push_notifications
+      return if Figaro.env.push_notifications_enabled != 'true'
+      PushNotification::AccountDelete.new.call(user.id)
     end
 
     def notify_user_via_email_of_deletion
