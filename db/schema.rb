@@ -289,10 +289,8 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email", limit: 255
-    t.integer "role"
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
-    t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0
