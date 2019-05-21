@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[role reset_requested_at]
-
   include NonNullUuid
 
   devise(
