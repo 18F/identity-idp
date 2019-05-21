@@ -20,10 +20,6 @@ feature 'managing email address' do
   end
 
   context 'allows deletion of email address' do
-    before do
-      allow(FeatureManagement).to receive(:email_deletion_enabled?).and_return(true)
-    end
-
     it 'does not allow last confirmed email to be deleted' do
       user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
       confirmed_email = user.confirmed_email_addresses.first
@@ -31,6 +27,7 @@ feature 'managing email address' do
       user.email_addresses.reload
 
       sign_in_and_2fa_user(user)
+      binding.pry
       expect(page).to have_current_path(account_path)
 
       delete_link_not_displayed(confirmed_email)
@@ -71,8 +68,10 @@ feature 'managing email address' do
       expect(page).to have_content t('email_addresses.delete.confirm',
                                      email: email.email)
       click_button t('forms.email.buttons.delete')
-      expect(page).to have_current_path(account_path)
-      expect(page).to have_content t('email_addresses.delete.failure')
+      if FeatureManagement.email_deletion_enabled?
+        expect(page).to have_current_path(account_path)
+        expect(page).to have_content t('email_addresses.delete.failure')
+      end
     end
 
     def delete_email_should_not_fail(email)
@@ -80,8 +79,10 @@ feature 'managing email address' do
       expect(page).to have_content t('email_addresses.delete.confirm',
                                      email: email.email)
       click_button t('forms.email.buttons.delete')
-      expect(page).to have_current_path(account_path)
-      expect(page).to have_content t('email_addresses.delete.success')
+      if FeatureManagement.email_deletion_enabled?
+        expect(page).to have_current_path(account_path)
+        expect(page).to have_content t('email_addresses.delete.success')
+      end
     end
   end
 end

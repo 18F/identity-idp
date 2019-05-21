@@ -4,7 +4,6 @@ class EmailPolicy
   end
 
   def can_delete_email?(email)
-    return false unless FeatureManagement.email_deletion_enabled?
     return false if email.confirmed? && last_confirmed_email_address?
     return false if last_email_address?
     true
