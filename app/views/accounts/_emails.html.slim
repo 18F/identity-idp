@@ -9,9 +9,10 @@
       .col.col-8.sm-6.truncate
         = email.email
       .col.col-4.sm-6.right-align
-        = render @view_model.manage_action_partial,
-          path: manage_email_url(id: email.id),
-          name: t('account.index.email')
+        - unless FeatureManagement.email_addition_enabled?
+          = render @view_model.manage_action_partial,
+            path: manage_email_url(id: email.id),
+            name: t('account.index.email')
         - if EmailPolicy.new(current_user).can_delete_email?(email)
           ' &nbsp; &nbsp;
           = render @view_model.delete_action_partial,
