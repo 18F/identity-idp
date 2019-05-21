@@ -24,6 +24,7 @@ class Event < ApplicationRecord
     backup_codes_added: 17,
     sign_in_before_2fa: 18,
     sign_in_after_2fa: 19,
+    email_deleted: 20,
   }
 
   validates :event_type, presence: true

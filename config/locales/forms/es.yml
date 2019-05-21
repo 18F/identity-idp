@@ -32,6 +32,7 @@ es:
       back: Atrás
       cancel: Sí, cancelar
       continue: Continuar
+      delete: Borrar
       disable: Suspender
       edit: Editar
       enable: Permitir
@@ -44,6 +45,9 @@ es:
         update: Actualización
     confirmation:
       show_hdr: Crear una contraseña segura
+    email:
+      buttons:
+        delete: Eliminar correo electrónico
     example: 'ejemplo:'
     messages:
       remember_device: Recuerde este navegador

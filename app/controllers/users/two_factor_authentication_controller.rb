@@ -14,9 +14,8 @@ module Users
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
-
       if result.success?
-        handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
+        handle_valid_otp_params(user_select_delivery_preference, user_selected_default_number)
         update_otp_delivery_preference_if_needed
       else
         handle_invalid_otp_delivery_preference(result)
@@ -40,9 +39,9 @@ module Users
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
       if result.success?
-        handle_valid_otp_delivery_preference(delivery_preference)
+        handle_valid_otp_params(delivery_preference)
       else
-        handle_valid_otp_delivery_preference('sms')
+        handle_valid_otp_params('sms')
         flash[:error] = result.errors[:phone].first
       end
     end
@@ -123,7 +122,7 @@ module Users
       super || otp_form.dig(:otp_delivery_selection_form, :reauthn)
     end
 
-    def handle_valid_otp_delivery_preference(method)
+    def handle_valid_otp_params(method, default = nil)
       otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
 
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
@@ -131,7 +130,9 @@ module Users
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
 
       send_user_otp(method)
-      redirect_to login_two_factor_url(otp_delivery_preference: method, reauthn: reauthn?)
+      redirect_to login_two_factor_url(otp_delivery_preference: method,
+                                       otp_make_default_number: default,
+                                       reauthn: reauthn?)
     end
 
     def exceeded_otp_send_limit?
@@ -164,12 +165,18 @@ module Users
       end
     end
 
-    def user_selected_otp_delivery_preference
+    def user_selected_default_number
+      delivery_params[:otp_make_default_number]
+    end
+
+    def user_select_delivery_preference
       delivery_params[:otp_delivery_preference]
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_delivery_preference, :resend)
+      params.require(:otp_delivery_selection_form).permit(:otp_delivery_preference,
+                                                          :otp_make_default_number,
+                                                          :resend)
     end
 
     def phone_to_deliver_to

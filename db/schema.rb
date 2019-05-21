@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190510202920) do
+ActiveRecord::Schema.define(version: 20190512200157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,8 +118,10 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.string "encrypted_email", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_sign_in_at"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
+    t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
@@ -180,6 +182,8 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.datetime "confirmed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "made_default_at"
+    t.index ["made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at_and_created_at"
     t.index ["user_id"], name: "index_phone_configurations_on_user_id"
   end
 
@@ -200,6 +204,13 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "push_account_deletes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "agency_id", null: false
+    t.string "uuid", null: false
+    t.index ["created_at"], name: "index_push_account_deletes_on_created_at"
   end
 
   create_table "remote_settings", force: :cascade do |t|
@@ -251,6 +262,7 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.boolean "piv_cac", default: false
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
+    t.string "push_notification_url"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -277,8 +289,10 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email", limit: 255
+    t.integer "role"
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
+    t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0
@@ -301,7 +315,6 @@ ActiveRecord::Schema.define(version: 20190510202920) do
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"

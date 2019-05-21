@@ -10,7 +10,7 @@ table.button.expanded.large.radius
               td
                 center
                 center
-                  = link_to t('mailer.confirmation_instructions.link_text'), \
+                  = link_to t('user_mailer.email_confirmation_instructions.link_text'), \
                     idv_recovery_step_url(step: :recover, token: @token, locale: @locale), \
                     target: '_blank', \
                     class: 'float-center', align: 'center'

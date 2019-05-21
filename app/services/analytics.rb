@@ -77,6 +77,7 @@ class Analytics
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
+  EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
   EVENT_DISAVOWAL = 'Event disavowal visited'.freeze
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze

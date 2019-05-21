@@ -2,18 +2,6 @@
 fr:
   mailer:
     about: À propos de %{app}
-    confirmation_instructions:
-      first_sentence:
-        confirmed: Vous tentez de changer votre adresse courriel?
-        forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
-          compte login.gov, mais nous ne possédons pas de compte associé à cette adresse
-          courriel. Si vous souhaitez créer un nouveau compte associé à cette adresse
-          courriel, confirmez votre adresse courriel ci-dessous.
-        unconfirmed: Merci d'avoir créé un compte.
-      footer: Ce lien expirera dans %{confirmation_period}.
-      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
-        le lien complet dans votre navigateur."
-      link_text: Confirmez votre adresse email
     email_change_notice:
       subject: Changez votre adresse courriel
     email_reuse_notice:

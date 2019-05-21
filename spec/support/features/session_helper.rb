@@ -49,6 +49,12 @@ module Features
     end
 
     def sign_up
+      user = create(:user, :unconfirmed)
+      confirm_last_user
+      user
+    end
+
+    def sign_up_with_backup_codes
       user = create(:user, :unconfirmed, :with_backup_code)
       confirm_last_user
       user
@@ -70,6 +76,13 @@ module Features
 
     def sign_up_and_set_password
       user = sign_up
+      fill_in 'password_form_password', with: VALID_PASSWORD
+      click_button t('forms.buttons.continue')
+      user
+    end
+
+    def sign_up_with_backup_codes_and_set_password
+      user = sign_up_with_backup_codes
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
@@ -366,7 +379,7 @@ module Features
 
     def click_confirmation_link_in_email(email)
       open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
     end
 
     def submit_form_with_invalid_password
