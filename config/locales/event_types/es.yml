@@ -10,6 +10,7 @@ es:
     backup_codes_added: Códigos de respaldo añadidos
     eastern_timestamp: "%{timestamp} (hora del Este)"
     email_changed: Email cambiado
+    email_deleted: Dirección de correo electrónico eliminada
     new_personal_key: Clave personal cambiado
     password_changed: Contraseña cambiada
     personal_key_used: Clave personal utilizada para iniciar sesión

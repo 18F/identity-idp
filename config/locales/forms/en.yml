@@ -29,6 +29,7 @@ en:
       back: Back
       cancel: Yes, cancel
       continue: Continue
+      delete: Delete
       disable: Disable
       edit: Edit
       enable: Enable
@@ -41,6 +42,9 @@ en:
         update: Update
     confirmation:
       show_hdr: Create a strong password
+    email:
+      buttons:
+        delete: Delete email address
     example: 'example:'
     messages:
       remember_device: Remember this browser
