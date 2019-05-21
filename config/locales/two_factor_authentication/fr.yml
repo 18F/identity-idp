@@ -71,6 +71,12 @@ fr:
       sms: Message texte (SMS)
       title: Comment devrions-nous vous envoyer un code?
       voice: Appel téléphonique
+    otp_make_default_number:
+      instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
+        téléphone par défaut. numéro que vous recevez des messages texte ou des appels
+        téléphoniques.
+      label: Numéro de téléphone par défaut
+      title: Faites-en votre numéro de téléphone par défaut?
     personal_key_fallback:
       question: Vous n'avez pas votre clé personnelle?
     personal_key_header_text: Entrez votre clé personnelle
@@ -116,6 +122,10 @@ fr:
       voice_info: Obtenez votre code de sécurité par appel téléphonique
       webauthn: Clé de sécurité
       webauthn_info: Utilisez une clé de sécurité pour sécuriser votre compte
+    two_factor_recovery_choice: Ajouter une méthode d'authentification de sauvegarde
+    two_factor_recovery_choice_intro: L'ajout de plusieurs méthodes d'authentification
+      à votre compte vous permet d'accéder à votre compte lorsque vous n'avez pas
+      accès à votre première option d'authentification.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité

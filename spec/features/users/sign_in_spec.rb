@@ -434,12 +434,6 @@ feature 'Sign in' do
       enter_personal_key(personal_key: old_personal_key)
       click_submit_default
       visit account_path
-
-      expect(page).to have_current_path(manage_personal_key_path)
-
-      click_acknowledge_personal_key
-
-      expect(page).to have_current_path(account_path)
       expect(page).to have_content t('event_types.personal_key_used')
     end
   end
@@ -466,7 +460,7 @@ feature 'Sign in' do
 
   context 'user is totp_enabled but not phone_enabled' do
     before do
-      user = create(:user, :with_authentication_app)
+      user = create(:user, :with_authentication_app, :with_backup_code)
       signin(user.email, user.password)
     end
 

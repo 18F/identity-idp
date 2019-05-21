@@ -3,9 +3,10 @@ require 'rails_helper'
 describe 'users/emails/edit.html.slim' do
   context 'user is not TOTP enabled' do
     before do
-      user = build_stubbed(:user, :signed_up)
+      user = create(:user, :signed_up)
+      email_address = user.email_addresses.first
       allow(view).to receive(:current_user).and_return(user)
-      @update_user_email_form = UpdateUserEmailForm.new(user)
+      @update_user_email_form = UpdateUserEmailForm.new(user, email_address)
     end
 
     it 'has a localized title' do

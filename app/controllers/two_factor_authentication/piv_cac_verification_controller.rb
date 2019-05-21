@@ -47,7 +47,7 @@ module TwoFactorAuthentication
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         after_otp_verification_confirmation_url
       else
-        account_recovery_setup_url
+        two_factor_options_url
       end
     end
 

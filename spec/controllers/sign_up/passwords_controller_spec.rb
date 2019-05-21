@@ -26,7 +26,6 @@ describe SignUp::PasswordsController do
       user.reload
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
       expect(user.confirmed?).to eq true
-      expect(user.reset_requested_at).to be_nil
     end
 
     it 'tracks an invalid password event' do

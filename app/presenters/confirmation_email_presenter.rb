@@ -5,16 +5,14 @@ class ConfirmationEmailPresenter
   end
 
   def first_sentence # rubocop:disable MethodLength
-    if user.reset_requested_at.present?
-      I18n.t('mailer.confirmation_instructions.first_sentence.reset_requested', app: app_link)
-    elsif user.confirmed_at.present?
+    if user.confirmed_at.present?
       I18n.t(
-        'mailer.confirmation_instructions.first_sentence.confirmed',
+        'user_mailer.email_confirmation_instructions.first_sentence.confirmed',
         app: app_link, confirmation_period: confirmation_period,
       )
     else
       I18n.t(
-        'mailer.confirmation_instructions.first_sentence.unconfirmed',
+        'user_mailer.email_confirmation_instructions.first_sentence.unconfirmed',
         app: app_link, confirmation_period: confirmation_period,
       )
     end

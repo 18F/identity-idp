@@ -26,11 +26,12 @@ module Features
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
+      select_2fa_option('backup_code')
+      click_continue
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       click_submit_default
-      click_acknowledge_personal_key
       user
     end
 
@@ -53,6 +54,12 @@ module Features
       user
     end
 
+    def sign_up_with_backup_codes
+      user = create(:user, :unconfirmed, :with_backup_code)
+      confirm_last_user
+      user
+    end
+
     def begin_sign_up_with_sp_and_loa(loa3:)
       user = create(:user)
       login_as(user, scope: :user, run_callbacks: false)
@@ -69,6 +76,13 @@ module Features
 
     def sign_up_and_set_password
       user = sign_up
+      fill_in 'password_form_password', with: VALID_PASSWORD
+      click_button t('forms.buttons.continue')
+      user
+    end
+
+    def sign_up_with_backup_codes_and_set_password
+      user = sign_up_with_backup_codes
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
@@ -310,6 +324,7 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
+      set_up_2fa_with_backup_code
       set_up_2fa_with_valid_phone
 
       expect(page).to have_css('img[src*=sp-logos]')
@@ -317,8 +332,6 @@ module Features
       click_submit_default
 
       # expect(page).to have_css('img[src*=sp-logos]')
-
-      click_acknowledge_personal_key
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -366,7 +379,7 @@ module Features
 
     def click_confirmation_link_in_email(email)
       open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
     end
 
     def submit_form_with_invalid_password
@@ -387,6 +400,8 @@ module Features
 
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
+      select_2fa_option('backup_code')
+      click_continue
       set_up_2fa_with_valid_phone
       click_submit_default
       User.find_with_email(email)
@@ -402,6 +417,7 @@ module Features
 
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
+      set_up_2fa_with_backup_code
       set_up_2fa_with_authenticator_app
     end
 
@@ -418,13 +434,17 @@ module Features
     def register_user_with_piv_cac(email = 'test@test.com')
       allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
-
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(
         t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
 
       set_up_2fa_with_piv_cac
+    end
+
+    def set_up_2fa_with_backup_code
+      select_2fa_option('backup_code')
+      click_continue
     end
 
     def set_up_2fa_with_piv_cac

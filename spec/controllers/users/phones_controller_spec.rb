@@ -32,7 +32,8 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: true },
           ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -77,7 +78,8 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: true },
           ),
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -149,14 +151,14 @@ describe Users::PhonesController do
     end
 
     context 'user has only a phone' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :with_phone, :with_backup_code) }
 
       let(:extra_analytics) do
         { configuration_id: user.phone_configurations.first.id,
           configuration_owner: user.uuid,
           configuration_present: true,
-          errors: { user: ['must have multiple MFA configurations'] },
-          mfa_method_counts: { phone: 1 },
+          errors: { user: ['must have 3 or more MFA configurations'] },
+          mfa_method_counts: { backup_codes: 10, phone: 1 },
           success: false }
       end
 
@@ -190,7 +192,7 @@ describe Users::PhonesController do
           configuration_owner: user.uuid,
           configuration_present: true,
           errors: {},
-          mfa_method_counts: { piv_cac: 1 },
+          mfa_method_counts: { backup_codes: 10, piv_cac: 1 },
           success: true }
       end
 
@@ -243,7 +245,8 @@ describe Users::PhonesController do
         MfaContext.new(user).phone_configurations.reload.first.phone,
       ).to_not eq '+1 202-555-4321'
       expect(response).to redirect_to(otp_send_path(otp_delivery_selection_form:
-                                                      { otp_delivery_preference: 'sms' }))
+                                                      { otp_delivery_preference: 'sms',
+                                                        otp_make_default_number: nil }))
       expect(subject.user_session[:context]).to eq 'confirmation'
     end
   end

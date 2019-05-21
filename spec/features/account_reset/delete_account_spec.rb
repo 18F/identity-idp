@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 describe 'Account Reset Request: Delete Account', email: true do
+  include PushNotificationsHelper
+
   let(:user) { create(:user, :signed_up) }
   let(:user_email) { user.email_addresses.first.email }
+  let(:push_notification_url) { 'http://localhost/push_notifications' }
+  let(:payload) { { uuid: '1234' } }
 
   before do
     TwilioService::Utils.telephony_service = FakeSms
@@ -52,10 +56,47 @@ describe 'Account Reset Request: Delete Account', email: true do
         expect(page).to have_current_path(sign_up_email_path)
       end
     end
+
+    it 'sends push notifications if push_notifications_enabled is true' do
+      allow(Figaro.env).to receive(:push_notifications_enabled).and_return('true')
+      AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
+
+      signin(user_email, user.password)
+      click_link t('two_factor_authentication.login_options_link_text')
+      click_link t('two_factor_authentication.account_reset.link')
+      click_button t('account_reset.request.yes_continue')
+
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.confirm_request.instructions', email: user_email),
+        )
+      expect(page).to have_content t('account_reset.confirm_request.security_note')
+      expect(page).to have_content t('account_reset.confirm_request.close_window')
+
+      reset_email
+
+      Timecop.freeze(Time.zone.now + 2.days) do
+        request = stub_request(:post, push_notification_url).
+                  with(headers: push_notification_headers(push_notification_url, payload)).
+                  with(body: '').
+                  to_return(body: '')
+
+        AccountReset::GrantRequestsAndSendEmails.new.call
+        open_last_email
+        click_email_link_matching(/delete_account\?token/)
+
+        expect(page).to have_content(t('account_reset.delete_account.title'))
+        expect(page).to have_current_path(account_reset_delete_account_path)
+
+        click_button t('account_reset.request.yes_continue')
+
+        expect(request).to have_been_requested
+      end
+    end
   end
 
   context 'as an LOA1 user without a phone' do
-    let(:user) { create(:user, :with_authentication_app) }
+    let(:user) { create(:user, :with_backup_code, :with_authentication_app) }
 
     it 'does not tell the user that an SMS was sent to their registered phone' do
       signin(user_email, user.password)

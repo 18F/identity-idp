@@ -3,10 +3,11 @@ module Users
     include UserAuthenticator
     include PhoneConfirmation
     include Authorizable
+    include MfaSetupConcern
 
     before_action :authenticate_user
     before_action :authorize_user
-    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
+    before_action :confirm_user_authenticated_for_2fa_setup
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user, nil)
@@ -21,7 +22,7 @@ module Users
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
       if result.success?
-        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+        handle_create_success(@user_phone_form.phone)
       else
         render :index
       end
@@ -29,13 +30,17 @@ module Users
 
     private
 
-    def delivery_preference
-      MfaContext.new(current_user).phone_configurations.take&.delivery_preference ||
-        current_user.otp_delivery_preference
+    def handle_create_success(phone)
+      if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
+        prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)
+      else
+        flash[:error] = t('errors.messages.phone_duplicate')
+        redirect_to phone_setup_url
+      end
     end
 
-    def two_factor_enabled?
-      MfaPolicy.new(current_user).two_factor_enabled?
+    def delivery_preference
+      current_user.otp_delivery_preference
     end
 
     def user_phone_form_params

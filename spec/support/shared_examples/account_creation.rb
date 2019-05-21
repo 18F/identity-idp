@@ -1,22 +1,8 @@
-shared_examples 'csrf error when acknowledging personal key' do |sp|
-  it 'redirects to sign in page', email: true do
-    visit_idp_from_sp_with_loa1(sp)
-    register_user
-    allow_any_instance_of(SignUp::PersonalKeysController).
-      to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
-    click_acknowledge_personal_key
-
-    expect(current_path).to eq new_user_session_path
-    expect(page).to have_content t('errors.invalid_authenticity_token')
-  end
-end
-
 shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
     visit_idp_from_sp_with_loa1(sp)
     register_user
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -38,7 +24,6 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   it 'redirects to the SP', email: true do
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_authenticator_app
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -95,16 +80,14 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_piv_cac
 
-    expect(page).to have_current_path(account_recovery_setup_path)
-    expect(page).to have_content t('instructions.account_recovery_setup.piv_cac_next_step')
+    expect(page).to have_current_path(two_factor_options_path)
 
     select_2fa_option('sms')
     click_link t('two_factor_authentication.choose_another_option')
 
-    expect(page).to have_current_path account_recovery_setup_path
+    expect(page).to have_current_path(two_factor_options_path)
 
     configure_backup_phone
-    click_acknowledge_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -127,6 +110,8 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_loa3(sp)
     confirm_email_and_password('test@test.com')
+    select_2fa_option('backup_code')
+    click_continue
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup

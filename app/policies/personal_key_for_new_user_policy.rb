@@ -13,9 +13,7 @@ class PersonalKeyForNewUserPolicy
   # confirm personal keys twice, once after 2FA setup, and once after
   # proofing, we only show it to them once after proofing.
   def show_personal_key_after_initial_2fa_setup?
-    !FeatureManagement.personal_key_assignment_disabled? &&
-      user_does_not_have_a_personal_key? &&
-      user_did_not_make_an_loa3_request?
+    user_does_not_have_a_personal_key? && user_did_not_make_an_loa3_request?
   end
 
   private

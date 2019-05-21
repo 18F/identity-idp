@@ -25,7 +25,6 @@ class PasswordResetEmailForm
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      role: user.role,
       confirmed: user.confirmed?,
       active_profile: user.active_profile.present?,
     }.merge(@recaptcha_h)

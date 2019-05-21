@@ -6,6 +6,8 @@ feature 'Phone confirmation during sign up' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       allow(SmsOtpSenderJob).to receive(:perform_now)
       @user = sign_in_before_2fa
+      select_2fa_option('backup_code')
+      click_continue
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '703-555-5555'
       click_send_security_code
@@ -23,9 +25,6 @@ feature 'Phone confirmation during sign up' do
       click_button t('forms.buttons.submit.default')
 
       expect(MfaContext.new(@user).phone_configurations.reload.first.confirmed_at).to be_present
-      expect(current_path).to eq sign_up_personal_key_path
-
-      click_acknowledge_personal_key
 
       expect(current_path).to eq account_path
     end
@@ -40,7 +39,7 @@ feature 'Phone confirmation during sign up' do
       fill_in 'code', with: '12345678'
       click_button t('forms.buttons.submit.default')
 
-      expect(MfaPolicy.new(@user.reload).two_factor_enabled?).to be false
+      expect(MfaPolicy.new(@user.reload).multiple_factors_enabled?).to be false
     end
 
     it 'provides user with link to type in a phone number so they are not locked out' do
