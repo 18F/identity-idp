@@ -162,6 +162,22 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end
 
+  create_table "job_runs", force: :cascade do |t|
+    t.string "host", null: false
+    t.string "pid", null: false
+    t.datetime "finish_time"
+    t.string "job_name", null: false
+    t.string "result"
+    t.string "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_job_runs_on_created_at"
+    t.index ["error"], name: "index_job_runs_on_error"
+    t.index ["finish_time"], name: "index_job_runs_on_finish_time"
+    t.index ["host"], name: "index_job_runs_on_host"
+    t.index ["job_name"], name: "index_job_runs_on_job_name"
+  end
+
   create_table "otp_requests_trackers", force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
