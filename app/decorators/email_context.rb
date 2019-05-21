@@ -12,4 +12,8 @@ class EmailContext
   def email_address_count
     user.email_addresses.count
   end
+
+  def confirmed_email_address_count
+    user.confirmed_email_addresses.count
+  end
 end

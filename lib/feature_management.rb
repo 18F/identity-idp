@@ -110,6 +110,10 @@ class FeatureManagement
     Figaro.env.disallow_ial2_recovery == 'true'
   end
 
+  def self.email_deletion_enabled?
+    Figaro.env.email_deletion_enabled? == 'true'
+  end
+
   def self.allow_doc_auth_test_credentials?
     Figaro.env.allow_doc_auth_test_credentials == 'true'
   end

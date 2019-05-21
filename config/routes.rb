@@ -145,9 +145,11 @@ Rails.application.routes.draw do
 
     get '/manage/email/:id' => 'users/emails#edit', as: :manage_email
     match '/manage/email/:id' => 'users/emails#update', via: %i[patch put]
-    delete '/manage/email/:id' => 'users/emails#delete'
-    get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
-        as: :manage_email_confirm_delete
+    if FeatureManagement.email_deletion_enabled?
+      delete '/manage/email/:id' => 'users/emails#delete'
+      get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
+          as: :manage_email_confirm_delete
+    end
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
     get '/add/phone' => 'users/phones#add'

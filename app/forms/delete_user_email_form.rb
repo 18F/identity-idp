@@ -18,7 +18,7 @@ class DeleteUserEmailForm
   private
 
   def email_address_destroyed
-    return false unless EmailPolicy.new(@user).can_delete_email?
+    return false unless EmailPolicy.new(@user).can_delete_email?(@email_address)
     return false if email_address.destroy == false
     user.email_addresses.reload
     true

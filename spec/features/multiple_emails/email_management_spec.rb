@@ -17,49 +17,71 @@ feature 'managing email address' do
       expect(page).to have_content(email1)
       expect(page).to have_content(email2)
     end
+  end
 
-    scenario 'Does not display or allow delete when only one email exists' do
+  context 'allows deletion of email address' do
+    before do
+      allow(FeatureManagement).to receive(:email_deletion_enabled?).and_return(true)
+    end
+
+    it 'does not allow last confirmed email to be deleted' do
       user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
-      email = user.reload.email_addresses.first.email
-      email_id = user.reload.email_addresses.first.id
+      confirmed_email = user.confirmed_email_addresses.first
+      unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
+      user.email_addresses.reload
+
       sign_in_and_2fa_user(user)
       expect(page).to have_current_path(account_path)
 
-      delete_link_path = manage_email_confirm_delete_url(id: email_id)
-      expect(page).to_not have_content delete_link_path
+      delete_link_not_displayed(confirmed_email)
+      delete_link_is_displayed(unconfirmed_email)
 
-      visit manage_email_confirm_delete_url(id: email_id)
-      expect(page).to have_content t('email_addresses.delete.confirm', email: email)
+      delete_email_should_fail(confirmed_email)
+      delete_email_should_not_fail(unconfirmed_email)
+    end
 
+    it 'Allows delete when more than one confirmed email exists' do
+      user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
+      confirmed_email1 = user.confirmed_email_addresses.first
+      confirmed_email2 = create(:email_address, user: user,
+                                                confirmed_at: Time.zone.now)
+      user.email_addresses.reload
+
+      sign_in_and_2fa_user(user)
+      expect(page).to have_current_path(account_path)
+
+      delete_link_is_displayed(confirmed_email1)
+      delete_link_is_displayed(confirmed_email2)
+
+      delete_email_should_not_fail(confirmed_email1)
+    end
+
+    def delete_link_not_displayed(email)
+      delete_link_path = manage_email_confirm_delete_url(id: email.id)
+      expect(page).to_not have_link(t('forms.buttons.delete'), href: delete_link_path)
+    end
+
+    def delete_link_is_displayed(email)
+      delete_link_path = manage_email_confirm_delete_url(id: email.id)
+      expect(page).to have_link(t('forms.buttons.delete'), href: delete_link_path)
+    end
+
+    def delete_email_should_fail(email)
+      visit manage_email_confirm_delete_url(id: email.id)
+      expect(page).to have_content t('email_addresses.delete.confirm',
+                                     email: email.email)
       click_button t('forms.email.buttons.delete')
       expect(page).to have_current_path(account_path)
       expect(page).to have_content t('email_addresses.delete.failure')
     end
 
-    scenario 'Allows delete when more than one email exists' do
-      user = create(:user, :signed_up, :with_multiple_emails)
-      email_2_id, email_1_id = user.reload.email_addresses.map(&:id)
-      email2, email1 = user.reload.email_addresses.map(&:email)
-      delete_link_path1 = manage_email_confirm_delete_url(id: email_1_id)
-      delete_link_path2 = manage_email_confirm_delete_url(id: email_2_id)
-
-      sign_in_and_2fa_user(user)
-      expect(page).to have_current_path(account_path)
-
-      expect(page).to have_content(email1)
-      expect(page).to have_content(email2)
-
-      expect(page).to have_link(t('forms.buttons.delete'), href: delete_link_path1)
-      expect(page).to have_link(t('forms.buttons.delete'), href: delete_link_path2)
-
-      find("a[href='#{delete_link_path1}']").click
-
-      expect(page).to have_content t('email_addresses.delete.confirm', email: email1)
-
+    def delete_email_should_not_fail(email)
+      visit manage_email_confirm_delete_url(id: email.id)
+      expect(page).to have_content t('email_addresses.delete.confirm',
+                                     email: email.email)
       click_button t('forms.email.buttons.delete')
-
-      expect(page).to_not have_content(email1)
-      expect(page).to have_content(email2)
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content t('email_addresses.delete.success')
     end
   end
 end
