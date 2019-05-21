@@ -95,7 +95,7 @@ feature 'managing email address' do
                                      email: email.email)
       click_button t('forms.email.buttons.delete')
 
-      return if FeatureManagement.email_deletion_enabled?
+      return unless FeatureManagement.email_deletion_enabled?
       expect(page).to have_current_path(account_path)
       expect(page).to have_content t('email_addresses.delete.failure')
     end
@@ -106,7 +106,7 @@ feature 'managing email address' do
                                      email: email.email)
       click_button t('forms.email.buttons.delete')
 
-      return if FeatureManagement.email_deletion_enabled?
+      return unless FeatureManagement.email_deletion_enabled?
       expect(page).to have_current_path(account_path)
       expect(page).to have_content t('email_addresses.delete.success')
     end
