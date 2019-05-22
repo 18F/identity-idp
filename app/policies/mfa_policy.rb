@@ -15,8 +15,9 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
-  def three_or_more_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 2
+  def sufficient_factors_enabled?
+    mfa_user.enabled_mfa_methods_count > 2 # ||
+      #mfa_user.backup_code_configurations != BackupCodeConfiguration.none
   end
 
   def unphishable?
