@@ -21,7 +21,7 @@ module JobRunner
 
       def successful_job_run_within_2_intervals?(job_configuration)
         interval_window = (job_configuration.interval * 2).seconds.ago
-        JobRun.where(job_name: job_configuration.name).
+        JobRun.where(job_name: job_configuration.name, error: nil).
           where('created_at > ?', interval_window).
           any?
       end
