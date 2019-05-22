@@ -6,6 +6,7 @@ module Health
       checkers = {
         database: DatabaseHealthChecker,
         account_reset: AccountResetHealthChecker,
+        job_runner: JobRunner::HealthChecker,
       }
       MultiHealthChecker.new(**checkers)
     end
