@@ -11,9 +11,9 @@ class CreateJobRuns < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :job_runs, :created_at
+    add_index :job_runs, %i[job_name created_at]
+    add_index :job_runs, %i[job_name finish_time]
     add_index :job_runs, :error
-    add_index :job_runs, :finish_time
     add_index :job_runs, :host
     add_index :job_runs, :job_name
   end

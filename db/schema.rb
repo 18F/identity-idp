@@ -171,10 +171,10 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.string "error"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_at"], name: "index_job_runs_on_created_at"
     t.index ["error"], name: "index_job_runs_on_error"
-    t.index ["finish_time"], name: "index_job_runs_on_finish_time"
     t.index ["host"], name: "index_job_runs_on_host"
+    t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
+    t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
     t.index ["job_name"], name: "index_job_runs_on_job_name"
   end
 
