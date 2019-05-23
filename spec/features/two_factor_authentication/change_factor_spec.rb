@@ -2,7 +2,17 @@ require 'rails_helper'
 
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
-    let!(:user) { sign_up_and_2fa_loa1_user }
+    let(:user) { sign_up_and_2fa_loa1_user }
+
+    before do
+      user # Sign up the user
+      reauthn_date = (Figaro.env.reauthn_window.to_i + 1).seconds.from_now
+      Timecop.travel reauthn_date
+    end
+
+    after do
+      Timecop.return
+    end
 
     scenario 'editing password' do
       visit manage_password_path
@@ -76,9 +86,12 @@ feature 'Changing authentication factor' do
       fill_in 'Phone', with: unsupported_phone
       click_button t('forms.buttons.submit.confirm_change')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+      expect(current_path).to eq manage_phone_path
+      expect(page).to have_content t(
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'Bahamas',
+      )
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_now)
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
 
@@ -136,12 +149,12 @@ feature 'Changing authentication factor' do
     end
 
     scenario 'editing email' do
-      visit manage_email_path
+      visit manage_email_path(id: user.email_addresses.take.id)
 
       expect(page).to have_content t('help_text.change_factor', factor: 'email')
       complete_2fa_confirmation
 
-      expect(current_path).to eq manage_email_path
+      expect(current_path).to eq manage_email_path(id: user.email_addresses.take.id)
     end
 
     scenario 'deleting account' do
@@ -160,10 +173,10 @@ feature 'Changing authentication factor' do
       sign_in_with_totp_enabled_user
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        visit manage_email_path
+        visit manage_email_path(id: User.last.email_addresses.take.id)
         submit_current_password_and_totp
 
-        expect(current_path).to eq manage_email_path
+        expect(current_path).to eq manage_email_path(id: User.last.email_addresses.take.id)
       end
 
       Timecop.travel(Figaro.env.reauthn_window.to_i * 3) do

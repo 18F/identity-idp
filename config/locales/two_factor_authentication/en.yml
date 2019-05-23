@@ -69,6 +69,11 @@ en:
       sms: Text message (SMS)
       title: How should we send you a code?
       voice: Phone call
+    otp_make_default_number:
+      instruction: Please check the box below if you want this to be the default phone
+        number you receive text messages or phone calls.
+      label: Default phone number
+      title: Make this your default phone number?
     personal_key_fallback:
       question: Don't have your personal key?
     personal_key_header_text: Enter your personal key
@@ -113,6 +118,10 @@ en:
       voice_info: Get your security code via phone call
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
+    two_factor_recovery_choice: Add a backup authentication method
+    two_factor_recovery_choice_intro: Adding multiple authentication methods to your
+      account ensures you will be able to access your account when you do not have
+      access to your first authentication option.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key

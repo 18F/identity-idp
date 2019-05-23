@@ -2,9 +2,11 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include Authorizable
+    include MfaSetupConcern
 
     before_action :authenticate_user
     before_action :authorize_user
+    before_action :confirm_user_authenticated_for_2fa_setup
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)

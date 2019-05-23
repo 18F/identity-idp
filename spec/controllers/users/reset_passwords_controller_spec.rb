@@ -300,7 +300,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)
@@ -322,76 +321,17 @@ describe Users::ResetPasswordsController, devise: true do
       end
     end
 
-    context 'matched email belongs to a tech support user' do
-      it 'tracks event using tech user' do
-        stub_analytics
-
-        tech_user = build_stubbed(:user, :tech_support)
-        allow(User).to receive(:find_with_email).with(tech_user.email).and_return(tech_user)
-
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
-        analytics_hash = {
-          success: true,
-          errors: {},
-          user_id: tech_user.uuid,
-          role: 'tech',
-          confirmed: true,
-          active_profile: false,
-        }.merge(captcha_h)
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
-
-        params = { password_reset_email_form: { email: tech_user.email },
-                   'g-recaptcha-response': 'foo' }
-        expect { put :create, params: params }.
-          to change { ActionMailer::Base.deliveries.count }.by(0)
-
-        expect(response).to redirect_to forgot_password_path
-      end
-    end
-
-    context 'matched email belongs to an admin user' do
-      it 'tracks event using admin user' do
-        stub_analytics
-
-        admin = build_stubbed(:user, :admin)
-        allow(User).to receive(:find_with_email).with(admin.email).and_return(admin)
-
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
-        analytics_hash = {
-          success: true,
-          errors: {},
-          user_id: admin.uuid,
-          role: 'admin',
-          confirmed: true,
-          active_profile: false,
-        }.merge(captcha_h)
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
-
-        params = { password_reset_email_form: { email: admin.email },
-                   'g-recaptcha-response': 'foo' }
-        expect { put :create, params: params }.
-          to change { ActionMailer::Base.deliveries.count }.by(0)
-
-        expect(response).to redirect_to forgot_password_path
-      end
-    end
-
     context 'user exists' do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = create(:user, :signed_up, role: :user, email: 'test@example.com')
+        user = create(:user, :signed_up, email: 'test@example.com')
 
         captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: true,
           active_profile: false,
         }.merge(captcha_h)
@@ -412,14 +352,13 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = create(:user, :unconfirmed, role: :user)
+        user = create(:user, :unconfirmed)
 
         captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)
@@ -451,7 +390,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
-          role: 'user',
           confirmed: true,
           active_profile: true,
         }.merge(captcha_h)
@@ -474,7 +412,6 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
-          role: 'nonexistent',
           confirmed: false,
           active_profile: false,
         }.merge(captcha_h)

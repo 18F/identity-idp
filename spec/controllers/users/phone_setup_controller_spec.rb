@@ -82,7 +82,8 @@ describe Users::PhoneSetupController do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'voice',
+                                           otp_make_default_number: nil },
           ),
         )
 
@@ -115,7 +116,8 @@ describe Users::PhoneSetupController do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: nil },
           ),
         )
 
@@ -147,7 +149,8 @@ describe Users::PhoneSetupController do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: nil },
           ),
         )
 
@@ -169,7 +172,7 @@ describe Users::PhoneSetupController do
   describe '#authorize_user' do
     context 'when the user is fully authenticated and phone enabled' do
       it 'redirects to account url' do
-        user = build_stubbed(:user, :with_phone)
+        user = build_stubbed(:user, :signed_up, :with_authentication_app)
         stub_sign_in(user)
 
         get :index

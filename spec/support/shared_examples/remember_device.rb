@@ -60,7 +60,7 @@ shared_examples 'remember device' do
       to(include('form-action \'self\' http://localhost:7654'))
 
     sign_in_user(user)
-
+    click_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
@@ -72,10 +72,10 @@ shared_examples 'remember device' do
                       login_two_factor_webauthn_path
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
-                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
-                      login_two_factor_backup_code_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
                       login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+                      login_two_factor_backup_code_path
                     end
 
     expect(page).to have_current_path(expected_path)

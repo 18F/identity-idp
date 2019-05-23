@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/mailer/confirmation_instructions.html.slim' do
+describe 'user_mailer/email_confirmation_instructions.html.slim' do
   it 'mentions how long the user has to confirm' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
     assign(:resource, user)
@@ -9,7 +9,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
     expect(rendered).to have_content(
       t(
-        'mailer.confirmation_instructions.footer',
+        'user_mailer.email_confirmation_instructions.footer',
         confirmation_period: user.decorate.confirmation_period,
       ),
     )
@@ -50,7 +50,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
     expect(rendered).to have_content(
       I18n.t(
-        'mailer.confirmation_instructions.first_sentence.confirmed',
+        'user_mailer.email_confirmation_instructions.first_sentence.confirmed',
         app: APP_NAME, confirmation_period: presenter.confirmation_period,
       ),
     )
@@ -65,26 +65,9 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
     expect(rendered).to have_content(
       I18n.t(
-        'mailer.confirmation_instructions.first_sentence.unconfirmed',
+        'user_mailer.email_confirmation_instructions.first_sentence.unconfirmed',
         app: APP_NAME, confirmation_period: presenter.confirmation_period,
       ),
     )
-  end
-
-  it 'mentions resetting the account when account has been reset by tech support' do
-    user = build_stubbed(:user, reset_requested_at: Time.zone.now)
-    presenter = ConfirmationEmailPresenter.new(user, self)
-    assign(:resource, user)
-    assign(:first_sentence, presenter.first_sentence)
-    render
-
-    expect(rendered).to have_content(
-      I18n.t(
-        'mailer.confirmation_instructions.first_sentence.reset_requested',
-        app: APP_NAME,
-      ),
-    )
-
-    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 end

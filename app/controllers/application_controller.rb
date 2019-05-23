@@ -131,12 +131,29 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
-    # return new_user_session_url unless user_signed_in?
     user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
   end
 
   def signed_in_url
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
+  end
+
+  def two_2fa_setup
+    if MfaPolicy.new(current_user).multiple_factors_enabled?
+      after_multiple_2fa_sign_up
+    else
+      two_factor_options_url
+    end
+  end
+
+  def after_multiple_2fa_sign_up
+    if session[:sp]
+      sign_up_completed_url
+    elsif current_user.decorate.password_reset_profile.present?
+      reactivate_account_url
+    else
+      after_sign_in_path_for(current_user)
+    end
   end
 
   def reauthn_param
@@ -156,7 +173,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def user_fully_authenticated?
     !reauthn? && user_signed_in? &&
-      MfaPolicy.new(current_user).two_factor_enabled? && is_fully_authenticated?
+      two_factor_enabled? && is_fully_authenticated?
   end
 
   def reauthn?
@@ -166,11 +183,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
-
-    return if user_fully_authenticated?
-
-    return prompt_to_set_up_2fa unless MfaPolicy.new(current_user).two_factor_enabled?
-
+    return if user_fully_authenticated? && multiple_factors_enabled?
+    return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
 
@@ -180,6 +194,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
+  end
+
+  def multiple_factors_enabled?
+    MfaPolicy.new(current_user).multiple_factors_enabled?
+  end
+
+  def two_factor_enabled?
+    MfaPolicy.new(current_user).two_factor_enabled?
   end
 
   def skip_session_expiration

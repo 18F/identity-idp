@@ -88,8 +88,8 @@ feature 'PIV/CAC Management' do
         expect(form).to be_nil
       end
 
-      context 'when the user does not have a phone number yet' do
-        it 'does not prompt to set one up after configuring PIV/CAC' do
+      context 'when the user does not have a 2nd mfa yet' do
+        it 'does prompt to set one up after configuring PIV/CAC' do
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
           stub_piv_cac_service
 
@@ -107,7 +107,7 @@ feature 'PIV/CAC Management' do
                                 uuid: SecureRandom.uuid,
                                 subject: 'SomeIgnoredSubject')
 
-          expect(page).to have_current_path account_path
+          expect(page).to have_current_path two_factor_options_url
         end
       end
     end

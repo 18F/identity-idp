@@ -47,7 +47,7 @@ class RegisterUserEmailForm
   def process_successful_submission(request_id, instructions)
     @success = true
     user.save!
-    user.send_custom_confirmation_instructions(request_id, instructions)
+    SendSignUpEmailConfirmation.new(user).call(request_id: request_id, instructions: instructions)
   end
 
   def extra_analytics_attributes
@@ -62,7 +62,7 @@ class RegisterUserEmailForm
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
-      existing_user.send_custom_confirmation_instructions(request_id)
+      SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
       true
     elsif email_taken?
       UserMailer.signup_with_your_email(email).deliver_later

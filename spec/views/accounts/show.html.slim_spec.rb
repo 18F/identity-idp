@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.slim' do
-  let(:user) { build(:user, :signed_up, :with_email) }
+  let(:user) { create(:user, :signed_up, :with_email) }
   let(:decorated_user) { user.decorate }
 
   before do
@@ -37,7 +37,7 @@ describe 'accounts/show.html.slim' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { build(:user, :signed_up, :with_email, otp_secret_key: '123') }
+    let(:user) { create(:user, :signed_up, :with_email, otp_secret_key: '123') }
 
     before do
       assign(
@@ -157,7 +157,7 @@ describe 'accounts/show.html.slim' do
 
     context 'user has no phone' do
       let(:user) do
-        record = build(:user, :signed_up, :with_piv_or_cac, :with_email)
+        record = create(:user, :signed_up, :with_piv_or_cac)
         record.phone_configurations = []
         record
       end
@@ -188,6 +188,29 @@ describe 'accounts/show.html.slim' do
           t('account.index.phone'), href: manage_phone_url(id: user.phone_configurations.first.id)
         )
       end
+    end
+  end
+
+  context 'email listing and adding' do
+    let(:user) do
+      record = create(:user)
+      record
+    end
+
+    it 'renders the email section' do
+      render
+
+      expect(view).to render_template(partial: '_emails')
+    end
+
+    it 'shows one email if the user has only one email' do
+      expect(user.email_addresses.size).to eq(1)
+    end
+
+    it 'shows one email if the user has only one email' do
+      create_list(:email_address, 4, user: user)
+      user.reload
+      expect(user.email_addresses.size).to eq(5)
     end
   end
 end

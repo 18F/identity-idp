@@ -5,34 +5,21 @@ describe RequestPasswordReset do
     context 'when the user is not found' do
       it 'sends the account registration email' do
         email = 'nonexistent@example.com'
-        expect_any_instance_of(User).to receive(:send_custom_confirmation_instructions).
-          with(nil, I18n.t('mailer.confirmation_instructions.first_sentence.forgot_password'))
+
+        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
+        expect(send_sign_up_email_confirmation).to receive(:call).with(
+          hash_including(
+            instructions: I18n.t(
+              'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+            ),
+          ),
+        )
+        expect(SendSignUpEmailConfirmation).to receive(:new).and_return(
+          send_sign_up_email_confirmation,
+        )
+
         RequestPasswordReset.new(email).perform
         expect(User.find_with_email(email)).to be_present
-      end
-    end
-
-    context 'when the user is an admin' do
-      it 'does not send any emails, to prevent password recovery via email for privileged users' do
-        user = build_stubbed(:user, :admin)
-
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
-
-        expect(user).to_not receive(:send_reset_password_instructions)
-
-        RequestPasswordReset.new(user.email).perform
-      end
-    end
-
-    context 'when the user is a tech support person' do
-      it 'does not send any emails, to prevent password recovery via email for privileged users' do
-        user = build_stubbed(:user, :tech_support)
-
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
-
-        expect(user).to_not receive(:send_reset_password_instructions)
-
-        RequestPasswordReset.new(user.email).perform
       end
     end
 

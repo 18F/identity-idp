@@ -34,8 +34,4 @@ class Identity < ApplicationRecord
       user.email_addresses.map(&:email),
     )
   end
-
-  def email
-    user.email_addresses.take&.email
-  end
 end
