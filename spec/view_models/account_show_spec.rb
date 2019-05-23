@@ -207,4 +207,36 @@ describe AccountShow do
       end
     end
   end
+
+  describe '#backup_codes_generated_at' do
+    it 'returns the created_at date of the oldest backup code' do
+      user = create(:user)
+      create(:backup_code_configuration, created_at: 1.day.ago, user: user)
+      oldest_code = create(:backup_code_configuration, created_at: 2.days.ago, user: user)
+
+      account_show = AccountShow.new(
+        decrypted_pii: {},
+        personal_key: '',
+        decorated_user: user.reload.decorate,
+      )
+
+      expect(account_show.backup_codes_generated_at).to be_within(
+        1.second,
+      ).of(
+        oldest_code.created_at,
+      )
+    end
+
+    it 'returns nil if there are not backup codes' do
+      user = create(:user)
+
+      account_show = AccountShow.new(
+        decrypted_pii: {},
+        personal_key: '',
+        decorated_user: user.reload.decorate,
+      )
+
+      expect(account_show.backup_codes_generated_at).to be_nil
+    end
+  end
 end

@@ -1,6 +1,9 @@
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 class AccountShow # rubocop:disable Metrics/ClassLength
+  include ActionView::Helpers::TagHelper
+  include LocalTimeHelper
+
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:)
@@ -138,6 +141,10 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/generate_backup_codes'
   end
 
+  def backup_codes_generated_at
+    decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
+  end
+
   def recent_event_partial
     'accounts/event_item'
   end
@@ -161,14 +168,6 @@ class AccountShow # rubocop:disable Metrics/ClassLength
       I18n.t('account.index.piv_cac_enabled')
     else
       I18n.t('account.index.piv_cac_disabled')
-    end
-  end
-
-  def backup_codes_content
-    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
-      I18n.t('account.index.backup_codes_exist')
-    else
-      I18n.t('account.index.backup_codes_no_exist')
     end
   end
 
