@@ -925,6 +925,7 @@ production:
     redirect_uris:
       - 'https://staging.flag.dol.gov/'
       - 'https://staging.flag.dol.gov/auth/auth/login-gov/callback/loa-1'
+      - 'https://staging-om.flag.dol.gov/auth/auth/login-gov/callback/loa-1'
       - 'https://staging.flag.dol.gov/dashboard/'
     attribute_bundle:
       - email
