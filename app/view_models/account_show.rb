@@ -1,9 +1,6 @@
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 class AccountShow # rubocop:disable Metrics/ClassLength
-  include ActionView::Helpers::TagHelper
-  include LocalTimeHelper
-
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:)
