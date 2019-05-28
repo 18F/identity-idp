@@ -125,8 +125,8 @@ feature 'Sign Up' do
 
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
-    set_up_2fa_with_backup_code
     set_up_2fa_with_authenticator_app
+    set_up_2fa_with_backup_code
 
     expect(page).to have_current_path account_path
   end

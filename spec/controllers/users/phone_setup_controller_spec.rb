@@ -163,8 +163,7 @@ describe Users::PhoneSetupController do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
-        :authenticate_user,
-        :authorize_user,
+        :authenticate_user
       )
     end
   end

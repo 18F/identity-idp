@@ -2,13 +2,14 @@ require 'rails_helper'
 
 feature 'sign up with backup code' do
   it 'works' do
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     sign_up_and_set_password
 
-    select_2fa_option('backup_code')
-
-    expect(current_path).to eq backup_code_setup_path
-
-    click_on 'Continue'
+    select_2fa_option('sms')
+    fill_in 'user_phone_form[phone]', with: '202-555-1111'
+    click_send_security_code
+    p page.body
+    click_submit_default
 
     expect(current_path).to eq two_factor_options_path
   end

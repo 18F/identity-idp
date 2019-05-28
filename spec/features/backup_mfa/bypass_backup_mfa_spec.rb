@@ -93,6 +93,7 @@ describe 'attempting to bypass backup mfa setup' do
       )
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       mock_webauthn_verification_challenge
+      complete_mfa
     end
 
     def complete_mfa
@@ -117,21 +118,6 @@ describe 'attempting to bypass backup mfa setup' do
                             nonce: nonce,
                             uuid: user.x509_dn_uuid,
                             subject: 'SomeIgnoredSubject')
-    end
-
-    it_behaves_like 'preventing backup mfa bypass'
-  end
-
-  context 'with backup codes' do
-    let(:user) { create(:user, :with_backup_code) }
-
-    before do
-      user.backup_code_configurations.create!(code: '123456')
-    end
-
-    def complete_mfa
-      fill_in :code, with: '123456'
-      click_submit_default
     end
 
     it_behaves_like 'preventing backup mfa bypass'

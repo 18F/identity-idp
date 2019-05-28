@@ -138,7 +138,6 @@ FactoryBot.define do
     trait :signed_up do
       with_phone
       with_personal_key
-      with_backup_code
     end
 
     trait :unconfirmed do

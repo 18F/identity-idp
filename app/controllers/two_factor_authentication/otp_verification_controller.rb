@@ -26,11 +26,10 @@ module TwoFactorAuthentication
     def confirm_multiple_factors_enabled
       return if confirmation_context? || phone_enabled?
 
-      if multiple_factors_enabled? && !phone_enabled? && user_signed_in?
+      if MfaPolicy.new(current_user).sufficient_factors_enabled? &&
+         !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
-
-      redirect_to phone_setup_url
     end
 
     def phone_enabled?

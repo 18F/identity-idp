@@ -22,7 +22,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
     context 'when fully authenticated and phone enabled' do
       it 'redirects to account page' do
-        user = build(:user, :signed_up)
+        user = build(:user, :signed_up, :with_backup_code)
         stub_sign_in(user)
 
         get :index

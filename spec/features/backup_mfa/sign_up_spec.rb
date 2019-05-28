@@ -125,13 +125,4 @@ feature 'backup mfa setup on sign up' do
 
     it_behaves_like 'setting up backup mfa on sign up'
   end
-
-  context 'backup code sign up' do
-    def choose_and_confirm_mfa
-      select_2fa_option('backup_code')
-      click_continue
-    end
-
-    it_behaves_like 'setting up backup mfa on sign up'
-  end
 end

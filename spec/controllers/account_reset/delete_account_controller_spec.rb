@@ -5,7 +5,7 @@ describe AccountReset::DeleteAccountController do
 
   describe '#delete' do
     it 'logs a good token to the analytics' do
-      user = create(:user, :signed_up)
+      user = create(:user, :signed_up, :with_backup_code)
       create(:phone_configuration, user: user, phone: '+1 703-555-1214')
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)

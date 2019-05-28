@@ -10,6 +10,7 @@ module RememberDeviceConcern
   end
 
   def check_remember_device_preference
+    print "in here"
     return unless authentication_context?
     return if remember_device_cookie.nil?
     return unless remember_device_cookie.valid_for_user?(

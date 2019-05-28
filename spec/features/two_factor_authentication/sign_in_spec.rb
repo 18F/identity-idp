@@ -252,7 +252,7 @@ feature 'Two Factor Authentication' do
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
-        user = create(:user, :signed_up)
+        user = create(:user, :signed_up, :with_backup_code)
         sign_in_user(user)
 
         3.times do
@@ -620,6 +620,7 @@ feature 'Two Factor Authentication' do
     end
   end
 
+  #TODO clara this defaults to authenticator for some reason now
   describe 'when the user is TOTP enabled and phone enabled' do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :with_authentication_app, :with_phone)
@@ -670,7 +671,7 @@ feature 'Two Factor Authentication' do
 
   describe 'signing in when user does not already have personal key' do
     # For example, when migrating users from another DB
-    it 'displays personal key and redirects to profile' do
+    it 'redirects to set up a backup MFA' do
       user = create(:user, :signed_up)
       UpdateUser.new(user: user, attributes: { encrypted_recovery_code_digest: nil }).call
 
@@ -679,7 +680,7 @@ feature 'Two Factor Authentication' do
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(current_path).to eq account_path
+      expect(current_path).to eq two_factor_options_path
     end
   end
 

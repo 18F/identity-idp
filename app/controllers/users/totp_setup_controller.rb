@@ -29,7 +29,7 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled? && MfaPolicy.new(current_user).sufficient_factors_enabled?
+      if current_user.totp_enabled? && MfaPolicy.new(current_user).more_than_two_factors_enabled?
         process_successful_disable
       end
       redirect_to account_url
@@ -39,7 +39,7 @@ module Users
 
     def track_event
       properties = {
-        user_signed_up: multiple_factors_enabled?,
+        user_signed_up: MfaPolicy.new(current_user).sufficient_factors_enabled?,
         totp_secret_present: new_totp_secret.present?,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)

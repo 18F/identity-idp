@@ -38,13 +38,15 @@ describe 'Remembering a webauthn device' do
   context 'sign up' do
     def remember_device_and_sign_out_user
       mock_webauthn_setup_challenge
-      user = sign_up_with_backup_codes_and_set_password
+      user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
       select_2fa_option('webauthn')
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup
       click_button t('forms.buttons.continue')
+      select_2fa_option('backup_code')
+      click_continue
       first(:link, t('links.sign_out')).click
       user
     end

@@ -6,7 +6,7 @@ feature 'Backup codes' do
   end
 
   context 'with backup codes' do
-    let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+    let(:user) { create(:user, :signed_up, :with_piv_or_cac, :with_backup_code) }
 
     it 'backup code generated and can be regenerated' do
       expect(page).to have_content(t('account.index.backup_codes_exist'))
@@ -22,6 +22,7 @@ feature 'Backup codes' do
     let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
     it 'does not show backup code section' do
+      p page.body
       expect(page).to have_content(t('account.index.backup_codes_no_exist'))
     end
   end
@@ -31,6 +32,20 @@ feature 'Backup codes' do
 
     it 'user can click generate backup codes' do
       click_link t('forms.backup_code.generate'), href: backup_code_setup_path
+    end
+  end
+
+  #todo clara fix here
+  context 'with only backup codes' do
+    let(:user) { create(:user, :with_backup_code) }
+
+    it 'the user is not prompted to set up another MFA upon login' do
+=begin
+      allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
+
+      get :destroy
+      expect(page).to have_content(t('account.index.backup_codes_exist'))
+=end
     end
   end
 end

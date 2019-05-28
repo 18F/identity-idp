@@ -24,12 +24,17 @@ describe 'Remembering a TOTP device' do
 
   context 'sign up' do
     def remember_device_and_sign_out_user
-      user = sign_up_with_backup_codes_and_set_password
+      user = sign_up_with_backup_codes
       user.password = Features::SessionHelper::VALID_PASSWORD
+      click_continue
+      print page.current_url
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       check :remember_device
       click_submit_default
+
+      select_2fa_option('backup_code')
+      click_continue
       first(:link, t('links.sign_out')).click
       user
     end

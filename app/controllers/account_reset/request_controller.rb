@@ -19,7 +19,7 @@ module AccountReset
     private
 
     def confirm_multiple_factors_enabled
-      return if multiple_factors_enabled?
+      return if MfaPolicy.new(current_user).sufficient_factors_enabled?
 
       redirect_to two_factor_options_url
     end
