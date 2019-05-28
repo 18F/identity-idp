@@ -22,6 +22,22 @@ module Users
       end
     end
 
+    def confirm_delete
+      @presenter = ConfirmDeleteEmailPresenter.new(current_user, email_address)
+    end
+
+    def delete
+      result = DeleteUserEmailForm.new(current_user, email_address).submit
+      analytics.track_event(Analytics::EMAIL_DELETION_REQUEST, result.to_h)
+      if result.success?
+        handle_successful_delete
+      else
+        flash[:error] = t('email_addresses.delete.failure')
+      end
+
+      redirect_to account_url
+    end
+
     private
 
     def authorize_user_to_edit_email
@@ -36,6 +52,11 @@ module Users
 
     def user_params
       params.require(:update_user_email_form).permit(:email)
+    end
+
+    def handle_successful_delete
+      flash[:success] = t('email_addresses.delete.success')
+      create_user_event(:email_deleted)
     end
 
     def process_updates

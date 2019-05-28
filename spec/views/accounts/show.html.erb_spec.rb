@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/show.html.slim' do
+describe 'accounts/show.html.erb' do
   let(:user) { create(:user, :signed_up, :with_email) }
   let(:decorated_user) { user.decorate }
 

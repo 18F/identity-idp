@@ -44,11 +44,7 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
         },
         {
           type: 'public-key',
-          alg: -8, // EdDSA
-        },
-        {
-          type: 'public-key',
-          alg: -35, // ECDSA w/SHA-384
+          alg: -257,
         },
       ],
       timeout: 800000,
