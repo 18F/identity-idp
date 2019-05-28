@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190512200157) do
+ActiveRecord::Schema.define(version: 20190524205306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_at", "user_id"], name: "index_backup_code_configurations_on_created_at_and_user_id"
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
   end
 
@@ -160,6 +161,22 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
+  end
+
+  create_table "job_runs", force: :cascade do |t|
+    t.string "host", null: false
+    t.string "pid", null: false
+    t.datetime "finish_time"
+    t.string "job_name", null: false
+    t.string "result"
+    t.string "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["error"], name: "index_job_runs_on_error"
+    t.index ["host"], name: "index_job_runs_on_host"
+    t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
+    t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
+    t.index ["job_name"], name: "index_job_runs_on_job_name"
   end
 
   create_table "otp_requests_trackers", force: :cascade do |t|
@@ -289,10 +306,8 @@ ActiveRecord::Schema.define(version: 20190512200157) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email", limit: 255
-    t.integer "role"
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
-    t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0

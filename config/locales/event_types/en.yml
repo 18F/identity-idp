@@ -10,6 +10,7 @@ en:
     backup_codes_added: Backup codes added
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
+    email_deleted: Email address deleted
     new_personal_key: Personal key changed
     password_changed: Password changed
     personal_key_used: Personal key used to sign in

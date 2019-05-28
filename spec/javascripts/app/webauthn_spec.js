@@ -49,8 +49,7 @@ describe('WebAuthn', () => {
           },
           pubKeyCredParams: [
             { type: 'public-key', alg: -7 },
-            { type: 'public-key', alg: -8 },
-            { type: 'public-key', alg: -35 },
+            { type: 'public-key', alg: -257 },
           ],
           timeout: 800000,
           attestation: 'none',

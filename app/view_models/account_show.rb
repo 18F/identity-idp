@@ -63,6 +63,10 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/manage_action_button'
   end
 
+  def delete_action_partial
+    'accounts/actions/delete_action_button'
+  end
+
   def pii_partial
     if decrypted_pii.present?
       'accounts/pii'
@@ -134,6 +138,10 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/generate_backup_codes'
   end
 
+  def backup_codes_generated_at
+    decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
+  end
+
   def recent_event_partial
     'accounts/event_item'
   end
@@ -157,14 +165,6 @@ class AccountShow # rubocop:disable Metrics/ClassLength
       I18n.t('account.index.piv_cac_enabled')
     else
       I18n.t('account.index.piv_cac_disabled')
-    end
-  end
-
-  def backup_codes_content
-    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
-      I18n.t('account.index.backup_codes_exist')
-    else
-      I18n.t('account.index.backup_codes_no_exist')
     end
   end
 
