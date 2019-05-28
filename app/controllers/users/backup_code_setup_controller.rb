@@ -20,7 +20,6 @@ module Users
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
       revoke_remember_device
-      #todo clara wat
       redirect_to two_2fa_setup
     end
 

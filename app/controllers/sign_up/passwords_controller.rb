@@ -12,12 +12,10 @@ module SignUp
         analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
         store_sp_metadata_in_session unless sp_request_id.empty?
 
-        if result.success?
-          session[:signing_up] = true
-          process_successful_password_creation
-        else
-          process_unsuccessful_password_creation
-        end
+        process_unsuccessful_password_creation unless result.success?
+
+        session[:signing_up] = true
+        process_successful_password_creation
       end
     end
 

@@ -620,7 +620,6 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  #TODO clara this defaults to authenticator for some reason now
   describe 'when the user is TOTP enabled and phone enabled' do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :with_authentication_app, :with_phone)

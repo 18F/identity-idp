@@ -128,7 +128,6 @@ feature 'Changing authentication factor' do
         user = sign_in_and_2fa_user
         old_phone = MfaContext.new(user).phone_configurations.first.phone
 
-
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
           visit manage_phone_path
           complete_2fa_confirmation_without_entering_otp
