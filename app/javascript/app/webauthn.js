@@ -46,10 +46,6 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
           type: 'public-key',
           alg: -257,
         },
-        {
-          type: 'public-key',
-          alg: -65536,
-        },
       ],
       timeout: 800000,
       attestation: 'none',
