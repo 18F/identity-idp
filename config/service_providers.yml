@@ -131,6 +131,7 @@ development:
     return_to_sp_url: 'http://localhost:3003'
     attribute_bundle:
       - email
+    ial: 2
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
     friendly_name: 'Dashboard'
