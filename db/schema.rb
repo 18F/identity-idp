@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190524205306) do
+ActiveRecord::Schema.define(version: 20190529120309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20190524205306) do
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_at", "user_id"], name: "index_backup_code_configurations_on_created_at_and_user_id"
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
+    t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
   end
 
   create_table "devices", force: :cascade do |t|
