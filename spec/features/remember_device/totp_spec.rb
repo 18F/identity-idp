@@ -27,13 +27,17 @@ describe 'Remembering a TOTP device' do
       user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
 
+      select_2fa_option('sms')
+      fill_in :user_phone_form_phone, with: '2025551212'
+      click_send_security_code
+      check :remember_device
+      click_submit_default
+
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       check :remember_device
       click_submit_default
 
-      select_2fa_option('backup_code')
-      click_continue
       first(:link, t('links.sign_out')).click
       user
     end
