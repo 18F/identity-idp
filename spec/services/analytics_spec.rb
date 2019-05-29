@@ -132,7 +132,7 @@ describe Analytics do
 
       client_id = analytics.grab_ga_client_id
 
-      expect(client_id).to eq '1142002911'
+      expect(client_id).to eq '3333333333.1142002911'
     end
   end
 end
