@@ -20,7 +20,7 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 2
   end
 
-  def sufficient_factors_enabled?()
+  def sufficient_factors_enabled?
     mfa_user.enabled_mfa_methods_count > 1 ||
       (mfa_user.backup_code_configurations != BackupCodeConfiguration.none &&
        !signing_up)
