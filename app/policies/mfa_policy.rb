@@ -1,7 +1,6 @@
 class MfaPolicy
-  def initialize(user, is_signing_up = false)
+  def initialize(user)
     @mfa_user = MfaContext.new(user)
-    @signing_up = is_signing_up
   end
 
   def no_factors_enabled?
@@ -22,8 +21,7 @@ class MfaPolicy
 
   def sufficient_factors_enabled?
     mfa_user.enabled_mfa_methods_count > 1 ||
-      (mfa_user.backup_code_configurations != BackupCodeConfiguration.none &&
-       !signing_up)
+      (mfa_user.backup_code_configurations != BackupCodeConfiguration.none)
   end
 
   def unphishable?
@@ -34,5 +32,4 @@ class MfaPolicy
   private
 
   attr_reader :mfa_user
-  attr_reader :signing_up
 end

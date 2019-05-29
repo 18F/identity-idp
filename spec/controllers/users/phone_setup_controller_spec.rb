@@ -167,28 +167,4 @@ describe Users::PhoneSetupController do
       )
     end
   end
-
-  describe '#authorize_user' do
-    context 'when the user is fully authenticated and phone enabled' do
-      it 'redirects to account url' do
-        user = build_stubbed(:user, :signed_up, :with_authentication_app)
-        stub_sign_in(user)
-
-        get :index
-
-        expect(response).to redirect_to(account_url)
-      end
-    end
-
-    context 'when the user is two_factor_enabled but not fully authenticated' do
-      it 'prompts to enter OTP' do
-        user = build(:user, :signed_up)
-        stub_sign_in_before_2fa(user)
-
-        get :index
-
-        expect(response).to redirect_to(user_two_factor_authentication_url)
-      end
-    end
-  end
 end
