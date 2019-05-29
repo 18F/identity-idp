@@ -31,8 +31,9 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
                   br
                   br
         .center.mt1
-          = link_to t('forms.backup_code.download'), backup_code_download_path,
-            class: 'text-decoration-none ico btn-border ico-download'
+          - if desktop_device?
+            = link_to t('forms.backup_code.download'), backup_code_download_path,
+              class: 'text-decoration-none ico btn-border ico-download'
           = link_to t('forms.backup_code.print'), '#',
             data: { print: true },
             class: 'ico ico-print btn-border ml2 text-decoration-none'
