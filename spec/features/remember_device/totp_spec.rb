@@ -30,7 +30,6 @@ describe 'Remembering a TOTP device' do
       select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '2025551212'
       click_send_security_code
-      check :remember_device
       click_submit_default
 
       select_2fa_option('auth_app')
