@@ -12,10 +12,11 @@ module SignUp
         analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
         store_sp_metadata_in_session unless sp_request_id.empty?
 
-        process_unsuccessful_password_creation unless result.success?
-
-        session[:signing_up] = true
-        process_successful_password_creation
+        if result.success?
+          process_successful_password_creation
+        else
+          process_unsuccessful_password_creation
+        end
       end
     end
 
@@ -68,6 +69,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      session[:signing_up] = true
       redirect_to after_confirmation_url_for(@user)
     end
   end
