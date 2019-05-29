@@ -97,7 +97,6 @@ feature 'PIV/CAC Management' do
           MfaContext.new(user).phone_configurations.clear
           sign_in_and_2fa_user(user)
           visit account_path
-          print MfaContext.new(user).enabled_mfa_methods_count.to_s
           click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
           expect(page).to have_current_path(setup_piv_cac_path)
