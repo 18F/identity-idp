@@ -1,16 +1,29 @@
 require 'rails_helper'
 
 feature 'sign up with backup code' do
+  include DocAuthHelper
+
   it 'works' do
     sign_up_and_set_password
 
     select_2fa_option('backup_code')
 
+    expect(page).to have_link(t('forms.backup_code.download'))
     expect(current_path).to eq backup_code_setup_path
 
     click_on 'Continue'
 
     expect(current_path).to eq two_factor_options_path
+  end
+
+  it 'does not show download button on a mobile device' do
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+
+    sign_up_and_set_password
+
+    select_2fa_option('backup_code')
+
+    expect(page).to_not have_link(t('forms.backup_code.download'))
   end
 
   it 'works for each code and refreshes the codes on the last one' do
