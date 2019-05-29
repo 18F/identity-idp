@@ -1,0 +1,28 @@
+<% title @presenter.title %>
+  <h1 class="h3 my0"><%= ::Temple::Utils.escape_html((@presenter.heading)) %>
+  </h1>
+  <p class="mt-tiny mb3"><%= ::Temple::Utils.escape_html((@presenter.info)) %>
+  </p>
+  <%= simple_form_for(@two_factor_options_form, html: { autocomplete: 'off', role: 'form' }, method: :patch, url: two_factor_options_path) %>
+  <div class="mb3">
+    <fieldset class="m0 p0 border-none">
+      <legend class="mb2 serif bold"><%= ::Temple::Utils.escape_html((@presenter.label)) %></legend>
+      <%= @presenter.options.each_with_index do |option, index| %>
+      <label class="btn-border col-12 mb2 bg-lightest-blue" for="two_factor_options_form_selection_<%= ::Temple::Utils.escape_html((option.type)) %>">
+        <div class="radio">
+          <%= ::Temple::Utils.escape_html((radio_button_tag('two_factor_options_form[selection]', option.type, index.zero?))) %>
+          <span class="indicator mt-tiny"></span>
+          <span class="blue bold fs-20p"><%= ::Temple::Utils.escape_html((option.label)) %></span>
+          <div class="regular gray-dark fs-10p mt0 mb-tiny"><%= ::Temple::Utils.escape_html((option.info)) %></div>
+        </div>
+      </label>
+    <% end %>
+  </fieldset>
+</div>
+<div>
+  <%= ::Temple::Utils.escape_html((f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide mb1')) %>
+</div>
+<% end %>
+<div class="mt2 pt1 border-top">
+<%= ::Temple::Utils.escape_html((render 'shared/cancel', link: destroy_user_session_path)) %>
+</div>
