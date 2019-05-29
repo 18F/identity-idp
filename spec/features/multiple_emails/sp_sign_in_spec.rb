@@ -14,7 +14,7 @@ feature 'signing into an SP with multiple emails enabled' do
     emails.each do |email|
       visit_idp_from_oidc_sp
       signin(email, user.password)
-      print page.current_url
+
       click_submit_default
       click_continue if current_path == sign_up_completed_path
 

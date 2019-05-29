@@ -8,7 +8,7 @@ feature 'sign up with backup code' do
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
     click_send_security_code
-    p page.body
+
     click_submit_default
 
     expect(current_path).to eq two_factor_options_path
