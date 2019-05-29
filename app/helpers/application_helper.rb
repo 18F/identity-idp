@@ -72,4 +72,8 @@ module ApplicationHelper
       t('links.cancel')
     end
   end
+
+  def desktop_device?
+    DeviceDetector.new(request.user_agent)&.device_type == 'desktop'
+  end
 end
