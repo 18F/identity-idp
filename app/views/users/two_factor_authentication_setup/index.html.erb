@@ -1,6 +1,5 @@
 <% title @presenter.title %>
-  <h1 class="h3 my0"><%= ::Temple::Utils.escape_html((@presenter.heading)) %>
-  </h1>
+  <h1 class="h3 my0"><%= ::Temple::Utils.escape_html((@presenter.heading)) %></h1>
   <p class="mt-tiny mb3"><%= ::Temple::Utils.escape_html((@presenter.info)) %>
   </p>
   <%= simple_form_for(@two_factor_options_form, html: { autocomplete: 'off', role: 'form' }, method: :patch, url: two_factor_options_path) %>
