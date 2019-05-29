@@ -9,12 +9,12 @@ feature 'webauthn sign up' do
 
   def visit_webauthn_setup
     user
-    select_2fa_option('backup_code')
-    click_continue
     select_2fa_option('webauthn')
   end
 
   def expect_webauthn_setup_success
+    select_2fa_option('backup_code')
+    click_continue
     expect(page).to have_current_path(account_path)
   end
 

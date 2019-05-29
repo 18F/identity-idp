@@ -19,6 +19,7 @@ module Features
     end
 
     def select_2fa_option(option)
+      print page.current_url
       find("label[for='two_factor_options_form_selection_#{option}']").click
       click_on t('forms.buttons.continue')
     end
