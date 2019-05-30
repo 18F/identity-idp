@@ -7,7 +7,7 @@ feature 'signing into an SP with multiple emails enabled' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
     user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.email_addresses.map(&:email)
+    emails = user.reload.email_addresses.map(&:email)
 
     expect(emails.count).to eq(2)
 
@@ -28,7 +28,7 @@ feature 'signing into an SP with multiple emails enabled' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
     user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.email_addresses.map(&:email)
+    emails = user.reload.email_addresses.map(&:email)
 
     expect(emails.count).to eq(2)
 
