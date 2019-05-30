@@ -29,7 +29,9 @@ end
 
 shared_examples 'signing in as LOA1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
-    loa1_sign_in_with_personal_key_goes_to_sp(sp)
+    Timecop.freeze Time.zone.now do
+      loa1_sign_in_with_personal_key_goes_to_sp(sp)
+    end
   end
 end
 
