@@ -123,10 +123,10 @@ es:
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
-    two_factor_recovery_choice: Añadir un método de autenticación de copia de seguridad
-    two_factor_recovery_choice_intro: Agregar múltiples métodos de autenticación a
-      su cuenta le garantiza que podrá acceder a su cuenta cuando no tenga acceso
-      a su primera opción de autenticación.
+    two_factor_recovery_choice: Añadir otro método
+    two_factor_recovery_choice_intro: Agregar otro método de autenticación hace
+       seguro que puede iniciar sesión en su cuenta incluso si pierde o no tiene su
+       principal
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad
