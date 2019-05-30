@@ -29,13 +29,14 @@ end
 
 shared_examples 'signing in as LOA1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
-    Timecop.freeze Time.zone.now do
-      loa1_sign_in_with_personal_key_goes_to_sp(sp)
-    end
+    loa1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
 shared_examples 'visiting 2fa when fully authenticated' do |sp|
+  before { Timecop.freeze Time.zone.now }
+  after { Timecop.return }
+
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     loa1_sign_in_with_personal_key_goes_to_sp(sp)
 
@@ -53,6 +54,9 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as LOA3 with personal key' do |sp|
+  before { Timecop.freeze Time.zone.now }
+  after { Timecop.return }
+
   it 'redirects to the SP after acknowledging new personal key', :email do
     stub_twilio_service
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
@@ -79,6 +83,9 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
 end
 
 shared_examples 'signing in as LOA1 with personal key after resetting password' do |sp|
+  before { Timecop.freeze Time.zone.now }
+  after { Timecop.return }
+
   it 'redirects to SP', email: true do
     user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
@@ -211,20 +218,22 @@ def personal_key_for_loa3_user(user, pii)
 end
 
 def loa1_sign_in_with_personal_key_goes_to_sp(sp)
-  user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
-  old_personal_key = PersonalKeyGenerator.new(user).create
-  visit_idp_from_sp_with_loa1(sp)
-  fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
-  choose_another_security_option('personal_key')
-  enter_personal_key(personal_key: old_personal_key)
-  click_submit_default
-  click_continue
+  Timecop.freeze Time.zone.now do
+    user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+    old_personal_key = PersonalKeyGenerator.new(user).create
+    visit_idp_from_sp_with_loa1(sp)
+    fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
+    choose_another_security_option('personal_key')
+    enter_personal_key(personal_key: old_personal_key)
+    click_submit_default
+    click_continue
 
-  expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_url).to eq @saml_authn_request if sp == :saml
 
-  return unless sp == :oidc
+    return unless sp == :oidc
 
-  redirect_uri = URI(current_url)
+    redirect_uri = URI(current_url)
 
-  expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
 end
