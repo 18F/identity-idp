@@ -30,6 +30,8 @@ module TwoFactorAuthentication
          !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
+
+      redirect_to phone_setup_url
     end
 
     def phone_enabled?
