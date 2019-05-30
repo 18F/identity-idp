@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AccountReset::RequestController do
-  let(:user) { create(:user, :with_authentication_app, :with_backup_code, :with_email) }
+  let(:user) { create(:user, :with_authentication_app, :with_email) }
   describe '#show' do
     it 'renders the page' do
       stub_sign_in_before_2fa(user)
