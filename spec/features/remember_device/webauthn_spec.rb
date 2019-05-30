@@ -52,7 +52,6 @@ describe 'Remembering a webauthn device' do
       mock_press_button_on_hardware_key_on_setup
       click_button t('forms.buttons.continue')
 
-
       first(:link, t('links.sign_out')).click
       user
     end
