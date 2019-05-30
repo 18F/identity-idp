@@ -31,7 +31,7 @@ class Analytics
 
   def grab_ga_client_id
     return if ga_cookie.blank?
-    ga_client_id = ga_cookie.match('GA1\.\d\.\d+\.(\d+)')
+    ga_client_id = ga_cookie.match('GA1\.\d\.(\d+\.\d+)')
     return ga_client_id[1] if ga_client_id
   end
 
