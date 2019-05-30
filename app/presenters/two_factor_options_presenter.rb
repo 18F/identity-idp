@@ -38,8 +38,6 @@ class TwoFactorOptionsPresenter
     no_factors_enabled? ? '' : 'recovery_'
   end
 
-
-
   def phone_options
     if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
       [
