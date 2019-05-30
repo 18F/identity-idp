@@ -31,7 +31,6 @@ shared_examples 'preventing backup mfa bypass' do
     expect(current_path).to eq(two_factor_options_path)
 
     set_up_2fa_with_valid_phone
-    click_submit_default
 
     expect(current_path).to eq(account_path)
   end
@@ -93,7 +92,6 @@ describe 'attempting to bypass backup mfa setup' do
       )
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       mock_webauthn_verification_challenge
-      complete_mfa
     end
 
     def complete_mfa
