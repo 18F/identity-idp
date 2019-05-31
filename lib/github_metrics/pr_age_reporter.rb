@@ -9,8 +9,9 @@ module GithubMetrics
     def call
       numerator = 0
       sprint_pull_requests.each do |pr|
-        numerator += pr.ready_for_review_time
-        puts "'#{pr.title}' under review for #{seconds_to_hours(pr.ready_for_review_time)} hours"
+        ready_for_review_time = pr.ready_for_review_time
+        numerator += ready_for_review_time
+        puts "'#{pr.title}' under review for #{seconds_to_hours(ready_for_review_time)} hours"
       end
       puts "Average: #{seconds_to_hours(numerator / sprint_pull_requests.count.to_f)} hours"
     end
