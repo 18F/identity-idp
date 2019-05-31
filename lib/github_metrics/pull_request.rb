@@ -46,7 +46,7 @@ module GithubMetrics
       merged_at || closed_at || Time.now
     end
 
-    def open_time
+    def ready_for_review_time
       done_at_or_current_date - ready_for_review_at
     end
 
