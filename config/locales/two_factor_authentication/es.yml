@@ -124,9 +124,7 @@ es:
       webauthn: Clave de seguridad
       webauthn_info: Use una clave de seguridad para proteger su cuenta
     two_factor_recovery_choice: Añadir otro método
-    two_factor_recovery_choice_intro: Agregar otro método de autenticación hace
-       seguro que puede iniciar sesión en su cuenta incluso si pierde o no tiene su
-       principal
+    two_factor_recovery_choice_intro: Agregar otro método de autenticación hace seguro que puede iniciar sesión en su cuenta incluso si pierde o no tiene su principal
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad
