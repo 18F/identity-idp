@@ -41,6 +41,21 @@ feature 'adding email address' do
       expect(page).to have_current_path(root_path)
       expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
     end
+
+    it 'notifies user they are already confirmed if the user does not have an active session' do
+      user = create(:user, :signed_up)
+      sign_in_user_and_add_email(user)
+
+      Capybara.reset_session!
+
+      email_to_click_on = last_email_sent
+      click_on_link_in_confirmation_email(email_to_click_on)
+      click_on_link_in_confirmation_email(email_to_click_on)
+
+      expect(page).to have_current_path(root_path)
+      action = t('devise.confirmations.sign_in')
+      expect(page).to have_content(t('devise.confirmations.already_confirmed', action: action))
+    end
   end
 
   def sign_in_user_and_add_email(user)
@@ -61,8 +76,8 @@ feature 'adding email address' do
     expect(page).to have_content email
   end
 
-  def click_on_link_in_confirmation_email
-    open_last_email
+  def click_on_link_in_confirmation_email(email_to_click_on = last_email_sent)
+    set_current_email(email_to_click_on)
 
     click_email_link_matching(%r{add/email/confirm\?confirmation_token})
   end
