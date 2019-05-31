@@ -119,9 +119,8 @@ en:
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
     two_factor_recovery_choice: Add another method
-    two_factor_recovery_choice_intro: Adding another authentication method makes
-      sure you can sign in to your account even if you lose or don't have your
-      main one.
+    two_factor_recovery_choice_intro: Adding another authentication method makes sure
+      you can sign in to your account even if you lose or don't have your main one.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
