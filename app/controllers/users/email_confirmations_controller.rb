@@ -54,7 +54,6 @@ module Users
     end
 
     def process_already_confirmed_user
-      raise "2"
       flash[:error] = message_for_already_confirmed_user
       redirect_to current_user ? account_url : root_url
     end
