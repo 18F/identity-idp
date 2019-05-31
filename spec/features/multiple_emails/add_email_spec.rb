@@ -52,7 +52,7 @@ feature 'adding email address' do
     expect(page).to have_current_path(add_email_path)
 
     expect(UserMailer).to receive(:add_email).
-      with(user, email, anything).and_call_original
+      with(user, anything, anything).and_call_original
 
     fill_in 'Email', with: email
     click_button t('forms.buttons.submit.default')
