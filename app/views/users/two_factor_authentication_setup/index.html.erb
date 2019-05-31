@@ -2,10 +2,12 @@
   <div class="alert alert-success" role="alert">Your primary authentication method has been successfully set up.</div>
 <% end %>
 <% title @presenter.title %>
-  <h1 class="h3 my0"><%= @presenter.heading %></h1>
-  <p class="mt-tiny mb3"><%= @presenter.info %>
-  </p>
-  <%= simple_form_for @two_factor_options_form, html: { autocomplete: 'off', role: 'form' }, method: :patch, url: two_factor_options_path do |f| %>
+<h1 class="h3 my0"><%= @presenter.heading %></h1>
+<p class="mt-tiny mb3"><%= @presenter.info %></p>
+  <%= simple_form_for @two_factor_options_form,
+                      html: { autocomplete: 'off', role: 'form' },
+                      method: :patch,
+                      url: two_factor_options_path do |f| %>
   <div class="mb3">
     <fieldset class="m0 p0 border-none">
       <legend class="mb2 serif bold"><%= @presenter.label %></legend>
