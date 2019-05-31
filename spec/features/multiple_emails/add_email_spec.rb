@@ -56,6 +56,12 @@ feature 'adding email address' do
       action = t('devise.confirmations.sign_in')
       expect(page).to have_content(t('devise.confirmations.already_confirmed', action: action))
     end
+
+    it 'routes to root with a bad token' do
+      visit add_email_path(confirmation_token: 'foo')
+
+      expect(page).to have_current_path(root_path)
+    end
   end
 
   def sign_in_user_and_add_email(user)

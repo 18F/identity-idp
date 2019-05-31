@@ -45,14 +45,6 @@ module Users
       redirect_to root_url
     end
 
-    def unsuccessful_confirmation_error
-      if @user.confirmation_period_expired?
-        @user.decorate.confirmation_period_expired_error
-      else
-        t('errors.messages.confirmation_invalid_token')
-      end
-    end
-
     def process_already_confirmed_user
       flash[:error] = message_for_already_confirmed_user
       redirect_to current_user ? account_url : root_url
