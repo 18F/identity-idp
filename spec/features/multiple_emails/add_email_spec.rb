@@ -22,7 +22,7 @@ feature 'adding email address' do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
     end
 
-    it 'allows the user to add an email if the user has an active session' do
+    it 'allows the user to add an email and confirm with an active session' do
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
       click_on_link_in_confirmation_email
@@ -31,7 +31,7 @@ feature 'adding email address' do
       expect(page).to have_content(t('devise.confirmations.confirmed'))
     end
 
-    it 'allows the user to add an email if the user does not have an active session' do
+    it 'allows the user to add an email and confirm without an active session' do
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
 
@@ -42,7 +42,7 @@ feature 'adding email address' do
       expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
     end
 
-    it 'notifies user they are already confirmed if the user does not have an active session' do
+    it 'notifies user they are already confirmed without an active session' do
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
 
