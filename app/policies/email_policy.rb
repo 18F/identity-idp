@@ -9,6 +9,10 @@ class EmailPolicy
     true
   end
 
+  def can_add_email?
+    user.email_address_count < Figaro.env.max_emails_per_account.to_i
+  end
+
   private
 
   def last_confirmed_email_address?

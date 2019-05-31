@@ -35,11 +35,22 @@ fr:
         la demande sera traitée dans les 24 heures.</strong><br><br>Si vous ne voulez
         pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
       subject: Supprimer votre compte
+    add_email:
+      footer: Ce lien expirera dans %{confirmation_period}.
+      header: Merci d'avoir ajouté un email. S'il vous plaît cliquez sur le lien ci-dessous
+        ou copiez et collez le lien en entier dans votre navigateur.
+      subject: Confirmez votre email
     contact_link_text: communiquez avec nous
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}
       subject: Verify your identity on a desktop computer
+    email_added:
+      header: Une nouvelle adresse e-mail a été ajoutée à votre profil login.gov.
+      help: Si vous n'avez pas apporté cette modification, connectez-vous à votre
+        profil et gérez vos adresses e-mail. Nous vous recommandons de changer également
+        votre mot de passe.
+      subject: Nouvelle adresse email ajoutée
     email_changed:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
         le %{help_link} de %{app} ou %{contact_link}.

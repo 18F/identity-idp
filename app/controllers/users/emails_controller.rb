@@ -1,7 +1,25 @@
+# :reek:RepeatedConditional
 module Users
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
-    before_action :authorize_user_to_edit_email
+    before_action :authorize_user_to_edit_email, except: %i[add show verify]
+
+    def show
+      @register_user_email_form = AddUserEmailForm.new
+    end
+
+    def add
+      @register_user_email_form = AddUserEmailForm.new
+
+      result = @register_user_email_form.submit(current_user, permitted_params)
+
+      if result.success?
+        process_successful_creation
+      else
+        flash.now[:error] = 'error'
+        redirect_to
+      end
+    end
 
     def edit
       @update_user_email_form = UpdateUserEmailForm.new(current_user, email_address)
@@ -38,6 +56,20 @@ module Users
       redirect_to account_url
     end
 
+    def verify
+      if session[:email].blank?
+        redirect_to add_email_url
+      else
+        @resend_confirmation = params[:resend].present?
+
+        email = session.delete(:email)
+        @register_user_email_form = RegisterUserEmailForm.new
+        @register_user_email_form.user.email = email
+
+        render :verify, locals: { email: email }
+      end
+    end
+
     private
 
     def authorize_user_to_edit_email
@@ -65,6 +97,18 @@ module Users
       end
 
       redirect_to account_url
+    end
+
+    def process_successful_creation
+      resend_confirmation = params[:user][:resend]
+      session[:email] = @register_user_email_form.email
+
+      redirect_to add_email_verify_email_url(resend: resend_confirmation,
+                                             request_id: permitted_params[:request_id])
+    end
+
+    def permitted_params
+      params.require(:user).permit(:email)
     end
   end
 end

@@ -1,0 +1,16 @@
+p.lead == t('user_mailer.email_added.header')
+
+table.spacer
+  tbody
+    tr
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
+      | &nbsp;
+
+p == t('.help',
+        app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'),
+        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+        contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url))
