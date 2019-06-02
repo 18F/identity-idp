@@ -26,10 +26,6 @@ class AddEmailConfirmTokenValidator
     }
   end
 
-  def user_valid?
-    user.errors.empty?
-  end
-
   def confirmation_token; end
 
   def token_found

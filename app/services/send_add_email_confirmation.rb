@@ -13,20 +13,17 @@ class SendAddEmailConfirmation
   private
 
   def confirmation_token
-    return email_address.confirmation_token if valid_confirmation_token_exists?
-    @token ||= Devise.friendly_token
+    email_address.confirmation_token
   end
 
   def confirmation_sent_at
-    return email_address.confirmation_sent_at if valid_confirmation_token_exists?
-    @confirmation_sent_at ||= Time.zone.now
+    email_address.confirmation_sent_at
   end
 
   def confirmation_period_expired?
     @confirmation_period_expired ||= user.confirmation_period_expired?
   end
 
-  # :reek:DuplicateMethodCall
   def email_address
     @email_address ||= begin
       user.email_addresses.take
