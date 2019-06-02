@@ -3,6 +3,7 @@ module Users
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify]
+    before_action :check_max_emails_per_account, only: %i[show add]
 
     def show
       @register_user_email_form = AddUserEmailForm.new
@@ -108,6 +109,11 @@ module Users
 
     def permitted_params
       params.require(:user).permit(:email)
+    end
+
+    def check_max_emails_per_account
+      return if EmailPolicy.new(current_user).can_add_email?
+      redirect_to account_url
     end
   end
 end

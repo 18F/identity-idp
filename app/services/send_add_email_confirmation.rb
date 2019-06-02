@@ -29,7 +29,6 @@ class SendAddEmailConfirmation
   # :reek:DuplicateMethodCall
   def email_address
     @email_address ||= begin
-      # handle_multiple_email_address_error if user.email_addresses.count > 1
       user.email_addresses.take
     end
   end
@@ -52,8 +51,4 @@ class SendAddEmailConfirmation
       confirmation_token,
     ).deliver_later
   end
-
-  # def handle_multiple_email_address_error
-  #   raise 'sign up user has multiple email address records'
-  # end
 end

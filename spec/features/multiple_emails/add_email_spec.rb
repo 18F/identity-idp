@@ -90,6 +90,24 @@ feature 'adding email address' do
       expect(page).to have_current_path(root_path)
     end
 
+    it 'does not show add email button when max emails is reached' do
+      allow(Figaro.env).to receive(:max_emails_per_account).and_return('1')
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+
+      visit account_path
+      expect(page).to_not have_link(t('account.index.email_add'), href: add_email_path)
+    end
+
+    it 'does not allow the user to add an email when max emails is reached' do
+      allow(Figaro.env).to receive(:max_emails_per_account).and_return('1')
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+
+      visit add_email_path
+      expect(page).to have_current_path(account_path)
+    end
+
     it 'stays on form with bad email' do
       user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
