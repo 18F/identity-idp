@@ -8,15 +8,9 @@
     | #{t('notices.signed_up_and_confirmed.first_paragraph_start')}
       <strong>#{email}</strong>
       #{t('notices.signed_up_and_confirmed.first_paragraph_end')}
-  - if @resend_confirmation
-    .alert.alert-thumb role="alert"
-      = t('notices.resend_confirmation_email.success')
-  = simple_form_for(@register_user_email_form, url: sign_up_register_path,
-          html: { class: 'mb2' }) do |f|
-    = f.input :email, as: :hidden, wrapper: false
-    = f.input :resend, as: :hidden, wrapper: false
-    | #{t('notices.signed_up_and_confirmed.no_email_sent_explanation_start')}
-    = f.button :submit, t('links.resend'), class: 'btn-link ml-tiny'
+  = t('notices.signed_up_and_confirmed.no_email_sent_explanation_start')
+  = button_to t('links.resend'), add_email_resend_path, method: :post, class: 'btn btn-link ml1',
+    form_class: 'inline-block'
   - link = link_to t('notices.use_diff_email.link'),
           add_email_path
   p = t('notices.use_diff_email.text_html', link: link)

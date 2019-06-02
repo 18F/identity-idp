@@ -129,6 +129,15 @@ feature 'adding email address' do
 
       expect(page).to have_current_path(add_email_path)
     end
+
+    it 'allows user to resend add email link' do
+      user = create(:user, :signed_up)
+      sign_in_user_and_add_email(user)
+
+      expect(UserMailer).to receive(:add_email).
+        with(user, anything, anything).and_call_original
+      click_button t('links.resend')
+    end
   end
 
   def sign_in_user_and_add_email(user)

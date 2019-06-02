@@ -16,10 +16,6 @@ class AddUserEmailForm
     @user ||= User.new
   end
 
-  # def resend
-  #   'true'
-  # end
-
   def submit(user, params)
     @user = user
     @email_address = new_email_address(params)

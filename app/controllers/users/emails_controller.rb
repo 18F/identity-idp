@@ -2,7 +2,7 @@
 module Users
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
-    before_action :authorize_user_to_edit_email, except: %i[add show verify]
+    before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
 
     def show
@@ -19,6 +19,13 @@ module Users
       else
         render :show
       end
+    end
+
+    def resend
+      email_address = EmailAddress.find_with_email(session_email)
+      SendAddEmailConfirmation.new(current_user).call(email_address)
+      flash[:success] = t('notices.resend_confirmation_email.success')
+      redirect_to add_email_verify_email_url
     end
 
     def edit
@@ -57,12 +64,10 @@ module Users
     end
 
     def verify
-      if session[:email].blank?
+      if session_email.blank?
         redirect_to add_email_url
       else
-        @resend_confirmation = params[:resend].present?
-
-        email = session.delete(:email)
+        email = session_email
         @register_user_email_form = RegisterUserEmailForm.new
         @register_user_email_form.user.email = email
 
@@ -105,6 +110,10 @@ module Users
 
       redirect_to add_email_verify_email_url(resend: resend_confirmation,
                                              request_id: permitted_params[:request_id])
+    end
+
+    def session_email
+      session[:email]
     end
 
     def permitted_params

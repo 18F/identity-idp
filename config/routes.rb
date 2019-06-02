@@ -155,6 +155,7 @@ Rails.application.routes.draw do
     get '/add/email/confirm' => 'users/email_confirmations#create',
         as: :add_email_confirmation
     get '/add/email/verify_email' => 'users/emails#verify', as: :add_email_verify_email
+    post '/add/email/resend' => 'users/emails#resend'
     get '/add/phone' => 'users/phones#add'
     post '/add/phone' => 'users/phones#create'
     get '/manage/phone' => 'users/phones#edit'
