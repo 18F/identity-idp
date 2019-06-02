@@ -28,7 +28,7 @@ class AddUserEmailForm
     if valid_form?
       process_successful_submission
     else
-      @success = @allow && process_errors
+      @success = false
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -62,24 +62,6 @@ class AddUserEmailForm
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
     }.merge(@recaptcha_h)
-  end
-
-  def process_errors
-    # To prevent discovery of existing emails, we check to see if the email is
-    # already taken and if so, we act as if the add email was successful.
-    if email_taken? && user_unconfirmed?
-      SendAddEmailConfirmation.new(existing_user).call
-      true
-    elsif email_taken?
-      UserMailer.signup_with_your_email(email).deliver_later
-      true
-    else
-      false
-    end
-  end
-
-  def user_unconfirmed?
-    existing_user.email_addresses.none?(&:confirmed?)
   end
 
   def existing_user
