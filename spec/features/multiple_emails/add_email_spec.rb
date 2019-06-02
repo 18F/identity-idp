@@ -138,6 +138,19 @@ feature 'adding email address' do
         with(user, anything, anything).and_call_original
       click_button t('links.resend')
     end
+
+    it 'invalidates the confirmation email/token after 24 hours' do
+      user = create(:user, :signed_up)
+      sign_in_user_and_add_email(user)
+
+      Capybara.reset_session!
+
+      Timecop.travel 25.hours.from_now do
+        click_on_link_in_confirmation_email
+        expect(page).to have_current_path(root_path)
+        expect(page).to_not have_content(t('devise.confirmations.confirmed_but_sign_in'))
+      end
+    end
   end
 
   def sign_in_user_and_add_email(user)
