@@ -5,7 +5,8 @@ class SendAddEmailConfirmation
     @user = user
   end
 
-  def call
+  def call(email_address)
+    @email_address = email_address
     update_email_address_record
     send_confirmation_email
   end
@@ -20,19 +21,7 @@ class SendAddEmailConfirmation
     email_address.confirmation_sent_at
   end
 
-  def confirmation_period_expired?
-    @confirmation_period_expired ||= user.confirmation_period_expired?
-  end
-
-  def email_address
-    @email_address ||= begin
-      user.email_addresses.take
-    end
-  end
-
-  def valid_confirmation_token_exists?
-    email_address.confirmation_token.present? && !confirmation_period_expired?
-  end
+  attr_reader :email_address
 
   def update_email_address_record
     email_address.update!(
