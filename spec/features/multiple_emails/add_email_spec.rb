@@ -120,7 +120,14 @@ feature 'adding email address' do
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_current_path(add_email_path)
-      # expect(page).to have_content email
+    end
+
+    it 'does not show verify screen without an email in session from add email' do
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+      visit add_email_verify_email_path
+
+      expect(page).to have_current_path(add_email_path)
     end
   end
 
