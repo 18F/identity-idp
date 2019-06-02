@@ -89,6 +89,21 @@ feature 'adding email address' do
 
       expect(page).to have_current_path(root_path)
     end
+
+    it 'stays on form with bad email' do
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('account.index.email_add')
+
+      expect(page).to have_current_path(add_email_path)
+
+      fill_in 'Email', with: 'foo'
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_current_path(add_email_path)
+      # expect(page).to have_content email
+    end
   end
 
   def sign_in_user_and_add_email(user)

@@ -16,8 +16,7 @@ module Users
       if result.success?
         process_successful_creation
       else
-        flash.now[:error] = 'error'
-        redirect_to
+        render :show
       end
     end
 
