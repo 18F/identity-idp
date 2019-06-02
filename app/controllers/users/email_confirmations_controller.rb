@@ -2,7 +2,7 @@
 module Users
   class EmailConfirmationsController < ApplicationController
     def create
-      if email_address&.confirmed_at
+      if email_address && already_confirmed(email_address.email)
         process_already_confirmed_user
       else
         validate_token
@@ -50,9 +50,16 @@ module Users
       redirect_to current_user ? account_url : root_url
     end
 
+    def already_confirmed(email)
+      @already_confirmed ||= EmailAddress.where(
+        'email_fingerprint=? AND confirmed_at IS NOT NULL',
+        Pii::Fingerprinter.fingerprint(email),
+      ).first
+    end
+
     def message_for_already_confirmed_user
       if current_user
-        if current_user.id == email_address.user.id
+        if current_user.id == @already_confirmed.user.id
           t('devise.confirmations.already_confirmed', action: nil)
         else
           t('devise.confirmations.confirmed_but_remove_from_other_account')

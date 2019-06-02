@@ -57,6 +57,33 @@ feature 'adding email address' do
       expect(page).to have_content(t('devise.confirmations.already_confirmed', action: action))
     end
 
+    it 'notifies user they are already confirmed with an active session' do
+      user = create(:user, :signed_up)
+      sign_in_user_and_add_email(user)
+
+      email_to_click_on = last_email_sent
+      click_on_link_in_confirmation_email(email_to_click_on)
+      click_on_link_in_confirmation_email(email_to_click_on)
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content(t('devise.confirmations.already_confirmed', action: nil).strip)
+    end
+
+    it 'notifies user they are already confirmed on another account' do
+      create(:user, :signed_up, email: email)
+
+      user = create(:user, :signed_up)
+      sign_in_user_and_add_email(user)
+
+      email_to_click_on = last_email_sent
+      click_on_link_in_confirmation_email(email_to_click_on)
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content(
+        t('devise.confirmations.confirmed_but_remove_from_other_account'),
+      )
+    end
+
     it 'routes to root with a bad confirmation token' do
       visit add_email_confirmation_url(confirmation_token: 'foo')
 
