@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'webauthn sign up' do
   include WebAuthnHelper
 
-  let!(:user) {sign_up_and_set_password}
+  let!(:user) { sign_up_and_set_password }
 
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
