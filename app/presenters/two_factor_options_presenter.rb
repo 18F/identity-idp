@@ -28,14 +28,14 @@ class TwoFactorOptionsPresenter
     phone_options + totp_option + webauthn_option + piv_cac_option + backup_code_option
   end
 
+  def no_factors_enabled?
+    MfaPolicy.new(current_user).no_factors_enabled?
+  end
+
   private
 
   def recovery
     no_factors_enabled? ? '' : 'recovery_'
-  end
-
-  def no_factors_enabled?
-    MfaPolicy.new(current_user).no_factors_enabled?
   end
 
   def phone_options
