@@ -11,6 +11,7 @@
     .p2.col.col-12.border-top.border-blue-light.account-list-item
       .col.col-8.sm-6.truncate
         = email.email
+        span.ml1 = t('email_addresses.unconfirmed') unless email.confirmed_at
       .col.col-4.sm-6.right-align
         - unless FeatureManagement.email_addition_enabled?
           = render @view_model.manage_action_partial,

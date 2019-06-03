@@ -27,10 +27,15 @@ feature 'adding email address' do
     it 'allows the user to add an email and confirm with an active session' do
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
+
+      visit account_path
+      expect(page).to have_content email + t('email_addresses.unconfirmed')
+
       click_on_link_in_confirmation_email
 
       expect(page).to have_current_path(account_path)
       expect(page).to have_content(t('devise.confirmations.confirmed'))
+      expect(page).to_not have_content email + t('email_addresses.unconfirmed')
     end
 
     it 'allows the user to add an email and confirm without an active session' do
