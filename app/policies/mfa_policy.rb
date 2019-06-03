@@ -20,8 +20,8 @@ class MfaPolicy
   end
 
   def sufficient_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 1 ||
-      (mfa_user.backup_code_configurations != BackupCodeConfiguration.none)
+    (FeatureManagement.backup_codes_enabled? &&
+    (mfa_user.backup_code_configurations != BackupCodeConfiguration.none)) || mfa_user.enabled_mfa_methods_count > 1
   end
 
   def unphishable?
