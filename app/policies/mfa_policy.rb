@@ -20,10 +20,11 @@ class MfaPolicy
   end
 
   def sufficient_factors_enabled?
-    (mfa_user.backup_code_configurations != BackupCodeConfiguration.none) if
-      FeatureManagement.backup_codes_2fa?
+    return true if mfa_user.enabled_mfa_methods_count.positive?
 
-    (mfa_user.enabled_mfa_methods_count > 1)
+    FeatureManagement.backup_codes_2fa? &&
+      mfa_user.backup_code_configurations.to_a.length.positive?
+
   end
 
   def unphishable?
