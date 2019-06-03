@@ -6,6 +6,7 @@ feature 'adding email address' do
   context 'when adding emails is disabled' do
     before do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(false)
+      Rails.application.reload_routes!
     end
 
     it 'does not display a link to allow adding an email' do
@@ -13,13 +14,14 @@ feature 'adding email address' do
       sign_in_and_2fa_user(user)
 
       visit account_path
-      expect(page).to_not have_link(t('account.index.email_add'), href: add_email_path)
+      expect(page).to_not have_link(t('account.index.email_add'), href: '/add/email')
     end
   end
 
   context 'when adding emails is enabled' do
     before do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
+      Rails.application.reload_routes!
     end
 
     it 'allows the user to add an email and confirm with an active session' do
