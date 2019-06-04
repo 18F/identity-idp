@@ -22,6 +22,11 @@ es:
       nueva dentro de %{minutes} minutos.
     session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra
       su sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.
+    signed_up_and_confirmed:
+      first_paragraph_end: con un enlace para confirmar su dirección de correo electrónico.
+        Siga el enlace para continuar agregando este correo electrónico a su cuenta.
+      first_paragraph_start: Enviamos un correo electrónico a
+      no_email_sent_explanation_start: "¿No recibió un correo electrónico?"
     signed_up_but_unconfirmed:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.

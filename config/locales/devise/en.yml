@@ -5,6 +5,11 @@ en:
       already_confirmed: Your email address has already been confirmed. %{action}
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
+      confirmed_but_remove_from_other_account: You have confirmed your email address
+        but it is associated with another login.gov account. You need to remove it
+        from the other account before you can associate it with this one.
+      confirmed_but_sign_in: You have confirmed your email address. Please sign in
+        to view your profile.
       sign_in: Please sign in.
     failure:
       already_authenticated: ''
