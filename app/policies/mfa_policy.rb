@@ -23,14 +23,6 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1 ||
       (FeatureManagement.backup_codes_2fa? &&
       mfa_user.backup_code_configurations.to_a.length.positive?)
-
-=begin
-    return true if mfa_user.enabled_mfa_methods_count.positive?
-
-    FeatureManagement.backup_codes_2fa? &&
-      mfa_user.backup_code_configurations.to_a.length.positive?
-=end
-
   end
 
   def unphishable?
