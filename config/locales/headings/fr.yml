@@ -15,6 +15,7 @@ fr:
       verified_account: Compte vérifié
     account_recovery_setup:
       piv_cac_linked: Votre carte PIV/CAC est liée à votre compte
+    add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:
