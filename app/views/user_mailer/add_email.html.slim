@@ -1,0 +1,23 @@
+p.lead == t('user_mailer.add_email.header') + ' ' + \
+  t('user_mailer.add_email.footer', confirmation_period: @confirmation_period)
+
+table.button.expanded.large.radius
+  tbody
+    tr
+      td
+        table
+          tbody
+            tr
+              td
+                center
+                  = link_to t('user_mailer.email_confirmation_instructions.link_text'), \
+                    add_email_confirmation_url(_request_id: \
+                    @request_id, confirmation_token: @token, locale: @locale), \
+                    target: '_blank', \
+                    class: 'float-center', align: 'center'
+      td.expander
+
+p = link_to add_email_confirmation_url(_request_id: @request_id, \
+    confirmation_token: @token, locale: @locale), \
+    sign_up_create_email_confirmation_url(_request_id: @request_id, \
+    confirmation_token: @token, locale: @locale), target: '_blank'

@@ -83,6 +83,7 @@ detectors:
       - Analytics
   TooManyInstanceVariables:
     exclude:
+      - AddUserEmailForm
       - BaseFlow
       - OpenidConnectAuthorizeForm
       - OpenidConnectRedirector
