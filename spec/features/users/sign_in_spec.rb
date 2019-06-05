@@ -434,7 +434,7 @@ feature 'Sign in' do
       enter_personal_key(personal_key: old_personal_key)
       click_submit_default
       visit account_path
-      expect(page).to have_content t('event_types.personal_key_used')
+      expect(page).to have_current_path(two_factor_options_path)
     end
   end
 

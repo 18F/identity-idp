@@ -4,8 +4,8 @@ feature 'sign up with backup code' do
   include DocAuthHelper
 
   it 'works' do
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     sign_up_and_set_password
-
     select_2fa_option('backup_code')
 
     expect(page).to have_link(t('forms.backup_code.download'))
@@ -13,7 +13,7 @@ feature 'sign up with backup code' do
 
     click_on 'Continue'
 
-    expect(current_path).to eq two_factor_options_path
+    expect(current_path).to eq account_path
   end
 
   it 'does not show download button on a mobile device' do

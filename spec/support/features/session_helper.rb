@@ -26,12 +26,12 @@ module Features
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
-      select_2fa_option('backup_code')
-      click_continue
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       click_submit_default
+      select_2fa_option('backup_code')
+      click_continue
       user
     end
 
@@ -123,6 +123,10 @@ module Features
     def sign_in_and_2fa_user(user = user_with_2fa)
       sign_in_with_warden(user)
       user
+    end
+
+    def sign_in_with_2fa
+      create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
     def user_with_2fa
@@ -324,12 +328,10 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      set_up_2fa_with_backup_code
       set_up_2fa_with_valid_phone
+      set_up_2fa_with_backup_code
 
       expect(page).to have_css('img[src*=sp-logos]')
-
-      click_submit_default
 
       # expect(page).to have_css('img[src*=sp-logos]')
     end
@@ -396,14 +398,14 @@ module Features
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
+      click_submit_default
     end
 
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
+      set_up_2fa_with_valid_phone
       select_2fa_option('backup_code')
       click_continue
-      set_up_2fa_with_valid_phone
-      click_submit_default
       User.find_with_email(email)
     end
 
@@ -417,8 +419,8 @@ module Features
 
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
-      set_up_2fa_with_backup_code
       set_up_2fa_with_authenticator_app
+      set_up_2fa_with_backup_code
     end
 
     def set_up_2fa_with_authenticator_app

@@ -93,6 +93,7 @@ feature 'View personal key' do
       expect(current_path).not_to eq account_path
 
       visit manage_personal_key_path
+
       acknowledge_and_confirm_personal_key
 
       expect(current_path).to eq account_path
