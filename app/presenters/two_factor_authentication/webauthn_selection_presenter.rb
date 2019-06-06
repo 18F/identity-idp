@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def html_class
-      'hidden'
+      'hide'
     end
   end
 end
