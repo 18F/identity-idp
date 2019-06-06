@@ -10,7 +10,6 @@ module OpenidConnect
     before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
 
     def index
@@ -25,6 +24,7 @@ module OpenidConnect
     private
 
     def confirm_user_is_authenticated_with_fresh_mfa
+      return confirm_two_factor_authenticated unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
     end
 
