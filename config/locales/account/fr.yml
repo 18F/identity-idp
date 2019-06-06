@@ -15,6 +15,7 @@ fr:
       device: "%{browser} sur %{os}"
       dob: Date de naissance
       email: Adresse courriel
+      email_add: "+ Ajouter un email"
       full_name: Nom complet
       login: Information de connexion
       password: Mot de passe

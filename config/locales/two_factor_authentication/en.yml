@@ -118,10 +118,9 @@ en:
       voice_info: Get your security code via phone call
       webauthn: Security key
       webauthn_info: Use a security key to secure your account
-    two_factor_recovery_choice: Add a backup authentication method
-    two_factor_recovery_choice_intro: Adding multiple authentication methods to your
-      account ensures you will be able to access your account when you do not have
-      access to your first authentication option.
+    two_factor_recovery_choice: Add another method
+    two_factor_recovery_choice_intro: Adding another authentication method makes sure
+      you can sign in to your account even if you lose or don't have your main one.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key

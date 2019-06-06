@@ -15,6 +15,7 @@ en:
       device: "%{browser} on %{os}"
       dob: Date of birth
       email: Email addresses
+      email_add: "+ Add email"
       full_name: Full name
       login: Login Information
       password: Password

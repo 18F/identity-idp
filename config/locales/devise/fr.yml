@@ -5,6 +5,11 @@ fr:
       already_confirmed: Votre adresse courriel a déjà été confirmée. %{action}
       confirmed: Vous avez confirmé votre adresse courriel
       confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
+      confirmed_but_remove_from_other_account: Vous avez confirmé votre adresse e-mail
+        mais elle est associée à un autre compte login.gov. Vous devez le supprimer
+        de l'autre compte avant de pouvoir l'associer à celui-ci.
+      confirmed_but_sign_in: Vous avez confirmé votre adresse email. Veuillez vous
+        connecter pour voir votre profil.
       sign_in: Veuillez vous connecter de nouveau.
     failure:
       already_authenticated: ''
