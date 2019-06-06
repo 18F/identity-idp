@@ -12,6 +12,7 @@ class SamlIdpController < ApplicationController
   include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
+  before_action :confirm_two_factor_authenticated
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
 
   def auth
@@ -43,7 +44,6 @@ class SamlIdpController < ApplicationController
   private
 
   def confirm_user_is_authenticated_with_fresh_mfa
-    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 
