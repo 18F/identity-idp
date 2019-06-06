@@ -40,7 +40,7 @@ class UserPhoneForm
   end
 
   def already_has_phone?
-    user.phone_configurations.map(&:phone).include?(phone)
+    formatted_user_phone != phone && user.phone_configurations.map(&:phone).include?(phone)
   end
 
   def phone_config_changed?
