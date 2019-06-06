@@ -39,6 +39,10 @@ class UserPhoneForm
     phone_configuration&.delivery_preference == 'voice'
   end
 
+  def already_has_phone?
+    user.phone_configurations.map(&:phone).include?(phone)
+  end
+
   def phone_config_changed?
     return true if formatted_user_phone != phone
     return true if phone_configuration&.delivery_preference != otp_delivery_preference
