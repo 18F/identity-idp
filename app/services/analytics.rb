@@ -36,7 +36,7 @@ class Analytics
   end
 
   def ga_cookie
-    request.cookies[:_ga]
+    request.cookies[:_ga, :domain => Figaro.env.domain_name]
   end
 
   attr_reader :user, :request, :sp, :ahoy
