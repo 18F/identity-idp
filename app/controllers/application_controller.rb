@@ -182,7 +182,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def confirm_two_factor_authenticated(id = nil)
-    return redirect_to new_user_session_url(request_id: id) unless user_signed_in?
     authenticate_user!(force: true)
     return if user_fully_authenticated? &&
               MfaPolicy.new(current_user).sufficient_factors_enabled?
