@@ -13,6 +13,7 @@ fr:
       two_factor: Authentification à deux facteurs
       unphishable: Incapable de phishing
       verified_account: Compte vérifié
+    add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:

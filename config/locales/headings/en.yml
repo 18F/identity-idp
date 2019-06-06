@@ -13,6 +13,7 @@ en:
       two_factor: Two-factor authentication
       unphishable: Unphishable
       verified_account: Verified Account
+    add_email: Add a new email address
     add_info:
       phone: Add a phone number
     cancellations:
