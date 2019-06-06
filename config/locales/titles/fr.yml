@@ -3,7 +3,6 @@ fr:
   titles:
     account: Compte
     account_locked: Compte temporairement verrouillé
-    account_recovery_setup: Configuration de la récupération du compte
     add_info:
       phone: Ajouter un numéro de téléphone
     confirmations:

@@ -13,8 +13,6 @@ es:
       two_factor: Autenticación de dos factores
       unphishable: Incapaz de phish
       verified_account: Cuenta verificada
-    account_recovery_setup:
-      piv_cac_linked: Tu tarjeta PIV/CAC está vinculada a tu cuenta
     add_info:
       phone: Agregar un número de teléfono
     cancellations:

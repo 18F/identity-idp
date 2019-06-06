@@ -118,7 +118,6 @@ Rails.application.routes.draw do
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
-    get '/account_recovery_setup' => 'account_recovery_setup#index'
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
