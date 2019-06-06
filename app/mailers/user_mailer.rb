@@ -103,4 +103,17 @@ class UserMailer < ActionMailer::Base
     @token = account_recovery_request.request_token
     mail(to: email.email, subject: t('recover.email.confirm'))
   end
+
+  def add_email(user, email, token)
+    presenter = ConfirmationEmailPresenter.new(user, view_context)
+    @first_sentence = presenter.first_sentence
+    @confirmation_period = presenter.confirmation_period
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.add_email.subject'))
+  end
+
+  def email_added(email)
+    mail(to: email, subject: t('user_mailer.email_added.subject'))
+  end
 end

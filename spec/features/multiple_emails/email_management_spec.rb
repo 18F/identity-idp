@@ -36,6 +36,7 @@ feature 'managing email address' do
   context 'when adding emails is enabled' do
     before do
       allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
+      Rails.application.reload_routes!
     end
 
     it 'does not display the links for allowing the user to manage their email addresses' do

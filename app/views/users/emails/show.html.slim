@@ -1,0 +1,17 @@
+- title t('titles.registrations.new')
+
+= render 'shared/sp_alert'
+
+h1.h3.my0 = t('headings.add_email')
+
+.mb4
+  = simple_form_for(@register_user_email_form,
+          html: { autocomplete: 'off', role: 'form' },
+          url: add_email_path) do |f|
+    = f.input :email, label: t('forms.registration.labels.email'), required: true
+    = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'
+
+= render 'shared/cancel', link: decorated_session.cancel_link_url
+
+p.mt2
+  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'

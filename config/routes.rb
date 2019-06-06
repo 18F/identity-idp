@@ -149,6 +149,15 @@ Rails.application.routes.draw do
         as: :manage_email_confirm_delete
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
+
+    if FeatureManagement.email_addition_enabled?
+      get '/add/email' => 'users/emails#show'
+      post '/add/email' => 'users/emails#add'
+      get '/add/email/confirm' => 'users/email_confirmations#create', as: :add_email_confirmation
+      get '/add/email/verify_email' => 'users/emails#verify', as: :add_email_verify_email
+      post '/add/email/resend' => 'users/emails#resend'
+    end
+
     get '/add/phone' => 'users/phones#add'
     post '/add/phone' => 'users/phones#create'
     get '/manage/phone' => 'users/phones#edit'
