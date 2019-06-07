@@ -64,6 +64,12 @@ shared_examples 'a saml endpoint' do
   end
 
   context 'for a metadata request' do
+    it 'does not throw a 404 error with an extension' do
+      visit endpoint_metadata_path + '.xml'
+
+      expect(page.status_code).to eq 404
+    end
+
     it 'includes the cert' do
       visit endpoint_metadata_path
       document = REXML::Document.new(page.html)
