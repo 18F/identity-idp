@@ -55,7 +55,7 @@ module RememberDeviceConcern
       category: 'authentication',
       event_action: 'device-remembered',
       method: 'same-device',
-      client_id: analytics.grab_ga_client_id,
+      client_id: ga_cookie_client_id,
     ).send_event
   end
 

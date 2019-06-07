@@ -1,8 +1,14 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
+  let(:ga_client_id) { '123.456' }
+  let(:ga_cookie) { 'GA1.2.123.456' }
   let(:personal_key) { { personal_key: 'foo' } }
-  let(:payload) { { personal_key_form: personal_key, ga_client_id: 'abc-cool-town-5' } }
+  let(:payload) { { personal_key_form: personal_key, ga_client_id: ga_client_id } }
+
+  before do
+    cookies['_ga'] = ga_cookie
+  end
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -44,7 +50,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal-key' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, 'abc-cool-town-5')
+          with(analytics_hash, ga_client_id)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -124,7 +130,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, 'abc-cool-town-5')
+          with(properties, ga_client_id)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params: payload

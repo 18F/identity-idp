@@ -8,6 +8,6 @@ class FakeAnalytics
   end
 
   def grab_ga_client_id
-    'abc-cool-town-5'
+    '123.456'
   end
 end
