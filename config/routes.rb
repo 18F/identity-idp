@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
-    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
+    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
