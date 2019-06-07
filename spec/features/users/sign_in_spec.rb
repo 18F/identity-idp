@@ -319,8 +319,6 @@ feature 'Sign in' do
     it 'redirects to sign in page with relevant flash message' do
       visit account_path
 
-      print new_user_session_path
-
       expect(current_path).to eq new_user_session_path
       expect(page).to have_content(t('devise.failure.unauthenticated'))
     end
