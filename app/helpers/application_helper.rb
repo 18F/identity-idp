@@ -35,7 +35,7 @@ module ApplicationHelper
 
   def user_signing_up?
     params[:confirmation_token].present? || (
-      current_user && !MfaPolicy.new(current_user).multiple_factors_enabled?
+      current_user && !MfaPolicy.new(current_user).sufficient_factors_enabled?
     )
   end
 
