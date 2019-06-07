@@ -37,6 +37,11 @@ ul.list-reset
     button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'
       = t('doc_auth.buttons.get_started')
 br
-= render 'shared/cancel_or_back_to_options'
+
+.mt2.pt1.border-top
+- if user_fully_authenticated?
+  = link_to cancel_link_text, account_path, class: 'h5'
+- else
+  = link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path
 
 == javascript_pack_tag 'clipboard'
