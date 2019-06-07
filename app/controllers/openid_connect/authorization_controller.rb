@@ -24,7 +24,7 @@ module OpenidConnect
     private
 
     def confirm_user_is_authenticated_with_fresh_mfa
-      return confirm_two_factor_authenticated unless user_fully_authenticated?
+      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
     end
 
