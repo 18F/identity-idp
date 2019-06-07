@@ -12,7 +12,7 @@
     <fieldset class="m0 p0 border-none">
       <legend class="mb2 serif bold"><%= @presenter.label %></legend>
       <% @presenter.options.each_with_index do |option, index| %>
-      <label class="btn-border col-12 mb2 bg-lightest-blue" for="two_factor_options_form_selection_<%= option.type %>">
+      <label class="btn-border col-12 mb2 bg-lightest-blue <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
         <div class="radio">
           <%= radio_button_tag('two_factor_options_form[selection]', option.type, index.zero?) %>
           <span class="indicator mt-tiny"></span>
@@ -30,3 +30,5 @@
 <div class="mt2 pt1 border-top">
   <%= render 'shared/cancel', link: destroy_user_session_path %>
 </div>
+
+<%= javascript_pack_tag("webauthn-unhide-signup") %>
