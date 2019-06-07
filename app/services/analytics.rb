@@ -36,7 +36,7 @@ class Analytics
   end
 
   def ga_cookie
-    request.cookies[:_ga]
+    cookies[:_ga]
   end
 
   attr_reader :user, :request, :sp, :ahoy
