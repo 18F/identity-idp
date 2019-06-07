@@ -93,7 +93,7 @@ module SignUp
         category: 'registration',
         event_action: 'completion',
         method: last_page,
-        client_id: analytics.grab_ga_client_id,
+        client_id: cookie_ga_client_id,
       ).send_event
     end
   end
