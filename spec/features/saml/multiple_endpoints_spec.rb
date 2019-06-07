@@ -64,7 +64,7 @@ shared_examples 'a saml endpoint' do
   end
 
   context 'for a metadata request' do
-    it 'does not throw a 404 error with an extension' do
+    it 'throws a 404 error with an extension' do
       visit endpoint_metadata_path + '.xml'
 
       expect(page.status_code).to eq 404
