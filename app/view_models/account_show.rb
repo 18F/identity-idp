@@ -84,7 +84,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def disable_totp_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).three_or_more_factors_enabled?
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).more_than_two_factors_enabled?
     'accounts/actions/disable_totp'
   end
 
@@ -101,7 +101,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def disable_piv_cac_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).three_or_more_factors_enabled?
+    return 'shared/null' unless MfaPolicy.new(decorated_user.user).more_than_two_factors_enabled?
     'accounts/actions/disable_piv_cac'
   end
 
@@ -130,7 +130,6 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def regenerate_backup_codes_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).three_or_more_factors_enabled?
     'accounts/actions/regenerate_backup_codes'
   end
 

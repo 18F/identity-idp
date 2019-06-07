@@ -6,8 +6,7 @@ feature 'Phone confirmation during sign up' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       allow(SmsOtpSenderJob).to receive(:perform_now)
       @user = sign_in_before_2fa
-      select_2fa_option('backup_code')
-      click_continue
+
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '703-555-5555'
       click_send_security_code
@@ -21,12 +20,12 @@ feature 'Phone confirmation during sign up' do
       )
     end
 
-    it 'updates phone_confirmed_at and redirects to acknowledge personal key' do
+    it 'updates phone_confirmed_at and redirects to add another MFA' do
       click_button t('forms.buttons.submit.default')
 
       expect(MfaContext.new(@user).phone_configurations.reload.first.confirmed_at).to be_present
 
-      expect(current_path).to eq account_path
+      expect(current_path).to eq two_factor_options_path
     end
 
     it 'allows user to resend confirmation code' do

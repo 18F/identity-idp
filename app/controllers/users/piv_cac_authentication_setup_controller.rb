@@ -81,7 +81,7 @@ module Users
     end
 
     def next_step
-      if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled?
+      if MfaPolicy.new(current_user).sufficient_factors_enabled?
         account_url
       else
         two_factor_options_url
@@ -101,7 +101,7 @@ module Users
     def authorize_piv_cac_disable
       return redirect_to account_url unless piv_cac_enabled? &&
                                             MfaPolicy.new(current_user).
-                                            three_or_more_factors_enabled?
+                                            more_than_two_factors_enabled?
     end
 
     def authorize_piv_cac_setup

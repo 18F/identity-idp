@@ -15,7 +15,7 @@ describe 'TOTP enrollability' do
     click_on 'Continue'
 
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
-    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
+    expect(page).to have_current_path(account_path)
   end
 
   it 'does not allow choosing totp as backup auth method after it is used as primary' do
@@ -26,6 +26,7 @@ describe 'TOTP enrollability' do
     fill_in 'code', with: generate_totp_code(secret)
     click_button 'Submit'
 
+    print page.current_url
     expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
     expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
   end

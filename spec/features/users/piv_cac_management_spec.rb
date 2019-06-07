@@ -107,7 +107,7 @@ feature 'PIV/CAC Management' do
                                 uuid: SecureRandom.uuid,
                                 subject: 'SomeIgnoredSubject')
 
-          expect(page).to have_current_path two_factor_options_url
+          expect(page).to have_current_path account_path
         end
       end
     end
