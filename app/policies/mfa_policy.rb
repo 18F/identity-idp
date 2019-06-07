@@ -21,7 +21,7 @@ class MfaPolicy
 
   def sufficient_factors_enabled?
     mfa_user.enabled_mfa_methods_count > 1 ||
-      (FeatureManagement.backup_codes_2fa? &&
+      (FeatureManagement.backup_codes_as_only_2fa? &&
       mfa_user.backup_code_configurations.to_a.length.positive?)
   end
 

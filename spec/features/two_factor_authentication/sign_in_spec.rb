@@ -255,6 +255,7 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up, :with_backup_code)
         sign_in_user(user)
 
+        print page.current_url
         3.times do
           fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')

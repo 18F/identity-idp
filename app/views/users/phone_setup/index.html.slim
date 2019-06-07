@@ -26,11 +26,7 @@ p.mt-tiny.mb0 = @presenter.info
         class: 'sm-col-6 col-12 btn-wide mb3 no-auto-enable'
 .mt2.pt1.border-top
   ruby:
-    path = if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
-             account_recovery_setup_path
-           else
-             two_factor_options_path
-           end
+    path = two_factor_options_path
   = link_to t('two_factor_authentication.choose_another_option'), path
 
   = stylesheet_link_tag 'intl-tel-number/intlTelInput'
