@@ -34,10 +34,10 @@ module GithubMetrics
                    :merged_at, :number, :draft
 
     def ready_for_review_at
-      timeline = self.class.github_client.issue_timeline(
+      events = self.class.github_client.issue_events(
         '18f/identity-idp', number, accept: 'application/vnd.github.mockingbird-preview'
       )
-      timeline.select do |item|
+      events.select do |item|
         item.event == 'ready_for_review'
       end.first&.created_at || created_at
     end
