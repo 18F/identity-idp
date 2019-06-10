@@ -4,6 +4,10 @@ class ResendEmailConfirmationForm
 
   attr_reader :email
 
+  def self.model_name
+    ActiveModel::Name.new(self, nil, 'User')
+  end
+
   def initialize(params = {})
     @params = params
     self.email = params[:email]
