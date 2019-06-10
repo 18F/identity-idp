@@ -191,13 +191,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     reauthn.present? && reauthn == 'true'
   end
 
-  def confirm_two_factor_authenticated
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  def confirm_two_factor_authenticated(id = nil)
+    return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
     return if user_fully_authenticated? &&
               MfaPolicy.new(current_user).sufficient_factors_enabled?
     return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
   def prompt_to_set_up_2fa
     redirect_to two_factor_options_url
