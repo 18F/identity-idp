@@ -191,8 +191,6 @@ Rails.application.routes.draw do
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
-    post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
-         as: :sign_up_create_email_resend
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/personal_key' => 'sign_up/personal_keys#show'
     post '/sign_up/personal_key' => 'sign_up/personal_keys#update'
