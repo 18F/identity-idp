@@ -4,6 +4,7 @@ feature 'OTP delivery selection' do
   context 'set up voice as 2FA' do
     before do
       sign_in_user
+      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('voice')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
@@ -27,6 +28,7 @@ feature 'OTP delivery selection' do
   context 'set up SMS as 2FA' do
     before do
       sign_in_user
+      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
@@ -49,6 +51,7 @@ feature 'OTP delivery selection' do
 
   it 'allows the user to select a backup delivery method and then change that selection' do
     sign_in_user
+    stub_twilio_service
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     select_2fa_option(:sms)
     fill_in :user_phone_form_phone, with: '202-555-1212'

@@ -6,6 +6,7 @@ feature 'OTP delivery selection' do
 
     before do
       sign_in_user(user)
+      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('voice')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'

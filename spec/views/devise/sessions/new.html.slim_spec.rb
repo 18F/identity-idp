@@ -42,7 +42,8 @@ describe 'devise/sessions/new.html.slim' do
     expect(rendered).
       to have_link(t('notices.terms_of_service.link'), href: MarketingSite.privacy_url)
 
-    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_url}'][target='_blank']")
+    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_url}']\
+[target='_blank'][rel='noopener noreferrer']")
   end
 
   context 'when SP is present' do

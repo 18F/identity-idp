@@ -26,9 +26,11 @@ feature 'Visit requests confirmation instructions again during sign up' do
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
+    button = t('forms.buttons.resend_confirmation')
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('forms.buttons.resend_confirmation')
+      click_button button
+      button = t('forms.buttons.submit.default')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -41,9 +43,11 @@ feature 'Visit requests confirmation instructions again during sign up' do
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
+    button = t('forms.buttons.resend_confirmation')
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('forms.buttons.resend_confirmation')
+      click_button button
+      button = t('forms.buttons.submit.default')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
