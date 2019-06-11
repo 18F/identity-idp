@@ -66,7 +66,8 @@ RSpec.configure do |config|
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
   end
 
-  config.before(:each, twilio: true) do
+  config.before(:each) do
+    TwilioService::Utils.telephony_service = Twilio::REST::Client
     FakeSms.messages = []
     FakeVoiceCall.calls = []
   end

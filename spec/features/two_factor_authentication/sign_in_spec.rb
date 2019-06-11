@@ -132,6 +132,7 @@ feature 'Two Factor Authentication' do
     context 'with voice option and US number' do
       it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
         sign_in_before_2fa
+        stub_twilio_service
         select_2fa_option('voice')
         fill_in 'user_phone_form_phone', with: '7035551212'
         click_send_security_code
@@ -170,6 +171,7 @@ feature 'Two Factor Authentication' do
   end
 
   def submit_2fa_setup_form_with_valid_phone
+    stub_twilio_service
     fill_in 'user_phone_form_phone', with: '703-555-1212'
     click_send_security_code
   end
