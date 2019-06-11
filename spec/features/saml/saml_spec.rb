@@ -35,7 +35,6 @@ feature 'saml api' do
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do
-        stub_twilio_service
         select_2fa_option('sms')
         fill_in 'user_phone_form_phone', with: '202-555-1212'
         click_send_security_code

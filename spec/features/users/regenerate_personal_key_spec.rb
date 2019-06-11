@@ -5,8 +5,6 @@ feature 'View personal key' do
   include PersonalKeyHelper
   include SamlAuthHelper
 
-  before { stub_twilio_service }
-
   context 'after sign up' do
     context 'regenerating personal key' do
       scenario 'displays new code and notifies the user' do

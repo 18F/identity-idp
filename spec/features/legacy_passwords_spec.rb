@@ -30,8 +30,6 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with a personal key digested by the uak verifier make the digest nil' do
-    stub_twilio_service
-
     user = create(:user, :signed_up)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
@@ -51,8 +49,6 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do
-    stub_twilio_service
-
     user = create(:user, :signed_up)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),

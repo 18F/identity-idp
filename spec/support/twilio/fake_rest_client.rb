@@ -3,7 +3,7 @@ module Twilio
     HttpClient = Struct.new(:adapter, :last_request)
     LastRequest = Struct.new(:url, :params, :headers, :method)
 
-    def initialize(_username, _password, _account_sid, _region, _http_client); end
+    def initialize(*args); end
 
     def messages
       FakeMessage
