@@ -45,7 +45,7 @@ module TwilioService
     attr_reader :client, :http_client
 
     def twilio_client
-      telephony_service.new(TWILIO_SID, TWILIO_AUTH_TOKEN, nil, nil, @http_client)
+      self.class.telephony_service.new(TWILIO_SID, TWILIO_AUTH_TOKEN, nil, nil, @http_client)
     end
 
     def random_phone_number
