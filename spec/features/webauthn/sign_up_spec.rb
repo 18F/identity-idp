@@ -6,6 +6,7 @@ feature 'webauthn sign up' do
   let!(:user) { sign_up_and_set_password }
 
   before do
+    stub_twilio_service
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   end
 

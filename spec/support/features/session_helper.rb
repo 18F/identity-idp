@@ -24,6 +24,7 @@ module Features
     end
 
     def sign_up_and_2fa_loa1_user
+      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       select_2fa_option('sms')
@@ -151,7 +152,6 @@ module Features
     end
 
     def click_send_security_code
-      stub_twilio_service
       click_button t('forms.buttons.send_security_code')
     end
 
@@ -395,6 +395,8 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
+      stub_twilio_service
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
@@ -519,6 +521,7 @@ module Features
     end
 
     def configure_backup_phone
+      stub_twilio_service
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
