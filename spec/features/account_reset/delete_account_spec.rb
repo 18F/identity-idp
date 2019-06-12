@@ -8,10 +8,6 @@ describe 'Account Reset Request: Delete Account', email: true do
   let(:push_notification_url) { 'http://localhost/push_notifications' }
   let(:payload) { { uuid: '1234' } }
 
-  before do
-    TwilioService::Utils.telephony_service = FakeSms
-  end
-
   context 'as an LOA1 user' do
     it 'allows the user to delete their account after 24 hours' do
       signin(user_email, user.password)
