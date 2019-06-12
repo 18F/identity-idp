@@ -109,7 +109,6 @@ feature 'Two Factor Authentication' do
     context 'with SMS option, international number, and locale header' do
       it 'passes locale to SmsOtpSenderJob' do
         page.driver.header 'Accept-Language', 'ar'
-        PhoneVerification.adapter = FakeAdapter
         allow(SmsOtpSenderJob).to receive(:perform_now)
 
         user = sign_in_before_2fa
@@ -255,7 +254,6 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up, :with_backup_code)
         sign_in_user(user)
 
-        print page.current_url
         3.times do
           fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')
@@ -553,7 +551,6 @@ feature 'Two Factor Authentication' do
     context 'with SMS, international number, and locale header' do
       it 'passes locale to SmsOtpSenderJob' do
         page.driver.header 'Accept-Language', 'ar'
-        PhoneVerification.adapter = FakeAdapter
         allow(SmsOtpSenderJob).to receive(:perform_later)
 
         user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
@@ -575,8 +572,8 @@ feature 'Two Factor Authentication' do
         allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
           SmsOtpSenderJob.perform_now(*args)
         end
-        PhoneVerification.adapter = FakeAdapter
-        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+        allow(Twilio::FakeVerifyAdapter).to receive(:post).
+          and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
         user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
         sign_in_user(user)
@@ -594,8 +591,8 @@ feature 'Two Factor Authentication' do
         allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
           SmsOtpSenderJob.perform_now(*args)
         end
-        PhoneVerification.adapter = FakeAdapter
-        allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+        allow(Twilio::FakeVerifyAdapter).to receive(:post).
+          and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
         user = create(:user, :signed_up,
                       otp_delivery_preference: 'voice',

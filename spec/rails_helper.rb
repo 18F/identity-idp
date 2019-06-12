@@ -67,6 +67,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    allow(PhoneVerification).to receive(:adapter).and_return(Twilio::FakeVerifyAdapter)
     allow(TwilioService::Utils).to receive(:telephony_service).and_return(Twilio::FakeRestClient)
     Twilio::FakeMessage.messages = []
     Twilio::FakeCall.calls = []
