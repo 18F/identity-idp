@@ -200,8 +200,8 @@ feature 'Changing authentication factor' do
   context 'with SMS and number that Verify does not think is valid' do
     it 'rescues the VerifyError' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
-      PhoneVerification.adapter = FakeAdapter
-      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+      allow(Twilio::FakeVerifyAdapter).to receive(:post).
+        and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
       user = create(:user, :signed_up, with: { phone: '+17035551212' })
       visit new_user_session_path
