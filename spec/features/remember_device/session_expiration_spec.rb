@@ -5,7 +5,6 @@ describe 'signing in with remember device and idling on the sign in page' do
 
   it 'redirects to the OIDC SP even though session is deleted' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
 
     # We want to simulate a user that has already visited an OIDC SP and that
