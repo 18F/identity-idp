@@ -25,6 +25,7 @@ feature 'adding email address' do
     end
 
     it 'allows the user to add an email and confirm with an active session' do
+      allow(UserMailer).to receive(:email_added).and_call_original
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
 
@@ -36,9 +37,11 @@ feature 'adding email address' do
       expect(page).to have_current_path(account_path)
       expect(page).to have_content(t('devise.confirmations.confirmed'))
       expect(page).to_not have_content email + t('email_addresses.unconfirmed')
+      expect(UserMailer).to have_received(:email_added).twice
     end
 
     it 'allows the user to add an email and confirm without an active session' do
+      allow(UserMailer).to receive(:email_added).and_call_original
       user = create(:user, :signed_up)
       sign_in_user_and_add_email(user)
 
@@ -47,6 +50,7 @@ feature 'adding email address' do
       click_on_link_in_confirmation_email
       expect(page).to have_current_path(root_path)
       expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
+      expect(UserMailer).to have_received(:email_added).twice
     end
 
     it 'notifies user they are already confirmed without an active session' do
