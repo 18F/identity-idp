@@ -9,10 +9,6 @@ describe 'phone configuration' do
   end
 
   describe 'sms delivery prefrence' do
-    before do
-      TwilioService::Utils.telephony_service = FakeSms
-    end
-
     context 'when the user has not set a default phone number' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
@@ -67,10 +63,6 @@ describe 'phone configuration' do
   end
 
   describe 'voice delivery prefrence' do
-    before do
-      TwilioService::Utils.telephony_service = FakeVoiceCall
-    end
-
     context 'when the user creates a new default phone number' do
       it 'displays the new default number for 2FA' do
         sign_in_visit_add_phone_path(user, phone_config2)

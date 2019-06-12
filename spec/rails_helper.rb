@@ -67,9 +67,9 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    TwilioService::Utils.telephony_service = Twilio::REST::Client
-    FakeSms.messages = []
-    FakeVoiceCall.calls = []
+    allow(TwilioService::Utils).to receive(:telephony_service).and_return(Twilio::FakeRestClient)
+    Twilio::FakeMessage.messages = []
+    Twilio::FakeCall.calls = []
   end
 
   config.around(:each, user_flow: true) do |example|

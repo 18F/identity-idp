@@ -38,7 +38,9 @@ module Users
 
     def confirm_and_notify_user(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
-      UserMailer.email_added(email_address.email).deliver_later
+      email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
+        UserMailer.email_added(confirmed_email_address.email).deliver_later
+      end
     end
 
     def process_unsuccessful_confirmation

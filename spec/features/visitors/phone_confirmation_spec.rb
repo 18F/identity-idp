@@ -57,7 +57,6 @@ feature 'Phone confirmation during sign up' do
     before do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
-      stub_twilio_service
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone',
               with: MfaContext.new(@existing_user).phone_configurations.detect(&:mfa_enabled?).phone

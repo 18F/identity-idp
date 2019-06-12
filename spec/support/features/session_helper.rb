@@ -24,7 +24,6 @@ module Features
     end
 
     def sign_up_and_2fa_loa1_user
-      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       select_2fa_option('sms')
@@ -395,7 +394,6 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
-      stub_twilio_service
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
@@ -470,14 +468,6 @@ module Features
       click_submit_default
     end
 
-    def stub_twilio_service
-      twilio_service = instance_double(TwilioService::Utils)
-      allow(twilio_service).to receive(:send_sms)
-      allow(twilio_service).to receive(:place_call)
-
-      allow(TwilioService::Utils).to receive(:new).and_return(twilio_service)
-    end
-
     def stub_piv_cac_service
       allow(Figaro.env).to receive(:identity_pki_disabled).and_return('false')
       allow(Figaro.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
@@ -521,7 +511,6 @@ module Features
     end
 
     def configure_backup_phone
-      stub_twilio_service
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code

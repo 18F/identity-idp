@@ -4,9 +4,6 @@ describe AccountReset::CancelController do
   include AccountResetHelper
 
   let(:user) { create(:user, :signed_up) }
-  before do
-    TwilioService::Utils.telephony_service = FakeSms
-  end
 
   describe '#create' do
     it 'logs a good token to the analytics' do
