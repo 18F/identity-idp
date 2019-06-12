@@ -38,7 +38,7 @@ module Users
 
     def confirm_and_notify_user(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
-      current_user.confirmed_email_addresses.each do |confirmed_email_address|
+      email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
         UserMailer.email_added(confirmed_email_address.email).deliver_later
       end
     end
