@@ -58,7 +58,6 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
   after { Timecop.return }
 
   it 'redirects to the SP after acknowledging new personal key', :email do
-    stub_twilio_service
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
