@@ -43,7 +43,7 @@ class AddUserEmailForm
   attr_reader :success, :email_address
 
   def valid_form?
-    @allow && valid? && !email_taken?
+    @allow && valid?
   end
 
   def process_successful_submission
@@ -54,7 +54,6 @@ class AddUserEmailForm
 
   def extra_analytics_attributes
     {
-      email_already_exists: email_taken?,
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
     }.merge(@recaptcha_h)
