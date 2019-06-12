@@ -5,8 +5,6 @@ describe SmsNewDeviceSignInNotifierJob do
 
   before do
     reset_job_queues
-    TwilioService::Utils.telephony_service = FakeSms
-    FakeSms.messages = []
   end
 
   describe '.perform' do
@@ -15,7 +13,7 @@ describe SmsNewDeviceSignInNotifierJob do
 
       described_class.perform_now(phone: '+1 (703) 314-3141')
 
-      messages = FakeSms.messages
+      messages = Twilio::FakeMessage.messages
 
       expect(messages.size).to eq(1)
 

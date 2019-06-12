@@ -58,7 +58,6 @@ feature 'backup mfa setup on sign up' do
   include WebAuthnHelper
 
   before do
-    stub_twilio_service
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   end
 

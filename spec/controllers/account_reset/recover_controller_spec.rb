@@ -55,7 +55,6 @@ describe AccountReset::RecoverController do
     end
 
     it 'logs sms user in the analytics' do
-      TwilioService::Utils.telephony_service = FakeSms
       user = create(:user, :signed_up, :with_email, profiles: [profile])
       stub_sign_in_before_2fa(user)
 

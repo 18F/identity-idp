@@ -5,8 +5,6 @@ describe AccountReset::Cancel do
 
   let(:user) { create(:user, :signed_up) }
 
-  before { TwilioService::Utils.telephony_service = FakeSms }
-
   it 'validates presence of token' do
     request = AccountReset::Cancel.new(nil).call
 

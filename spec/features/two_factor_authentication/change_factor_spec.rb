@@ -169,7 +169,6 @@ feature 'Changing authentication factor' do
 
   context 'user has authenticator app enabled' do
     it 'allows them to change their email, password, or phone' do
-      stub_twilio_service
       sign_in_with_totp_enabled_user
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do

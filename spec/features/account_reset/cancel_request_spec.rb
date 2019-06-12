@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'Account Reset Request: Cancellation' do
   context 'user cancels right away from the first email' do
     it 'cancels the request and does not delete the user', email: true do
-      TwilioService::Utils.telephony_service = FakeSms
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
@@ -26,7 +25,6 @@ describe 'Account Reset Request: Cancellation' do
 
   context 'user cancels from the second email after the request has been granted' do
     it 'cancels the request and does not delete the user', email: true do
-      TwilioService::Utils.telephony_service = FakeSms
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
