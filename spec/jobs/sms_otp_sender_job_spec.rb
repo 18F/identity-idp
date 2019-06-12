@@ -102,7 +102,6 @@ describe SmsOtpSenderJob do
 
     context 'when the phone number country is not in the programmable_sms_countries list' do
       it 'sends the SMS via PhoneVerification class' do
-        PhoneVerification.adapter = FakeAdapter
         phone = '+1 787-327-0143'
         code = '123456'
         verification = instance_double(PhoneVerification)
