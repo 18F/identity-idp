@@ -1,6 +1,8 @@
 ---
 en:
   email_addresses:
+    add:
+      duplicate: This email address is already registered to your account.
     delete:
       confirm: Are you sure you want to delete %{email}?
       failure: Unable to delete this email address.

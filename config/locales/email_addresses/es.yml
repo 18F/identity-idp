@@ -1,6 +1,8 @@
 ---
 es:
   email_addresses:
+    add:
+      duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
     delete:
       confirm: "¿Estas seguro que quieres borrarlo %{email}?"
       failure: No se puede eliminar esta dirección de correo electrónico.

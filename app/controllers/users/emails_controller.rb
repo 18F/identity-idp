@@ -17,6 +17,7 @@ module Users
       if result.success?
         process_successful_creation
       else
+        flash.now[:error] = t('email_addresses.add.duplicate') if duplicate_email?
         render :show
       end
     end
@@ -76,6 +77,10 @@ module Users
     end
 
     private
+
+    def duplicate_email?
+      @register_user_email_form.email_taken?
+    end
 
     def authorize_user_to_edit_email
       return render_not_found if email_address.user != current_user

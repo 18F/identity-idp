@@ -133,6 +133,21 @@ feature 'adding email address' do
       expect(page).to have_current_path(add_email_path)
     end
 
+    it 'stays on form and gives an error message when adding an email already on the account' do
+      user = create(:user, :signed_up)
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('account.index.email_add')
+
+      expect(page).to have_current_path(add_email_path)
+
+      fill_in 'Email', with: user.email_addresses.first.email
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_current_path(add_email_path)
+      expect(page).to have_content(I18n.t('email_addresses.add.duplicate'))
+    end
+
     it 'does not show verify screen without an email in session from add email' do
       user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
