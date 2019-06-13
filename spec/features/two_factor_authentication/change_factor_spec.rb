@@ -79,8 +79,7 @@ feature 'Changing authentication factor' do
       visit manage_phone_path
       complete_2fa_confirmation
 
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
-      allow(SmsOtpSenderJob).to receive(:perform_now)
+      Twilio::FakeCall.calls = []
 
       select 'Bahamas', from: 'user_phone_form_international_code'
       fill_in 'Phone', with: unsupported_phone
@@ -91,7 +90,7 @@ feature 'Changing authentication factor' do
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
         location: 'Bahamas',
       )
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(Twilio::FakeCall.calls).to eq([])
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
 
@@ -199,7 +198,6 @@ feature 'Changing authentication factor' do
 
   context 'with SMS and number that Verify does not think is valid' do
     it 'rescues the VerifyError' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(Twilio::FakeVerifyAdapter).to receive(:post).
         and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 

@@ -329,14 +329,13 @@ feature 'Sign in' do
 
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
     it 'falls back to SMS with an error message' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
       signin(user.email, user.password)
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -348,16 +347,15 @@ feature 'Sign in' do
   end
 
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -369,9 +367,7 @@ feature 'Sign in' do
   end
 
   context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
@@ -379,8 +375,9 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
@@ -392,9 +389,7 @@ feature 'Sign in' do
   end
 
   context 'user with voice delivery preference visits /otp/send' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
@@ -402,8 +397,9 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(

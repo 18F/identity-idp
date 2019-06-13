@@ -6,7 +6,6 @@ describe 'Remembering a webauthn device' do
   before do
     allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 

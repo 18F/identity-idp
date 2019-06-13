@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'taking an action that revokes remember device' do
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 
