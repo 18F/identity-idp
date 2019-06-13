@@ -5,6 +5,7 @@ module Users
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
+    before_action :retain_confirmed_emails, only: %i[delete]
 
     def show
       @register_user_email_form = AddUserEmailForm.new
@@ -52,12 +53,10 @@ module Users
       @presenter = ConfirmDeleteEmailPresenter.new(current_user, email_address)
     end
 
-    def delete # rubocop:disable Metrics/AbcSize
-      current_confirmed_emails = current_user.confirmed_email_addresses.map(&:email)
+    def delete
       result = DeleteUserEmailForm.new(current_user, email_address).submit
       analytics.track_event(Analytics::EMAIL_DELETION_REQUEST, result.to_h)
       if result.success?
-        send_delete_email_notification(current_confirmed_emails)
         handle_successful_delete
       else
         flash[:error] = t('email_addresses.delete.failure')
@@ -95,6 +94,7 @@ module Users
     end
 
     def handle_successful_delete
+      send_delete_email_notification
       flash[:success] = t('email_addresses.delete.success')
       create_user_event(:email_deleted)
     end
@@ -128,8 +128,12 @@ module Users
       redirect_to account_url
     end
 
-    def send_delete_email_notification(current_confirmed_emails)
-      current_confirmed_emails.each do |confirmed_email|
+    def retain_confirmed_emails
+      @current_confirmed_emails = current_user.confirmed_email_addresses.map(&:email)
+    end
+
+    def send_delete_email_notification
+      @current_confirmed_emails.each do |confirmed_email|
         UserMailer.email_deleted(confirmed_email).deliver_later
       end
     end
