@@ -1,5 +1,6 @@
 # :reek:RepeatedConditional
 module Users
+  # rubocop:disable Metrics/ClassLength
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
@@ -52,6 +53,7 @@ module Users
     end
 
     def delete
+      send_delete_email_notification
       result = DeleteUserEmailForm.new(current_user, email_address).submit
       analytics.track_event(Analytics::EMAIL_DELETION_REQUEST, result.to_h)
       if result.success?
@@ -124,5 +126,12 @@ module Users
       return if EmailPolicy.new(current_user).can_add_email?
       redirect_to account_url
     end
+
+    def send_delete_email_notification
+      current_user.confirmed_email_addresses.each do |confirmed_address|
+        UserMailer.email_deleted(confirmed_address.email).deliver_later
+      end
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end

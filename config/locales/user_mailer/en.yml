@@ -49,6 +49,11 @@ en:
       help: If you did not make this change, sign in to your profile and manage your
         email addresses. We recommend that you also change your password.
       subject: New email address added
+    email_deleted:
+      header: An email address was deleted from your login.gov profile.
+      help_html: If you did not want to delete this email address, please visit the %{app}
+        %{help_link} or %{contact_link}.
+      subject: Email address deleted
     email_changed:
       help: If you did not want to change your email address, please visit the %{app}
         %{help_link} or %{contact_link}.
