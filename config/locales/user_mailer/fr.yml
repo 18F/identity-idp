@@ -55,11 +55,6 @@ fr:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
         le %{help_link} de %{app} ou %{contact_link}.
       intro: L'adresse courriel de votre compte %{app} a été changée.
-    email_deleted:
-      header: Une adresse email a été supprimée de votre profil login.gov.
-      help_html: Si vous ne souhaitez pas supprimer cette adresse électronique veuillez visiter
-        le %{help_link} de %{app} ou %{contact_link}.
-      subject: Adresse email supprimée
     email_confirmation_instructions:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
@@ -73,6 +68,11 @@ fr:
         le lien complet dans votre navigateur."
       link_text: Confirmez votre adresse email
       subject: Confirmez votre adresse courriel
+    email_deleted:
+      header: Une adresse email a été supprimée de votre profil login.gov.
+      help_html: Si vous ne souhaitez pas supprimer cette adresse électronique veuillez
+        visiter le %{help_link} de %{app} ou %{contact_link}.
+      subject: Adresse email supprimée
     help_link_text: Centre d'aide
     letter_expired:
       help: ''

@@ -53,11 +53,6 @@ es:
     email_changed:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
       intro: El email de su cuenta de %{app} ha sido cambiado.
-    email_deleted:
-      header: Se eliminó una dirección de correo electrónico de su perfil de login.gov.
-      help_html: Si no desea eliminar esta dirección de correo electrónico, visite
-        el %{app} %{help_link} o el %{contact_link}.
-      subject: Dirección de correo electrónico eliminada
     email_confirmation_instructions:
       first_sentence:
         confirmed: "¿Desea cambiar su email?"
@@ -71,6 +66,11 @@ es:
         completo en su navegador."
       link_text: Confirmar el correo
       subject: Confirme su email
+    email_deleted:
+      header: Se eliminó una dirección de correo electrónico de su perfil de login.gov.
+      help_html: Si no desea eliminar esta dirección de correo electrónico, visite
+        el %{app} %{help_link} o el %{contact_link}.
+      subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
     letter_expired:
       help: ''
