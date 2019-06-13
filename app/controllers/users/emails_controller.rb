@@ -52,11 +52,12 @@ module Users
       @presenter = ConfirmDeleteEmailPresenter.new(current_user, email_address)
     end
 
-    def delete
-      send_delete_email_notification
+    def delete # rubocop:disable Metrics/AbcSize
+      current_confirmed_emails = current_user.confirmed_email_addresses.map(&:email)
       result = DeleteUserEmailForm.new(current_user, email_address).submit
       analytics.track_event(Analytics::EMAIL_DELETION_REQUEST, result.to_h)
       if result.success?
+        send_delete_email_notification(current_confirmed_emails)
         handle_successful_delete
       else
         flash[:error] = t('email_addresses.delete.failure')
@@ -127,9 +128,9 @@ module Users
       redirect_to account_url
     end
 
-    def send_delete_email_notification
-      current_user.confirmed_email_addresses.each do |confirmed_address|
-        UserMailer.email_deleted(confirmed_address.email).deliver_later
+    def send_delete_email_notification(current_confirmed_emails)
+      current_confirmed_emails.each do |confirmed_email|
+        UserMailer.email_deleted(confirmed_email).deliver_later
       end
     end
   end
