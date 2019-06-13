@@ -1,5 +1,5 @@
 module Twilio
-  FakeVerifyMessage = Struct.new(:country_code, :local_number, :code) do
+  FakeVerifyMessage = Struct.new(:country_code, :local_number, :code, :sent_at) do
     cattr_accessor :messages
     self.messages = []
 
@@ -11,10 +11,13 @@ module Twilio
       )
     end
 
+    def self.last_message(phone: nil)
+      return messages.last if phone.nil?
+      messages.select { |m| m.to == phone }.last
+    end
+
     def self.last_otp(phone: nil)
-      return messages.last&.otp if phone.nil?
-      message = messages.select { |m| m.to == phone }.last
-      message&.otp
+      last_message(phone: phone)&.otp
     end
 
     def to

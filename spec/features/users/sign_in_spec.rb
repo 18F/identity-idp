@@ -290,11 +290,11 @@ feature 'Sign in' do
 
   context 'invalid request_id' do
     it 'allows the user to sign in and does not try to redirect to any SP' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :signed_up)
 
       visit new_user_session_path(request_id: 'invalid')
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_path).to eq account_path
@@ -485,12 +485,11 @@ feature 'Sign in' do
 
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1(:saml)
       visit_idp_from_sp_with_loa1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
 

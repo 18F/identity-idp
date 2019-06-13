@@ -187,7 +187,8 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       check 'remember_device'
-      submit_prefilled_otp_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
       expect(current_path).to eq account_path
     end
@@ -196,18 +197,14 @@ feature 'Two Factor Authentication' do
       visit account_path
     end
 
-    def submit_prefilled_otp_code
-      click_button t('forms.buttons.submit.default')
-    end
-
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      old_code = find('input[@name="code"]').value
+      old_code = last_sms_otp
 
       click_link t('links.two_factor_authentication.get_another_code')
 
-      new_code = find('input[@name="code"]').value
+      new_code = last_sms_otp
 
       expect(old_code).not_to eq(new_code)
     end
@@ -343,6 +340,7 @@ feature 'Two Factor Authentication' do
         (max_attempts - 1).times do
           click_link t('links.two_factor_authentication.get_another_code')
         end
+        fill_in_code_with_last_phone_otp
         click_submit_default
 
         expect(current_path).to eq account_path
@@ -364,6 +362,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
+        fill_in_code_with_last_phone_otp
         click_submit_default
 
         expect(current_path).to eq account_path

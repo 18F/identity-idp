@@ -1,5 +1,5 @@
 module Twilio
-  FakeMessage = Struct.new(:to, :body, :messaging_service_sid) do
+  FakeMessage = Struct.new(:to, :body, :messaging_service_sid, :sent_at) do
     cattr_accessor :messages
     self.messages = []
 
@@ -8,13 +8,17 @@ module Twilio
         opts[:to],
         opts[:body],
         opts[:messaging_service_sid],
+        Time.zone.now,
       )
     end
 
+    def self.last_message(phone: nil)
+      return messages.last if phone.nil?
+      messages.select { |m| m.to == phone }.last
+    end
+
     def self.last_otp(phone: nil)
-      return messages.last&.otp if phone.nil?
-      message = messages.select { |m| m.to == phone }.last
-      message&.otp
+      last_message(phone: phone)&.otp
     end
 
     def otp

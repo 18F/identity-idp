@@ -1,13 +1,9 @@
 require 'rails_helper'
 
-describe 'TOTP enrollability' do
-  before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
+describe 'MFA enrollability' do
   let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
-  it 'is not available for selection as backup auth method once it is chosen as primary' do
+  it 'backup codes are not available for backup mfa after being chosen as primary' do
     sign_up_and_set_password
 
     select_2fa_option('backup_code')
