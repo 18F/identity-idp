@@ -231,11 +231,10 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, otp_delivery_preference: :sms)
       sign_in_before_2fa(user)
 
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
-
       choose_another_security_option('voice')
 
-      expect(VoiceOtpSenderJob).to have_received(:perform_later)
+      expect(Twilio::FakeMessage.messages.length).to eq(1)
+      expect(Twilio::FakeCall.calls.length).to eq(1)
     end
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
@@ -569,9 +568,6 @@ feature 'Two Factor Authentication' do
 
     context 'with SMS and international number that Verify does not think is valid' do
       it 'rescues the VerifyError' do
-        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
-          SmsOtpSenderJob.perform_now(*args)
-        end
         allow(Twilio::FakeVerifyAdapter).to receive(:post).
           and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
@@ -587,10 +583,6 @@ feature 'Two Factor Authentication' do
     context 'user with Voice preference sends SMS, causing a Twilio error' do
       it 'does not change their OTP delivery preference' do
         allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
-        allow(VoiceOtpSenderJob).to receive(:perform_later)
-        allow(SmsOtpSenderJob).to receive(:perform_later) do |*args|
-          SmsOtpSenderJob.perform_now(*args)
-        end
         allow(Twilio::FakeVerifyAdapter).to receive(:post).
           and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
