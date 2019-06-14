@@ -1,30 +1,34 @@
 namespace :job_runs do
   task run: :environment do
     warn 'Calling job runner. See rails log for output.'
+    @keep_jobs_loop = true
+    @jobs_pid_file = "#{Rails.root}/tmp/job_runs-0.pid"
 
-    keep_loop = true
-    puts "rake job_runs:run with PID #{Process.pid}" if keep_loop
+    puts "rake job_runs:run with PID #{Process.pid}" if @keep_jobs_loop
 
-    `echo "#{Process.pid}" > #{Rails.root}/tmp/job_runs-0.pid`
+    File.open(@jobs_pid_file, 'w') { |file| file.write(Process.pid) }
 
     def shut_down
-      `rm -rf #{Rails.root}/tmp/job_runs-0.pid`
-      keep_loop = false
-      puts "\nShutting down gracefully..." unless keep_loop
+      File.unlink(@jobs_pid_file)
+      @keep_jobs_loop = false
+      puts "\nShutting down gracefully..." unless @keep_jobs_loop
     end
 
     # Trap ^C
     Signal.trap('INT') do
       shut_down
-      exit
     end
 
     # Trap `Kill `
     Signal.trap('TERM') do
       shut_down
-      exit
     end
 
-    JobRunner::Runner.new.run while keep_loop
+    while @keep_jobs_loop
+      JobRunner::Runner.new.run
+      unless @keep_jobs_loop
+        exit
+      end
+    end
   end
 end
