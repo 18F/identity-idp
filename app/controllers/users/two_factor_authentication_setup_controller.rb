@@ -19,6 +19,9 @@ module Users
 
       if result.success?
         process_valid_form
+      elsif session[:signing_up] && @two_factor_options_form.selection == 'backup_code_only'
+        session[:signing_up] = false
+        redirect_to account_url
       else
         @presenter = two_factor_options_presenter
         render :index
@@ -28,7 +31,7 @@ module Users
     private
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp)
+      TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])
     end
 
     # rubocop:disable Metrics/MethodLength

@@ -257,7 +257,6 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up, :with_backup_code)
         sign_in_user(user)
 
-        print page.current_url
         3.times do
           fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')
@@ -668,21 +667,6 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
         expect(current_path).to eq login_two_factor_authenticator_path
       end
-    end
-  end
-
-  describe 'signing in when user does not already have personal key' do
-    # For example, when migrating users from another DB
-    it 'redirects to set up a backup MFA' do
-      user = create(:user, :signed_up)
-      UpdateUser.new(user: user, attributes: { encrypted_recovery_code_digest: nil }).call
-
-      sign_in_user(user)
-      click_button t('forms.buttons.submit.default')
-      fill_in 'code', with: user.reload.direct_otp
-      click_button t('forms.buttons.submit.default')
-
-      expect(current_path).to eq two_factor_options_path
     end
   end
 

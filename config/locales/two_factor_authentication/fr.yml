@@ -114,6 +114,9 @@ fr:
       backup_code: Codes de sécurité personnels
       backup_code_info: Recevoir une liste pré-générée de codes de sécurité à utiliser
         lors de la connexion
+      backup_code_only: I don't have any of the above
+      backup_code_only_info: Configurez votre compte sans méthode d'authentification de sauvegarde. <strong>Ceci n'est pas recommandé.</strong>
+        Si vous perdez vos codes de sauvegarde, vous ne pourrez pas vous connecter à votre compte.
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte
       sms: SMS

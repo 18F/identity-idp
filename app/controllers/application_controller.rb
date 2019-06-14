@@ -196,7 +196,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
     return if user_fully_authenticated? &&
-              MfaPolicy.new(current_user).sufficient_factors_enabled?
+              MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
     return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
@@ -211,7 +211,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def two_factor_enabled?
-    MfaPolicy.new(current_user).two_factor_enabled?
+    MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
   end
 
   def skip_session_expiration

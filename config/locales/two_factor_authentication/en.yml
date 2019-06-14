@@ -110,6 +110,9 @@ en:
       backup_code: Backup Codes
       backup_code_info: Receive a pre-generated list of security codes to use when
         signing in
+      backup_code_only: I don't have any of the above
+      backup_code_only_info: Set up your account without a backup authentication method. This is <strong>not recommended</strong>.
+        If you ever lose your backup codes you will not be able to sign into your account.
       piv_cac: Government employees
       piv_cac_info: Use your PIV/CAC card to secure your account
       sms: Text message / SMS
