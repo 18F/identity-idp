@@ -65,6 +65,11 @@ en:
         into your browser."
       link_text: Confirm email address
       subject: Confirm your email
+    email_deleted:
+      header: An email address was deleted from your login.gov profile.
+      help_html: If you did not want to delete this email address, please visit the
+        %{app} %{help_link} or %{contact_link}.
+      subject: Email address deleted
     help_link_text: Help Center
     letter_expired:
       help: ''
