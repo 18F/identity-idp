@@ -33,7 +33,7 @@ class PhoneVerification
 
   def response
     @response ||= begin
-      adapter.post do |request|
+      self.class.adapter.post do |request|
         request.url AUTHY_VERIFY_ENDPOINT
         request.headers['X-Authy-API-Key'] = Figaro.env.twilio_verify_api_key
         request.body = request_body

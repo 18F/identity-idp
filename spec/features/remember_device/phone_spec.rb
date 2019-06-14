@@ -4,8 +4,6 @@ feature 'Remembering a phone' do
   include IdvHelper
 
   before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 
@@ -16,6 +14,7 @@ feature 'Remembering a phone' do
       user = user_with_2fa
       sign_in_user(user)
       check :remember_device
+      fill_in_code_with_last_phone_otp
       click_submit_default
       first(:link, t('links.sign_out')).click
       user
@@ -32,12 +31,14 @@ feature 'Remembering a phone' do
       select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '2025551212'
       click_send_security_code
       check :remember_device
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       first(:link, t('links.sign_out')).click
@@ -55,6 +56,7 @@ feature 'Remembering a phone' do
       fill_in 'user_phone_form_phone', with: '2022347193'
       click_button t('forms.buttons.submit.confirm_change')
       check :remember_device
+      fill_in_code_with_last_phone_otp
       click_submit_default
       first(:link, t('links.sign_out')).click
       user
@@ -66,6 +68,7 @@ feature 'Remembering a phone' do
       user = user_with_2fa
       sign_in_user(user)
       check :remember_device
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       visit manage_phone_path
@@ -82,6 +85,7 @@ feature 'Remembering a phone' do
     before do
       sign_in_user(user)
       check :remember_device
+      fill_in_code_with_last_phone_otp
       click_submit_default
       visit idv_session_path
       fill_out_idv_form_ok

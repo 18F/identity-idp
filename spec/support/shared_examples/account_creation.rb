@@ -53,6 +53,7 @@ shared_examples 'creating an LOA3 account using authenticator app for 2FA' do |s
     fill_out_phone_form_ok
     click_idv_continue
     choose_idv_otp_delivery_method_sms
+    fill_in_code_with_last_phone_otp
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
@@ -76,7 +77,6 @@ end
 
 shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   it 'redirects to the SP', email: true do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_piv_cac
 
@@ -87,7 +87,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 
     expect(page).to have_current_path(two_factor_options_path)
 
-    configure_backup_phone
+    set_up_2fa_with_valid_phone
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -125,6 +125,7 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     fill_out_phone_form_ok
     click_idv_continue
     choose_idv_otp_delivery_method_sms
+    fill_in_code_with_last_phone_otp
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue

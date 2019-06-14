@@ -6,8 +6,6 @@ describe SmsOtpSenderJob do
   describe '.perform' do
     before do
       reset_job_queues
-      TwilioService::Utils.telephony_service = FakeSms
-      FakeSms.messages = []
     end
 
     subject(:perform) do
@@ -21,14 +19,12 @@ describe SmsOtpSenderJob do
 
     let(:otp_created_at) { Time.zone.now.to_s }
 
-    it 'sends a sign in message containing the OTP code to the mobile number', twilio: true do
+    it 'sends a sign in message containing the OTP code to the mobile number' do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
-
-      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 
-      messages = FakeSms.messages
+      messages = Twilio::FakeMessage.messages
 
       expect(messages.size).to eq(1)
 
@@ -42,10 +38,8 @@ describe SmsOtpSenderJob do
       )
     end
 
-    it 'sends a verify message containing the OTP code to the mobile number', twilio: true do
+    it 'sends a verify message containing the OTP code to the mobile number' do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
-
-      TwilioService::Utils.telephony_service = FakeSms
 
       SmsOtpSenderJob.perform_now(
         code: '1234',
@@ -54,7 +48,7 @@ describe SmsOtpSenderJob do
         otp_created_at: otp_created_at,
       )
 
-      messages = FakeSms.messages
+      messages = Twilio::FakeMessage.messages
 
       expect(messages.size).to eq(1)
 
@@ -69,11 +63,9 @@ describe SmsOtpSenderJob do
       allow(I18n).to receive(:locale).and_return(:en).at_least(:once)
       allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
 
-      TwilioService::Utils.telephony_service = FakeSms
-
       perform
 
-      message = FakeSms.messages.first
+      message = Twilio::FakeMessage.messages.first
 
       expect(message.body).to include('4 minutes')
     end
@@ -87,7 +79,7 @@ describe SmsOtpSenderJob do
       it 'does not send if the OTP code is expired' do
         perform
 
-        messages = FakeSms.messages
+        messages = Twilio::FakeMessage.messages
         expect(messages.size).to eq(0)
         expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to eq []
       end
@@ -102,7 +94,7 @@ describe SmsOtpSenderJob do
       it 'respects time zone' do
         perform
 
-        messages = FakeSms.messages
+        messages = Twilio::FakeMessage.messages
         expect(messages.size).to eq(0)
         expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to eq []
       end
@@ -110,7 +102,6 @@ describe SmsOtpSenderJob do
 
     context 'when the phone number country is not in the programmable_sms_countries list' do
       it 'sends the SMS via PhoneVerification class' do
-        PhoneVerification.adapter = FakeAdapter
         phone = '+1 787-327-0143'
         code = '123456'
         verification = instance_double(PhoneVerification)

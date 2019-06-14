@@ -25,6 +25,27 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'email_deleted' do
+    let(:mail) { UserMailer.email_deleted('old@email.com') }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the old email' do
+      expect(mail.to).to eq ['old@email.com']
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.email_deleted.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.email_deleted.header', app: APP_NAME),
+      )
+      expect_email_body_to_have_help_and_contact_links
+    end
+  end
+
   describe 'password_changed' do
     let(:mail) { UserMailer.password_changed(email_address, disavowal_token: '123abc') }
 

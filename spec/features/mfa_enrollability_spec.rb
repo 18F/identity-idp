@@ -1,25 +1,20 @@
 require 'rails_helper'
 
-describe 'TOTP enrollability' do
-  before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
+describe 'MFA enrollability' do
   let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
-  it 'is available for selection as backup auth method once it is chosen as primary in support of users without another device' do
+  it 'backup codes are not available for backup mfa after being chosen as primary' do
     sign_up_and_set_password
 
     select_2fa_option('backup_code')
 
     click_on 'Continue'
 
-    expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
-    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
+    expect(page).to have_current_path(account_path)
   end
 
-  it 'allow choosing totp as the backup auth method' do
+  it 'does not allow choosing totp as backup auth method after it is used as primary' do
     sign_up_and_set_password
 
     select_2fa_option('auth_app')
@@ -29,6 +24,5 @@ describe 'TOTP enrollability' do
 
     expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
     expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
-    expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 1)
   end
 end

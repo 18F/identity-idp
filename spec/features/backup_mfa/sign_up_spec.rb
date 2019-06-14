@@ -42,6 +42,7 @@ shared_examples 'setting up backup mfa on sign up' do
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
     click_send_security_code
+    fill_in_code_with_last_phone_otp
     click_submit_default
   end
 
@@ -57,16 +58,12 @@ feature 'backup mfa setup on sign up' do
   include SamlAuthHelper
   include WebAuthnHelper
 
-  before do
-    stub_twilio_service
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
   context 'sms sign up' do
     def choose_and_confirm_mfa
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
@@ -78,6 +75,7 @@ feature 'backup mfa setup on sign up' do
       select_2fa_option('voice')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 

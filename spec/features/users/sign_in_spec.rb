@@ -290,11 +290,11 @@ feature 'Sign in' do
 
   context 'invalid request_id' do
     it 'allows the user to sign in and does not try to redirect to any SP' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :signed_up)
 
       visit new_user_session_path(request_id: 'invalid')
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_path).to eq account_path
@@ -329,14 +329,13 @@ feature 'Sign in' do
 
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
     it 'falls back to SMS with an error message' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
       signin(user.email, user.password)
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -348,16 +347,15 @@ feature 'Sign in' do
   end
 
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -369,9 +367,7 @@ feature 'Sign in' do
   end
 
   context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
@@ -379,8 +375,9 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
@@ -392,9 +389,7 @@ feature 'Sign in' do
   end
 
   context 'user with voice delivery preference visits /otp/send' do
-    it 'displays an error message but does not send an SMS' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+    it 'displays an error message but does not send another SMS' do
       user = create(:user, :signed_up,
                     otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' })
       signin(user.email, user.password)
@@ -402,8 +397,9 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(Twilio::FakeCall.calls).to eq([])
+      expect(Twilio::FakeMessage.messages).to eq([])
+      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -427,7 +423,6 @@ feature 'Sign in' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'redirects to the personal key page' do
       user = create(:user, :signed_up)
-      stub_twilio_service
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
@@ -490,12 +485,11 @@ feature 'Sign in' do
 
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_loa1(:saml)
       visit_idp_from_sp_with_loa1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
 

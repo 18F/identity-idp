@@ -24,12 +24,11 @@ module Features
     end
 
     def sign_up_and_2fa_loa1_user
-      stub_twilio_service
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
       select_2fa_option('backup_code')
       click_continue
@@ -95,10 +94,9 @@ module Features
     end
 
     def sign_in_before_2fa(user = create(:user))
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       login_as(user, scope: :user, run_callbacks: false)
 
-      if TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+      if MfaPolicy.new(user).two_factor_enabled?
         Warden.on_next_request do |proxy|
           session = proxy.env['rack.session']
           session['warden.user.user.session'] = {}
@@ -156,8 +154,8 @@ module Features
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       user
     end
@@ -171,6 +169,10 @@ module Features
         dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
         uuid: user.x509_dn_uuid,
       )
+    end
+
+    def fill_in_code_with_last_phone_otp
+      fill_in :code, with: last_phone_otp
     end
 
     def click_submit_default
@@ -266,7 +268,6 @@ module Features
     end
 
     def sign_up_user_from_sp_without_confirming_email(email)
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sp_request_id = ServiceProviderRequest.last.uuid
 
       expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
@@ -395,11 +396,10 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
-      stub_twilio_service
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
@@ -412,7 +412,6 @@ module Features
     end
 
     def confirm_email_and_password(email)
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
@@ -465,17 +464,9 @@ module Features
     end
 
     def sign_in_via_branded_page(user)
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
-    end
-
-    def stub_twilio_service
-      twilio_service = instance_double(TwilioService::Utils)
-      allow(twilio_service).to receive(:send_sms)
-      allow(twilio_service).to receive(:place_call)
-
-      allow(TwilioService::Utils).to receive(:new).and_return(twilio_service)
     end
 
     def stub_piv_cac_service
@@ -518,14 +509,6 @@ module Features
       ).link_identity(
         ial: ial,
       )
-    end
-
-    def configure_backup_phone
-      stub_twilio_service
-      select_2fa_option('sms')
-      fill_in 'user_phone_form_phone', with: '202-555-1212'
-      click_send_security_code
-      click_submit_default
     end
   end
 end

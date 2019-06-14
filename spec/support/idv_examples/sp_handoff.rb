@@ -2,10 +2,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
   include SamlAuthHelper
   include IdvHelper
 
-  before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
   let(:email) { 'test@test.com' }
 
   context 'sign up' do
@@ -45,6 +41,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     it 'requires idv and hands off successfully' do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_path).to eq idv_jurisdiction_path
@@ -82,6 +79,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     it 'does not require verification and hands off successfully' do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect_csp_headers_to_be_present if sp == :oidc
@@ -99,6 +97,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     before do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       fill_out_idv_jurisdiction_ok
       click_idv_continue
@@ -115,6 +114,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect_csp_headers_to_be_present if sp == :oidc
 
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect_successful_oidc_handoff if sp == :oidc

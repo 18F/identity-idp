@@ -5,11 +5,6 @@ feature 'webauthn sign up' do
 
   let!(:user) { sign_up_and_set_password }
 
-  before do
-    stub_twilio_service
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
   context 'as first MFA method' do
     def visit_webauthn_setup
       select_2fa_option('webauthn')
@@ -21,6 +16,7 @@ feature 'webauthn sign up' do
       select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(page).to have_current_path(account_path)
@@ -34,6 +30,7 @@ feature 'webauthn sign up' do
       select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       select_2fa_option('webauthn')

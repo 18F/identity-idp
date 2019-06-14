@@ -2,8 +2,6 @@ require 'rails_helper'
 
 feature 'taking an action that revokes remember device' do
   before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 
@@ -11,7 +9,7 @@ feature 'taking an action that revokes remember device' do
     let(:user) { create(:user, :signed_up) }
 
     it 'revokes remember device when modified' do
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_link(
@@ -20,6 +18,7 @@ feature 'taking an action that revokes remember device' do
       )
       fill_in 'user_phone_form_phone', with: '7032231000'
       click_button t('forms.buttons.submit.confirm_change')
+      fill_in_code_with_last_phone_otp
       click_submit_default
       first(:link, t('links.sign_out')).click
 
@@ -29,7 +28,7 @@ feature 'taking an action that revokes remember device' do
     it 'revokes remember device when removed' do
       create(:webauthn_configuration, user: user) # The user needs multiple methods to delete phone
 
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_link(
@@ -47,7 +46,7 @@ feature 'taking an action that revokes remember device' do
     let(:user) { create(:user, :signed_up, :with_webauthn) }
 
     it 'revokes remember device when removed' do
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_on t('account.index.webauthn_delete')
@@ -62,7 +61,7 @@ feature 'taking an action that revokes remember device' do
     let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
 
     it 'revokes remember device when removed' do
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_on t('forms.buttons.disable')
@@ -76,7 +75,7 @@ feature 'taking an action that revokes remember device' do
     let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
     it 'revokes remember device when removed' do
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_on t('forms.buttons.disable')
@@ -90,7 +89,7 @@ feature 'taking an action that revokes remember device' do
     let(:user) { create(:user, :signed_up, :with_authentication_app, :with_backup_code) }
 
     it 'revokes remember device when regenerated' do
-      sign_with_remember_device_and_sign_out
+      sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
       click_on t('forms.backup_code.regenerate')
@@ -102,10 +101,11 @@ feature 'taking an action that revokes remember device' do
     end
   end
 
-  def sign_with_remember_device_and_sign_out
+  def sign_in_with_remember_device_and_sign_out
     sign_in_user(user)
     choose_another_security_option('sms')
     check :remember_device
+    fill_in_code_with_last_phone_otp
     click_submit_default
     first(:link, t('links.sign_out')).click
   end

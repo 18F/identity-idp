@@ -3,8 +3,7 @@ require 'rails_helper'
 feature 'Phone confirmation during sign up' do
   context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      allow(SmsOtpSenderJob).to receive(:perform_now)
+      allow(SmsOtpSenderJob).to receive(:perform_now).and_call_original
       @user = sign_in_before_2fa
 
       select_2fa_option('sms')
@@ -21,6 +20,7 @@ feature 'Phone confirmation during sign up' do
     end
 
     it 'updates phone_confirmed_at and redirects to add another MFA' do
+      fill_in_code_with_last_phone_otp
       click_button t('forms.buttons.submit.default')
 
       expect(MfaContext.new(@user).phone_configurations.reload.first.confirmed_at).to be_present
@@ -57,7 +57,6 @@ feature 'Phone confirmation during sign up' do
     before do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
-      stub_twilio_service
       select_2fa_option('sms')
       fill_in 'user_phone_form_phone',
               with: MfaContext.new(@existing_user).phone_configurations.detect(&:mfa_enabled?).phone

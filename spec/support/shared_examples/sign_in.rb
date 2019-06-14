@@ -1,6 +1,5 @@
 shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
     user = create(:user, :signed_up)
@@ -12,7 +11,9 @@ shared_examples 'signing in with the site in Spanish' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
+    fill_in_code_with_last_phone_otp
     click_submit_default
+
     expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
 
     click_continue
@@ -58,7 +59,6 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
   after { Timecop.return }
 
   it 'redirects to the SP after acknowledging new personal key', :email do
-    stub_twilio_service
     user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 

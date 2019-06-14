@@ -6,16 +6,14 @@ feature 'OTP delivery selection' do
 
     before do
       sign_in_user(user)
-      stub_twilio_service
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       select_2fa_option('voice')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
     it 'should fail if using the same number as backup MFA voice' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('voice')
       expect(page).to have_content t('titles.phone_setup.voice')
@@ -30,6 +28,7 @@ feature 'OTP delivery selection' do
 
     it 'should prevent changing one phone to the other number' do
       choose_phone_as_backup_mfa
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_path).to eq(account_path)
@@ -44,7 +43,6 @@ feature 'OTP delivery selection' do
     end
 
     def choose_phone_as_backup_mfa
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('voice')
       expect(page).to have_content t('titles.phone_setup.voice')

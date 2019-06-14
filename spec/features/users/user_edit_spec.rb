@@ -50,9 +50,6 @@ feature 'User edit' do
     end
 
     scenario 'confirms with selected OTP delivery method and updates user delivery preference' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_now)
-
       fill_in 'user_phone_form_phone', with: '703-555-5000'
       choose 'Phone call'
 
@@ -61,8 +58,8 @@ feature 'User edit' do
       user.reload
 
       expect(current_path).to eq(login_otp_path(otp_delivery_preference: :voice))
-      expect(SmsOtpSenderJob).to_not have_received(:perform_later)
-      expect(VoiceOtpSenderJob).to have_received(:perform_now)
+      expect(Twilio::FakeCall.calls.length).to eq(1)
+      expect(Twilio::FakeMessage.messages).to eq([])
       expect(user.otp_delivery_preference).to eq('voice')
     end
   end
