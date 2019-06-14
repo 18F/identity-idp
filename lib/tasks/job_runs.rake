@@ -2,7 +2,7 @@ namespace :job_runs do
   task run: :environment do
     warn 'Calling job runner. See rails log for output.'
     @keep_jobs_loop = true
-    @jobs_pid_file = "#{Rails.root}/tmp/job_runs-0.pid"
+    @jobs_pid_file = Rails.root.join('tmp', 'job_runs-0.pid')
 
     puts "rake job_runs:run with PID #{Process.pid}" if @keep_jobs_loop
 
@@ -26,9 +26,7 @@ namespace :job_runs do
 
     while @keep_jobs_loop
       JobRunner::Runner.new.run
-      unless @keep_jobs_loop
-        exit
-      end
+      exit unless @keep_jobs_loop
     end
   end
 end
