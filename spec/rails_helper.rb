@@ -45,6 +45,7 @@ RSpec.configure do |config|
   config.include AnalyticsHelper
   config.include AwsKmsClientHelper
   config.include KeyRotationHelper
+  config.include TwilioHelper
 
   config.before(:suite) do
     Rails.application.load_seed

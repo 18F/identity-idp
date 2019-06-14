@@ -1,6 +1,5 @@
 shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
     user = create(:user, :signed_up)
@@ -12,7 +11,9 @@ shared_examples 'signing in with the site in Spanish' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
+    fill_in_code_with_last_phone_otp
     click_submit_default
+
     expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
 
     click_continue

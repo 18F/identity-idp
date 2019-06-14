@@ -2,16 +2,13 @@ shared_examples 'sp requesting attributes' do |sp|
   include SamlAuthHelper
   include IdvHelper
 
-  before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-  end
-
   let(:user) { user_with_2fa }
 
   context 'visiting an SP for the first time' do
     it 'requires the user to verify the attributes submitted to the SP' do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_path).to eq idv_jurisdiction_path
@@ -38,6 +35,7 @@ shared_examples 'sp requesting attributes' do |sp|
     before do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       fill_out_idv_jurisdiction_ok
       click_idv_continue
@@ -51,6 +49,7 @@ shared_examples 'sp requesting attributes' do |sp|
     it 'does not require the user to verify attributes' do
       visit_idp_from_sp_with_loa3(sp)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       if sp == :oidc

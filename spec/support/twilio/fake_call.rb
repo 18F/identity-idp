@@ -1,5 +1,5 @@
 module Twilio
-  FakeCall = Struct.new(:to, :from, :url, :record) do
+  FakeCall = Struct.new(:to, :from, :url, :record, :sent_at) do
     cattr_accessor :calls
     self.calls = []
 
@@ -9,13 +9,17 @@ module Twilio
         opts[:from],
         opts[:url],
         opts[:record],
+        Time.zone.now,
       )
     end
 
+    def self.last_call(phone: nil)
+      return calls.last if phone.nil?
+      calls.select { |c| c.to == phone }.last
+    end
+
     def self.last_otp(phone: nil)
-      return calls.last.otp if phone.nil?
-      call = calls.select { |c| c.to == phone }.last
-      call&.otp
+      last_call(phone: phone)&.otp
     end
 
     def otp

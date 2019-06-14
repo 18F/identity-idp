@@ -27,6 +27,7 @@ shared_examples 'remember device' do
 
     # Setup remember device as second user
     check :remember_device
+    fill_in_code_with_last_phone_otp
     click_submit_default
 
     # Sign out second user

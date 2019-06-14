@@ -90,7 +90,6 @@ feature 'PIV/CAC Management' do
 
       context 'when the user does not have a 2nd mfa yet' do
         it 'does prompt to set one up after configuring PIV/CAC' do
-          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
           stub_piv_cac_service
 
           user.update(otp_secret_key: 'secret')

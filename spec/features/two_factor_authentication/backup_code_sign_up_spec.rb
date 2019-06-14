@@ -4,7 +4,6 @@ feature 'sign up with backup code' do
   include DocAuthHelper
 
   it 'works' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     sign_up_and_set_password
     select_2fa_option('backup_code')
 
