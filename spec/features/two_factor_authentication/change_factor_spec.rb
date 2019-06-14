@@ -216,6 +216,7 @@ feature 'Changing authentication factor' do
 
   def complete_2fa_confirmation
     complete_2fa_confirmation_without_entering_otp
+    fill_in_code_with_last_phone_otp
     click_submit_default
   end
 
@@ -251,6 +252,7 @@ feature 'Changing authentication factor' do
   end
 
   def submit_correct_otp
+    fill_in_code_with_last_phone_otp
     click_submit_default
   end
 

@@ -6,10 +6,10 @@ feature 'LOA3 Single Sign On' do
   include DocAuthHelper
 
   def perform_id_verification_with_usps_without_confirming_code(user)
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     visit saml_authn_request
     fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
     click_submit_default
     fill_out_idv_jurisdiction_ok
     click_idv_continue
@@ -43,7 +43,6 @@ feature 'LOA3 Single Sign On' do
   context 'First time registration' do
     let(:email) { 'test@test.com' }
     before do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     end
 
