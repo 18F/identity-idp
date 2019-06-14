@@ -72,12 +72,12 @@ describe 'OpenID Connect' do
         prompt: 'select_account',
       )
 
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
 
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
@@ -102,7 +102,6 @@ describe 'OpenID Connect' do
         prompt: 'select_account',
       )
 
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
@@ -114,6 +113,8 @@ describe 'OpenID Connect' do
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
+
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
@@ -304,12 +305,11 @@ describe 'OpenID Connect' do
 
   context 'canceling sign in with active identities present' do
     it 'signs the user out and returns to the home page' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = create(:user, :signed_up)
 
       visit_idp_from_sp_with_loa1
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       visit destroy_user_session_url
 

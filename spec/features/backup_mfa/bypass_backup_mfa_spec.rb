@@ -53,7 +53,6 @@ end
 
 describe 'attempting to bypass backup mfa setup' do
   before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('9999')
   end
 
@@ -63,6 +62,7 @@ describe 'attempting to bypass backup mfa setup' do
     end
 
     def complete_mfa
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
