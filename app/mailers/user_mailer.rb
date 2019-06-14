@@ -116,4 +116,8 @@ class UserMailer < ActionMailer::Base
   def email_added(email)
     mail(to: email, subject: t('user_mailer.email_added.subject'))
   end
+
+  def email_deleted(email)
+    mail(to: email, subject: t('user_mailer.email_deleted.subject'))
+  end
 end

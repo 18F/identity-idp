@@ -1,0 +1,25 @@
+<p class="lead">
+  <%= t('user_mailer.email_deleted.header') %>
+</p>
+<table class="spacer">
+  <tbody>
+     <tr style="vertical-align: top; padding: 0;" align="left">
+        <td class="s10" height="10px">&nbsp;</td>
+     </tr>
+  </tbody>
+</table>
+<table class="hr">
+  <tbody>
+     <tr>
+        <th>&nbsp;</th>
+     </tr>
+  </tbody>
+</table>
+<p>
+  <%=
+    t('.help_html',
+       app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'),
+       help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+       contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url))
+  %>
+</p>
