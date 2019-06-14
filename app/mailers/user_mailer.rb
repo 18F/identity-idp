@@ -32,8 +32,8 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
-  def phone_changed(email_address)
-    mail(to: email_address.email, subject: t('user_mailer.phone_changed.subject'))
+  def phone_added(email_address)
+    mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
   end
 
   def account_does_not_exist(email, request_id)

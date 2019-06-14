@@ -190,8 +190,8 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'phone_changed' do
-    let(:mail) { UserMailer.phone_changed(email_address) }
+  describe 'phone_added' do
+    let(:mail) { UserMailer.phone_added(email_address) }
 
     it_behaves_like 'a system email'
 
@@ -200,14 +200,13 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.phone_changed.subject')
+      expect(mail.subject).to eq t('user_mailer.phone_added.subject')
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.phone_changed.intro', app: APP_NAME),
+        t('user_mailer.phone_added.intro', app: APP_NAME),
       )
-      expect_email_body_to_have_help_and_contact_links
     end
   end
 
