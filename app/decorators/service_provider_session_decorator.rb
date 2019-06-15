@@ -88,7 +88,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   def sp_create_link
     view_context.link_to t('service_providers.default.account_page.create_link'),
-                         view_context.sign_up_email_url(request_id: sp_session[:request_id])
+                         view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
 
   def sp_name
