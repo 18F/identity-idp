@@ -7,9 +7,9 @@ shared_examples 'setting up backup mfa on sign up' do
     fill_in 'password_form_password', with: 'salty pickles'
     click_button t('forms.buttons.continue')
 
-    choose_and_confirm_mfa
+    device = choose_and_confirm_mfa
 
-    expect_back_mfa_setup_to_be_required
+    expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
@@ -18,9 +18,9 @@ shared_examples 'setting up backup mfa on sign up' do
 
   it 'requires backup mfa on sp sign up' do
     user = visit_idp_from_sp_and_sign_up
-    choose_and_confirm_mfa
+    device = choose_and_confirm_mfa
 
-    expect_back_mfa_setup_to_be_required
+    expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(sign_up_completed_path)
 
@@ -30,14 +30,16 @@ shared_examples 'setting up backup mfa on sign up' do
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
   end
 
-  def expect_back_mfa_setup_to_be_required
+  def expect_back_mfa_setup_to_be_required(device)
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
+    expect(page).to have_content t('two_factor_authentication.first_factor_enabled', device: device)
 
     visit account_path
 
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
+    expect(page).to have_content t('two_factor_authentication.first_factor_enabled', device: device)
 
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
@@ -65,6 +67,7 @@ feature 'backup mfa setup on sign up' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      :phone
     end
 
     it_behaves_like 'setting up backup mfa on sign up'
@@ -77,6 +80,7 @@ feature 'backup mfa setup on sign up' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      :phone
     end
 
     it_behaves_like 'setting up backup mfa on sign up'
@@ -87,6 +91,7 @@ feature 'backup mfa setup on sign up' do
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       click_submit_default
+      :auth_app
     end
 
     def totp_secret_from_page
@@ -104,6 +109,7 @@ feature 'backup mfa setup on sign up' do
 
     def choose_and_confirm_mfa
       set_up_2fa_with_piv_cac
+      :piv_cac
     end
 
     it_behaves_like 'setting up backup mfa on sign up'
@@ -119,6 +125,7 @@ feature 'backup mfa setup on sign up' do
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
       click_button t('forms.buttons.continue')
+      :webauthn
     end
 
     it_behaves_like 'setting up backup mfa on sign up'
