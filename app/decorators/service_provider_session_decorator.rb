@@ -92,7 +92,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_name
-    'USAJOBS' #sp.friendly_name || sp.agency
+    sp.friendly_name || sp.agency
   end
 
   def sp_agency
