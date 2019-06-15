@@ -33,13 +33,13 @@ shared_examples 'setting up backup mfa on sign up' do
   def expect_back_mfa_setup_to_be_required(device)
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
-    expect(page).to have_content t('two_factor_authentication.first_factor_enabled', device: device)
+    expect(page).to have_content first_factor_enabled_message(device)
 
     visit account_path
 
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
-    expect(page).to have_content t('two_factor_authentication.first_factor_enabled', device: device)
+    expect(page).to have_content first_factor_enabled_message(device)
 
     select_2fa_option('sms')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
@@ -53,6 +53,11 @@ shared_examples 'setting up backup mfa on sign up' do
     visit_idp_from_sp_with_loa1(:oidc)
     confirm_email_and_password(email)
     User.find_with_email(email)
+  end
+
+  def first_factor_enabled_message(device)
+    dmsg = t("two_factor_authentication.devices.#{device}")
+    t('two_factor_authentication.first_factor_enabled', device: dmsg)
   end
 end
 

@@ -69,6 +69,7 @@ Metrics/MethodLength:
   Exclude:
   - 'db/migrate/*'
   - spec/**/*
+  - 'app/services/first_mfa_enabled_for_user.rb'
 
 Metrics/ModuleLength:
   CountComments: false

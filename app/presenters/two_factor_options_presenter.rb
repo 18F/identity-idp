@@ -39,7 +39,7 @@ class TwoFactorOptionsPresenter
   private
 
   def first_mfa_enabled
-    FirstMfaEnabledForUser.call(current_user)
+    t("two_factor_authentication.devices.#{FirstMfaEnabledForUser.call(current_user)}")
   end
 
   def recovery

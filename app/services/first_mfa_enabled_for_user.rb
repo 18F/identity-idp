@@ -1,10 +1,17 @@
 class FirstMfaEnabledForUser
   def self.call(user)
-    return :piv_cac if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
-    return :webauthn if TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-    return :auth_app if TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
-    return :phone if TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-    return :backup_code if TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
-    :error
+    if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
+      :piv_cac
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
+      :webauthn
+    elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
+      :auth_app
+    elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
+      :phone
+    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+      :backup_code
+    else
+      :error
+    end
   end
 end
