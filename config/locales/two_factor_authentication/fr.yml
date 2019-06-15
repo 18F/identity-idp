@@ -26,7 +26,8 @@ fr:
       phone: téléphone
       piv_cac: PIV/CAC
       webauthn: clé de sécurité
-    first_factor_enabled: Votre méthode d'authentification principale %{device} a été configurée avec succès.
+    first_factor_enabled: Votre méthode d'authentification principale %{device} a
+      été configurée avec succès.
     header_text: Entrez votre code de sécurité
     invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer

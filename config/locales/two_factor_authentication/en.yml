@@ -26,7 +26,8 @@ en:
       phone: phone
       piv_cac: PIV/CAC
       webauthn: security key
-    first_factor_enabled: Your primary authentication method %{device} has been successfully set up.
+    first_factor_enabled: Your primary authentication method %{device} has been successfully
+      set up.
     header_text: Enter your security code
     invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
