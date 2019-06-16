@@ -2,6 +2,7 @@ module Idv
   module Steps
     class FrontImageStep < DocAuthBaseStep
       def call
+        sleep 30
         success, instance_id_or_message, analytics_hash = assure_id_create_document
         return failure(instance_id_or_message, analytics_hash) unless success
 
