@@ -1,4 +1,5 @@
 class FirstMfaEnabledForUser
+  # rubocop:disable MethodLength
   def self.call(user)
     if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
       :piv_cac
@@ -14,4 +15,5 @@ class FirstMfaEnabledForUser
       :error
     end
   end
+  # rubocop:enable MethodLength
 end

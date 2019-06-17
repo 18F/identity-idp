@@ -21,13 +21,12 @@ fr:
       need to use a new key.
     choose_another_option: "‹ Choisissez une autre option"
     devices:
-      auth_app: application d'authentification
-      backup_code: codes de sécurité personnels
-      phone: téléphone
+      auth_app: Application d'authentification
+      backup_code: Codes de sécurité personnels
+      phone: Téléphone
       piv_cac: PIV/CAC
-      webauthn: clé de sécurité
-    first_factor_enabled: Votre méthode d'authentification principale %{device} a
-      été configurée avec succès.
+      webauthn: Clé de sécurité
+    first_factor_enabled: "%{device} a été configuré avec succès comme méthode d'authentification."
     header_text: Entrez votre code de sécurité
     invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer

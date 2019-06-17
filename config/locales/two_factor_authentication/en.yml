@@ -21,13 +21,12 @@ en:
       need to use a new key.
     choose_another_option: "‹ Choose another option"
     devices:
-      auth_app: authentication app
-      backup_code: backup codes
-      phone: phone
+      auth_app: Authentication app
+      backup_code: Backup codes
+      phone: Phone
       piv_cac: PIV/CAC
-      webauthn: security key
-    first_factor_enabled: Your primary authentication method %{device} has been successfully
-      set up.
+      webauthn: Security key
+    first_factor_enabled: "%{device} was successfully setup as an authentication method."
     header_text: Enter your security code
     invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
