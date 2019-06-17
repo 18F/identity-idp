@@ -1,5 +1,6 @@
 module TwoFactorAuthentication
   class BackupCodeSelectionPresenter < SelectionPresenter
+    # :reek:BooleanParameter
     def initialize(only = false)
       @only_backup_codes = only
     end

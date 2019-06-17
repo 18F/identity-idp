@@ -1,4 +1,5 @@
 class MfaPolicy
+  # :reek:BooleanParameter
   def initialize(user, signup = false)
     @mfa_user = MfaContext.new(user)
     @signup_flag = signup

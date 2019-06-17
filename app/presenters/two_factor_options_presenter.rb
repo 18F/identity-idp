@@ -3,6 +3,7 @@ class TwoFactorOptionsPresenter
 
   attr_reader :current_user, :service_provider
 
+  # :reek:BooleanParameter
   def initialize(current_user, sp, signingup = false)
     @current_user = current_user
     @service_provider = sp
