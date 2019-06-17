@@ -29,25 +29,25 @@ es:
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
       auth_app: Aplicación de autenticación
-      auth_app_info: Use su aplicación de autenticación para obtener el código de
+      auth_app_info_html: Use su aplicación de autenticación para obtener el código de
         seguridad.
       personal_key: Clave personal
-      personal_key_info: Use la clave personal de 16 caracteres que usó en la creación
+      personal_key_info_html: Use la clave personal de 16 caracteres que usó en la creación
         de la cuenta.
       piv_cac: Empleados del Gobierno
-      piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
+      piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS a <strong>%{phone}</strong>.
-      sms_setup_info: Obtenga su código de seguridad a través de mensajes de texto
+      sms_setup_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS.
       voice: Llamada telefónica automatizada
-      voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
+      voice_info_html_html: Obtenga su código de seguridad a través de una llamada telefónica
         a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
-      voice_setup_info: Obtenga su código de seguridad a través de una llamada telefónica.
+      voice_setup_info_html: Obtenga su código de seguridad a través de una llamada telefónica.
         (Solo números de teléfono de América del Norte).
       webauthn: Clave de seguridad
-      webauthn_info: Use su clave de seguridad para acceder a su cuenta.
+      webauthn_info_html: Use su clave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está bloqueada

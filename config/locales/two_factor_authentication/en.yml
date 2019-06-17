@@ -29,22 +29,22 @@ en:
     login_intro: You set these up when you created your account
     login_options:
       auth_app: Authentication app
-      auth_app_info: Use your authentication application to get security code.
+      auth_app_info_html: Use your authentication application to get security code.
       personal_key: Personal Key
-      personal_key_info: Use the 16 character personal key you received at account
+      personal_key_info_html: Use the 16 character personal key you received at account
         creation.
       piv_cac: Government employee ID
-      piv_cac_info: Use your PIV/CAC card instead of a security code.
+      piv_cac_info_html: Use your PIV/CAC card instead of a security code.
       sms: Text message
       sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
-      sms_setup_info: Get security code via text message.
+      sms_setup_info_html: Get security code via text message.
       voice: Automated phone call
       voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
         (North America phone numbers only).
-      voice_setup_info: Get security code via phone call (North America phone numbers
+      voice_setup_info_html: Get security code via phone call (North America phone numbers
         only).
       webauthn: Security key
-      webauthn_info: Use your security key to access your account.
+      webauthn_info_html: Use your security key to access your account.
     login_options_link_text: Choose another security option
     login_options_title: Select your security option
     max_backup_code_login_attempts_reached: For your security, your account is temporarily
