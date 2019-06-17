@@ -12,7 +12,8 @@ feature 'sign up with backup code' do
 
     click_on 'Continue'
 
-    expect(current_path).to eq account_path
+    expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
+    expect(current_path).to eq two_factor_options_path
   end
 
   it 'does not show download button on a mobile device' do
