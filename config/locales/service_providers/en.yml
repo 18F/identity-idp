@@ -3,8 +3,9 @@ en:
   service_providers:
     default:
       account_page:
-        body: Your old %{sp_name} username and password won’t work. Please create
-          a login.gov account using the same email address you use for %{sp_name}.
+        body: Your old %{sp_name} username and password won’t work. Please %{sp_create_link}
+          using the same email address you use for %{sp_name}.
+        create_link: create a login.gov account
       body_html: Your old %{sp_name} username and password won’t work. Please %{link}
         using the same email address you use for %{sp_name}.
       create_account_link: create a login.gov account

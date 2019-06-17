@@ -11,6 +11,8 @@ describe 'devise/passwords/new.html.slim' do
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url).
       and_return('https://www.example.com/')
+    allow(view_context).to receive(:sign_up_email_path).
+      and_return('/sign_up/enter_email')
 
     @decorated_session = DecoratedSession.new(
       sp: @sp,

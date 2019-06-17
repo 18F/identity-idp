@@ -5,7 +5,8 @@ fr:
       account_page:
         body: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
           e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
-          créer votre nouveau compte login.gov.
+          %{sp_create_link}.
+        create_link: créer votre nouveau compte login.gov
       body_html: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
         e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
         %{link}.

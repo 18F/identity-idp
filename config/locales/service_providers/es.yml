@@ -5,7 +5,8 @@ es:
       account_page:
         body: Si tiene un perfil de %{sp_name} existente, favor de usar la dirección
           de correo electrónico primaria o secundaria que usó para %{sp_name} para
-          crear su nueva cuenta de login.gov.
+          %{sp_create_link}.
+        create_link: crear su nueva cuenta de login.gov
       body_html: Si tiene un perfil de %{sp_name} existente, favor de usar la dirección
         de correo electrónico primaria o secundaria que usó para %{sp_name} para %{link}.
       create_account_link: crear su nueva cuenta de login.gov
