@@ -116,8 +116,9 @@ es:
       backup_code_info: Reciba una lista generada previamente de códigos de seguridad
         para usar al iniciar sesión
       backup_code_only: I don't have any of the above
-      backup_code_only_info: Configure su cuenta sin un método de autenticación de copia de seguridad. <strong>Esto no es recomendable.</strong>
-        Si alguna vez pierde sus códigos de respaldo, no podrá iniciar sesión en su cuenta.
+      backup_code_only_info: Configure su cuenta sin un método de autenticación de
+        copia de seguridad. <strong>Esto no es recomendable.</strong> Si alguna vez
+        pierde sus códigos de respaldo, no podrá iniciar sesión en su cuenta.
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta
       sms: Mensaje de texto / SMS

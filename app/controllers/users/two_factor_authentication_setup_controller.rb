@@ -19,7 +19,15 @@ module Users
 
       if result.success?
         process_valid_form
-      elsif session[:signing_up] && @two_factor_options_form.selection == 'backup_code_only'
+      else
+        direct_user_on_failure
+      end
+    end
+
+    private
+
+    def direct_user_on_failure
+      if session[:signing_up] && @two_factor_options_form.selection == 'backup_code_only'
         session[:signing_up] = false
         redirect_to account_url
       else
@@ -27,8 +35,6 @@ module Users
         render :index
       end
     end
-
-    private
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])

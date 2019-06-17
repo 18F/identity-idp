@@ -212,7 +212,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def two_factor_enabled?
     MfaPolicy.new(current_user).two_factor_enabled?
-    #MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+    # MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
   end
 
   def skip_session_expiration
