@@ -70,7 +70,7 @@ module IdvHelper
       text: t('two_factor_authentication.otp_delivery_preference.sms'),
     ).click
     click_on t('idv.buttons.send_confirmation_code')
-  end¡
+  end
 
   def choose_idv_otp_delivery_method_voice
     page.find(
