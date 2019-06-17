@@ -29,11 +29,11 @@ fr:
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
       auth_app: Application d'authentification
-      auth_app_info_html: Utilisez votre application d'authentification pour obtenir votre
-        code de sécurité
+      auth_app_info_html: Utilisez votre application d'authentification pour obtenir
+        votre code de sécurité
       personal_key: Clé personnelle
-      personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous avez
-        utilisée lors de la création du compte.
+      personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
+        avez utilisée lors de la création du compte.
       piv_cac: Employés du gouvernement
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
@@ -42,8 +42,8 @@ fr:
       voice: Appel téléphonique
       voice_info_html: Obtenez votre code de sécurité par appel téléphonique à <strong>%{phone}</strong>.
         (Seulement les numéros de téléphone en Amerique du Nord)
-      voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique. (Seulement
-        les numéros de téléphone en Amerique du Nord)
+      voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique.
+        (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité

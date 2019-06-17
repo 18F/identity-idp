@@ -41,8 +41,8 @@ en:
       voice: Automated phone call
       voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
         (North America phone numbers only).
-      voice_setup_info_html: Get security code via phone call (North America phone numbers
-        only).
+      voice_setup_info_html: Get security code via phone call (North America phone
+        numbers only).
       webauthn: Security key
       webauthn_info_html: Use your security key to access your account.
     login_options_link_text: Choose another security option
