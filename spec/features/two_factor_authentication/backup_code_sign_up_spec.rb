@@ -4,7 +4,8 @@ feature 'sign up with backup code' do
   include DocAuthHelper
 
   it 'works' do
-    sign_up_and_set_password
+    user = sign_up_and_set_password
+    expect(FirstMfaEnabledForUser.call(user)).to eq(:error)
     select_2fa_option('backup_code')
 
     expect(page).to have_link(t('forms.backup_code.download'))
@@ -14,6 +15,7 @@ feature 'sign up with backup code' do
 
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
     expect(current_path).to eq two_factor_options_path
+    expect(FirstMfaEnabledForUser.call(user)).to eq(:backup_code)
   end
 
   it 'does not show download button on a mobile device' do

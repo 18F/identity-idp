@@ -1,5 +1,5 @@
 <% if !@presenter.no_factors_enabled? %>
-  <div class="alert alert-success" role="alert">Your primary authentication method has been successfully set up.</div>
+  <div class="alert alert-success" role="alert"><%= @presenter.first_mfa_successfully_enabled_message %></div>
 <% end %>
 <% title @presenter.title %>
 <h1 class="h3 my0"><%= @presenter.heading %></h1>
