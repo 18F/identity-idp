@@ -66,7 +66,8 @@ en:
       otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
-      phone_duplicate: This phone number is already in use. Please use another number.
+      phone_duplicate: This account is already using the phone number you entered
+        as an authenticator. Please use a different phone number.
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
       twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
