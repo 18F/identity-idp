@@ -12,6 +12,10 @@ RSpec.describe ServiceProviderSessionDecorator do
   end
   let(:sp) { build_stubbed(:service_provider) }
   let(:sp_name) { subject.sp_name }
+  before do
+    allow(view_context).to receive(:sign_up_email_path).
+      and_return('/sign_up/enter_email')
+  end
 
   it 'has the same public API as SessionDecorator' do
     SessionDecorator.public_instance_methods.each do |method|
