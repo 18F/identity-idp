@@ -10,7 +10,6 @@ fr:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
     edit_info:
-      email: Modifier votre adresse courriel
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique

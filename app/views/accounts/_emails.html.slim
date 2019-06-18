@@ -4,8 +4,7 @@
       = t('account.index.email')
     .right-align.col.col-6
       .btn.btn-account-action.rounded-lg.bg-light-blue
-        - if FeatureManagement.email_addition_enabled? && \
-          EmailPolicy.new(current_user).can_add_email?
+        - if EmailPolicy.new(current_user).can_add_email?
           = link_to t('account.index.email_add'), add_email_path
   - current_user.email_addresses.each do |email|
     .p2.col.col-12.border-top.border-blue-light.account-list-item
@@ -13,10 +12,6 @@
         = email.email
         span.ml1 = t('email_addresses.unconfirmed') unless email.confirmed_at
       .col.col-4.sm-6.right-align
-        - unless FeatureManagement.email_addition_enabled?
-          = render @view_model.manage_action_partial,
-            path: manage_email_url(id: email.id),
-            name: t('account.index.email')
         - if EmailPolicy.new(current_user).can_delete_email?(email)
           ' &nbsp; &nbsp;
           = render @view_model.delete_action_partial,

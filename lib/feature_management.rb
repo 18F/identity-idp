@@ -106,20 +106,12 @@ class FeatureManagement
     Figaro.env.send_new_device_sms == 'true'
   end
 
-  def self.email_deletion_enabled?
-    Figaro.env.email_deletion_enabled == 'true'
-  end
-
   def self.disallow_ial2_recovery?
     Figaro.env.disallow_ial2_recovery == 'true'
   end
 
   def self.allow_doc_auth_test_credentials?
     Figaro.env.allow_doc_auth_test_credentials == 'true'
-  end
-
-  def self.email_addition_enabled?
-    Figaro.env.email_addition_enabled == 'true'
   end
 
   def self.backup_codes_as_only_2fa?

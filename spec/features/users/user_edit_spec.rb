@@ -3,32 +3,6 @@ require 'rails_helper'
 feature 'User edit' do
   let(:user) { create(:user, :signed_up) }
 
-  context 'editing email' do
-    let(:new_email) { 'new_email@test.com' }
-
-    before do
-      sign_in_and_2fa_user(user)
-      visit manage_email_path(id: user.email_addresses.take.id)
-    end
-
-    scenario 'user is not able to submit form without entering an email' do
-      fill_in 'Email', with: ''
-      click_button 'Update'
-
-      expect(page).to have_current_path manage_email_path(id: user.email_addresses.take.id)
-    end
-
-    scenario 'user receives confirmation message at new address' do
-      fill_in 'Email', with: new_email
-      click_button 'Update'
-
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
-
-      expect(page).to have_content(new_email)
-    end
-  end
-
   context 'editing 2FA phone number' do
     before do
       sign_in_and_2fa_user(user)

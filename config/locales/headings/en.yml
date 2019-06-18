@@ -26,7 +26,6 @@ en:
         securely.
     create_account_without_sp: Create a login.gov account
     edit_info:
-      email: Change your email
       password: Change your password
       phone: Manage your phone number
     lock_failure: Here's what you can do
