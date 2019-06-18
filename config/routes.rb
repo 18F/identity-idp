@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
-    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
+    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
@@ -118,7 +118,6 @@ Rails.application.routes.draw do
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
-    get '/account_recovery_setup' => 'account_recovery_setup#index'
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
@@ -192,8 +191,6 @@ Rails.application.routes.draw do
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
-    post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
-         as: :sign_up_create_email_resend
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/personal_key' => 'sign_up/personal_keys#show'
     post '/sign_up/personal_key' => 'sign_up/personal_keys#update'

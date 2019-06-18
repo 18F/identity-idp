@@ -1,8 +1,6 @@
 ---
 en:
   forms:
-    account_recovery_setup:
-      legend: Select a secondary authentication option
     backup_code:
       download: Download
       generate: Generate

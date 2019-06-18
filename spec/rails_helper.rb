@@ -45,6 +45,7 @@ RSpec.configure do |config|
   config.include AnalyticsHelper
   config.include AwsKmsClientHelper
   config.include KeyRotationHelper
+  config.include TwilioHelper
 
   config.before(:suite) do
     Rails.application.load_seed
@@ -66,9 +67,12 @@ RSpec.configure do |config|
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
   end
 
-  config.before(:each, twilio: true) do
-    FakeSms.messages = []
-    FakeVoiceCall.calls = []
+  config.before(:each) do
+    allow(PhoneVerification).to receive(:adapter).and_return(Twilio::FakeVerifyAdapter)
+    allow(TwilioService::Utils).to receive(:telephony_service).and_return(Twilio::FakeRestClient)
+    Twilio::FakeMessage.messages = []
+    Twilio::FakeCall.calls = []
+    Twilio::FakeVerifyMessage.messages = []
   end
 
   config.around(:each, user_flow: true) do |example|

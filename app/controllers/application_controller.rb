@@ -139,7 +139,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def two_2fa_setup
-    if MfaPolicy.new(current_user).multiple_factors_enabled?
+    if MfaPolicy.new(current_user).sufficient_factors_enabled?
       after_multiple_2fa_sign_up
     else
       two_factor_options_url
@@ -154,6 +154,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     else
       after_sign_in_path_for(current_user)
     end
+  end
+
+  def ga_cookie_client_id
+    return if ga_cookie.blank?
+    ga_client_id = ga_cookie.match('GA1\.\d\.(\d+\.\d+)')
+    return ga_client_id[1] if ga_client_id
+  end
+
+  def ga_cookie
+    cookies[:_ga]
   end
 
   def reauthn_param
@@ -181,12 +191,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     reauthn.present? && reauthn == 'true'
   end
 
-  def confirm_two_factor_authenticated
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  def confirm_two_factor_authenticated(id = nil)
+    return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
-    return if user_fully_authenticated? && multiple_factors_enabled?
+    return if user_fully_authenticated? &&
+              MfaPolicy.new(current_user).sufficient_factors_enabled?
     return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
   def prompt_to_set_up_2fa
     redirect_to two_factor_options_url
@@ -194,10 +208,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
-  end
-
-  def multiple_factors_enabled?
-    MfaPolicy.new(current_user).multiple_factors_enabled?
   end
 
   def two_factor_enabled?

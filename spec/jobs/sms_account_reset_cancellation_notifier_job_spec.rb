@@ -6,8 +6,6 @@ describe SmsAccountResetCancellationNotifierJob do
   describe '.perform' do
     before do
       reset_job_queues
-      TwilioService::Utils.telephony_service = FakeSms
-      FakeSms.messages = []
     end
 
     subject(:perform) do
@@ -16,14 +14,12 @@ describe SmsAccountResetCancellationNotifierJob do
       )
     end
 
-    it 'sends a message to the mobile number', twilio: true do
+    it 'sends a message to the mobile number' do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
-
-      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 
-      messages = FakeSms.messages
+      messages = Twilio::FakeMessage.messages
 
       expect(messages.size).to eq(1)
 

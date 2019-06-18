@@ -31,6 +31,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
+    args = args.merge(sp_create_link: sp_create_link)
     return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
 
     t("service_providers.default.#{section}", args)
@@ -83,6 +84,11 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   def requested_attributes
     sp_session[:requested_attributes].sort
+  end
+
+  def sp_create_link
+    view_context.link_to t('service_providers.default.account_page.create_link'),
+                         view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
 
   def sp_name

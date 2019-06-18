@@ -9,15 +9,12 @@ describe PhoneVerification do
     end
 
     it 'does not raise an error when the response is successful' do
-      PhoneVerification.adapter = FakeAdapter
-      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::SuccessResponse.new)
-
       expect { verification }.to_not raise_error
     end
 
     it 'raises VerifyError when response is not successful' do
-      PhoneVerification.adapter = FakeAdapter
-      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::ErrorResponse.new)
+      allow(Twilio::FakeVerifyAdapter).to receive(:post).
+        and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
 
       expect { verification }.to raise_error do |error|
         expect(error.code).to eq 60_033
@@ -27,8 +24,8 @@ describe PhoneVerification do
     end
 
     it 'raises VerifyError when response body is not valid JSON' do
-      PhoneVerification.adapter = FakeAdapter
-      allow(FakeAdapter).to receive(:post).and_return(FakeAdapter::EmptyResponse.new)
+      allow(Twilio::FakeVerifyAdapter).to receive(:post).
+        and_return(Twilio::FakeVerifyAdapter::EmptyResponse.new)
 
       expect { verification }.to raise_error do |error|
         expect(error.code).to eq 0
@@ -69,8 +66,7 @@ describe PhoneVerification do
     end
 
     it 'rescues timeout errors, retries, then raises a custom Twilio error' do
-      PhoneVerification.adapter = FakeAdapter
-      expect(FakeAdapter).to receive(:post).twice.and_raise(Faraday::TimeoutError)
+      expect(Twilio::FakeVerifyAdapter).to receive(:post).twice.and_raise(Faraday::TimeoutError)
 
       expect { verification }.to raise_error do |error|
         expect(error.code).to eq 4_815_162_342
@@ -82,8 +78,9 @@ describe PhoneVerification do
     end
 
     it 'rescues failed connection errors, retries, then raises a custom Twilio error' do
-      PhoneVerification.adapter = FakeAdapter
-      expect(FakeAdapter).to receive(:post).twice.and_raise(Faraday::ConnectionFailed.new('error'))
+      expect(Twilio::FakeVerifyAdapter).to receive(:post).
+        twice.
+        and_raise(Faraday::ConnectionFailed.new('error'))
 
       expect { verification }.to raise_error do |error|
         expect(error.code).to eq 4_815_162_342

@@ -68,6 +68,11 @@ fr:
         le lien complet dans votre navigateur."
       link_text: Confirmez votre adresse email
       subject: Confirmez votre adresse courriel
+    email_deleted:
+      header: Une adresse email a été supprimée de votre profil login.gov.
+      help_html: Si vous ne souhaitez pas supprimer cette adresse électronique veuillez
+        visiter le %{help_link} de %{app} ou %{contact_link}.
+      subject: Adresse email supprimée
     help_link_text: Centre d'aide
     letter_expired:
       help: ''
@@ -137,11 +142,12 @@ fr:
         login.gov
       intro: La clé personnelle utilisée pour vous connecter
       subject: Alerte de sécurité du compte
-    phone_changed:
-      help: Si vous ne souhaitiez pas changer votre numéro de téléphone, veuillez
-        visiter le %{help_link} de %{app} ou %{contact_link}.
-      intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
-      subject: Nouveau numéro de téléphone
+    phone_added:
+      help: Si vous n'avez pas apporté cette modification, connectez-vous à votre
+        profil et gérez vos numéros de téléphone. Nous vous recommandons de changer
+        également votre mot de passe.
+      intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app}.
+      subject: Nouveau numéro de téléphone ajouté
     please_reset_password:
       additional_help_html: Si vous avez utilisé votre mot de passe login.gov sur
         d'autres sites internet, nous vous encourageons à mettre ces mots de passe

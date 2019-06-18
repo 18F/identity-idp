@@ -1,8 +1,14 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::BackupCodeVerificationController do
+  let(:ga_client_id) { '123.456' }
+  let(:ga_cookie) { 'GA1.2.123.456' }
   let(:backup_code) { { backup_code: 'foo' } }
-  let(:payload) { { backup_code_verification_form: backup_code, ga_client_id: 'abc-cool-town-5' } }
+  let(:payload) { { backup_code_verification_form: backup_code, ga_client_id: ga_client_id } }
+
+  before do
+    cookies['_ga'] = ga_cookie
+  end
 
   describe '#show' do
     it 'tracks the page visit' do
@@ -34,7 +40,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, 'abc-cool-town-5')
+          with(analytics_hash, ga_client_id)
 
         post :create, params: payload
       end
@@ -56,7 +62,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, 'abc-cool-town-5')
+          with(analytics_hash, ga_client_id)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
@@ -117,7 +123,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, 'abc-cool-town-5')
+          with(properties, ga_client_id)
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 

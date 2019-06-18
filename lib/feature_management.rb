@@ -121,4 +121,8 @@ class FeatureManagement
   def self.email_addition_enabled?
     Figaro.env.email_addition_enabled == 'true'
   end
+
+  def self.backup_codes_as_only_2fa?
+    Figaro.env.backup_codes_as_only_2fa == 'true'
+  end
 end

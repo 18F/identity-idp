@@ -5,7 +5,6 @@ feature 'doc auth send link step' do
   include DocAuthHelper
 
   before do
-    TwilioService::Utils.telephony_service = FakeSms
     enable_doc_auth
     complete_doc_auth_steps_before_send_link_step
   end

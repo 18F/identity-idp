@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::OtpVerificationController do
+  let(:ga_client_id) { '123.456' }
+  let(:ga_cookie) { 'GA1.2.123.456' }
+
+  before do
+    cookies['_ga'] = ga_cookie
+  end
+
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
       before do
@@ -85,12 +92,12 @@ describe TwoFactorAuthentication::OtpVerificationController do
         }
         stub_analytics
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, 'abc-cool-town-5')
+          with(properties, ga_client_id)
 
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms',
-          ga_client_id: 'abc-cool-town-5' }
+          ga_client_id: ga_client_id }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -133,14 +140,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, 'abc-cool-town-5')
+          with(properties, ga_client_id)
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms',
-          ga_client_id: 'abc-cool-town-5' }
+          ga_client_id: ga_client_id }
       end
     end
 
@@ -155,7 +162,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
-          ga_client_id: 'abc-cool-town-5',
+          ga_client_id: ga_client_id,
         }
 
         expect(response).to redirect_to account_path
@@ -183,14 +190,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, 'abc-cool-town-5')
+          with(properties, ga_client_id)
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
-          ga_client_id: 'abc-cool-town-5',
+          ga_client_id: ga_client_id,
         }
       end
 
@@ -283,7 +290,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         allow(subject).to receive(:create_user_event)
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
         subject.current_user.email_addresses.each do |email_address|
-          allow(UserMailer).to receive(:phone_changed).with(email_address).
+          allow(UserMailer).to receive(:phone_added).with(email_address).
             and_return(@mailer)
         end
         @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
@@ -322,7 +329,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
             subject.current_user.email_addresses.each do |email_address|
-              expect(UserMailer).to have_received(:phone_changed).with(email_address)
+              expect(UserMailer).to have_received(:phone_added).with(email_address)
             end
             expect(@mailer).to have_received(:deliver_later)
           end

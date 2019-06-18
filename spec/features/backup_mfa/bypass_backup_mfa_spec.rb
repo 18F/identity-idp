@@ -31,7 +31,6 @@ shared_examples 'preventing backup mfa bypass' do
     expect(current_path).to eq(two_factor_options_path)
 
     set_up_2fa_with_valid_phone
-    click_submit_default
 
     expect(current_path).to eq(account_path)
   end
@@ -54,7 +53,6 @@ end
 
 describe 'attempting to bypass backup mfa setup' do
   before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('9999')
   end
 
@@ -64,6 +62,7 @@ describe 'attempting to bypass backup mfa setup' do
     end
 
     def complete_mfa
+      fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
@@ -117,21 +116,6 @@ describe 'attempting to bypass backup mfa setup' do
                             nonce: nonce,
                             uuid: user.x509_dn_uuid,
                             subject: 'SomeIgnoredSubject')
-    end
-
-    it_behaves_like 'preventing backup mfa bypass'
-  end
-
-  context 'with backup codes' do
-    let(:user) { create(:user, :with_backup_code) }
-
-    before do
-      user.backup_code_configurations.create!(code: '123456')
-    end
-
-    def complete_mfa
-      fill_in :code, with: '123456'
-      click_submit_default
     end
 
     it_behaves_like 'preventing backup mfa bypass'

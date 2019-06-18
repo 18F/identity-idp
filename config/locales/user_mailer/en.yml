@@ -65,6 +65,11 @@ en:
         into your browser."
       link_text: Confirm email address
       subject: Confirm your email
+    email_deleted:
+      header: An email address was deleted from your login.gov profile.
+      help_html: If you did not want to delete this email address, please visit the
+        %{app} %{help_link} or %{contact_link}.
+      subject: Email address deleted
     help_link_text: Help Center
     letter_expired:
       help: ''
@@ -125,11 +130,11 @@ en:
         <br>Thanks,<br>The login.gov team
       intro: Personal key used to sign in
       subject: Account Security Alert
-    phone_changed:
-      help: If you did not want to change your phone number, please visit the %{app}
-        %{help_link} or %{contact_link}.
-      intro: The phone number associated with your %{app} account has been changed.
-      subject: New phone number
+    phone_added:
+      help: If you did not make this change, sign in to your profile and manage your
+        phone numbers. We recommend that you also change your password.
+      intro: A new phone number was added to your %{app} profile.
+      subject: New phone number added
     please_reset_password:
       additional_help_html: If you’ve used your login.gov password on other websites,
         we encourage you to update these passwords as well. If you have any questions,
