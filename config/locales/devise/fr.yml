@@ -54,10 +54,6 @@ fr:
     registrations:
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
       destroyed: Votre compte a bien été supprimé.
-      email_update_needs_confirmation: Vous avez mis à jour votre compte, mais nous
-        devons confirmer votre nouvelle adresse courriel. Surveillez la réception
-        d'un courriel envoyé par nous et suivez le lien inscrit pour confirmer votre
-        nouvelle adresse courriel.
       phone_update_needs_confirmation: Votre demande de mise à jour de votre numéro
         de téléphone a été traitée, mais nous devons d'abord confirmer votre nouveau
         numéro. Veuillez suivre les instructions ci-dessous. Si vous ne confirmez

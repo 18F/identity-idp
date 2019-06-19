@@ -10,7 +10,6 @@ es:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
     edit_info:
-      email: Edite su email
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code: Ingese su código de seguridad de sólo un uso
