@@ -48,9 +48,6 @@ en:
     registrations:
       close_window: You can close this window if you're done.
       destroyed: Your account has been successfully deleted.
-      email_update_needs_confirmation: You have updated your account, but we need
-        to confirm your new email address. Check for an email from us, then follow
-        the link in the email to confirm your new address.
       phone_update_needs_confirmation: Your request to update your phone number was
         processed, but we need to confirm your new number first. Please follow the
         instructions below. If you do not confirm your new number, we will keep using

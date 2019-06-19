@@ -61,6 +61,8 @@ describe 'devise/sessions/new.html.slim' do
         service_provider_request: ServiceProviderRequest.new,
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
+      allow(view_context).to receive(:sign_up_email_path).
+        and_return('/sign_up/enter_email')
     end
 
     it 'displays a custom header' do

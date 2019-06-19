@@ -19,39 +19,7 @@ feature 'managing email address' do
     end
   end
 
-  context 'when adding emails is disabled' do
-    before do
-      allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(false)
-    end
-
-    it 'displays the links for allowing the user to manage their email addresses' do
-      user = create(:user, :signed_up)
-      sign_in_and_2fa_user(user)
-
-      manage_link_path = manage_email_url(id: user.email_addresses.first.id)
-      expect(page).to have_link(t('forms.buttons.manage'), href: manage_link_path)
-    end
-  end
-
-  context 'when adding emails is enabled' do
-    before do
-      allow(FeatureManagement).to receive(:email_addition_enabled?).and_return(true)
-      Rails.application.reload_routes!
-    end
-
-    it 'does not display the links for allowing the user to manage their email addresses' do
-      user = create(:user, :signed_up)
-      sign_in_and_2fa_user(user)
-
-      expect(page).to have_content("#{user.email_addresses.first.email}\nPassword")
-    end
-  end
-
   context 'allows deletion of email address' do
-    before do
-      allow(FeatureManagement).to receive(:email_deletion_enabled?).and_return(true)
-    end
-
     it 'does not allow last confirmed email to be deleted' do
       user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
       confirmed_email = user.confirmed_email_addresses.first

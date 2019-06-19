@@ -3,7 +3,7 @@
     .bold = decorated_session.sp_msg('header')
     p.mb1
       - if current_page?(new_user_session_path)
-        = decorated_session.sp_msg('account_page.body')
+        == decorated_session.sp_msg('account_page.body')
       - elsif current_page?(sign_up_email_path)
         = decorated_session.sp_msg('create_account_page.body')
       - else
