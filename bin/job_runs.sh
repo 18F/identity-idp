@@ -7,7 +7,7 @@ usage: $(basename "$0") {start|stop|status} [PIDFILE]
 
 Init script for IdP background job runner.
 
-PIDFILE: defaults to $PIDFILE
+PIDFILE: if provided, fork to run in background (allowing stop/status as well)
 EOM
 }
 
@@ -28,10 +28,13 @@ fi
 
 case $1 in
   start)
+    # If PIDFILE is given, fork into background
     if [ -n "$PIDFILE" ]; then
-      exec rbenv exec bundle exec rake "job_runs:run[$PIDFILE]"
+      run rbenv exec bundle exec rake "job_runs:run[$PIDFILE]" &
+      # save last process pid to the pidfile
+      echo "$!" > "$PIDFILE"
     else
-      exec rbenv exec bundle exec rake job_runs:run
+      run rbenv exec bundle exec rake job_runs:run
     fi
     ;;
   stop)
