@@ -25,7 +25,7 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1 ||
       (FeatureManagement.backup_codes_as_only_2fa? &&
       mfa_user.backup_code_configurations.to_a.length.positive? &&
-      !@signup_flag)
+      !signup_flag)
   end
 
   def unphishable?
