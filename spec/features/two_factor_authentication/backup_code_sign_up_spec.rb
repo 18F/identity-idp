@@ -51,6 +51,20 @@ feature 'sign up with backup code' do
     end
   end
 
+  it 'allows backup code only MFA configurations' do
+    user = sign_up_and_set_password
+
+    expect(current_path).to eq two_factor_options_path
+    select_2fa_option('backup_code')
+    click_on 'Continue'
+
+    expect(current_path).to eq two_factor_options_path
+    expect(user.backup_code_configurations.count).to eq(10)
+    select_2fa_option('backup_code_only')
+
+    expect(current_path).to eq account_path
+  end
+
   def sign_out_user
     first(:link, t('links.sign_out')).click
   end

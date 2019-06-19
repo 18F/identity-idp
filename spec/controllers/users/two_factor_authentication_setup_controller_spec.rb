@@ -166,6 +166,20 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
+    context 'when the selection is backup codes' do
+      it 'redirects to account page' do
+        stub_sign_in_before_2fa
+
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'back_up_codes',
+          },
+        }
+
+        expect(path).to eq backup_code_setup_url
+      end
+    end
+
     context 'when the selection is not valid' do
       it 'renders index page' do
         stub_sign_in_before_2fa
