@@ -6,8 +6,9 @@
 </p>
 
 
-<%= form_with url: two_factor_options_path,
-                    method: :put do |f| %>
+<%= form_tag(idv_otp_delivery_method_url,
+             method: 'put', autocomplete: 'off',
+             role: 'form', class: 'mt3',method: :put) do |f| %>
 
   <fieldset class="mb3 p0 border-none">
     <label class="btn-border col-12 mb1">
@@ -39,10 +40,11 @@
       <div class="mt3">
         <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
       </div>
-      <div class="mt2">
-        <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
-      </div>
     <% end %>
+    <div class="mt2">
+        <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
+    </div>
+
   </fieldset>
   <div class="mt3">
     <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 btn btn-primary') %>
