@@ -18,26 +18,24 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
+        process_backup_code_only if session[:signing_up] &&
+                                    @two_factor_options_form.selection == 'backup_code_only'
         process_valid_form
-      else
-        direct_user_on_failure
-      end
-    end
-
-    private
-
-    def direct_user_on_failure
-      if session[:signing_up] && @two_factor_options_form.selection == 'backup_code_only'
-        session[:signing_up] = false
-        redirect_to account_url
       else
         @presenter = two_factor_options_presenter
         render :index
       end
     end
 
+    private
+
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])
+    end
+
+    def process_backup_code_only
+      session[:signing_up] = false
+      redirect_to account_url
     end
 
     # rubocop:disable Metrics/MethodLength
