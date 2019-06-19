@@ -8,6 +8,14 @@ module TwoFactorAuthCode
       t('two_factor_authentication.header_text')
     end
 
+    def step
+      no_factors_enabled? ? '3' : '4'
+    end
+
+    def no_factors_enabled?
+      MfaPolicy.new(@view.current_user).no_factors_enabled?
+    end
+
     def phone_number_message
       t("instructions.mfa.#{otp_delivery_preference}.number_message",
         number: content_tag(:strong, phone_number),

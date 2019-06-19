@@ -1,6 +1,7 @@
 - title @presenter.heading
 = image_tag asset_url(@presenter.image), width: 200, class: 'mb2'
 
+h1.h5.my0 = 'Step ' + @presenter.step + ' of 4'
 h1.h3.my0 = @presenter.heading
 p.mt-tiny.mb0 = @presenter.info
 = simple_form_for(@user_phone_form,

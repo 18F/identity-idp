@@ -3,8 +3,13 @@ class PhoneSetupPresenter
 
   attr_reader :otp_delivery_preference
 
-  def initialize(otp_delivery_preference)
+  def initialize(current_user, otp_delivery_preference)
+    @current_user = current_user
     @otp_delivery_preference = otp_delivery_preference
+  end
+
+  def step
+    no_factors_enabled? ? '3' : '4'
   end
 
   def heading
@@ -21,5 +26,11 @@ class PhoneSetupPresenter
 
   def image
     "2FA-#{otp_delivery_preference}.svg"
+  end
+
+  private
+
+  def no_factors_enabled?
+    MfaPolicy.new(@current_user).no_factors_enabled?
   end
 end

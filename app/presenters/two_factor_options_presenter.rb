@@ -8,6 +8,10 @@ class TwoFactorOptionsPresenter
     @service_provider = sp
   end
 
+  def step
+    no_factors_enabled? ? '3' : '4'
+  end
+
   def title
     t("titles.two_factor_#{recovery}setup")
   end
