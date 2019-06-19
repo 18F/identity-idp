@@ -26,7 +26,6 @@ fr:
         en toute sécurité.
     create_account_without_sp: Créer un compte login.gov
     edit_info:
-      email: Changez votre courriel
       password: Changez votre mot de passe
       phone: Administrer votre numéro de téléphone
     lock_failure: Voici ce que vous pouvez faire

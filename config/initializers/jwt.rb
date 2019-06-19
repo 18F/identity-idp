@@ -1,28 +1,28 @@
-# rubocop:disable Metrics/ParameterLists
+# rubocop:disable all
 module JWT
-  module_function
+  class Decode
+    def verify_signature
+      @key = find_key(&@keyfinder) if @keyfinder
+      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
 
-  def decode_verify_signature(key, header, payload, signature, signing_input, options, &keyfinder)
-    algo, key = signature_algorithm_and_key(header, payload, key, &keyfinder)
+      raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
+      unless options_includes_algo_in_header? || header['alg'].include?('Proc:')
+        raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+      end
 
-    allowed_a = allowed_algorithms(options)
-    raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_a.empty?
-    unless allowed_a.include?(algo) || algo.to_s.include?('Proc:') # login.gov mod for CloudHsm
-      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm')
+      Signature.verify(header['alg'], @key, signing_input, @signature)
     end
-
-    Signature.verify(algo, key, signing_input, signature)
   end
 
   class Encode
-    def encoded_signature(signing_input)
+    def encode_signature
       return '' if @algorithm == 'none'
       signature = if @algorithm.class == Proc # login.gov mod for CloudHsm
-                    @algorithm.call(signing_input, @key)
+                    @algorithm.call(encoded_header_and_payload, @key)
                   else
-                    JWT::Signature.sign(@algorithm, signing_input, @key)
+                    JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key)
                   end
-      Encode.base64url_encode(signature)
+      JWT::Base64.url_encode(signature)
     end
   end
 end
@@ -39,4 +39,4 @@ module JWT
     end
   end
 end
-# rubocop:enable Metrics/ParameterLists
+# rubocop:enable all

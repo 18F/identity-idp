@@ -3,32 +3,6 @@ require 'rails_helper'
 feature 'User edit' do
   let(:user) { create(:user, :signed_up) }
 
-  context 'editing email' do
-    let(:new_email) { 'new_email@test.com' }
-
-    before do
-      sign_in_and_2fa_user(user)
-      visit manage_email_path(id: user.email_addresses.take.id)
-    end
-
-    scenario 'user is not able to submit form without entering an email' do
-      fill_in 'Email', with: ''
-      click_button 'Update'
-
-      expect(page).to have_current_path manage_email_path(id: user.email_addresses.take.id)
-    end
-
-    scenario 'user receives confirmation message at new address' do
-      fill_in 'Email', with: new_email
-      click_button 'Update'
-
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
-
-      expect(page).to have_content(new_email)
-    end
-  end
-
   context 'editing 2FA phone number' do
     before do
       sign_in_and_2fa_user(user)
@@ -88,24 +62,6 @@ feature 'User edit' do
         expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq true
         expect(page).to have_content t('event_types.phone_removed')
       end
-    end
-  end
-
-  context "user A accesses create password page with user B's email change token" do
-    it "redirects to user A's account page", email: true do
-      sign_in_and_2fa_user(user)
-      visit manage_email_path(id: user.email_addresses.take.id)
-      fill_in 'Email', with: 'user_b_new_email@test.com'
-      click_button 'Update'
-      confirmation_link = parse_email_for_link(last_email, /confirmation_token/)
-      token = confirmation_link.split('confirmation_token=').last
-      visit destroy_user_session_path
-      user_a = create(:user, :signed_up)
-      sign_in_and_2fa_user(user_a)
-      visit sign_up_enter_password_path(confirmation_token: token)
-
-      expect(page).to have_current_path(account_path)
-      expect(page).to_not have_content user.email_addresses.first.email
     end
   end
 

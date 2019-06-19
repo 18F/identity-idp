@@ -10,7 +10,6 @@ en:
       new: Resend confirmation instructions for your account
       show: Choose a password
     edit_info:
-      email: Edit your email address
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time security code

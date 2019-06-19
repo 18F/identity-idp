@@ -29,7 +29,7 @@ feature 'Changing authentication factor' do
 
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
       user.email_addresses.each do |email_address|
-        allow(UserMailer).to receive(:phone_changed).with(email_address).and_return(mailer)
+        allow(UserMailer).to receive(:phone_added).with(email_address).and_return(mailer)
       end
 
       @previous_phone_confirmed_at =
@@ -59,7 +59,7 @@ feature 'Changing authentication factor' do
 
       expect(current_path).to eq account_path
       user.email_addresses.each do |email_address|
-        expect(UserMailer).to have_received(:phone_changed).with(email_address)
+        expect(UserMailer).to have_received(:phone_added).with(email_address)
       end
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
@@ -147,15 +147,6 @@ feature 'Changing authentication factor' do
       end
     end
 
-    scenario 'editing email' do
-      visit manage_email_path(id: user.email_addresses.take.id)
-
-      expect(page).to have_content t('help_text.change_factor', factor: 'email')
-      complete_2fa_confirmation
-
-      expect(current_path).to eq manage_email_path(id: user.email_addresses.take.id)
-    end
-
     scenario 'deleting account' do
       visit account_delete_path
 
@@ -163,36 +154,6 @@ feature 'Changing authentication factor' do
       complete_2fa_confirmation
 
       expect(current_path).to eq account_delete_path
-    end
-  end
-
-  context 'user has authenticator app enabled' do
-    it 'allows them to change their email, password, or phone' do
-      sign_in_with_totp_enabled_user
-
-      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        visit manage_email_path(id: User.last.email_addresses.take.id)
-        submit_current_password_and_totp
-
-        expect(current_path).to eq manage_email_path(id: User.last.email_addresses.take.id)
-      end
-
-      Timecop.travel(Figaro.env.reauthn_window.to_i * 3) do
-        visit manage_password_path
-        submit_current_password_and_totp
-
-        expect(current_path).to eq manage_password_path
-      end
-
-      Timecop.travel(Figaro.env.reauthn_window.to_i * 4) do
-        visit manage_phone_path
-        submit_current_password_and_totp
-
-        expect(current_path).to eq manage_phone_path
-
-        update_phone_number
-        expect(page).to have_link t('links.cancel'), href: account_path
-      end
     end
   end
 

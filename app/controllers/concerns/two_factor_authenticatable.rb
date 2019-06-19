@@ -147,13 +147,21 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
 
   def phone_changed
     create_user_event(:phone_changed)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.phone_changed(email_address).deliver_later
-    end
+    send_phone_added_email
   end
 
   def phone_confirmed
     create_user_event(:phone_confirmed)
+    # If the user has MFA configured, then they are not adding a phone during sign up and are
+    # instead adding it outside the sign up flow
+    return unless MfaPolicy.new(current_user).sufficient_factors_enabled?
+    send_phone_added_email
+  end
+
+  def send_phone_added_email
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.phone_added(email_address).deliver_later
+    end
   end
 
   def update_phone_attributes
