@@ -12,6 +12,7 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
     end
 
+    # :reek:TooManyStatements
     def create
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
