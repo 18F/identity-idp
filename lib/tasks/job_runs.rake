@@ -1,17 +1,23 @@
 namespace :job_runs do
-  task run: :environment do
+  task :run, [:pidfile] => :environment do |_t, args|
     warn 'Calling job runner. See rails log for output.'
     @keep_jobs_loop = true
-    @jobs_pid_file = Rails.root.join('tmp', 'job_runs-0.pid')
+    @jobs_pid_file = nil
 
-    puts "rake job_runs:run with PID #{Process.pid}" if @keep_jobs_loop
+    # use provided pidfile path, if any
+    @jobs_pid_file = args.pidfile
 
-    File.open(@jobs_pid_file, 'w') { |file| file.write(Process.pid) }
+    warn "rake job_runs:run starting with PID #{Process.pid}"
+
+    if @jobs_pid_file
+      warn 'Writing to pidfile at ' + @jobs_pid_file.inspect
+      File.write(@jobs_pid_file, Process.pid.to_s)
+    end
 
     def shut_down
-      File.unlink(@jobs_pid_file)
+      File.unlink(@jobs_pid_file) if @jobs_pid_file
       @keep_jobs_loop = false
-      puts "\nShutting down gracefully..." unless @keep_jobs_loop
+      warn "\nShutting down gracefully..."
     end
 
     # Trap ^C
@@ -19,14 +25,14 @@ namespace :job_runs do
       shut_down
     end
 
-    # Trap `Kill `
-    Signal.trap('TERM') do
-      shut_down
-    end
-
     while @keep_jobs_loop
       JobRunner::Runner.new.run
-      exit unless @keep_jobs_loop
+
+      # sleep 15, but bail out early if we are shutting down
+      15.times do
+        sleep 1
+        break unless @keep_jobs_loop
+      end
     end
   end
 end
