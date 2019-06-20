@@ -14,6 +14,11 @@ module Users
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
+
+      @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        view: view_context,
+        data: { current_user: current_user },
+      )
     end
 
     def confirm

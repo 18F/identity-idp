@@ -11,6 +11,10 @@ module Users
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
+      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
+        view: view_context,
+        data: { current_user: current_user },
+      )
       flash_error(result.errors) unless result.success?
     end
 
