@@ -142,21 +142,18 @@ Rails.application.routes.draw do
 
     get '/forgot_password' => 'forgot_password#show'
 
-    get '/manage/email/:id' => 'users/emails#edit', as: :manage_email
-    match '/manage/email/:id' => 'users/emails#update', via: %i[patch put]
-    delete '/manage/email/:id' => 'users/emails#delete' if FeatureManagement.email_deletion_enabled?
-    get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
-        as: :manage_email_confirm_delete
     get '/manage/password' => 'users/passwords#edit'
     patch '/manage/password' => 'users/passwords#update'
 
-    if FeatureManagement.email_addition_enabled?
-      get '/add/email' => 'users/emails#show'
-      post '/add/email' => 'users/emails#add'
-      get '/add/email/confirm' => 'users/email_confirmations#create', as: :add_email_confirmation
-      get '/add/email/verify_email' => 'users/emails#verify', as: :add_email_verify_email
-      post '/add/email/resend' => 'users/emails#resend'
-    end
+    get '/add/email' => 'users/emails#show'
+    post '/add/email' => 'users/emails#add'
+    get '/add/email/confirm' => 'users/email_confirmations#create', as: :add_email_confirmation
+    get '/add/email/verify_email' => 'users/emails#verify', as: :add_email_verify_email
+    post '/add/email/resend' => 'users/emails#resend'
+
+    delete '/manage/email/:id' => 'users/emails#delete', as: :delete_email
+    get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
+        as: :manage_email_confirm_delete
 
     get '/add/phone' => 'users/phones#add'
     post '/add/phone' => 'users/phones#create'
