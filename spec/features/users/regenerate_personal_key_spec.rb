@@ -5,8 +5,6 @@ feature 'View personal key' do
   include PersonalKeyHelper
   include SamlAuthHelper
 
-  before { stub_twilio_service }
-
   context 'after sign up' do
     context 'regenerating personal key' do
       scenario 'displays new code and notifies the user' do
@@ -93,6 +91,7 @@ feature 'View personal key' do
       expect(current_path).not_to eq account_path
 
       visit manage_personal_key_path
+
       acknowledge_and_confirm_personal_key
 
       expect(current_path).to eq account_path
@@ -127,11 +126,11 @@ feature 'View personal key' do
 end
 
 def sign_up_and_view_personal_key
-  allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   sign_up_and_set_password
   select_2fa_option('sms')
   fill_in 'user_phone_form_phone', with: '202-555-1212'
   click_send_security_code
+  fill_in_code_with_last_phone_otp
   click_submit_default
 end
 

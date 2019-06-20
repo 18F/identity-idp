@@ -11,8 +11,8 @@ describe TwoFactorAuthentication::WebauthnSelectionPresenter do
   end
 
   describe '#html_class' do
-    it 'returns hidden' do
-      expect(subject.html_class).to eq 'hidden'
+    it 'returns hide' do
+      expect(subject.html_class).to eq 'hide'
     end
   end
 end

@@ -2,8 +2,6 @@ require 'rails_helper'
 
 describe 'Remembering a TOTP device' do
   before do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-    allow(SmsOtpSenderJob).to receive(:perform_now)
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 
@@ -24,12 +22,20 @@ describe 'Remembering a TOTP device' do
 
   context 'sign up' do
     def remember_device_and_sign_out_user
-      user = sign_up_with_backup_codes_and_set_password
+      user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
+
+      select_2fa_option('sms')
+      fill_in :user_phone_form_phone, with: '2025551212'
+      click_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       check :remember_device
       click_submit_default
+
       first(:link, t('links.sign_out')).click
       user
     end

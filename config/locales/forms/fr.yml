@@ -1,8 +1,6 @@
 ---
 fr:
   forms:
-    account_recovery_setup:
-      legend: Sélectionnez une option d'authentification secondaire
     backup_code:
       download: Télécharger
       generate: Générer

@@ -92,15 +92,16 @@ feature 'phone otp rate limiting', :idv_job do
 
   def expect_rate_limit_circumvention_to_be_disallowed(user)
     # Attempting to send another OTP does not send an OTP and shows lockout message
-    allow(SmsOtpSenderJob).to receive(:perform_now)
-    allow(SmsOtpSenderJob).to receive(:perform_later)
+    Twilio::FakeMessage.messages = []
+    Twilio::FakeCall.calls = []
 
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_delivery_selection_step(user)
 
     expect(page).to have_content t('titles.account_locked')
-    expect(SmsOtpSenderJob).to_not have_received(:perform_now)
-    expect(SmsOtpSenderJob).to_not have_received(:perform_later)
+    expect(Twilio::FakeMessage.messages).to eq([])
+    expect(Twilio::FakeVerifyMessage.messages).to eq([])
+    expect(Twilio::FakeCall.calls).to eq([])
   end
 
   def expect_rate_limit_to_expire(user)

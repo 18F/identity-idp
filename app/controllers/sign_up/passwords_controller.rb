@@ -69,6 +69,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      session[:signing_up] = true
       redirect_to after_confirmation_url_for(@user)
     end
   end

@@ -2,11 +2,9 @@ module Users
   class PhoneSetupController < ApplicationController
     include UserAuthenticator
     include PhoneConfirmation
-    include Authorizable
     include MfaSetupConcern
 
     before_action :authenticate_user
-    before_action :authorize_user
     before_action :confirm_user_authenticated_for_2fa_setup
 
     def index

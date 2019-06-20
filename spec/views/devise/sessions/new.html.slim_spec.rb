@@ -42,7 +42,8 @@ describe 'devise/sessions/new.html.slim' do
     expect(rendered).
       to have_link(t('notices.terms_of_service.link'), href: MarketingSite.privacy_url)
 
-    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_url}'][target='_blank']")
+    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_url}']\
+[target='_blank'][rel='noopener noreferrer']")
   end
 
   context 'when SP is present' do
@@ -60,6 +61,8 @@ describe 'devise/sessions/new.html.slim' do
         service_provider_request: ServiceProviderRequest.new,
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
+      allow(view_context).to receive(:sign_up_email_path).
+        and_return('/sign_up/enter_email')
     end
 
     it 'displays a custom header' do

@@ -84,6 +84,20 @@ feature 'managing email address' do
       delete_email_should_not_fail(confirmed_email1)
     end
 
+    it 'sends notification to all confirmed emails when email address is deleted' do
+      allow(UserMailer).to receive(:email_deleted).and_call_original
+      user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
+      confirmed_email1 = user.confirmed_email_addresses.first
+      create(:email_address, user: user, confirmed_at: Time.zone.now)
+      user.email_addresses.reload
+
+      sign_in_and_2fa_user(user)
+      expect(page).to have_current_path(account_path)
+
+      delete_email_should_not_fail(confirmed_email1)
+      expect(UserMailer).to have_received(:email_deleted).twice
+    end
+
     def delete_link_not_displayed(email)
       delete_link_path = manage_email_confirm_delete_url(id: email.id)
       expect(page).to_not have_link(t('forms.buttons.delete'), href: delete_link_path)

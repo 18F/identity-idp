@@ -2,7 +2,6 @@ shared_examples 'remember device' do
   it 'does not require 2FA on sign in' do
     user = remember_device_and_sign_out_user
     sign_in_user(user)
-
     expect(page).to have_current_path(account_path)
   end
 
@@ -28,6 +27,7 @@ shared_examples 'remember device' do
 
     # Setup remember device as second user
     check :remember_device
+    fill_in_code_with_last_phone_otp
     click_submit_default
 
     # Sign out second user

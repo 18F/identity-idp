@@ -66,6 +66,11 @@ es:
         completo en su navegador."
       link_text: Confirmar el correo
       subject: Confirme su email
+    email_deleted:
+      header: Se eliminó una dirección de correo electrónico de su perfil de login.gov.
+      help_html: Si no desea eliminar esta dirección de correo electrónico, visite
+        el %{app} %{help_link} o el %{contact_link}.
+      subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
     letter_expired:
       help: ''
@@ -129,11 +134,11 @@ es:
         equipo de login.gov
       intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
-    phone_changed:
-      help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}
-        o el %{contact_link}.
-      intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
-      subject: Nuevo número de teléfono
+    phone_added:
+      help: Si no realizó este cambio, inicie sesión en su perfil y administre sus
+        números de teléfono. Le recomendamos que también cambie su contraseña.
+      intro: Se agregó un nuevo número de teléfono a su perfil de %{app}.
+      subject: Nuevo número de teléfono añadido
     please_reset_password:
       additional_help_html: Si ha utilizado su contraseña de login.gov en otros sitios,
         le pedimos que actualice estas contraseñas también. Si tiene preguntas, por

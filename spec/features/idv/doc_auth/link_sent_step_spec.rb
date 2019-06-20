@@ -11,7 +11,6 @@ shared_examples 'link sent step' do |simulate|
     before do
       allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
       enable_doc_auth
-      stub_twilio_service
       complete_doc_auth_steps_before_link_sent_step(user)
       mock_assure_id_ok
       mock_doc_captured(user.id)

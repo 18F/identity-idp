@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 describe 'users/totp_setup/new.html.slim' do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { create(:user, :signed_up) }
 
-  context 'user is fully authenticated' do
+  context 'user has sufficient factors enabled' do
     before do
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:user_fully_authenticated?).and_return(true)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
     end
@@ -32,9 +31,8 @@ describe 'users/totp_setup/new.html.slim' do
 
   context 'user is setting up 2FA' do
     it 'renders a link to choose a different option' do
-      user = build_stubbed(:user)
+      user = create(:user)
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
 

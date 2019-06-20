@@ -1,6 +1,8 @@
 ---
 fr:
   email_addresses:
+    add:
+      duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
     delete:
       confirm: Etes-vous sûr que vous voulez supprimer %{email}?
       failure: Impossible de supprimer cette adresse email.

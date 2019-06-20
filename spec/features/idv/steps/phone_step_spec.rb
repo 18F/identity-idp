@@ -115,8 +115,6 @@ feature 'idv phone step' do
     end
 
     it 'is not re-entrant after confirming OTP' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = user_with_2fa
 
       start_idv_from_sp
@@ -124,6 +122,7 @@ feature 'idv phone step' do
       fill_out_phone_form_ok
       click_idv_continue
       choose_idv_otp_delivery_method_sms
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       visit idv_phone_path
@@ -151,8 +150,6 @@ feature 'idv phone step' do
   end
 
   it 'requires the user to complete the profile step before completing' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
     start_idv_from_sp
     complete_idv_steps_before_profile_step
     # Try to advance ahead to the phone step

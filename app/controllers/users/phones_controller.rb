@@ -30,11 +30,11 @@ module Users
     def update
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
       @presenter = PhoneSetupPresenter.new(delivery_preference)
-      if @user_phone_form.submit(user_params).success?
+      if @user_phone_form.submit(user_params).success? && !already_has_phone?
         process_updates
         bypass_sign_in current_user
       else
-        render :edit
+        render_edit
       end
     end
 
@@ -54,6 +54,11 @@ module Users
 
     private
 
+    def render_edit
+      flash.now[:error] = t('errors.messages.phone_duplicate') if already_has_phone?
+      render :edit
+    end
+
     # we only allow editing of the first configuration since we'll eventually be
     # doing away with this controller. Once we move to multiple phones, we'll allow
     # adding and deleting, but not editing.
@@ -65,6 +70,10 @@ module Users
       params.require(:user_phone_form).permit(:phone, :international_code,
                                               :otp_delivery_preference,
                                               :otp_make_default_number)
+    end
+
+    def already_has_phone?
+      @user_has_phone ||= @user_phone_form.already_has_phone?
     end
 
     def delivery_preference

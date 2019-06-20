@@ -4,16 +4,15 @@ feature 'signing into an SP with multiple emails enabled' do
   include SamlAuthHelper
 
   scenario 'signing in with OIDC sends the email address used to sign in' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
     user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.email_addresses.map(&:email)
+    emails = user.reload.email_addresses.map(&:email)
 
     expect(emails.count).to eq(2)
 
     emails.each do |email|
       visit_idp_from_oidc_sp
       signin(email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue if current_path == sign_up_completed_path
 
@@ -24,16 +23,15 @@ feature 'signing into an SP with multiple emails enabled' do
   end
 
   scenario 'signing in with SAML sends the email address used to sign in' do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
     user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.email_addresses.map(&:email)
+    emails = user.reload.email_addresses.map(&:email)
 
     expect(emails.count).to eq(2)
 
     emails.each do |email|
       visit authn_request
       signin(email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue if current_path == sign_up_completed_path
 

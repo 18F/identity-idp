@@ -35,13 +35,12 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = create(:user, :signed_up)
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
 
@@ -78,8 +77,6 @@ feature 'LOA1 Single Sign On' do
     end
 
     it 'after session timeout, signing in takes user back to SP' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
       user = create(:user, :signed_up)
       saml_authn_request = auth_request.create(saml_settings)
 
@@ -90,6 +87,7 @@ feature 'LOA1 Single Sign On' do
       expect(current_url).to eq root_url(request_id: sp_request_id)
 
       fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
 
@@ -102,8 +100,8 @@ feature 'LOA1 Single Sign On' do
     let(:saml_authn_request) { auth_request.create(saml_settings) }
 
     before do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
       visit saml_authn_request
     end
@@ -124,6 +122,7 @@ feature 'LOA1 Single Sign On' do
       visit sign_out_url
 
       sign_in_user(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       visit saml_authn_request

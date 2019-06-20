@@ -7,7 +7,7 @@ describe TwilioService::Utils do
     end
 
     it 'uses NullTwilioClient' do
-      TwilioService::Utils.telephony_service = Twilio::REST::Client
+      allow(TwilioService::Utils).to receive(:telephony_service).and_call_original
 
       client = instance_double(NullTwilioClient)
       expect(NullTwilioClient).to receive(:new).and_return(client)
@@ -19,9 +19,7 @@ describe TwilioService::Utils do
       TwilioService::Utils.new
     end
 
-    it 'does not send OTP messages', twilio: true do
-      TwilioService::Utils.telephony_service = FakeSms
-
+    it 'does not send OTP messages' do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '17035551212',
@@ -29,7 +27,7 @@ describe TwilioService::Utils do
         otp_created_at: Time.zone.now.to_s,
       )
 
-      expect(FakeSms.messages.size).to eq 0
+      expect(Twilio::FakeMessage.messages.size).to eq 0
     end
   end
 
@@ -37,7 +35,7 @@ describe TwilioService::Utils do
     before do
       expect(FeatureManagement).to receive(:telephony_disabled?).
         at_least(:once).and_return(false)
-      TwilioService::Utils.telephony_service = Twilio::REST::Client
+      allow(TwilioService::Utils).to receive(:telephony_service).and_call_original
     end
 
     it 'uses a real Twilio client with timeout' do
@@ -63,8 +61,7 @@ describe TwilioService::Utils do
   end
 
   describe '#place_call' do
-    it 'initiates a phone call with options', twilio: true do
-      TwilioService::Utils.telephony_service = FakeVoiceCall
+    it 'initiates a phone call with options' do
       service = TwilioService::Utils.new
 
       service.place_call(
@@ -72,7 +69,7 @@ describe TwilioService::Utils do
         url: 'https://twimlets.com/say?merp',
       )
 
-      calls = FakeVoiceCall.calls
+      calls = Twilio::FakeCall.calls
       expect(calls.size).to eq(1)
       msg = calls.first
       expect(msg.url).to eq('https://twimlets.com/say?merp')
@@ -80,7 +77,6 @@ describe TwilioService::Utils do
     end
 
     it 'partially redacts phone numbers embedded in error messages from Twilio' do
-      TwilioService::Utils.telephony_service = FakeVoiceCall
       raw_message = 'Unable to create record: Account not authorized to call +123456789012.'
       error_code = '21215'
       status_code = 400
@@ -102,7 +98,6 @@ describe TwilioService::Utils do
     end
 
     it 'rescues timeout errors, retries, then raises a custom Twilio error' do
-      TwilioService::Utils.telephony_service = FakeVoiceCall
       error_code = 4_815_162_342
       status_code = 4_815_162_342
 
@@ -117,7 +112,6 @@ describe TwilioService::Utils do
     end
 
     it 'rescues failed connection errors, retries, then raises a custom Twilio error' do
-      TwilioService::Utils.telephony_service = FakeVoiceCall
       error_code = 4_815_162_342
       status_code = 4_815_162_342
 
@@ -133,10 +127,9 @@ describe TwilioService::Utils do
   end
 
   describe '#send_sms' do
-    it 'sends an SMS with valid attributes', twilio: true do
+    it 'sends an SMS with valid attributes' do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      TwilioService::Utils.telephony_service = FakeSms
       service = TwilioService::Utils.new
 
       service.send_sms(
@@ -144,7 +137,7 @@ describe TwilioService::Utils do
         body: '!!CODE1!!',
       )
 
-      messages = FakeSms.messages
+      messages = Twilio::FakeMessage.messages
       expect(messages.size).to eq(1)
       messages.each do |msg|
         expect(msg.messaging_service_sid).to eq('fake_sid')
@@ -154,7 +147,6 @@ describe TwilioService::Utils do
     end
 
     it 'partially redacts phone numbers embedded in error messages from Twilio' do
-      TwilioService::Utils.telephony_service = FakeSms
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
       error_code = '21211'
       status_code = 400
@@ -174,7 +166,6 @@ describe TwilioService::Utils do
     end
 
     it 'rescues timeout errors, retries, then raises a custom Twilio error' do
-      TwilioService::Utils.telephony_service = FakeSms
       error_code = 4_815_162_342
       status_code = 4_815_162_342
 
@@ -199,7 +190,6 @@ describe TwilioService::Utils do
     end
 
     it 'rescues failed connection errors, retries, then raises a custom Twilio error' do
-      TwilioService::Utils.telephony_service = FakeSms
       error_code = 4_815_162_342
       status_code = 4_815_162_342
 

@@ -24,8 +24,7 @@ ul
   div id= 'target'
   br
   .mt4
-    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'
-      = t('forms.buttons.continue')
+    = render 'idv/doc_auth/submit_with_spinner'
 
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'

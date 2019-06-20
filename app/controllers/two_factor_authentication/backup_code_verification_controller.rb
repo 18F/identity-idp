@@ -18,7 +18,7 @@ module TwoFactorAuthentication
     def create
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
-      analytics.track_mfa_submit_event(result.to_h, analytics.grab_ga_client_id)
+      analytics.track_mfa_submit_event(result.to_h, ga_cookie_client_id)
       handle_result(result)
     end
 
@@ -54,6 +54,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
+        handle_valid_otp_for_authentication_context
         return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
@@ -66,7 +67,6 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_backup_code
-      handle_valid_otp_for_authentication_context
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)

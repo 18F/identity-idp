@@ -71,8 +71,9 @@ fr:
       otp_failed: Échec de l'envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
-      phone_duplicate: Ce numéro de téléphone est déjà utilisé. Veuillez utiliser
-        un autre numéro.
+      phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
+        entré en tant qu'authentificateur. Veuillez utiliser un numéro de téléphone
+        différent.
       phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
