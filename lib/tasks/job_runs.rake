@@ -17,6 +17,7 @@ namespace :job_runs do
     def shut_down
       File.unlink(@jobs_pid_file) if @jobs_pid_file
       @keep_jobs_loop = false
+      Rails.logger.warn('Shutting down gracefully...')
       warn "\nShutting down gracefully..."
     end
 
@@ -28,8 +29,8 @@ namespace :job_runs do
     while @keep_jobs_loop
       JobRunner::Runner.new.run
 
-      # sleep 15, but bail out early if we are shutting down
-      15.times do
+      # sleep 60, but bail out early if we are shutting down
+      60.times do
         sleep 1
         break unless @keep_jobs_loop
       end
