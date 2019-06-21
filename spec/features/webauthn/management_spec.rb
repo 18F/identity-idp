@@ -29,8 +29,6 @@ describe 'webauthn management' do
       webauthn_config1 = create(:webauthn_configuration, user: user)
       webauthn_config2 = create(:webauthn_configuration, user: user)
 
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
-
       sign_in_and_2fa_user(user)
       visit account_path
 
@@ -41,7 +39,6 @@ describe 'webauthn management' do
     it 'allows the user to setup another key' do
       mock_webauthn_setup_challenge
       create(:webauthn_configuration, user: user)
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       sign_in_and_2fa_user(user)
 
@@ -61,7 +58,6 @@ describe 'webauthn management' do
 
     it 'allows user to delete security key when another 2FA option is set up' do
       webauthn_config = create(:webauthn_configuration, user: user)
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       sign_in_and_2fa_user(user)
       visit account_path
@@ -81,7 +77,6 @@ describe 'webauthn management' do
 
     it 'allows the user to cancel deletion of the security key' do
       webauthn_config = create(:webauthn_configuration, user: user)
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       sign_in_and_2fa_user(user)
       visit account_path
@@ -99,13 +94,10 @@ describe 'webauthn management' do
 
     it 'prevents a user from deleting the last key' do
       webauthn_config = create(:webauthn_configuration, user: user)
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       sign_in_and_2fa_user(user)
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
-
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       visit account_path
 
@@ -115,7 +107,6 @@ describe 'webauthn management' do
 
     it 'gives an error if name is taken and stays on the configuration screen' do
       webauthn_config = create(:webauthn_configuration, user: user)
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(data: {}, view: view)
 
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)

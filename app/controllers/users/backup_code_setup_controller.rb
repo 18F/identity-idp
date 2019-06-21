@@ -5,6 +5,7 @@ module Users
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[create download]
+    before_action :set_backup_code_setup_presenter
 
     def index
       generate_codes
@@ -35,10 +36,14 @@ module Users
     end
 
     def generate_codes
-      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
-                                                              view: view_context)
+      # @presenter = TwoFactorAuthCode::BackupCodePresenter.new(data: { current_user: current_user },
+      #                                                         view: view_context)
       @codes = generator.generate
       user_session[:backup_codes] = @codes
+    end
+
+    def set_backup_code_setup_presenter
+      @presenter = BackupCodeSetupPresenter.new(current_user)
     end
 
     def mark_user_as_fully_authenticated

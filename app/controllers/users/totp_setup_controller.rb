@@ -5,6 +5,8 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_totp_setup_presenter
+    before_action :set_sign_up_progress_visible
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
@@ -14,11 +16,6 @@ module Users
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
-
-      @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-        view: view_context,
-        data: { current_user: current_user },
-      )
     end
 
     def confirm
@@ -41,6 +38,21 @@ module Users
     end
 
     private
+
+    def set_totp_setup_presenter
+      @presenter = TotpSetupPresenter.new(current_user)
+    end
+
+    def sufficient_factors_enabled?
+      MfaPolicy.new(current_user).sufficient_factors_enabled?
+    end
+
+    def set_sign_up_progress_visible
+      @sign_up_progress_visible = SignUpProgressPolicy.new(current_user,
+          user_fully_authenticated?,
+          sufficient_factors_enabled?,
+        ).sign_up_progress_visible?
+    end
 
     def track_event
       properties = {

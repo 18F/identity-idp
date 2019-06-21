@@ -8,10 +8,7 @@ describe 'users/totp_setup/new.html.slim' do
       allow(view).to receive(:current_user).and_return(user)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
-      @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-        view: view,
-        data: { current_user: user },
-      )
+      @presenter = TotpSetupPresenter.new(user)
     end
 
     it 'renders the QR code' do
