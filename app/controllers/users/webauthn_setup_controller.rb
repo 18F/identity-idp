@@ -5,16 +5,13 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_webauthn_setup_presenter
 
     def new
       result = WebauthnVisitForm.new.submit(params)
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
-      @presenter = TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
-        view: view_context,
-        data: { current_user: current_user },
-      )
       flash_error(result.errors) unless result.success?
     end
 
@@ -47,6 +44,10 @@ module Users
     end
 
     private
+
+    def set_webauthn_setup_presenter
+      @presenter = WebauthnSetupPresenter.new(current_user)
+    end
 
     def flash_error(errors)
       flash.now[:error] = errors.values.first.first
@@ -108,7 +109,7 @@ module Users
     def process_invalid_webauthn(form)
       if form.name_taken
         flash.now[:error] = t('errors.webauthn_setup.unique_name')
-        render 'users/webauthn_setup/new'
+        render :new
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
         redirect_to account_url
