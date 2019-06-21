@@ -3,9 +3,11 @@ class TwoFactorOptionsPresenter
 
   attr_reader :current_user, :service_provider
 
-  def initialize(current_user, sp)
+  # :reek:BooleanParameter
+  def initialize(current_user, sp, signingup = false)
     @current_user = current_user
     @service_provider = sp
+    @signing_up = signingup
   end
 
   def title
@@ -81,8 +83,11 @@ class TwoFactorOptionsPresenter
   end
 
   def backup_code_option
-    if TwoFactorAuthentication::BackupCodePolicy.new(current_user).enrollable?
-      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
+    if TwoFactorAuthentication::BackupCodePolicy.new(current_user).enrollable? || @signing_up
+      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(
+        @signing_up &&
+        TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?,
+      )]
     else
       []
     end

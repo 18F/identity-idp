@@ -36,23 +36,23 @@ fr:
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
       auth_app: Application d'authentification
-      auth_app_info: Utilisez votre application d'authentification pour obtenir votre
-        code de sécurité
+      auth_app_info_html: Utilisez votre application d'authentification pour obtenir
+        votre code de sécurité
       personal_key: Clé personnelle
-      personal_key_info: Utilisez la clé personnelle de 16 caractères que vous avez
-        utilisée lors de la création du compte.
+      personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
+        avez utilisée lors de la création du compte.
       piv_cac: Employés du gouvernement
-      piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
+      piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
-      sms_setup_info: Obtenez votre code de sécurité par SMS.
+      sms_setup_info_html: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
       voice_info_html: Obtenez votre code de sécurité par appel téléphonique à <strong>%{phone}</strong>.
         (Seulement les numéros de téléphone en Amerique du Nord)
-      voice_setup_info: Obtenez votre code de sécurité par appel téléphonique. (Seulement
-        les numéros de téléphone en Amerique du Nord)
+      voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique.
+        (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
-      webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
+      webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
@@ -116,19 +116,23 @@ fr:
       en ajoutant une deuxième couche de sécurité.
     two_factor_choice_options:
       auth_app: Application d'authentification
-      auth_app_info: Configurez une application d'authentification pour obtenir votre
-        code de sécurité sans fournir de numéro de téléphone
+      auth_app_info_html: Configurez une application d'authentification pour obtenir
+        votre code de sécurité sans fournir de numéro de téléphone
       backup_code: Codes de sécurité personnels
-      backup_code_info: Recevoir une liste pré-générée de codes de sécurité à utiliser
-        lors de la connexion
+      backup_code_info_html: Recevoir une liste pré-générée de codes de sécurité à
+        utiliser lors de la connexion
+      backup_code_only: I don't have any of the above
+      backup_code_only_info_html: Configurez votre compte sans méthode d'authentification
+        de sauvegarde. <strong>Ceci n'est pas recommandé.</strong> Si vous perdez
+        vos codes de sauvegarde, vous ne pourrez pas vous connecter à votre compte.
       piv_cac: Employés du gouvernement
-      piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte
+      piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte
       sms: SMS
-      sms_info: Obtenez votre code de sécurité par SMS
+      sms_info_html: Obtenez votre code de sécurité par SMS
       voice: Appel téléphonique
-      voice_info: Obtenez votre code de sécurité par appel téléphonique
+      voice_info_html: Obtenez votre code de sécurité par appel téléphonique
       webauthn: Clé de sécurité
-      webauthn_info: Utilisez une clé de sécurité pour sécuriser votre compte
+      webauthn_info_html: Utilisez une clé de sécurité pour sécuriser votre compte
     two_factor_recovery_choice: Ajouter une autre méthode
     two_factor_recovery_choice_intro: L'ajout d'une autre méthode d'authentification
       rend sûr que vous pouvez vous connecter à votre compte même si vous perdez ou

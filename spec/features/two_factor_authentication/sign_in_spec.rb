@@ -657,21 +657,6 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'signing in when user does not already have personal key' do
-    # For example, when migrating users from another DB
-    it 'redirects to set up a backup MFA' do
-      user = create(:user, :signed_up)
-      UpdateUser.new(user: user, attributes: { encrypted_recovery_code_digest: nil }).call
-
-      sign_in_user(user)
-      click_button t('forms.buttons.submit.default')
-      fill_in 'code', with: user.reload.direct_otp
-      click_button t('forms.buttons.submit.default')
-
-      expect(current_path).to eq two_factor_options_path
-    end
-  end
-
   it 'generates a 404 with bad otp_delivery_preference' do
     sign_in_before_2fa
     visit '/login/two_factor/bad'
