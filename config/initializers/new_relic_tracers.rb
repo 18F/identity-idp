@@ -3,6 +3,7 @@
 require 'new_relic/agent/method_tracer'
 require 'aws/ses'
 require 'cloudhsm_jwt'
+require 'newrelic_rpm'
 
 Aws::SES::Base.class_eval do
   include ::NewRelic::Agent::MethodTracer
@@ -80,4 +81,19 @@ TwilioService::Utils.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :place_call, "Custom/#{name}/place_call"
   add_method_tracer :send_sms, "Custom/#{name}/send_sms"
+end
+
+JobRunner::LockReferee.class_eval do
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+  add_transaction_tracer :log_executing_job_message, :category => :task
+end
+
+JobRunner::LockReferee.class_eval do
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+  add_transaction_tracer :log_done_message, :category => :task
+end
+
+UspsConfirmationUploader.class_eval do
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+  add_transaction_tracer :run, :category => :task
 end

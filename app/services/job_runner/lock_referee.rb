@@ -22,6 +22,14 @@ module JobRunner
       log_done_message
     end
 
+    def log_executing_job_message
+      Rails.logger.info("#{job_configuration}: Executing job")
+    end
+
+    def log_done_message
+      Rails.logger.debug("#{job_configuration}: Done")
+    end
+
     private
 
     def run_needed?
@@ -38,14 +46,6 @@ module JobRunner
     def log_race_lost_message
       race_lost_message = "#{job_configuration}: Due for run, but someone else won the race"
       Rails.logger.info(race_lost_message)
-    end
-
-    def log_executing_job_message
-      Rails.logger.info("#{job_configuration}: Executing job")
-    end
-
-    def log_done_message
-      Rails.logger.debug("#{job_configuration}: Done")
     end
 
     def log_run_not_needed_message(last_run)
