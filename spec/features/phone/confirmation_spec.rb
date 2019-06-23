@@ -7,8 +7,8 @@ describe 'phone otp confirmation' do
   context 'on sign up as first MFA' do
     let!(:user) { sign_up_and_set_password }
 
-    it_behaves_like 'otp confirmation', :sms
-    it_behaves_like 'otp confirmation', :voice
+    it_behaves_like 'phone otp confirmation', :sms
+    it_behaves_like 'phone otp confirmation', :voice
 
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(delivery_method)
@@ -36,8 +36,8 @@ describe 'phone otp confirmation' do
   context 'on sign up as second MFA method' do
     let!(:user) { sign_up_and_set_password }
 
-    it_behaves_like 'otp confirmation', :sms
-    it_behaves_like 'otp confirmation', :voice
+    it_behaves_like 'phone otp confirmation', :sms
+    it_behaves_like 'phone otp confirmation', :voice
 
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:sms)
@@ -69,8 +69,8 @@ describe 'phone otp confirmation' do
     let(:user) { create(:user, :signed_up) }
     let(:phone) { user.phone_configurations.first.phone }
 
-    it_behaves_like 'otp confirmation', :sms
-    it_behaves_like 'otp confirmation', :voice
+    it_behaves_like 'phone otp confirmation', :sms
+    it_behaves_like 'phone otp confirmation', :voice
 
     def visit_otp_confirmation(delivery_method)
       user.phone_configurations.first.update!(delivery_preference: delivery_method)
@@ -91,8 +91,8 @@ describe 'phone otp confirmation' do
   context 'add phone' do
     let(:user) { create(:user, :signed_up) }
 
-    it_behaves_like 'otp confirmation', :sms
-    it_behaves_like 'otp confirmation', :voice
+    it_behaves_like 'phone otp confirmation', :sms
+    it_behaves_like 'phone otp confirmation', :voice
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
