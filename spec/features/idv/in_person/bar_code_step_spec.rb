@@ -14,7 +14,7 @@ feature 'in person find usps step' do
   end
 
   it 'proceeds to the next step' do
-    click_continue
+    click_link t('forms.buttons.continue')
 
     expect(page).to have_current_path(account_path)
   end

@@ -35,11 +35,8 @@ p.mt-tiny.mb3 == t('in_person_proofing.info.enrollment_form')
             data: { print: true },
             class: 'ico ico-print btn-border ml2 text-decoration-none'
 
-= form_tag(backup_code_setup_path, method: :patch, role: 'form') do
-  .clearfix.mxn1
-    .col.col-6.sm-col-5.px1
-      = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'
-
+= link_to t('forms.buttons.continue'), account_path, class: 'btn btn-primary btn-wide'
+br
 = render 'idv/in_person/start_over_or_cancel'
 
 == javascript_pack_tag 'clipboard'
