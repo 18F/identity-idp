@@ -2,6 +2,7 @@ module Users
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
+
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_webauthn_setup_presenter
@@ -76,7 +77,6 @@ module Users
 
     def track_delete(success)
       counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,

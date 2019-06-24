@@ -6,7 +6,7 @@ describe 'users/piv_cac_authentication_setup/new.html.slim' do
       user = create(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
       form = OpenStruct.new
-      @presenter = PivCacAuthenticationSetupPresenter.new(user, form)
+      @presenter = PivCacAuthenticationSetupPresenter.new(user, true, form)
 
       render
 
@@ -19,7 +19,7 @@ describe 'users/piv_cac_authentication_setup/new.html.slim' do
       user = create(:user)
       allow(view).to receive(:current_user).and_return(user)
       form = OpenStruct.new
-      @presenter = PivCacAuthenticationSetupPresenter.new(user, form)
+      @presenter = PivCacAuthenticationSetupPresenter.new(user, false, form)
 
       render
 

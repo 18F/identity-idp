@@ -39,8 +39,8 @@ module Users
         current_user, user_fully_authenticated?, delivery_preference
       )
       if @user_phone_form.submit(user_params).success? && !already_has_phone?
-        process_updates
-        bypass_sign_in current_user
+          process_updates
+          bypass_sign_in current_user
       else
         render_edit
       end

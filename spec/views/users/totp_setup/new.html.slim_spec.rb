@@ -8,7 +8,7 @@ describe 'users/totp_setup/new.html.slim' do
       allow(view).to receive(:current_user).and_return(user)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
-      @presenter = TotpSetupPresenter.new(user)
+      @presenter = TotpSetupPresenter.new(user, true)
     end
 
     it 'renders the QR code' do
@@ -34,6 +34,7 @@ describe 'users/totp_setup/new.html.slim' do
     it 'renders a link to choose a different option' do
       user = create(:user)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
       @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(

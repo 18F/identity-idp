@@ -17,7 +17,7 @@ class PivCacAuthenticationSetupPresenter < PivCacAuthenticationSetupBasePresente
 
   def steps_visible?
     SignUpProgressPolicy.new(
-      user, fully_authenticated,
+      user, fully_authenticated
     ).sign_up_progress_visible?
   end
 
