@@ -14,7 +14,7 @@ module SignUp
       analytics.track_event(
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         analytics_attributes(''),
-        )
+      )
     end
 
     def update
