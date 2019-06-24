@@ -83,6 +83,10 @@ describe 'phone otp confirmation' do
     it_behaves_like 'otp confirmation', :voice
 
     context 'with an international phone number' do
+      before do
+        user.phone_configurations.first.update!(phone: formatted_phone)
+      end
+
       let(:phone) { '+81543543643' }
       it_behaves_like 'otp confirmation', :sms
     end
