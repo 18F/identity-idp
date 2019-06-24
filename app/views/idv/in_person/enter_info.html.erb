@@ -1,5 +1,5 @@
-<h1 class="h2 my0"><%= t('in_person_proofing.step', step: 2) %></h1><br />
-<h1 class="h3 my0">Enter in your information</h1>
+<h1 class="h2 my0"><%= t('in_person_proofing.step', step: 2) %></h1><br/>
+<h1 class="h3 my0"><%= t('in_person_proofing.headings.enter_info') %></h1>
 
 <form autocomplete="off" role="form" class="simple_form mt3 sm-mt3 new_profile" id="new_profile" action="/verify/in_person/enter_info" accept-charset="UTF-8" method="post">
   <input name="utf8" type="hidden" value="&#x2713;"/><input type="hidden" name="_method" value="put"/>
@@ -7,19 +7,22 @@
   <fieldset class="ml0 p0 border-none">
     <div class="mb3 string required profile_first_name">
       <label class="bold string required" for="profile_first_name"><abbr title="required" class="red display-none">*</abbr>
-        First
-        name</label><input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[first_name]" id="profile_first_name"/>
+        <%= t('in_person_proofing.forms.first_name') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[first_name]" id="profile_first_name"/>
     </div>
     <div class="mb3 string required profile_last_name">
       <label class="bold string required" for="profile_last_name"><abbr title="required" class="red display-none">*</abbr>
-        Last
-        name</label><input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[last_name]" id="profile_last_name"/>
+        <%= t('in_person_proofing.forms.last_name') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[last_name]" id="profile_last_name"/>
     </div>
     <div class="clearfix mxn1">
       <div class="sm-col sm-col-6 px1">
         <div class="mb3 tel required profile_dob">
           <label class="bold tel required" for="profile_dob"><abbr title="required" class="red display-none">*</abbr>
-            Date of birth</label>
+            <%= t('in_person_proofing.forms.dob') %>
+          </label>
           <div id="dob-instructs" class="italic mb1">example: 01/17/1964</div>
           <input class="block col-12 field string tel required dob" aria-describedby="dob-instructs" required="required" aria-required="true" pattern="(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}" type="tel" name="in_person[dob]" id="profile_dob"/>
         </div>
@@ -29,8 +32,9 @@
       <div class="sm-col sm-col-6 px1">
         <div class="mb3 tel required profile_ssn">
           <label class="bold tel required" for="profile_ssn"><abbr title="required" class="red display-none">*</abbr>
-            Social Security
-            Number</label><input class="block col-12 field string tel required ssn" required="required" aria-required="true" pattern="^\d{3}-?\d{2}-?\d{4}$" type="tel" name="in_person[ssn]" id="profile_ssn"/>
+            <%= t('in_person_proofing.forms.ssn') %>
+          </label>
+          <input class="block col-12 field string tel required ssn" required="required" aria-required="true" pattern="^\d{3}-?\d{2}-?\d{4}$" type="tel" name="in_person[ssn]" id="profile_ssn"/>
         </div>
       </div>
     </div>
@@ -38,20 +42,29 @@
   <fieldset class="m0 p0 border-none">
     <div class="mb3 string required profile_address1 mb1">
       <label class="bold string required" for="profile_address1"><abbr title="required" class="red display-none">*</abbr>
-        Address</label><input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[address1]" id="profile_address1"/>
+        <%= t('in_person_proofing.forms.address1') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[address1]" id="profile_address1"/>
     </div>
-    <div class="mb3 string optional profile_address2"><label class="bold string optional" for="profile_address2">Address
-      (optional)</label><input class="block col-12 field string optional" maxlength="255" size="255" type="text" name="in_person[address2]" id="profile_address2"/>
+    <div class="mb3 string optional profile_address2">
+      <label class="bold string optional" for="profile_address2">
+        <%= t('in_person_proofing.forms.address2') %>
+      </label>
+      <input class="block col-12 field string optional" maxlength="255" size="255" type="text" name="in_person[address2]" id="profile_address2"/>
     </div>
     <div class="mb3 string required profile_city">
       <label class="bold string required" for="profile_city"><abbr title="required" class="red display-none">*</abbr>
-        City</label><input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[city]" id="profile_city"/>
+        <%= t('in_person_proofing.forms.city') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[city]" id="profile_city"/>
     </div>
     <div class="clearfix mxn1">
       <div class="sm-col sm-col-8 px1">
         <div class="mb3 select required profile_state">
           <label class="bold select required" for="profile_state"><abbr title="required" class="red display-none">*</abbr>
-            State</label><select class="block col-12 field select required" data-supported-jurisdictions="AR AZ CO DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM PA RI SC SD TX VA VT WA WI WY" data-error-message="Sorry, we can&#39;t verify people from this state." required="required" aria-required="true" name="in_person[state]" id="profile_state">
+            <%= t('in_person_proofing.forms.state') %>
+          </label>
+          <select class="block col-12 field select required" required="required" aria-required="true" name="in_person[state]" id="profile_state">
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AS">American Samoa</option>
@@ -117,8 +130,9 @@
       <div class="sm-col sm-col-4 px1">
         <div class="mb3 tel required profile_zipcode">
           <label class="bold tel required" for="profile_zipcode"><abbr title="required" class="red display-none">*</abbr>
-            ZIP
-            Code</label><input class="block col-12 field string tel required zipcode" required="required" aria-required="true" pattern="(\d{5}([\-]\d{4})?)" type="tel" name="in_person[zipcode]" id="profile_zipcode"/>
+            <%= t('in_person_proofing.forms.zip_code') %>
+          </label>
+          <input class="block col-12 field string tel required zipcode" required="required" aria-required="true" pattern="(\d{5}([\-]\d{4})?)" type="tel" name="in_person[zipcode]" id="profile_zipcode"/>
         </div>
       </div>
     </div>
@@ -130,8 +144,4 @@
 
 <br>
 <br>
-<form class="inline-block" method="post" action="/verify/in_person_proofing/reset">
-  <input type="hidden" name="_method" value="put" /><input class="btn btn-link" type="submit" value="Start over" />
-  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-</form>
-<div class="mt2 pt1 border-top"><a href="/verify/cancel">Cancel</a></div>
+<%= render 'idv/doc_auth/start_over_or_cancel' %>

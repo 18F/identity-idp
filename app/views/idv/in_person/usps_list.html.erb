@@ -1,5 +1,5 @@
 <h1 class="h2 my0"><%= t('in_person_proofing.step', step: 1) %></h1><br />
-<h1 class="h3 my0">Choose a post office</h1>
+<h1 class="h3 my0"><%= t('in_person_proofing.headings.usps_list') %></h1>
 
 <form autocomplete="off" role="form" class="simple_form mt2" action="/verify/in_person/usps_list" accept-charset="UTF-8" method="post">
 <div class="mb3">
@@ -60,8 +60,4 @@
 </div>
 </form>
 
-<form class="inline-block" method="post" action="/verify/in_person/reset">
-  <input type="hidden" name="_method" value="put" /><input class="btn btn-link" type="submit" value="Start over" />
-  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-</form>
-<div class="mt2 pt1 border-top"><a href="/verify/cancel">Cancel</a></div>
+<%= render 'idv/doc_auth/start_over_or_cancel' %>
