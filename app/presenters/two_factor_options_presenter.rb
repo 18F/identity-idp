@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 

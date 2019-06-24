@@ -27,20 +27,20 @@ module Users
 
     def edit
       set_phone_id
-      @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
+      # memoized for view
+      user_phone_form
       @presenter = PhoneSetupPresenter.new(
         current_user, user_fully_authenticated?, delivery_preference
       )
     end
 
     def update
-      @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
       @presenter = PhoneSetupPresenter.new(
         current_user, user_fully_authenticated?, delivery_preference
       )
-      if @user_phone_form.submit(user_params).success? && !already_has_phone?
-          process_updates
-          bypass_sign_in current_user
+      if user_phone_form.submit(user_params).success? && !already_has_phone?
+        process_updates
+        bypass_sign_in current_user
       else
         render_edit
       end
@@ -61,6 +61,10 @@ module Users
     end
 
     private
+
+    def user_phone_form
+      @user_phone_form ||= UserPhoneForm.new(current_user, phone_configuration)
+    end
 
     def render_edit
       flash.now[:error] = t('errors.messages.phone_duplicate') if already_has_phone?
