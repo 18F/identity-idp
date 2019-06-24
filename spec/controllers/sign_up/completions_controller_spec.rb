@@ -89,7 +89,7 @@ describe SignUp::CompletionsController do
       subject.session[:sp] = {}
       get :show
 
-      expect(response).to render_template(:show)
+      expect(response).to redirect_to(account_url)
     end
   end
 
@@ -100,12 +100,15 @@ describe SignUp::CompletionsController do
       @linker = instance_double(IdentityLinker)
       allow(@linker).to receive(:link_identity).and_return(true)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
+      allow_any_instance_of(SignUp::CompletionsController).to \
+        receive(:user_has_identity_for_issuer?).and_return(false)
     end
 
     context 'LOA1' do
       it 'tracks analytics' do
         stub_sign_in
         subject.session[:sp] = {
+          issuer: 'foo',
           loa3: false,
           request_url: 'http://example.com',
         }
@@ -123,6 +126,7 @@ describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in
         subject.session[:sp] = {
+          issuer: 'foo',
           loa3: false,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
@@ -137,6 +141,7 @@ describe SignUp::CompletionsController do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
+          issuer: 'foo',
           loa3: true,
           request_url: 'http://example.com',
         }
@@ -155,6 +160,7 @@ describe SignUp::CompletionsController do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
+          issuer: 'foo',
           loa3: true,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name],
