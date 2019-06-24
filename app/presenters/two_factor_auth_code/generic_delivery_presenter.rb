@@ -38,6 +38,12 @@ module TwoFactorAuthCode
       no_factors_enabled? ? '3' : '4'
     end
 
+    def steps_visible?
+      SignUpProgressPolicy.new(@view.current_user,
+          @view.user_fully_authenticated?,
+        ).sign_up_progress_visible?
+    end
+
     private
 
     def no_factors_enabled?

@@ -4,8 +4,9 @@ class PivCacAuthenticationSetupBasePresenter
 
   attr_reader :form
 
-  def initialize(current_user, form)
+  def initialize(current_user, user_fully_authenticated, form)
     @current_user = current_user
+    @user_fully_authenticated = user_fully_authenticated
     @form = form
   end
 

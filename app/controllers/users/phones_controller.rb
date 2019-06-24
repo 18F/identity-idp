@@ -7,12 +7,12 @@ module Users
     def add
       user_session[:phone_id] = nil
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new(current_user, current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user, user_fully_authenticated?, current_user.otp_delivery_preference)
     end
 
     def create
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new(current_user, current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user, user_fully_authenticated?, current_user.otp_delivery_preference)
       if @user_phone_form.submit(user_params).success?
         confirm_phone
         bypass_sign_in current_user
@@ -24,12 +24,12 @@ module Users
     def edit
       set_phone_id
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
-      @presenter = PhoneSetupPresenter.new(current_user, delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user, user_fully_authenticated?, delivery_preference)
     end
 
     def update
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
-      @presenter = PhoneSetupPresenter.new(current_user, delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user, user_fully_authenticated?, delivery_preference)
       if @user_phone_form.submit(user_params).success? && !already_has_phone?
         process_updates
         bypass_sign_in current_user

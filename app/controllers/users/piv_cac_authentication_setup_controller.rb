@@ -9,7 +9,6 @@ module Users
                   except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
-    before_action :set_sign_up_progress_visible
 
     def new
       if params.key?(:token)
@@ -44,7 +43,7 @@ module Users
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-      @presenter = PivCacAuthenticationSetupPresenter.new(current_user, user_piv_cac_form)
+      @presenter = PivCacAuthenticationSetupPresenter.new(current_user, user_fully_authenticated?, user_piv_cac_form)
       render :new
     end
 

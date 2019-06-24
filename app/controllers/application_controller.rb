@@ -214,17 +214,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     MfaPolicy.new(current_user).two_factor_enabled?
   end
 
-  def sufficient_factors_enabled?
-    MfaPolicy.new(current_user).sufficient_factors_enabled?
-  end
-
-  def set_sign_up_progress_visible
-    @sign_up_progress_visible = SignUpProgressPolicy.new(current_user,
-        user_fully_authenticated?,
-        sufficient_factors_enabled?,
-      ).sign_up_progress_visible?
-  end
-
   def skip_session_expiration
     @skip_session_expiration = true
   end

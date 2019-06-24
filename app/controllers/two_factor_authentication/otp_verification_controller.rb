@@ -4,7 +4,6 @@ module TwoFactorAuthentication
 
     before_action :confirm_multiple_factors_enabled
     before_action :confirm_voice_capability, only: [:show]
-    before_action :set_sign_up_progress_visible
 
     def show
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)

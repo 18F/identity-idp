@@ -6,7 +6,6 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[create download]
     before_action :set_backup_code_setup_presenter
-    before_action :set_sign_up_progress_visible
 
     def index
       generate_codes
@@ -44,7 +43,7 @@ module Users
     end
 
     def set_backup_code_setup_presenter
-      @presenter = BackupCodeSetupPresenter.new(current_user)
+      @presenter = BackupCodeSetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
     def mark_user_as_fully_authenticated
