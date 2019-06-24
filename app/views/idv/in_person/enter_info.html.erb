@@ -1,4 +1,4 @@
-<h1 class="h2 my0"><%= t('in_person_proofing.step', step: 2) %></h1><br/>
+<h5 class="my1 caps bold accent-blue"><%= t('in_person_proofing.step', step: 2) %></h5>
 <h1 class="h3 my0"><%= t('in_person_proofing.headings.enter_info') %></h1>
 
 <form autocomplete="off" role="form" class="simple_form mt3 sm-mt3 new_profile" id="new_profile" action="/verify/in_person/enter_info" accept-charset="UTF-8" method="post">
@@ -142,6 +142,4 @@
   </div>
 </form>
 
-<br>
-<br>
-<%= render 'idv/doc_auth/start_over_or_cancel' %>
+<%= render 'idv/in_person/start_over_or_cancel' %>

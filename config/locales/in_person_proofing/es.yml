@@ -43,7 +43,7 @@ es:
       text5: sign in and finish the process
       welcome: 'What you''ll need to do:'
     opt_in_link: Verify your identity in person at a local post office instead
-    step: Verify your identity in person - Step %{step} of 3
+    step: Verify your identity in person - Step %{step} of 5
     titles:
       in_person_proofing: Verify your identity in person
     warning:
