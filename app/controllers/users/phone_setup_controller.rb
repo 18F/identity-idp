@@ -32,17 +32,6 @@ module Users
       @presenter = PhoneSetupPresenter.new(current_user, delivery_preference)
     end
 
-    def sufficient_factors_enabled?
-      MfaPolicy.new(current_user).sufficient_factors_enabled?
-    end
-
-    def set_sign_up_progress_visible
-      @sign_up_progress_visible = SignUpProgressPolicy.new(current_user,
-          user_fully_authenticated?,
-          sufficient_factors_enabled?,
-        ).sign_up_progress_visible?
-    end
-
     def handle_create_success(phone)
       if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
         prompt_to_confirm_phone(id: nil, phone: @user_phone_form.phone)

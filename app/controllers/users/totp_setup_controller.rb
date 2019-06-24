@@ -43,17 +43,6 @@ module Users
       @presenter = TotpSetupPresenter.new(current_user)
     end
 
-    def sufficient_factors_enabled?
-      MfaPolicy.new(current_user).sufficient_factors_enabled?
-    end
-
-    def set_sign_up_progress_visible
-      @sign_up_progress_visible = SignUpProgressPolicy.new(current_user,
-          user_fully_authenticated?,
-          sufficient_factors_enabled?,
-        ).sign_up_progress_visible?
-    end
-
     def track_event
       properties = {
         user_signed_up: MfaPolicy.new(current_user).sufficient_factors_enabled?,

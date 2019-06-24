@@ -6,6 +6,7 @@ module Users
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_webauthn_setup_presenter
+    before_action :set_sign_up_progress_visible
 
     def new
       result = WebauthnVisitForm.new.submit(params)
