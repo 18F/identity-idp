@@ -5,13 +5,14 @@ require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w[headless disable-gpu] },
-  )
+  browser_options = Selenium::WebDriver::Chrome::Options.new
+  browser_options.args << '--headless'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--no-sandbox'
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 desired_capabilities: capabilities
+                                 options: browser_options
 end
 Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
