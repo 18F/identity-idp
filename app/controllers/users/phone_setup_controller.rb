@@ -28,7 +28,9 @@ module Users
     private
 
     def set_phone_setup_presenter
-      @presenter = PhoneSetupPresenter.new(current_user, user_fully_authenticated?, delivery_preference)
+      @presenter = PhoneSetupPresenter.new(
+        current_user, user_fully_authenticated?, delivery_preference
+      )
     end
 
     def handle_create_success(phone)

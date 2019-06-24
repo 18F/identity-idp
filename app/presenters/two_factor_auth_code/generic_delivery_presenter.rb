@@ -39,9 +39,10 @@ module TwoFactorAuthCode
     end
 
     def steps_visible?
-      SignUpProgressPolicy.new(@view.current_user,
-          @view.user_fully_authenticated?,
-        ).sign_up_progress_visible?
+      SignUpProgressPolicy.new(
+        @view.current_user,
+        @view.user_fully_authenticated?,
+      ).sign_up_progress_visible?
     end
 
     private

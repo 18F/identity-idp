@@ -2,7 +2,6 @@ module Users
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
-
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_webauthn_setup_presenter

@@ -9,7 +9,7 @@ class TwoFactorOptionsPresenter
   end
 
   def step
-    no_factors_enabled? ? '3' : '4'
+    MfaPolicy.new(current_user).no_factors_enabled? ? '3' : '4'
   end
 
   def title
@@ -30,10 +30,6 @@ class TwoFactorOptionsPresenter
 
   def options
     phone_options + totp_option + webauthn_option + piv_cac_option + backup_code_option
-  end
-
-  def no_factors_enabled?
-    MfaPolicy.new(current_user).no_factors_enabled?
   end
 
   def first_mfa_successfully_enabled_message
