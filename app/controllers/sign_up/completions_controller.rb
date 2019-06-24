@@ -29,6 +29,11 @@ module SignUp
 
     private
 
+    def handle_verified_attributes
+      update_verified_attributes
+      clear_verify_attributes_sessions
+    end
+
     def redirect_to_account_if_no_issuer
       redirect_to account_url if sp_session[:issuer].blank?
     end
