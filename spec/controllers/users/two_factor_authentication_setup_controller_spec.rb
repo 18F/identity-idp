@@ -96,27 +96,13 @@ describe Users::TwoFactorAuthenticationSetupController do
       }
     end
 
-    context 'when the selection is sms' do
+    context 'when the selection is phone' do
       it 'redirects to phone setup page' do
         stub_sign_in_before_2fa
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'sms',
-          },
-        }
-
-        expect(response).to redirect_to phone_setup_url
-      end
-    end
-
-    context 'when the selection is voice' do
-      it 'redirects to phone setup page' do
-        stub_sign_in_before_2fa
-
-        patch :create, params: {
-          two_factor_options_form: {
-            selection: 'voice',
+            selection: 'phone',
           },
         }
 
