@@ -1052,3 +1052,33 @@ production:
       - email
     ial: 1
     restrict_to_deploy_env: 'prod'
+
+  # SBA - Connect (connect.sba.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:sba:sbaconnect':
+    agency_id: 17
+    friendly_name: 'SBA Connect'
+    agency: 'SBA'
+    ial: 1
+    logo: 'sba_connect.png'
+    cert: 'sba_connect_prod'
+    return_to_sp_url: 'https://connect.sba.gov'
+    redirect_uris:
+      - 'https://connect.sba.gov/Account/SignInCallback'
+      - 'https://connect.sba.gov/home/logoutcallback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # GSA TTS OPP api.data.gov
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:api-data-gov':
+    friendly_name: 'api.data.gov'
+    agency: 'GSA'
+    agency_id: 9
+    logo: 'square-gsa-dark.svg'
+    cert: 'api_data_gov_prod'
+    return_to_sp_url: 'https://api.data.gov/admin'
+    redirect_uris:
+      - 'https://api.data.gov/admins/auth/login.gov/callback'
+      - 'https://api.data.gov/admin/logout/callback'
+    restrict_to_deploy_env: 'prod'
+    piv_cac: true

@@ -10,6 +10,11 @@ describe 'phone otp confirmation' do
     it_behaves_like 'otp confirmation', :sms
     it_behaves_like 'otp confirmation', :voice
 
+    context 'with an international phone number' do
+      let(:phone) { '+81543543643' }
+      it_behaves_like 'otp confirmation', :sms
+    end
+
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(delivery_method)
       fill_in :user_phone_form_phone, with: phone
@@ -38,6 +43,11 @@ describe 'phone otp confirmation' do
 
     it_behaves_like 'otp confirmation', :sms
     it_behaves_like 'otp confirmation', :voice
+
+    context 'with an international phone number' do
+      let(:phone) { '+81543543643' }
+      it_behaves_like 'otp confirmation', :sms
+    end
 
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:sms)
@@ -72,6 +82,15 @@ describe 'phone otp confirmation' do
     it_behaves_like 'otp confirmation', :sms
     it_behaves_like 'otp confirmation', :voice
 
+    context 'with an international phone number' do
+      before do
+        user.phone_configurations.first.update!(phone: formatted_phone)
+      end
+
+      let(:phone) { '+81543543643' }
+      it_behaves_like 'otp confirmation', :sms
+    end
+
     def visit_otp_confirmation(delivery_method)
       user.phone_configurations.first.update!(delivery_preference: delivery_method)
       sign_in_user(user)
@@ -93,6 +112,11 @@ describe 'phone otp confirmation' do
 
     it_behaves_like 'otp confirmation', :sms
     it_behaves_like 'otp confirmation', :voice
+
+    context 'with an international phone number' do
+      let(:phone) { '+81543543643' }
+      it_behaves_like 'otp confirmation', :sms
+    end
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
