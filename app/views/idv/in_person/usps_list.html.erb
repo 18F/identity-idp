@@ -1,0 +1,62 @@
+<h5 class="my1 caps bold accent-blue"><%= t('in_person_proofing.step', step: 1) %></h5>
+<h1 class="h3 my0"><%= t('in_person_proofing.headings.usps_list') %></h1>
+
+<%= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+<div class="mb3">
+  <fieldset class="m0 p0 border-none">
+    <legend class="mb2 serif bold">Choose a post office near you:</legend>
+    <label class="btn-border col-12 mb2 " for="two_factor_options_form_selection_sms">
+      <div class="radio">
+        <input type="radio" name="two_factor_options_form[selection]" id="two_factor_options_form_selection_sms" value="sms" checked="checked" />
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">ROSSLYN</span>
+        <div class="regular gray-dark fs-10p mt0 mb-tiny">1101 WILSON BLVD STE 1
+          ARLINGTON, VA 22209-9998</div>
+      </div>
+    </label>
+    <label class="btn-border col-12 mb2 " for="two_factor_options_form_selection_voice">
+      <div class="radio">
+        <input type="radio" name="two_factor_options_form[selection]" id="two_factor_options_form_selection_voice" value="voice" />
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">COURT HOUSE ARLINGTON</span>
+        <div class="regular gray-dark fs-10p mt0 mb-tiny">2043 WILSON BLVD
+          ARLINGTON, VA 22201-9997 </div>
+      </div>
+    </label>
+    <label class="btn-border col-12 mb2 " for="two_factor_options_form_selection_auth_app">
+      <div class="radio">
+        <input type="radio" name="two_factor_options_form[selection]" id="two_factor_options_form_selection_auth_app" value="auth_app" />
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">FORT MYER</span>
+        <div class="regular gray-dark fs-10p mt0 mb-tiny">217 JACKSON AVE
+          FORT MYER, VA 22211-9998 </div>
+      </div>
+    </label>
+    <label class="btn-border col-12 mb2 hide" for="two_factor_options_form_selection_webauthn">
+      <div class="radio">
+        <input type="radio" name="two_factor_options_form[selection]" id="two_factor_options_form_selection_webauthn" value="webauthn" />
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">WATERGATE</span>
+        <div class="regular gray-dark fs-10p mt0 mb-tiny">2512 VIRGINIA AVE NW
+          WASHINGTON, DC 20037-9997 </div>
+      </div>
+    </label>
+    <label class="btn-border col-12 mb2 " for="two_factor_options_form_selection_backup_code">
+      <div class="radio">
+        <input type="radio" name="two_factor_options_form[selection]" id="two_factor_options_form_selection_backup_code" value="backup_code" />
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">GEORGETOWN</span>
+        <div class="regular gray-dark fs-10p mt0 mb-tiny">1215 31ST ST NW
+          WASHINGTON, DC 20007-9998 </div>
+      </div>
+    </label>
+  </fieldset>
+</div>
+
+<div>
+  <input type="submit" name="commit" value="Continue" class="btn btn-primary sm-col-6 col-12 btn-wide mb1" data-disable-with="Continue" />
+</div>
+<% end %>
+
+<%= render 'idv/in_person/start_over_or_cancel' %>

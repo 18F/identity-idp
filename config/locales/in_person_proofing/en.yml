@@ -1,0 +1,51 @@
+---
+en:
+  in_person_proofing:
+    buttons:
+      change_address: change
+      change_ssn: change
+      get_started: Get started
+    enrollment_form: Enrollment form
+    forms:
+      address1: Address
+      address2: Address (optional)
+      city: City
+      dob: Date of birth
+      first_name: First name
+      last_name: Last Name
+      ssn: Social security number
+      state: State
+      zip_code: Zip code
+    headings:
+      enrollment_form: Bring this form to your post office
+      enter_info: Enter in your information
+      usps_list: Choose a post office
+      welcome: Verify your identity in person
+      zip_code: Find a post office
+    info:
+      enrollment_form: Please print or save this form and take it to the post office
+        you chose.
+      welcome: We can verify your identity at your local post office.
+    instructions:
+      bullet1: Choose a nearby post office
+      bullet2: Enter your information
+      bullet3: Print or save your enrollment form
+      bullet4: Visit the post office to get verified
+      bullet5: Come back to login.gov
+      encrypt: When you re-enter your password, login.gov will encrypt your information
+        to make sure no one else can access it.
+      enrollment_form: 'Bring this code to the following post office along with a
+        government-issued ID:'
+      text1: by entering your ZIP code
+      text2: name, date of birth, address, and social security number
+      text3: a bar code that you need to take to the post office with you
+      text4: bring your enrollment code and a government-issued ID
+      text5: sign in and finish the process
+      welcome: 'What you''ll need to do:'
+    opt_in_link: Verify your identity in person at a local post office instead
+    step: Verify your identity in person - Step %{step} of 5
+    titles:
+      in_person_proofing: Verify your identity in person
+    warning:
+      enrollment_form: Download, print, or save your enrollment form.  A copy has
+        also been sent to your email.

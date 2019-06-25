@@ -17,9 +17,7 @@ ul
     .sm-col.sm-col-8.px1
       = f.input :image, label: false, as: 'file', required: true
 
-  - unless flow_session[:error_message].nil?
-    .alert.alert-error = flow_session[:error_message]
-    .alert.alert-notice == flow_session[:notice]
+  = render 'idv/doc_auth/error_messages', flow_session: flow_session
 
   div id= 'target'
   br
