@@ -12,12 +12,14 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
     end
 
+    # :reek:TooManyStatements
     def create
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
+        backup_code_only_processing
         process_valid_form
       else
         @presenter = two_factor_options_presenter
@@ -28,7 +30,15 @@ module Users
     private
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp)
+      TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])
+    end
+
+    def backup_code_only_processing
+      if session[:signing_up] &&
+         @two_factor_options_form.selection == 'backup_code_only'
+        session[:signing_up] = false
+        redirect_to account_url
+      end
     end
 
     # rubocop:disable Metrics/MethodLength

@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'doc auth verify step' do
   include IdvStepHelper
   include DocAuthHelper
+  include InPersonHelper
 
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   before do
@@ -48,7 +49,21 @@ feature 'doc auth verify step' do
     click_idv_continue
     click_idv_continue
 
+    enable_in_person_proofing
     expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+    expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
+                                  href: idv_in_person_welcome_step)
+  end
+
+  it 'has a link to proof in person' do
+    enable_in_person_proofing
+    complete_doc_auth_steps_before_ssn_step
+    fill_out_ssn_form_with_duplicate_ssn
+    click_idv_continue
+    click_idv_continue
+
+    expect(page).to have_link(t('in_person_proofing.opt_in_link'),
+                              href: idv_in_person_welcome_step)
   end
 
   it 'throttles resolution' do

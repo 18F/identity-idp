@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     def confirm_multiple_factors_enabled
       return if confirmation_context? || phone_enabled?
 
-      if MfaPolicy.new(current_user).sufficient_factors_enabled? &&
+      if MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled? &&
          !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end

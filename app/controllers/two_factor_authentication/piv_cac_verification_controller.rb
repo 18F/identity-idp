@@ -44,7 +44,7 @@ module TwoFactorAuthentication
     end
 
     def next_step
-      if MfaPolicy.new(current_user).sufficient_factors_enabled?
+      if MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
         after_otp_verification_confirmation_url
       else
         two_factor_options_url
