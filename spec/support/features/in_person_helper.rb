@@ -65,17 +65,4 @@ module InPersonHelper
     complete_in_person_steps_before_encrypt_step
     click_continue
   end
-
-  def fill_out_personal_info_form_ok
-    fill_in 'in_person_first_name', with: 'José'
-    fill_in 'in_person_last_name', with: 'One'
-    fill_in 'in_person_address1', with: '123 Main St'
-    fill_in 'in_person_city', with: 'Nowhere'
-    select 'Virginia', from: 'in_person_state'
-    fill_in 'in_person_zipcode', with: '66044'
-    fill_in 'in_person_dob', with: '01/02/1980'
-    fill_in 'in_person_ssn', with: '666-66-1234'
-    find("label[for='in_person_state_id_type_drivers_permit']").click
-    fill_in 'in_person_state_id_number', with: '123456789'
-  end
 end
