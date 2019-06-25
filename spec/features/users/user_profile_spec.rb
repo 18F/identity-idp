@@ -148,7 +148,8 @@ feature 'User profile' do
         trigger_reset_password_and_click_email_link(user.email)
         reset_password_and_sign_back_in(user, user_password)
         click_submit_default
-        enter_correct_otp_code_for_user(user)
+        fill_in_code_with_last_phone_otp
+        click_submit_default
         click_on t('links.account.reactivate.without_key')
         fill_out_idv_jurisdiction_ok
         click_idv_continue
