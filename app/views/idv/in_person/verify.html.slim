@@ -1,0 +1,25 @@
+-title t('in_person_proofing.titles.in_person_proofing')
+
+h5.my1.caps.bold.accent-blue = t('in_person_proofing.step', step: 2)
+br
+h1.h3.my0 = 'Verify your information'
+
+.mt3.mb2
+  .right = link_to(t('in_person_proofing.buttons.change_address'), idv_address_url)
+  div = "#{t('in_person_proofing.forms.first_name')}: Jane"
+  div = "#{t('in_person_proofing.forms.last_name')}: Doe"
+  div = "#{t('in_person_proofing.forms.dob')}: 11/1/1911"
+  hr
+  .right = link_to(t('in_person_proofing.buttons.change_address'), idv_address_url)
+  div = "#{t('in_person_proofing.forms.address1')}: 1 Fake Street"
+  div = "#{t('in_person_proofing.forms.city')}: Faketown"
+  div = "#{t('in_person_proofing.forms.state')}: NY"
+  div = "#{t('in_person_proofing.forms.zip_code')}: 11364"
+  hr
+  .right = button_to(t('in_person_proofing.buttons.change_ssn'),
+    idv_doc_auth_step_path(step: :redo_ssn), method: :put, class: 'btn btn-link')
+  = "#{t('in_person_proofing.forms.ssn')}: 111-11-1111"
+  .mt4 = button_to(t('forms.buttons.continue'), url_for, method: :put,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12')
+
+= render 'idv/in_person/start_over_or_cancel'
