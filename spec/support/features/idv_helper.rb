@@ -12,7 +12,7 @@ module IdvHelper
   end
 
   def fill_out_idv_form_ok
-    fill_in 'profile_first_name', with: 'Jose'
+    fill_in 'profile_first_name', with: 'José'
     fill_in 'profile_last_name', with: 'One'
     fill_in 'profile_address1', with: '123 Main St'
     fill_in 'profile_city', with: 'Nowhere'

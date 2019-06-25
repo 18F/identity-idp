@@ -7,7 +7,7 @@ feature 'idv review step' do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
-    expect(page).to have_content('Jose')
+    expect(page).to have_content('José')
     expect(page).to have_content('One')
     expect(page).to have_content('123 Main St')
     expect(page).to have_content('Nowhere, VA 6604')

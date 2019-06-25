@@ -12,11 +12,11 @@ describe Pii::Attributes do
 
     it 'initializes from complex Hash' do
       pii = described_class.new_from_hash(
-        first_name: 'Jose',
+        first_name: 'José',
         last_name: 'Foo',
       )
 
-      expect(pii.first_name.to_s).to eq 'Jose'
+      expect(pii.first_name.to_s).to eq 'José'
       expect(pii.first_name).to be_a String
       expect(pii.last_name).to be_a String
     end
