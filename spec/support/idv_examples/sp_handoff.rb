@@ -171,7 +171,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
-    expect(decoded_id_token[:given_name]).to eq('José')
+    expect(decoded_id_token[:given_name]).to eq('Jose')
     expect(decoded_id_token[:social_security_number]).to eq('666-66-1234')
 
     access_token = token_response[:access_token]
@@ -185,7 +185,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(userinfo_response[:sub]).to eq(sub)
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
     expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:given_name]).to eq('José')
+    expect(userinfo_response[:given_name]).to eq('Jose')
     expect(userinfo_response[:social_security_number]).to eq('666-66-1234')
   end
 

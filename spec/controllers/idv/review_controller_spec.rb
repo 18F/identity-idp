@@ -12,7 +12,7 @@ describe Idv::ReviewController do
   let(:zipcode) { '66044' }
   let(:user_attrs) do
     {
-      first_name: 'José',
+      first_name: 'Jose',
       last_name: 'One',
       dob: 'March 29, 1972',
       address1: '123 Main St',
@@ -309,8 +309,8 @@ describe Idv::ReviewController do
 
         expect(pii.zipcode).to eq zipcode
 
-        expect(idv_session.applicant[:first_name]).to eq 'José'
-        expect(pii.first_name).to eq 'José'
+        expect(idv_session.applicant[:first_name]).to eq 'Jose'
+        expect(pii.first_name).to eq 'Jose'
       end
 
       context 'user picked phone confirmation' do
