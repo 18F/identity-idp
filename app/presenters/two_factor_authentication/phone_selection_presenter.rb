@@ -15,7 +15,7 @@ module TwoFactorAuthentication
           phone: masked_number(configuration.phone),
         )
       else
-        t("two_factor_authentication.two_factor_choice_options.phone_info_html")
+        t('two_factor_authentication.two_factor_choice_options.phone_info_html')
       end
     end
 
