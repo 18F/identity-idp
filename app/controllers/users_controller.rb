@@ -27,6 +27,6 @@ class UsersController < ApplicationController
   end
 
   def signed_in_user_with_multiple_mfa?
-    current_user && MfaPolicy.new(current_user).sufficient_factors_enabled?
+    current_user && MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
   end
 end
