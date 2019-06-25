@@ -94,9 +94,9 @@ en:
       question: Don't have access to your phone right now?
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
     phone_sms_label: Mobile phone number
-    phone_voice_info_html: We'll call you with a security code <strong>each time you
+    phone_info_html: We'll send you a security code <strong>each time you
       sign in</strong>.
-    phone_voice_label: Phone number
+    phone_label: Phone number
     piv_cac_fallback:
       question: Don't have your piv/cac card available?
     piv_cac_header_text: Present your PIV/CAC
@@ -125,8 +125,10 @@ en:
       piv_cac_info_html: Use your PIV/CAC card to secure your account
       sms: Text message / SMS
       sms_info_html: Get your security code via text message / SMS
-      voice: Phone call
-      voice_info_html: Get your security code via phone call
+      phone: Phone
+      phone_info_html: Get your security code via text message (SMS) or phone call
+      voice: Phone
+      voice_info_html: Get your security code via text message (SMS) or phone call
       webauthn: Security key
       webauthn_info_html: Use a security key to secure your account
     two_factor_recovery_choice: Add another method

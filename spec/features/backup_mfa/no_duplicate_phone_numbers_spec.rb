@@ -45,7 +45,7 @@ feature 'OTP delivery selection' do
     def choose_phone_as_backup_mfa
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('voice')
-      expect(page).to have_content t('titles.phone_setup.voice')
+      expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('two_factor_authentication.header_text'))

@@ -44,7 +44,7 @@ module Users
     # rubocop:disable Metrics/MethodLength
     def process_valid_form
       case @two_factor_options_form.selection
-      when 'sms', 'voice'
+      when 'phone'
         redirect_to phone_setup_url
       when 'auth_app'
         redirect_to authenticator_setup_url

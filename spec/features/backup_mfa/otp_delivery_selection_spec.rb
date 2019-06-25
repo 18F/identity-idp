@@ -14,7 +14,7 @@ feature 'OTP delivery selection' do
     it 'allows the user to setup SMS for backup MFA' do
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('sms')
-      expect(page).to have_content t('titles.phone_setup.sms')
+      expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.sms.number_message',
@@ -36,7 +36,7 @@ feature 'OTP delivery selection' do
     it 'allows the user to voice for backup MFA' do
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('voice')
-      expect(page).to have_content t('titles.phone_setup.voice')
+      expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.voice.number_message',
@@ -52,14 +52,14 @@ feature 'OTP delivery selection' do
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
-    select_2fa_option(:voice)
+    select_2fa_option(:phone)
 
-    expect(page).to have_content(t('titles.phone_setup.voice'))
+    expect(page).to have_content(t('titles.phone_setup'))
 
     click_on t('two_factor_authentication.choose_another_option')
     select_2fa_option(:sms)
 
-    expect(page).to have_content(t('titles.phone_setup.sms'))
+    expect(page).to have_content(t('titles.phone_setup'))
 
     Twilio::FakeCall.calls = []
     Twilio::FakeMessage.messages = []

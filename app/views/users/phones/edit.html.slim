@@ -1,28 +1,17 @@
 - title t('titles.edit_info.phone')
 
 h1.h3.my0 = t('headings.edit_info.phone')
-= simple_form_for(@user_phone_form,
-    html: { autocomplete: 'off', method: :put, role: 'form' },
-    data: { international_phone_form: true },
-    url: manage_phone_path) do |f|
-  .sm-col-8.js-intl-tel-code-select
-    = f.input :international_code,
-      collection: international_phone_codes,
-      include_blank: false,
-      input_html: { class: 'international-code' }
-  .sm-col-8.mb3
-    = f.label :phone
-      strong.left = @presenter.label
-    = f.input :phone, as: :tel, label: false, required: true,
-        input_html: { class: 'phone col-8 mb4' }
-  = render 'users/shared/otp_delivery_preference_selection'
-  = render 'users/shared/otp_make_default_number'
-  = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'btn-wide'
+
+= render 'users/shared/phone_form',
+        http_method: :put,
+        target_url: manage_phone_path,
+        button: 'forms.buttons.submit.confirm_change'
+
 - if MfaPolicy.new(current_user).more_than_two_factors_enabled? && @user_phone_form.phone.present?
   br
   .sm-col-8.mb3
-    = button_to t('forms.phone.buttons.delete'), manage_phone_url(id: params[:id]), \
-        class: 'btn btn-danger btn-wide', \
+    = button_to t('forms.phone.buttons.delete'), manage_phone_url(id: params[:id]),
+        class: 'btn btn-danger btn-wide',
         method: :delete
 = render 'shared/cancel', link: account_path
 

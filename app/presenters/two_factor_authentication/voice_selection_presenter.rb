@@ -1,7 +1,7 @@
 module TwoFactorAuthentication
   class VoiceSelectionPresenter < PhoneSelectionPresenter
     def method
-      :voice
+      :phone
     end
   end
 end
