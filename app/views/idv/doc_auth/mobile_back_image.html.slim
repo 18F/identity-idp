@@ -16,7 +16,9 @@ ul
   .clearfix.mxn1
     .sm-col.sm-col-9.px1
       = f.input :image, label: false, as: 'file', required: true
-  = render 'idv/doc_auth/error_messages', flow_session: flow_session
+  - unless flow_session[:error_message].nil?
+    .alert.alert-error = flow_session[:error_message]
+    .alert.alert-notice == flow_session[:notice]
 
   div id= 'target'
   br
