@@ -12,7 +12,7 @@ describe 'phone otp confirmation' do
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :sms
+      it_behaves_like 'phone otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
@@ -46,7 +46,7 @@ describe 'phone otp confirmation' do
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :sms
+      it_behaves_like 'phone otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
@@ -88,7 +88,7 @@ describe 'phone otp confirmation' do
       end
 
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :sms
+      it_behaves_like 'phone otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
@@ -115,7 +115,7 @@ describe 'phone otp confirmation' do
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :sms
+      it_behaves_like 'phone otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
