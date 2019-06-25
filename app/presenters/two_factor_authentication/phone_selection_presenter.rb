@@ -25,7 +25,6 @@ module TwoFactorAuthentication
 
     private
 
-
     def masked_number(number)
       return '' if number.blank?
       "***-***-#{number[-4..-1]}"

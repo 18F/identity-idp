@@ -24,7 +24,7 @@ module Users
     def edit
       set_phone_id
       @user_phone_form = UserPhoneForm.new(current_user, phone_configuration)
-      print "delivery pref: " + phone_configuration&.delivery_preference.to_s
+      print 'delivery pref: ' + phone_configuration&.delivery_preference.to_s
       @presenter = PhoneSetupPresenter.new
     end
 

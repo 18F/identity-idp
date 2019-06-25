@@ -95,6 +95,9 @@ fr:
         success: Votre numéro de téléphone a été supprimé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
+    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité <strong>chaque
+      fois que vous vous connectez</strong>.
+    phone_label: Numéro de téléphone
     phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
       que vous vous connectez</strong>.
     phone_sms_label: Numéro de téléphone portable
@@ -127,6 +130,8 @@ fr:
         vos codes de sauvegarde, vous ne pourrez pas vous connecter à votre compte.
       piv_cac: Employés du gouvernement
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte
+      phone_info_html: Obtenez votre code de sécurité par SMS ou par appel téléphonique
+      phone: Téléphone
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS
       voice: Appel téléphonique
