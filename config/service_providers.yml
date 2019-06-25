@@ -1052,3 +1052,19 @@ production:
       - email
     ial: 1
     restrict_to_deploy_env: 'prod'
+
+  # SBA - Connect (connect.sba.gov)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:sba:sbaconnect':
+    agency_id: 17
+    friendly_name: 'SBA Connect'
+    agency: 'SBA'
+    ial: 1
+    logo: 'sba_connect.png'
+    cert: 'sba_connect_prod'
+    return_to_sp_url: 'https://connect.sba.gov'
+    redirect_uris:
+      - 'https://connect.sba.gov/Account/SignInCallback'
+      - 'https://connect.sba.gov/home/logoutcallback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
