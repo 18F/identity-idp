@@ -47,10 +47,12 @@ shared_examples 'otp confirmation' do |delivery_method|
   end
 
   def last_otp(delivery_method)
-    if delivery_method == :sms
+    if delivery_method == :voice
+      last_voice_otp(phone: formatted_phone)
+    elsif delivery_method == :sms && Phonelib.parse(phone, 'US').country == 'US'
       last_sms_otp(phone: formatted_phone)
     else
-      last_voice_otp(phone: formatted_phone)
+      last_international_sms_otp(phone: formatted_phone)
     end
   end
 end
