@@ -11,12 +11,12 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq two_factor_options_path
 
-      select_2fa_option('sms')
+      select_2fa_option('phone')
 
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup.sms')
+        to have_content t('titles.phone_setup')
 
       send_security_code_without_entering_phone_number
 
@@ -42,7 +42,7 @@ feature 'Two Factor Authentication' do
       it 'locks the user out' do
         sign_in_before_2fa
 
-        select_2fa_option('sms')
+        select_2fa_option('phone')
         submit_2fa_setup_form_with_valid_phone
         3.times do
           fill_in('code', with: 'bad-code')
@@ -60,7 +60,7 @@ feature 'Two Factor Authentication' do
 
       scenario 'renders an error if a user submits with JS disabled' do
         sign_in_before_2fa
-        select_2fa_option('voice')
+        select_2fa_option('phone')
         select 'Bahamas', from: 'user_phone_form_international_code'
         fill_in 'Phone', with: unsupported_phone
         click_send_security_code
@@ -80,7 +80,7 @@ feature 'Two Factor Authentication' do
     context 'with international phone that does not support voice delivery' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
-        select_2fa_option('voice')
+        select_2fa_option('phone')
         fill_in 'Phone', with: '+81 54 354 3643'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
@@ -98,7 +98,7 @@ feature 'Two Factor Authentication' do
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
-        select_2fa_option('voice')
+        select_2fa_option('phone')
 
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
@@ -112,7 +112,7 @@ feature 'Two Factor Authentication' do
         allow(SmsOtpSenderJob).to receive(:perform_now)
 
         user = sign_in_before_2fa
-        select_2fa_option('sms')
+        select_2fa_option('phone')
         select 'Morocco', from: 'user_phone_form_international_code'
         fill_in 'user_phone_form_phone', with: '6 61 28 93 24'
         click_send_security_code
@@ -131,7 +131,7 @@ feature 'Two Factor Authentication' do
     context 'with voice option and US number' do
       it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
         sign_in_before_2fa
-        select_2fa_option('voice')
+        select_2fa_option('phone')
         fill_in 'user_phone_form_phone', with: '7035551212'
         click_send_security_code
 
@@ -415,7 +415,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
 
-        select_2fa_option('sms')
+        select_2fa_option('phone')
         submit_2fa_setup_form_with_valid_phone
 
         max_attempts.times do

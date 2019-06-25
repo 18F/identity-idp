@@ -13,7 +13,7 @@ feature 'webauthn sign up' do
     def expect_webauthn_setup_success
       expect(page).to have_current_path(two_factor_options_path)
 
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp
@@ -27,7 +27,7 @@ feature 'webauthn sign up' do
 
   context 'as second MFA method' do
     def visit_webauthn_setup
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp

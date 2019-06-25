@@ -6,7 +6,7 @@ feature 'Phone confirmation during sign up' do
       allow(SmsOtpSenderJob).to receive(:perform_now).and_call_original
       @user = sign_in_before_2fa
 
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in 'user_phone_form_phone', with: '703-555-5555'
       click_send_security_code
 
@@ -57,7 +57,7 @@ feature 'Phone confirmation during sign up' do
     before do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in 'user_phone_form_phone',
               with: MfaContext.new(@existing_user).phone_configurations.detect(&:mfa_enabled?).phone
       click_send_security_code

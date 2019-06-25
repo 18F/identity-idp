@@ -23,6 +23,6 @@ describe 'MFA enrollability' do
     click_button 'Submit'
 
     expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
-    expect(page).to have_selector('#two_factor_options_form_selection_sms', count: 1)
+    expect(page).to have_selector('#two_factor_options_form_selection_phone', count: 1)
   end
 end

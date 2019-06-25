@@ -42,10 +42,9 @@ module Users
     end
 
     def user_phone_form_params
-      params.require(:user_phone_form).permit(
-        :international_code,
-        :phone,
-      )
+      params.require(:user_phone_form).permit(:phone, :international_code,
+                                              :otp_delivery_preference,
+                                              :otp_make_default_number)
     end
   end
 end
