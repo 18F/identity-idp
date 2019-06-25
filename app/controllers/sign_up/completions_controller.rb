@@ -6,8 +6,8 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :loa3?
     before_action :apply_secure_headers_override, only: :show
-    before_action :redirect_to_account_if_no_issuer
-    before_action :redirect_to_sp_if_user_has_identity_for_issuer
+    before_action :redirect_to_account_if_no_issuer, only: :show
+    before_action :redirect_to_account_if_user_has_identity_for_issuer, only: :show
 
     def show
       @view_model = view_model
@@ -38,16 +38,12 @@ module SignUp
       redirect_to account_url if sp_session[:issuer].blank?
     end
 
-    def redirect_to_sp_if_user_has_identity_for_issuer
-      redirect_to sp_session[:request_url] if user_has_identity_for_issuer?(sp_session[:issuer])
+    def redirect_to_account_if_user_has_identity_for_issuer
+      redirect_to account_url if user_has_identity_for_issuer?(sp_session[:issuer])
     end
 
     def user_has_identity_for_issuer?(issuer)
       current_user.identities.where(service_provider: issuer).any?
-    end
-
-    def after_sign_in_url
-      after_sign_in_path_for(current_user)
     end
 
     def view_model
