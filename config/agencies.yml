@@ -29,6 +29,10 @@ test:
     name: 'DOL'
   15:
     name: 'USAID'
+  16:
+    name: 'DOI'
+  17:
+    name: 'SBA'
 
 development:
   1:
@@ -61,6 +65,10 @@ development:
     name: 'DOL'
   15:
     name: 'USAID'
+  16:
+    name: 'DOI'
+  17:
+    name: 'SBA'
 
 production:
   1:
@@ -95,3 +103,5 @@ production:
     name: 'USAID'
   16:
     name: 'DOI'
+  17:
+    name: 'SBA'
