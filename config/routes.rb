@@ -251,6 +251,9 @@ Rails.application.routes.draw do
           put '/recovery/:step' => 'recovery#update'
         end
       end
+      get '/in_person' => 'in_person#index'
+      get '/in_person/:step' => 'in_person#show', as: :in_person_step
+      put '/in_person/:step' => 'in_person#update'
     end
 
     if FeatureManagement.enable_usps_verification?
