@@ -100,7 +100,7 @@ feature 'Two Factor Authentication' do
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        select_phone_delivery_option(:voice)
+        page.find('#user_phone_form_otp_delivery_preference_voice', visible: false).click
 
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
