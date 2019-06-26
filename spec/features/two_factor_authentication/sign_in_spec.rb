@@ -100,7 +100,13 @@ feature 'Two Factor Authentication' do
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        page.find('#user_phone_form_otp_delivery_preference_voice', visible: false).click
+
+        # Because javascript is enabled and we do some fancy pants stuff with radio buttons, we need
+        # to click on the radio buttons parent to make a selection
+        voice_radio_button = page.find(
+          '#user_phone_form_otp_delivery_preference_voice', visible: false
+        )
+        voice_radio_button.find(:xpath, '..').click
 
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
