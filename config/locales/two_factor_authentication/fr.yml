@@ -41,15 +41,17 @@ fr:
       personal_key: Clé personnelle
       personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
         avez utilisée lors de la création du compte.
+      phone_info_html: Obtenez votre code de sécurité par SMS ou Obtenez votre code
+        de sécurité par SMS à <strong>%{phone}</strong>.
       piv_cac: Employés du gouvernement
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
-      phone_info_html: Obtenez votre code de sécurité par SMS ou Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
       sms_setup_info_html: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
-      voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité par SMS à  à <strong>%{phone}</strong>.
-        (Seulement les numéros de téléphone en Amerique du Nord)
+      voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
+        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de téléphone
+        en Amerique du Nord)
       voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique.
         (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
