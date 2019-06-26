@@ -21,8 +21,6 @@ class UserPhoneForm
 
   def submit(params)
     ingest_submitted_params(params)
-    # TODO: clara
-    # print params
 
     success = valid?
     self.phone = submitted_phone unless success

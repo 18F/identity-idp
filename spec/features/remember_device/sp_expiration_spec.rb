@@ -70,7 +70,6 @@ feature 'remember device sp expiration' do
     user_record = sign_up_and_set_password
     user_record.password = Features::SessionHelper::VALID_PASSWORD
 
-    # TODO: clara
     select_2fa_option('phone')
     fill_in :user_phone_form_phone, with: '2025551313'
     click_send_security_code
