@@ -36,6 +36,7 @@ es:
       enable: Permitir
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
+      send_security_code: Enviar código
       submit:
         default: Enviar
         update: Actualización

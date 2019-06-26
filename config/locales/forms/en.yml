@@ -33,6 +33,7 @@ en:
       enable: Enable
       manage: Manage
       resend_confirmation: Resend confirmation instructions
+      send_security_code: Send code
       submit:
         default: Submit
         update: Update
