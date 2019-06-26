@@ -1,5 +1,4 @@
 class SetupPresenter
-  
   attr_reader :current_user, :user_fully_authenticated
 
   def initialize(current_user, user_fully_authenticated)
