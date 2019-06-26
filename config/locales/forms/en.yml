@@ -33,9 +33,7 @@ en:
       enable: Enable
       manage: Manage
       resend_confirmation: Resend confirmation instructions
-      send_security_code: Send code
       submit:
-        confirm_change: Confirm change
         default: Submit
         update: Update
     confirmation:
@@ -43,7 +41,6 @@ en:
     email:
       buttons:
         delete: Delete email address
-    example: 'example:'
     messages:
       remember_device: Remember this browser
     passwords:
