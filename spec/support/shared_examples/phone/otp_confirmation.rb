@@ -3,7 +3,6 @@ shared_examples 'otp confirmation' do |delivery_method|
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: last_otp(delivery_method)
     click_submit_default
-    warn(current_url)
     expect_successful_otp_confirmation(delivery_method)
   end
 

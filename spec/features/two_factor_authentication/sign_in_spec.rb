@@ -55,12 +55,13 @@ feature 'Two Factor Authentication' do
       end
     end
 
-    context 'with number that does not support phone delivery method' do
+    context 'with number that does not support voice delivery method' do
       let(:unsupported_phone) { '242-327-0143' }
 
       scenario 'renders an error if a user submits with JS disabled' do
         sign_in_before_2fa
-        select_2fa_option('phone')
+        select_2fa_option(:phone)
+        select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'user_phone_form_international_code'
         fill_in 'Phone', with: unsupported_phone
         click_send_security_code
@@ -80,7 +81,7 @@ feature 'Two Factor Authentication' do
     context 'with international phone that does not support voice delivery' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
-        select_2fa_option('phone')
+        select_2fa_option(:phone)
         fill_in 'Phone', with: '+81 54 354 3643'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
@@ -98,7 +99,14 @@ feature 'Two Factor Authentication' do
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
-        select_2fa_option('phone')
+        select_2fa_option(:phone)
+
+        # Because javascript is enabled and we do some fancy pants stuff with radio buttons, we need
+        # to click on the radio buttons parent to make a selection
+        voice_radio_button = page.find(
+          '#user_phone_form_otp_delivery_preference_voice', visible: false
+        )
+        voice_radio_button.find(:xpath, '..').click
 
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
@@ -131,7 +139,8 @@ feature 'Two Factor Authentication' do
     context 'with voice option and US number' do
       it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
         sign_in_before_2fa
-        select_2fa_option('phone')
+        select_2fa_option(:phone)
+        select_phone_delivery_option(:voice)
         fill_in 'user_phone_form_phone', with: '7035551212'
         click_send_security_code
 
