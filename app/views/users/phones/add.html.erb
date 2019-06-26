@@ -1,0 +1,13 @@
+<% title t('titles.add_info.phone')
+
+ %><h1 class="h3 my0"><%= ::Temple::Utils.escape_html((t('headings.add_info.phone'))) %>
+
+</h1><%= ::Temple::Utils.escape_html((render 'users/shared/phone_form',
+http_method: :post,
+target_url: add_phone_path,
+button: 'forms.buttons.continue')) %>
+
+<%= ::Temple::Utils.escape_html((render 'shared/cancel', link: account_path)) %>
+
+<%= ::Temple::Utils.escape_html((stylesheet_link_tag 'intl-tel-number/intlTelInput')) %>
+<%= ::Temple::Utils.escape_html((javascript_pack_tag 'intl-tel-input')) %>
