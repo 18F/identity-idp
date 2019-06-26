@@ -6,7 +6,7 @@ shared_examples 'otp confirmation' do |delivery_method|
     expect_successful_otp_confirmation(delivery_method)
   end
 
-  xit 'renders an error if the user enters an incorrect otp' do
+  it 'renders an error if the user enters an incorrect otp' do
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: '123456'
     click_submit_default
@@ -14,7 +14,7 @@ shared_examples 'otp confirmation' do |delivery_method|
     expect_failed_otp_confirmation(delivery_method)
   end
 
-  xit 'renders an error if the user does not enter an otp' do
+  it 'renders an error if the user does not enter an otp' do
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: ''
     click_submit_default
@@ -22,7 +22,7 @@ shared_examples 'otp confirmation' do |delivery_method|
     expect_failed_otp_confirmation(delivery_method)
   end
 
-  xit 'renders an error if the OTP has expired' do
+  it 'renders an error if the OTP has expired' do
     visit_otp_confirmation(delivery_method)
     Timecop.travel 11.minutes.from_now do
       fill_in :code, with: last_otp(delivery_method)
@@ -32,7 +32,7 @@ shared_examples 'otp confirmation' do |delivery_method|
     end
   end
 
-  xit 'allows the user to resend an OTP and confirm with the new OTP' do
+  it 'allows the user to resend an OTP and confirm with the new OTP' do
     visit_otp_confirmation(delivery_method)
     old_code = last_otp(delivery_method)
     click_on t('links.two_factor_authentication.get_another_code')

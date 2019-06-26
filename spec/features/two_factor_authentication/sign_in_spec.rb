@@ -82,7 +82,6 @@ feature 'Two Factor Authentication' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        select_phone_delivery_option(:voice)
         fill_in 'Phone', with: '+81 54 354 3643'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
