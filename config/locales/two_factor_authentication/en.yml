@@ -40,6 +40,7 @@ en:
       personal_key: Personal Key
       personal_key_info_html: Use the 16 character personal key you received at account
         creation.
+      phone_info_html: Get security code via text/SMS or phone call to <strong>%{phone}</strong>.
       piv_cac: Government employee ID
       piv_cac_info_html: Use your PIV/CAC card instead of a security code.
       sms: Text message
