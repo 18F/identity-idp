@@ -41,7 +41,7 @@ module Users
     end
 
     def set_backup_code_setup_presenter
-      @presenter = BackupCodeSetupPresenter.new(current_user, user_fully_authenticated?)
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
     def mark_user_as_fully_authenticated

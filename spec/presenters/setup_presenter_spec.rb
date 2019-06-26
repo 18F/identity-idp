@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TotpSetupPresenter do
+describe SetupPresenter do
   let(:user) { create(:user) }
   let(:presenter) { described_class.new(user, false) }
 

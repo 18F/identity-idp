@@ -39,7 +39,7 @@ module Users
     private
 
     def set_totp_setup_presenter
-      @presenter = TotpSetupPresenter.new(current_user, user_fully_authenticated?)
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
     def track_event

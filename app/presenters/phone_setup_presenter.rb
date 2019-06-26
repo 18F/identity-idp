@@ -1,4 +1,4 @@
-class PhoneSetupPresenter
+class PhoneSetupPresenter < SetupPresenter
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :otp_delivery_preference
@@ -7,10 +7,6 @@ class PhoneSetupPresenter
     @current_user = current_user
     @user_fully_authenticated = user_fully_authenticated
     @otp_delivery_preference = otp_delivery_preference
-  end
-
-  def step
-    no_factors_enabled? ? '3' : '4'
   end
 
   def heading
@@ -27,18 +23,5 @@ class PhoneSetupPresenter
 
   def image
     "2FA-#{otp_delivery_preference}.svg"
-  end
-
-  def steps_visible?
-    SignUpProgressPolicy.new(
-      @current_user,
-      @user_fully_authenticated,
-    ).sign_up_progress_visible?
-  end
-
-  private
-
-  def no_factors_enabled?
-    MfaPolicy.new(@current_user).no_factors_enabled?
   end
 end

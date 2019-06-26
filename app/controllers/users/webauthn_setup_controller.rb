@@ -47,7 +47,7 @@ module Users
     private
 
     def set_webauthn_setup_presenter
-      @presenter = WebauthnSetupPresenter.new(current_user, user_fully_authenticated?)
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
     def flash_error(errors)

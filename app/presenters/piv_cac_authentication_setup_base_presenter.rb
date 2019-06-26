@@ -1,12 +1,12 @@
-class PivCacAuthenticationSetupBasePresenter
+class PivCacAuthenticationSetupBasePresenter < SetupPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :form, :user, :fully_authenticated
 
   def initialize(current_user, user_fully_authenticated, form)
-    @user = current_user
-    @fully_authenticated = user_fully_authenticated
+    @current_user = current_user
+    @user_fully_authenticated = user_fully_authenticated
     @form = form
   end
 
