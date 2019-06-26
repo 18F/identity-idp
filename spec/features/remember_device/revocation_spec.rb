@@ -121,7 +121,7 @@ feature 'taking an action that revokes remember device' do
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
                       login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
-                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+                    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
                       login_two_factor_backup_code_path
                     end
 

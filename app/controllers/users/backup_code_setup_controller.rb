@@ -11,9 +11,7 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
-      mark_user_as_fully_authenticated
       save_backup_codes
-      revoke_remember_device
     end
 
     def edit; end
@@ -46,8 +44,10 @@ module Users
     end
 
     def save_backup_codes
+      mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
+      revoke_remember_device
     end
 
     def revoke_remember_device
