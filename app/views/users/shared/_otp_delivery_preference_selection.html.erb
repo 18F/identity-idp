@@ -6,7 +6,10 @@
     <p class="mt0 mb2" id="otp_delivery_preference_instruction">
       <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
     </p>
-    <label class="btn-border col-12 sm-col-5 sm-mr2 mb2 sm-mb0">
+    <label
+      class="btn-border col-12 sm-col-5 sm-mr2 mb2 sm-mb0"
+      for="user_phone_form_otp_delivery_preference_sms"
+    >
       <div class="radio">
         <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
           :sms, @user_phone_form.delivery_preference_sms?,
@@ -15,7 +18,10 @@
         <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
       </div>
     </label>
-    <label class="btn-border col-12 sm-col-5 mb0">
+    <label
+      class="btn-border col-12 sm-col-5 mb0"
+      for="user_phone_form_otp_delivery_preference_voice"
+    >
       <div class="radio">
         <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
             :voice, @user_phone_form.delivery_preference_voice?,

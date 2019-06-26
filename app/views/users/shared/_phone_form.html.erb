@@ -10,9 +10,11 @@
         input_html: { class: 'international-code' } %>
   </div>
   <div class="sm-col-8 mb3">
-    <strong class="left">
-      <%= @presenter.label %></strong>
-    </strong>
+    <label for='user_phone_form_phone'>
+      <strong class="left">
+        <%= @presenter.label %>
+      </strong>
+    </label>
     <%= f.input :phone, as: :tel, label: false, required: true,
         input_html: { class: 'phone col-8 mb4' } %>
   </div>
