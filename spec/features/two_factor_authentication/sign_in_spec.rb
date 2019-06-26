@@ -63,7 +63,7 @@ feature 'Two Factor Authentication' do
         select_2fa_option(:phone)
         select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'user_phone_form_international_code'
-        fill_in 'Phone', with: unsupported_phone
+        fill_in 'user_phone_form_phone', with: unsupported_phone
         click_send_security_code
 
         expect(current_path).to eq phone_setup_path
@@ -82,17 +82,17 @@ feature 'Two Factor Authentication' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        fill_in 'Phone', with: '+81 54 354 3643'
+        fill_in 'user_phone_form_phone', with: '+81 54 354 3643'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
 
-        fill_in 'Phone', with: ''
-        fill_in 'Phone', with: '+212 5376'
+        fill_in 'user_phone_form_phone', with: ''
+        fill_in 'user_phone_form_phone', with: '+212 5376'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'MA'
 
-        fill_in 'Phone', with: ''
-        fill_in 'Phone', with: '+81 54354'
+        fill_in 'user_phone_form_phone', with: ''
+        fill_in 'user_phone_form_phone', with: '+81 54354'
 
         expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
       end
