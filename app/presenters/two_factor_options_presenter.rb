@@ -82,12 +82,20 @@ class TwoFactorOptionsPresenter
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 
+  def backup_code_configured?
+    TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
+  end
+
   def backup_code_option
-    return [] if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-    return [] if @signing_up
+    return backup_code_option_value if backup_code_configured?
+    return backup_code_option_value if @signing_up
+    []
+  end
+
+  def backup_code_option_value
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(
       @signing_up &&
-      TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?,
+      backup_code_configured?,
     )]
   end
 end
