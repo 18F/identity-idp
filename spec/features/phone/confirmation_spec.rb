@@ -7,17 +7,18 @@ describe 'phone otp confirmation' do
   context 'on sign up as first MFA' do
     let!(:user) { sign_up_and_set_password }
 
-    it_behaves_like 'otp confirmation', :phone
-    it_behaves_like 'otp confirmation', :phone
+    it_behaves_like 'otp confirmation', :sms
+    it_behaves_like 'otp confirmation', :voice
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :phone
+      it_behaves_like 'otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
-      select_2fa_option(delivery_method)
+      select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: phone
+      select_phone_delivery_option(delivery_method)
       click_send_security_code
     end
 
@@ -41,23 +42,25 @@ describe 'phone otp confirmation' do
   context 'on sign up as second MFA method' do
     let!(:user) { sign_up_and_set_password }
 
-    it_behaves_like 'otp confirmation', :phone
-    it_behaves_like 'otp confirmation', :phone
+    it_behaves_like 'otp confirmation', :sms
+    it_behaves_like 'otp confirmation', :voice
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :phone
+      it_behaves_like 'otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: '2025551313'
+      select_phone_delivery_option(:sms)
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      select_2fa_option(delivery_method)
+      select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: phone
+      select_phone_delivery_option(delivery_method)
       click_send_security_code
     end
 
@@ -88,7 +91,7 @@ describe 'phone otp confirmation' do
       end
 
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :phone
+      it_behaves_like 'otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
@@ -115,14 +118,14 @@ describe 'phone otp confirmation' do
 
     context 'with an international phone number' do
       let(:phone) { '+81543543643' }
-      it_behaves_like 'otp confirmation', :phone
+      it_behaves_like 'otp confirmation', :sms
     end
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
       click_on t('account.index.phone_add')
       fill_in :user_phone_form_phone, with: phone
-      choose "user_phone_form_otp_delivery_preference_#{delivery_method}"
+      select_phone_delivery_option(delivery_method)
       click_continue
     end
 
