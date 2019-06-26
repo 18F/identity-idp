@@ -431,18 +431,4 @@ describe 'FeatureManagement', type: :feature do
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
     end
   end
-
-  describe '#email_deletion_enabled?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:email_deletion_enabled) { 'true' }
-
-      expect(FeatureManagement.email_deletion_enabled?).to eq(true)
-    end
-
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:email_deletion_enabled) { 'false' }
-
-      expect(FeatureManagement.email_deletion_enabled?).to eq(false)
-    end
-  end
 end

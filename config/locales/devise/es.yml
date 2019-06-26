@@ -51,9 +51,6 @@ es:
     registrations:
       close_window: Puedes cerrar esta ventana si terminaste.
       destroyed: Su cuenta se ha eliminado exitosamente.
-      email_update_needs_confirmation: Ha actualizado su cuenta, pero debemos confirmar
-        su nueva dirección de email. Encuentre el email que nosotros le enviamos y
-        siga el enlace para confirmar su nueva dirección.
       phone_update_needs_confirmation: Su solicitud para actualizar su número de teléfono
         fue procesada, pero necesitamos confirmar primero su número nuevo. Por favor,
         siga las siguientes instrucciones. Si no confirma su nuevo número, seguiremos

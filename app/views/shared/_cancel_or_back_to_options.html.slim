@@ -1,5 +1,0 @@
-.mt2.pt1.border-top
-- if MfaPolicy.new(current_user).sufficient_factors_enabled?
-  = link_to t('links.cancel'), account_path, class: 'h5'
-- else
-  = link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path

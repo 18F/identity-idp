@@ -39,7 +39,8 @@ module Users
 
     def track_event
       properties = {
-        user_signed_up: MfaPolicy.new(current_user).sufficient_factors_enabled?,
+        user_signed_up: MfaPolicy.new(current_user, session[:signing_up]).
+                   sufficient_factors_enabled?,
         totp_secret_present: new_totp_secret.present?,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
