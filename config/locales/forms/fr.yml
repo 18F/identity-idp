@@ -37,6 +37,7 @@ fr:
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
       submit:
+        confirm_change: Confirmer le changement
         default: Soumettre
         update: Mettre à jour
     confirmation:
