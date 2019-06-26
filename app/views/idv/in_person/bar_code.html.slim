@@ -1,0 +1,42 @@
+- title t('forms.backup_code.title')
+
+h5.my1.caps.bold.accent-blue = t('in_person_proofing.step', step: 3)
+br
+h1.h3.my0 = t('in_person_proofing.headings.enrollment_form')
+p.mt-tiny.mb3 == t('in_person_proofing.info.enrollment_form')
+.mb4
+  fieldset.m0.p0.rounded-xl
+    ul.list-reset
+      li.px-12p.mb1.border-none.mt1.m2
+        .inline-block.h1.bold = t('in_person_proofing.enrollment_form')
+        .h5.mt0.mb0.pt1.pb2.fs-12p
+          = t('users.backup_code.generated_on_html',
+                  date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))
+        .inline-block = t('in_person_proofing.instructions.enrollment_form')
+        br
+        br
+        = 'ROSSLYN POST OFFICE'
+        br
+        = '1101 WILSON BLVD STE 1 ARLINGTON, VA 22209-9998'
+      li.mb0.border-top
+        .alert-inline.bold.border-bottom
+          = t('in_person_proofing.warning.enrollment_form')
+        table.pl4.pr3.monospace
+          tr
+            td.center
+              = image_tag(asset_url('idv/bar_code.png'),
+                alt: t('doc_auth.headings.upload_back'), height: 140)
+                  br
+                  br
+        .center.mt1
+          = link_to t('forms.backup_code.download'), backup_code_download_path,
+                  class: 'text-decoration-none ico btn-border ico-download'
+          = link_to t('forms.backup_code.print'), '#',
+            data: { print: true },
+            class: 'ico ico-print btn-border ml2 text-decoration-none'
+
+= link_to t('forms.buttons.continue'), account_path, class: 'btn btn-primary btn-wide'
+br
+= render 'idv/in_person/start_over_or_cancel'
+
+== javascript_pack_tag 'clipboard'
