@@ -173,7 +173,7 @@ Rails.application.routes.draw do
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     if FeatureManagement.backup_codes_enabled?
       get '/backup_code_setup' => 'users/backup_code_setup#index'
-      patch '/backup_code_setup' => 'users/backup_code_setup#create'
+      patch '/backup_code_setup' => 'users/backup_code_setup#continue'
       get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
       get '/backup_code_download' => 'users/backup_code_setup#download'
     end

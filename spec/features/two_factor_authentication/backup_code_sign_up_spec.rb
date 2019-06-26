@@ -38,7 +38,7 @@ feature 'sign up with backup code' do
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
         expect(current_path).to eq backup_code_setup_path
-        expect(user.backup_code_configurations.count).to eq(0)
+        expect(user.backup_code_configurations.count).to eq(10)
 
         click_on 'Continue'
 
