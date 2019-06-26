@@ -35,6 +35,7 @@ fr:
       enable: Activer
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
+      send_security_code: Envoyer le code
       submit:
         default: Soumettre
         update: Mettre à jour
@@ -43,6 +44,7 @@ fr:
     email:
       buttons:
         delete: Supprimer l'email
+    example: 'exemple:'
     messages:
       remember_device: Enregistrer ce navigateur
     passwords:

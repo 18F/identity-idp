@@ -4,7 +4,7 @@
 </h1><%= render 'users/shared/phone_form',
         http_method: :put,
         target_url: manage_phone_path,
-        button: 'forms.buttons.submit.confirm_change' %>
+        button: t('forms.buttons.submit.confirm_change') %>
 
 <% if MfaPolicy.new(current_user).more_than_two_factors_enabled? && @user_phone_form.phone.present? %>
   <br />
