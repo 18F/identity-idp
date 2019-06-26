@@ -13,7 +13,7 @@ module Idv
     }.freeze
 
     def render_404_if_disabled
-      render_not_found unless FeatureManagement.in_person_proofing_enabled
+      render_not_found unless FeatureManagement.in_person_proofing_enabled?
     end
   end
 end
