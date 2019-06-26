@@ -23,6 +23,10 @@ module Features
       click_on t('forms.buttons.continue')
     end
 
+    def select_phone_delivery_option(delivery_option)
+      choose "user_phone_form_otp_delivery_preference_#{delivery_option}"
+    end
+
     def sign_up_and_2fa_loa1_user
       user = sign_up_and_set_password
       select_2fa_option('phone')
