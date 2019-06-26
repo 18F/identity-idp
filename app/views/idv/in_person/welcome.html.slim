@@ -1,0 +1,49 @@
+h1.h3.my0 = t('in_person_proofing.headings.welcome')
+p.mt-tiny.mb3 = t('in_person_proofing.info.welcome')
+h1.h3.mb2 = t('in_person_proofing.instructions.welcome')
+ul.list-reset
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 1
+    .mr1.inline-block
+      .h1.inline-block.bold = t('in_person_proofing.instructions.bullet1')
+      br
+      = t('in_person_proofing.instructions.text1')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 2
+    .mr1.inline-block
+      .h1.inline-block.bold = t('in_person_proofing.instructions.bullet2')
+      br
+      = t('in_person_proofing.instructions.text2')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 3
+    .mr1.inline-block
+      .h1.inline-block.bold = t('in_person_proofing.instructions.bullet3')
+      br
+      = t('in_person_proofing.instructions.text3')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 4
+    .mr1.inline-block
+      .h1.inline-block.bold = t('in_person_proofing.instructions.bullet4')
+      br
+      = t('in_person_proofing.instructions.text4')
+  li.pt2.pb1
+    .inline-block.mr2.mt1.align-top.circle.circle-number.bg-blue.white
+      | 5
+    .mr1.inline-block
+      .h1.inline-block.bold = t('in_person_proofing.instructions.bullet5')
+      br
+      = t('in_person_proofing.instructions.text5')
+= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+        html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
+  br
+  .mt0
+    button type='submit' class='btn btn-primary btn-wide sm-col-6 col-6'
+      = t('in_person_proofing.buttons.get_started')
+br
+
+.mt2.pt1.border-top
+  = link_to cancel_link_text, account_path, class: 'h5'

@@ -1,0 +1,21 @@
+<% title @presenter.heading %>
+<%= image_tag asset_url(@presenter.image), width: 200, class: 'mb2' %>
+
+<h1 class="h3 my0">
+  <%= @presenter.heading %>
+</h1>
+<p class="mt-tiny mb0">
+  <%= @presenter.info %>
+</p>
+
+<%= render 'users/shared/phone_form',
+    http_method: :patch,
+    target_url: phone_setup_path,
+    button: 'forms.buttons.send_security_code' %>
+
+<div class="mt2 pt1 border-top">
+  <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
+
+  <%= stylesheet_link_tag 'intl-tel-number/intlTelInput' %>
+  <%= javascript_pack_tag 'intl-tel-input' %>
+</div>
