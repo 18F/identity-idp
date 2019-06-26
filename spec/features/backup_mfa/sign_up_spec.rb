@@ -80,7 +80,8 @@ feature 'backup mfa setup on sign up' do
 
   context 'voice sign up' do
     def choose_and_confirm_mfa
-      select_2fa_option('phone')
+      select_2fa_option(:phone)
+      select_phone_delivery_option(:voice)
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
