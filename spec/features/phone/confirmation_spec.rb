@@ -67,7 +67,7 @@ describe 'phone otp confirmation' do
     def expect_successful_otp_confirmation(delivery_method)
       expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
-      expect(phone_configuration.delivery_preference).to eq('sms')
+      expect(phone_configuration.delivery_preference.to_s).to eq(delivery_method.to_s)
     end
 
     def expect_failed_otp_confirmation(_delivery_method)
