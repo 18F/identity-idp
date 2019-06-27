@@ -42,6 +42,8 @@ es:
       personal_key: Clave personal
       personal_key_info_html: Use la clave personal de 16 caracteres que usó en la
         creación de la cuenta.
+      phone_info_html: Obtenga su código de seguridad a través de mensajes de texto
+        / SMS o de una llamada telefónica a <strong>%{phone}</strong>.
       piv_cac: Empleados del Gobierno
       piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
@@ -97,6 +99,9 @@ es:
         success: Su teléfono ha sido eliminado.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
+    phone_info_html: Le enviaremos o llamaremos con un código de seguridad <strong>cada
+      vez que inicie sesión</strong>.
+    phone_label: Número de teléfono
     phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
       <strong>cada vez que inicie sesión</strong>.
     phone_sms_label: Número de teléfono móvil
@@ -127,6 +132,9 @@ es:
       backup_code_only_info_html: Configure su cuenta sin un método de autenticación
         de copia de seguridad. <strong>Esto no es recomendable.</strong> Si alguna
         vez pierde sus códigos de respaldo, no podrá iniciar sesión en su cuenta.
+      phone: Teléfono
+      phone_info_html: Obtenga su código de seguridad a través de mensajes de texto
+        / SMS o de una llamada telefónica
       piv_cac: Empleados del Gobierno
       piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta
       sms: Mensaje de texto / SMS

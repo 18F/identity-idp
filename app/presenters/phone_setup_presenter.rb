@@ -1,25 +1,19 @@
 class PhoneSetupPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :otp_delivery_preference
-
-  def initialize(otp_delivery_preference)
-    @otp_delivery_preference = otp_delivery_preference
-  end
-
   def heading
-    t("titles.phone_setup.#{otp_delivery_preference}")
+    t('titles.phone_setup')
   end
 
   def label
-    t("two_factor_authentication.phone_#{otp_delivery_preference}_label")
+    t('two_factor_authentication.phone_label')
   end
 
   def info
-    t("two_factor_authentication.phone_#{otp_delivery_preference}_info_html")
+    t('two_factor_authentication.phone_info_html')
   end
 
   def image
-    "2FA-#{otp_delivery_preference}.svg"
+    '2FA-voice.svg'
   end
 end

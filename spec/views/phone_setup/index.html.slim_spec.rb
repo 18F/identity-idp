@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe 'users/phone_setup/index.html.slim' do
+describe 'users/phone_setup/index.html.erb' do
   before do
     user = build_stubbed(:user)
 
     allow(view).to receive(:current_user).and_return(user)
 
     @user_phone_form = UserPhoneForm.new(user, nil)
-    @presenter = PhoneSetupPresenter.new('voice')
+    @presenter = PhoneSetupPresenter.new
     render
   end
 

@@ -50,10 +50,7 @@ class TwoFactorOptionsPresenter
 
   def phone_options
     if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
-      [
-        TwoFactorAuthentication::SmsSelectionPresenter.new,
-        TwoFactorAuthentication::VoiceSelectionPresenter.new,
-      ]
+      [TwoFactorAuthentication::PhoneSelectionPresenter.new]
     else
       []
     end
