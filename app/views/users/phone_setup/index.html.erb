@@ -1,6 +1,7 @@
 <% title @presenter.heading %>
 <%= image_tag asset_url(@presenter.image), width: 200, class: 'mb2' %>
 
+<div class="h5 caps bold my1 accent-blue"><%= t('sign_up.current_step', step: @presenter.step) %></div>
 <h1 class="h3 my0">
   <%= @presenter.heading %>
 </h1>

@@ -1,6 +1,8 @@
 <% if !@presenter.no_factors_enabled? %>
   <div class="alert alert-success" role="alert"><%= @presenter.first_mfa_successfully_enabled_message %></div>
 <% end %>
+
+<div class="h5 caps bold my1 accent-blue"><%= t('sign_up.current_step', step: @presenter.step) %></div>
 <% title @presenter.title %>
 <h1 class="h3 my0"><%= @presenter.heading %></h1>
 <p class="mt-tiny mb3"><%= @presenter.info %></p>

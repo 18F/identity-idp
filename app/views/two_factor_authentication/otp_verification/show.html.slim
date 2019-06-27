@@ -1,5 +1,6 @@
 - title t('titles.enter_2fa_code')
 
+= render 'partials/step_indicator', presenter: @presenter
 h1.h3.my0 = @presenter.header
 
 p == @presenter.phone_number_message
