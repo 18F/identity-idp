@@ -41,14 +41,17 @@ fr:
       personal_key: Clé personnelle
       personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
         avez utilisée lors de la création du compte.
+      phone_info_html: Obtenez votre code de sécurité par SMS ou Obtenez votre code
+        de sécurité par SMS à <strong>%{phone}</strong>.
       piv_cac: Employés du gouvernement
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
       sms_setup_info_html: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
-      voice_info_html: Obtenez votre code de sécurité par appel téléphonique à <strong>%{phone}</strong>.
-        (Seulement les numéros de téléphone en Amerique du Nord)
+      voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
+        par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de téléphone
+        en Amerique du Nord)
       voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique.
         (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
@@ -95,6 +98,9 @@ fr:
         success: Votre numéro de téléphone a été supprimé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
+    phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité <strong>chaque
+      fois que vous vous connectez</strong>.
+    phone_label: Numéro de téléphone
     phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
       que vous vous connectez</strong>.
     phone_sms_label: Numéro de téléphone portable
@@ -125,6 +131,8 @@ fr:
       backup_code_only_info_html: Configurez votre compte sans méthode d'authentification
         de sauvegarde. <strong>Ceci n'est pas recommandé.</strong> Si vous perdez
         vos codes de sauvegarde, vous ne pourrez pas vous connecter à votre compte.
+      phone: Téléphone
+      phone_info_html: Obtenez votre code de sécurité par SMS ou par appel téléphonique
       piv_cac: Employés du gouvernement
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte
       sms: SMS

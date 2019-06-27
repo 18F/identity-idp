@@ -40,6 +40,7 @@ en:
       personal_key: Personal Key
       personal_key_info_html: Use the 16 character personal key you received at account
         creation.
+      phone_info_html: Get security code via text/SMS or phone call to <strong>%{phone}</strong>.
       piv_cac: Government employee ID
       piv_cac_info_html: Use your PIV/CAC card instead of a security code.
       sms: Text message
@@ -92,6 +93,8 @@ en:
         success: Your phone has been removed.
     phone_fallback:
       question: Don't have access to your phone right now?
+    phone_info_html: We'll send you a security code <strong>each time you sign in</strong>.
+    phone_label: Phone number
     phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
     phone_sms_label: Mobile phone number
     phone_voice_info_html: We'll call you with a security code <strong>each time you
@@ -121,6 +124,8 @@ en:
       backup_code_only_info_html: Set up your account without a backup authentication
         method. This is <strong>not recommended</strong>. If you ever lose your backup
         codes you will not be able to sign into your account.
+      phone: Phone
+      phone_info_html: Get your security code via text message (SMS) or phone call
       piv_cac: Government employees
       piv_cac_info_html: Use your PIV/CAC card to secure your account
       sms: Text message / SMS

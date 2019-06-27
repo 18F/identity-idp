@@ -16,8 +16,9 @@ describe 'phone otp confirmation' do
     end
 
     def visit_otp_confirmation(delivery_method)
-      select_2fa_option(delivery_method)
+      select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: phone
+      select_phone_delivery_option(delivery_method)
       click_send_security_code
     end
 
@@ -50,21 +51,23 @@ describe 'phone otp confirmation' do
     end
 
     def visit_otp_confirmation(delivery_method)
-      select_2fa_option(:sms)
+      select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: '2025551313'
+      select_phone_delivery_option(:sms)
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      select_2fa_option(delivery_method)
+      select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: phone
+      select_phone_delivery_option(delivery_method)
       click_send_security_code
     end
 
     def expect_successful_otp_confirmation(delivery_method)
       expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
-      expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
+      expect(phone_configuration.delivery_preference.to_s).to eq(delivery_method.to_s)
     end
 
     def expect_failed_otp_confirmation(_delivery_method)
@@ -122,7 +125,7 @@ describe 'phone otp confirmation' do
       sign_in_live_with_2fa(user)
       click_on t('account.index.phone_add')
       fill_in :user_phone_form_phone, with: phone
-      choose "user_phone_form_otp_delivery_preference_#{delivery_method}"
+      select_phone_delivery_option(delivery_method)
       click_continue
     end
 

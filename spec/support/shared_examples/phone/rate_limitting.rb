@@ -20,7 +20,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
 
     visit root_path
     sign_up_and_set_password
-    select_2fa_option(:sms)
+    select_2fa_option(:phone)
     fill_in :user_phone_form_phone, with: phone
     click_send_security_code
 

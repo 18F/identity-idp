@@ -1,0 +1,25 @@
+<%= simple_form_for(@user_phone_form,
+    html: { autocomplete: 'off', method: http_method, role: 'form' },
+    data: { international_phone_form: true },
+    url: target_url) do |f| %>
+
+  <div class="sm-col-8 js-intl-tel-code-select">
+    <%= f.input :international_code,
+        collection: international_phone_codes,
+        include_blank: false,
+        input_html: { class: 'international-code' } %>
+  </div>
+  <div class="sm-col-8 mb3">
+    <%= f.label :phone do %>
+      <strong class="left">
+        <%= @presenter.label %>
+      </strong>
+    <% end %>
+    <%= f.input :phone, as: :tel, label: false, required: true,
+        input_html: { class: 'phone col-8 mb4' } %>
+  </div>
+
+  <%= render 'users/shared/otp_delivery_preference_selection' %>
+  <%= render 'users/shared/otp_make_default_number' %>
+  <%= f.button :submit, button, class: 'no-auto-enable btn-wide' %>
+<% end %>

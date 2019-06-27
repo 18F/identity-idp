@@ -82,7 +82,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 
     expect(page).to have_current_path(two_factor_options_path)
 
-    select_2fa_option('sms')
+    select_2fa_option('phone')
     click_link t('two_factor_authentication.choose_another_option')
 
     expect(page).to have_current_path(two_factor_options_path)

@@ -5,6 +5,7 @@ module TwoFactorAuthentication
     FACTOR_TO_URL_METHOD = {
       'voice' => :otp_send_url,
       'sms' => :otp_send_url,
+      'phone' => :otp_send_url,
       'auth_app' => :login_two_factor_authenticator_url,
       'piv_cac' => :login_two_factor_piv_cac_url,
       'webauthn' => :login_two_factor_webauthn_url,
