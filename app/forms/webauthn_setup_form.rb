@@ -68,10 +68,11 @@ class WebauthnSetupForm
     credential = attestation_response.credential
     public_key = Base64.strict_encode64(credential.public_key)
     id = Base64.strict_encode64(credential.id)
-    WebauthnConfiguration.create(user_id: user.id,
-                                 credential_public_key: public_key,
-                                 credential_id: id,
-                                 name: name)
+    user.webauthn_configurations.create(
+      credential_public_key: public_key,
+      credential_id: id,
+      name: name,
+    )
   end
 
   def extra_analytics_attributes

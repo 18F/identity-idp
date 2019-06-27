@@ -3,6 +3,7 @@
               MarketingSite.help_authentication_app_url, target: :_blank
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
+= render 'partials/step_indicator', presenter: @presenter
 h1.h3.my0 = t('headings.totp_setup.new')
 p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
 ul.list-reset

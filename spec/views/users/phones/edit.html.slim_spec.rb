@@ -6,7 +6,7 @@ describe 'users/phones/edit.html.erb' do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
       @user_phone_form = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
-      @presenter = PhoneSetupPresenter.new
+      @presenter = PhoneSetupPresenter.new(user, true, 'voice')
     end
 
     it 'has a localized title' do

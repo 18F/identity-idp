@@ -6,16 +6,15 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_phone_setup_presenter
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     def create
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
@@ -27,6 +26,12 @@ module Users
     end
 
     private
+
+    def set_phone_setup_presenter
+      @presenter = PhoneSetupPresenter.new(
+        current_user, user_fully_authenticated?, delivery_preference
+      )
+    end
 
     def handle_create_success(phone)
       if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
