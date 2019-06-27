@@ -2,7 +2,6 @@ class MfasEnabledForUser
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def self.call(user)
-    print "in here"
     methods_enabled = []
     methods_enabled.push(:piv_cac) if
       TwoFactorAuthentication::PivCacPolicy.new(user).enabled?

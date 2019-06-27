@@ -26,7 +26,7 @@ class AccountsController < ApplicationController
 
   def build_mfa_message(methds)
     translated = []
-    methds.each { |val| translated.push(t("two_factor_authentication.devices.#{val}"))}
-    t('two_factor_authentication.mfa_factors_enabled', devices: translated.join(" and "))
+    methds.each { |val| translated.push(t("two_factor_authentication.devices.#{val}")) }
+    t('two_factor_authentication.mfa_factors_enabled', devices: translated.join(' and '))
   end
 end

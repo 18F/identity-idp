@@ -140,8 +140,4 @@ fr:
       login_text: Appuyez sur le bouton de votre clé de sécurité pour vous connecter
         avec login.gov
       nickname: Pseudo clé de sécurité
-      success_text: Chaque fois que vous vous connecterez à login.gov, nous vous demanderons
-        d'utiliser votre clé de sécurité. Si vous ne possédez pas votre clé de sécurité,
-        vous pouvez utiliser toute autre méthode d'authentification que vous avez
-        activée.
       success_title: Vous avez ajouté une clé de sécurité comme méthode d'authentification.

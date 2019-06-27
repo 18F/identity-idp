@@ -8,7 +8,7 @@ shared_examples 'webauthn setup' do
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
 
-    expect(current_path).to eq account_path
+    expect(current_path).to eq two_factor_options_path
 
     expect(user.reload.webauthn_configurations.count).to eq(1)
 

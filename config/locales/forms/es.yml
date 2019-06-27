@@ -134,7 +134,4 @@ es:
       login_text: Presione el botón en su clave de seguridad para iniciar sesión con
         login.gov
       nickname: Apodo clave de seguridad
-      success_text: Cada vez que inicie sesión en login.gov, le pediremos que utilice
-        su clave de seguridad. Si no tiene su clave de seguridad, puede usar cualquier
-        otro método de autenticación que haya habilitado.
       success_title: Has añadido una clave de seguridad como tu método de autenticación.
