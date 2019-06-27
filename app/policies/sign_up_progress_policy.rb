@@ -11,7 +11,7 @@ class SignUpProgressPolicy
   private
 
   def user_is_on_first_step?
-    !@fully_authenticated && enabled_mfa_methods_count == 0
+    !@fully_authenticated && enabled_mfa_methods_count.zero?
   end
 
   def user_is_on_second_step?
