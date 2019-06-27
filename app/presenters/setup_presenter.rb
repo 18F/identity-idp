@@ -11,6 +11,7 @@ class SetupPresenter
   end
 
   def steps_visible?
+    binding.pry
     SignUpProgressPolicy.new(
       @current_user,
       @user_fully_authenticated,

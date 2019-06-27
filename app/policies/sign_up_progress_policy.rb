@@ -5,16 +5,20 @@ class SignUpProgressPolicy
   end
 
   def sign_up_progress_visible?
-    if !@fully_authenticated || (@fully_authenticated && !sufficient_factors_enabled?)
-      true
-    else
-      false
-    end
+    user_is_on_first_step? || user_is_on_second_step?
   end
 
   private
 
-  def sufficient_factors_enabled?
-    MfaPolicy.new(@user).sufficient_factors_enabled?
+  def user_is_on_first_step?
+    !@fully_authenticated && enabled_mfa_methods_count == 0
+  end
+
+  def user_is_on_second_step?
+    @fully_authenticated && enabled_mfa_methods_count == 1
+  end
+
+  def enabled_mfa_methods_count
+    @enabled_mfa_methods_count ||= MfaContext.new(@user).enabled_mfa_methods_count
   end
 end
