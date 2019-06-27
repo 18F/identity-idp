@@ -5,7 +5,7 @@ module MfaSetupConcern
     authenticate_user!(force: true)
     return if user_fully_authenticated?
     return unless MfaPolicy.new(current_user).two_factor_enabled? &&
-                  !session[:signing_up]
+                  !user_session[:signing_up]
     redirect_to user_two_factor_authentication_url
   end
 end
