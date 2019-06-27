@@ -13,11 +13,6 @@ describe 'webauthn management' do
     click_link t('account.index.webauthn_add'), href: webauthn_setup_path
   end
 
-  def expect_webauthn_setup_success
-    expect(page).to have_content t('event_types.webauthn_key_added')
-    expect(page).to have_current_path(account_path)
-  end
-
   def expect_webauthn_setup_error
     expect(page).to have_content t('errors.webauthn_setup.general_error')
     expect(current_path).to eq account_path
@@ -48,11 +43,7 @@ describe 'webauthn management' do
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
-      expect(current_path).to eq webauthn_setup_success_path
-
-      click_button t('forms.buttons.continue')
-
-      expect_webauthn_setup_success
+      expect(current_path).to eq two_factor_options_path
     end
 
     it 'allows user to delete security key when another 2FA option is set up' do

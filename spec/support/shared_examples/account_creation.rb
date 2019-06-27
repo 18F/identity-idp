@@ -113,7 +113,7 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
-    expect(current_path).to eq webauthn_setup_success_path
+    expect(current_path).to eq two_factor_options_path
     click_button t('forms.buttons.continue')
     select_2fa_option('backup_code')
     click_continue
