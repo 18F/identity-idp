@@ -1,7 +1,7 @@
 .clearfix.border-top.border-blue-light
   .p2.col.col-12
     .col.col-6.bold
-      = t('account.index.email')
+      = t('account.index.email_addresses')
     .right-align.col.col-6
       .btn.btn-account-action.rounded-lg.bg-light-blue
         - if EmailPolicy.new(current_user).can_add_email?
