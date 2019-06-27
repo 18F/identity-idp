@@ -73,7 +73,6 @@ module Users
     end
 
     def process_valid_submission
-      flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
         presented: true,
