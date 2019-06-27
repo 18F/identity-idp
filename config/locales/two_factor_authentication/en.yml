@@ -128,6 +128,9 @@ en:
       phone_info_html: Get your security code via text message (SMS) or phone call
       piv_cac: Government employees
       piv_cac_info_html: Use your PIV/CAC card to secure your account
+      second_phone: Second phone
+      second_phone_info_html: Get a security code by text message (SMS) or phone call
+        to a phone number that is not %{phone}
       sms: Text message / SMS
       sms_info_html: Get your security code via text message / SMS
       voice: Phone call

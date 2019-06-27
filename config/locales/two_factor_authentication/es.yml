@@ -137,6 +137,9 @@ es:
         / SMS o de una llamada telefónica
       piv_cac: Empleados del Gobierno
       piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta
+      second_phone: Segundo telefono
+      second_phone_info_html: Obtenga un código de seguridad por mensaje de texto
+        (SMS) o llame a un número de teléfono que no sea %{phone}
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS
