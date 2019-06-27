@@ -243,11 +243,11 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def user_needs_sign_up_completed_page?
     issuer = sp_session[:issuer]
     return false unless issuer
-    !user_has_identity_for_issuer?(issuer)
+    !user_has_ial1_identity_for_issuer?(issuer)
   end
 
-  def user_has_identity_for_issuer?(issuer)
-    current_user.identities.where(service_provider: issuer).any?
+  def user_has_ial1_identity_for_issuer?(issuer)
+    current_user.identities.where(service_provider: issuer, ial: 1).any?
   end
 
   def analytics_exception_info(exception)
