@@ -107,6 +107,7 @@ describe SignUp::CompletionsController do
         stub_sign_in
         subject.session[:sp] = {
           loa3: false,
+          issuer: 'foo',
           request_url: 'http://example.com',
         }
 
@@ -137,6 +138,7 @@ describe SignUp::CompletionsController do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
+          issuer: 'foo',
           loa3: true,
           request_url: 'http://example.com',
         }
