@@ -38,23 +38,6 @@ feature 'Two Factor Authentication' do
       expect(user.sms?).to eq true
     end
 
-    context 'user enters OTP incorrectly 3 times' do
-      it 'locks the user out' do
-        sign_in_before_2fa
-
-        select_2fa_option('phone')
-        submit_2fa_setup_form_with_valid_phone
-        3.times do
-          fill_in('code', with: 'bad-code')
-          click_button t('forms.buttons.submit.default')
-        end
-
-        expect(page).to have_content t('titles.account_locked')
-        expect(page).
-          to have_content t('two_factor_authentication.max_otp_login_attempts_reached')
-      end
-    end
-
     context 'with number that does not support voice delivery method' do
       let(:unsupported_phone) { '242-327-0143' }
 
@@ -204,18 +187,6 @@ feature 'Two Factor Authentication' do
 
     def attempt_to_bypass_2fa
       visit account_path
-    end
-
-    scenario 'user can resend one-time password (OTP)' do
-      user = create(:user, :signed_up)
-      sign_in_before_2fa(user)
-      old_code = last_sms_otp
-
-      click_link t('links.two_factor_authentication.get_another_code')
-
-      new_code = last_sms_otp
-
-      expect(old_code).not_to eq(new_code)
     end
 
     scenario 'user can cancel OTP process' do
