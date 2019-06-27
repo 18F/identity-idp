@@ -19,6 +19,7 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
+        session[:signed_up] = true
         backup_code_only_processing
         process_valid_form
       else
@@ -36,7 +37,7 @@ module Users
     def backup_code_only_processing
       if session[:signing_up] &&
          @two_factor_options_form.selection == 'backup_code_only'
-        session[:signing_up] = false
+        session.delete(:signing_up)
         redirect_to account_url
       end
     end

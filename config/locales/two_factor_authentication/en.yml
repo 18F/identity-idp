@@ -69,6 +69,8 @@ en:
     max_piv_cac_login_attempts_reached: For your security, your account is temporarily
       locked because you have presented your piv/cac credential incorrectly too many
       times.
+    mfa_factors_enabled: "%{devices} were successfully setup as your multi-factor
+      authentication methods."
     otp_delivery_preference:
       instruction: You can change this selection the next time you log in. If you
         entered a landline, please select "Phone call" below.

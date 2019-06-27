@@ -73,6 +73,8 @@ fr:
     max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été temporairement
       bloqué en raison de la saisie de mauvais identifiants PIV/CAC à de trop nombreuses
       reprises.
+    mfa_factors_enabled: "%{devices} ont été configurés avec succès comme méthode
+      d’authentification multi-facteurs."
     otp_delivery_preference:
       instruction: Vous pouvez changer cette sélection la prochaine fois que vous
         vous connectez.

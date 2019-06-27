@@ -9,7 +9,9 @@
 <%= render @view_model.pending_profile_partial, view_model: @view_model %>
 
 <h1 class="hide"><%= t 'titles.account' %></h1>
-
+<% if !@view_model.message.nil? %>
+  <div class="alert alert-success" role="alert"><%= @view_model.message %></div>
+<% end %>
 <%= render @view_model.header_partial, view_model: @view_model %>
 
 <div class="mb3 profile-info-box">

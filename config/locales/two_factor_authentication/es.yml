@@ -76,6 +76,8 @@ es:
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
       temporalmente dado que has presentado las credenciales de tu piv/cac de forma
       incorrecta demasiadas veces.
+    mfa_factors_enabled: "%{devices} fueron configurados con éxito como su método
+      de autenticación de múltiples factores"
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
       phone_unsupported: En este momento no podemos realizar llamadas a personas en

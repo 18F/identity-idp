@@ -23,6 +23,7 @@ describe 'Remembering a webauthn device' do
     def remember_device_and_sign_out_user
       mock_webauthn_verification_challenge
       sign_in_user(user)
+      print page.current_url
       mock_press_button_on_hardware_key_on_verification
       check :remember_device
       click_button t('forms.buttons.continue')
@@ -49,8 +50,8 @@ describe 'Remembering a webauthn device' do
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup
-      click_button t('forms.buttons.continue')
 
+      print page.body
       first(:link, t('links.sign_out')).click
       user
     end
@@ -66,7 +67,6 @@ describe 'Remembering a webauthn device' do
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup
-      click_button t('forms.buttons.continue')
       expect(page).to have_current_path(account_path)
       first(:link, t('links.sign_out')).click
       user

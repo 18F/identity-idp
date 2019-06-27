@@ -43,7 +43,7 @@ describe 'webauthn management' do
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq account_path
     end
 
     it 'allows user to delete security key when another 2FA option is set up' do

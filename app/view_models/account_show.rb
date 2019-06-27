@@ -1,12 +1,13 @@
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 class AccountShow # rubocop:disable Metrics/ClassLength
-  attr_reader :decorated_user, :decrypted_pii, :personal_key
+  attr_reader :decorated_user, :decrypted_pii, :personal_key, :message
 
-  def initialize(decrypted_pii:, personal_key:, decorated_user:)
+  def initialize(decrypted_pii:, personal_key:, decorated_user:, message:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
+    @message = message
   end
 
   def header_partial
