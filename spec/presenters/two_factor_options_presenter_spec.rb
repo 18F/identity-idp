@@ -21,8 +21,7 @@ describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user with no mfa configured' do
       expect(presenter.options.map(&:class)).to eq [
-        TwoFactorAuthentication::SmsSelectionPresenter,
-        TwoFactorAuthentication::VoiceSelectionPresenter,
+        TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
@@ -34,8 +33,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SmsSelectionPresenter,
-          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
@@ -48,8 +46,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options but the auth app' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SmsSelectionPresenter,
-          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
@@ -61,8 +58,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SmsSelectionPresenter,
-          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
@@ -75,8 +71,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SmsSelectionPresenter,
-          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
         ]
