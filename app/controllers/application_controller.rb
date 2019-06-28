@@ -139,7 +139,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def two_2fa_setup
-    if MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+    if MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
       after_multiple_2fa_sign_up
     else
       two_factor_options_url
@@ -147,7 +147,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_multiple_2fa_sign_up
-    if session[:sp]
+    if user_needs_sign_up_completed_page?
       sign_up_completed_url
     elsif current_user.decorate.password_reset_profile.present?
       reactivate_account_url
@@ -196,7 +196,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
     return if user_fully_authenticated? &&
-              MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+              MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
     return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
@@ -238,6 +238,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def render_full_width(template, **opts)
     render template, **opts, layout: 'base'
+  end
+
+  def user_needs_sign_up_completed_page?
+    issuer = sp_session[:issuer]
+    return false unless issuer
+    !user_has_ial1_identity_for_issuer?(issuer)
+  end
+
+  def user_has_ial1_identity_for_issuer?(issuer)
+    current_user.identities.where(service_provider: issuer, ial: 1).any?
   end
 
   def analytics_exception_info(exception)
