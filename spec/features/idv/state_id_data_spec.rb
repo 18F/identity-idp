@@ -39,7 +39,7 @@ feature 'idv state id data entry' do
     expect(current_path).to eq(idv_session_path)
   end
 
-  it 'renders an error for unsupported jurisdiction and allows the user to get back to selection of state', :email do
+  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
     expect(Idv::Proofer).to_not receive(:get_vendor)
 
     select 'Alabama', from: 'profile_state'

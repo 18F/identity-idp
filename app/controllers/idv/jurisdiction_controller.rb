@@ -23,6 +23,7 @@ module Idv
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
         # `strong_params`.
+        user_session[:unsupported_jurisdiction] = true
         redirect_to failure_url(:unsupported_jurisdiction)
       end
     end
@@ -47,7 +48,9 @@ module Idv
     end
 
     def confirm_step_needed
-      return if idv_session.selected_jurisdiction.nil?
+      return if idv_session.selected_jurisdiction.nil? || user_session[:unsupported_jurisdiction]
+      user_session.delete(:unsupported_jurisdiction)
+      redirect_to idv_session_url
     end
 
     def failure_url(reason)
