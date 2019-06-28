@@ -2,6 +2,12 @@
 es:
   forms:
     backup_code:
+      are_you_sure_title: Êtes-vous sûr de ne pas avoir accès à une autre méthode de sécurité?
+      are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés. Ils sont facilement perdus ou volés et n'expirent jamais. Nous vous recommandons de choisir une autre option.
+      are_you_sure_continue: continuer avec les codes de sauvegarde
+      generate_codes_title: Créer de nouveaux codes de sauvegarde
+      generate_codes_desc: Vous avez utilisé tous les codes de sauvegarde associés à ce compte. Il est temps de créer de nouveaux codes de sauvegarde et de les sauvegarder dans un endroit sûr. Les codes de sauvegarde ne sont pas recommandés pour une utilisation continue. Ils sont facilement perdus ou volés et n'expirent jamais. Nous vous recommandons de configurer une autre méthode de sécurité.
+      generate_codes_other_option: Choisissez une autre option
       download: Descargar
       generate: Generar
       info: Use códigos de inicio de sesión si no puede acceder a su teléfono para

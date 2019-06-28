@@ -7,6 +7,13 @@ module Users
     before_action :ensure_backup_codes_in_session, only: %i[continue download]
 
     def index
+      state = session[:signing_up] ? :signing_up : :logging_in
+      @presenter = BackupCodeSetupIntroPresenter.new(state)
+    end
+
+    def edit; end
+
+    def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
