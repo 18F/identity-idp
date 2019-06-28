@@ -8,6 +8,7 @@ class BackupCodeSetupIntroPresenter
       title: I18n.t('forms.backup_code.are_you_sure_title'),
       description: I18n.t('forms.backup_code.are_you_sure_desc'),
       other_option_display: true,
+      other_option_title: I18n.t('forms.backup_code.generate_codes_other_option'),
       continue_bttn_title: I18n.t('forms.backup_code.are_you_sure_continue'),
       continue_bttn_class: 'btn btn-link',
     },
@@ -15,9 +16,10 @@ class BackupCodeSetupIntroPresenter
       title: I18n.t('forms.backup_code.generate_codes_title'),
       description: I18n.t('forms.backup_code.generate_codes_desc'),
       other_option_display: false,
+      other_option_title: '',
       continue_bttn_title: I18n.t('forms.buttons.continue'),
       continue_bttn_class: 'btn btn-primary btn-wide',
-    }
+    },
   }.freeze
 
   def initialize(state)
@@ -37,7 +39,7 @@ class BackupCodeSetupIntroPresenter
   end
 
   def other_option_title
-    I18n.t('forms.backup_code.generate_codes_other_option')
+    STATE_CONFIG.dig(state, :other_option_title)
   end
 
   def other_option_path

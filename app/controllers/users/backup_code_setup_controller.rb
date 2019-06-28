@@ -12,8 +12,6 @@ module Users
       @presenter = BackupCodeSetupIntroPresenter.new(state)
     end
 
-    def edit; end
-
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
