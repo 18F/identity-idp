@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe 'users/phones/edit.html.slim' do
+describe 'users/phones/edit.html.erb' do
   context 'user is not TOTP enabled' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
       @user_phone_form = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
-      @presenter = PhoneSetupPresenter.new('voice')
+      @presenter = PhoneSetupPresenter.new(user, true, 'voice')
     end
 
     it 'has a localized title' do

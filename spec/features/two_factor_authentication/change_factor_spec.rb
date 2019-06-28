@@ -82,7 +82,7 @@ feature 'Changing authentication factor' do
       Twilio::FakeCall.calls = []
 
       select 'Bahamas', from: 'user_phone_form_international_code'
-      fill_in 'Phone', with: unsupported_phone
+      fill_in 'user_phone_form_phone', with: unsupported_phone
       click_button t('forms.buttons.submit.confirm_change')
 
       expect(current_path).to eq manage_phone_path

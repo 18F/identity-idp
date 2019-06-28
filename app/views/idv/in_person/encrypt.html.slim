@@ -1,0 +1,17 @@
+- title t('idv.titles.review')
+
+h5.my1.caps.bold.accent-blue = t('in_person_proofing.step', step: 2)
+br
+h1.h3 = 'Re-enter your login.gov password to protect your information'
+
+p = t('in_person_proofing.instructions.encrypt')
+
+= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.input :password, label: t('idv.form.password'), required: true
+  .right-align.mtn2.mb4 = t('idv.forgot_password.link_html',
+          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
+                  class: 'btn btn-link ml1', form_class: 'inline-block'))
+  = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12'
+
+= render 'idv/in_person/start_over_or_cancel'

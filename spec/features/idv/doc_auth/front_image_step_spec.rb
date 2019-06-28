@@ -4,6 +4,7 @@ shared_examples 'front image step' do |simulate|
   feature 'doc auth front image step' do
     include IdvStepHelper
     include DocAuthHelper
+    include InPersonHelper
 
     let(:user) { user_with_2fa }
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
@@ -32,6 +33,20 @@ shared_examples 'front image step' do |simulate|
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    end
+
+    it 'offers in person option on failure' do
+      enable_in_person_proofing
+
+      expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
+                                    href: idv_in_person_welcome_step)
+
+      mock_assure_id_fail
+      attach_image
+      click_idv_continue
+
+      expect(page).to have_link(t('in_person_proofing.opt_in_link'),
+                                href: idv_in_person_welcome_step)
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do

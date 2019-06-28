@@ -14,8 +14,9 @@ en:
       default: default
       device: "%{browser} on %{os}"
       dob: Date of birth
-      email: Email addresses
+      email: Email address
       email_add: "+ Add email"
+      email_addresses: Email addresses
       full_name: Full name
       login: Login Information
       password: Password

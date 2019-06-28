@@ -34,7 +34,22 @@ module TwoFactorAuthCode
       end
     end
 
+    def step
+      no_factors_enabled? ? '3' : '4'
+    end
+
+    def steps_visible?
+      SignUpProgressPolicy.new(
+        @view.current_user,
+        @view.user_fully_authenticated?,
+      ).sign_up_progress_visible?
+    end
+
     private
+
+    def no_factors_enabled?
+      MfaPolicy.new(@view.current_user).no_factors_enabled?
+    end
 
     attr_reader :personal_key_unavailable, :view, :reauthn
   end

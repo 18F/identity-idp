@@ -49,7 +49,6 @@ en:
     email:
       buttons:
         delete: Delete email address
-    example: 'example:'
     messages:
       remember_device: Remember this browser
     passwords:

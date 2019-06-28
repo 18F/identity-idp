@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_totp_setup_presenter
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
@@ -36,6 +37,10 @@ module Users
     end
 
     private
+
+    def set_totp_setup_presenter
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
+    end
 
     def track_event
       properties = {

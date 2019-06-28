@@ -1,5 +1,9 @@
 module TwoFactorAuthentication
   class PhoneSelectionPresenter < SelectionPresenter
+    def method
+      :phone
+    end
+
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
         "#{super}_#{configuration.id}"
@@ -11,11 +15,11 @@ module TwoFactorAuthentication
     def info
       if configuration.present?
         t(
-          "two_factor_authentication.#{option_mode}.#{method}_info_html",
+          "two_factor_authentication.#{option_mode}.phone_info_html",
           phone: masked_number(configuration.phone),
         )
       else
-        t("two_factor_authentication.#{option_mode}.#{method}_info_html")
+        t("two_factor_authentication.#{option_mode}.phone_info_html")
       end
     end
 

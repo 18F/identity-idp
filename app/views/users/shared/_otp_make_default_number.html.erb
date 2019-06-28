@@ -1,0 +1,18 @@
+<div class="mb3">
+  <fieldset class="m0 p0 border-none">
+    <legend class="mb1 h4 serif bold">
+      <%= t('two_factor_authentication.otp_make_default_number.title') %>
+    </legend>
+    <p class="mt0 mb2" id="otp_make_default_number_instruction">
+      <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
+    </p>
+    <label class="btn-border col-8">
+      <div class="checkbox">
+        <%= check_box_tag 'user_phone_form[otp_make_default_number]',
+            :otp_make_default_number, @user_phone_form.otp_make_default_number %>
+        <span class="indicator"></span>
+        <%= t('two_factor_authentication.otp_make_default_number.label') %>
+      </div>
+    </label>
+  </fieldset>
+</div>
