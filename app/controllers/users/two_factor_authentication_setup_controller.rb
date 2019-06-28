@@ -30,13 +30,13 @@ module Users
     private
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])
+      TwoFactorOptionsPresenter.new(current_user, current_sp, user_session[:signing_up])
     end
 
     def backup_code_only_processing
-      if session[:signing_up] &&
+      if user_session[:signing_up] &&
          @two_factor_options_form.selection == 'backup_code_only'
-        session[:signing_up] = false
+        user_session[:signing_up] = false
         redirect_to account_url
       end
     end

@@ -6,6 +6,7 @@ describe 'users/totp_setup/new.html.slim' do
   context 'user has sufficient factors enabled' do
     before do
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:user_session).and_return(signing_up: false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
       @presenter = SetupPresenter.new(user, true)
@@ -34,6 +35,7 @@ describe 'users/totp_setup/new.html.slim' do
     it 'renders a link to choose a different option' do
       user = create(:user)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:user_session).and_return(signing_up: true)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
