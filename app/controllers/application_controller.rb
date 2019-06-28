@@ -147,7 +147,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_multiple_2fa_sign_up
-    if session[:sp]
+    if user_needs_sign_up_completed_page?
       sign_up_completed_url
     elsif current_user.decorate.password_reset_profile.present?
       reactivate_account_url
@@ -238,6 +238,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def render_full_width(template, **opts)
     render template, **opts, layout: 'base'
+  end
+
+  def user_needs_sign_up_completed_page?
+    issuer = sp_session[:issuer]
+    return false unless issuer
+    !user_has_ial1_identity_for_issuer?(issuer)
+  end
+
+  def user_has_ial1_identity_for_issuer?(issuer)
+    current_user.identities.where(service_provider: issuer, ial: 1).any?
   end
 
   def analytics_exception_info(exception)
