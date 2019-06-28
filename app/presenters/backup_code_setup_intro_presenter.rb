@@ -57,5 +57,4 @@ class BackupCodeSetupIntroPresenter
   def continue_bttn_class
     STATE_CONFIG.dig(state, :continue_bttn_class)
   end
-
 end

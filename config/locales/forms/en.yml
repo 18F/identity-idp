@@ -3,7 +3,7 @@ en:
   forms:
     backup_code:
       are_you_sure_title: Are you sure you don't have access to any other security method?
-      are_you_sure_desc: Backup codes are not recommended. They are easily lost or stolen and never expire. We recommended that you choose another option.
+      are_you_sure_desc: Backup codes are not recommended. They are easily lost or stolen and never expire. We recommend that you choose another option.
       are_you_sure_continue: continue with backup codes
       generate_codes_title: Create new backup codes
       generate_codes_desc: You have used all backup codes associated with this account. It is time to create new backup codes and save them in a safe place. Backup codes are not recommended for continued use. They are easily lost or stolen and never expire. We recommended that you setup another security method.
