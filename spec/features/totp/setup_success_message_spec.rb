@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'success message for TOTP setup' do
   context 'the user is setting up TOTP as first MFA method' do
     it 'shows the fist MFA setup success method' do
-      user = sign_up_and_set_password
+      sign_up_and_set_password
       set_up_2fa_with_authenticator_app
 
       expect(page).to have_content(
@@ -18,7 +18,7 @@ feature 'success message for TOTP setup' do
 
   context 'the user is setting up TOTP as the second MFA method' do
     it 'shows the TOTP setup success message' do
-      user = sign_up_and_set_password
+      sign_up_and_set_password
       set_up_2fa_with_valid_phone
       set_up_2fa_with_authenticator_app
 
