@@ -130,7 +130,6 @@ describe Users::TotpSetupController, devise: true do
 
         it 'redirects to account_path with a success message' do
           expect(response).to redirect_to(account_path)
-          expect(flash[:success]).to eq t('notices.totp_configured')
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
           result = {
