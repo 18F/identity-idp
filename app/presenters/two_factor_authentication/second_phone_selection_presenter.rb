@@ -17,8 +17,15 @@ module TwoFactorAuthentication
     def info
       t(
         'two_factor_authentication.two_factor_choice_options.second_phone_info_html',
-        phone: current_phone_configuration.phone,
+        phone: masked_number(current_phone_configuration.phone),
       )
+    end
+
+    private
+
+    def masked_number(number)
+      return '' if number.blank?
+      "***-***-#{number[-4..-1]}"
     end
   end
 end
