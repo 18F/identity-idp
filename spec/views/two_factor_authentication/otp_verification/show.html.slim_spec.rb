@@ -15,6 +15,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     before do
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
       controller.request.path_parameters[:otp_delivery_preference] =
         presenter_data[:otp_delivery_preference]
 

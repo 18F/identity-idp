@@ -1,10 +1,12 @@
 module Users
+  # rubocop:disable Metrics/ClassLength
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_webauthn_setup_presenter
 
     def new
       result = WebauthnVisitForm.new.submit(params)
@@ -44,6 +46,10 @@ module Users
 
     private
 
+    def set_webauthn_setup_presenter
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
+    end
+
     def flash_error(errors)
       flash.now[:error] = errors.values.first.first
     end
@@ -72,7 +78,6 @@ module Users
 
     def track_delete(success)
       counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-
       analytics.track_event(
         Analytics::WEBAUTHN_DELETED,
         success: success,
@@ -104,7 +109,7 @@ module Users
     def process_invalid_webauthn(form)
       if form.name_taken
         flash.now[:error] = t('errors.webauthn_setup.unique_name')
-        render 'users/webauthn_setup/new'
+        render :new
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
         redirect_to account_url
@@ -120,4 +125,5 @@ module Users
       TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
