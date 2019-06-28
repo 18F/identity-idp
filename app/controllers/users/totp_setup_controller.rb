@@ -59,9 +59,16 @@ module Users
       create_user_event(:authenticator_enabled)
       mark_user_as_fully_authenticated
       save_remember_device_preference
-      flash[:success] = t('notices.totp_configured')
+      flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
       redirect_to url_after_entering_valid_code
       user_session.delete(:new_totp_secret)
+    end
+
+    def should_show_totp_configured_message?
+      # If the user's only MFA method is the one they just setup, then they will be redirected to
+      # the mfa option screen which will show them the first MFA success message. In that case we
+      # do not want to show this additional flash message here.
+      MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def process_successful_disable
