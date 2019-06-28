@@ -14,8 +14,9 @@ es:
       default: defecto
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
-      email: Email
+      email: Correo electrónico
       email_add: "+ Agregar email"
+      email_addresses: Correos electrónicos
       full_name: Nombre completo
       login: Información para iniciar sesión
       password: Contraseña
