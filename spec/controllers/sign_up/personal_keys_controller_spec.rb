@@ -32,7 +32,8 @@ describe SignUp::PersonalKeysController do
   describe '#update' do
     context 'sp present' do
       it 'redirects to the sign up completed url' do
-        subject.session[:sp] = 'true'
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        subject.session[:sp] = { issuer: sp.issuer, request_id: '123' }
         stub_sign_in
 
         patch :update
@@ -52,7 +53,8 @@ describe SignUp::PersonalKeysController do
     end
 
     it 'tracks CSRF errors' do
-      subject.session[:sp] = 'true'
+      sp = ServiceProvider.from_issuer('http://localhost:3000')
+      subject.session[:sp] = { issuer: sp.issuer, request_id: '123' }
       stub_sign_in
       stub_analytics
       analytics_hash = {
