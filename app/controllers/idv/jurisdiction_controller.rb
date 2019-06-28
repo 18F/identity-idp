@@ -48,7 +48,6 @@ module Idv
 
     def confirm_step_needed
       return if idv_session.selected_jurisdiction.nil?
-      redirect_to idv_session_url
     end
 
     def failure_url(reason)
