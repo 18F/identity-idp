@@ -24,7 +24,7 @@ feature 'setting up a second phone as backup MFA' do
     expect(page).to have_content(
       t(
         'two_factor_authentication.two_factor_choice_options.second_phone_info_html',
-        phone: '+1 202-555-1234',
+        phone: '***-***-1234',
       ),
     )
 
