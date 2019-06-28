@@ -37,7 +37,7 @@ module Users
       if user_session[:signing_up] &&
          @two_factor_options_form.selection == 'backup_code_only'
         user_session[:signing_up] = false
-        redirect_to account_url
+        redirect_to two_2fa_setup
       end
     end
 
