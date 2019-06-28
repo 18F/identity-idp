@@ -49,8 +49,8 @@ es:
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS a <strong>%{phone}</strong>.
-      sms_setup_info_html: Obtenga un código de seguridad por mensaje de texto (SMS)
-        o llame a un número de teléfono secundario (uno que no sea %{phone})
+      sms_setup_info_html: Obtenga su código de seguridad a través de mensajes de
+        texto / SMS.
       voice: Llamada telefónica automatizada
       voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
         a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
@@ -139,7 +139,7 @@ es:
       piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta
       second_phone: Segundo telefono
       second_phone_info_html: Obtenga un código de seguridad por mensaje de texto
-        (SMS) o llame a un número de teléfono que no sea %{phone}
+        (SMS) o por llamada a un número de teléfono secundario (uno que no es %{phone})
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS
