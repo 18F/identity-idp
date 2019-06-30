@@ -137,6 +137,7 @@ class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
   def extra_analytics_attributes
     {
       client_id: client_id,
+      user_id: identity&.user&.uuid,
     }
   end
 
