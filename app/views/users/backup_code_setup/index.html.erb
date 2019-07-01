@@ -4,7 +4,7 @@
 <% if @presenter.other_option_display %>
   <%= link_to @presenter.other_option_title, @presenter.other_option_path, class: 'btn btn-primary btn-wide' %>
   <br><br>
-  If you don't have access to any other security method, then
+  If you don't have access to any other authentication method, then
 <% end %>
 
 <%= form_tag(backup_code_setup_path, method: :patch, role: 'form') do %>
