@@ -311,7 +311,7 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission).to eq response
         expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: { client_id: client_id })
+          with(success: true, errors: {}, extra: { client_id: client_id, user_id: user.uuid })
       end
     end
 
@@ -326,7 +326,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission).to eq response
         expect(FormResponse).to have_received(:new).
-          with(success: false, errors: form.errors.messages, extra: { client_id: nil })
+          with(success: false, errors: form.errors.messages, extra: { client_id: nil,
+                                                                      user_id: nil })
       end
     end
   end
