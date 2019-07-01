@@ -2,12 +2,12 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_title: Êtes-vous sûr de ne pas avoir accès à une autre méthode de sécurité?
-      are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés. Ils sont facilement perdus ou volés et n'expirent jamais. Nous vous recommandons de choisir une autre option.
+      are_you_sure_title: Êtes-vous sûr que c'est votre seule option?
+      are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés car ils peuvent facilement être perdus ou volés. Si vous avez accès à une autre méthode d'authentification, choisissez une autre option.
       are_you_sure_continue_prologue: Si vous n'avez accès à aucune autre méthode d'authentification,
-      are_you_sure_continue: continuer avec les codes de sauvegarde
+      are_you_sure_continue: continuez avec les codes de sauvegarde
       generate_codes_title: Créer de nouveaux codes de sauvegarde
-      generate_codes_desc: Vous avez utilisé tous les codes de sauvegarde associés à ce compte. Il est temps de créer de nouveaux codes de sauvegarde et de les sauvegarder dans un endroit sûr. Les codes de sauvegarde ne sont pas recommandés pour une utilisation continue. Ils sont facilement perdus ou volés et n'expirent jamais. Nous vous recommandons de configurer une autre méthode de sécurité.
+      generate_codes_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons générer de nouveaux codes de sauvegarde après avoir cliqué sur Continuer. Rangez-les dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
       generate_codes_other_option: Choisissez une autre option
       download: Télécharger
       generate: Générer
