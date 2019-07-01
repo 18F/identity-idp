@@ -35,6 +35,7 @@ module Features
       fill_in_code_with_last_phone_otp
       click_submit_default
       select_2fa_option('backup_code')
+      click_button t('forms.backup_code.are_you_sure_continue')
       click_continue
       user
     end
