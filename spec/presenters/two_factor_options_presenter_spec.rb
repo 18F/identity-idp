@@ -31,9 +31,9 @@ describe TwoFactorOptionsPresenter do
     context 'with a user with a phone configured' do
       let(:user) { build(:user, :with_phone) }
 
-      it 'supplies all the options' do
+      it 'supplies all the options with second phone options' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::PhoneSelectionPresenter,
+          TwoFactorAuthentication::SecondPhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,

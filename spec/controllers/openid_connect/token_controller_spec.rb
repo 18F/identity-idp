@@ -49,7 +49,8 @@ RSpec.describe OpenidConnect::TokenController do
       it 'tracks a successful event in analytics' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with(Analytics::OPENID_CONNECT_TOKEN, success: true, client_id: client_id, errors: {})
+          with(Analytics::OPENID_CONNECT_TOKEN, success: true, client_id: client_id,
+                                                user_id: user.uuid, errors: {})
 
         action
       end
@@ -73,6 +74,7 @@ RSpec.describe OpenidConnect::TokenController do
           with(Analytics::OPENID_CONNECT_TOKEN,
                success: false,
                client_id: client_id,
+               user_id: user.uuid,
                errors: hash_including(:grant_type))
 
         action
