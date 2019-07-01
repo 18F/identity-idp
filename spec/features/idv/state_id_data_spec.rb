@@ -46,7 +46,9 @@ feature 'idv state id data entry' do
     click_idv_continue
 
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
+
     visit idv_jurisdiction_path
+
     expect(page).to have_content t('idv.messages.jurisdiction.where')
   end
 

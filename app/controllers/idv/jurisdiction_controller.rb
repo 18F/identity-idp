@@ -5,7 +5,6 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed, only: %i[new create]
     before_action :set_jurisdiction_form, except: [:failure]
 
     def new
@@ -23,7 +22,6 @@ module Idv
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
         # `strong_params`.
-        user_session[:unsupported_jurisdiction] = true
         redirect_to failure_url(:unsupported_jurisdiction)
       end
     end
@@ -48,8 +46,7 @@ module Idv
     end
 
     def confirm_step_needed
-      return if idv_session.selected_jurisdiction.nil? || user_session[:unsupported_jurisdiction]
-      user_session.delete(:unsupported_jurisdiction)
+      return if idv_session.selected_jurisdiction.nil?
       redirect_to idv_session_url
     end
 
