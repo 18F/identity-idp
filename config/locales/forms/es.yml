@@ -6,7 +6,7 @@ es:
       are_you_sure_desc: No se recomiendan los códigos de respaldo porque se pueden perder o robar fácilmente. Si tienes acceso a otro método de autenticación, elije otra opción.
       are_you_sure_continue: continúa con los códigos de respaldo
       generate_codes_title: Crea nuevos códigos de respaldo
-      generate_codes_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos de respaldo después de que haga clic en continuar. Guárdalas en un lugar seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
+      generate_codes_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos de respaldo después de que hagas clic en continuar. Guárdalas en un lugar seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
       generate_codes_other_option: Elige otra opción
       download: Descargar
       generate: Generar
