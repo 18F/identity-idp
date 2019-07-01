@@ -73,7 +73,7 @@ module Users
     end
 
     def process_valid_submission
-      flash[:success] = t('notices.piv_cac_configured')
+      flash[:success] = t('notices.piv_cac_configured') if should_show_success_message?
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
         presented: true,
@@ -83,11 +83,15 @@ module Users
     end
 
     def next_step
-      if MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+      if MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
         account_url
       else
         two_factor_options_url
       end
+    end
+
+    def should_show_success_message?
+      MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def piv_cac_enabled?
