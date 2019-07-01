@@ -39,6 +39,24 @@ feature 'disavowing an action' do
     disavow_last_action_and_reset_password
   end
 
+  scenario 'disavowing a phone being added' do
+    sign_in_and_2fa_user(user)
+    visit add_phone_path
+
+    fill_in 'user_phone_form[phone]', with: '202-555-3434'
+    
+    choose 'user_phone_form_otp_delivery_preference_voice'
+    check 'user_phone_form_otp_make_default_number'
+    click_button t('forms.buttons.continue')
+
+    submit_prefilled_otp_code(user, 'voice')
+
+    open_last_email
+
+    click_email_link_matching(%r{events\/disavow})
+    expect(page).to have_content(t('headings.passwords.change'))
+  end
+
   scenario 'attempting to disavow an event with an invalid disavowal token' do
     visit event_disavowal_path(disavowal_token: 'this is a totally fake token')
 
@@ -110,6 +128,13 @@ feature 'disavowing an action' do
     # We should be on the MFA screen because we logged in with the new password
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+  end
+
+  def submit_prefilled_otp_code(user, delivery_preference)
+    expect(current_path).
+      to eq login_two_factor_path(otp_delivery_preference: delivery_preference)
+    fill_in('code', with: user.reload.direct_otp)
+    click_button t('forms.buttons.submit.default')
   end
 
   def perform_disavowable_password_reset
