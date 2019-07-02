@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'sign up with backup code' do
   include DocAuthHelper
+  include SamlAuthHelper
 
   it 'works' do
     user = sign_up_and_set_password
@@ -68,6 +69,20 @@ feature 'sign up with backup code' do
     select_2fa_option('backup_code_only')
 
     expect(current_path).to eq account_path
+  end
+
+  it 'directs backup code only users to the SP during sign up' do
+    visit_idp_from_sp_with_loa1(:oidc)
+    sign_up_and_set_password
+    select_2fa_option('backup_code')
+    click_on 'Continue'
+    select_2fa_option('backup_code_only')
+
+    expect(page).to have_current_path(sign_up_completed_path)
+
+    click_continue
+
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
   def sign_out_user

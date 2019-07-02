@@ -1082,3 +1082,18 @@ production:
       - 'https://api.data.gov/admin/logout/callback'
     restrict_to_deploy_env: 'prod'
     piv_cac: true
+
+  # NLRB - My Account aka public self-service portal - https://apps.nlrb.gov
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nlrb:my_account':
+    friendly_name: 'NLRB My Account'
+    agency: 'NLRB'
+    agency_id: 18
+    logo: 'nlrb.png'
+    cert: 'nlrb_prod'
+    ial: 1
+    return_to_sp_url: 'https://apps.nlrb.gov/myAccount'
+    redirect_uris:
+      - 'https://apps.nlrb.gov/myAccountAPI/Callback'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'

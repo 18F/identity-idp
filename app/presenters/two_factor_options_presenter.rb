@@ -54,10 +54,14 @@ class TwoFactorOptionsPresenter
   end
 
   def phone_options
-    if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
-      [TwoFactorAuthentication::PhoneSelectionPresenter.new]
+    if TwoFactorAuthentication::PhonePolicy.new(current_user).second_phone?
+      [
+        TwoFactorAuthentication::SecondPhoneSelectionPresenter.new(
+          current_user.phone_configurations.take,
+        ),
+      ]
     else
-      []
+      [TwoFactorAuthentication::PhoneSelectionPresenter.new]
     end
   end
 
