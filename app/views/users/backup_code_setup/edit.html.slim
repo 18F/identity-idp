@@ -10,8 +10,6 @@ h1.h3.mb1.mt3.my0 = t('forms.backup_code_regenerate.confirm')
 
 p.mb4 == t('forms.backup_code_regenerate.caution')
 
-
-
 = form_tag(backup_code_setup_path, method: :patch, role: 'form') do
   = button_tag t('account.index.backup_code_confirm_regenerate'), type: 'submit',
                  class: 'btn btn-primary col-6 mb2 p2 rounded-lg center'

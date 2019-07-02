@@ -49,7 +49,9 @@ p.mb0 = t('forms.backup_code.new_info')
   = form_tag(backup_code_setup_path, method: :patch, role: 'form') do
     .clearfix.mxn1
       .col.col-12.sm-col-8.px1
-        = button_tag t('forms.backup_code.new_codes'), type: 'submit', class: 'btn btn-border ico ico-refresh', style: 'color: #0071bb; font-size: 100%; font-weight: normal;'
+        = button_tag t('forms.backup_code.new_codes'), type: 'submit',  \
+          class: 'btn btn-border ico ico-refresh',  \
+          style: 'color: #0071bb; font-size: 100%; font-weight: normal;'
 
 = form_tag(backup_code_continue_path, method: :patch, role: 'form') do
   .clearfix.mxn1
