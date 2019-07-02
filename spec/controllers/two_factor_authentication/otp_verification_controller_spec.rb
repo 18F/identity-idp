@@ -290,7 +290,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         allow(subject).to receive(:create_user_event)
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
         subject.current_user.email_addresses.each do |email_address|
-          allow(UserMailer).to receive(:phone_added).with(email_address, disavowal_token: instance_of(String)).
+          allow(UserMailer).to receive(:phone_added).
+            with(email_address, disavowal_token: instance_of(String)).
             and_return(@mailer)
         end
         @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
@@ -306,7 +307,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
             }
-            disavowal_token = 'i_am_disavowal_token'
 
             expect(@analytics).to receive(:track_event).
               with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
@@ -330,7 +330,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
             subject.current_user.email_addresses.each do |email_address|
-              expect(UserMailer).to have_received(:phone_added).with(email_address, disavowal_token: instance_of(String))
+              expect(UserMailer).to have_received(:phone_added).
+                with(email_address, disavowal_token: instance_of(String))
             end
             expect(@mailer).to have_received(:deliver_later)
           end
