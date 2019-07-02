@@ -7,7 +7,7 @@ module OpenidConnect
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
-    before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
+    before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
@@ -88,15 +88,8 @@ module OpenidConnect
       end
     end
 
-    def force_login_if_prompt_param_is_login_and_request_is_external
-      return unless user_signed_in? && @authorize_form.prompt == 'login'
-      sign_out unless referring_host.to_s == Figaro.env.domain_name
-    end
-
-    def referring_host
-      URI.parse(request.referer).host
-    rescue URI::InvalidURIError
-      nil
+    def sign_out_if_prompt_param_is_login_and_user_is_signed_in
+      sign_out if user_signed_in? && @authorize_form.prompt == 'login'
     end
 
     def store_request
