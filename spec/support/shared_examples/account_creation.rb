@@ -9,7 +9,7 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_on t('forms.buttons.continue')
+    click_on t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
