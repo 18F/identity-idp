@@ -21,7 +21,9 @@ module Upaya
   class DevelopmentUpayaLogFormatter < UpayaLogFormatter
     # This method is invoked when a log event occurs
     def call(severity, timestamp, progname, msg)
-      # If message contains terminal escapes, print it directly.
+      # If message contains terminal escapes, print it directly. This is useful
+      # in development because rails dev logs contain SQL queries with ANSI
+      # terminal escapes that should be printed as-is without timestamps.
       if msg.is_a?(String) && msg.include?("\u001b[")
         "#{msg}\n"
       else
