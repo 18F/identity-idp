@@ -229,8 +229,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def sp_session_request_url_without_prompt_login
     # login.gov redirects to the orginal request_url after a user authenticates
-    # strip prompt=login to prevent sign_out
-    # which should only occur once when the user lands on login.gov
+    # replace prompt=login with prompt=select_account to prevent sign_out
+    # which should only every occur once when the user lands on login.gov with prompt=login
     url = sp_session[:request_url]
     url ? url.gsub('prompt=login', 'prompt=select_account') : nil
   end
