@@ -231,7 +231,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # login.gov redirects to the orginal request_url after a user authenticates
     # strip prompt=login to prevent sign_out
     # which should only occur once when the user lands on login.gov
-    sp_session[:request_url].to_s.gsub('prompt=login', 'prompt=select_account')
+    url = sp_session[:request_url]
+    url ? url.gsub('prompt=login', 'prompt=select_account') : nil
   end
 
   def render_not_found
