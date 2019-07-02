@@ -17,10 +17,19 @@ class DeleteUserEmailForm
 
   private
 
+  def update_user_email_column
+    new_email_address = user.confirmed_email_addresses.take
+    user.update_columns(
+      encrypted_email: new_email_address.encrypted_email,
+      email_fingerprint: new_email_address.email_fingerprint,
+    )
+  end
+
   def email_address_destroyed
     return false unless EmailPolicy.new(@user).can_delete_email?(@email_address)
     return false if email_address.destroy == false
     user.email_addresses.reload
+    update_user_email_column
     true
   end
 end
