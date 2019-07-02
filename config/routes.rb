@@ -169,6 +169,7 @@ Rails.application.routes.draw do
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
+    get '/backup_code_depleted' => 'users/backup_code_setup#depleted'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
     patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'

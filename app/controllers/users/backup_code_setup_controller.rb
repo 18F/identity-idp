@@ -8,9 +8,11 @@ module Users
     before_action :set_backup_code_setup_presenter
 
     def index
-      signing_up = user_session[:signing_up]
-      state = signing_up.blank? || signing_up ? :signing_up : :logging_in
-      @presenter = BackupCodeSetupIntroPresenter.new(state)
+      @presenter = BackupCodeIntroPresenter.new(:signing_up)
+    end
+
+    def depleted
+      @presenter = BackupCodeIntroPresenter.new(:depleted)
     end
 
     def create

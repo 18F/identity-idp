@@ -9,13 +9,13 @@ en:
         be lost or stolen. If you have access to another authentication method, please
         choose another option.
       are_you_sure_title: Are you sure this is your only option?
+      depleted_desc: You used all of your backup codes. We will generate new backup
+        codes after you click continue. Save them in a safe place to make sure you
+        can sign in again in the future.
+      depleted_other_option: Choose another option
+      depleted_title: Create new backup codes
       download: Download
       generate: Generate
-      generate_codes_desc: You used all of your backup codes. We will generate new
-        backup codes after you click continue. Save them in a safe place to make sure
-        you can sign in again in the future.
-      generate_codes_other_option: Choose another option
-      generate_codes_title: Create new backup codes
       info: Use backup codes if you cannot access your phone to sign in
       instructions: You will be asked for a backup code <strong>each time you sign
         in</strong> to your login.gov account.

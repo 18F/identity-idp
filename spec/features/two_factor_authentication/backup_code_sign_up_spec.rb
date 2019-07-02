@@ -38,8 +38,8 @@ feature 'sign up with backup code' do
       fill_in :backup_code_verification_form_backup_code, with: code
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
-        expect(current_path).to eq backup_code_setup_path
-        expect(page).to have_content(t('forms.backup_code.generate_codes_desc'))
+        expect(current_path).to eq backup_code_depleted_path
+        expect(page).to have_content(t('forms.backup_code.depleted_desc'))
         expect(user.backup_code_configurations.count).to eq(0)
         click_on 'Continue'
 
