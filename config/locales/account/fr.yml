@@ -16,6 +16,7 @@ fr:
       dob: Date de naissance
       email: Adresse courriel
       email_add: "+ Ajouter un email"
+      email_addresses: Adresses courriel
       full_name: Nom complet
       login: Information de connexion
       password: Mot de passe

@@ -23,9 +23,13 @@ module Features
       click_on t('forms.buttons.continue')
     end
 
+    def select_phone_delivery_option(delivery_option)
+      choose "user_phone_form_otp_delivery_preference_#{delivery_option}"
+    end
+
     def sign_up_and_2fa_loa1_user
       user = sign_up_and_set_password
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
@@ -396,7 +400,7 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
-      select_2fa_option('sms')
+      select_2fa_option('phone')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp

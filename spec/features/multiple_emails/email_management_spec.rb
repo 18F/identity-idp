@@ -66,6 +66,25 @@ feature 'managing email address' do
       expect(UserMailer).to have_received(:email_deleted).twice
     end
 
+    it 'allows a user to create an account with the old email address' do
+      user = create(:user, :signed_up)
+      original_email = user.email
+      original_email_address = user.email_addresses.first
+      create(:email_address, user: user)
+
+      sign_in_and_2fa_user(user)
+
+      visit manage_email_confirm_delete_url(id: original_email_address.id)
+      click_button t('forms.email.buttons.delete')
+
+      Capybara.reset_session!
+
+      sign_up_with(original_email)
+      open_last_email
+      click_email_link_matching(/confirmation_token/)
+      expect(page).to have_content(t('devise.confirmations.confirmed'))
+    end
+
     def delete_link_not_displayed(email)
       delete_link_path = manage_email_confirm_delete_url(id: email.id)
       expect(page).to_not have_link(t('forms.buttons.delete'), href: delete_link_path)

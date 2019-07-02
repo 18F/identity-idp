@@ -1,0 +1,5 @@
+- unless flow_session[:error_message].nil?
+  .alert.alert-error
+    = flow_session[:error_message]
+    = render 'idv/doc_auth/in_person_proofing_option'
+  .alert.alert-notice == flow_session[:notice]

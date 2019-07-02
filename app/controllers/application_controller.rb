@@ -131,7 +131,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
-    user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
+    user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
+      signed_in_url
   end
 
   def signed_in_url
@@ -139,7 +140,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def two_2fa_setup
-    if MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+    if MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
       after_multiple_2fa_sign_up
     else
       two_factor_options_url
@@ -147,7 +148,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_multiple_2fa_sign_up
-    if session[:sp]
+    if user_needs_sign_up_completed_page?
       sign_up_completed_url
     elsif current_user.decorate.password_reset_profile.present?
       reactivate_account_url
@@ -196,7 +197,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
     return if user_fully_authenticated? &&
-              MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+              MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
     return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
     prompt_to_enter_otp
   end
@@ -226,6 +227,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     session.fetch(:sp, {})
   end
 
+  def sp_session_request_url_without_prompt_login
+    # login.gov redirects to the orginal request_url after a user authenticates
+    # replace prompt=login with prompt=select_account to prevent sign_out
+    # which should only every occur once when the user lands on login.gov with prompt=login
+    url = sp_session[:request_url]
+    url ? url.gsub('prompt=login', 'prompt=select_account') : nil
+  end
+
   def render_not_found
     render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
@@ -238,6 +247,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def render_full_width(template, **opts)
     render template, **opts, layout: 'base'
+  end
+
+  def user_needs_sign_up_completed_page?
+    issuer = sp_session[:issuer]
+    return false unless issuer
+    !user_has_ial1_identity_for_issuer?(issuer)
+  end
+
+  def user_has_ial1_identity_for_issuer?(issuer)
+    current_user.identities.where(service_provider: issuer, ial: 1).any?
   end
 
   def analytics_exception_info(exception)

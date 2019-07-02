@@ -1,0 +1,144 @@
+<h5 class="my1 caps bold accent-blue"><%= t('in_person_proofing.step', step: 2) %></h5>
+<h1 class="h3 my0"><%= t('in_person_proofing.headings.enter_info') %></h1>
+
+<%= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+  <fieldset class="ml0 p0 border-none">
+    <div class="mb3 string required profile_first_name">
+      <label class="bold string required" for="profile_first_name"><abbr title="required" class="red display-none">*</abbr>
+        <%= t('in_person_proofing.forms.first_name') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[first_name]" id="profile_first_name"/>
+    </div>
+    <div class="mb3 string required profile_last_name">
+      <label class="bold string required" for="profile_last_name"><abbr title="required" class="red display-none">*</abbr>
+        <%= t('in_person_proofing.forms.last_name') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[last_name]" id="profile_last_name"/>
+    </div>
+    <div class="clearfix mxn1">
+      <div class="sm-col sm-col-6 px1">
+        <div class="mb3 tel required profile_dob">
+          <label class="bold tel required" for="profile_dob"><abbr title="required" class="red display-none">*</abbr>
+            <%= t('in_person_proofing.forms.dob') %>
+          </label>
+          <div id="dob-instructs" class="italic mb1">example: 01/17/1964</div>
+          <input class="block col-12 field string tel required dob" aria-describedby="dob-instructs" required="required" aria-required="true" pattern="(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}" type="tel" name="in_person[dob]" id="profile_dob"/>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix mxn1">
+      <div class="sm-col sm-col-6 px1">
+        <div class="mb3 tel required profile_ssn">
+          <label class="bold tel required" for="profile_ssn"><abbr title="required" class="red display-none">*</abbr>
+            <%= t('in_person_proofing.forms.ssn') %>
+          </label>
+          <input class="block col-12 field string tel required ssn" required="required" aria-required="true" pattern="^\d{3}-?\d{2}-?\d{4}$" type="tel" name="in_person[ssn]" id="profile_ssn"/>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset class="m0 p0 border-none">
+    <div class="mb3 string required profile_address1 mb1">
+      <label class="bold string required" for="profile_address1"><abbr title="required" class="red display-none">*</abbr>
+        <%= t('in_person_proofing.forms.address1') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[address1]" id="profile_address1"/>
+    </div>
+    <div class="mb3 string optional profile_address2">
+      <label class="bold string optional" for="profile_address2">
+        <%= t('in_person_proofing.forms.address2') %>
+      </label>
+      <input class="block col-12 field string optional" maxlength="255" size="255" type="text" name="in_person[address2]" id="profile_address2"/>
+    </div>
+    <div class="mb3 string required profile_city">
+      <label class="bold string required" for="profile_city"><abbr title="required" class="red display-none">*</abbr>
+        <%= t('in_person_proofing.forms.city') %>
+      </label>
+      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="in_person[city]" id="profile_city"/>
+    </div>
+    <div class="clearfix mxn1">
+      <div class="sm-col sm-col-8 px1">
+        <div class="mb3 select required profile_state">
+          <label class="bold select required" for="profile_state"><abbr title="required" class="red display-none">*</abbr>
+            <%= t('in_person_proofing.forms.state') %>
+          </label>
+          <select class="block col-12 field select required" required="required" aria-required="true" name="in_person[state]" id="profile_state">
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AS">American Samoa</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="AA">Armed Forces Americas</option>
+          <option value="AE">Armed Forces Others</option>
+          <option value="AP">Armed Forces Pacific</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option selected="selected" value="DC">District of Columbia</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="GU">Guam</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="MP">Northern Mariana Islands</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="PR">Puerto Rico</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UM">United States Minor Outlying Islands</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VI">Virgin Islands</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
+        </select></div>
+      </div>
+      <div class="sm-col sm-col-4 px1">
+        <div class="mb3 tel required profile_zipcode">
+          <label class="bold tel required" for="profile_zipcode"><abbr title="required" class="red display-none">*</abbr>
+            <%= t('in_person_proofing.forms.zip_code') %>
+          </label>
+          <input class="block col-12 field string tel required zipcode" required="required" aria-required="true" pattern="(\d{5}([\-]\d{4})?)" type="tel" name="in_person[zipcode]" id="profile_zipcode"/>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <div class="mt3">
+    <button class="btn btn-primary btn-wide sm-col-6 col-12" type="submit">Continue</button>
+  </div>
+<% end %>
+
+<%= render 'idv/in_person/start_over_or_cancel' %>

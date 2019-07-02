@@ -45,7 +45,6 @@ fr:
     email:
       buttons:
         delete: Supprimer l'email
-    example: 'exemple:'
     messages:
       remember_device: Enregistrer ce navigateur
     passwords:

@@ -18,9 +18,7 @@ fr:
       confirm: Confirmez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe de votre compte
     personal_key: Juste au cas
-    phone_setup:
-      sms: Envoyer votre code de sécurité par SMS
-      voice: Envoyez votre code de sécurité par appel téléphonique
+    phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
     piv_cac_setup:
       certificate:
         bad: Erreur de certificat PIV/CAC

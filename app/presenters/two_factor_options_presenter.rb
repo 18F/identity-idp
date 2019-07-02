@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
@@ -8,6 +9,10 @@ class TwoFactorOptionsPresenter
     @current_user = current_user
     @service_provider = sp
     @signing_up = signingup
+  end
+
+  def step
+    no_factors_enabled? ? '3' : '4'
   end
 
   def title
@@ -30,12 +35,12 @@ class TwoFactorOptionsPresenter
     phone_options + totp_option + webauthn_option + piv_cac_option + backup_code_option
   end
 
-  def no_factors_enabled?
-    MfaPolicy.new(current_user).no_factors_enabled?
-  end
-
   def first_mfa_successfully_enabled_message
     t('two_factor_authentication.first_factor_enabled', device: first_mfa_enabled)
+  end
+
+  def no_factors_enabled?
+    MfaPolicy.new(current_user).no_factors_enabled?
   end
 
   private
@@ -49,13 +54,14 @@ class TwoFactorOptionsPresenter
   end
 
   def phone_options
-    if TwoFactorAuthentication::PhonePolicy.new(current_user).available?
+    if TwoFactorAuthentication::PhonePolicy.new(current_user).second_phone?
       [
-        TwoFactorAuthentication::SmsSelectionPresenter.new,
-        TwoFactorAuthentication::VoiceSelectionPresenter.new,
+        TwoFactorAuthentication::SecondPhoneSelectionPresenter.new(
+          current_user.phone_configurations.take,
+        ),
       ]
     else
-      []
+      [TwoFactorAuthentication::PhoneSelectionPresenter.new]
     end
   end
 
