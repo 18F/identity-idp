@@ -14,9 +14,6 @@ fr:
       generate_codes_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons
         générer de nouveaux codes de sauvegarde après avoir cliqué sur Continuer.
         Rangez-les dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
-      generate_codes_add_mfa_desc: Nous allons générer de nouveaux codes de sauvegarde
-        après avoir cliqué sur Continuer. Rangez-les dans un endroit sûr pour pouvoir
-        vous connecter à nouveau ultérieurement.
       generate_codes_other_option: Choisissez une autre option
       generate_codes_title: Créer de nouveaux codes de sauvegarde
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre

@@ -22,15 +22,6 @@ class BackupCodeSetupIntroPresenter
       continue_bttn_title: I18n.t('forms.buttons.continue'),
       continue_bttn_class: 'btn btn-primary btn-wide',
     },
-    add_mfa_method: {
-      title: I18n.t('forms.backup_code.generate_codes_title'),
-      description: I18n.t('forms.backup_code.generate_codes_add_mfa_desc'),
-      other_option_display: false,
-      other_option_title: '',
-      continue_bttn_prologue:  '',
-      continue_bttn_title: I18n.t('forms.buttons.continue'),
-      continue_bttn_class: 'btn btn-primary btn-wide',
-    },
   }.freeze
 
   def initialize(state)

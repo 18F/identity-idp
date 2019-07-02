@@ -14,9 +14,6 @@ en:
       generate_codes_desc: You used all of your backup codes. We will generate new
         backup codes after you click continue. Save them in a safe place to make sure
         you can sign in again in the future.
-      generate_codes_add_mfa_desc: We will generate new
-        backup codes after you click continue. Save them in a safe place to make sure
-        you can sign in again in the future.
       generate_codes_other_option: Choose another option
       generate_codes_title: Create new backup codes
       info: Use backup codes if you cannot access your phone to sign in
