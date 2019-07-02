@@ -29,7 +29,7 @@ feature 'Backup codes' do
     let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
     it 'user can click generate backup codes' do
-      click_link t('forms.backup_code.generate'), href: backup_code_setup_path
+      click_on t('forms.backup_code.generate')
 
       expect(page).to have_current_path(backup_code_setup_path)
 
