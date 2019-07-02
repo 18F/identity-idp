@@ -170,7 +170,7 @@ Rails.application.routes.draw do
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_setup' => 'users/backup_code_setup#index'
-    patch '/backup_code_setup' => 'users/backup_code_setup#create'
+    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_download' => 'users/backup_code_setup#download'
@@ -270,5 +270,5 @@ Rails.application.routes.draw do
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
   # will be ignored.
-  match '*path', via: :all, to: 'pages#page_not_found'
+  # match '*path', via: :all, to: 'pages#page_not_found'
 end

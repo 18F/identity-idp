@@ -2,15 +2,23 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_title: Êtes-vous sûr que c'est votre seule option?
-      are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés car ils peuvent facilement être perdus ou volés. Si vous avez accès à une autre méthode d'authentification, choisissez une autre option.
-      are_you_sure_continue_prologue: Si vous n'avez accès à aucune autre méthode d'authentification,
       are_you_sure_continue: continuez avec les codes de sauvegarde
-      generate_codes_title: Créer de nouveaux codes de sauvegarde
-      generate_codes_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons générer de nouveaux codes de sauvegarde après avoir cliqué sur Continuer. Rangez-les dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
-      generate_codes_other_option: Choisissez une autre option
+      are_you_sure_continue_prologue: Si vous n'avez accès à aucune autre méthode
+        d'authentification,
+      are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés car ils peuvent
+        facilement être perdus ou volés. Si vous avez accès à une autre méthode d'authentification,
+        choisissez une autre option.
+      are_you_sure_title: Êtes-vous sûr que c'est votre seule option?
       download: Télécharger
       generate: Générer
+      generate_codes_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons
+        générer de nouveaux codes de sauvegarde après avoir cliqué sur Continuer.
+        Rangez-les dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
+      generate_codes_add_mfa_desc: Nous allons générer de nouveaux codes de sauvegarde
+        après avoir cliqué sur Continuer. Rangez-les dans un endroit sûr pour pouvoir
+        vous connecter à nouveau ultérieurement.
+      generate_codes_other_option: Choisissez une autre option
+      generate_codes_title: Créer de nouveaux codes de sauvegarde
       info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
         téléphone pour vous connecter
       instructions: Un code de connexion vous sera demandé chaque fois que vous vous

@@ -38,8 +38,13 @@ feature 'sign up with backup code' do
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
         expect(current_path).to eq backup_code_setup_path
-        expect(user.backup_code_configurations.count).to eq(10)
+        expect(page).to have_content(t('forms.backup_code.generate_codes_desc'))
+        expect(user.backup_code_configurations.count).to eq(0)
+        click_on 'Continue'
 
+        expect(current_path).to eq backup_code_create_path
+        expect(page).to have_content(t('forms.backup_code.warn'))
+        expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 
         expect(current_path).to eq account_path

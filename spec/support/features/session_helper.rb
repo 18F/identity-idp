@@ -454,6 +454,7 @@ module Features
     def set_up_2fa_with_backup_code
       select_2fa_option('backup_code')
       click_continue
+      click_continue
     end
 
     def set_up_2fa_with_piv_cac

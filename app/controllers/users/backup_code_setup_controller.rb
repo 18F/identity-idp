@@ -8,8 +8,7 @@ module Users
     before_action :set_backup_code_setup_presenter
 
     def index
-      state = session[:signing_up] ? :signing_up : :logging_in
-      @presenter = BackupCodeSetupIntroPresenter.new(state)
+      @presenter = BackupCodeSetupIntroPresenter.new(intro_state)
     end
 
     def create
@@ -32,6 +31,12 @@ module Users
     end
 
     private
+
+    def intro_state
+      return :signing_up if session[:signing_up]
+      return :logging_in if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
+      :add_mfa_method
+    end
 
     def ensure_backup_codes_in_session
       redirect_to backup_code_setup_url unless user_session[:backup_codes]

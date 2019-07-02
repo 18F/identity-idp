@@ -13,6 +13,7 @@ feature 'Backup codes' do
       old_backup_code = user.backup_code_configurations.sample
       click_link t('forms.backup_code.regenerate'), href: backup_code_regenerate_path
       click_link t('account.index.backup_code_confirm_regenerate')
+      click_continue
       expect(BackupCodeConfiguration.where(id: old_backup_code.id).any?).to eq(false)
     end
   end
