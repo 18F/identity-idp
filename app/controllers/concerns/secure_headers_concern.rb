@@ -20,6 +20,6 @@ module SecureHeadersConcern
   private
 
   def stored_url_for_user
-    sp_session[:request_url]
+    sp_session_request_url_without_prompt_login
   end
 end

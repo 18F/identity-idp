@@ -131,7 +131,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
-    user_session.delete(:stored_location) || sp_session[:request_url] || signed_in_url
+    user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
+      signed_in_url
   end
 
   def signed_in_url
@@ -224,6 +225,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def sp_session
     session.fetch(:sp, {})
+  end
+
+  def sp_session_request_url_without_prompt_login
+    # login.gov redirects to the orginal request_url after a user authenticates
+    # replace prompt=login with prompt=select_account to prevent sign_out
+    # which should only every occur once when the user lands on login.gov with prompt=login
+    url = sp_session[:request_url]
+    url ? url.gsub('prompt=login', 'prompt=select_account') : nil
   end
 
   def render_not_found

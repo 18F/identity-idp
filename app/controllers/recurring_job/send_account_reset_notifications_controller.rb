@@ -1,9 +1,10 @@
 module RecurringJob
   class SendAccountResetNotificationsController < BaseController
     def create
-      count = AccountReset::GrantRequestsAndSendEmails.new.call
-      analytics.track_event(Analytics::ACCOUNT_RESET, event: :notifications, count: count)
-      render plain: 'ok'
+      render(
+        plain: 'This endpoint has been removed in favor of idp-jobs.',
+        status: :gone,
+      )
     end
 
     private
