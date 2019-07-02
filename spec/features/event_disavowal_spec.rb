@@ -44,7 +44,7 @@ feature 'disavowing an action' do
     visit add_phone_path
 
     fill_in 'user_phone_form[phone]', with: '202-555-3434'
-    
+
     choose 'user_phone_form_otp_delivery_preference_voice'
     check 'user_phone_form_otp_make_default_number'
     click_button t('forms.buttons.continue')

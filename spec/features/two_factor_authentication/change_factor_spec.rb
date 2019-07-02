@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
     let(:user) { sign_up_and_2fa_loa1_user }
+    let(:disavowal_token) { 'i_am_disavowal_token' }
 
     before do
       user # Sign up the user
@@ -29,7 +30,8 @@ feature 'Changing authentication factor' do
 
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
       user.email_addresses.each do |email_address|
-        allow(UserMailer).to receive(:phone_added).with(email_address).and_return(mailer)
+        allow(UserMailer).to receive(:phone_added).with(email_address, disavowal_token).
+          and_return(mailer)
       end
 
       @previous_phone_confirmed_at =
@@ -59,7 +61,7 @@ feature 'Changing authentication factor' do
 
       expect(current_path).to eq account_path
       user.email_addresses.each do |email_address|
-        expect(UserMailer).to have_received(:phone_added).with(email_address)
+        expect(UserMailer).to have_received(:phone_added).with(email_address, disavowal_token)
       end
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
