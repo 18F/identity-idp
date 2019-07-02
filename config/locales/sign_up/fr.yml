@@ -4,3 +4,4 @@ fr:
     cancel:
       success: Le dossier contenant votre information a été effacé
       warning_header: Si vous annulez maintenant
+    current_step: Étape %{step} sur 4

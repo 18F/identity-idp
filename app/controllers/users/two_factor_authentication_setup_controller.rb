@@ -30,21 +30,21 @@ module Users
     private
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp, session[:signing_up])
+      TwoFactorOptionsPresenter.new(current_user, current_sp, user_session[:signing_up])
     end
 
     def backup_code_only_processing
-      if session[:signing_up] &&
+      if user_session[:signing_up] &&
          @two_factor_options_form.selection == 'backup_code_only'
-        session[:signing_up] = false
-        redirect_to account_url
+        user_session[:signing_up] = false
+        redirect_to two_2fa_setup
       end
     end
 
     # rubocop:disable Metrics/MethodLength
     def process_valid_form
       case @two_factor_options_form.selection
-      when 'sms', 'voice'
+      when 'voice', 'sms', 'phone'
         redirect_to phone_setup_url
       when 'auth_app'
         redirect_to authenticator_setup_url

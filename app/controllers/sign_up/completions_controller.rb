@@ -20,12 +20,12 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page')
+      track_completion_event('agency-page') if user_needs_sign_up_completed_page?
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        redirect_to sp_session[:request_url]
+        redirect_to sp_session_request_url_without_prompt_login
       end
     end
 
@@ -59,7 +59,7 @@ module SignUp
     end
 
     def return_to_account
-      track_completion_event('account-page')
+      track_completion_event('account-page') if user_needs_sign_up_completed_page?
       redirect_to account_url
     end
 

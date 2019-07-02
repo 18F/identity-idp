@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :set_totp_setup_presenter
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
@@ -37,9 +38,13 @@ module Users
 
     private
 
+    def set_totp_setup_presenter
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
+    end
+
     def track_event
       properties = {
-        user_signed_up: MfaPolicy.new(current_user, session[:signing_up]).
+        user_signed_up: MfaPolicy.new(current_user, user_session[:signing_up]).
                    sufficient_factors_enabled?,
         totp_secret_present: new_totp_secret.present?,
       }
@@ -54,9 +59,16 @@ module Users
       create_user_event(:authenticator_enabled)
       mark_user_as_fully_authenticated
       save_remember_device_preference
-      flash[:success] = t('notices.totp_configured')
+      flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
       redirect_to url_after_entering_valid_code
       user_session.delete(:new_totp_secret)
+    end
+
+    def should_show_totp_configured_message?
+      # If the user's only MFA method is the one they just setup, then they will be redirected to
+      # the mfa option screen which will show them the first MFA success message. In that case we
+      # do not want to show this additional flash message here.
+      MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def process_successful_disable

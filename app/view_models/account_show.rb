@@ -148,7 +148,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    decorated_user.email
+    EmailContext.new(decorated_user.user).last_sign_in_email_address.email
   end
 
   def totp_content

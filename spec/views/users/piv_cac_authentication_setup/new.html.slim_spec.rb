@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 describe 'users/piv_cac_authentication_setup/new.html.slim' do
-  before { @presenter = OpenStruct.new(title: 'foo', heading: 'bar', description: 'foobar') }
-
   context 'user has sufficient factors' do
     it 'renders a link to cancel and go back to the account page' do
       user = create(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:user_session).and_return(signing_up: false)
+      form = OpenStruct.new
+      @presenter = PivCacAuthenticationSetupPresenter.new(user, true, form)
 
       render
 
@@ -18,6 +19,9 @@ describe 'users/piv_cac_authentication_setup/new.html.slim' do
     it 'renders a link to choose a different option' do
       user = create(:user)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:user_session).and_return(signing_up: true)
+      form = OpenStruct.new
+      @presenter = PivCacAuthenticationSetupPresenter.new(user, false, form)
 
       render
 

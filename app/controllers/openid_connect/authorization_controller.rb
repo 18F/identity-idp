@@ -7,7 +7,7 @@ module OpenidConnect
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
-    before_action :force_login_if_prompt_param_is_login_and_request_is_external, only: [:index]
+    before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
@@ -15,7 +15,7 @@ module OpenidConnect
     def index
       link_identity_to_service_provider
       return redirect_to two_factor_options_url unless
-        MfaPolicy.new(current_user, session[:signing_up]).sufficient_factors_enabled?
+        MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       handle_successful_handoff
@@ -88,15 +88,9 @@ module OpenidConnect
       end
     end
 
-    def force_login_if_prompt_param_is_login_and_request_is_external
+    def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
-      sign_out unless referring_host.to_s == Figaro.env.domain_name
-    end
-
-    def referring_host
-      URI.parse(request.referer).host
-    rescue URI::InvalidURIError
-      nil
+      sign_out unless sp_session[:request_url] == request.original_url
     end
 
     def store_request

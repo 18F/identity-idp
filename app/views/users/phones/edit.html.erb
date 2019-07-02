@@ -1,0 +1,21 @@
+<% title t('titles.edit_info.phone') %><h1 class="h3 my0">
+  <%= t('headings.edit_info.phone') %>
+
+</h1><%= render 'users/shared/phone_form',
+        http_method: :put,
+        target_url: manage_phone_path,
+        button: t('forms.buttons.submit.confirm_change') %>
+
+<% if MfaPolicy.new(current_user).more_than_two_factors_enabled? && @user_phone_form.phone.present? %>
+  <br />
+  <div class="sm-col-8 mb3">
+    <%= button_to t('forms.phone.buttons.delete'), manage_phone_url(id: params[:id]),
+        class: 'btn btn-danger btn-wide',
+        method: :delete %>
+  </div>
+<% end %>
+
+<%= render 'shared/cancel', link: account_path %>
+
+<%= stylesheet_link_tag 'intl-tel-number/intlTelInput' %>
+<%= javascript_pack_tag 'intl-tel-input' %>
