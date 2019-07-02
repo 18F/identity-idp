@@ -89,7 +89,8 @@ module OpenidConnect
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
-      sign_out if user_signed_in? && @authorize_form.prompt == 'login'
+      return unless user_signed_in? && @authorize_form.prompt == 'login'
+      sign_out unless sp_session[:request_url] == request.original_url
     end
 
     def store_request
