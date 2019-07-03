@@ -8,6 +8,14 @@ module AccountReset
       ).order('requested_at ASC').each do |arr|
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end
+
+      # TODO: rewrite analytics so that we can generate events even from
+      # background jobs where we have no request or user objects
+      # analytics.track_event(Analytics::ACCOUNT_RESET,
+      #                       event: :notifications, count: notifications_sent)
+
+      Rails.logger.info("Sent #{notifications_sent} account_reset notifications")
+
       notifications_sent
     end
 
@@ -26,6 +34,7 @@ module AccountReset
     def grant_request_and_send_email(arr)
       user = arr.user
       return false unless AccountReset::GrantRequest.new(user).call
+
       arr = arr.reload
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.account_reset_granted(email_address, arr).deliver_later
