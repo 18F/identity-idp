@@ -1,24 +1,15 @@
 shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
-    puts 'DEBUG: shared_examples 1: account Spanish'
-    puts current_url
-    puts page.body
     visit_idp_from_sp_with_loa1(sp)
-    puts 'DEBUG: shared_examples 2: account Spanish'
-    puts current_url
-    puts page.body
     register_user
-    puts 'DEBUG: shared_examples 3: account Spanish'
-    puts current_url
-    puts page.body
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_on t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc

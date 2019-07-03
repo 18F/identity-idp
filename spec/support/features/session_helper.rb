@@ -413,11 +413,6 @@ module Features
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
       select_2fa_option('backup_code')
-      puts 'DEBUG: session_helper: register_user'
-      puts current_url
-      puts page.body
-      click_button t('forms.backup_code.are_you_sure_continue') if
-        page.has_button?(t('forms.backup_code.are_you_sure_continue'))
       click_continue
       User.find_with_email(email)
     end
