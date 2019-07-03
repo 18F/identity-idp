@@ -109,7 +109,6 @@ namespace :dev do
 
   def setup_user(user, args)
     user.encrypted_email = args[:ee].encrypted
-    user.skip_confirmation!
     user.reset_password(args[:pw], args[:pw])
     MfaContext.new(user).phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
@@ -117,7 +116,6 @@ namespace :dev do
 
   def setup_totp_user(user, args)
     user.encrypted_email = args[:ee].encrypted
-    user.skip_confirmation!
     user.reset_password(args[:pw], args[:pw])
     user.otp_secret_key = ROTP::Base32.random_base32
     Event.create(user_id: user.id, event_type: :account_created)
