@@ -143,10 +143,10 @@ fr:
       intro: La clé personnelle utilisée pour vous connecter
       subject: Alerte de sécurité du compte
     phone_added:
-      disavowal_link: ici
-      help: Si vous n'avez pas changé votre mot de passe, vous pouvez réinitialiser
-        votre mot de passe %{disavowal_link}. Pour plus d'aide, veuillez visiter le
-        %{help_link} de %{app} ou %{contact_link}.
+      disavowal_link: réinitialiser votre mot de passe
+      help: Si vous n'avez pas apporté cette modification, connectez-vous à votre
+        profil et gérez vos numéros de téléphone. Nous vous recommandons également
+        de %{disavowal_link}.
       intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app}.
       subject: Nouveau numéro de téléphone ajouté
     please_reset_password:
