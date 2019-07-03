@@ -9,7 +9,7 @@ module SignUp
 
     def show
       @view_model = view_model
-      if show_completions_page?
+      if user_needs_sign_up_completed_page?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
           analytics_attributes(''),
@@ -34,11 +34,6 @@ module SignUp
     def handle_verified_attributes
       update_verified_attributes
       clear_verify_attributes_sessions
-    end
-
-    def show_completions_page?
-      service_providers = sp_session[:issuer].present? || @view_model.user_has_identities?
-      user_fully_authenticated? && service_providers
     end
 
     def view_model
