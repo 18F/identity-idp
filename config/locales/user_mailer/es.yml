@@ -136,8 +136,8 @@ es:
       subject: Alerta de seguridad de cuenta
     phone_added:
       disavowal_link: restablezca su contraseña
-      help: Si no realizó este cambio, inicie sesión en su perfil y administre sus números
-        de teléfono.  También le recomendamos que %{disavowal_link}.
+      help: Si no realizó este cambio, inicie sesión en su perfil y administre sus
+        números de teléfono.  También le recomendamos que %{disavowal_link}.
       intro: Se agregó un nuevo número de teléfono a su perfil de %{app}.
       subject: Nuevo número de teléfono añadido
     please_reset_password:
