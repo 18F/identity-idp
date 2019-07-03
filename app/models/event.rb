@@ -25,6 +25,7 @@ class Event < ApplicationRecord
     sign_in_before_2fa: 18,
     sign_in_after_2fa: 19,
     email_deleted: 20,
+    phone_added: 21,
   }
 
   validates :event_type, presence: true
