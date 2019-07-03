@@ -14,6 +14,7 @@ es:
     new_personal_key: Clave personal cambiado
     password_changed: Contraseña cambiada
     personal_key_used: Clave personal utilizada para iniciar sesión
+    phone_added: Teléfono añadido
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
     phone_removed: Teléfono eliminado
