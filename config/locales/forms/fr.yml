@@ -8,11 +8,11 @@ fr:
       are_you_sure_desc: Les codes de sauvegarde ne sont pas recommandés car ils peuvent
         facilement être perdus ou volés. Si vous avez accès à une autre méthode d'authentification,
         choisissez une autre option.
+      are_you_sure_other_option: Choisissez une autre option
       are_you_sure_title: Êtes-vous sûr que c'est votre seule option?
       depleted_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons générer
         de nouveaux codes de sauvegarde après avoir cliqué sur Continuer. Rangez-les
         dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
-      depleted_other_option: Choisissez une autre option
       depleted_title: Créer de nouveaux codes de sauvegarde
       download: Télécharger
       generate: Générer

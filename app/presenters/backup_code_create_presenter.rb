@@ -19,7 +19,7 @@ class BackupCodeCreatePresenter
   end
 
   def other_option_title
-    t('forms.backup_code.depleted_other_option')
+    t('forms.backup_code.are_you_sure_other_option')
   end
 
   def other_option_path
