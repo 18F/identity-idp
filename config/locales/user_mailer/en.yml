@@ -29,13 +29,13 @@ en:
         want to delete your account?
       subject: Delete your account
     account_reset_request:
+      header: Wait 24 hours to delete your account
       help: ''
       intro: You’ve requested to delete your login.gov account. For security reasons,
         you must wait 24 hours. <br><br><strong>In 24 hours, you will receive an email
-        with a link to confirm and complete your account deletion.</strong>
-        <br><br> If you don’t want to delete your account, <u>%{cancel_account_reset}</u>.
+        with a link to confirm and complete your account deletion.</strong> <br><br>
+        If you don’t want to delete your account, <u>%{cancel_account_reset}</u>.
       subject: Delete your account
-      header: Wait 24 hours to delete your account
     add_email:
       footer: This link will expire in %{confirmation_period}.
       header: Thanks for adding an email. Please click the link below or copy and
