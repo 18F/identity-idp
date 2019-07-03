@@ -269,7 +269,7 @@ describe UserMailer, type: :mailer do
     it 'does not render the subject in the body' do
       expect(mail.html_part.body).not_to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.subject')
+          t('user_mailer.account_reset_request.subject'),
         ),
       )
     end
@@ -277,7 +277,7 @@ describe UserMailer, type: :mailer do
     it 'renders the header within the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.header')
+          t('user_mailer.account_reset_request.header'),
         ),
       )
     end
