@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
     let(:user) { sign_up_and_2fa_loa1_user }
-    let(:disavowal_token) { 'i_am_disavowal_token' }
 
     before do
       user # Sign up the user
