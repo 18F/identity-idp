@@ -53,5 +53,4 @@ describe BackupCodeDepletedPresenter do
       expect(presenter.continue_bttn_class).to eq 'btn btn-primary btn-wide'
     end
   end
-
 end

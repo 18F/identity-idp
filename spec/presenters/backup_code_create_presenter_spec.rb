@@ -38,7 +38,8 @@ describe BackupCodeCreatePresenter do
 
   describe '#continue_bttn_prologue' do
     it 'uses localization' do
-      expect(presenter.continue_bttn_prologue).to eq t('forms.backup_code.are_you_sure_continue_prologue')
+      expect(presenter.continue_bttn_prologue).
+        to eq t('forms.backup_code.are_you_sure_continue_prologue')
     end
   end
 
@@ -53,5 +54,4 @@ describe BackupCodeCreatePresenter do
       expect(presenter.continue_bttn_class).to eq 'btn btn-link'
     end
   end
-
 end
