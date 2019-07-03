@@ -5,7 +5,7 @@ html xmlns="http://www.w3.org/1999/xhtml"
     meta content="width=device-width" name="viewport"
     = stylesheet_link_tag 'email'
     title
-      = @header ? @header : message.subject
+      = @header || message.subject
   body
     table.body data-made-with-foundation=""
       tbody
@@ -51,7 +51,7 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                           td.s30 height="30px"
                                             | &nbsp;
                                     h4
-                                      = @header ? @header : message.subject
+                                      = @header || message.subject
                                     == yield
                                     table.spacer
                                       tbody
