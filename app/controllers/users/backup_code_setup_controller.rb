@@ -8,7 +8,7 @@ module Users
     before_action :set_backup_code_setup_presenter
 
     def index
-      @presenter = BackupCodeDepletedPresenter.new(view_context)
+      @presenter = BackupCodeCreatePresenter.new(view_context)
     end
 
     def depleted
