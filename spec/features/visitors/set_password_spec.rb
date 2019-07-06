@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 feature 'Visitor sets password during signup' do
-  before do
-    allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(false)
-  end
-
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user
