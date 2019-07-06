@@ -30,7 +30,7 @@ module FormPasswordValidator
   end
 
   def not_pwned
-    return unless Pwned::Password.new(password).pwned?
+    return if password.blank? || !Pwned::Password.new(password).pwned?
 
     errors.add :password, :pwned_password
   end
