@@ -9,6 +9,7 @@ module FormPasswordValidator
               presence: true,
               length: { in: Devise.password_length }
     validate :strong_password
+    validate :not_pwned
   end
 
   private
@@ -26,6 +27,12 @@ module FormPasswordValidator
       password,
       user.email_addresses.flat_map { |address| ForbiddenPasswords.new(address.email).call },
     )
+  end
+
+  def not_pwned
+    return unless Pwned::Password.new(password).pwned?
+
+    errors.add :password, :pwned_password
   end
 
   def min_password_score

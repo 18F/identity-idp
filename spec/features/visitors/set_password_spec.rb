@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 feature 'Visitor sets password during signup' do
+  before do
+    allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(false)
+  end
+
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user
@@ -91,6 +95,18 @@ feature 'Visitor sets password during signup' do
       click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
+    end
+
+    scenario 'visitor gets password pwned message' do
+      allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(true)
+
+      create(:user, :unconfirmed)
+      confirm_last_user
+      fill_in 'password_form_password', with: '3.1415926535'
+
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_content t('errors.messages.pwned_password')
     end
   end
 end

@@ -391,6 +391,7 @@ GEM
     public_suffix (3.1.1)
     puma (4.0.0)
       nio4r (~> 2.0)
+    pwned (1.2.1)
     rack (2.0.7)
     rack-attack (6.0.0)
       rack (>= 1.0, < 3)
@@ -732,6 +733,7 @@ DEPENDENCIES
   pry-rails
   psych
   puma
+  pwned
   rack-attack
   rack-cors
   rack-headers_filter

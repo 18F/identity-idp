@@ -70,6 +70,8 @@ en:
         as an authenticator. Please use a different phone number.
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
+      pwned_password: Your password appears in a list of known passwords exposed in
+        data breaches
       twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
       twilio_timeout: The server took too long to respond. Please try again.
       unauthorized_authn_context: Unauthorized authentication context
