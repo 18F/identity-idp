@@ -41,14 +41,16 @@ fr:
         ou copiez et collez le lien en entier dans votre navigateur.
       subject: Confirmez votre email
     add_email_associated_with_another_account:
-      help: If you did not request a new email or suspect an error, please visit the
-        %{app} %{help_link} or %{contact_link}.
-      intro: This email address is already associated with a %{app} account, so we
-        can't add it your current account. To sign in with your existing account,
-        follow the link below.  If you are not trying to sign in with this email address,
-        you can ignore this message.
-      link_text: Go to %{app}
-      reset_password: If you can't remember your password, go to %{app} to reset it.
+      help: Si vous n'avez pas demandé de nouvel email ou que vous suspectez une erreur,
+        veuillez visiter le %{app} %{help_link} ou %{contact_link}.
+      intro: Cette adresse email est déjà associée à un compte %{app}, nous ne pouvons
+        donc pas l'ajouter à votre compte actuel. Vous devez le supprimer de l'autre
+        compte avant de pouvoir l'associer à celui-ci. Pour vous connecter avec votre
+        compte existant, suivez le lien ci-dessous. Si vous n'essayez pas de vous
+        connecter avec cette adresse électronique, vous pouvez ignorer ce message.
+      link_text: Allez à %{app}
+      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
+        %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
