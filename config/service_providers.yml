@@ -1097,3 +1097,33 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # DHS - CBP - eCBP Gateway
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:ecbp_gateway':
+    friendly_name: 'eCBP Gateway'
+    agency: 'DHS'
+    agency_id: 1
+    logo: 'cbp.png'
+    ial: 1
+    return_to_sp_url: 'https://e.cbp.dhs.gov'
+    redirect_uris:
+      - 'https://e.cbp.dhs.gov/brokers'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
+  # BETA SAM
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:beta_sam_prod':
+    friendly_name: 'beta.sam.gov'
+    agency: 'GSA'
+    agency_id: 9
+    logo: 'beta-sam.png'
+    cert: 'beta_sam_prod'
+    ial: 2
+    return_to_sp_url: 'https://beta.sam.gov'
+    redirect_uris:
+      - 'https://beta.sam.gov/'
+      - 'https://beta.sam.gov/openid_connect_login'
+    attribute_bundle:
+      - 'email'
+    restrict_to_deploy_env: 'prod'

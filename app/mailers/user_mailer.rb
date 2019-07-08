@@ -32,7 +32,8 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
-  def phone_added(email_address)
+  def phone_added(email_address, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
   end
 

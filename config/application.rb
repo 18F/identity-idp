@@ -1,5 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'
+require_relative '../lib/upaya_log_formatter'
 
 Bundler.require(*Rails.groups)
 
@@ -24,6 +25,9 @@ module Upaya
       event.payload[:pid] = Process.pid
       event.payload.except(:params, :headers)
     end
+
+    # Use a custom log formatter to get timestamp
+    config.log_formatter = Upaya::UpayaLogFormatter.new
 
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter

@@ -26,6 +26,9 @@ Rails.application.configure do
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
 
+  # Override log formatter
+  config.log_formatter = Upaya::DevelopmentUpayaLogFormatter.new
+
   # Bullet gem config
   config.after_initialize do
     Bullet.enable = true
