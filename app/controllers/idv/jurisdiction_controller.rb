@@ -9,24 +9,18 @@ module Idv
     before_action :set_jurisdiction_form, except: [:failure]
 
     def new
-      print "then here 1"
       analytics.track_event(Analytics::IDV_JURISDICTION_VISIT)
     end
 
     def create
-      print "then here 2\n"
-
       result = @jurisdiction_form.submit(jurisdiction_params)
-      print @jurisdiction_form.state
 
       analytics.track_event(Analytics::IDV_JURISDICTION_FORM, result.to_h)
       idv_session.selected_jurisdiction = @jurisdiction_form.state
 
       if result.success?
-        print "success"
         redirect_to idv_session_url
       else
-        print result.to_h
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
         # `strong_params`.
@@ -54,17 +48,10 @@ module Idv
     end
 
     def confirm_step_needed
-      print "\n------"
-      print "\n state:\n"
-      print idv_session.selected_jurisdiction
-      #print "\n reason:\n"
-      #print params[:reason]
-      print "\n------\n"
-      #return if idv_session.selected_jurisdiction.nil? ||
-      #  (Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.include? idv_session.selected_jurisdiction)
-      # TODO clara this is what makes the max attempts blow up
-      redirect_to idv_session_url unless idv_session.selected_jurisdiction.nil? ||
-        (Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.include? idv_session.selected_jurisdiction)
+      return if idv_session.selected_jurisdiction.nil?
+      return unless (Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.include? idv_session.selected_jurisdiction)
+
+      redirect_to idv_session_url unless idv_session.selected_jurisdiction.nil?
     end
 
     def failure_url(reason)
