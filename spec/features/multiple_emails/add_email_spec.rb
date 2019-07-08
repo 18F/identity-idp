@@ -59,7 +59,7 @@ feature 'adding email address' do
     expect(page).to have_content(t('devise.confirmations.already_confirmed', action: nil).strip)
   end
 
-  it 'notifies user they are already confirmed on another account' do
+  it 'notifies user they are already confirmed on another account after clicking on link' do
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user)
 
@@ -70,6 +70,17 @@ feature 'adding email address' do
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(
       t('devise.confirmations.confirmed_but_remove_from_other_account'),
+    )
+  end
+
+  it 'notifies user they are already confirmed on another account via email' do
+    create(:user, :signed_up, email: email)
+
+    user = create(:user, :signed_up)
+    sign_in_user_and_add_email(user, false)
+
+    expect(last_email_sent.default_part_body.to_s).to have_content(
+      t('user_mailer.add_email_associated_with_another_account.intro', app: APP_NAME),
     )
   end
 
@@ -156,7 +167,7 @@ feature 'adding email address' do
     end
   end
 
-  def sign_in_user_and_add_email(user)
+  def sign_in_user_and_add_email(user, add_email = true)
     sign_in_and_2fa_user(user)
 
     visit account_path
@@ -164,8 +175,13 @@ feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    expect(UserMailer).to receive(:add_email).
-      with(user, anything, anything).and_call_original
+    if add_email
+      expect(UserMailer).to receive(:add_email).
+        with(user, anything, anything).and_call_original
+    else
+      expect(UserMailer).to receive(:add_email_associated_with_another_account).
+        with(email).and_call_original
+    end
 
     fill_in 'Email', with: email
     click_button t('forms.buttons.submit.default')
