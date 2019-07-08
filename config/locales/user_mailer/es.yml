@@ -151,7 +151,14 @@ es:
         Hemos deshabilitado su contraseña para mantener su cuenta segura. Esto no
         fue el resultado de un problema de seguridad con login.gov, sino un problema
         con su contraseña que ha sido comprometida.
+      link_text: Restablezca su contraseña
       subject: Restablece tu contraseña
+    reset_password_instructions:
+      footer: Este enlace expira en %{expires} horas.
+      header: Para terminar de restablecer su contraseña, haga clic en el enlace de
+        abajo o copie y pegue el enlace completo en su navegador.
+      link_text: Restablezca su contraseña
+      subject: Restablezca su contraseña.
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.

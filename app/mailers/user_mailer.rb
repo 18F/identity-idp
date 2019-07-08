@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
@@ -25,6 +26,12 @@ class UserMailer < ActionMailer::Base
   def signup_with_your_email(email)
     @root_url = root_url(locale: locale_url_param)
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  end
+
+  def reset_password_instructions(email, token:)
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
   end
 
   def password_changed(email_address, disavowal_token:)
@@ -122,3 +129,4 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.email_deleted.subject'))
   end
 end
+# rubocop:enable Metrics/ClassLength

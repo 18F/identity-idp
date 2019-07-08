@@ -23,13 +23,20 @@ describe RequestPasswordReset do
       end
     end
 
-    context 'when the user is found, not privileged, and confirmed' do
+    context 'when the user is found and confirmed' do
       it 'sends password reset instructions' do
-        user = build_stubbed(:user)
+        user = create(:user, :with_email)
+        email = user.email_addresses.first.email
 
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
+        allow(User).to receive(:find_with_email).with(email).and_return(user)
 
-        expect(user).to receive(:send_reset_password_instructions)
+        expect(user).to receive(:set_reset_password_token).and_return('asdf1234')
+
+        mail = double
+        expect(mail).to receive(:deliver_now)
+        expect(UserMailer).to receive(:reset_password_instructions).
+          with(email, token: 'asdf1234').
+          and_return(mail)
 
         RequestPasswordReset.new(user.email).perform
       end
@@ -37,11 +44,18 @@ describe RequestPasswordReset do
 
     context 'when the user is found, not privileged, and not yet confirmed' do
       it 'sends password reset instructions' do
-        user = build_stubbed(:user, :unconfirmed)
+        user = create(:user, :unconfirmed)
+        email = user.email_addresses.first.email
 
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
+        allow(User).to receive(:find_with_email).with(email).and_return(user)
 
-        expect(user).to receive(:send_reset_password_instructions)
+        expect(user).to receive(:set_reset_password_token).and_return('asdf1234')
+
+        mail = double
+        expect(mail).to receive(:deliver_now)
+        expect(UserMailer).to receive(:reset_password_instructions).
+          with(email, token: 'asdf1234').
+          and_return(mail)
 
         RequestPasswordReset.new(user.email).perform
       end
