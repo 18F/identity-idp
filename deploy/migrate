@@ -15,7 +15,7 @@ id
 which bundle
 
 export RAILS_ENV=production
-export MIGRATION_STATEMENT_TIMEOUT=60000
+export MIGRATION_STATEMENT_TIMEOUT=600000 # 10 minutes, units are 1/1000 of a second
 
 bundle exec rake db:create db:migrate db:seed db:grant_readonly_access --trace
 
