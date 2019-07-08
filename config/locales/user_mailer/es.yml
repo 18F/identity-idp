@@ -33,9 +33,10 @@ es:
       header: Espera 24 horas para borrar tu cuenta
       help: ''
       intro: Has solicitado eliminar tu cuenta de login.gov. Por razones de seguridad,
-        debes esperar 24 horas.<br><br><strong>En 24 horas, recibirá un correo electrónico
-        con un enlace para confirmar y completar la eliminación de su cuenta.</strong><br><br>Si
-        no quieres para eliminar su cuenta, <u>%{cancel_account_reset}</u>.
+        debes esperar 24 horas.
+      more_info: <strong>En 24 horas, recibirá un correo electrónico
+        con un enlace para confirmar y completar la eliminación de su cuenta.</strong>
+      cancel: Si no quieres para eliminar su cuenta, <u>%{cancel_account_reset}</u>.
       subject: Eliminar su cuenta
     add_email:
       footer: Este enlace expirará en %{confirmation_period}.
