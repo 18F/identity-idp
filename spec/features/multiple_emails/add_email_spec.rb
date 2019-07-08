@@ -60,12 +60,11 @@ feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed on another account' do
-    create(:user, :signed_up, email: email)
-
     user = create(:user, :signed_up)
     sign_in_user_and_add_email(user)
 
     email_to_click_on = last_email_sent
+    create(:user, :signed_up, email: email)
     click_on_link_in_confirmation_email(email_to_click_on)
 
     expect(page).to have_current_path(account_path)
