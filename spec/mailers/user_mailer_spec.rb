@@ -191,7 +191,8 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'phone_added' do
-    let(:mail) { UserMailer.phone_added(email_address) }
+    disavowal_token = 'i_am_disavowal_token'
+    let(:mail) { UserMailer.phone_added(email_address, disavowal_token: disavowal_token) }
 
     it_behaves_like 'a system email'
 

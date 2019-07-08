@@ -1097,3 +1097,17 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # DHS - CBP - eCBP Gateway
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:ecbp_gateway':
+    friendly_name: 'eCBP Gateway'
+    agency: 'DHS'
+    agency_id: 1
+    logo: 'cbp.png'
+    ial: 1
+    return_to_sp_url: 'https://e.cbp.dhs.gov'
+    redirect_uris:
+      - 'https://e.cbp.dhs.gov/brokers'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
