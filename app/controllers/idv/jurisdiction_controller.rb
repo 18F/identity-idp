@@ -5,6 +5,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
+    before_action :confirm_step_needed, only: %i[new create]
     before_action :set_jurisdiction_form, except: [:failure]
 
     def new
@@ -47,7 +48,8 @@ module Idv
 
     def confirm_step_needed
       return if idv_session.selected_jurisdiction.nil?
-      redirect_to idv_session_url
+      # TODO clara this is what makes the max attempts blow up
+      redirect_to idv_session_url unless params[:reason].nil?
     end
 
     def failure_url(reason)
