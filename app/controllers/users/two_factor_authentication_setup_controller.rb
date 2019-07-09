@@ -27,6 +27,8 @@ module Users
       end
     end
 
+    def success; end
+
     private
 
     def two_factor_options_presenter
