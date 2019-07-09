@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --require babel-core/register --require spec/javascripts/spec_helper.js spec/javascripts/**/*.js",
-    "build": "true"
+    "build": "true",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@rails/webpacker": "^3.5.5",
@@ -25,7 +27,8 @@
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "snyk": "^1.192.4"
   },
   "devDependencies": {
     "atob": "^2.1.2",
@@ -38,5 +41,6 @@
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^4.0.1",
     "proxyquire": "^1.8.0"
-  }
+  },
+  "snyk": true
 }
