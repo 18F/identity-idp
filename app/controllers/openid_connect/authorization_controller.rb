@@ -3,7 +3,6 @@ module OpenidConnect
     include FullyAuthenticatable
     include RememberDeviceConcern
     include VerifyProfileConcern
-    include VerifySPAttributesConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]

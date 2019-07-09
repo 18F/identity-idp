@@ -9,7 +9,6 @@ class SamlIdpController < ApplicationController
   include FullyAuthenticatable
   include RememberDeviceConcern
   include VerifyProfileConcern
-  include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
