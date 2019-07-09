@@ -3,8 +3,7 @@ require 'rails_helper'
 describe BackupCodeCreatePresenter do
   include Rails.application.routes.url_helpers
 
-  let(:view) { ActionController::Base.new.view_context }
-  subject(:presenter) { BackupCodeCreatePresenter.new(view) }
+  subject(:presenter) { BackupCodeCreatePresenter.new }
 
   describe '#title' do
     it 'uses localization' do
