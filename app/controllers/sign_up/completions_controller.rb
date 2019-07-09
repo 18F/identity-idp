@@ -9,7 +9,7 @@ module SignUp
 
     def show
       @view_model = view_model
-      if user_needs_sign_up_completed_page?
+      if needs_sp_attribute_verification?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
           analytics_attributes(''),
