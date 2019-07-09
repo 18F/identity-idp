@@ -2,10 +2,6 @@ class BackupCodeDepletedPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(view)
-    @view = view
-  end
-
   def title
     t('forms.backup_code.depleted_title')
   end
