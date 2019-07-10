@@ -12,7 +12,7 @@ feature 'Backup codes' do
       expect(page).to have_content(t('account.index.backup_codes_exist'))
       old_backup_code = user.backup_code_configurations.sample
       click_link t('forms.backup_code.regenerate'), href: backup_code_regenerate_path
-      click_link t('account.index.backup_code_confirm_regenerate')
+      click_on t('account.index.backup_code_confirm_regenerate')
       expect(BackupCodeConfiguration.where(id: old_backup_code.id).any?).to eq(false)
     end
   end
@@ -29,7 +29,7 @@ feature 'Backup codes' do
     let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
 
     it 'user can click generate backup codes' do
-      click_link t('forms.backup_code.generate'), href: backup_code_setup_path
+      click_on t('forms.backup_code.generate')
 
       expect(page).to have_current_path(backup_code_setup_path)
 
