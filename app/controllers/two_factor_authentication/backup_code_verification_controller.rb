@@ -30,7 +30,7 @@ module TwoFactorAuthentication
 
     def handle_last_code
       BackupCodeGenerator.new(current_user).delete_existing_codes
-      redirect_to backup_code_setup_url
+      redirect_to backup_code_depleted_url
     end
 
     def presenter_for_two_factor_authentication_method

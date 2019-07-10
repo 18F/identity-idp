@@ -4,23 +4,28 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :ensure_backup_codes_in_session, only: %i[create download]
+    before_action :ensure_backup_codes_in_session, only: %i[continue download]
     before_action :set_backup_code_setup_presenter
 
     def index
+      @presenter = BackupCodeCreatePresenter.new
+    end
+
+    def depleted
+      @presenter = BackupCodeDepletedPresenter.new
+    end
+
+    def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
+      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      save_backup_codes
     end
 
     def edit; end
 
-    def create
-      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
-      mark_user_as_fully_authenticated
-      generator.save(user_session[:backup_codes])
-      create_user_event(:backup_codes_added)
-      revoke_remember_device
+    def continue
       redirect_to two_2fa_setup
     end
 
@@ -47,6 +52,13 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+    end
+
+    def save_backup_codes
+      mark_user_as_fully_authenticated
+      generator.save(user_session[:backup_codes])
+      create_user_event(:backup_codes_added)
+      revoke_remember_device
     end
 
     def revoke_remember_device

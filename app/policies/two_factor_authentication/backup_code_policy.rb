@@ -14,12 +14,12 @@ module TwoFactorAuthentication
 
     # :reek:UtilityFunction
     def visible?
-      FeatureManagement.backup_codes_enabled?
+      true
     end
 
     # :reek:UtilityFunction
     def available?
-      FeatureManagement.backup_codes_enabled?
+      true
     end
 
     def enrollable?
