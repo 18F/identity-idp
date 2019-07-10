@@ -104,6 +104,7 @@ en:
       backup_code: Security code
       code: One-time security code
       personal_key: Personal key
+      success: Next, you'll set up a backup method.
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
