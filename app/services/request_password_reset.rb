@@ -5,12 +5,17 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
       result = form.submit({ email: email }, instructions)
       [form.user, result]
     else
-      user.send_reset_password_instructions
+      send_reset_password_instructions
       nil
     end
   end
 
   private
+
+  def send_reset_password_instructions
+    token = user.set_reset_password_token
+    UserMailer.reset_password_instructions(email, token: token).deliver_now
+  end
 
   def instructions
     I18n.t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password')

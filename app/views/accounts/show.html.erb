@@ -56,9 +56,7 @@
         action: @view_model.personal_key_action_partial %>
     <% end %>
   <% end %>
-  <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).visible? %>
-    <%= render 'backup_codes' %>
-  <% end %>
+  <%= render 'backup_codes' %>
 </div>
 <%= render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii %>
 <div class="mb3 profile-info-box">

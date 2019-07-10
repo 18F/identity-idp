@@ -9,9 +9,4 @@ es:
     help: Si necesitas ayuda, visita %{link}
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Política de privacidad
-    reset_password:
-      footer: Este enlace expira en %{expires} horas.
-      header: Para terminar de restablecer su contraseña, haga clic en el enlace de
-        abajo o copie y pegue el enlace completo en su navegador.
-      link_text: Restablezca su contraseña
     sent_from: Enviado desde %{app}

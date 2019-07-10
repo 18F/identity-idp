@@ -15,12 +15,11 @@ feature 'Password Recovery' do
 
       expect(current_path).to eq forgot_password_path
 
-      expect(last_email.subject).to eq t('devise.mailer.reset_password_instructions.' \
-                                          'subject')
+      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
       expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
         t(
-          'mailer.reset_password.footer',
+          'user_mailer.reset_password_instructions.footer',
           expires: (Devise.reset_password_within / 3600),
         ),
       )

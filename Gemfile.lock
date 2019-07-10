@@ -369,7 +369,6 @@ GEM
     pg (1.1.4)
     phonelib (0.6.36)
     pkcs11 (0.2.7)
-    powerpack (0.1.2)
     premailer (1.11.1)
       addressable
       css_parser (>= 1.6.0)
@@ -497,14 +496,16 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
-    rubocop (0.58.2)
+    rubocop (0.72.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
-      parser (>= 2.5, != 2.5.1.1)
-      powerpack (~> 0.1)
+      parser (>= 2.6)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.0, >= 1.0.1)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rails (2.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.72.0)
     ruby-graphviz (1.2.4)
     ruby-progressbar (1.10.1)
     ruby-saml (1.10.2)
@@ -749,7 +750,8 @@ DEPENDENCIES
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.7)
-  rubocop (~> 0.58.0)
+  rubocop (~> 0.72.0)
+  rubocop-rails
   ruby-progressbar
   ruby-saml
   safe_target_blank

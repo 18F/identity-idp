@@ -79,13 +79,6 @@ describe TwoFactorOptionsPresenter do
     end
   end
 
-  describe '#backup_code_option' do
-    it 'returns [] when backup_codes are not enabled' do
-      allow(FeatureManagement).to receive(:backup_codes_enabled?).and_return(false)
-      expect(presenter.send(:backup_code_option)).to eq([])
-    end
-  end
-
   describe 'shows correct step indicator' do
     context 'with a user who has not chosen their first option' do
       let(:user) { build(:user) }

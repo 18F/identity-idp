@@ -30,8 +30,6 @@ es:
     mailer:
       password_updated:
         subject: Su contraseña ha sido cambiada.
-      reset_password_instructions:
-        subject: Restablezca su contraseña.
     passwords:
       choose_new_password: Elija una contraseña nueva.
       invalid_token: El código para restablecer la contraseña no es válido. Inténtelo
