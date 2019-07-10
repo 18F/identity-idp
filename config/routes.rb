@@ -39,14 +39,25 @@ Rails.application.routes.draw do
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
     # authentication failure.
-    devise_for(
-      :users,
-      skip: %i[confirmations sessions registrations two_factor_authentication],
-      controllers: { passwords: 'users/reset_passwords' },
-    )
+    # devise_for(
+    #   :users,
+    #   skip: %i[confirmations sessions registrations two_factor_authentication],
+    #   controllers: { passwords: 'users/reset_passwords' },
+    # )
 
     # Additional device controller routes.
+    devise_for(
+      :users,
+      skip: %i[confirmations sessions registrations two_factor_authentication passwords],
+    )
+
     devise_scope :user do
+      get '/users/password/new' => 'users/reset_passwords#new', as: :new_user_password
+      get '/users/password/edit' => 'users/reset_passwords#edit', as: :edit_user_password
+      patch '/users/password' => 'users/reset_passwords#update', as: :user_password
+      put '/users/password' => 'users/reset_passwords#update', as: nil
+      post '/users/password' => 'users/reset_passwords#create', as: nil
+
       get '/' => 'users/sessions#new', as: :new_user_session
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session

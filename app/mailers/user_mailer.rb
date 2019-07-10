@@ -28,6 +28,12 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
+  def reset_password_instructions(email, token:)
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
+  end
+
   def password_changed(email_address, disavowal_token:)
     @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))

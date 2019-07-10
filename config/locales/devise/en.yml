@@ -29,8 +29,6 @@ en:
     mailer:
       password_updated:
         subject: Your password has been changed
-      reset_password_instructions:
-        subject: Reset your password
     passwords:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
