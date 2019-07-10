@@ -39,19 +39,6 @@ feature 'idv state id data entry' do
     expect(current_path).to eq(idv_session_path)
   end
 
-  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
-    expect(Idv::Proofer).to_not receive(:get_vendor)
-
-    select 'Alabama', from: 'profile_state'
-    click_idv_continue
-
-    expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
-
-    visit idv_jurisdiction_path
-
-    expect(page).to have_content t('idv.messages.jurisdiction.where')
-  end
-
   it 'renders an error for a state id that is too long and does not submit a job', :email do
     expect(Idv::Proofer).to_not receive(:get_vendor)
 
@@ -68,5 +55,24 @@ feature 'idv state id data entry' do
 
     expect(page).to have_content(t('idv.messages.sessions.success'))
     expect(current_path).to eq(idv_session_success_path)
+  end
+end
+
+feature 'idv state selection' do
+  include IdvStepHelper
+
+  let(:locale) { LinkLocaleResolver.locale }
+
+  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
+    start_idv_from_sp
+    complete_idv_steps_before_jurisdiction_step
+
+    select 'Alabama', from: 'jurisdiction_state'
+    click_idv_continue
+    print page.current_url
+    expect(page).to have_content t('idv.messages.jurisdiction.unsupported_jurisdiction_failure')
+
+    visit idv_jurisdiction_path
+    expect(page).to have_content t('idv.messages.jurisdiction.where')
   end
 end

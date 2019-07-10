@@ -13,8 +13,6 @@ class SamlIdpController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
-
-  # rubocop:disable Metrics/AbcSize
   def auth
     link_identity_from_session_data
     capture_analytics
@@ -24,7 +22,6 @@ class SamlIdpController < ApplicationController
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
     handle_successful_handoff
   end
-  # rubocop:enable Metrics/AbcSize
 
   def metadata
     render inline: saml_metadata.signed, content_type: 'text/xml'

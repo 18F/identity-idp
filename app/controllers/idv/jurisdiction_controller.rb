@@ -14,7 +14,6 @@ module Idv
 
     def create
       result = @jurisdiction_form.submit(jurisdiction_params)
-
       analytics.track_event(Analytics::IDV_JURISDICTION_FORM, result.to_h)
       idv_session.selected_jurisdiction = @jurisdiction_form.state
 
@@ -49,7 +48,7 @@ module Idv
 
     def confirm_step_needed
       return if idv_session.selected_jurisdiction.nil?
-      return unless (Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.include? idv_session.selected_jurisdiction)
+      return unless Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.include? idv_session.selected_jurisdiction
 
       redirect_to idv_session_url unless idv_session.selected_jurisdiction.nil?
     end

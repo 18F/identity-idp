@@ -88,7 +88,6 @@ module FormHelper
   end
 
   def state_name_for_abbrev(abbrev)
-    print us_states_territories
     us_states_territories.find([]) { |state| state.second == abbrev }.first
   end
 
