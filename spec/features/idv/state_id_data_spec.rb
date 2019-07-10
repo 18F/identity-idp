@@ -58,12 +58,12 @@ feature 'idv state id data entry' do
   end
 end
 
-feature 'idv state selection' do
+feature 'idv unsuported state selection' do
   include IdvStepHelper
 
   let(:locale) { LinkLocaleResolver.locale }
 
-  it 'on unsupported jurisdiction it allows the SP user to get back to state selection', :email do
+  it 'it allows the SP user to get back to state selection', :email do
     start_idv_from_sp
     complete_idv_steps_before_jurisdiction_step
 
@@ -77,7 +77,7 @@ feature 'idv state selection' do
     expect(page).to have_content t('idv.messages.jurisdiction.where')
   end
 
-  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
+  it 'it allows the user to get back to state selection', :email do
     sign_in_and_2fa_user
     visit idv_jurisdiction_url
 

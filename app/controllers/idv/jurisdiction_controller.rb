@@ -48,7 +48,6 @@ module Idv
 
     def confirm_step_needed
       selected_jurisdiction = idv_session.selected_jurisdiction
-      return if selected_jurisdiction.nil?
       return unless Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.
                     include? selected_jurisdiction
 
