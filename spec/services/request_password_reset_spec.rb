@@ -38,7 +38,7 @@ describe RequestPasswordReset do
           with(email, token: 'asdf1234').
           and_return(mail)
 
-        RequestPasswordReset.new(user.email).perform
+        RequestPasswordReset.new(email).perform
       end
     end
 
@@ -57,7 +57,7 @@ describe RequestPasswordReset do
           with(email, token: 'asdf1234').
           and_return(mail)
 
-        RequestPasswordReset.new(user.email).perform
+        RequestPasswordReset.new(email).perform
       end
     end
   end
