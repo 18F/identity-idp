@@ -63,15 +63,29 @@ feature 'idv state selection' do
 
   let(:locale) { LinkLocaleResolver.locale }
 
-  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
+  it 'on unsupported jurisdiction it allows the SP user to get back to state selection', :email do
     start_idv_from_sp
     complete_idv_steps_before_jurisdiction_step
 
     select 'Alabama', from: 'jurisdiction_state'
     click_idv_continue
 
-    expect(page).to have_content "We're working hard to add more states"
-    # t('idv.messages.jurisdiction.unsupported_jurisdiction_failure')
+    expect(page).to have_content t('idv.messages.jurisdiction.unsupported_jurisdiction_failure',
+                                   state: 'Alabama')
+
+    visit idv_jurisdiction_path
+    expect(page).to have_content t('idv.messages.jurisdiction.where')
+  end
+
+  it 'on unsupported jurisdiction it allows the user to get back to state selection', :email do
+    sign_in_and_2fa_user
+    visit idv_jurisdiction_url
+
+    select 'Alabama', from: 'jurisdiction_state'
+    click_idv_continue
+
+    expect(page).to have_content t('idv.messages.jurisdiction.unsupported_jurisdiction_failure',
+                                   state: 'Alabama')
 
     visit idv_jurisdiction_path
     expect(page).to have_content t('idv.messages.jurisdiction.where')
