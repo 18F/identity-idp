@@ -22,6 +22,7 @@ shared_examples 'preventing backup mfa bypass' do
     expect(page).to have_current_path(mfa_path_for_user(user))
 
     complete_mfa
+    click_continue
 
     # MFA should be required before advancing to account or verificaiton
     expect(current_path).to eq(two_factor_options_path)

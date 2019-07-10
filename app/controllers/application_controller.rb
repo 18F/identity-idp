@@ -144,7 +144,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       after_multiple_2fa_sign_up
     else
       two_factor_options_success_url
-      # two_factor_options_url
     end
   end
 

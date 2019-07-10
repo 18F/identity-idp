@@ -20,6 +20,8 @@ shared_examples 'setting up backup mfa on sign up' do
     user = visit_idp_from_sp_and_sign_up
     device = choose_and_confirm_mfa
 
+    click_continue
+
     expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(sign_up_completed_path)

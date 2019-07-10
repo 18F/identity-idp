@@ -10,11 +10,7 @@
 
 <h2 class="h2 h3 mb6 my0"><%= t('forms.two_factor.success') %></h2>
 
-<%= link_to two_factor_options_path do %>
-  <span class="btn btn-primary btn-wide sm-col-6 col-12">
-    <%= t('forms.buttons.continue') %>
-  </span>
-<% end %>
+<%= button_to t('forms.buttons.continue'), two_factor_options_path,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12', method: :get %>
 
 <%= render 'shared/cancel', link: destroy_user_session_path %>
-</div>

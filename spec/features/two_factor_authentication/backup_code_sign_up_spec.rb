@@ -13,6 +13,7 @@ feature 'sign up with backup code' do
     expect(current_path).to eq backup_code_setup_path
 
     click_on 'Continue'
+    click_continue
 
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
     expect(current_path).to eq two_factor_options_path
@@ -58,6 +59,7 @@ feature 'sign up with backup code' do
     expect(current_path).to eq two_factor_options_path
     select_2fa_option('backup_code')
     click_on 'Continue'
+    click_continue
 
     expect(current_path).to eq two_factor_options_path
     expect(user.backup_code_configurations.count).to eq(10)
@@ -71,6 +73,7 @@ feature 'sign up with backup code' do
     sign_up_and_set_password
     select_2fa_option('backup_code')
     click_on 'Continue'
+    click_continue
     select_2fa_option('backup_code_only')
 
     expect(page).to have_current_path(sign_up_completed_path)

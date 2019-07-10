@@ -1,6 +1,7 @@
 ---
 es:
   headings:
+    2fa_success: Has configurado correctamente tu primer método de autenticación.
     account:
       account_history: Historial de cuenta
       account_management: Manejo de cuenta

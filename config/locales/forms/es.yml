@@ -108,6 +108,7 @@ es:
       backup_code: Código de seguridad
       code: Código de seguridad de sólo un uso
       personal_key: Clave personal
+      success: A continuación, configurará un método de copia de seguridad.
       try_again: Use otro número de teléfono.
     two_factor_choice:
       legend: Seleccione una opción para proteger su cuenta

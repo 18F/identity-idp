@@ -1,6 +1,7 @@
 ---
 en:
   headings:
+    2fa_success: You successfully set up your first authentication method.
     account:
       account_history: Account history
       account_management: Account Management
@@ -54,7 +55,6 @@ en:
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
-    2fa_success: You successfully set up your first authentication method.
     totp_setup:
       new: Enable an authentication app
     verify_email: Check your email
