@@ -750,7 +750,7 @@ DEPENDENCIES
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.7)
-  rubocop
+  rubocop (~> 0.72.0)
   rubocop-rails
   ruby-progressbar
   ruby-saml
