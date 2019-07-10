@@ -80,6 +80,8 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_piv_cac
 
+    click_continue
+
     expect(page).to have_current_path(two_factor_options_path)
 
     select_2fa_option('phone')

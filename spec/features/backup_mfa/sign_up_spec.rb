@@ -9,6 +9,7 @@ shared_examples 'setting up backup mfa on sign up' do
 
     device = choose_and_confirm_mfa
 
+    click_continue
     expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(account_path)
@@ -21,7 +22,6 @@ shared_examples 'setting up backup mfa on sign up' do
     device = choose_and_confirm_mfa
 
     click_continue
-
     expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(sign_up_completed_path)

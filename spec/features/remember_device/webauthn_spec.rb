@@ -45,6 +45,8 @@ describe 'Remembering a webauthn device' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
+      click_continue
+
       select_2fa_option('webauthn')
       fill_in_nickname_and_click_continue
       check :remember_device

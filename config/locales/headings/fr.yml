@@ -1,7 +1,7 @@
 ---
 fr:
   headings:
-    2fa_success: Vous avez correctement configuré votre première méthode d'authentification.
+    mfa_success: Vous avez correctement configuré votre première méthode d'authentification.
     account:
       account_history: Historique du compte
       account_management: Gestion de compte

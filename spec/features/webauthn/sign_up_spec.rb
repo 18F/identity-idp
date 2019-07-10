@@ -19,6 +19,8 @@ feature 'webauthn sign up' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
+      click_continue
+
       expect(page).to have_current_path(account_path)
     end
 
@@ -32,6 +34,7 @@ feature 'webauthn sign up' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
 
       select_2fa_option('webauthn')
     end

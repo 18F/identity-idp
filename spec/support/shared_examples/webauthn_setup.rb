@@ -11,6 +11,7 @@ shared_examples 'webauthn setup' do
     expect(current_path).to eq webauthn_setup_success_path
 
     click_button t('forms.buttons.continue')
+    click_continue
 
     expect_webauthn_setup_success
     expect(user.reload.webauthn_configurations.count).to eq(1)

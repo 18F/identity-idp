@@ -31,6 +31,8 @@ describe 'Remembering a TOTP device' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
+      click_continue
+
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       check :remember_device

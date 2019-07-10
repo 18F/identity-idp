@@ -1,7 +1,7 @@
 ---
 en:
   headings:
-    2fa_success: You successfully set up your first authentication method.
+    mfa_success: You successfully set up your first authentication method.
     account:
       account_history: Account history
       account_management: Account Management
