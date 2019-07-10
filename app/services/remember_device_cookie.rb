@@ -23,13 +23,13 @@ class RememberDeviceCookie
     raise "RememberDeviceCookie role '#{role}' did not match '#{COOKIE_ROLE}'"
   end
 
-  def to_json
+  def to_json(*args)
     {
       user_id: user_id,
       created_at: created_at.iso8601,
       role: COOKIE_ROLE,
       entropy: SecureRandom.base64(32),
-    }.to_json
+    }.to_json(*args)
   end
 
   def valid_for_user?(user:, expiration_interval:)

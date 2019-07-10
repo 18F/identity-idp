@@ -31,6 +31,7 @@ module SessionTimeoutWarningHelper
     end
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def auto_session_expired_js
     return if @skip_session_expiration
 
@@ -43,6 +44,7 @@ module SessionTimeoutWarningHelper
       )
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def time_left_in_session
     distance_of_time_in_words(warning)
