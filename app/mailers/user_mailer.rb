@@ -67,6 +67,7 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_request(email_address, account_reset)
     @token = account_reset&.request_token
+    @header = t('user_mailer.account_reset_request.header')
     mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
   end
 
@@ -127,6 +128,11 @@ class UserMailer < ActionMailer::Base
 
   def email_deleted(email)
     mail(to: email, subject: t('user_mailer.email_deleted.subject'))
+  end
+
+  def add_email_associated_with_another_account(email)
+    @root_url = root_url(locale: locale_url_param)
+    mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 end
 # rubocop:enable Metrics/ClassLength
