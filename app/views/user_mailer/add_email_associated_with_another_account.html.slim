@@ -1,0 +1,35 @@
+p.lead == t('.intro', app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
+
+table.button.expanded.large.radius
+  tbody
+    tr
+      td
+        table
+          tbody
+            tr
+              td
+                center
+                  = link_to t('.link_text', app: APP_NAME),
+                          @root_url, target: '_blank',
+                          class: 'float-center', align: 'center'
+      td.expander
+
+p = link_to @root_url, @root_url, target: '_blank'
+
+table.spacer
+  tbody
+    tr
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
+      | &nbsp;
+
+p == t('.reset_password',
+        app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
+
+p == t('.help',
+        app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'),
+        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+        contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url))
