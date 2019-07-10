@@ -1,7 +1,6 @@
 ---
 es:
   headings:
-    mfa_success: Has configurado correctamente tu primer método de autenticación.
     account:
       account_history: Historial de cuenta
       account_management: Manejo de cuenta
@@ -30,6 +29,7 @@ es:
       password: Cambie su contraseña
       phone: Administrar su número de teléfono
     lock_failure: Esto es lo que puedes hacer
+    mfa_success: Has configurado correctamente tu primer método de autenticación.
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
