@@ -3,6 +3,8 @@ class RegisterUserEmailForm
   include ActionView::Helpers::TranslationHelper
   include FormEmailValidator
 
+  validate :service_provider_request_exists
+
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
@@ -25,9 +27,9 @@ class RegisterUserEmailForm
 
   def submit(params, instructions = nil)
     user.email = params[:email]
-    request_id = params[:request_id]
+    @request_id = params[:request_id]
 
-    if valid_form?(request_id)
+    if valid_form?
       process_successful_submission(request_id, instructions)
     else
       @success = @allow && process_errors(request_id)
@@ -40,16 +42,16 @@ class RegisterUserEmailForm
 
   attr_writer :email
   attr_reader :success
+  attr_reader :request_id
 
-  def valid_form?(request_id)
-    @allow && valid? && !email_taken? && valid_request_id?(request_id)
+  def valid_form?
+    @allow && valid? && !email_taken?
   end
 
-  def valid_request_id?(request_id)
-    return true if request_id.blank?
-    return true if ServiceProviderRequest.find_by(uuid: request_id)
+  def service_provider_request_exists
+    return if request_id.blank?
+    return if ServiceProviderRequest.where(uuid: request_id).any?
     errors.add(:email, t('sign_up.email.invalid_request'))
-    false
   end
 
   def process_successful_submission(request_id, instructions)
