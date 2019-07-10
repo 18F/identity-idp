@@ -3,6 +3,7 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
+require: rubocop-rails
 
 AllCops:
   Exclude:
@@ -188,7 +189,7 @@ Style/IfUnlessModifier:
   Enabled: true
 
 # Checks the indentation of the first element in an array literal.
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -217,9 +218,6 @@ Layout/MultilineOperationIndentation:
   # By default, the indentation width from Style/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
-
-Style/FormatStringToken:
-  Enabled: false
 
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key
@@ -275,14 +273,24 @@ Style/TrailingCommaInHashLiteral:
     - consistent_comma
     - no_comma
 
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 2
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+
 Style/SingleLineBlockParams:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
-Naming/UncommunicativeMethodParamName:
-  MinNameLength: 2
-
-Style/ExpandPathArguments:
+Naming/RescuedExceptionsVariableName:
   Enabled: false

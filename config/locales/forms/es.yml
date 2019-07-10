@@ -2,6 +2,18 @@
 es:
   forms:
     backup_code:
+      are_you_sure_continue: continúa con los códigos de respaldo
+      are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de
+        autenticación,
+      are_you_sure_desc: No se recomiendan los códigos de respaldo porque se pueden
+        perder o robar fácilmente. Si tienes acceso a otro método de autenticación,
+        elije otra opción.
+      are_you_sure_other_option: Elige otra opción
+      are_you_sure_title: "¿Estás seguro de que esta es tu única opción?"
+      depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
+        de respaldo después de que hagas clic en continuar. Guárdalas en un lugar
+        seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
+      depleted_title: Crea nuevos códigos de respaldo
       download: Descargar
       generate: Generar
       info: Use códigos de inicio de sesión si no puede acceder a su teléfono para

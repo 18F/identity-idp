@@ -45,7 +45,7 @@ feature 'doc auth send link step' do
       code: 60_033,
       message: 'error',
       status: 400,
-      response:  '{"error_code":"60004"}',
+      response: '{"error_code":"60004"}',
     )
     allow(SmsDocAuthLinkJob).to receive(:perform_now).and_raise(generic_exception)
     fill_in :doc_auth_phone, with: '415-555-0199'

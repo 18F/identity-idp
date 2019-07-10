@@ -39,14 +39,25 @@ Rails.application.routes.draw do
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
     # authentication failure.
-    devise_for(
-      :users,
-      skip: %i[confirmations sessions registrations two_factor_authentication],
-      controllers: { passwords: 'users/reset_passwords' },
-    )
+    # devise_for(
+    #   :users,
+    #   skip: %i[confirmations sessions registrations two_factor_authentication],
+    #   controllers: { passwords: 'users/reset_passwords' },
+    # )
 
     # Additional device controller routes.
+    devise_for(
+      :users,
+      skip: %i[confirmations sessions registrations two_factor_authentication passwords],
+    )
+
     devise_scope :user do
+      get '/users/password/new' => 'users/reset_passwords#new', as: :new_user_password
+      get '/users/password/edit' => 'users/reset_passwords#edit', as: :edit_user_password
+      patch '/users/password' => 'users/reset_passwords#update', as: :user_password
+      put '/users/password' => 'users/reset_passwords#update', as: nil
+      post '/users/password' => 'users/reset_passwords#create', as: nil
+
       get '/' => 'users/sessions#new', as: :new_user_session
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
@@ -76,10 +87,8 @@ Rails.application.routes.draw do
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
-      if FeatureManagement.backup_codes_enabled?
-        get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
-        post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
-      end
+      get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
+      post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
@@ -172,12 +181,12 @@ Rails.application.routes.draw do
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
-    if FeatureManagement.backup_codes_enabled?
-      get '/backup_code_setup' => 'users/backup_code_setup#index'
-      patch '/backup_code_setup' => 'users/backup_code_setup#create'
-      get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
-      get '/backup_code_download' => 'users/backup_code_setup#download'
-    end
+    get '/backup_code_depleted' => 'users/backup_code_setup#depleted'
+    get '/backup_code_setup' => 'users/backup_code_setup#index'
+    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
+    patch '/backup_code_continue' => 'users/backup_code_setup#continue'
+    get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
+    get '/backup_code_download' => 'users/backup_code_setup#download'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
