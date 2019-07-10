@@ -69,7 +69,7 @@ feature 'idv state selection' do
 
     select 'Alabama', from: 'jurisdiction_state'
     click_idv_continue
-    print page.current_url
+
     expect(page).to have_content "We're working hard to add more states"
     # t('idv.messages.jurisdiction.unsupported_jurisdiction_failure')
 
