@@ -6,12 +6,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
     {
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       client_id: client_id,
-      nonce:  SecureRandom.hex,
+      nonce: SecureRandom.hex,
       prompt: 'select_account',
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
       scope: 'openid profile',
-      state:  SecureRandom.hex,
+      state: SecureRandom.hex,
     }
   end
 

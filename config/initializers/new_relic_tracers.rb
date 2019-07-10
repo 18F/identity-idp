@@ -19,14 +19,6 @@ ConfirmationEmailPresenter.class_eval do
   add_method_tracer :confirmation_period, "Custom/#{name}/confirmation_period"
 end
 
-CustomDeviseMailer.class_eval do
-  include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :initialize, "Custom/#{name}/initialize"
-  add_method_tracer :confirmation_instructions, "Custom/#{name}/confirmation_instructions"
-  add_method_tracer :initialize_from_record, "Custom/#{name}/initialize_from_record"
-  add_method_tracer :mail, "Custom/#{name}/mail"
-end
-
 Mail::Message.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :initialize, "Custom/#{name}/initialize"

@@ -9,7 +9,7 @@ class FirstMfaEnabledForUser
       :auth_app
     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
       :phone
-    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).enabled?
+    elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       :backup_code
     else
       :error

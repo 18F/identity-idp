@@ -49,7 +49,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"
     samesite: {
-      lax: true # SameSite setting.
+      lax: true, # SameSite setting.
     },
   }
 

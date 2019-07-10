@@ -2,7 +2,7 @@
   <div class="col col-8">
     <div class="bold col col-12 sm-col-6"><%= t 'forms.backup_code.title' %></div>
     <div class="col col-12 sm-col-6 truncate">
-      <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled? %>
+      <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
         <p class='m0 p0'>
           <em><%= t 'account.index.backup_codes_exist' %></em>
         </p>

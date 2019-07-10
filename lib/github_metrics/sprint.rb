@@ -25,8 +25,8 @@ module GithubMetrics
 
     def current_sprint_start
       @sprint_start ||= begin
-        # 12:00 ET on 4/22/2019 was the start of sprint 83
-        reference_sprint_start = Time.new(2019, 4, 22, 12, 0, 0, -14_400)
+        # 12:00 ET on 7/2/2019 was the start of sprint 88
+        reference_sprint_start = Time.new(2019, 7, 2, 12, 0, 0, -14_400)
         days_since_reference = (Time.now - reference_sprint_start) / (24 * 3600)
         sprints_since_reference = (days_since_reference / 14).floor
         reference_sprint_start + 14 * sprints_since_reference * 24 * 3600

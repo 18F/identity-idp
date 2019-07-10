@@ -9,9 +9,4 @@ fr:
     help: Si vous avez besoin d’aide, visitez le site %{link}
     no_reply: Veuillez ne pas répondre à ce message.
     privacy_policy: Politique de confidentialité
-    reset_password:
-      footer: Ce lien expire dans %{expires} heures.
-      header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer
-        sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
-      link_text: Réinitialisez votre mot de passe
     sent_from: Envoyé à partir de %{app}
