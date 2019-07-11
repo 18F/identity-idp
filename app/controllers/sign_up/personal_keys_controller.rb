@@ -29,7 +29,7 @@ module SignUp
     end
 
     def next_step
-      if needs_sp_attribute_verification?
+      if needs_completions_screen?
         sign_up_completed_url
       elsif current_user.decorate.password_reset_profile.present?
         reactivate_account_url

@@ -8,7 +8,7 @@ module SignUp
 
     def show
       @view_model = view_model
-      if needs_sp_attribute_verification?
+      if needs_completions_screen?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
           analytics_attributes(''),
@@ -19,7 +19,7 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page') if needs_sp_attribute_verification?
+      track_completion_event('agency-page') if needs_completions_screen?
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -53,7 +53,7 @@ module SignUp
     end
 
     def return_to_account
-      track_completion_event('account-page') if needs_sp_attribute_verification?
+      track_completion_event('account-page') if needs_completions_screen?
       redirect_to account_url
     end
 

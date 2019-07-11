@@ -149,7 +149,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_multiple_2fa_sign_up
-    if needs_sp_attribute_verification?
+    if needs_completions_screen?
       sign_up_completed_url
     elsif current_user.decorate.password_reset_profile.present?
       reactivate_account_url
