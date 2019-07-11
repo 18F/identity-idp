@@ -53,7 +53,7 @@ module SignUp
     end
 
     def return_to_account
-      track_completion_event('account-page') if needs_completions_screen?
+      track_completion_event('account-page')
       redirect_to account_url
     end
 
