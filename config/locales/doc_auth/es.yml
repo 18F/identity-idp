@@ -74,7 +74,7 @@ es:
       text4: asegúrate de tener siempre acceso
       welcome: 'Lo que necesitarás hacer:'
     tips:
-      title_html: <b>¡No tome la foto en una superficie blanca!</b> Ver más...
+      header_text: Pautas importantes al tomar una foto de su identificación de estado
       text1: Encuentra una habitación con mucha luz. La luz solar indirecta es la
         mejor.
       text2: Inspeccione su identificación para ver si hay suciedad o códigos de barras
@@ -87,5 +87,6 @@ es:
       text6: La imagen debe ser nítida y clara. Debe ser fácil leer toda la información.
       text7: Utilice una cámara de alta resolución. Un teléfono inteligente moderno
         funcionará bien.
+      title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."
     titles:
       doc_auth: Autenticación de documentos

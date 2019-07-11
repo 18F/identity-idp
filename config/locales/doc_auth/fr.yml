@@ -84,7 +84,8 @@ fr:
       text4: assurez-vous d'avoir toujours accès
       welcome: 'Ce que vous devez faire:'
     tips:
-      title_html: <b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus...
+      header_text: Directives importantes pour prendre une photo de votre identifiant
+        d'état
       text1: Trouvez une pièce avec beaucoup de lumière. La lumière solaire indirecte
         est la meilleure.
       text2: Inspectez votre ID pour la saleté ou les codes à barres endommagés.
@@ -98,5 +99,6 @@ fr:
         les informations.
       text7: Utilisez une caméra haute résolution. Un smartphone moderne fonctionnera
         parfaitement.
+      title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."
     titles:
       doc_auth: Authentification de document
