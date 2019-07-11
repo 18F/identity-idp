@@ -29,7 +29,8 @@ fr:
       password: Changez votre mot de passe
       phone: Administrer votre numéro de téléphone
     lock_failure: Voici ce que vous pouvez faire
-    mfa_success: Vous avez correctement configuré %{method} comme première méthode d'authentification.
+    mfa_success: Vous avez correctement configuré %{method} comme première méthode
+      d'authentification.
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer

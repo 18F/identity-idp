@@ -184,13 +184,10 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
                           uuid: user.x509_dn_uuid,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
-    click_continue
 
-    expect(current_path).to eq two_factor_options_path
+    expect(current_path).to eq two_factor_options_success_path
 
     visit_idp_from_sp_with_loa1(sp)
-
-    click_continue
 
     expect(current_path).to eq two_factor_options_path
   end
