@@ -66,18 +66,6 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
           type: 'public-key',
           alg: -257, // RSASSA-PKCS1-v1_5 w/ SHA-256
         },
-        {
-          type: 'public-key',
-          alg: -258, // RSASSA-PKCS1-v1_5 w/ SHA-384
-        },
-        {
-          type: 'public-key',
-          alg: -259, // RSASSA-PKCS1-v1_5 w/ SHA-512
-        },
-        {
-          type: 'public-key',
-          alg: -65535, // RSASSA-PKCS1-v1_5 w/ SHA-1
-        },
       ],
       timeout: 800000,
       attestation: 'none',
