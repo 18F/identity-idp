@@ -12,6 +12,7 @@ feature 'OTP delivery selection' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
     end
 
     it 'should fail if using the same number as backup MFA voice' do
