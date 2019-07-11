@@ -22,7 +22,6 @@ shared_examples 'back image step' do |simulate|
     it 'displays tips and sample images' do
       expect(page).to have_current_path(idv_doc_auth_back_image_step)
       expect(page).to have_content(I18n.t('doc_auth.tips.text1'))
-      expect(page).to have_css('img[src*=state-id-sample-front]')
       expect(page).to have_css('img[src*=state-id-sample-back]')
     end
 
