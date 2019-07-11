@@ -1,6 +1,6 @@
 module VerifySPAttributesConcern
   def needs_completions_screen?
-    sp_session_identity.nil? || !requested_attributes_verified?
+    sp_session[:issuer].present? && (sp_session_identity.nil? || !requested_attributes_verified?)
   end
 
   def needs_sp_attribute_verification?
