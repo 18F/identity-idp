@@ -2,7 +2,7 @@
 
 <%= image_tag asset_url('alert/success.svg'), alt: t('headings.mfa_success'), width: 90 %>
 
-<h1 class="h3 mb2 mt3 my0"><%= t('headings.mfa_success') %></h1>
+<h1 class="h3 mb2 mt3 my0"><%= t('headings.mfa_success', method: @presenter.first_mfa_enabled) %></h1>
 
 <div class="col-2">
   <hr class="mt3 mb3 bw4 border-green rounded"/>
