@@ -28,7 +28,7 @@ module Users
     end
 
     def success
-      @next_url = url_after_successful_webauthn_setup
+      @next_url = two_2fa_setup
     end
 
     def delete
@@ -95,15 +95,6 @@ module Users
       mark_user_as_fully_authenticated
       save_remember_device_preference
       redirect_to webauthn_setup_success_url
-    end
-
-    def url_after_successful_webauthn_setup
-      return two_2fa_setup if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return two_2fa_setup if policy.show_personal_key_after_initial_2fa_setup?
-
-      idv_jurisdiction_url
     end
 
     def process_invalid_webauthn(form)
