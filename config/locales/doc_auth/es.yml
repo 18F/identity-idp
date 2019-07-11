@@ -73,5 +73,19 @@ es:
       text3: volviendo a ingresar su contraseña de login.gov
       text4: asegúrate de tener siempre acceso
       welcome: 'Lo que necesitarás hacer:'
+    tips:
+      title_html: <b>¡No tome la foto en una superficie blanca!</b> Ver más...
+      text1: Encuentra una habitación con mucha luz. La luz solar indirecta es la
+        mejor.
+      text2: Inspeccione su identificación para ver si hay suciedad o códigos de barras
+        dañados.
+      text3: Coloque su identificación en una superficie oscura de color sólido que
+        le permita ver fácilmente todos los bordes de la identificación.
+      text4: Puede ser difícil detectar el resplandor que oculta su información. Asegúrese
+        de que no haya deslumbramiento, sombras o reflejos en su identificación.
+      text5: Su identificación debe cubrir el 80% de la foto.
+      text6: La imagen debe ser nítida y clara. Debe ser fácil leer toda la información.
+      text7: Utilice una cámara de alta resolución. Un teléfono inteligente moderno
+        funcionará bien.
     titles:
       doc_auth: Autenticación de documentos

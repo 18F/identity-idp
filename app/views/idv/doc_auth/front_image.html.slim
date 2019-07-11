@@ -4,7 +4,7 @@
 
 h1.h3.my0 = t('doc_auth.headings.upload_front')
 
-= t('doc_auth.info.upload_image')
+= render 'idv/doc_auth/tips_and_sample'
 = simple_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
@@ -14,6 +14,8 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
   .mb4 id= 'target'
   .mt2
     = render 'idv/doc_auth/submit_with_spinner'
+br
+= t('doc_auth.info.upload_image')
 br
 
 = render 'idv/doc_auth/start_over_or_cancel'

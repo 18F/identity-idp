@@ -70,5 +70,16 @@ en:
       text3: by re-entering your login.gov password
       text4: make sure you always have access
       welcome: 'What you''ll need to do:'
+    tips:
+      title_html: <b>Don't take the photo on a white surface!</b> &nbsp;&nbsp; See more tips...
+      text1: Find a room with lots of light. Indirect sunlight is best.
+      text2: Inspect your ID for dirt or damaged barcodes.
+      text3: Place your ID on a dark solid-colored surface that makes it easy to see
+        all edges of the ID.
+      text4: It can be difficult to spot glare covering up your information. Make
+        sure there is no glare, shadows or reflections on your ID.
+      text5: Your ID should cover 80% of the photo
+      text6: The image should be sharp and clear. It should be easy to read all information.
+      text7: Use a high-resolution camera. A modern smartphone will work just fine.
     titles:
       doc_auth: Document Authentication

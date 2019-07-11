@@ -19,6 +19,13 @@ shared_examples 'back image step' do |simulate|
       expect(page).to have_content(t('doc_auth.headings.upload_back'))
     end
 
+    it 'displays tips and sample images' do
+      expect(page).to have_current_path(idv_doc_auth_back_image_step)
+      expect(page).to have_content(I18n.t('doc_auth.tips.text1'))
+      expect(page).to have_css('img[src*=state-id-sample-front]')
+      expect(page).to have_css('img[src*=state-id-sample-back]')
+    end
+
     it 'proceeds to the next page with valid info' do
       attach_image
       click_idv_continue
