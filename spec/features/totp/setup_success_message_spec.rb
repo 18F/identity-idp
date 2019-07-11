@@ -8,12 +8,12 @@ feature 'success message for TOTP setup' do
 
       click_continue
 
-      expect(page).to have_content(
-        t(
-          'two_factor_authentication.first_factor_enabled',
-          device: t('two_factor_authentication.devices.auth_app'),
-        ),
-      )
+      # expect(page).to have_content(
+      #   t(
+      #     'two_factor_authentication.first_factor_enabled',
+      #     device: t('two_factor_authentication.devices.auth_app'),
+      #   ),
+      # )
       expect(page).to_not have_content(t('notices.totp_configured'))
     end
   end
