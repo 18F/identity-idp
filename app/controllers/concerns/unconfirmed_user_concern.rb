@@ -31,14 +31,6 @@ module UnconfirmedUserConcern
     session[:user_confirmation_token] = @confirmation_token
   end
 
-  def process_confirmed_user
-    create_user_event(:email_changed, @user)
-
-    flash[:success] = t('devise.confirmations.confirmed')
-    redirect_to after_confirmation_url_for(@user)
-    EmailNotifier.new(@user).send_email_changed_email
-  end
-
   def after_confirmation_url_for(user)
     if !user_signed_in?
       new_user_session_url

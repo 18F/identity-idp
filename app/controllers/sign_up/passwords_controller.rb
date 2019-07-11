@@ -27,7 +27,7 @@ module SignUp
         process_valid_confirmation_token
         render_page
       else
-        process_confirmed_user
+        process_already_confirmed_user
       end
     end
 

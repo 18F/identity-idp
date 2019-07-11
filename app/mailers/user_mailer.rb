@@ -6,10 +6,6 @@ class UserMailer < ActionMailer::Base
   default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from),
           reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
 
-  def email_changed(old_email)
-    mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
-  end
-
   # :reek:ControlParameter
   # :reek:LongParameterList
   # :reek:TooManyStatements

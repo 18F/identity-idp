@@ -9,7 +9,6 @@ class Event < ApplicationRecord
     phone_confirmed: 2,
     password_changed: 3,
     phone_changed: 4,
-    email_changed: 5,
     authenticator_enabled: 6,
     authenticator_disabled: 7,
     account_verified: 8,

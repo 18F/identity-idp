@@ -18,7 +18,7 @@ module SignUp
           request_id: request_id, confirmation_token: @confirmation_token,
         )
       else
-        process_confirmed_user
+        process_already_confirmed_user
       end
     end
   end
