@@ -69,7 +69,7 @@ namespace :dev do
             first_name: 'Test',
             last_name: "User #{num_created}",
             dob: '1970-05-01',
-            ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
+            ssn: "666-#{num_created}", # doesn't need to be legit 9 digits, just unique
           )
           personal_key = profile.encrypt_pii(pii, pw)
           profile.verified_at = Time.zone.now

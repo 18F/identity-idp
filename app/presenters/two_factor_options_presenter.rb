@@ -89,13 +89,16 @@ class TwoFactorOptionsPresenter
   end
 
   def backup_code_option
-    if TwoFactorAuthentication::BackupCodePolicy.new(current_user).enrollable? || @signing_up
-      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(
-        @signing_up &&
-        TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?,
-      )]
-    else
-      []
-    end
+    return backup_code_option_value unless
+      TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
+    return backup_code_option_value if @signing_up
+    []
+  end
+
+  def backup_code_option_value
+    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(
+      @signing_up &&
+      TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?,
+    )]
   end
 end

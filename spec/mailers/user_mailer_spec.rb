@@ -191,7 +191,8 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'phone_added' do
-    let(:mail) { UserMailer.phone_added(email_address) }
+    disavowal_token = 'i_am_disavowal_token'
+    let(:mail) { UserMailer.phone_added(email_address, disavowal_token: disavowal_token) }
 
     it_behaves_like 'a system email'
 
@@ -262,6 +263,22 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         strip_tags(
           t('user_mailer.account_reset_request.intro', cancel_account_reset: reset_text),
+        ),
+      )
+    end
+
+    it 'does not render the subject in the body' do
+      expect(mail.html_part.body).not_to have_content(
+        strip_tags(
+          t('user_mailer.account_reset_request.subject'),
+        ),
+      )
+    end
+
+    it 'renders the header within the body' do
+      expect(mail.html_part.body).to have_content(
+        strip_tags(
+          t('user_mailer.account_reset_request.header'),
         ),
       )
     end

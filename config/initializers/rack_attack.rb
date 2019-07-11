@@ -137,7 +137,7 @@ module Rack
       [
         429, # status
         { 'Content-Type' => 'text/html' }, # headers
-        [::File.read('public/429.html')] # body
+        [::File.read('public/429.html')], # body
       ]
     end
 

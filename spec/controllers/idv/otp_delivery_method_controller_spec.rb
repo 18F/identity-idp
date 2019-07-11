@@ -220,7 +220,7 @@ describe Idv::OtpDeliveryMethodController do
             code: 60_033,
             message: 'error',
             status: 400,
-            response:  '{"error_code":"60004"}',
+            response: '{"error_code":"60004"}',
           )
         end
 

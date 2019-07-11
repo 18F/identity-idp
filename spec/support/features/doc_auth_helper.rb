@@ -1,6 +1,6 @@
 module DocAuthHelper
   ACUANT_RESULTS = {
-    'Result' =>  1,
+    'Result' => 1,
     'Fields' => [
       { 'Name' => 'First Name', 'Value' => 'Jane' },
       { 'Name' => 'Middle Name', 'Value' => 'Ann' },

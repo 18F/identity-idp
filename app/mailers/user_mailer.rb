@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
@@ -27,12 +28,19 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
+  def reset_password_instructions(email, token:)
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
+  end
+
   def password_changed(email_address, disavowal_token:)
     @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
-  def phone_added(email_address)
+  def phone_added(email_address, disavowal_token:)
+    @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
   end
 
@@ -59,6 +67,7 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_request(email_address, account_reset)
     @token = account_reset&.request_token
+    @header = t('user_mailer.account_reset_request.header')
     mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
   end
 
@@ -120,4 +129,10 @@ class UserMailer < ActionMailer::Base
   def email_deleted(email)
     mail(to: email, subject: t('user_mailer.email_deleted.subject'))
   end
+
+  def add_email_associated_with_another_account(email)
+    @root_url = root_url(locale: locale_url_param)
+    mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  end
 end
+# rubocop:enable Metrics/ClassLength

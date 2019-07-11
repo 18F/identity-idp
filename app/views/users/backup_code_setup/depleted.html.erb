@@ -1,0 +1,19 @@
+<h1 class="h3 my0 mt0"><%= @presenter.title %></h1>
+<p class="mt-tiny mb3"><%= @presenter.description %></p>
+
+<% if @presenter.other_option_display %>
+  <%= link_to @presenter.other_option_title, @presenter.other_option_path, class: 'btn btn-primary btn-wide' %>
+  <br><br>
+  <%= @presenter.continue_bttn_prologue %>
+<% end %>
+
+<%= form_tag(backup_code_setup_path, method: :patch, role: 'form') do %>
+  <div class="clearfix mxn1">
+    <div class="col col-12 sm-col-8 px1">
+      <%= button_tag @presenter.continue_bttn_title, type: 'submit', class: @presenter.continue_bttn_class %>
+    </div>
+  </div>
+<% end %>
+
+<div class="mt2 pt1 border-top"></div>
+<%= javascript_pack_tag("webauthn-unhide-signup") %>
