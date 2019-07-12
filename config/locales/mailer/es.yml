@@ -2,8 +2,6 @@
 es:
   mailer:
     about: Acerca de %{app}
-    email_change_notice:
-      subject: Cambie su email
     email_reuse_notice:
       subject: Este email ya está asociado a una cuenta.
     help: Si necesitas ayuda, visita %{link}

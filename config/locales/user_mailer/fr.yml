@@ -66,10 +66,6 @@ fr:
         profil et gérez vos adresses e-mail. Nous vous recommandons de changer également
         votre mot de passe.
       subject: Nouvelle adresse email ajoutée
-    email_changed:
-      help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
-        le %{help_link} de %{app} ou %{contact_link}.
-      intro: L'adresse courriel de votre compte %{app} a été changée.
     email_confirmation_instructions:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?

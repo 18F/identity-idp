@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'layouts/user_mailer.html.slim' do
   before do
-    @mail = UserMailer.email_changed('foo@example.com')
+    @mail = UserMailer.email_added('foo@example.com')
     allow(view).to receive(:message).and_return(@mail)
     allow(view).to receive(:attachments).and_return(@mail.attachments)
 
