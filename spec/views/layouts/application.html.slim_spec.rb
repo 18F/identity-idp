@@ -34,7 +34,7 @@ describe 'layouts/application.html.slim' do
       allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(true)
       render
 
-      expect(rendered).to have_content('FAKE')
+      expect(rendered).to have_content('DEMO')
     end
   end
 
@@ -43,7 +43,7 @@ describe 'layouts/application.html.slim' do
       allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(false)
       render
 
-      expect(rendered).to_not have_content('FAKE')
+      expect(rendered).to_not have_content('DEMO')
     end
   end
 

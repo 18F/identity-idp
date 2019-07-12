@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   include UserSessionContext
   include VerifyProfileConcern
   include LocaleHelper
+  include VerifySPAttributesConcern
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 
@@ -148,7 +149,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_multiple_2fa_sign_up
-    if user_needs_sign_up_completed_page?
+    if needs_completions_screen?
       sign_up_completed_url
     elsif current_user.decorate.password_reset_profile.present?
       reactivate_account_url
@@ -247,12 +248,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def render_full_width(template, **opts)
     render template, **opts, layout: 'base'
-  end
-
-  def user_needs_sign_up_completed_page?
-    issuer = sp_session[:issuer]
-    return false unless issuer
-    !user_has_ial1_identity_for_issuer?(issuer)
   end
 
   def user_has_ial1_identity_for_issuer?(issuer)
