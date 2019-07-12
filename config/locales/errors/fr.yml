@@ -76,6 +76,8 @@ fr:
       phone_unsupported: Désolé, nous ne sommes pas en mesure d'envoyer des SMS pour
         le moment. S'il vous plaît essayez l'option d'appel téléphonique ci-dessous,
         ou utilisez votre clé personnelle.
+      pwned_password: Le mot de passe que vous avez entré n'est pas sécurisé. C'est
+        dans une liste de mots de passe connus exposés dans les violations de données.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
       twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
       unauthorized_authn_context: Contexte d'authentification non autorisé
