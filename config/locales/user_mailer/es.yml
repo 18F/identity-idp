@@ -64,9 +64,6 @@ es:
       help: Si no realizó este cambio, inicie sesión en su perfil y administre sus
         direcciones de correo electrónico. Le recomendamos que también cambie su contraseña.
       subject: Nueva dirección de correo electrónico añadida
-    email_changed:
-      help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
-      intro: El email de su cuenta de %{app} ha sido cambiado.
     email_confirmation_instructions:
       first_sentence:
         confirmed: "¿Desea cambiar su email?"

@@ -62,10 +62,6 @@ en:
       help: If you did not make this change, sign in to your profile and manage your
         email addresses. We recommend that you also change your password.
       subject: New email address added
-    email_changed:
-      help: If you did not want to change your email address, please visit the %{app}
-        %{help_link} or %{contact_link}.
-      intro: The email address for your %{app} account has been changed.
     email_confirmation_instructions:
       first_sentence:
         confirmed: Trying to change your email address?
