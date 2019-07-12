@@ -11,7 +11,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -28,7 +27,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -45,7 +43,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -62,7 +59,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -81,7 +77,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { email: [t('errors.messages.already_confirmed')] },
         user_id: user.uuid,
-        existing_user: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -101,7 +96,6 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         errors: { confirmation_token: [t('errors.messages.expired')] },
         user_id: user.uuid,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -125,54 +119,12 @@ describe SignUp::EmailConfirmationsController do
         success: true,
         errors: {},
         user_id: user.uuid,
-        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, params: { confirmation_token: 'foo' }
-    end
-  end
-
-  describe 'User confirms new email' do
-    it 'tracks the event' do
-      user = create(
-        :user,
-        :signed_up,
-        confirmation_token: 'foo',
-        confirmation_sent_at: Time.zone.now,
-        unconfirmed_email: 'test@example.com',
-      )
-
-      stub_analytics
-
-      analytics_hash = {
-        success: true,
-        errors: {},
-        user_id: user.uuid,
-        existing_user: true,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
-
-      get :create, params: { confirmation_token: 'foo' }
-    end
-  end
-
-  describe 'Two users simultaneously confirm email with race condition' do
-    it 'does not throw a 500 error' do
-      create(:user, :unconfirmed, confirmation_token: 'foo')
-      allow_any_instance_of(SignUp::EmailConfirmationsController).
-        to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
-
-      get :create, params: { confirmation_token: 'foo' }
-
-      expect(flash[:error]).
-        to eq t('devise.confirmations.already_confirmed',
-                action: t('devise.confirmations.sign_in'))
-      expect(response).to redirect_to root_url
     end
   end
 end

@@ -9,7 +9,8 @@ class EmailConfirmationTokenValidator
     @user = user
   end
 
-  def submit
+  def submit(confirmation_token:)
+    @confirmation_token = confirmation_token
     @success = valid? && user_valid?
 
     FormResponse.new(success: success, errors: form_errors, extra: extra_analytics_attributes)
@@ -18,7 +19,7 @@ class EmailConfirmationTokenValidator
   private
 
   attr_accessor :user
-  attr_reader :success
+  attr_reader :success, :confirmation_token
 
   def form_errors
     errors.messages.merge!(user.errors.messages)
@@ -27,7 +28,6 @@ class EmailConfirmationTokenValidator
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      existing_user: user.confirmed?,
     }
   end
 

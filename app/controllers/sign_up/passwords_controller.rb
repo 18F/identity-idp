@@ -2,33 +2,31 @@ module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
 
+    before_action :find_user_with_confirmation_token
+    before_action :confirm_user_needs_sign_up_confirmation
+
     def new
+      password_form # Memoize the password form to use in the view
       validate_token
     end
 
     def create
-      with_unconfirmed_user do
-        result = @password_form.submit(permitted_params)
-        analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
-        store_sp_metadata_in_session unless sp_request_id.empty?
+      result = password_form.submit(permitted_params)
+      analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
+      store_sp_metadata_in_session unless sp_request_id.empty?
 
-        if result.success?
-          process_successful_password_creation
-        else
-          process_unsuccessful_password_creation
-        end
+      if result.success?
+        process_successful_password_creation
+      else
+        process_unsuccessful_password_creation
       end
     end
 
     private
 
     def process_successful_confirmation
-      if !@user.confirmed?
-        process_valid_confirmation_token
-        render_page
-      else
-        process_already_confirmed_user
-      end
+      process_valid_confirmation_token
+      render_page
     end
 
     def render_page
@@ -58,6 +56,10 @@ module SignUp
       StoreSpMetadataInSession.new(session: session, request_id: sp_request_id).call
     end
 
+    def password_form
+      @password_form ||= PasswordForm.new(@user)
+    end
+
     def sp_request_id
       permitted_params.fetch(:request_id, '')
     end
@@ -70,7 +72,7 @@ module SignUp
     def sign_in_and_redirect_user
       sign_in @user
       user_session[:signing_up] = true
-      redirect_to after_confirmation_url_for(@user)
+      redirect_to two_factor_options_url
     end
   end
 end
