@@ -130,6 +130,60 @@ describe RegisterUserEmailForm do
         expect(subject.submit(email: 'invalid_email')).to eq result
       end
     end
+
+    context 'when request_id is invalid' do
+      it 'returns unsuccessful and adds an error to the form object' do
+        errors = { email: [t('sign_up.email.invalid_request')] }
+        result = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(result)
+        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: 'fake_id')
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: false,
+          user_id: 'anonymous-uuid',
+        }
+
+        expect(FormResponse).to have_received(:new).
+          with(errors: errors, extra: extra, success: false)
+        expect(submit_form).to eq result
+      end
+    end
+
+    context 'when request_id is valid' do
+      it 'returns success with no errors' do
+        sp_request = create(:service_provider_request)
+        request_id = sp_request.uuid
+        result = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(result)
+        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: request_id)
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: false,
+          user_id: User.find_with_email('not_taken@gmail.com').uuid,
+        }
+
+        expect(FormResponse).to have_received(:new).
+          with(errors: {}, extra: extra, success: true)
+        expect(submit_form).to eq result
+      end
+    end
+
+    context 'when request_id is blank' do
+      it 'returns success with no errors' do
+        result = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(result)
+        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: nil)
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: false,
+          user_id: User.find_with_email('not_taken@gmail.com').uuid,
+        }
+
+        expect(FormResponse).to have_received(:new).
+          with(errors: {}, extra: extra, success: true)
+        expect(submit_form).to eq result
+      end
+    end
   end
 
   def mock_captcha(enabled:, present:, valid:)
