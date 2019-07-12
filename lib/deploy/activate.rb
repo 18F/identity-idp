@@ -6,6 +6,7 @@ require 'login_gov/hostdata'
 require 'yaml'
 
 module Deploy
+  # :reek:TooManyMethods
   class Activate
     attr_reader :logger, :s3_client
 
@@ -40,11 +41,11 @@ module Deploy
     end
 
     def download_from_s3_and_update_permissions(src, dest)
-      download_file_from_s3(src, dest)
+      copy_from_s3(src, dest)
       update_file_permissions(dest)
     end
 
-    def download_file_from_s3(src, dest)
+    def copy_from_s3(src, dest)
       ec2_region = ec2_data.region
 
       LoginGov::Hostdata::S3.new(
