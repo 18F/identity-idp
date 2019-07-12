@@ -1,7 +1,6 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
-    include VerifySPAttributesConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :loa3?
@@ -9,7 +8,7 @@ module SignUp
 
     def show
       @view_model = view_model
-      if show_completions_page?
+      if needs_completions_screen?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
           analytics_attributes(''),
@@ -20,7 +19,7 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page') if user_needs_sign_up_completed_page?
+      track_completion_event('agency-page') if needs_completions_screen?
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -34,11 +33,6 @@ module SignUp
     def handle_verified_attributes
       update_verified_attributes
       clear_verify_attributes_sessions
-    end
-
-    def show_completions_page?
-      service_providers = sp_session[:issuer].present? || @view_model.user_has_identities?
-      user_fully_authenticated? && service_providers
     end
 
     def view_model
@@ -59,7 +53,7 @@ module SignUp
     end
 
     def return_to_account
-      track_completion_event('account-page') if user_needs_sign_up_completed_page?
+      track_completion_event('account-page')
       redirect_to account_url
     end
 

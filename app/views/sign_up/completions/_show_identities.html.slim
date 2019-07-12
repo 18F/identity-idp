@@ -3,7 +3,7 @@
   p.fs-20p
     - if identities.length > 1
       = t('idv.messages.agencies_login')
-    - else
+    - elsif identities.length == 1
       = t('idv.messages.agency_login_html', sp: identities.first.display_name)
   ul.list-reset
     - identities.each do |identity|
