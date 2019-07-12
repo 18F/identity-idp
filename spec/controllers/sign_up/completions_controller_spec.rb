@@ -86,7 +86,7 @@ describe SignUp::CompletionsController do
       user = create(:user)
       create(:identity, user: user)
       stub_sign_in(user)
-      subject.session[:sp] = {}
+      subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
       get :show
 
       expect(response).to render_template(:show)

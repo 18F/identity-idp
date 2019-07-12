@@ -5,3 +5,5 @@ es:
       success: Su cuenta ha sido eliminada. No guardamos su información.
       warning_header: Si cancela ahora
     current_step: Paso %{step} de 4
+    email:
+      invalid_request: El formulario de correo electrónico no es válido
