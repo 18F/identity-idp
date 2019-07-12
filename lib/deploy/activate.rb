@@ -1,3 +1,5 @@
+# :reek:TooManyMethods
+
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'login_gov/hostdata'
@@ -17,11 +19,8 @@ module Deploy
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      download_file_from_s3('/common/GeoLite2-City.mmdb', geolocation_db_path)
-      update_file_permissions(geolocation_db_path)
-
-      download_file_from_s3('/common/pwned-passwords.txt', pwned_passwords_path)
-      update_file_permissions(pwned_passwords_path)
+      download_from_s3_and_update_permissions('/common/GeoLite2-City.mmdb', geolocation_db_path)
+      download_from_s3_and_update_permissions('/common/pwned-passwords.txt', pwned_passwords_path)
     end
 
     private
@@ -38,6 +37,11 @@ module Deploy
 
     def set_proper_file_permissions_for_application_yml
       FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
+    end
+
+    def download_from_s3_and_update_permissions(src, dest)
+      download_file_from_s3(src, dest)
+      update_file_permissions(dest)
     end
 
     def download_file_from_s3(src, dest)
