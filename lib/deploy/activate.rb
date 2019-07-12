@@ -17,11 +17,11 @@ module Deploy
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      download_geocoding_database_from_s3
-      set_proper_file_permissions_for_geolocation_db
+      download_file_from_s3('/common/GeoLite2-City.mmdb', geolocation_db_path)
+      update_file_permissions(geolocation_db_path)
 
-      download_pwned_passwords_from_s3
-      set_proper_file_permissions_for_pwned_passwords
+      download_file_from_s3('/common/pwned-passwords.txt', pwned_passwords_path)
+      update_file_permissions(pwned_passwords_path)
     end
 
     private
@@ -40,7 +40,7 @@ module Deploy
       FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
     end
 
-    def download_geocoding_database_from_s3
+    def download_file_from_s3(src, dest)
       ec2_region = ec2_data.region
 
       LoginGov::Hostdata::S3.new(
@@ -49,31 +49,15 @@ module Deploy
         region: ec2_region,
         logger: logger,
         s3_client: s3_client,
-      ).download_configs('/common/GeoLite2-City.mmdb' => geolocation_db_path)
-    end
-
-    def download_pwned_passwords_from_s3
-      ec2_region = ec2_data.region
-
-      LoginGov::Hostdata::S3.new(
-        bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_region}",
-        env: nil,
-        region: ec2_region,
-        logger: logger,
-        s3_client: s3_client,
-        ).download_configs('/common/pwned-passwords.txt' => pwned_passwords_path)
+      ).download_configs(src => dest)
     end
 
     def ec2_data
       @ec2_data ||= LoginGov::Hostdata::EC2.load
     end
 
-    def set_proper_file_permissions_for_geolocation_db
-      FileUtils.chmod(0o644, geolocation_db_path)
-    end
-
-    def set_proper_file_permissions_for_pwned_passwords
-      FileUtils.chmod(0o644, pwned_passwords_path)
+    def update_file_permissions(path)
+      FileUtils.chmod(0o644, path)
     end
 
     def default_logger
