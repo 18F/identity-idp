@@ -73,3 +73,8 @@ TwilioService::Utils.class_eval do
   add_method_tracer :place_call, "Custom/#{name}/place_call"
   add_method_tracer :send_sms, "Custom/#{name}/send_sms"
 end
+
+PwnedPasswords::BinarySearchSortedHashFile.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :call, "Custom/#{name}/call"
+end
