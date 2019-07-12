@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PwnedPassword do
+describe PwnedPasswords::LookupPassword do
   describe '#call' do
     let(:pwned_passwords_file) { 'spec/fixtures/pwned_passwords.txt' }
     let(:pwned_passwords) do
@@ -30,13 +30,13 @@ describe PwnedPassword do
 
     it 'returns false for pwned passwords' do
       pwned_passwords.each do |password|
-        expect(PwnedPassword.call(password)).to be true
+        expect(PwnedPasswords::LookupPassword.call(password)).to be true
       end
     end
 
     it 'returns true for non pwned passwords' do
       good_passwords.each do |password|
-        expect(PwnedPassword.call(password)).to be false
+        expect(PwnedPasswords::LookupPassword.call(password)).to be false
       end
     end
   end
