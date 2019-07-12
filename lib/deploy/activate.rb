@@ -19,6 +19,9 @@ module Deploy
 
       download_geocoding_database_from_s3
       set_proper_file_permissions_for_geolocation_db
+
+      download_pwned_passwords_from_s3
+      set_proper_file_permissions_for_pwned_passwords
     end
 
     private
@@ -49,12 +52,28 @@ module Deploy
       ).download_configs('/common/GeoLite2-City.mmdb' => geolocation_db_path)
     end
 
+    def download_pwned_passwords_from_s3
+      ec2_region = ec2_data.region
+
+      LoginGov::Hostdata::S3.new(
+        bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_region}",
+        env: nil,
+        region: ec2_region,
+        logger: logger,
+        s3_client: s3_client,
+        ).download_configs('/common/pwned-passwords.txt' => pwned_passwords_path)
+    end
+
     def ec2_data
       @ec2_data ||= LoginGov::Hostdata::EC2.load
     end
 
     def set_proper_file_permissions_for_geolocation_db
       FileUtils.chmod(0o644, geolocation_db_path)
+    end
+
+    def set_proper_file_permissions_for_pwned_passwords
+      FileUtils.chmod(0o644, pwned_passwords_path)
     end
 
     def default_logger
@@ -85,6 +104,10 @@ module Deploy
 
     def geolocation_db_path
       File.join(root, 'geo_data/GeoLite2-City.mmdb')
+    end
+
+    def pwned_passwords_path
+      File.join(root, 'pwned_passwords/pwned-passwords.txt')
     end
   end
 end
