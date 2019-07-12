@@ -32,7 +32,7 @@ module FormPasswordValidator
   def not_pwned
     env = Figaro.env
     return unless env.pwned_password_enabled == 'true'
-    return if password.blank? || !PwnedPassword.new(env.pwned_password_file).call(password)
+    return if password.blank? || !PwnedPassword.call(password)
 
     errors.add :password, :pwned_password
   end
