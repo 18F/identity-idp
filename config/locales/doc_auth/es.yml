@@ -74,19 +74,18 @@ es:
       text4: asegúrate de tener siempre acceso
       welcome: 'Lo que necesitarás hacer:'
     tips:
-      header_text: Pautas importantes al tomar una foto de su identificación de estado
-      text1: Encuentra una habitación con mucha luz. La luz solar indirecta es la
+      header_text: Pautas para tomar una foto de su identificación
+      text1: Tómalo en una habitación con mucha luz. La luz solar indirecta es la
         mejor.
-      text2: Inspeccione su identificación para ver si hay suciedad o códigos de barras
+      text2: Asegúrese de que su identificación no tenga suciedad o códigos de barras
         dañados.
       text3: Coloque su identificación en una superficie oscura de color sólido que
         le permita ver fácilmente todos los bordes de la identificación.
-      text4: Puede ser difícil detectar el resplandor que oculta su información. Asegúrese
-        de que no haya deslumbramiento, sombras o reflejos en su identificación.
+      text4: Asegúrese de que no haya deslumbramientos, sombras o reflejos en su identificación.
       text5: Su identificación debe cubrir el 80% de la foto.
-      text6: La imagen debe ser nítida y clara. Debe ser fácil leer toda la información.
-      text7: Utilice una cámara de alta resolución. Un teléfono inteligente moderno
-        funcionará bien.
+      text6: Asegúrese de que la imagen es nítida y clara. Debe ser fácil leer toda la información.
+      text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono móvil o tableta 
+        funcionará.
       title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."
     titles:
       doc_auth: Autenticación de documentos
