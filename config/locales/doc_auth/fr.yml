@@ -95,8 +95,8 @@ fr:
       text5: Votre identifiant doit couvrir 80% de la photo
       text6: Assurez-vous que la photo est nette et nette. Il devrait être facile de lire toutes
         les informations.
-      text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile ou 
-      d'une tablette fonctionnera.
+      text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile ou
+        d'une tablette fonctionnera.
       title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."
     titles:
       doc_auth: Authentification de document
