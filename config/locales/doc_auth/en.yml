@@ -78,8 +78,10 @@ en:
         all edges of the ID.
       text4: Make sure there are no glares, shadows, or reflections on your ID.
       text5: Your ID should cover 80% of the photo.
-      text6: Make sure the picture is sharp and clear. It should be easy to read all information.
-      text7: Use a high-resolution camera. A good mobile phone or tablet camera will work.
+      text6: Make sure the picture is sharp and clear. It should be easy to read all
+        information.
+      text7: Use a high-resolution camera. A good mobile phone or tablet camera will
+        work.
       title_html: "<b>Don't take the photo on a white surface!</b> &nbsp;&nbsp; See
         more tips..."
     titles:

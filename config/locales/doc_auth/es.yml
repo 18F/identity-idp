@@ -83,9 +83,10 @@ es:
         le permita ver fácilmente todos los bordes de la identificación.
       text4: Asegúrese de que no haya deslumbramientos, sombras o reflejos en su identificación.
       text5: Su identificación debe cubrir el 80% de la foto.
-      text6: Asegúrese de que la imagen es nítida y clara. Debe ser fácil leer toda la información.
-      text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono móvil o tableta 
-        funcionará.
+      text6: Asegúrese de que la imagen es nítida y clara. Debe ser fácil leer toda
+        la información.
+      text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono
+        móvil o tableta funcionará.
       title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."
     titles:
       doc_auth: Autenticación de documentos
