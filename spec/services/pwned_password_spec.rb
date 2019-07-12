@@ -24,19 +24,15 @@ describe PwnedPassword do
       ]
     end
 
-    subject(:pwned) do
-      PwnedPassword.new(pwned_password_file)
-    end
-
     it 'returns false for pwned passwords' do
       pwned_passwords.each do |password|
-        expect(pwned.call(password)).to be true
+        expect(PwnedPassword.call(password)).to be true
       end
     end
 
     it 'returns true for non pwned passwords' do
       good_passwords.each do |password|
-        expect(pwned.call(password)).to be false
+        expect(PwnedPassword.call(password)).to be false
       end
     end
   end
