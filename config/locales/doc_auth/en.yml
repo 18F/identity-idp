@@ -70,5 +70,19 @@ en:
       text3: by re-entering your login.gov password
       text4: make sure you always have access
       welcome: 'What you''ll need to do:'
+    tips:
+      header_text: Guidelines for taking a photo of your ID
+      text1: Take it in a room with lots of light. Indirect sunlight is best.
+      text2: Make sure your ID doesn't have dirt or damaged barcodes.
+      text3: Place your ID on a dark solid-colored surface that makes it easy to see
+        all edges of the ID.
+      text4: Make sure there are no glares, shadows, or reflections on your ID.
+      text5: Your ID should cover 80% of the photo.
+      text6: Make sure the picture is sharp and clear. It should be easy to read all
+        information.
+      text7: Use a high-resolution camera. A good mobile phone or tablet camera will
+        work.
+      title_html: "<b>Don't take the photo on a white surface!</b> &nbsp;&nbsp; See
+        more tips..."
     titles:
       doc_auth: Document Authentication
