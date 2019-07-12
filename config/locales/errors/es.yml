@@ -72,8 +72,8 @@ es:
         como autenticador. Por favor, use un número de teléfono diferente.
       phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe
         la opción de llamada telefónica a continuación o use su clave personal.
-      pwned_password: Su contraseña aparece en una lista de contraseñas conocidas
-        expuestas en violaciones de datos
+      pwned_password: La contraseña que ingresaste no es segura. Está en una lista
+        de contraseñas conocidas expuestas en violaciones de datos.
       twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
       twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.
       unauthorized_authn_context: Contexto de autenticación no autorizado

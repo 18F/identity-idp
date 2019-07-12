@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Visitor sets password during signup' do
+  let(:pwned_passwords_file) { 'spec/fixtures/pwned_passwords.txt' }
+
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user
@@ -95,7 +97,7 @@ feature 'Visitor sets password during signup' do
 
     scenario 'visitor gets password pwned message' do
       allow(Figaro.env).to receive(:pwned_password_enabled).and_return('true')
-      allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(true)
+      allow(Figaro.env).to receive(:pwned_password_file).and_return(pwned_passwords_file)
 
       create(:user, :unconfirmed)
       confirm_last_user
@@ -107,8 +109,6 @@ feature 'Visitor sets password during signup' do
     end
 
     scenario 'visitor does not get password pwned message when feature flag disabled' do
-      allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(true)
-
       create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: '3.1415926535'

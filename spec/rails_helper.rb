@@ -73,7 +73,6 @@ RSpec.configure do |config|
     Twilio::FakeMessage.messages = []
     Twilio::FakeCall.calls = []
     Twilio::FakeVerifyMessage.messages = []
-    allow_any_instance_of(Pwned::Password).to receive(:pwned?).and_return(false)
   end
 
   config.around(:each, user_flow: true) do |example|
