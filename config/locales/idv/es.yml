@@ -158,8 +158,8 @@ es:
       sessions:
         id_information_message: como aparece en su identificación emitida por el estado
         id_information_subtitle: Información de identificación
-        no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para propósitos de
-          demostración) - SITIO DE PRUEBA
+        no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
+          propósitos de demostración) - SITIO DE PRUEBA
         review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
         success: A continuación, necesitaremos un número de teléfono.
