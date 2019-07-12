@@ -6,11 +6,13 @@ module UnconfirmedUserConcern
 
   def confirm_user_needs_sign_up_confirmation
     return unless @user&.confirmed?
+    process_already_confirmed_user
+  end
 
+  def process_already_confirmed_user
     track_user_already_confirmed_event
     action_text = t('devise.confirmations.sign_in') unless user_signed_in?
     flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
-
     redirect_to user_signed_in? ? account_url : new_user_session_url
   end
 
