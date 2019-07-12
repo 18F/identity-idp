@@ -29,7 +29,6 @@ fr:
         <div class="bold">Si vous utilisez une caméra, veuillez vous assurer que</div>
         <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
         <li class="mxn3">Vous êtes dans une zone bien éclairée</li>
-        <li class="mxn3">Your ID does not have any damaged barcodes</li>
         <li class="mxn3">Votre identifiant n'a pas de code à barres endommagé</li>
         <li class="mxn3">Les images sont claires (non floues) et nettes</li>
         <li class="mxn3">Aucun éblouissement, ombre ou reflet n'est présent</li>
