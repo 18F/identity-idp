@@ -117,6 +117,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_confirmation_context
+    user_session[:authn_at] = Time.zone.now
     assign_phone
   end
 
@@ -142,21 +143,31 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def phone_changed
     create_user_event(:phone_changed)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.phone_changed(email_address).deliver_later
-    end
+    send_phone_added_email
   end
 
   def phone_confirmed
     create_user_event(:phone_confirmed)
+    # If the user has MFA configured, then they are not adding a phone during sign up and are
+    # instead adding it outside the sign up flow
+    return unless MfaPolicy.new(current_user).sufficient_factors_enabled?
+    send_phone_added_email
+  end
+
+  def send_phone_added_email
+    event = create_user_event_with_disavowal(:phone_added, current_user)
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.phone_added(email_address, disavowal_token: event.disavowal_token).deliver_later
+    end
   end
 
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
       attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
-                    phone_confirmed_at: Time.zone.now },
-    ).call
+                    phone_confirmed_at: Time.zone.now,
+                    otp_make_default_number: selected_otp_make_default_number },
+      ).call
   end
 
   def reset_otp_session_data
@@ -173,34 +184,38 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_action_required?
-    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      policy.show_personal_key_after_initial_2fa_setup?
+      !MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
   end
 
   def after_otp_action_url
-    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
-    if policy.show_personal_key_after_initial_2fa_setup?
-      sign_up_personal_key_url
-    elsif @updating_existing_number
+    if @updating_existing_number
       account_url
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      account_url
+      two_2fa_setup
     end
   end
 
   def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
+    mark_user_session_authenticated_analytics(authentication_type)
+  end
+
+  def mark_user_session_authenticated_analytics(authentication_type)
     analytics.track_event(
       Analytics::USER_MARKED_AUTHED,
       authentication_type: authentication_type,
-    )
+      )
+    GoogleAnalyticsMeasurement.new(
+      category: 'authentication',
+      event_action: 'authenticated',
+      method: authentication_type,
+      client_id: ga_cookie_client_id,
+      ).send_event
   end
 
   def direct_otp_code
@@ -216,16 +231,19 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def phone_view_data
-    {
-      confirmation_for_phone_change: confirmation_for_phone_change?,
+    { confirmation_for_phone_change: confirmation_for_phone_change?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
+      otp_make_default_number: selected_otp_make_default_number,
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      account_reset_token: account_reset_token,
-    }.merge(generic_data)
+      account_reset_token: account_reset_token }.merge(generic_data)
+  end
+
+  def selected_otp_make_default_number
+    params&.dig(:otp_make_default_number)
   end
 
   def account_reset_token
@@ -269,7 +287,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if MfaPolicy.new(current_user).two_factor_enabled?
+    if MfaPolicy.new(current_user).multiple_factors_enabled?
       manage_phone_path(locale: locale)
     else
       phone_setup_path(locale: locale)
@@ -277,7 +295,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def confirmation_for_phone_change?
-    confirmation_context? && MfaPolicy.new(current_user).two_factor_enabled?
+    confirmation_context? && MfaContext.new(current_user).phone_configurations.exists?
   end
 
   def presenter_for_two_factor_authentication_method
