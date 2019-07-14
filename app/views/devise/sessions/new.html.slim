@@ -30,14 +30,14 @@
 - else
   .border-top
 
+.mxn1.my1
+  = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
+    class: 'px1'
+
 - if FeatureManagement.allow_piv_cac_login? && @ial
   .mxn1.my1
     = link_to t('account.login.piv_cac'), login_piv_cac_url, \
       class: 'px1'
-
-.mxn1.my1
-  = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
-    class: 'px1'
 
 - if loa3_requested?
   = render 'sign_up/registrations/required_pii_accordion'
