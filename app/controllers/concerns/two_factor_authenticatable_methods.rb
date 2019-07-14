@@ -63,22 +63,16 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     ).call
   end
 
-  def handle_valid_otp(next_url = nil)
-    handle_valid_otp_for_context
-    save_remember_device_preference
-    user_session.delete(:mfa_device_remembered)
-
-    next_url ||= after_otp_verification_confirmation_url
-    reset_otp_session_data
-    redirect_to next_url
-  end
-
-  def handle_valid_otp_for_context
+  def handle_valid_otp
     if authentication_context?
       handle_valid_otp_for_authentication_context
     elsif confirmation_context?
       handle_valid_otp_for_confirmation_context
     end
+    save_remember_device_preference
+    user_session.delete(:mfa_device_remembered)
+    reset_otp_session_data
+    redirect_to after_otp_verification_confirmation_url
   end
 
   def two_factor_authentication_method
@@ -167,7 +161,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
                     phone_confirmed_at: Time.zone.now,
                     otp_make_default_number: selected_otp_make_default_number },
-      ).call
+    ).call
   end
 
   def reset_otp_session_data
@@ -209,13 +203,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     analytics.track_event(
       Analytics::USER_MARKED_AUTHED,
       authentication_type: authentication_type,
-      )
+    )
     GoogleAnalyticsMeasurement.new(
       category: 'authentication',
       event_action: 'authenticated',
       method: authentication_type,
       client_id: ga_cookie_client_id,
-      ).send_event
+    ).send_event
   end
 
   def direct_otp_code
