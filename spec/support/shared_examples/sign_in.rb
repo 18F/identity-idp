@@ -255,13 +255,11 @@ def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
   visit_idp_from_sp_with_loa1(sp)
-  click_link t('links.next')
-
-  expect(page).to have_content(t('account.login.piv_cac_info.ial1'))
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
 
+  click_continue
   if sp == :saml
     expect(current_url).to eq @saml_authn_request
   elsif sp == :oidc
@@ -276,8 +274,6 @@ def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
 
   visit_idp_from_sp_with_loa3(sp)
-  click_link t('links.next')
-  expect(page).to have_content(t('account.login.piv_cac_info.ial2'))
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
