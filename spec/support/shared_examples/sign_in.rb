@@ -260,9 +260,7 @@ def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_piv_cac_credentials_and_submit(user)
 
   click_continue
-  if sp == :saml
-    expect(current_url).to eq @saml_authn_request
-  elsif sp == :oidc
+  if sp == :oidc
     redirect_uri = URI(current_url)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
