@@ -30,7 +30,7 @@ es:
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."
-        number_message: Enviamos un código de seguridad al %{number}. Este código
+        number_message_html: Enviamos un código de seguridad al %{number}. Este código
           caducará en %{expiration} minutos.
       voice:
         confirm_code_html: "¿Desea que le llamemos de nuevo? %{resend_code_link}"

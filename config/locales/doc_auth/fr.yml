@@ -83,5 +83,21 @@ fr:
       text3: en ressaisissant votre mot de passe login.gov
       text4: assurez-vous d'avoir toujours accès
       welcome: 'Ce que vous devez faire:'
+    tips:
+      header_text: Directives pour prendre une photo de votre identité
+      text1: Prenez-le dans une pièce très éclairée. La lumière solaire indirecte
+        est la meilleure.
+      text2: Assurez-vous que votre identité n’a pas de poussière ni de codes à barres
+        endommagés.
+      text3: Placez votre identifiant sur une surface sombre de couleur unie qui permet
+        de voir facilement tous ses bords.
+      text4: Assurez-vous qu'il n'y a pas d'éblouissement, d'ombres ou de reflets
+        sur votre identité.
+      text5: Votre identifiant doit couvrir 80% de la photo
+      text6: Assurez-vous que la photo est nette et nette. Il devrait être facile
+        de lire toutes les informations.
+      text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile
+        ou d'une tablette fonctionnera.
+      title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."
     titles:
       doc_auth: Authentification de document
