@@ -15,6 +15,7 @@ describe Encryption::Encryptors::PiiEncryptor do
 
     it 'uses layers KMS and AES to encrypt the plaintext' do
       salt = '0' * 64
+      allow(SecureRandom).to receive(:hex).and_call_original
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
       scrypt_digest = '31' * 32 # hex_encode('1111..')
