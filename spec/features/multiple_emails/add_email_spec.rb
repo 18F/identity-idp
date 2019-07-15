@@ -88,6 +88,7 @@ feature 'adding email address' do
     visit add_email_confirmation_url(confirmation_token: 'foo')
 
     expect(page).to have_current_path(root_path)
+    expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
   end
 
   it 'does not show add email button when max emails is reached' do
