@@ -56,6 +56,30 @@ CloudhsmJwt.class_eval do
   add_method_tracer :sign, "Custom/#{name}/sign"
 end
 
+Encryption::Encryptors::AttributeEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::Encryptors::PiiEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::Encryptors::SessionEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::PasswordVerifier.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :digest, "Custom/#{name}/digest"
+  add_method_tracer :verify, "Custom/#{name}/verify"
+end
+
 Encryption::KmsClient.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :decrypt, "Custom/#{name}/decrypt"
