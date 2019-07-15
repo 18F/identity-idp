@@ -81,10 +81,6 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
-      # else
-      #   puts "IN HANDLE VALID OTP"
-      #   redirect_to two_2fa_setup
-      # this is probably wrong
       elsif MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
         redirect_to after_multiple_2fa_sign_up
       else
