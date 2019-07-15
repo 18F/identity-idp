@@ -92,6 +92,10 @@ shared_examples 'signing in as LOA3 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating and getting the password', :email do
     loa3_sign_in_with_piv_cac_goes_to_sp(sp)
   end
+
+  it 'gets bad password error', :email do
+    loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
+  end
 end
 
 shared_examples 'signing in as LOA1 with personal key after resetting password' do |sp|
@@ -260,11 +264,10 @@ def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_piv_cac_credentials_and_submit(user)
 
   click_continue
-  if sp == :oidc
-    redirect_uri = URI(current_url)
+  return unless sp == :oidc
+  redirect_uri = URI(current_url)
 
-    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-  end
+  expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
 end
 
 def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
@@ -293,4 +296,20 @@ def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
+end
+
+def loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
+  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+
+  visit_idp_from_sp_with_loa3(sp)
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  expect(current_url).to eq capture_password_url
+
+  fill_in 'user_password', with: 'badpassword'
+  click_button t('links.next')
+  expect(page).to have_content(t('errors.confirm_password_incorrect'))
 end
