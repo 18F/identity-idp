@@ -37,7 +37,7 @@ class PasswordCaptureController < ApplicationController
 
     if session[:password_attempts] < Figaro.env.password_max_attempts.to_i
       flash[:error] = t('errors.confirm_password_incorrect')
-      redirect_to user_password_confirm_url
+      redirect_to capture_password_url
     else
       handle_max_password_attempts_reached
     end
