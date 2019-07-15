@@ -42,17 +42,6 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
             class: 'text-decoration-none ml2 clipboard btn-border ico ico-copy',
             data: { "clipboard-text": @codes.join(' ') }
 
-h2.h3.my0 = t('forms.backup_code.new_login_codes')
-p.mb0 = t('forms.backup_code.new_info')
-
-.mt2.mb4
-  = form_tag(backup_code_setup_path, method: :patch, role: 'form') do
-    .clearfix.mxn1
-      .col.col-12.sm-col-8.px1
-        = button_tag t('forms.backup_code.new_codes'), type: 'submit',  \
-          class: 'btn btn-border ico ico-refresh',  \
-          style: 'color: #0071bb; font-size: 100%; font-weight: normal;'
-
 = form_tag(backup_code_continue_path, method: :patch, role: 'form') do
   .clearfix.mxn1
     .col.col-6.sm-col-5.px1
