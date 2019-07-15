@@ -22,7 +22,7 @@ describe 'account_reset/request/show.html.slim' do
     expect(rendered).to have_content(t('account_reset.request.personal_key'))
   end
 
-  it 'does not show personal key info when a user has a personal key' do
+  it 'does not show personal key info when a user does not have a personal key' do
     user = view.current_user
     user.encrypted_recovery_code_digest = ''
     user.save
