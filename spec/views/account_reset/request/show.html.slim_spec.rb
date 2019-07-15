@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 describe 'account_reset/request/show.html.slim' do
+  before do
+    user = create(:user, :signed_up)
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('account_reset.request.title'))
 

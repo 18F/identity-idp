@@ -2,7 +2,7 @@
 
 h3.my0 = t('account_reset.request.title')
 p.mt-tiny.mb0 == t('account_reset.request.info')
-- if current_user.encrypted_recovery_code_digest.present?
+- if current_user&.encrypted_recovery_code_digest&.present?
   br
   h4.my0 = t('account_reset.request.personal_key')
 
