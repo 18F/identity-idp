@@ -1,7 +1,7 @@
 const Events = require('../../../../app/javascript/app/utils/events').default;
 /*eslint-disable */
 const sinon = require('sinon');
-/*eslint-enable */
+/* eslint-enable */
 
 describe('Events', () => {
   const myEvent = 'super.event';
