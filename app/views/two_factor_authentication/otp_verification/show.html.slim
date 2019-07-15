@@ -35,4 +35,5 @@ br
     = @presenter.update_phone_link
 - else
     = render 'shared/fallback_links', presenter: @presenter
-= render 'shared/cancel', link: @presenter.cancel_link
+br
+= render 'shared/cancel_or_back_to_options'
