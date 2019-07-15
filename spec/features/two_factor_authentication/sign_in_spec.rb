@@ -189,7 +189,7 @@ feature 'Two Factor Authentication' do
       visit account_path
     end
 
-    scenario 'user can cancel OTP process' do
+    scenario 'user can return to the 2fa options screen' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
