@@ -35,4 +35,6 @@ br
     = @presenter.update_phone_link
 - else
     = render 'shared/fallback_links', presenter: @presenter
-= render 'shared/cancel', link: @presenter.cancel_link
+
+.mt2.pt1.border-top
+  = link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path
