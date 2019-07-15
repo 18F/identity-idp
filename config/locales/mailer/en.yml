@@ -2,8 +2,6 @@
 en:
   mailer:
     about: About %{app}
-    email_change_notice:
-      subject: Change your email address
     email_reuse_notice:
       subject: This email address is already associated with an account.
     help: If you need help, visit %{link}

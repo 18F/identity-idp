@@ -1,9 +1,12 @@
+# :reek:TooManyMethods
+
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'login_gov/hostdata'
 require 'yaml'
 
 module Deploy
+  # :reek:TooManyMethods
   class Activate
     attr_reader :logger, :s3_client
 
@@ -17,8 +20,8 @@ module Deploy
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      download_geocoding_database_from_s3
-      set_proper_file_permissions_for_geolocation_db
+      download_from_s3_and_update_permissions('/common/GeoLite2-City.mmdb', geolocation_db_path)
+      download_from_s3_and_update_permissions('/common/pwned-passwords.txt', pwned_passwords_path)
     end
 
     private
@@ -37,7 +40,12 @@ module Deploy
       FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
     end
 
-    def download_geocoding_database_from_s3
+    def download_from_s3_and_update_permissions(src, dest)
+      download_file(src, dest)
+      update_file_permissions(dest)
+    end
+
+    def download_file(src, dest)
       ec2_region = ec2_data.region
 
       LoginGov::Hostdata::S3.new(
@@ -46,15 +54,15 @@ module Deploy
         region: ec2_region,
         logger: logger,
         s3_client: s3_client,
-      ).download_configs('/common/GeoLite2-City.mmdb' => geolocation_db_path)
+      ).download_configs(src => dest)
     end
 
     def ec2_data
       @ec2_data ||= LoginGov::Hostdata::EC2.load
     end
 
-    def set_proper_file_permissions_for_geolocation_db
-      FileUtils.chmod(0o644, geolocation_db_path)
+    def update_file_permissions(path)
+      FileUtils.chmod(0o644, path)
     end
 
     def default_logger
@@ -85,6 +93,10 @@ module Deploy
 
     def geolocation_db_path
       File.join(root, 'geo_data/GeoLite2-City.mmdb')
+    end
+
+    def pwned_passwords_path
+      File.join(root, 'pwned_passwords/pwned-passwords.txt')
     end
   end
 end
