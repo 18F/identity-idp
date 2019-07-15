@@ -20,10 +20,6 @@ es:
         iniciar sesión
       instructions: Se le pedirá un código de inicio de sesión cada vez que inicie
         sesión. a su cuenta login.gov.
-      new_codes: Generar nuevos códigos
-      new_info: Cuando genera nuevos códigos, debe descargarlos o imprimirlos. Tus
-        viejos códigos ya no funcionarán.
-      new_login_codes: Generar nuevos códigos de inicio de sesión
       print: Impresión
       regenerate: Regenerar
       subinfo: Cada código solo se puede utilizar una vez, una vez que se haya utilizado
