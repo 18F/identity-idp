@@ -10,7 +10,7 @@ class AddEmailConfirmTokenValidator
   end
 
   def submit
-    @success = valid? && @email_address
+    @success = valid? && @email_address.present?
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
