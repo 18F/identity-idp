@@ -18,7 +18,7 @@ feature 'OTP delivery selection' do
       expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
-      expect(page).to have_content(t('instructions.mfa.sms.number_message',
+      expect(page).to have_content(t('instructions.mfa.sms.number_message_html',
                                      number: '+1 202-555-1213',
                                      expiration: Figaro.env.otp_valid_for))
     end
