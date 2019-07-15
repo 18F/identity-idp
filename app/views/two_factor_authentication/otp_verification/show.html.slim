@@ -35,5 +35,7 @@ br
     = @presenter.update_phone_link
 - else
     = render 'shared/fallback_links', presenter: @presenter
-br
-= render 'shared/cancel_or_back_to_options'
+- if MfaPolicy.new(current_user).sufficient_factors_enabled?
+  = render 'shared/cancel', link: @presenter.cancel_link
+- else
+  = render 'shared/cancel_or_back_to_options'
