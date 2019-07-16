@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "~8.x.x",
-    "npm": "~5.x.x"
+    "node": "~10.x.x",
+    "npm": "~6.x.x"
   },
   "scripts": {
     "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js spec/javascripts/**/**_spec.js",
@@ -20,6 +20,7 @@
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
+    "identity-style-guide": "^2.1.2",
     "intl-tel-input": "^12.1.15",
     "jquery": "^3.3.1",
     "libphonenumber-js": "^0.4.23",
@@ -35,7 +36,7 @@
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
     "eslint": "^4.18.2",
-    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-config-airbnb-base": "^11.2.0bass",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^6.1.4",
     "proxyquire": "^1.8.0"
