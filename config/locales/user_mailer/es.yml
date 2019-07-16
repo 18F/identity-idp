@@ -71,7 +71,8 @@ es:
           una cuenta vinculada a esta dirección de correo electrónico. Si desea configurar
           una nueva cuenta vinculada a este correo electrónico, confirme su dirección
           de correo electrónico a continuación.
-        unconfirmed: Gracias por crear una cuenta.
+        unconfirmed: Gracias por agregar esta dirección de correo electrónico a su
+          cuenta.
       footer: Este enlace expira en %{confirmation_period}.
       header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador."
