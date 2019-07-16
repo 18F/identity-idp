@@ -55,7 +55,7 @@ section of the README.
   s.add_development_dependency "rubocop"
   s.add_development_dependency "ruby-saml", "~> 1.4.1"
   s.add_development_dependency("rails", "~> 4.2")
-  s.add_development_dependency("capybara")
+  s.add_development_dependency("capybara", "~> 3.15.1")
   s.add_development_dependency("timecop")
   s.add_development_dependency("xmlenc", ">= 0.6.4")
 end
