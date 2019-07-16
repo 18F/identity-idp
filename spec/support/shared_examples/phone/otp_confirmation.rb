@@ -3,6 +3,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: last_otp(delivery_method)
     click_submit_default
+    click_continue
     expect_successful_otp_confirmation(delivery_method)
   end
 
@@ -42,6 +43,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
 
     fill_in :code, with: new_code
     click_submit_default
+    click_continue
 
     expect_successful_otp_confirmation(delivery_method)
   end

@@ -27,10 +27,6 @@ module Users
       end
     end
 
-    def success
-      @next_url = url_after_successful_webauthn_setup
-    end
-
     def delete
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
@@ -94,16 +90,7 @@ module Users
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       save_remember_device_preference
-      redirect_to webauthn_setup_success_url
-    end
-
-    def url_after_successful_webauthn_setup
-      return two_2fa_setup if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-      return two_2fa_setup if policy.show_personal_key_after_initial_2fa_setup?
-
-      idv_jurisdiction_url
+      redirect_to two_2fa_setup
     end
 
     def process_invalid_webauthn(form)

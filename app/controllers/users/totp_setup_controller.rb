@@ -60,7 +60,7 @@ module Users
       mark_user_as_fully_authenticated
       save_remember_device_preference
       flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
-      redirect_to url_after_entering_valid_code
+      redirect_to two_2fa_setup
       user_session.delete(:new_totp_secret)
     end
 
@@ -88,18 +88,6 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-    end
-
-    def url_after_entering_valid_code
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
-      if policy.show_personal_key_after_initial_2fa_setup?
-        two_2fa_setup
-      else
-        idv_jurisdiction_url
-      end
     end
 
     def user_already_has_a_personal_key?

@@ -188,24 +188,18 @@ module TwoFactorAuthenticatable # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_action_required?
-    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      policy.show_personal_key_after_initial_2fa_setup?
+      !MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
   end
 
   def after_otp_action_url
-    policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
-    if policy.show_personal_key_after_initial_2fa_setup?
-      two_2fa_setup
-    elsif @updating_existing_number
+    if @updating_existing_number
       account_url
     elsif decorated_user.password_reset_profile.present?
       reactivate_account_url
     else
-      account_url
+      two_2fa_setup
     end
   end
 

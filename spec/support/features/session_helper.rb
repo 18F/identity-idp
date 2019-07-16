@@ -36,6 +36,7 @@ module Features
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
       select_2fa_option('backup_code')
       click_continue
       user
@@ -336,6 +337,7 @@ module Features
       expect(page).to have_css('img[src*=sp-logos]')
 
       set_up_2fa_with_valid_phone
+      click_continue
       set_up_2fa_with_backup_code
 
       expect(page).to have_css('img[src*=sp-logos]')
@@ -412,6 +414,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      click_continue
       select_2fa_option('backup_code')
       click_continue
       User.find_with_email(email)
@@ -427,6 +430,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      click_continue
       set_up_2fa_with_backup_code
     end
 
