@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/otp_verification/show.html.slim' do
+describe 'two_factor_authentication/otp_verification/show.html.erb' do
   let(:presenter_data) do
     {
       otp_delivery_preference: 'sms',
@@ -47,7 +47,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'OTP copy' do
       let(:help_text) do
-        t('instructions.mfa.sms.number_message',
+        t('instructions.mfa.sms.number_message_html',
           number: content_tag(:strong, presenter_data[:phone_number]),
           expiration: Figaro.env.otp_valid_for)
       end
