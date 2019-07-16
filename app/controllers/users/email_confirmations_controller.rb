@@ -44,6 +44,7 @@ module Users
     end
 
     def process_unsuccessful_confirmation
+      flash[:error] = t('errors.messages.confirmation_invalid_token')
       redirect_to root_url
     end
 

@@ -18,6 +18,6 @@ $telInput.on('countrychange', function(e, countryData) {
 // Changing hidden dropdown country code on JS dropdown change
   $intlCode.val(countryData.iso2.toUpperCase());
 
-// Using plain JS to dispatch the country change event to phone-internationalization.js
+  // Using plain JS to dispatch the country change event to phone-internationalization.js
   telInput.dispatchEvent(new Event('countryChange'));
 });

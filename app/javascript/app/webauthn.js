@@ -10,7 +10,7 @@ const arrayBufferToBase64 = (arrayBuffer) => {
 };
 
 const longToByteArray = long => new Uint8Array(8).map(() => {
-  const byte = long & 0xff;  // eslint-disable-line no-bitwise
+  const byte = long & 0xff; // eslint-disable-line no-bitwise
   long = (long - byte) / 256;
   return byte;
 });

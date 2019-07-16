@@ -40,9 +40,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       end
     end
 
-    it 'allows the user to cancel and delete their account' do
+    it 'allow user to return to two factor options screen' do
       render
-      expect(rendered).to have_link(t('links.cancel_account_creation'))
+      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
 
     context 'OTP copy' do
@@ -75,8 +75,6 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         allow(view).to receive(:current_user).and_return(user)
         render
       end
-
-      it_behaves_like 'an otp form'
 
       it 'provides an option to use a personal key' do
         expect(rendered).to have_link(

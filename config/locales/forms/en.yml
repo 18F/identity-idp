@@ -19,10 +19,6 @@ en:
       info: Use backup codes if you cannot access your phone to sign in
       instructions: You will be asked for a backup code <strong>each time you sign
         in</strong> to your login.gov account.
-      new_codes: Generate new codes
-      new_info: When you generate new codes, you must download or print them. Your
-        old codes won't work anymore.
-      new_login_codes: Generate new login codes
       print: Print
       regenerate: Regenerate
       subinfo: Each code may only be used once, once the 10th code has been used you
