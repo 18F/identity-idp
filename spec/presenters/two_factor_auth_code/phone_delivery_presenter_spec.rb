@@ -49,7 +49,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   describe '#phone_number_message' do
     it 'specifies when the code will expire' do
       text = t(
-        'instructions.mfa.sms.number_message',
+        'instructions.mfa.sms.number_message_html',
         number: "<strong>#{data[:phone_number]}</strong>",
         expiration: Figaro.env.otp_valid_for,
       )
