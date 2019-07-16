@@ -1,13 +1,10 @@
+# rubocop:disable Metrics/ClassLength
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
   default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from),
           reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
-
-  def email_changed(old_email)
-    mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
-  end
 
   # :reek:ControlParameter
   # :reek:LongParameterList
@@ -25,6 +22,12 @@ class UserMailer < ActionMailer::Base
   def signup_with_your_email(email)
     @root_url = root_url(locale: locale_url_param)
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  end
+
+  def reset_password_instructions(email, token:)
+    @locale = locale_url_param
+    @token = token
+    mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
   end
 
   def password_changed(email_address, disavowal_token:)
@@ -60,6 +63,7 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_request(email_address, account_reset)
     @token = account_reset&.request_token
+    @header = t('user_mailer.account_reset_request.header')
     mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
   end
 
@@ -121,4 +125,10 @@ class UserMailer < ActionMailer::Base
   def email_deleted(email)
     mail(to: email, subject: t('user_mailer.email_deleted.subject'))
   end
+
+  def add_email_associated_with_another_account(email)
+    @root_url = root_url(locale: locale_url_param)
+    mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  end
 end
+# rubocop:enable Metrics/ClassLength

@@ -59,7 +59,7 @@ en:
       email_body: Only use it when you cannot use normal sign-in methods.
       email_title: We never ask for your personal key in email
       info_html: This is the only way to regain access to your account if you lose
-        your phone or security options. %{accent}
+        your phone or authentication methods. %{accent}
       once_html: "<strong>Personal keys are one-time use.</strong> If you need to
         use your personal key for any reason, you'll be issued a new key."
       safety_html: "<strong>Keep it private and safe.</strong> Don't share your personal

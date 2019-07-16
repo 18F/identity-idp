@@ -5,9 +5,10 @@ fr:
       already_confirmed: Votre adresse courriel a déjà été confirmée. %{action}
       confirmed: Vous avez confirmé votre adresse courriel
       confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
-      confirmed_but_remove_from_other_account: Vous avez confirmé votre adresse e-mail
-        mais elle est associée à un autre compte login.gov. Vous devez le supprimer
-        de l'autre compte avant de pouvoir l'associer à celui-ci.
+      confirmed_but_remove_from_other_account: Cette adresse électronique est déjà
+        associée à un compte login.gov, nous ne pouvons donc pas l’ajouter à un autre
+        compte. Vous devez d'abord le supprimer ou le supprimer du compte auquel il
+        est associé. Pour ce faire, connectez-vous avec cette adresse e-mail.
       confirmed_but_sign_in: Vous avez confirmé votre adresse email. Veuillez vous
         connecter pour voir votre profil.
       sign_in: Veuillez vous connecter de nouveau.
@@ -32,8 +33,6 @@ fr:
     mailer:
       password_updated:
         subject: Votre mot de passe a été modifié
-      reset_password_instructions:
-        subject: Réinitialisez votre mot de passe
     passwords:
       choose_new_password: Choisissez un nouveau mot de passe.
       invalid_token: Le jeton de réinitialisation de mot de passe n'est pas valide.

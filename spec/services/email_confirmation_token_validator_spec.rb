@@ -13,7 +13,6 @@ describe EmailConfirmationTokenValidator do
         errors = { confirmation_token: [t('errors.messages.invalid')] }
         extra = {
           user_id: user.uuid,
-          existing_user: false,
         }
 
         validator = EmailConfirmationTokenValidator.new(user).submit
@@ -35,7 +34,6 @@ describe EmailConfirmationTokenValidator do
         errors = { confirmation_token: [t('errors.messages.expired')] }
         extra = {
           user_id: user.uuid,
-          existing_user: false,
         }
 
         validator = EmailConfirmationTokenValidator.new(user).submit
@@ -57,7 +55,6 @@ describe EmailConfirmationTokenValidator do
         errors = { email: [t('errors.messages.already_confirmed')] }
         extra = {
           user_id: user.uuid,
-          existing_user: true,
         }
 
         validator = EmailConfirmationTokenValidator.new(user).submit
@@ -77,7 +74,6 @@ describe EmailConfirmationTokenValidator do
 
         extra = {
           user_id: user.uuid,
-          existing_user: false,
         }
 
         validator = EmailConfirmationTokenValidator.new(user).submit

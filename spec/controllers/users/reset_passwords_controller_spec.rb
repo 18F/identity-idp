@@ -372,7 +372,7 @@ describe Users::ResetPasswordsController, devise: true do
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(ActionMailer::Base.deliveries.last.subject).
-          to eq t('devise.mailer.reset_password_instructions.subject')
+          to eq t('user_mailer.reset_password_instructions.subject')
 
         expect(response).to redirect_to forgot_password_path
       end

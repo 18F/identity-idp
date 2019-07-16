@@ -215,7 +215,7 @@ module Users
     end
 
     def backup_code_redirect
-      return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).enabled?
+      return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
       redirect_to login_two_factor_backup_code_url
     end
 

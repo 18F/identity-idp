@@ -122,7 +122,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def backup_codes_partial
-    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).enabled?
+    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).configured?
       regenerate_backup_codes_partial
     else
       generate_backup_codes_partial

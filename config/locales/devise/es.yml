@@ -5,9 +5,10 @@ es:
       already_confirmed: Su email ha sido confirmado. %{action}
       confirmed: Usted ha confirmado su email.
       confirmed_but_must_set_password: Usted ha confirmado su email.
-      confirmed_but_remove_from_other_account: Ha confirmado su dirección de correo
-        electrónico, pero está asociada con otra cuenta de login.gov. Debe eliminarlo
-        de la otra cuenta antes de poder asociarlo con esta.
+      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico
+        ya está asociada con una cuenta login.gov, por lo que no podemos agregarla
+        a otra cuenta. Primero debe eliminarlo o eliminarlo de la cuenta con la que
+        está asociado. Para ello, inicie sesión con esta dirección de correo electrónico.
       confirmed_but_sign_in: Has confirmado tu dirección de correo electrónico. Por
         favor inicia sesión para ver tu perfil.
       sign_in: Inicie la sesión de nuevo.
@@ -30,8 +31,6 @@ es:
     mailer:
       password_updated:
         subject: Su contraseña ha sido cambiada.
-      reset_password_instructions:
-        subject: Restablezca su contraseña.
     passwords:
       choose_new_password: Elija una contraseña nueva.
       invalid_token: El código para restablecer la contraseña no es válido. Inténtelo

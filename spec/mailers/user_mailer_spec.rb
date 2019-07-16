@@ -4,27 +4,6 @@ describe UserMailer, type: :mailer do
   let(:user) { build(:user, :with_email) }
   let(:email_address) { user.email_addresses.first }
 
-  describe 'email_changed' do
-    let(:mail) { UserMailer.email_changed('old@email.com') }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the old email' do
-      expect(mail.to).to eq ['old@email.com']
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('mailer.email_change_notice.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_content(
-        t('user_mailer.email_changed.intro', app: APP_NAME),
-      )
-      expect_email_body_to_have_help_and_contact_links
-    end
-  end
-
   describe 'email_deleted' do
     let(:mail) { UserMailer.email_deleted('old@email.com') }
 
@@ -263,6 +242,22 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         strip_tags(
           t('user_mailer.account_reset_request.intro', cancel_account_reset: reset_text),
+        ),
+      )
+    end
+
+    it 'does not render the subject in the body' do
+      expect(mail.html_part.body).not_to have_content(
+        strip_tags(
+          t('user_mailer.account_reset_request.subject'),
+        ),
+      )
+    end
+
+    it 'renders the header within the body' do
+      expect(mail.html_part.body).to have_content(
+        strip_tags(
+          t('user_mailer.account_reset_request.header'),
         ),
       )
     end

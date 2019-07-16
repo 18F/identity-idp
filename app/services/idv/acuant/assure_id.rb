@@ -86,7 +86,7 @@ module Idv
           Type: {
             Manufacturer: 'Login.gov',
             Model: 'Doc Auth 1.0',
-            SensorType: '3' # mobile
+            SensorType: '3', # mobile
           },
         }
       end

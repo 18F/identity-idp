@@ -77,6 +77,10 @@ class User < ApplicationRecord
     super
   end
 
+  def set_reset_password_token
+    super
+  end
+
   def last_identity
     identities.where.not(session_uuid: nil).order(last_authenticated_at: :desc).take ||
       NullIdentity.new

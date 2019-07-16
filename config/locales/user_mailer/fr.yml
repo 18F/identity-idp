@@ -30,16 +30,31 @@ fr:
         adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre compte?
       subject: Supprimer votre compte
     account_reset_request:
+      cancel: Si vous ne voulez pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
+      header: Attendez 24 heures pour supprimer votre compte
       help: ''
-      intro: Vous avez demandé à supprimer votre compte login.gov.<br><br><strong>Votre
-        la demande sera traitée dans les 24 heures.</strong><br><br>Si vous ne voulez
-        pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
+      intro: Vous avez demandé à supprimer votre compte login.gov. Pour des raisons
+        de sécurité, vous devez attendre 24 heures.
+      more_info: "<strong>Dans les 24 heures, vous recevrez un email avec un lien
+        pour confirmer et compléter la suppression de votre compte.</strong>"
       subject: Supprimer votre compte
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: Merci d'avoir ajouté un email. S'il vous plaît cliquez sur le lien ci-dessous
         ou copiez et collez le lien en entier dans votre navigateur.
       subject: Confirmez votre email
+    add_email_associated_with_another_account:
+      help: Si vous n'avez pas demandé de nouvel email ou que vous suspectez une erreur,
+        veuillez visiter le %{app} %{help_link} ou %{contact_link}.
+      intro: Cette adresse électronique est déjà associée à un compte %{app}, nous
+        ne pouvons donc pas l’ajouter à un autre compte. Vous devez d'abord le supprimer
+        ou le supprimer du compte auquel il est associé. Pour ce faire, suivez le
+        lien ci-dessous et connectez-vous avec cette adresse e-mail. Si vous n'essayez
+        pas d'ajouter cette adresse électronique à un compte, vous pouvez ignorer
+        ce message.
+      link_text: Allez à %{app}
+      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
+        %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
@@ -51,10 +66,6 @@ fr:
         profil et gérez vos adresses e-mail. Nous vous recommandons de changer également
         votre mot de passe.
       subject: Nouvelle adresse email ajoutée
-    email_changed:
-      help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
-        le %{help_link} de %{app} ou %{contact_link}.
-      intro: L'adresse courriel de votre compte %{app} a été changée.
     email_confirmation_instructions:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
@@ -160,7 +171,14 @@ fr:
         mot de passe. Nous avons désactivé ce dernier pour sécuriser votre compte.
         Cela n'a pas été causé par un problème de sécurité sur login.gov mais par
         la corruption de votre mot de passe.
+      link_text: Réinitialisez votre mot de passe
       subject: Veuillez réinitialiser votre mot de passe
+    reset_password_instructions:
+      footer: Ce lien expire dans %{expires} heures.
+      header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer
+        sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
+      link_text: Réinitialisez votre mot de passe
+      subject: Réinitialisez votre mot de passe
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
         erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
