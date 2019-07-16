@@ -139,7 +139,6 @@ Rails.application.routes.draw do
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
     delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-    get '/webauthn_setup_success' => 'users/webauthn_setup#success'
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'

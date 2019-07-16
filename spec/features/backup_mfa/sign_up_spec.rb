@@ -130,7 +130,6 @@ feature 'backup mfa setup on sign up' do
       select_2fa_option('webauthn')
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
-      click_button t('forms.buttons.continue')
       :webauthn
     end
 
