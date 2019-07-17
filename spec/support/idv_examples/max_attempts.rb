@@ -70,7 +70,7 @@ shared_examples 'verification step max attempts' do |step, sp|
 
     scenario 'user sees the failure screen' do
       expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
-      expect(page).to have_content(strip_tags(t("idv.failure.#{step_locale_key}.fail")))
+      expect(page).to have_content(strip_tags(t("idv.failure.#{step_locale_key}.fail_html")))
     end
   end
 

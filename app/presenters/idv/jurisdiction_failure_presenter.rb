@@ -37,10 +37,6 @@ module Idv
       []
     end
 
-    def button_text
-      "meow"
-    end
-
     private
 
     def i18n_args
