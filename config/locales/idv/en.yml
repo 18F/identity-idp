@@ -45,7 +45,7 @@ en:
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
-        fail: For your security, identity verification for your account is <strong>locked
+        fail_html: For your security, identity verification for your account is <strong>locked
           for 24 hours</strong>.
         heading: We could not find records matching your phone information.
         jobfail: Something went wrong and we cannot process your request at this time.

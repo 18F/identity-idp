@@ -51,7 +51,7 @@ fr:
       help:
         get_help_html: Obtenir de l'aide à <strong>%{sp_name}</strong>
       phone:
-        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+        fail_html: Pour votre sécurité, la vérification d'identité de votre compte est
           <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
@@ -60,8 +60,8 @@ fr:
         timeout: Notre demande de vérification de vos renseignements a expiré.
         warning: Veuillez vérifier l'information que vous avez fournie.
       sessions:
-        fail_html: Pour votre sécurité, la vérification d'identité de votre compte est
-          <strong>verrouillée pendant 24 heures</strong>.
+        fail_html: Pour votre sécurité, la vérification d'identité de votre compte
+          est <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
         jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande

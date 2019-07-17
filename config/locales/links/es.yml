@@ -6,8 +6,8 @@ es:
       reactivate:
         with_key: Tengo mi clave
         without_key: No tengo mi clave
-    back_to_sp: Volver a %{sp}
     back_to_account: Volver a Login.gov
+    back_to_sp: Volver a %{sp}
     cancel: Cancelar
     cancel_account_creation: "‹ Cancelar la creación de cuenta"
     contact: Contactar
