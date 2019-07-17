@@ -12,11 +12,11 @@
   - if @resend_confirmation
     .alert.alert-thumb role="alert"
       = t('notices.resend_confirmation_email.success')
-  = simple_form_for(@register_user_email_form, url: sign_up_register_path,
+  = simple_form_for(@resend_email_confirmation_form, url: sign_up_register_path,
     html: { class: 'mb2' }) do |f|
     = f.input :email, as: :hidden, wrapper: false
     = f.input :resend, as: :hidden, wrapper: false
-    = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] }
+    = f.input :request_id, as: :hidden, wrapper: false
     | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
     = f.button :submit, t('links.resend'), class: 'btn-link ml-tiny'
   - link = link_to t('notices.use_diff_email.link'),
