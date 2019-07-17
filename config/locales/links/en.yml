@@ -7,6 +7,7 @@ en:
         with_key: I have my key
         without_key: I don't have my key
     back_to_sp: Back to %{sp}
+    back_to_account: Back to Login.gov
     cancel: Cancel
     cancel_account_creation: "‹ Cancel account creation"
     contact: Contact
