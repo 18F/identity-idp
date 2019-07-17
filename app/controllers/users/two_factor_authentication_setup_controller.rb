@@ -27,6 +27,10 @@ module Users
       end
     end
 
+    def success
+      @presenter = two_factor_options_presenter
+    end
+
     private
 
     def two_factor_options_presenter

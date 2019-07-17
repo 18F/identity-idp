@@ -9,6 +9,7 @@ shared_examples 'setting up backup mfa on sign up' do
 
     device = choose_and_confirm_mfa
 
+    click_continue
     expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(account_path)
@@ -20,6 +21,7 @@ shared_examples 'setting up backup mfa on sign up' do
     user = visit_idp_from_sp_and_sign_up
     device = choose_and_confirm_mfa
 
+    click_continue
     expect_back_mfa_setup_to_be_required(device)
 
     expect(page).to have_current_path(sign_up_completed_path)
@@ -33,13 +35,11 @@ shared_examples 'setting up backup mfa on sign up' do
   def expect_back_mfa_setup_to_be_required(device)
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
-    expect(page).to have_content first_factor_enabled_message(device)
 
     visit account_path
 
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
-    expect(page).to have_content first_factor_enabled_message(device)
 
     select_2fa_option('phone')
     fill_in 'user_phone_form[phone]', with: '202-555-1111'
@@ -130,7 +130,6 @@ feature 'backup mfa setup on sign up' do
       select_2fa_option('webauthn')
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
-      click_button t('forms.buttons.continue')
       :webauthn
     end
 

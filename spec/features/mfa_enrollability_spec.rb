@@ -9,6 +9,7 @@ describe 'MFA enrollability' do
     select_2fa_option('backup_code')
 
     click_on 'Continue'
+    click_continue
 
     expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
     expect(page).to have_current_path(two_factor_options_path)
@@ -21,6 +22,8 @@ describe 'MFA enrollability' do
     secret = find('#qr-code').text
     fill_in 'code', with: generate_totp_code(secret)
     click_button 'Submit'
+
+    click_continue
 
     expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
     expect(page).to have_selector('#two_factor_options_form_selection_phone', count: 1)

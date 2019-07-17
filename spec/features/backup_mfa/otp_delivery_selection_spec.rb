@@ -10,6 +10,7 @@ feature 'OTP delivery selection' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
     end
 
     it 'allows the user to setup SMS for backup MFA' do
@@ -18,7 +19,7 @@ feature 'OTP delivery selection' do
       expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
-      expect(page).to have_content(t('instructions.mfa.sms.number_message',
+      expect(page).to have_content(t('instructions.mfa.sms.number_message_html',
                                      number: '+1 202-555-1213',
                                      expiration: Figaro.env.otp_valid_for))
     end
@@ -32,6 +33,7 @@ feature 'OTP delivery selection' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
     end
 
     it 'allows the user to voice for backup MFA' do
@@ -41,7 +43,7 @@ feature 'OTP delivery selection' do
       expect(page).to have_content t('titles.phone_setup')
       fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
-      expect(page).to have_content(t('instructions.mfa.voice.number_message',
+      expect(page).to have_content(t('instructions.mfa.voice.number_message_html',
                                      number: '+1 202-555-1213',
                                      expiration: Figaro.env.otp_valid_for))
     end
@@ -54,6 +56,7 @@ feature 'OTP delivery selection' do
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
+    click_continue
     select_2fa_option(:phone)
     select_phone_delivery_option(:voice)
 

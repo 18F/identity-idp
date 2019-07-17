@@ -43,11 +43,11 @@ class TwoFactorOptionsPresenter
     MfaPolicy.new(current_user).no_factors_enabled?
   end
 
-  private
-
   def first_mfa_enabled
     t("two_factor_authentication.devices.#{FirstMfaEnabledForUser.call(current_user)}")
   end
+
+  private
 
   def recovery
     no_factors_enabled? ? '' : 'recovery_'

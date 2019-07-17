@@ -12,7 +12,7 @@ describe 'phone configuration' do
     context 'when the user has not set a default phone number' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
-        t('instructions.mfa.sms.number_message',
+        t('instructions.mfa.sms.number_message_html',
           number: '***-***-1212',
           expiration: Figaro.env.otp_valid_for)
       end
@@ -26,7 +26,7 @@ describe 'phone configuration' do
         check 'user_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
-        expect(page).to have_content t('instructions.mfa.sms.number_message',
+        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '+1 202-555-3434',
                                        expiration: Figaro.env.otp_valid_for)
 
@@ -36,7 +36,7 @@ describe 'phone configuration' do
         expect(page).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message',
+        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-3434',
                                        expiration: Figaro.env.otp_valid_for)
       end
@@ -55,7 +55,7 @@ describe 'phone configuration' do
         expect(page).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message',
+        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-2323',
                                        expiration: Figaro.env.otp_valid_for)
       end
@@ -72,7 +72,7 @@ describe 'phone configuration' do
         check 'user_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
-        expect(page).to have_content t('instructions.mfa.voice.number_message',
+        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '+1 202-555-3434',
                                        expiration: Figaro.env.otp_valid_for)
 
@@ -82,7 +82,7 @@ describe 'phone configuration' do
         expect(page).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.voice.number_message',
+        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '***-***-3434',
                                        expiration: Figaro.env.otp_valid_for)
       end
@@ -102,7 +102,7 @@ describe 'phone configuration' do
         expect(page).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.voice.number_message',
+        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '***-***-2323',
                                        expiration: Figaro.env.otp_valid_for)
       end
