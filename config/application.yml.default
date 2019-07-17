@@ -76,6 +76,8 @@ twilio_timeout: '5'
 usps_download_sftp_timeout: '5'
 usps_upload_sftp_timeout: '5'
 
+google_analytics_timeout: '5'
+
 piv_cac_email_domains: >-
   [
     ".eop.gov", ".mil", ".treas.gov", ".dhs.gov",

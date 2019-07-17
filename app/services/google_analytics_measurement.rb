@@ -1,10 +1,11 @@
 class GoogleAnalyticsMeasurement
-  GA_ENDPOINT = 'https://www.google-analytics.com/collect'.freeze
+  GA_URL = 'https://www.google-analytics.com/collect'.freeze
+  TIMEOUT = Figaro.env.google_analytics_timeout.to_i
 
   attr_reader :category, :event_action, :method, :client_id
 
   cattr_accessor :adapter do
-    Faraday.new(url: GA_ENDPOINT) do |faraday|
+    Faraday.new(url: GA_URL, request: { open_timeout: TIMEOUT, timeout: TIMEOUT }) do |faraday|
       faraday.adapter :typhoeus
     end
   end
@@ -20,7 +21,7 @@ class GoogleAnalyticsMeasurement
     adapter.post do |request|
       request.body = request_body
     end
-  rescue Faraday::ConnectionFailed => err
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
     NewRelic::Agent.notice_error(err)
   end
 
