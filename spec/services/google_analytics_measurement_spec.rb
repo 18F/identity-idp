@@ -48,7 +48,7 @@ describe GoogleAnalyticsMeasurement do
 
     it 'catches network timeout errors' do
       allow(subject.adapter).to receive(:post).
-        and_raise(Faraday::ConnectionFailed.new('error'))
+        and_raise(Faraday::TimeoutError.new('error'))
 
       expect(NewRelic::Agent).to receive(:notice_error)
       subject.send_event
