@@ -36,6 +36,8 @@ fr:
       confirm: Confirmez votre mot de passe actuel pour continuer
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Ayez toujours accès à votre compte avec votre clé personnelle
+    piv_cac_login:
+      new: Utilisez votre PIV / CAC pour vous connecter à votre compte
     piv_cac_setup:
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.
