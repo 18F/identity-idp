@@ -49,6 +49,14 @@ fr:
     links:
       delete_account: Effacer
       regenerate_personal_key: Obtenez une nouvelle clé
+    login:
+      piv_cac: Employés du gouvernement
+      piv_cac_info:
+        ial1: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
+          l’utiliser à la place de votre adresse courriel et de votre mot de passe.
+        ial2: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
+          l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
+          mot de passe pour déverrouiller votre profil.
     security:
       link: En apprendre davantage dans le Centre d'aide
       text: L'information de votre profil est verrouillée pour votre sécurité.
