@@ -6,7 +6,6 @@ class SendSignUpEmailConfirmation
   end
 
   def call(request_id: nil, instructions: nil)
-    update_user_record
     update_email_address_record
     send_confirmation_email(request_id, instructions)
   end
@@ -33,13 +32,6 @@ class SendSignUpEmailConfirmation
       handle_multiple_email_address_error if user.email_addresses.count > 1
       user.email_addresses.take
     end
-  end
-
-  def update_user_record
-    user.update!(
-      confirmation_token: confirmation_token,
-      confirmation_sent_at: confirmation_sent_at,
-    )
   end
 
   def valid_confirmation_token_exists?

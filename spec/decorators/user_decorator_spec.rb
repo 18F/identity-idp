@@ -26,27 +26,6 @@ describe UserDecorator do
     end
   end
 
-  describe '#confirmation_period' do
-    it 'returns a precise word version of Devise.confirm_within' do
-      allow(Devise).to receive(:confirm_within).and_return(24.hours)
-      user = build_stubbed(:user)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.confirmation_period).to eq '24 hours'
-    end
-  end
-
-  describe '#confirmation_period_expired_error' do
-    it 'returns a localized error message when the confirmation period is expired' do
-      user = build_stubbed(:user)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.confirmation_period_expired_error).
-        to eq t('errors.messages.confirmation_period_expired',
-                period: user_decorator.confirmation_period)
-    end
-  end
-
   describe '#masked_number' do
     it 'returns blank for a nil number' do
       user = build_stubbed(:user)
