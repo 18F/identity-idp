@@ -208,6 +208,7 @@ development:
   send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   telephony_disabled: 'true'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
@@ -327,6 +328,7 @@ production:
   send_new_device_sms: 'false'
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   twilio_numbers: # Add JSON encoded array of phone numbers
   twilio_sid: # Twilio SID
   twilio_auth_token: # Twilio auth token
@@ -452,6 +454,7 @@ test:
   send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
   twilio_auth_token: 'token1'
