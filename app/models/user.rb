@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
   include EmailAddressCallback
+  include DeprecatedUserAttributes
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
