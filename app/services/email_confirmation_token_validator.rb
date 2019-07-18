@@ -27,7 +27,6 @@ class EmailConfirmationTokenValidator
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      existing_user: user.confirmed?,
     }
   end
 

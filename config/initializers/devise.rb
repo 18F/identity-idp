@@ -9,11 +9,9 @@ Devise.setup do |config|
   config.case_insensitive_keys = []
   config.confirm_within = 24.hours
   config.expire_all_remember_me_on_sign_out = true
-  config.mailer = 'CustomDeviseMailer'
   config.mailer_sender = email_with_name(Figaro.env.email_from, Figaro.env.email_from)
   config.paranoid = true
   config.password_length = 12..128
-  config.reconfirmable = true
   config.reset_password_within = 6.hours
   config.secret_key = Figaro.env.secret_key_base
   config.sign_in_after_reset_password = false

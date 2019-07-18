@@ -2,24 +2,26 @@
 
 h3.my0 = t('account_reset.request.title')
 p.mt-tiny.mb0 == t('account_reset.request.info')
-br
-h4.my0 = t('account_reset.request.personal_key')
+- if current_user&.encrypted_recovery_code_digest&.present?
+  br
+  h4.my0 = t('account_reset.request.personal_key')
 
-p.mt-tiny.mb0
-  = t('account_reset.request.personal_key_info')
+  p.mt-tiny.mb0
+    = t('account_reset.request.personal_key_info')
 
-hr
-= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
+  hr
+  = render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
 
-.mb3.right-align
+  .mb3.right-align
 
-  = link_to t('users.personal_key.print'), '#',
-          data: { print: true },
-          class: 'ml2 btn-border ico ico-print text-decoration-none'
+    = link_to t('users.personal_key.print'), '#',
+            data: { print: true },
+            class: 'ml2 btn-border ico ico-print text-decoration-none'
 
-hr
-p.mt-tiny.mb0 == t('account_reset.request.personal_key_trailer', \
-  link: link_to(t('account_reset.request.access_your_account'), login_two_factor_personal_key_url))
+  hr
+  p.mt-tiny.mb0 == t('account_reset.request.personal_key_trailer', \
+    link: link_to(t('account_reset.request.access_your_account'), \
+    login_two_factor_personal_key_url))
 br
 h4.my0 = t('account_reset.request.delete_account')
 p.mt-tiny.mb0 == t('account_reset.request.delete_account_info')

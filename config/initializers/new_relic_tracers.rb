@@ -19,14 +19,6 @@ ConfirmationEmailPresenter.class_eval do
   add_method_tracer :confirmation_period, "Custom/#{name}/confirmation_period"
 end
 
-CustomDeviseMailer.class_eval do
-  include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :initialize, "Custom/#{name}/initialize"
-  add_method_tracer :confirmation_instructions, "Custom/#{name}/confirmation_instructions"
-  add_method_tracer :initialize_from_record, "Custom/#{name}/initialize_from_record"
-  add_method_tracer :mail, "Custom/#{name}/mail"
-end
-
 Mail::Message.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :initialize, "Custom/#{name}/initialize"
@@ -64,6 +56,30 @@ CloudhsmJwt.class_eval do
   add_method_tracer :sign, "Custom/#{name}/sign"
 end
 
+Encryption::Encryptors::AttributeEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::Encryptors::PiiEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::Encryptors::SessionEncryptor.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+end
+
+Encryption::PasswordVerifier.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :digest, "Custom/#{name}/digest"
+  add_method_tracer :verify, "Custom/#{name}/verify"
+end
+
 Encryption::KmsClient.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :decrypt, "Custom/#{name}/decrypt"
@@ -80,4 +96,9 @@ TwilioService::Utils.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :place_call, "Custom/#{name}/place_call"
   add_method_tracer :send_sms, "Custom/#{name}/send_sms"
+end
+
+PwnedPasswords::BinarySearchSortedHashFile.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :call, "Custom/#{name}/call"
 end

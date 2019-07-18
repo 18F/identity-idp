@@ -47,8 +47,11 @@ module Idv
     end
 
     def confirm_step_needed
-      return if idv_session.selected_jurisdiction.nil?
-      redirect_to idv_session_url
+      selected_jurisdiction = idv_session.selected_jurisdiction
+      return unless Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.
+                    include? selected_jurisdiction
+
+      redirect_to idv_session_url unless selected_jurisdiction.nil?
     end
 
     def failure_url(reason)

@@ -171,8 +171,8 @@ fr:
       sessions:
         id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
         id_information_subtitle: Informations d'identification
-        no_pii: TRUQUÉ N'utilisez pas de véritables données personnelles (il s'agit
-          d'une démonstration seulement) TRUQUÉ
+        no_pii: SITE DE TEST - N'utilisez pas de véritables données personnelles (il
+          s'agit d'une démonstration seulement) - SITE DE TEST
         review_message: Lorsque vous entrez à nouveau votre mot de passe, login.gov
           crypte vos données pour vous assurer que personne ne peut y accéder.
         success: Ensuite, nous aurons besoin d'un numéro de téléphone.

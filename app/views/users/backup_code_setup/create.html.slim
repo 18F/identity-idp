@@ -42,18 +42,9 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
             class: 'text-decoration-none ml2 clipboard btn-border ico ico-copy',
             data: { "clipboard-text": @codes.join(' ') }
 
-h2.h3.my0 = t('forms.backup_code.new_login_codes')
-p.mb0 = t('forms.backup_code.new_info')
-
-.mt2.mb4
-  = link_to t('forms.backup_code.new_codes'), '',
-    class: 'btn-border ico ico-refresh text-decoration-none'
-
-= form_tag(backup_code_setup_path, method: :patch, role: 'form') do
+= form_tag(backup_code_continue_path, method: :patch, role: 'form') do
   .clearfix.mxn1
     .col.col-6.sm-col-5.px1
       = button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide'
-
-= render 'shared/cancel_or_back_to_options'
 
 == javascript_pack_tag 'clipboard'
