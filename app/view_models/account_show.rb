@@ -70,6 +70,8 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   def pii_partial
     if decrypted_pii.present?
       'accounts/pii'
+    elsif decorated_user.identity_verified?
+      'accounts/pii_locked'
     else
       'shared/null'
     end

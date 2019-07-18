@@ -56,14 +56,26 @@ RSpec.describe OpenidConnect::AuthorizationController do
           context 'account is already verified' do
             let(:user) { create(:profile, :active, :verified).user }
 
-            it 'redirects to the redirect_uri immediately' do
+            it 'redirects to the redirect_uri immediately when pii is unlocked' do
               IdentityLinker.new(user, client_id).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate],
               )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               action
 
               expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            end
+
+            it 'redirects to the password capture url when pii is locked' do
+              IdentityLinker.new(user, client_id).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(true)
+              action
+
+              expect(response).to redirect_to(capture_password_url)
             end
           end
 
