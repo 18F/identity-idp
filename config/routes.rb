@@ -63,6 +63,13 @@ Rails.application.routes.draw do
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
 
+      if FeatureManagement.allow_piv_cac_login?
+        get '/login/piv_cac' => 'users/piv_cac_login#new'
+        get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
+        get '/login/password' => 'password_capture#new', as: :capture_password
+        post '/login/password' => 'password_capture#create'
+      end
+
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
       unless FeatureManagement.disallow_ial2_recovery?
