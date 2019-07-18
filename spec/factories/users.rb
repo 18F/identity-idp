@@ -142,6 +142,7 @@ FactoryBot.define do
 
     trait :unconfirmed do
       confirmed_at { nil }
+      confirmation_sent_at { 5.minutes.ago }
       password { nil }
     end
   end

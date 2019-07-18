@@ -2,86 +2,90 @@ require 'rails_helper'
 
 describe EmailConfirmationTokenValidator do
   describe '#submit' do
-    context 'confirmation token is invalid' do
-      it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user, :unconfirmed)
-        user.errors.add(:confirmation_token, t('errors.messages.invalid'))
+    subject { described_class.new(email_address) }
 
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
+    context 'the email address exists and the token is not expired' do
+      let(:email_address) do
+        create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
+      end
 
-        errors = { confirmation_token: [t('errors.messages.invalid')] }
-        extra = {
-          user_id: user.uuid,
-        }
+      it 'returns a successful result' do
+        result = subject.submit
 
-        validator = EmailConfirmationTokenValidator.new(user).submit
-
-        expect(validator).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+        expect(subject.email_address_already_confirmed?).to eq(false)
+        expect(subject.confirmation_period_expired?).to eq(false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
-    context 'confirmation token has expired' do
-      it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user, :unconfirmed)
-        allow(user).to receive(:confirmation_period_expired?).and_return(true)
+    context 'the email address exists and the token is expired' do
+      let(:email_address) do
+        create(:email_address, confirmed_at: nil,confirmation_sent_at: 3.days.ago)
+      end
 
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
+      it 'returns an unsuccessful result' do
+        result = subject.submit
 
-        errors = { confirmation_token: [t('errors.messages.expired')] }
-        extra = {
-          user_id: user.uuid,
-        }
-
-        validator = EmailConfirmationTokenValidator.new(user).submit
-
-        expect(validator).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(confirmation_token: [t('errors.messages.expired')])
+        expect(subject.email_address_already_confirmed?).to eq(false)
+        expect(subject.confirmation_period_expired?).to eq(true)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
-    context 'confirmation token has already been used' do
-      it 'returns FormResponse with success: false' do
-        user = create(:user)
-        user.errors.add(:email, :already_confirmed)
+    context 'the email address exists and is already confirmed' do
+      let(:email_address) do
+        create(:email_address, confirmed_at: 5.hours.ago, confirmation_sent_at: 6.hours.ago)
+      end
 
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
+      it 'returns an unsuccessful result' do
+        result = subject.submit
 
-        errors = { email: [t('errors.messages.already_confirmed')] }
-        extra = {
-          user_id: user.uuid,
-        }
-
-        validator = EmailConfirmationTokenValidator.new(user).submit
-
-        expect(validator).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(confirmation_token: [t('errors.messages.already_confirmed')])
+        expect(subject.email_address_already_confirmed?).to eq(true)
+        expect(subject.confirmation_period_expired?).to eq(false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
 
-    context 'confirmation token is valid' do
-      it 'returns FormResponse with success: true' do
-        user = build_stubbed(:user, :unconfirmed)
+    context 'the email address does not exist' do
+      let(:email_address) { nil }
 
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
+      it 'returns an unsuccessful result' do
+        result = subject.submit
 
-        extra = {
-          user_id: user.uuid,
-        }
-
-        validator = EmailConfirmationTokenValidator.new(user).submit
-
-        expect(validator).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(confirmation_token: [t('errors.messages.not_found')])
+        expect(subject.email_address_already_confirmed?).to eq(false)
+        expect(subject.confirmation_period_expired?).to eq(false)
+        expect(result.extra).to eq(user_id: nil)
       end
+    end
+  end
+
+  describe '#email_address_already_confirmed_by_user?' do
+    subject { described_class.new(email_address) }
+
+    context 'the email address was confirmed by the user' do
+      let(:email_address) do
+        create(:email_address, confirmed_at: 1.day.ago, confirmation_sent_at: 2.days.ago)
+      end
+      let(:user) { email_address.user }
+
+      it { expect(subject.email_address_already_confirmed_by_user?(user)).to eq(true) }
+    end
+
+    context 'the email address was confirmed by a different user' do
+      let(:email_address) do
+        create(:email_address, confirmed_at: 1.day.ago, confirmation_sent_at: 2.days.ago)
+      end
+      let(:user) { create(:user) }
+
+      it { expect(subject.email_address_already_confirmed_by_user?(user)).to eq(false) }
     end
   end
 end

@@ -1,7 +1,7 @@
 module Users
   class EmailConfirmationsController < ApplicationController
     def create
-      result = add_email_confirm_token_validator.submit
+      result = email_confirmation_token_validator.submit
       analytics.track_event(Analytics::ADD_EMAIL_CONFIRMATION, result.to_h)
       if result.success?
         process_successful_confirmation(email_address)
@@ -16,12 +16,12 @@ module Users
       @email_address ||= EmailAddress.find_by(confirmation_token: params[:confirmation_token])
     end
 
-    def add_email_confirm_token_validator
-      @add_email_confirm_token_validator ||= AddEmailConfirmTokenValidator.new(email_address)
+    def email_confirmation_token_validator
+      @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.new(email_address)
     end
 
     def email_address_already_confirmed?
-      add_email_confirm_token_validator.email_address_already_confirmed?
+      email_confirmation_token_validator.email_address_already_confirmed?
     end
 
     def process_successful_confirmation(email_address)
@@ -66,7 +66,7 @@ module Users
 
     def email_address_already_confirmed_by_current_user?
       user_signed_in? &&
-        add_email_confirm_token_validator.email_address_already_confirmed_by_user?(current_user)
+        email_confirmation_token_validator.email_address_already_confirmed_by_user?(current_user)
     end
   end
 end
