@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/emails/show.html.slim' do
+describe 'sign_up/emails/show.html.erb' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
     @register_user_email_form = RegisterUserEmailForm.new
