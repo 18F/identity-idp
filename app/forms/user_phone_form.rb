@@ -50,6 +50,11 @@ class UserPhoneForm
     false
   end
 
+  def masked_number
+    return '' if phone_configuration.phone.blank?
+    "***-***-#{phone_configuration.phone[-4..-1]}"
+  end
+
   private
 
   attr_accessor :user, :submitted_phone
