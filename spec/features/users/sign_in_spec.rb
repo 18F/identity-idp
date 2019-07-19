@@ -25,6 +25,13 @@ feature 'Sign in' do
       to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
+  scenario 'user cannot sign in with an unregistered piv/cac card' do
+    user = build(:user, x509_dn_uuid: 'unknown-pivcac-uuid')
+    signin_with_piv(user)
+
+    expect(current_path).to eq new_user_session_path
+  end
+
   it 'does not throw an exception if the email contains invalid bytes' do
     suppress_output do
       signin("test@\xFFbar\xF8.com", 'Please123!')
@@ -226,47 +233,96 @@ feature 'Sign in' do
   end
 
   context 'user attempts too many concurrent sessions' do
-    scenario 'redirects to home page with error' do
-      user = user_with_2fa
+    context 'with email and password' do
+      scenario 'redirects to home page with error' do
+        user = user_with_2fa
 
-      perform_in_browser(:one) do
-        sign_in_live_with_2fa(user)
+        perform_in_browser(:one) do
+          sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq account_path
+          expect(current_path).to eq account_path
+        end
+
+        perform_in_browser(:two) do
+          sign_in_live_with_2fa(user)
+
+          expect(current_path).to eq account_path
+        end
+
+        perform_in_browser(:one) do
+          visit account_path
+
+          expect(current_path).to eq new_user_session_path
+          expect(page).to have_content(t('devise.failure.session_limited'))
+        end
       end
+    end
 
-      perform_in_browser(:two) do
-        sign_in_live_with_2fa(user)
+    context 'with piv/cac' do
+      scenario 'redirects to home page with error' do
+        user = user_with_piv_cac
 
-        expect(current_path).to eq account_path
-      end
+        perform_in_browser(:one) do
+          sign_in_user_with_piv(user)
 
-      perform_in_browser(:one) do
-        visit account_path
+          expect(current_path).to eq account_path
+        end
 
-        expect(current_path).to eq new_user_session_path
-        expect(page).to have_content(t('devise.failure.session_limited'))
+        perform_in_browser(:two) do
+          sign_in_user_with_piv(user)
+
+          expect(current_path).to eq account_path
+        end
+
+        perform_in_browser(:one) do
+          visit account_path
+
+          expect(current_path).to eq new_user_session_path
+          expect(page).to have_content(t('devise.failure.session_limited'))
+        end
       end
     end
   end
 
   context 'attribute_encryption_key is changed but queue does not contain any previous keys' do
-    it 'throws an exception and does not overwrite User email' do
-      email = 'test@example.com'
-      password = 'salty pickles'
+    context 'when logging in with email and password' do
+      it 'throws an exception and does not overwrite User email' do
+        email = 'test@example.com'
+        password = 'salty pickles'
 
-      create(:user, :signed_up, email: email, password: password)
+        create(:user, :signed_up, email: email, password: password)
 
-      user = User.find_with_email(email)
-      encrypted_email = user.encrypted_email
+        user = User.find_with_email(email)
+        encrypted_email = user.encrypted_email
 
-      rotate_attribute_encryption_key_with_invalid_queue
+        rotate_attribute_encryption_key_with_invalid_queue
 
-      expect { signin(email, password) }.
-        to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
+        expect { signin(email, password) }.
+          to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
-      user = user.reload
-      expect(user.encrypted_email).to eq encrypted_email
+        user = user.reload
+        expect(user.encrypted_email).to eq encrypted_email
+      end
+    end
+
+    context 'when logging in with piv/cac' do
+      it 'throws an exception and does not overwrite User email' do
+        email = 'test@example.com'
+        password = 'salty pickles'
+
+        create(:user, :signed_up, email: email, password: password)
+
+        user = User.find_with_email(email)
+        encrypted_email = user.encrypted_email
+
+        rotate_attribute_encryption_key_with_invalid_queue
+
+        expect { sign_in_user_with_piv(user) }.
+          to raise_error ActionView::Template::Error, 'unable to decrypt attribute with any key'
+
+        user = user.reload
+        expect(user.encrypted_email).to eq encrypted_email
+      end
     end
   end
 
@@ -296,8 +352,31 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-
       expect(current_path).to eq account_path
+    end
+
+    context 'with email and password' do
+      it 'allows the user to sign in and does not try to redirect to any SP' do
+        allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+        user = create(:user, :signed_up)
+
+        visit new_user_session_path(request_id: 'invalid')
+        fill_in_credentials_and_submit(user.email, user.password)
+        click_submit_default
+
+        expect(current_path).to eq account_path
+      end
+    end
+
+    context 'with piv/cac' do
+      it 'allows the user to sign in and does not try to redirect to any SP' do
+        user = create(:user, :signed_up, :with_piv_or_cac)
+
+        visit new_user_session_path(request_id: 'invalid')
+        signin_with_piv(user)
+
+        expect(current_path).to eq account_path
+      end
     end
   end
 
@@ -414,6 +493,10 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA1 with personal key', :oidc
   it_behaves_like 'signing in as LOA3 with personal key', :saml
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
+  it_behaves_like 'signing in as LOA1 with piv/cac', :saml
+  it_behaves_like 'signing in as LOA1 with piv/cac', :oidc
+  it_behaves_like 'signing in as LOA3 with piv/cac', :saml
+  it_behaves_like 'signing in as LOA3 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml

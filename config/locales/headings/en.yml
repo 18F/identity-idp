@@ -35,6 +35,8 @@ en:
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
     personal_key: Always have access to your account with your personal key
+    piv_cac_login:
+      new: Use your PIV/CAC to log in to your account
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.

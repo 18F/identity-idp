@@ -1,0 +1,11 @@
+- title @presenter.title
+
+h1.h3.my0 = @presenter.heading
+.no-spinner
+
+  = link_to @presenter.piv_cac_capture_text,
+                @presenter.piv_cac_service_link,
+                class: 'btn btn-primary activate-spinner'
+
+= render 'shared/spinner'
+= render 'shared/cancel', link: new_user_session_url
