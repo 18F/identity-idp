@@ -21,7 +21,7 @@ module Deploy
       set_proper_file_permissions_for_application_yml
 
       download_from_s3_and_update_permissions('/common/GeoLite2-City.mmdb', geolocation_db_path)
-      download_from_s3_and_update_permissions('/common/pwned_passwords.txt', pwned_passwords_path)
+      download_from_s3_and_update_permissions('/common/pwned-passwords.txt', pwned_passwords_path)
     end
 
     private
