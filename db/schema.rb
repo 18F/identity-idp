@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190620204206) do
+ActiveRecord::Schema.define(version: 20190720132736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,13 @@ ActiveRecord::Schema.define(version: 20190620204206) do
     t.index ["job_name"], name: "index_job_runs_on_job_name"
   end
 
+  create_table "monthly_auth_totals", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.string "year_month", null: false
+    t.integer "total", null: false
+    t.index ["issuer", "year_month"], name: "index_monthly_auth_totals_on_issuer_and_year_month", unique: true
+  end
+
   create_table "otp_requests_trackers", force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
@@ -229,6 +236,20 @@ ActiveRecord::Schema.define(version: 20190620204206) do
     t.integer "agency_id", null: false
     t.string "uuid", null: false
     t.index ["created_at"], name: "index_push_account_deletes_on_created_at"
+  end
+
+  create_table "registration_funnels", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "submitted_at", null: false
+    t.datetime "confirmed_at"
+    t.datetime "password_at"
+    t.string "first_mfa"
+    t.datetime "first_mfa_at"
+    t.string "second_mfa"
+    t.datetime "registered_at"
+    t.index ["registered_at"], name: "index_registration_funnels_on_registered_at"
+    t.index ["submitted_at"], name: "index_registration_funnels_on_submitted_at"
+    t.index ["user_id"], name: "index_registration_funnels_on_user_id", unique: true
   end
 
   create_table "remote_settings", force: :cascade do |t|

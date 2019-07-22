@@ -60,6 +60,7 @@ module Users
       mark_user_as_fully_authenticated
       save_remember_device_preference
       flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
       redirect_to two_2fa_setup
       user_session.delete(:new_totp_secret)
     end

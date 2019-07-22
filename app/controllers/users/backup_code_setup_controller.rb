@@ -20,6 +20,7 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
     end
 
