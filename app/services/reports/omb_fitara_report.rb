@@ -5,9 +5,13 @@ module Reports
     S3_FILENAME = Figaro.env.omb_fitara_filename
 
     def call
-      Aws::S3::Resource.new.bucket(S3_BUCKET).object(S3_FILENAME).put(
-        body: results_json, acl: 'private', content_type: 'application/json',
-      )
+      body = results_json
+      if Rails.env.production?
+        Aws::S3::Resource.new.bucket(S3_BUCKET).object(S3_FILENAME).put(
+          body: results_json, acl: 'private', content_type: 'application/json',
+        )
+      end
+      body
     end
 
     private
@@ -16,7 +20,7 @@ module Reports
       month, year = current_month
       counts = []
       MOST_RECENT_MONTHS_COUNT.times do
-        counts << { month: "#{year}#{month}", count: count_for_month(month, year) }
+        counts << { month: "#{year}#{format('%02d', month)}", count: count_for_month(month, year) }
         month, year = previous_month(month, year)
       end
       { counts: counts }.to_json
@@ -26,7 +30,7 @@ module Reports
       start = "#{year}-#{month}-01 00:00:00"
       month, year = next_month(month, year)
       finish = "#{year}-#{month}-01 00:00:00"
-      RangeRegisteredCount.call(start, finish)
+      Funnel::Registration::RangeRegisteredCount.call(start, finish)
     end
 
     def current_month
