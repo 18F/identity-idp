@@ -18,7 +18,7 @@
   <hr class="my3 bw3 border-teal rounded"/>
 </div>
 
-<%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
+<%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
 <%= button_to(t('links.resend'), add_email_resend_path, method: :post, class: 'btn btn-link ml1', form_class: 'inline-block') %>
 
 <p><% link = link_to(t('notices.use_diff_email.link'), add_email_path) %></p>
