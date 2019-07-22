@@ -16,8 +16,7 @@ module Reports
       month, year = current_month
       counts = []
       MOST_RECENT_MONTHS_COUNT.times do
-        count = count_for_month(month, year)
-        counts << { month: "#{year}#{month}", count: count }
+        counts << { month: "#{year}#{month}", count: count_for_month(month, year) }
         month, year = previous_month(month, year)
       end
       { counts: counts }.to_json

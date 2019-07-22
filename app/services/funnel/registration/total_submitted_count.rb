@@ -1,7 +1,7 @@
 module Funnel
   module Registration
     class TotalSubmittedCount
-      def call
+      def self.call
         RegistrationFunnel.count
       end
     end
