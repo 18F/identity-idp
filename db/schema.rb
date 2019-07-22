@@ -180,13 +180,6 @@ ActiveRecord::Schema.define(version: 20190720132736) do
     t.index ["job_name"], name: "index_job_runs_on_job_name"
   end
 
-  create_table "monthly_auth_totals", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.string "year_month", null: false
-    t.integer "total", null: false
-    t.index ["issuer", "year_month"], name: "index_monthly_auth_totals_on_issuer_and_year_month", unique: true
-  end
-
   create_table "otp_requests_trackers", force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
