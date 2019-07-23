@@ -15,7 +15,7 @@ module Funnel
         funnel.first_mfa = mfa_method
         now = Time.zone.now
         funnel.first_mfa_at = now
-        funnel.registered_at = now
+        funnel.registered_at = now if mfa_method == 'backup_codes'
         funnel.save
       end
       private_class_method :first_mfa
