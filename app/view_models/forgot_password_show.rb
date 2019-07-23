@@ -1,4 +1,6 @@
 class ForgotPasswordShow
+  attr_reader :resend, :session
+
   def initialize(resend:, session:)
     @resend = resend
     @session = session
@@ -19,8 +21,4 @@ class ForgotPasswordShow
   def email
     @_email ||= session.delete(:email)
   end
-
-  private
-
-  attr_reader :resend, :session
 end
