@@ -231,7 +231,7 @@ ActiveRecord::Schema.define(version: 20190720132736) do
     t.index ["created_at"], name: "index_push_account_deletes_on_created_at"
   end
 
-  create_table "registration_funnels", force: :cascade do |t|
+  create_table "registration_logs", force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "submitted_at", null: false
     t.datetime "confirmed_at"
@@ -240,9 +240,9 @@ ActiveRecord::Schema.define(version: 20190720132736) do
     t.datetime "first_mfa_at"
     t.string "second_mfa"
     t.datetime "registered_at"
-    t.index ["registered_at"], name: "index_registration_funnels_on_registered_at"
-    t.index ["submitted_at"], name: "index_registration_funnels_on_submitted_at"
-    t.index ["user_id"], name: "index_registration_funnels_on_user_id", unique: true
+    t.index ["registered_at"], name: "index_registration_logs_on_registered_at"
+    t.index ["submitted_at"], name: "index_registration_logs_on_submitted_at"
+    t.index ["user_id"], name: "index_registration_logs_on_user_id", unique: true
   end
 
   create_table "remote_settings", force: :cascade do |t|

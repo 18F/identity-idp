@@ -4,7 +4,7 @@ module Funnel
       def self.call(user_id)
         user = User.find(user_id)
         return unless user
-        RegistrationFunnel.create(user_id: user_id, submitted_at: user.created_at)
+        RegistrationLog.create(user_id: user_id, submitted_at: user.created_at)
       end
     end
   end

@@ -2,7 +2,7 @@ module Funnel
   module Registration
     class RangeRegisteredCount
       def self.call(start, finish)
-        RegistrationFunnel.where('? < registered_at AND registered_at < ?', start, finish).count
+        RegistrationLog.where('? < registered_at AND registered_at < ?', start, finish).count
       end
     end
   end

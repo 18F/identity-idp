@@ -2,7 +2,7 @@ module Funnel
   module Registration
     class AddMfa
       def self.call(user_id, mfa_method)
-        funnel = RegistrationFunnel.find_by(user_id: user_id)
+        funnel = RegistrationLog.find_by(user_id: user_id)
         return unless funnel
         if funnel.first_mfa.blank?
           first_mfa(funnel, mfa_method)
