@@ -96,7 +96,7 @@ module Deploy
     end
 
     def pwned_passwords_path
-      File.join(root, 'pwned_passwords/pwned-passwords.txt')
+      File.join(root, 'pwned_passwords/pwned_passwords.txt')
     end
   end
 end
