@@ -51,8 +51,9 @@ class UserPhoneForm
   end
 
   def masked_number
-    return '' if phone_configuration.phone.blank?
-    "***-***-#{phone_configuration.phone[-4..-1]}"
+    phone_number = phone_configuration.phone
+    return '' if phone_number.blank?
+    "***-***-#{phone_number[-4..-1]}"
   end
 
   private
