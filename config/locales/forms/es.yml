@@ -72,6 +72,8 @@ es:
     phone:
       buttons:
         delete: Eliminar el teléfono
+    piv_cac_login:
+      submit: Presentar tarjeta PIV/CAC
     piv_cac_mfa:
       submit: Presentar tarjeta PIV/CAC
     piv_cac_setup:
@@ -116,6 +118,7 @@ es:
       backup_code: Código de seguridad
       code: Código de seguridad de sólo un uso
       personal_key: Clave personal
+      success: A continuación, configurarás otro método.
       try_again: Use otro número de teléfono.
     two_factor_choice:
       legend: Seleccione una opción para proteger su cuenta
@@ -142,7 +145,4 @@ es:
       login_text: Presione el botón en su clave de seguridad para iniciar sesión con
         login.gov
       nickname: Apodo clave de seguridad
-      success_text: Cada vez que inicie sesión en login.gov, le pediremos que utilice
-        su clave de seguridad. Si no tiene su clave de seguridad, puede usar cualquier
-        otro método de autenticación que haya habilitado.
       success_title: Has añadido una clave de seguridad como tu método de autenticación.

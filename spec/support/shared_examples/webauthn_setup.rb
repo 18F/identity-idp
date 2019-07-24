@@ -8,10 +8,6 @@ shared_examples 'webauthn setup' do
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
 
-    expect(current_path).to eq webauthn_setup_success_path
-
-    click_button t('forms.buttons.continue')
-
     expect_webauthn_setup_success
     expect(user.reload.webauthn_configurations.count).to eq(1)
 

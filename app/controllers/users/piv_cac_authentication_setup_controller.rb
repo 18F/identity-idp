@@ -86,7 +86,7 @@ module Users
       if MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
         account_url
       else
-        two_factor_options_url
+        two_factor_options_success_url
       end
     end
 

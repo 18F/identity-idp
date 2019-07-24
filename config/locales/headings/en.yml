@@ -29,11 +29,14 @@ en:
       password: Change your password
       phone: Manage your phone number
     lock_failure: Here's what you can do
+    mfa_success: You successfully set up %{method} as your first authentication method.
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
     personal_key: Always have access to your account with your personal key
+    piv_cac_login:
+      new: Use your PIV/CAC to log in to your account
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.

@@ -36,6 +36,7 @@ module Features
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
       select_2fa_option('backup_code')
       click_continue
       user
@@ -48,8 +49,32 @@ module Features
       fill_in_credentials_and_submit(email, password)
     end
 
+    def signin_with_piv(user = user_with_piv_cac)
+      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user)
+    end
+
+    def fill_in_piv_cac_credentials_and_submit(user)
+      allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
+
+      stub_piv_cac_service
+      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
+      visit_piv_cac_service(current_url,
+                            nonce: nonce,
+                            uuid: user.x509_dn_uuid,
+                            subject: 'SomeIgnoredSubject')
+    end
+
     def fill_in_credentials_and_submit(email, password)
       fill_in 'user_email', with: email
+      fill_in 'user_password', with: password
+      click_button t('links.next')
+    end
+
+    def fill_in_password_and_submit(password)
       fill_in 'user_password', with: password
       click_button t('links.next')
     end
@@ -96,6 +121,11 @@ module Features
 
     def sign_in_user(user = create(:user))
       signin(user.email_addresses.first.email, user.password)
+      user
+    end
+
+    def sign_in_user_with_piv(user = user_with_piv_cac)
+      signin_with_piv(user)
       user
     end
 
@@ -336,6 +366,7 @@ module Features
       expect(page).to have_css('img[src*=sp-logos]')
 
       set_up_2fa_with_valid_phone
+      click_continue
       set_up_2fa_with_backup_code
 
       expect(page).to have_css('img[src*=sp-logos]')
@@ -412,6 +443,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      click_continue
       select_2fa_option('backup_code')
       click_continue
       User.find_with_email(email)
@@ -427,6 +459,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      click_continue
       set_up_2fa_with_backup_code
     end
 

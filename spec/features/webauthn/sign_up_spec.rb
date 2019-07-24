@@ -11,6 +11,9 @@ feature 'webauthn sign up' do
     end
 
     def expect_webauthn_setup_success
+      expect(current_path).to eq two_factor_options_success_path
+      click_continue
+      
       expect(page).to have_current_path(two_factor_options_path)
 
       select_2fa_option('phone')
@@ -18,6 +21,8 @@ feature 'webauthn sign up' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+
+      click_continue
 
       expect(page).to have_current_path(account_path)
     end
@@ -32,6 +37,7 @@ feature 'webauthn sign up' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
 
       select_2fa_option('webauthn')
     end
