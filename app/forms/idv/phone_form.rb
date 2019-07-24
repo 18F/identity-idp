@@ -23,7 +23,7 @@ module Idv
                      PhoneFormatter.format(params[:phone])
                    end
       success = valid?
-
+      print success
       FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end
 

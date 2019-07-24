@@ -3,7 +3,7 @@
     data: { international_phone_form: true },
     url: target_url) do |f| %>
 
-  <% if @user_phone_form.phone %>
+  <% if @user_phone_form.phone && @user_phone_form.errors.blank?%>
     <div class="mb1 h4">
       <%= @presenter.label %>:&nbsp;
       <strong><%= @user_phone_form.masked_number %></strong>

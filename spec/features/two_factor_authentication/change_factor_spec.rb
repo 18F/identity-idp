@@ -162,24 +162,6 @@ feature 'Changing authentication factor' do
     end
   end
 
-  context 'with SMS and number that Verify does not think is valid' do
-    it 'rescues the VerifyError' do
-      allow(Twilio::FakeVerifyAdapter).to receive(:post).
-        and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
-
-      user = create(:user, :signed_up, with: { phone: '+17035551212' })
-      visit new_user_session_path
-      sign_in_live_with_2fa(user)
-      visit manage_phone_path
-      select 'Morocco', from: 'user_phone_form_international_code'
-      fill_in 'user_phone_form_phone', with: '+212 661-289325'
-      click_button t('forms.buttons.submit.confirm_change')
-
-      expect(current_path).to eq manage_phone_path
-      expect(page).to have_content t('errors.messages.invalid_phone_number')
-    end
-  end
-
   def complete_2fa_confirmation
     complete_2fa_confirmation_without_entering_otp
     fill_in_code_with_last_phone_otp
