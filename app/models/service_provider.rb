@@ -1,9 +1,12 @@
 require 'fingerprinter'
+require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  scope(:active, -> { where(active: true) })
+  # Do not define validations in this model.
+  # See https://github.com/18F/identity_validations
+  include IdentityValidations::ServiceProviderValidation
 
-  validate :redirect_uris_are_parsable
+  scope(:active, -> { where(active: true) })
 
   def self.from_issuer(issuer)
     return NullServiceProvider.new(issuer: nil) if issuer.blank?

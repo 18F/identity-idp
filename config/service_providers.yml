@@ -39,12 +39,14 @@ test:
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
     cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
 
   'http://test.host':
     acs_url: 'http://test.host/test/saml/decode_assertion'
     block_encryption: 'aes256-cbc'
     metadata_url: 'http://test.host/test/saml/metadata'
     sp_initiated_login_url: 'http://test.host/test/saml'
+    friendly_name: 'Test SP'
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:

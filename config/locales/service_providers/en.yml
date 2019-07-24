@@ -1,5 +1,14 @@
 ---
 en:
+  activerecord:
+    errors:
+      models:
+        service_provider:
+          attributes:
+            issuer:
+              invalid: is not formatted correctly. The issuer must be a unique string with no spaces.
+            cert:
+              invalid: is not valid
   service_providers:
     default:
       account_page:

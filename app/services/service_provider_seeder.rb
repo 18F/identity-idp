@@ -13,6 +13,7 @@ class ServiceProviderSeeder
         sp.approved = true
         sp.active = true
         sp.native = true
+        sp.friendly_name = config["friendly_name"]
       end.update!(config.except('restrict_to_deploy_env', 'uuid_priority'))
     end
   end
