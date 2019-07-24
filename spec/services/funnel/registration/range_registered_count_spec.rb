@@ -35,7 +35,7 @@ describe Funnel::Registration::RangeRegisteredCount do
   end
 
   it 'returns 0 when the record is higher than higher range' do
-    register_user(2020, 1, 1)
+    register_user(2020, 1, 2)
 
     expect(subject.call(start, finish)).to eq(0)
   end
