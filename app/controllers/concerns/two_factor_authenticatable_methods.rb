@@ -69,7 +69,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session.delete(:mfa_device_remembered)
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
-
     redirect_to next_url
   end
 
