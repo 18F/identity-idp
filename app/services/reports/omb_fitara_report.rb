@@ -6,7 +6,7 @@ module Reports
 
     def call
       body = results_json
-      if Rails.env.production?
+      if Rails.env.production? && S3_FILENAME
         Aws::S3::Resource.new.bucket(S3_BUCKET).object(S3_FILENAME).put(
           body: results_json, acl: 'private', content_type: 'application/json',
         )
