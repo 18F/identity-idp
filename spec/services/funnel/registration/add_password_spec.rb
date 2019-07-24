@@ -15,6 +15,6 @@ describe Funnel::Registration::AddPassword do
   end
 
   def funnel
-    RegistrationFunnel.all.first
+    RegistrationLog.all.first
   end
 end

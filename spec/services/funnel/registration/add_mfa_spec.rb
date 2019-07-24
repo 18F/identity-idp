@@ -9,7 +9,7 @@ describe Funnel::Registration::AddMfa do
     Funnel::Registration::Create.call(user_id)
     user_id
   end
-  let(:funnel) { RegistrationFunnel.all.first }
+  let(:funnel) { RegistrationLog.all.first }
 
   it 'adds an 1st mfa' do
     subject.call(user_id, 'phone')
