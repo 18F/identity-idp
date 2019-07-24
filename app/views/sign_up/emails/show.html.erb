@@ -20,13 +20,13 @@
   <hr class="my3 bw3 border-teal rounded"/>
 </div>
 
-<%= simple_form_for @register_user_email_form,
+<%= simple_form_for @resend_email_confirmation_form,
                     html: { class: 'mb2' },
                     url: sign_up_register_path do |f| %>
 
   <%= f.input :email, as: :hidden, wrapper: false %>
   <%= f.input :resend, as: :hidden, wrapper: false %>
-  <%= f.input :request_id, as: :hidden, wrapper: false, input_html: { value: params[:request_id] } %>
+  <%= f.input :request_id, as: :hidden, wrapper: false } %>
   <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
   <%= f.button :submit, t('links.resend'), class: 'btn-link ml-tiny' %></p>
 
