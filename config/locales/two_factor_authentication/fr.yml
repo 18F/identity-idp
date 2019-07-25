@@ -98,8 +98,7 @@ fr:
         success: Votre numéro de téléphone a été supprimé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
-    # TODO: Translate
-    phone_fee_disclosure: Message and data rates may apply
+    phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
     phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité <strong>chaque
       fois que vous vous connectez</strong>.
     phone_label: Numéro de téléphone
