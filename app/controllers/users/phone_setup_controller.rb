@@ -6,7 +6,6 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :set_phone_setup_presenter
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user, nil)
@@ -26,12 +25,6 @@ module Users
     end
 
     private
-
-    def set_phone_setup_presenter
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, delivery_preference
-      )
-    end
 
     def handle_create_success(phone)
       if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
