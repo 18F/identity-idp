@@ -98,6 +98,25 @@ feature 'Changing authentication factor' do
       expect(Twilio::FakeCall.calls).to eq([])
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
+
+  context 'with SMS and number that Verify does not think is valid' do
+    it 'rescues the VerifyError' do
+      allow(Twilio::FakeVerifyAdapter).to receive(:post).
+        and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
+
+      user = create(:user, :signed_up, with: { phone: '+17035551212' })
+      visit new_user_session_path
+      sign_in_live_with_2fa(user)
+      visit manage_phone_path
+      select 'Morocco', from: 'user_phone_form_international_code'
+      fill_in 'user_phone_form_phone', with: '+212 661-289325'
+      click_button t('forms.buttons.submit.confirm_change')
+
+      expect(current_path).to eq manage_phone_path
+      expect(page).to have_content t('errors.messages.invalid_phone_number')
+    end
+  end
+
 =end
 
     scenario 'waiting too long to change phone number' do
@@ -108,6 +127,7 @@ feature 'Changing authentication factor' do
       visit manage_phone_path
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+        print page.current_url
         click_link t('forms.two_factor.try_again'), href: manage_phone_path
         complete_2fa_confirmation_without_entering_otp
 
