@@ -4,6 +4,6 @@ en:
     help:
       message: Get help at www.login.gov/help or contact us at www.login.gov/contact.
     stop:
-      message: You've unsubscribed from alerts from login.gov. You will no longer
+      message: You've unsubscribed from login.gov alerts. You will no longer
         receive alerts unless you resubscribe by using this phone number to sign in
         or set up an account. Reply HELP for help or see www.login.gov/help.
