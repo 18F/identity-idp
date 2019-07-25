@@ -27,7 +27,7 @@ module Users
 
     private
 
-    def setup_presenter
+    def set_setup_presenter
       @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
