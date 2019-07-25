@@ -23,8 +23,8 @@ class TwoFactorOptionsPresenter
     t("two_factor_authentication.two_factor_#{recovery}choice")
   end
 
-  def info
-    t("two_factor_authentication.two_factor_#{recovery}choice_intro")
+  def intro_parapraphs
+    t("two_factor_authentication.two_factor_#{recovery}choice_intro_paragraphs")
   end
 
   def label
