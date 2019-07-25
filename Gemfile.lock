@@ -34,9 +34,9 @@ GIT
     proofer (2.7.0)
 
 GIT
-  remote: https://github.com/18F/identity_validations.git
-  revision: 8b4abc433b113a2cc4a43fcb3175963be6a4b5f3
-  ref: 8b4abc4
+  remote: https://github.com/18F/identity-validations.git
+  revision: d112abe3707b62ee53987dfbdc89faa70a4c976f
+  branch: master
   specs:
     identity_validations (0.1.0)
 
