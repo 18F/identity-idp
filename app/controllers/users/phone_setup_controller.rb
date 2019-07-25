@@ -6,7 +6,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :set_phone_setup_presenter
+    before_action :set_setup_presenter
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user, nil)
@@ -27,10 +27,8 @@ module Users
 
     private
 
-    def set_phone_setup_presenter
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, delivery_preference
-      )
+    def set_setup_presenter
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
     end
 
     def handle_create_success(phone)
