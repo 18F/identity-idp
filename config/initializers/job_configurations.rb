@@ -21,5 +21,5 @@ JobRunner::Runner.configurations << JobRunner::JobConfiguration.new(
   name: 'OMB Fitara report',
   interval: 24 * 60 * 60, # 5 minutes
   timeout: 300,
-  callback: -> { Reports::OmbFitaraReport.call },
+  callback: -> { Reports::OmbFitaraReport.new.call },
 )

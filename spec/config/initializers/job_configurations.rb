@@ -31,7 +31,9 @@ describe JobRunner::Runner do
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
       expect(job.interval).to eq 24 * 60 * 60
 
-      expect(Reports::OmbFitaraReport).to receive(:call).and_return('the report test worked')
+      service = instance_double(Reports::OmbFitaraReport)
+      expect(Reports::OmbFitaraReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
 
       expect(job.callback.call).to eq 'the report test worked'
     end
