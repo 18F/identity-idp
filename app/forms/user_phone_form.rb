@@ -50,6 +50,7 @@ class UserPhoneForm
     false
   end
 
+  # :reek:FeatureEnvy
   def masked_number
     phone_number = phone_configuration == nil ? nil : phone_configuration.phone
     return '' if !phone_number || phone_number.blank?
