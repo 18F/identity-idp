@@ -71,18 +71,6 @@ describe ServiceProvider do
       expect(service_provider).to be_valid
     end
 
-    it 'provides an error message when issuer is formatted incorrectly' do
-      invalid_service_provider = build(
-        :service_provider,
-        issuer: 'i-dont-care-about-your-rules even a little',
-      )
-      invalid_service_provider.valid?
-
-      expect(invalid_service_provider.errors[:issuer]).to include(
-        t('activerecord.errors.models.service_provider.attributes.issuer.invalid'),
-      )
-    end
-
     it 'accepts a blank certificate' do
       sp = build(:service_provider, redirect_uris: [], cert: '')
 
@@ -93,15 +81,6 @@ describe ServiceProvider do
       sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_invalid_sp')
 
       expect(sp).to_not be_valid
-    end
-
-    it 'provides an error message if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_invalid_sp')
-      sp.valid?
-
-      message_key = 'activerecord.errors.models.service_provider.attributes.cert.invalid'
-
-      expect(sp.errors[:cert]).to include(t(message_key))
     end
 
     it 'accepts a valid x509 certificate' do
