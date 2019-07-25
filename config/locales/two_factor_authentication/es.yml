@@ -154,8 +154,8 @@ es:
     two_factor_recovery_choice: Configuración del segundo método de autenticación
       (2 de 2)
     two_factor_recovery_choice_intro_paragraphs:
-    - Si agrega un segundo método de autenticación, podrá iniciar sesión en su cuenta,
-      incluso si pierde o no la otra.
+    - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
+      à votre compte même si vous perdez ou n’avez pas l’autre.
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad

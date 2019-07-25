@@ -142,7 +142,7 @@ en:
     two_factor_recovery_choice: Second authentication method setup (2 of 2)
     two_factor_recovery_choice_intro_paragraphs:
     - Adding a second authentication method makes sure you can sign in to you account
-      even if you lose or don’t the other.
+      even if you lose or don’t have the other.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
