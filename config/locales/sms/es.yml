@@ -2,8 +2,7 @@
 es:
   sms:
     help:
-      message: 'login.gov: obtenga ayuda en www.login.gov/help o envíenos un correo
-        electrónico a hello@login.gov.'
+      message: Obtenga ayuda en www.login.gov/help o contáctenos en www.login.gov/contact.
     stop:
       message: login.gov no es un servicio de suscripción. Solo recibirá códigos de
         seguridad cuando se registre. Responda HELP para obtener ayuda o visite www.login.gov/help.
