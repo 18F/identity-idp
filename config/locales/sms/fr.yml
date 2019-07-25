@@ -5,7 +5,7 @@ fr:
       message: Obtenez de l'aide à l'adresse www.login.gov/help ou contactez-nous
         à l'adresse www.login.gov/contact.
     stop:
-      message: Has cancelado la suscripción a las alertas de login.gov. Ya no recibirá
-        alertas a menos que vuelva a suscribirse utilizando este número de teléfono
-        para iniciar sesión o configurar una cuenta. Responda la HELP para obtener
-        ayuda de ver www.login.gov/help.
+      message: Vous avez désabonné des alertes de login.gov. Vous ne recevrez plus
+        d'alertes sauf si vous vous réabonnez en utilisant ce numéro de téléphone
+        pour vous connecter ou créer un compte. Répondez à HELP pour obtenir de l'aide
+        ou visitez www.login.gov/help.
