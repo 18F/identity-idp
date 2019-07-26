@@ -3,26 +3,6 @@ require 'rails_helper'
 feature 'User edit' do
   let(:user) { create(:user, :signed_up) }
 
-  context 'editing 2FA phone number' do
-    before do
-      sign_in_and_2fa_user(user)
-      visit manage_phone_path
-    end
-
-    scenario 'confirms with selected OTP delivery method and updates user delivery preference' do
-      choose 'Phone call'
-
-      click_button t('forms.buttons.submit.confirm_change')
-
-      user.reload
-
-      expect(current_path).to eq(login_otp_path(otp_delivery_preference: :voice))
-      expect(Twilio::FakeCall.calls.length).to eq(1)
-      expect(Twilio::FakeMessage.messages).to eq([])
-      expect(user.otp_delivery_preference).to eq('voice')
-    end
-  end
-
   context 'deleting 2FA phone number' do
     before do
       sign_in_and_2fa_user(user)

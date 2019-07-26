@@ -24,19 +24,11 @@ describe Users::PhonesController do
       end
 
       it 'lets user know they need to confirm their new phone' do
-        expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(
           MfaContext.new(user).phone_configurations.reload.first.phone,
         ).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
-                                           otp_make_default_number: true },
-          ),
-        )
-        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 
