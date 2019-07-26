@@ -68,24 +68,20 @@
 </ul>
 
 <!-- ahhhh fix these??? -->
-<%= simple_form_for @consent_form,
+<%= simple_form_for :doc_auth,
                     url: url_for,
                     method: 'put',
                     html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
   <br/>
-  <div class='mt0'>
-
-    <div class="top-n24 right-0">
-      <label class="" for="ial2_consent_given">
-        <div class="checkbox">
-          <%= check_box_tag :ial2_consent_given, true, false %>
-          <span class="indicator"></span>
-          By checking this box, you are letting login.gov ask for, use, keep, and share your personal information.
-            We will only use it to verify your identity.
-        </div>
-      </label>
+  <label class="mtn1 mb3" for="ial2_consent_given">
+    <div class="checkbox">
+      <%= check_box_tag :ial2_consent_given, true, false %>
+      <span class="indicator"></span>
+      By checking this box, you are letting login.gov ask for, use, keep, and share your personal information.
+      We will only use it to verify your identity. <%= link_to('Learn more.', 'https://login.gov/policy/', target: '_blank') %>
     </div>
-    <%= f.button :submit, t('doc_auth.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6 no-auto-enable' %>
+  </label>
+  <%= f.button :submit, t('doc_auth.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6 no-auto-enable' %>
 <% end %>
 
 <br/>
@@ -99,3 +95,4 @@
 </div>
 
 <%= javascript_pack_tag('clipboard') %>
+<%= javascript_pack_tag('ial2-consent-button') %>
