@@ -79,7 +79,9 @@ fr:
       pwned_password: Le mot de passe que vous avez entré n'est pas sécurisé. C'est
         dans une liste de mots de passe connus exposés dans les violations de données.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
-      twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
+      twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.  Il
+        est possible que le service SMS rencontre des difficultés. Vous pouvez vérifier
+        le statut à <a href="https://status.twilio.com/" target='_blank'>Twilio</a>.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé
