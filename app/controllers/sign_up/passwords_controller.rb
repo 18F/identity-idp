@@ -49,6 +49,7 @@ module SignUp
         user: @user,
         attributes: { password: password },
       ).call
+      Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
     end
 

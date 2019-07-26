@@ -98,6 +98,7 @@ fr:
         success: Votre numéro de téléphone a été supprimé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?
+    phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
     phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité <strong>chaque
       fois que vous vous connectez</strong>.
     phone_label: Numéro de téléphone
@@ -117,9 +118,14 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
-    two_factor_choice: Sécurise ton compte
-    two_factor_choice_intro: login.gov s'assure que vous pouvez accéder à votre compte
-      en ajoutant une deuxième couche de sécurité.
+    two_factor_choice: Configuration de la première méthode d'authentification (1
+      sur 2)
+    two_factor_choice_intro_paragraphs:
+    - Ajoutez une deuxième couche de sécurité pour que vous puissiez vous connecter
+      à votre compte.
+    - Vous utiliserez une seule méthode d'authentification pour vous connecter, mais
+      nous vous demandons d'en configurer deux. Cela garantit que vous pouvez toujours
+      vous connecter si vous perdez l'accès à l'un d'entre eux.
     two_factor_choice_options:
       auth_app: Application d'authentification
       auth_app_info_html: Configurez une application d'authentification pour obtenir
@@ -144,10 +150,11 @@ fr:
       voice_info_html: Obtenez votre code de sécurité par appel téléphonique
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez une clé de sécurité pour sécuriser votre compte
-    two_factor_recovery_choice: Ajouter une autre méthode
-    two_factor_recovery_choice_intro: L'ajout d'une autre méthode d'authentification
-      rend sûr que vous pouvez vous connecter à votre compte même si vous perdez ou
-      n'avez pas votre principal.
+    two_factor_recovery_choice: Configuration de la seconde méthode d'authentification
+      (2 sur 2)
+    two_factor_recovery_choice_intro_paragraphs:
+    - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
+      à votre compte même si vous perdez ou ne perdez pas l’autre.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité

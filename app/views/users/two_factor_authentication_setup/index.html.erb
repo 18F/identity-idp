@@ -1,30 +1,38 @@
-<div class="h5 caps bold my1 accent-blue"><%= t('sign_up.current_step', step: @presenter.step) %></div>
 <% title @presenter.title %>
-<h1 class="h3 my0"><%= @presenter.heading %></h1>
-<p class="mt-tiny mb3"><%= @presenter.info %></p>
-  <%= simple_form_for @two_factor_options_form,
-                      html: { autocomplete: 'off', role: 'form' },
-                      method: :patch,
-                      url: two_factor_options_path do |f| %>
-<div class="mb3">
-  <fieldset class="m0 p0 border-none">
-    <legend class="mb2 serif bold"><%= @presenter.label %></legend>
-    <% @presenter.options.each_with_index do |option, index| %>
-      <label class="btn-border col-12 mb2 <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
-        <div class="radio">
-          <%= radio_button_tag('two_factor_options_form[selection]', option.type, index.zero?) %>
-          <span class="indicator mt-tiny"></span>
-          <span class="blue bold fs-20p"><%= option.label %></span>
-          <div class="regular gray-dark fs-10p mt0 mb-tiny"><%= option.info %></div>
-        </div>
-      </label>
-      <% end %>
-  </fieldset>
+
+<div class="h5 caps bold my1 accent-blue">
+  <%= t('sign_up.current_step', step: @presenter.step) %>
 </div>
 
-<div>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide mb1' %>
-</div>
+<h1 class="h4 my0"><%= @presenter.heading %></h1>
+
+<% @presenter.intro_parapraphs.each do |paragraph| %>
+  <p class="mt-tiny"><%= paragraph %></p>
+<% end %>
+
+<%= simple_form_for @two_factor_options_form,
+                    html: { autocomplete: 'off', role: 'form' },
+                    method: :patch,
+                    url: two_factor_options_path do |f| %>
+  <div class="mb3">
+    <fieldset class="m0 p0 border-none">
+      <legend class="mb2 serif bold"><%= @presenter.label %></legend>
+      <% @presenter.options.each_with_index do |option, index| %>
+        <label class="btn-border col-12 mb2 <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
+          <div class="radio">
+            <%= radio_button_tag('two_factor_options_form[selection]', option.type, index.zero?) %>
+            <span class="indicator mt-tiny"></span>
+            <span class="blue bold fs-20p"><%= option.label %></span>
+            <div class="regular gray-dark fs-10p mt0 mb-tiny"><%= option.info %></div>
+          </div>
+        </label>
+        <% end %>
+    </fieldset>
+  </div>
+
+  <div>
+    <%= f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide mb1' %>
+  </div>
 <% end %>
 
 <%= render 'shared/cancel', link: destroy_user_session_path %>

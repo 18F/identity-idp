@@ -7,10 +7,10 @@ shared_examples 'setting up backup mfa on sign up' do
     fill_in 'password_form_password', with: 'salty pickles'
     click_button t('forms.buttons.continue')
 
-    device = choose_and_confirm_mfa
+    choose_and_confirm_mfa
 
     click_continue
-    expect_back_mfa_setup_to_be_required(device)
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('titles.account'))
@@ -19,10 +19,10 @@ shared_examples 'setting up backup mfa on sign up' do
 
   it 'requires backup mfa on sp sign up' do
     user = visit_idp_from_sp_and_sign_up
-    device = choose_and_confirm_mfa
+    choose_and_confirm_mfa
 
     click_continue
-    expect_back_mfa_setup_to_be_required(device)
+    expect_back_mfa_setup_to_be_required
 
     expect(page).to have_current_path(sign_up_completed_path)
 
@@ -32,7 +32,7 @@ shared_examples 'setting up backup mfa on sign up' do
     expect(user.reload.encrypted_recovery_code_digest).to be_empty
   end
 
-  def expect_back_mfa_setup_to_be_required(device)
+  def expect_back_mfa_setup_to_be_required
     expect(page).to have_current_path(two_factor_options_path)
     expect(page).to have_content t('two_factor_authentication.two_factor_recovery_choice')
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe DeleteUserEmailForm do
   describe '#submit' do
     context 'with only a single email address' do
-      let(:user) { create(:user, :with_email, email: 'test@example.com ') }
+      let(:user) { create(:user, email: 'test@example.com ') }
       let(:email_address) { user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
       let!(:result) { form.submit }
