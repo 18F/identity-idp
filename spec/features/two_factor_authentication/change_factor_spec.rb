@@ -24,32 +24,6 @@ feature 'Changing authentication factor' do
       expect(current_path).to eq manage_password_path
     end
 
-    scenario 'waiting too long to change phone number' do
-      allow(SmsOtpSenderJob).to receive(:perform_later)
-
-      user = sign_in_and_2fa_user
-      old_phone = MfaContext.new(user).phone_configurations.first.phone
-      visit manage_phone_path
-
-      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        print page.current_url
-        click_link t('forms.two_factor.try_again'), href: manage_phone_path
-        complete_2fa_confirmation_without_entering_otp
-
-        expect(SmsOtpSenderJob).to have_received(:perform_later).
-          with(
-            code: user.reload.direct_otp,
-            phone: old_phone,
-            otp_created_at: user.reload.direct_otp_sent_at.to_s,
-            message: 'jobs.sms_otp_sender_job.login_message',
-            locale: nil,
-          )
-
-        expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
-        expect(page).not_to have_link t('forms.two_factor.try_again')
-      end
-    end
-
     context 'resending OTP code to old phone' do
       it 'resends OTP and prompts user to enter their code' do
         allow(SmsOtpSenderJob).to receive(:perform_later)

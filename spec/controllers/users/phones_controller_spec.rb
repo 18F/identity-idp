@@ -70,19 +70,11 @@ describe Users::PhonesController do
       end
 
       it 'processes successfully and informs user' do
-        expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(MfaContext.new(user).phone_configurations.reload.first.phone).to_not eq(
           MfaContext.new(second_user).phone_configurations.first.phone,
         )
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
-                                           otp_make_default_number: true },
-          ),
-        )
-        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 
