@@ -1,5 +1,5 @@
-<% if flash[:errors] %>
-  <div class='alert alert-error'><%= flash[:errors] %></div>
+<% if flow_session[:error_message] %>
+  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
 <% end %>
 
 <h1 class='h3 my0'><%= t('doc_auth.headings.welcome') %></h1>
@@ -70,7 +70,7 @@
 <!-- ahhhh fix these??? -->
 <%= simple_form_for @consent_form,
                     url: url_for,
-                    method: 'POST',
+                    method: 'put',
                     html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
   <br/>
   <div class='mt0'>
