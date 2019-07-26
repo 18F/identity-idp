@@ -4,7 +4,7 @@ es:
     buttons:
       change_address: cambio
       change_ssn: cambio
-      get_started: Empezar
+      continue: Continue
       start_over: Comenzar de nuevo
       use_computer: Usa tu computadora
       use_phone: Usa tu telefono

@@ -22,6 +22,7 @@ en:
         try again later.
       acuant_throttle: To prevent abuse we limit the number of times you can attempt
         to validate a document.  Please try again later.
+      consent_must_be_given: You must consent muahahah
       general_error: Your state issued ID could not be verified.  Please try using
         different images starting with the front of your state issued ID.
       general_info: |-

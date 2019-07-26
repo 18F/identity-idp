@@ -257,7 +257,8 @@ Rails.application.routes.draw do
       if FeatureManagement.doc_auth_enabled?
         get '/doc_auth' => 'doc_auth#index'
         get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-        put '/doc_auth/:step' => 'doc_auth#update'
+        put '/doc_auth/:step' => 'doc_auth#update', as: :doc_auth_step_update
+        post '/doc_auth/:step' => 'doc_auth#create'
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
         put '/capture_doc/:step' => 'capture_doc#update'
