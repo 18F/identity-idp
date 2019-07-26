@@ -77,6 +77,7 @@ module TwoFactorAuthentication
       @personal_key_form.personal_key
     end
 
+    # rubocop:disable Metrics/AbcSize
     def handle_valid_otp
       handle_valid_otp_for_authentication_context
       if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
@@ -89,5 +90,6 @@ module TwoFactorAuthentication
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end

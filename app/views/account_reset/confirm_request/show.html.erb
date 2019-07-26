@@ -1,0 +1,21 @@
+<% title t('account_reset.confirm_request.check_your_email') %>
+
+<div class="mtn2">
+  <%= image_tag asset_url('check-email.svg'), width: 24, class: 'left-0 right-0 ico-heading' %>
+  <h1 class="mt2 ml1 h3 ico-heading"><%= t('headings.verify_email') %></h1>
+</div>
+
+<p><%= t('account_reset.confirm_request.instructions_start') %>
+  <strong><%= email %></strong>
+  <%= t('account_reset.confirm_request.instructions_end') %>
+</p>
+
+<div class="col-3">
+  <hr class="my3 bw3 border-teal rounded"/>
+</div>
+
+<% if sms_phone %>
+  <p><%= t('account_reset.confirm_request.security_note') %></p>
+<% end %>
+
+<p><%= t('account_reset.confirm_request.close_window') %></p>

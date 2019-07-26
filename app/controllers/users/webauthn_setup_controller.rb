@@ -1,5 +1,4 @@
 module Users
-  # rubocop:disable Metrics/ClassLength
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
@@ -90,6 +89,7 @@ module Users
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       save_remember_device_preference
+      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       redirect_to two_2fa_setup
     end
 
@@ -112,5 +112,4 @@ module Users
       TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

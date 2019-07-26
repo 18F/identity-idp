@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AccountReset::RequestController do
-  let(:user) { create(:user, :with_authentication_app, :with_email) }
+  let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
     it 'renders the page' do
       stub_sign_in_before_2fa(user)
@@ -53,7 +53,7 @@ describe AccountReset::RequestController do
     end
 
     it 'logs sms user in the analytics' do
-      user = create(:user, :signed_up, :with_email)
+      user = create(:user, :signed_up)
       stub_sign_in_before_2fa(user)
 
       stub_analytics
@@ -71,7 +71,7 @@ describe AccountReset::RequestController do
     end
 
     it 'logs PIV/CAC user in the analytics' do
-      user = create(:user, :with_piv_or_cac, :with_backup_code, :with_email)
+      user = create(:user, :with_piv_or_cac, :with_backup_code)
       stub_sign_in_before_2fa(user)
 
       stub_analytics

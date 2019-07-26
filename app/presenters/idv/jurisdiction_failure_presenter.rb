@@ -30,7 +30,7 @@ module Idv
     end
 
     def message
-      t('headings.lock_failure')
+      nil
     end
 
     def next_steps
