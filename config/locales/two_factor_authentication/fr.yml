@@ -130,13 +130,13 @@ fr:
       auth_app: Application d'authentification
       auth_app_info_html: Configurez une application d'authentification pour obtenir
         votre code de sécurité sans fournir de numéro de téléphone
-      backup_code: Codes de sécurité personnels
-      backup_code_info_html: Recevoir une liste pré-générée de codes de sécurité à
-        utiliser lors de la connexion
-      backup_code_only: I don't have any of the above
-      backup_code_only_info_html: Configurez votre compte sans méthode d'authentification
-        de sauvegarde. <strong>Ceci n'est pas recommandé.</strong> Si vous perdez
-        vos codes de sauvegarde, vous ne pourrez pas vous connecter à votre compte.
+      backup_code: Je n'ai rien de ce qui précède
+      backup_code_info_html: Vous pouvez utiliser des codes de sauvegarde. Nous vous
+        donnerons 10 codes que vous devrez garder dans un endroit sûr.
+      backup_code_only: Je n'ai rien de ce qui précède
+      backup_code_only_info_html: Vous pouvez utiliser des codes de sauvegarde comme
+        seule méthode d'authentification. Nous vous donnerons 10 codes que vous devrez
+        garder dans un endroit sûr.
       phone: Téléphone
       phone_info_html: Obtenez votre code de sécurité par SMS ou par appel téléphonique
       piv_cac: Employés du gouvernement
