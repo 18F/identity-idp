@@ -19,7 +19,7 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
-        user_session[:signing_up] = false
+        backup_code_only_processing
         process_valid_form
       else
         @presenter = two_factor_options_presenter
@@ -32,6 +32,13 @@ module Users
     end
 
     private
+
+    def backup_code_only_processing
+      if user_session[:signing_up] &&
+        @two_factor_options_form.selection == 'backup_code_only'
+        user_session[:signing_up] = false
+      end
+    end
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp)
