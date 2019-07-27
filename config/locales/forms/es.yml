@@ -2,12 +2,16 @@
 es:
   forms:
     backup_code:
-      are_you_sure_continue: continúa con los códigos de respaldo
+      are_you_sure_continue: Continuar
       are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de
         autenticación,
-      are_you_sure_desc: No se recomiendan los códigos de respaldo porque se pueden
-        perder o robar fácilmente. Si tienes acceso a otro método de autenticación,
-        elije otra opción.
+      are_you_sure_desc: "<br> <b> Los códigos de respaldo no son muy seguros </b>
+        porque se pueden perder o robar fácilmente. <br> <b> Elija otra opción </b>,
+        si puede. Puede usar un teléfono, descargar una aplicación de autenticación
+        o usar una clave de seguridad. <br> <b> Si continúa con los códigos de copia
+        de seguridad, manténgalos seguros </b>. Le daremos 10 códigos que puede descargar,
+        imprimir, copiar o escribir. Más tarde, deberás ingresar uno cada vez que
+        inicies sesión."
       are_you_sure_other_option: Elige otra opción
       are_you_sure_title: "¿Estás seguro de que esta es tu única opción?"
       depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
