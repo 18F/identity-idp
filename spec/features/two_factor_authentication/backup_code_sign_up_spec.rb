@@ -45,7 +45,7 @@ feature 'sign up with backup code' do
         click_on 'Continue'
 
         expect(current_path).to eq backup_code_create_path
-        expect(page).to have_content(t('forms.backup_code.warn'))
+        expect(page).to have_content(t('forms.backup_code.subtitle'))
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 
@@ -62,6 +62,10 @@ feature 'sign up with backup code' do
     visit_idp_from_sp_with_loa1(:oidc)
     sign_up_and_set_password
     select_2fa_option('backup_code_only')
+    click_continue
+
+    expect(page).to have_current_path(sign_up_completed_path)
+
     click_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
