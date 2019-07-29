@@ -1,0 +1,17 @@
+- title t('cac_proofing.titles.cac_proofing')
+
+h5.my1.caps.bold.accent-blue = t('cac_proofing.step', step: 2)
+
+= image_tag(asset_url('state-id-confirm@3x.png'),
+        alt: t('idv.titles.session.success'), width: 210)
+
+h1.h3.mb2.mt3.my0 = t('cac_proofing.headings.success')
+
+br
+.mt4 = button_to(t('forms.buttons.continue'), url_for, method: :put,
+          class: 'btn btn-primary btn-wide sm-col-6 col-12')
+
+= form_for('', url: url_for, method: 'PUT',
+        html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+
+= render 'idv/cac/start_over_or_cancel'
