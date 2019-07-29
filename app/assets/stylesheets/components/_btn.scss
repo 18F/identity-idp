@@ -20,6 +20,13 @@
 
 .btn-primary {
   border-radius: $border-radius-lg;
+
+  &:disabled {
+    opacity: .6;
+    background-color: $gray-dark;
+    color: $white;
+    cursor: default;
+  }
 }
 
 .btn-secondary {

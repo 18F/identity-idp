@@ -1,14 +1,12 @@
 function toggleButton() {
   const continueButton = document.querySelector('input[value="Continue"]');
-  const checkbox = document.querySelector('input[name="ial2_consent_given"]');
+  var checkbox = document.querySelector('input[name="ial2_consent_given"]');
 
-  console.log(checkbox);
+  continueButton.disabled = true;
 
-  if (checkbox.checked == true) {
-    console.log("HEY")
-  }
-
-  console.log(continueButton);
+  checkbox.addEventListener("click", function() {
+    continueButton.disabled = !continueButton.disabled;
+  });
 }
 
 document.addEventListener('DOMContentLoaded', toggleButton);
