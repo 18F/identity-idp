@@ -31,7 +31,7 @@ module Users
     end
 
     def download
-      data = user_session[:backup_codes].join("\n") + "\n"
+      data = user_session[:backup_codes].join("\r\n") + "\r\n"
       send_data data, filename: 'backup_codes.txt'
     end
 
