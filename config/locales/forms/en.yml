@@ -18,8 +18,8 @@ en:
       generate: Generate
       print: Print
       regenerate: Regenerate
-      subinfo: "<b><u>Don't lose these codes</u></b>. Download, print, or copy them.
-        Each code can only be used once. After you’ve used all 10 codes, 
+      subinfo: "<b>Don't lose these codes</b>. Download, print, or copy them.
+        Each code can only be used once. After you’ve used all 10 codes,
         we’ll give you 10 new codes.  Keep your codes as safe
         as your password."
       subtitle: Your backup codes

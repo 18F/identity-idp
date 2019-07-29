@@ -6,36 +6,33 @@ h1.h3.my0.mt0 = t('forms.backup_code.subtitle')
         date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))
 br
 br
-.inline-block == t('forms.backup_code.subinfo')
-ul.list-reset
-  li.mb0
-    table.pl4.pr3.monospace
-      tr
-        td
-          br
-          strong
-            - @codes[0..@codes.length / 2 - 1].each do |code|
-              = code.upcase.insert(8, '-').insert(4, '-')
-              br
-              br
-        td
-          br
-          strong
-            - @codes[@codes.length / 2..-1].each do |code|
-              = code.upcase.insert(8, '-').insert(4, '-')
-              br
-              br
-    .center.mt1
-      - if desktop_device?
-        = link_to t('forms.backup_code.download'), backup_code_download_path,
-          class: 'text-decoration-none ico btn-border ico-download'
-      = link_to t('forms.backup_code.print'), '#',
-        data: { print: true },
-        class: 'ico ico-print btn-border ml2 text-decoration-none'
-      = link_to t('links.copy'), '#',
-        class: 'text-decoration-none ml2 clipboard btn-border ico ico-copy',
-        data: { "clipboard-text": @codes.join(' ') }
-br
+.inline-block.mb3 == t('forms.backup_code.subinfo')
+.mb4
+  table.monospace
+    tr
+      td.p0
+        .monospace.bold
+          - @codes[0..@codes.length / 2 - 1].each do |code|
+            = code.upcase.insert(8, '-').insert(4, '-')
+            br
+            br
+      td
+        .monospace.bold
+          - @codes[@codes.length / 2..-1].each do |code|
+            = code.upcase.insert(8, '-').insert(4, '-')
+            br
+            br
+  .mt0
+    - if desktop_device?
+      = link_to t('forms.backup_code.download'), backup_code_download_path,
+        class: 'text-decoration-none ico btn-border ico-download'
+    = link_to t('forms.backup_code.print'), '#',
+      data: { print: true },
+      class: 'ico ico-print btn-border ml2 text-decoration-none'
+    = link_to t('links.copy'), '#',
+      class: 'text-decoration-none ml2 clipboard btn-border ico ico-copy',
+      data: { "clipboard-text": @codes.join(' ') }
+
 = form_tag(backup_code_continue_path, method: :patch, role: 'form') do
   .clearfix.mxn1
     .col.col-6.sm-col-5.px1
