@@ -14,7 +14,7 @@ feature 'cac proofing present cac step' do
   end
 
   it 'proceeds to the next page' do
-    click_submit_default
+    click_button t('forms.buttons.cac')
 
     expect(page).to have_current_path(idv_cac_proofing_enter_info_step)
   end

@@ -15,6 +15,10 @@ module CacProofingHelper
     idv_cac_step_path(step: :verify)
   end
 
+  def idv_cac_proofing_success_step
+    idv_cac_step_path(step: :success)
+  end
+
   def enable_cac_proofing
     allow(Figaro.env).to receive(:cac_proofing_enabled).and_return('true')
   end
@@ -30,7 +34,7 @@ module CacProofingHelper
 
   def complete_cac_proofing_steps_before_enter_info_step
     complete_cac_proofing_steps_before_present_cac_step
-    click_continue
+    click_button t('forms.buttons.cac')
   end
 
   def complete_cac_proofing_steps_before_verify_step

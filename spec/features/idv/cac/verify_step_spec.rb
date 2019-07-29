@@ -16,6 +16,6 @@ feature 'cac proofing verify info step' do
   it 'proceeds to the next page' do
     click_continue
 
-    expect(page).to have_current_path(idv_cac_proofing_encrypt_step)
+    expect(page).to have_current_path(idv_cac_proofing_success_step)
   end
 end
