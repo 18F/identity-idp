@@ -13,7 +13,8 @@ es:
         imprimir, copiar o escribir. Más tarde, deberás ingresar uno cada vez que
         inicies sesión."
       are_you_sure_other_option: Elige otra opción
-      are_you_sure_title: "¿Estás seguro de que esta es tu única opción?"
+      are_you_sure_title: "¿Estás seguro? Le daremos códigos de respaldo para guardar
+        y usar."
       depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
         de respaldo después de que hagas clic en continuar. Guárdalas en un lugar
         seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
