@@ -6,11 +6,11 @@ en:
       are_you_sure_continue_prologue: If you don’t have access to any other authentication
         method,
       are_you_sure_desc: "<br><b>Backup codes are not very safe</b> because they can
-        easily be lost or stolen. <b>If you can, choose a different method</b>
-        (use a phone, download an authentication application, or use a security
-        key). <br><b>If you continue with backup codes, keep them safe</b>.  We'll
-        give you 10 codes that you can download, print, copy or write down.  Later,
-        you'll have to enter one every time you sign in."
+        easily be lost or stolen. <b>If you can, choose a different method</b> (use
+        a phone, download an authentication application, or use a security key). <br><b>If
+        you continue with backup codes, keep them safe</b>.  We'll give you 10 codes
+        that you can download, print, copy or write down.  Later, you'll have to enter
+        one every time you sign in."
       are_you_sure_other_option: Choose another option
       are_you_sure_title: Are you sure?  We'll give you backup codes to save and use.
       depleted_desc: You used all of your backup codes. We will generate new backup
