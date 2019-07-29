@@ -1,8 +1,7 @@
 class MfaPolicy
   # :reek:BooleanParameter
-  def initialize(user, signup = false)
+  def initialize(user)
     @mfa_user = MfaContext.new(user)
-    @signup_flag = signup
   end
 
   def no_factors_enabled?
@@ -33,5 +32,4 @@ class MfaPolicy
   private
 
   attr_reader :mfa_user
-  attr_reader :signup_flag
 end
