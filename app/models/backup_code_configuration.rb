@@ -17,7 +17,7 @@ class BackupCodeConfiguration < ApplicationRecord
 
   # This method smells of :reek:UtilityFunction
   def selection_presenters
-    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
+    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user)]
   end
 
   def friendly_name
