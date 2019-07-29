@@ -110,7 +110,8 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_upload_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    click_on t('doc_auth.buttons.get_started')
+    find('input[name="ial2_consent_given"]').set(true)
+    click_on t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)

@@ -4,7 +4,7 @@ function toggleButton() {
 
   continueButton.disabled = true;
 
-  checkbox.addEventListener("click", function() {
+  checkbox.addEventListener('click', function() {
     continueButton.disabled = !continueButton.disabled;
   });
 }
