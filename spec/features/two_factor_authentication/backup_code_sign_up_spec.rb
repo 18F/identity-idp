@@ -45,7 +45,7 @@ feature 'sign up with backup code' do
         click_on 'Continue'
 
         expect(current_path).to eq backup_code_create_path
-        expect(page).to have_content(t('forms.backup_code.warn'))
+        expect(page).to have_content(t('forms.backup_code.subtitle'))
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 

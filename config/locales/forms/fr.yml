@@ -21,18 +21,14 @@ fr:
       depleted_title: Créer de nouveaux codes de sauvegarde
       download: Télécharger
       generate: Générer
-      info: Utiliser les codes de connexion si vous ne pouvez pas accéder à votre
-        téléphone pour vous connecter
-      instructions: Un code de connexion vous sera demandé chaque fois que vous vous
-        connecterez. sur votre compte login.gov.
       print: Impression
       regenerate: Régénérer
-      subinfo: Chaque code ne peut être utilisé qu'une seule fois. Une fois le code
-        10 utilisé, vous serez invité à télécharger une nouvelle liste. Traitez vos
-        codes de récupération avec le même niveau d’attention que votre mot de passe.
+      subinfo: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
+        Chaque code ne peut être utilisé qu'une seule fois. Une fois que vous avez
+        utilisé les 10 codes, nous vous en donnons 10 nouveaux. Gardez vos codes aussi
+        sûr qu'un mot de passe."
       subtitle: Vos codes de sauvegarde
       title: Codes de sauvegarde
-      warn: Téléchargez, imprimez ou notez vos codes de sécurité personnels.
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d'origine ne seront
