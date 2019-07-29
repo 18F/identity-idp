@@ -3,21 +3,19 @@
     data: { international_phone_form: true },
     url: target_url) do |f| %>
 
-  <div class="sm-col-8 js-intl-tel-code-select">
-    <%= f.input :international_code,
-        collection: international_phone_codes,
-        include_blank: false,
-        input_html: { class: 'international-code' } %>
-  </div>
-  <div class="sm-col-8 mb3">
-    <%= f.label :phone do %>
-      <strong class="left">
-        <%= t('two_factor_authentication.phone_label') %>
-      </strong>
-    <% end %>
-    <%= f.input :phone, as: :tel, label: false, required: true,
-        input_html: { class: 'phone col-8 mb4' } %>
-  </div>
+  <% if @user_phone_form.phone && @user_phone_form.errors.blank?%>
+    <div class="mb1 h4">
+      <%= :phone %>:&nbsp;
+      <strong><%= @user_phone_form.masked_number %></strong>
+    </div><br/>
+
+    <div style="display:none">
+      <%= f.hidden_field :international_code, :value => @user_phone_form.international_code %>
+      <%= f.hidden_field :phone, :value => @user_phone_form.phone %>
+    </div>
+  <% else %>
+    <%= render 'users/shared/phone_number_edit', f: f %>
+  <% end %>
 
   <%= render 'users/shared/otp_delivery_preference_selection' %>
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>

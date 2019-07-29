@@ -27,7 +27,7 @@ fr:
     create_account_without_sp: Créer un compte login.gov
     edit_info:
       password: Changez votre mot de passe
-      phone: Administrer votre numéro de téléphone
+      phone: Administrer les paramètres de votre téléphone
     lock_failure: Voici ce que vous pouvez faire
     mfa_success: Vous avez correctement configuré %{method} comme première méthode
       d'authentification.
