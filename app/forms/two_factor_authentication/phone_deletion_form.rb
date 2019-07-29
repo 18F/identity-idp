@@ -33,7 +33,7 @@ module TwoFactorAuthentication
     def configuration_destroyed
       if configuration.destroy != false
         user.phone_configurations.reload
-        revoke_remember_device
+        revoke_remember_device(user)
         true
       else
         errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')

@@ -38,22 +38,18 @@ module RememberDeviceConcern
     )
   end
 
-  def revoke_remember_device
+  def revoke_remember_device(user)
     return if sign_up_incomplete
     UpdateUser.new(
-      user: this_user,
+      user: user,
       attributes: { remember_device_revoked_at: Time.zone.now },
     ).call
   end
 
   private
 
-  def sign_up_incomplete
-    !MfaPolicy.new(this_user).sufficient_factors_enabled?
-  end
-
-  def this_user
-    user || current_user
+  def sign_up_incomplete(user)
+    !MfaPolicy.new(user).sufficient_factors_enabled?
   end
 
   def handle_valid_remember_device_cookie

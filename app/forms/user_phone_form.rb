@@ -26,7 +26,7 @@ class UserPhoneForm
     success = valid?
     self.phone = submitted_phone unless success
 
-    revoke_remember_device if success
+    revoke_remember_device(user) if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end

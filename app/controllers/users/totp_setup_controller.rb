@@ -80,7 +80,7 @@ module Users
     def process_successful_disable
       analytics.track_event(Analytics::TOTP_USER_DISABLED)
       create_user_event(:authenticator_disabled)
-      revoke_remember_device
+      revoke_remember_device(current_user)
       revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
     end

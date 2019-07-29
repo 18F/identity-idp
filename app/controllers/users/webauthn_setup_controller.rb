@@ -57,7 +57,7 @@ module Users
     def handle_successful_delete
       create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
-      revoke_remember_device
+      revoke_remember_device(current_user)
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
     end

@@ -22,7 +22,7 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    revoke_remember_device
+    revoke_remember_device(user)
     attributes = { x509_dn_uuid: x509_dn_uuid }
     UpdateUser.new(user: user, attributes: attributes).call
     true

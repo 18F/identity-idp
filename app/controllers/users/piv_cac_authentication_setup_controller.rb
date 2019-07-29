@@ -38,7 +38,7 @@ module Users
     private
 
     def remove_piv_cac
-      revoke_remember_device
+      revoke_remember_device(current_user)
       attributes = { x509_dn_uuid: nil }
       UpdateUser.new(user: current_user, attributes: attributes).call
     end
