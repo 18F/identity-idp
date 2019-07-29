@@ -18,10 +18,10 @@ es:
       generate: Generar
       print: Impresión
       regenerate: Regenerar
-      subinfo: "<b><u>NO PIERDAS ESTOS CÓDIGOS</u></b>. Descargar, imprimir, o copiarlos.
-        Cada código solo se puede usar una vez, una vez que se haya utilizado el décimo
-        código, se le pedirá que descargue una nueva lista. Trata tus códigos con
-        el mismo nivel de atención que tu contraseña."
+      subinfo: "<b><u>No pierdas estos códigos</u></b>. Descarga, imprime, o copialos.
+        Cada código solo se puede usar una vez. Después de que haya utilizado el décimo
+        código, le daremos 10 códigos nuevos. Mantenga sus códigos
+        tan seguros como una contraseña."
       subtitle: Tus códigos de respaldo
       title: Códigos de respaldo
     backup_code_regenerate:
