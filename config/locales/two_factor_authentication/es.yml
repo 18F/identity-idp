@@ -130,13 +130,12 @@ es:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Configure una aplicación de autenticación para obtener su
         código de seguridad sin proporcionar un número de teléfono
-      backup_code: Códigos de seguridad personal
-      backup_code_info_html: Reciba una lista generada previamente de códigos de seguridad
-        para usar al iniciar sesión
-      backup_code_only: I don't have any of the above
-      backup_code_only_info_html: Configure su cuenta sin un método de autenticación
-        de copia de seguridad. <strong>Esto no es recomendable.</strong> Si alguna
-        vez pierde sus códigos de respaldo, no podrá iniciar sesión en su cuenta.
+      backup_code: No tengo ninguno de los anteriores
+      backup_code_info_html: Puede utilizar códigos de copia de seguridad. Le daremos
+        10 códigos que deberá guardar en un lugar seguro.
+      backup_code_only: No tengo ninguno de los anteriores
+      backup_code_only_info_html: Puede usar códigos de respaldo como su único método
+        de autenticación. Le daremos 10 códigos que deberá guardar en un lugar seguro.
       phone: Teléfono
       phone_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS o de una llamada telefónica
