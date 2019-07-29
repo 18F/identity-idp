@@ -40,7 +40,7 @@ p.mt-tiny.mb3 == t('forms.backup_code.instructions')
             class: 'ico ico-print btn-border ml2 text-decoration-none'
           = link_to t('links.copy'), '#',
             class: 'text-decoration-none ml2 clipboard btn-border ico ico-copy',
-            data: { "clipboard-text": @codes.join(' ') }
+            data: { "clipboard-text": @codes.join("\r\n") }
 
 = form_tag(backup_code_continue_path, method: :patch, role: 'form') do
   .clearfix.mxn1
