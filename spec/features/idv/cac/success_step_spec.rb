@@ -16,6 +16,6 @@ feature 'cac proofing success step' do
   it 'proceeds to the next page' do
     click_continue
 
-    expect(page).to have_current_path(idv_review_url)
+    expect(page).to have_current_path(idv_phone_path)
   end
 end
