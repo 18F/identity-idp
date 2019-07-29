@@ -1,6 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
     include MfaSetupConcern
+    include UserRevokeRememberDevice
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -60,12 +61,6 @@ module Users
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
       revoke_remember_device
-    end
-
-    def revoke_remember_device
-      UpdateUser.new(
-        user: current_user, attributes: { remember_device_revoked_at: Time.zone.now },
-      ).call
     end
 
     def generator

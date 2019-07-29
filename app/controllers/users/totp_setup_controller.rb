@@ -2,6 +2,7 @@ module Users
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
+    include UserRevokeRememberDevice
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -80,14 +81,8 @@ module Users
       analytics.track_event(Analytics::TOTP_USER_DISABLED)
       create_user_event(:authenticator_disabled)
       revoke_remember_device
+      revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
-    end
-
-    def revoke_remember_device
-      UpdateUser.new(
-        user: current_user,
-        attributes: { otp_secret_key: nil, remember_device_revoked_at: Time.zone.now },
-      ).call
     end
 
     def mark_user_as_fully_authenticated
