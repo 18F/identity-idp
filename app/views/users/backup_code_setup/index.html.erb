@@ -11,6 +11,12 @@
   <% end %>
 <% end %>
 <br>
-<%= render 'shared/cancel_or_back_to_options' %>
+<div class="mt2 pt1 border-top">
+  <% if MfaPolicy.new(current_user).sufficient_factors_enabled? %>
+    <%= link_to t('links.cancel'), account_path, class: 'h5' %>
+  <% else %>
+    <%= link_to @presenter.other_option_title, two_factor_options_path %>
+  <% end %>
+</div>
 
 <%= javascript_pack_tag("webauthn-unhide-signup") %>

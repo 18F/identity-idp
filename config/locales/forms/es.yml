@@ -8,11 +8,11 @@ es:
       are_you_sure_desc: "<br> <b> Los códigos de respaldo no son muy seguros </b>
         porque se pueden perder o robar fácilmente. <b> Si peude, elija otra opción
         </b>, (usar un teléfono, descargar una aplicación de autenticación o usar
-        una clave de seguridad). <br> <b> Si continúa con los códigos de copia de
-        seguridad, manténgalos seguros </b>. Le daremos 10 códigos que puede descargar,
+        una clave de seguridad). <br><br> <b> Si continúa con los códigos de copia
+        de seguridad, manténgalos seguros </b>. Le daremos 10 códigos que puede descargar,
         imprimir, copiar o escribir. Más tarde, deberás ingresar un codigo cada vez
         que inicies sesión."
-      are_you_sure_other_option: Elige otra opción
+      are_you_sure_other_option: Elige un método diferente
       are_you_sure_title: "¿Estás seguro? Le daremos códigos de respaldo para guardar
         y usar."
       depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
