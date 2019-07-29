@@ -3,7 +3,7 @@ module DeprecatedUserAttributes
 
   DEPRECATED_ATTRIBUTES = %i[
     email_fingerprint encrypted_email email confirmed_at confirmation_token confirmation_sent_at
-  ].freeze
+  ]
 
   def []=(attribute, value)
     if show_user_attribute_deprecation_warnings && DEPRECATED_ATTRIBUTES.include?(attribute)

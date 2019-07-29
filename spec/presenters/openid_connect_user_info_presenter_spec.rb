@@ -8,7 +8,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:identity) do
     build(:identity,
           rails_session_id: rails_session_id,
-          user: create(:user),
+          user: create(:user, :with_email),
           scope: scope)
   end
 

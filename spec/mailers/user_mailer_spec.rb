@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserMailer, type: :mailer do
-  let(:user) { build(:user) }
+  let(:user) { build(:user, :with_email) }
   let(:email_address) { user.email_addresses.first }
 
   describe 'email_deleted' do

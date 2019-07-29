@@ -2,10 +2,9 @@
 fr:
   sms:
     help:
-      message: Obtenez de l'aide à l'adresse www.login.gov/help ou contactez-nous
-        à l'adresse www.login.gov/contact.
+      message: 'login.gov: Obtenez de l''aide sur www.login.gov/help ou envoyez-nous
+        un courriel à hello@login.gov.'
     stop:
-      message: Vous avez désabonné des alertes de login.gov. Vous ne recevrez plus
-        d'alertes sauf si vous vous réabonnez en utilisant ce numéro de téléphone
-        pour vous connecter ou créer un compte. Répondez à HELP pour obtenir de l'aide
-        ou visitez www.login.gov/help.
+      message: login.gov n'est pas un service d'abonnement. Vous ne recevrez des codes
+        de sécurité que lorsque vous vous connecterez. Aidez HELP pour obtenir de
+        l'aide ou consultez www.login.gov/help.

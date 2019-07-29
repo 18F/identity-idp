@@ -75,10 +75,7 @@ es:
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista
         de contraseñas conocidas expuestas en violaciones de datos.
       twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
-      twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.<br><br>El
-        servicio de mensajes de texto puede estar teniendo problemas. Puede consultar
-        el estado con <a href="https://status.twilio.com/" target='_blank'>nuestro
-        proveedor de servicios de mensajes</a>.
+      twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado

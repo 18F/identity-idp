@@ -21,7 +21,7 @@ feature 'managing email address' do
 
   context 'allows deletion of email address' do
     it 'does not allow last confirmed email to be deleted' do
-      user = create(:user, :signed_up, email: 'test@example.com ')
+      user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
       confirmed_email = user.confirmed_email_addresses.first
       unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
       user.email_addresses.reload
@@ -37,7 +37,7 @@ feature 'managing email address' do
     end
 
     it 'Allows delete when more than one confirmed email exists' do
-      user = create(:user, :signed_up, email: 'test@example.com ')
+      user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
       confirmed_email2 = create(:email_address, user: user,
                                                 confirmed_at: Time.zone.now)
@@ -54,7 +54,7 @@ feature 'managing email address' do
 
     it 'sends notification to all confirmed emails when email address is deleted' do
       allow(UserMailer).to receive(:email_deleted).and_call_original
-      user = create(:user, :signed_up, email: 'test@example.com ')
+      user = create(:user, :signed_up, :with_email, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
       create(:email_address, user: user, confirmed_at: Time.zone.now)
       user.email_addresses.reload

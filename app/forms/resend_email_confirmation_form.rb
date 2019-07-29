@@ -1,18 +1,44 @@
 class ResendEmailConfirmationForm
   include ActiveModel::Model
+  include FormEmailValidator
 
-  attr_reader :email, :request_id
+  attr_reader :email
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
 
   def initialize(params = {})
-    @email = params[:email]
+    @params = params
+    self.email = params[:email]
     @request_id = params[:request_id]
   end
 
-  def resend
-    'true'
+  def submit
+    @success = valid?
+    send_confirmation_email_if_necessary
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+  end
+
+  def user
+    @_user ||= (email.presence && User.find_with_email(email)) || NonexistentUser.new
+  end
+
+  private
+
+  attr_writer :email
+  attr_reader :params, :success, :request_id
+
+  def send_confirmation_email_if_necessary
+    return unless valid? && user.persisted? && !user.confirmed?
+
+    SendSignUpEmailConfirmation.new(user).call(request_id: request_id)
+  end
+
+  def extra_analytics_attributes
+    {
+      user_id: user.uuid,
+      confirmed: user.confirmed?,
+    }
   end
 end

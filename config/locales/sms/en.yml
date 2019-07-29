@@ -2,8 +2,7 @@
 en:
   sms:
     help:
-      message: Get help at www.login.gov/help or contact us at www.login.gov/contact.
+      message: 'login.gov: Get help at www.login.gov/help or email us at hello@login.gov.'
     stop:
-      message: You've unsubscribed from login.gov alerts. You will no longer receive
-        alerts unless you resubscribe by using this phone number to sign in or set
-        up an account. Reply HELP for help or see www.login.gov/help.
+      message: login.gov is not a subscription service. You will only receive security
+        codes when you sign in. Reply HELP for help or see www.login.gov/help.

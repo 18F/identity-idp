@@ -6,6 +6,7 @@ describe 'Account Reset Request: Delete Account', email: true do
   let(:user) { create(:user, :signed_up) }
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
+  let(:payload) { { uuid: '1234' } }
 
   context 'as an LOA1 user' do
     it 'allows the user to delete their account after 24 hours' do
@@ -16,13 +17,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
+          t('account_reset.confirm_request.instructions', email: user_email),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
@@ -69,25 +64,18 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
+          t('account_reset.confirm_request.instructions', email: user_email),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 
       reset_email
 
-      Timecop.travel(2.days.from_now) do
-        request = stub_push_notification_request(
-          sp_push_notification_endpoint: push_notification_url,
-          topic: 'account_delete',
-          payload: { 'uuid' => '1234' },
-        )
+      Timecop.freeze(Time.zone.now + 2.days) do
+        request = stub_request(:post, push_notification_url).
+                  with(headers: push_notification_headers(push_notification_url, payload)).
+                  with(body: '').
+                  to_return(body: '')
 
         AccountReset::GrantRequestsAndSendEmails.new.call
         open_last_email
@@ -114,13 +102,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       expect(page).
         to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
+          t('account_reset.confirm_request.instructions', email: user_email),
         )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')

@@ -24,7 +24,7 @@ module Idv
     end
 
     def description
-      t("idv.failure.#{step_name}.fail_html")
+      t("idv.failure.#{step_name}.fail")
     end
 
     def message

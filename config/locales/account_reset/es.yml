@@ -15,9 +15,9 @@ es:
     confirm_request:
       check_your_email: Consultar su correo electrónico
       close_window: Puede cerrar esta ventana si ha terminado.
-      instructions_end: para comenzar el proceso de eliminación de cuenta. Siga las
-        instrucciones en su correo electrónico para completar el proceso.
-      instructions_start: Enviamos un correo electrónico a
+      instructions: Enviamos un correo electrónico a <strong>%{email}</strong> para
+        comenzar el proceso de eliminación de cuenta. Siga las instrucciones en su
+        correo electrónico para completar el proceso.
       security_note: Como medida de seguridad, también enviamos un mensaje de texto
         a su registro número de teléfono.
     delete_account:

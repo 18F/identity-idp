@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'forgot_password/show.html.erb' do
+describe 'forgot_password/show.html.slim' do
   let(:email) { 'foo@bar.com' }
 
   before do

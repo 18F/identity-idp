@@ -99,7 +99,6 @@ es:
         success: Su teléfono ha sido eliminado.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"
-    phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad <strong>cada
       vez que inicie sesión</strong>.
     phone_label: Número de teléfono
@@ -119,13 +118,9 @@ es:
     totp_fallback:
       question: "¿No tiene su aplicación de autenticación?"
     totp_header_text: Ingrese su código de la app de autenticación
-    two_factor_choice: Configuración del primer método de autenticación (1 de 2)
-    two_factor_choice_intro_paragraphs:
-    - Agregue una segunda capa de seguridad para que solo usted pueda iniciar sesión
-      en su cuenta.
-    - Solo usarás un método de autenticación para iniciar sesión, pero te pedimos
-      que configures dos. Esto asegura que aún puede iniciar sesión si pierde el acceso
-      a uno.
+    two_factor_choice: Asegure su cuenta
+    two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
+      agregando una segunda capa de seguridad.
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Configure una aplicación de autenticación para obtener su
@@ -152,11 +147,9 @@ es:
       voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info_html: Use una clave de seguridad para proteger su cuenta
-    two_factor_recovery_choice: Configuración del segundo método de autenticación
-      (2 de 2)
-    two_factor_recovery_choice_intro_paragraphs:
-    - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
-      à votre compte même si vous perdez ou n’avez pas l’autre.
+    two_factor_recovery_choice: Añadir otro método
+    two_factor_recovery_choice_intro: Agregar otro método de autenticación hace seguro
+      que puede iniciar sesión en su cuenta incluso si pierde o no tiene su principal
     webauthn_fallback:
       question: "¿No tienes tu clave de seguridad disponible?"
     webauthn_header_text: Presenta tu clave de seguridad

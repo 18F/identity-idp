@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/usps/index.html.erb' do
+describe 'idv/usps/index.html.slim' do
   it 'calls UspsPresenter#title, #button, and #cancel_path' do
     user = build_stubbed(:user, :signed_up)
     usps_mail_service = Idv::UspsMail.new(user)

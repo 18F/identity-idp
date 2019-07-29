@@ -1,9 +1,7 @@
 module PwnedPasswords
   class LookupPassword
-    PWNED_PASSWORD_FILE = Rails.root.join('pwned_passwords', 'pwned_passwords.txt')
-
     def self.call(password)
-      BinarySearchSortedHashFile.new(PWNED_PASSWORD_FILE).call(password)
+      BinarySearchSortedHashFile.new(Figaro.env.pwned_password_file).call(password)
     end
   end
 end

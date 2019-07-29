@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'sign_up/emails/show.html.erb' do
+describe 'sign_up/emails/show.html.slim' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
-    @resend_email_confirmation_form = ResendEmailConfirmationForm.new
+    @register_user_email_form = RegisterUserEmailForm.new
   end
 
   it 'has a localized title' do

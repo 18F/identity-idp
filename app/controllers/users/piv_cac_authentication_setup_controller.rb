@@ -79,7 +79,6 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
-      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       redirect_to next_step
     end
 

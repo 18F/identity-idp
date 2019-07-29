@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe PwnedPasswords::LookupPassword do
   describe '#call' do
+    let(:pwned_passwords_file) { 'spec/fixtures/pwned_passwords.txt' }
     let(:pwned_passwords) do
       %w[
         3.1415926535
@@ -21,6 +22,10 @@ describe PwnedPasswords::LookupPassword do
         pepperpickles
         saltypickles
       ]
+    end
+
+    before do
+      allow(Figaro.env).to receive(:pwned_password_file).and_return(pwned_passwords_file)
     end
 
     it 'returns false for pwned passwords' do

@@ -7,9 +7,8 @@ module SignUp
         @resend_confirmation = params[:resend].present?
 
         email = session.delete(:email)
-        @resend_email_confirmation_form = ResendEmailConfirmationForm.new(
-          email: email, request_id: params[:request_id],
-        )
+        @register_user_email_form = RegisterUserEmailForm.new
+        @register_user_email_form.user.email = email
 
         render :show, locals: { email: email }
       end

@@ -25,7 +25,7 @@ describe RequestPasswordReset do
 
     context 'when the user is found and confirmed' do
       it 'sends password reset instructions' do
-        user = create(:user)
+        user = create(:user, :with_email)
         email = user.email_addresses.first.email
 
         allow(User).to receive(:find_with_email).with(email).and_return(user)

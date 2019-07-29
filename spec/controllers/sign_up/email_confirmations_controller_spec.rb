@@ -134,9 +134,9 @@ describe SignUp::EmailConfirmationsController do
       allow_any_instance_of(SignUp::EmailConfirmationsController).
         to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
 
-      get :create, params: { confirmation_token: 'foo' }
+       get :create, params: { confirmation_token: 'foo' }
 
-      expect(flash[:error]).
+       expect(flash[:error]).
         to eq t('devise.confirmations.already_confirmed',
                 action: t('devise.confirmations.sign_in'))
       expect(response).to redirect_to root_url

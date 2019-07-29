@@ -16,9 +16,9 @@ fr:
     confirm_request:
       check_your_email: Vérifiez votre email
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
-      instructions_end: pour commencer le compte. Supprimer le processus. Suivez les
-        instructions dans votre e-mail pour terminer le processus.
-      instructions_start: Nous avons envoyé un e-mail à
+      instructions: Nous avons envoyé un e-mail à <strong>%{email}</strong> pour commencer
+        le compte. Supprimer le processus. Suivez les instructions dans votre e-mail
+        pour terminer le processus.
       security_note: Par mesure de sécurité, nous avons également envoyé un SMS à
         votre numéro de téléphone enregistré.
     delete_account:

@@ -59,20 +59,5 @@ describe TwilioService::Sms::Response do
 
       expect(response.reply).to eq(expected)
     end
-
-    it 'calls join and returns  the appropriate message' do
-      message = request.new(url, { Body: 'join', From: number }, signature)
-
-      response = described_class.new(message)
-      expected_message = t(
-        'jobs.sms_otp_sender_job.login_message',
-        code: '123456',
-        app: APP_NAME,
-        expiration: Devise.direct_otp_valid_for.to_i / 60,
-      )
-      expected = { to: number, body: expected_message }
-
-      expect(response.reply).to eq(expected)
-    end
   end
 end

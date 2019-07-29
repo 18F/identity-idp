@@ -7,21 +7,24 @@ describe PushNotification::AccountDelete do
   let(:push_notification_url) { 'http://localhost/push_notifications' }
   let(:push_notification_url2) { 'http://localhost:9292/push_notifications' }
   let(:user_id) { 1 }
+  let(:payload) { { uuid: '1234' } }
+  let(:payload2) { { uuid: '4567' } }
 
   before do
     AgencyIdentity.create(user_id: user_id, agency_id: 1, uuid: '1234')
   end
 
   it 'sends updates to one subscriber' do
-    request = stub_push_notification_request(
-      sp_push_notification_endpoint: push_notification_url,
-      topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
-    )
+    Timecop.freeze(Time.zone.now) do
+      request = stub_request(:post, push_notification_url).
+                with(headers: push_notification_headers(push_notification_url, payload)).
+                with(body: '').
+                to_return(body: '')
 
-    subject.call(user_id)
+      subject.call(user_id)
 
-    expect(request).to have_been_requested
+      expect(request).to have_been_requested
+    end
   end
 
   it 'sends updates to two subscribers of the same agency' do
@@ -29,22 +32,22 @@ describe PushNotification::AccountDelete do
     sp.push_notification_url = push_notification_url2
     sp.save!
 
-    request = stub_push_notification_request(
-      sp_push_notification_endpoint: push_notification_url,
-      topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
-    )
+    Timecop.freeze(Time.zone.now) do
+      request = stub_request(:post, push_notification_url).
+                with(headers: push_notification_headers(push_notification_url, payload)).
+                with(body: '').
+                to_return(body: '')
 
-    request2 = stub_push_notification_request(
-      sp_push_notification_endpoint: push_notification_url2,
-      topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
-    )
+      request2 = stub_request(:post, push_notification_url2).
+                 with(headers: push_notification_headers(push_notification_url2, payload)).
+                 with(body: '').
+                 to_return(body: '')
 
-    subject.call(user_id)
+      subject.call(user_id)
 
-    expect(request).to have_been_requested
-    expect(request2).to have_been_requested
+      expect(request).to have_been_requested
+      expect(request2).to have_been_requested
+    end
   end
 
   it 'sends updates to two subscribers for two different agencies' do
@@ -55,22 +58,22 @@ describe PushNotification::AccountDelete do
     sp.agency_id = 2
     sp.save!
 
-    request = stub_push_notification_request(
-      sp_push_notification_endpoint: push_notification_url,
-      topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
-    )
+    Timecop.freeze(Time.zone.now) do
+      request = stub_request(:post, push_notification_url).
+                with(headers: push_notification_headers(push_notification_url, payload)).
+                with(body: '').
+                to_return(body: '')
 
-    request2 = stub_push_notification_request(
-      sp_push_notification_endpoint: push_notification_url2,
-      topic: 'account_delete',
-      payload: { 'uuid' => '4567' },
-    )
+      request2 = stub_request(:post, push_notification_url2).
+                 with(headers: push_notification_headers(push_notification_url2, payload2)).
+                 with(body: '').
+                 to_return(body: '')
 
-    subject.call(user_id)
+      subject.call(user_id)
 
-    expect(request).to have_been_requested
-    expect(request2).to have_been_requested
+      expect(request).to have_been_requested
+      expect(request2).to have_been_requested
+    end
   end
 
   it 'writes failures to the retry table on connection errors' do

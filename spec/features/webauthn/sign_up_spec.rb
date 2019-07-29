@@ -13,7 +13,7 @@ feature 'webauthn sign up' do
     def expect_webauthn_setup_success
       expect(current_path).to eq two_factor_options_success_path
       click_continue
-
+      
       expect(page).to have_current_path(two_factor_options_path)
 
       select_2fa_option('phone')

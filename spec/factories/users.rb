@@ -2,32 +2,33 @@ FactoryBot.define do
   Faker::Config.locale = :en
 
   factory :user do
-    password { '!1a Z@6s' * 16 } # Maximum length password.
-
     transient do
       with { {} }
-      email { Faker::Internet.safe_email }
-      confirmed_at { Time.zone.now }
     end
 
-    after(:build) do |user, evaluator|
-      next unless user.email_addresses.empty?
-      user.email_addresses.build(
-        email: evaluator.email,
-        confirmed_at: evaluator.confirmed_at,
-      )
-      user.email = evaluator.email
-      user.confirmed_at = evaluator.confirmed_at
-    end
+    confirmed_at { Time.zone.now }
+    email { Faker::Internet.safe_email }
+    password { '!1a Z@6s' * 16 } # Maximum length password.
 
-    after(:stub) do |user, evaluator|
-      next unless user.email_addresses.empty?
-      user.email_addresses.build(
-        email: evaluator.email,
-        confirmed_at: evaluator.confirmed_at,
-      )
-      user.email = evaluator.email
-      user.confirmed_at = evaluator.confirmed_at
+    trait :with_email do
+      after(:build) do |user, _evaluator|
+        next unless user.email_addresses.empty?
+        user.email_addresses << build(
+          :email_address,
+          email: user.email,
+          confirmed_at: user.confirmed_at,
+          user_id: -1,
+        )
+      end
+
+      after(:stub) do |user, _evaluator|
+        next unless user.email_addresses.empty?
+        user.email_addresses << build(
+          :email_address,
+          email: user.email,
+          confirmed_at: user.confirmed_at,
+        )
+      end
     end
 
     trait :with_multiple_emails do
