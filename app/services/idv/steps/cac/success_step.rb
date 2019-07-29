@@ -3,6 +3,13 @@ module Idv
     module Cac
       class SuccessStep < DocAuthBaseStep
         def call
+          skip_legacy_steps
+          save_legacy_state
+        end
+
+        private
+
+        def save_legacy_state
           pii_from_doc = {
             first_name: 'Jane',
             middle_name: 'Ann',
@@ -16,13 +23,6 @@ module Idv
             phone: '456',
           }.freeze
 
-          skip_legacy_steps
-          save_legacy_state
-        end
-
-        private
-
-        def save_legacy_state
           idv_session['params'] = pii_from_doc
           idv_session['applicant'] = pii_from_doc
           idv_session['applicant']['uuid'] = current_user.uuid
