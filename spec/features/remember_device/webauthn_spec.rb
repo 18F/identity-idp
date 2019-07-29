@@ -33,7 +33,7 @@ describe 'Remembering a webauthn device' do
     it_behaves_like 'remember device'
   end
 
-  context 'sign up' do
+  context 'sign up with remember_device last' do
     def remember_device_and_sign_out_user
       mock_webauthn_setup_challenge
       user = sign_up_and_set_password
@@ -51,6 +51,32 @@ describe 'Remembering a webauthn device' do
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup
+
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
+    it_behaves_like 'remember device'
+  end
+
+  context 'sign up with remember_device first' do
+    def remember_device_and_sign_out_user
+      mock_webauthn_setup_challenge
+      user = sign_up_and_set_password
+      user.password = Features::SessionHelper::VALID_PASSWORD
+
+      select_2fa_option('webauthn')
+      fill_in_nickname_and_click_continue
+      check :remember_device
+      mock_press_button_on_hardware_key_on_setup
+
+      click_continue
+
+      select_2fa_option('phone')
+      fill_in :user_phone_form_phone, with: '2025551313'
+      click_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
       first(:link, t('links.sign_out')).click
       user
