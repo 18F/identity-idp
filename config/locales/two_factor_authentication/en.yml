@@ -120,13 +120,12 @@ en:
       auth_app: Authentication application
       auth_app_info_html: Set up an authentication application to get your security
         code without providing a phone number
-      backup_code: Backup Codes
-      backup_code_info_html: Receive a pre-generated list of security codes to use
-        when signing in
+      backup_code: I don't have any of the above
+      backup_code_info_html: You can use backup codes. We'll give you 10 codes that
+        you'll have to keep in a safe place.
       backup_code_only: I don't have any of the above
-      backup_code_only_info_html: Set up your account without a backup authentication
-        method. This is <strong>not recommended</strong>. If you ever lose your backup
-        codes you will not be able to sign into your account.
+      backup_code_only_info_html: You can use backup codes as your only authentication
+        method. We'll give you 10 codes that you'll have to keep in a safe place.
       phone: Phone
       phone_info_html: Get your security code via text message (SMS) or phone call
       piv_cac: Government employees

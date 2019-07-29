@@ -1,8 +1,7 @@
 class MfaPolicy
   # :reek:BooleanParameter
-  def initialize(user, signup = false)
+  def initialize(user)
     @mfa_user = MfaContext.new(user)
-    @signup_flag = signup
   end
 
   def no_factors_enabled?
@@ -22,10 +21,7 @@ class MfaPolicy
   end
 
   def sufficient_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 1 ||
-      (FeatureManagement.backup_codes_as_only_2fa? &&
-      mfa_user.backup_code_configurations.to_a.length.positive? &&
-      !signup_flag)
+    mfa_user.enabled_mfa_methods_count > 1 || mfa_user.backup_code_configurations.to_a.length.positive?
   end
 
   def unphishable?
@@ -36,5 +32,4 @@ class MfaPolicy
   private
 
   attr_reader :mfa_user
-  attr_reader :signup_flag
 end
