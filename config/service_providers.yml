@@ -1127,3 +1127,18 @@ production:
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'
+
+  # GSA - OPP - Touchpoints
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa-tts-opp:touchpoints':
+    friendly_name: 'Touchpoints'
+    agency: 'GSA'
+    agency_id: 9
+    logo: 'square-gsa.svg'
+    cert: 'touchpoints_prod'
+    ial: 1
+    return_to_sp_url: 'https://touchpoints.app.cloud.gov'
+    redirect_uris:
+      - 'https://touchpoints.app.cloud.gov/users/auth/login_dot_gov/callback'
+    attribute_bundle:
+      - 'email'
+    restrict_to_deploy_env: 'prod'

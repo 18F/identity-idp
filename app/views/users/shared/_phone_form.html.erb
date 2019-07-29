@@ -18,6 +18,8 @@
   <% end %>
 
   <%= render 'users/shared/otp_delivery_preference_selection' %>
-  <%= render 'users/shared/otp_make_default_number' %>
+  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
+    <%= render 'users/shared/otp_make_default_number' %>
+  <% end %>
   <%= f.button :submit, button, class: 'no-auto-enable btn-wide' %>
 <% end %>

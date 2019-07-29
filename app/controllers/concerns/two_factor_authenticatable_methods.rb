@@ -186,7 +186,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def after_otp_action_required?
     decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      !MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
+      !MfaPolicy.new(current_user).sufficient_factors_enabled?
   end
 
   def after_otp_action_url
