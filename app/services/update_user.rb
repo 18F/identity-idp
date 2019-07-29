@@ -4,6 +4,7 @@ class UpdateUser
     @attributes = attributes
   end
 
+  #TODO wth?!
   def call
     result = user.update!(attributes.except(:phone_id, :phone, :phone_confirmed_at,
                                             :otp_make_default_number))

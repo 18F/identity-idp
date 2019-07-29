@@ -13,7 +13,7 @@ RSpec.describe IdTokenBuilder do
           # this is a known value from an example developer guide
           # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
           access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-          user: create(:user, :with_email))
+          user: create(:user))
   end
 
   let(:custom_expiration) { 5.minutes.from_now.to_i }

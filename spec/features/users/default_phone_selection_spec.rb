@@ -68,9 +68,7 @@ describe 'phone configuration' do
 
         expect(page).to have_current_path(account_path)
 
-        # print page.body
         node = page.first('div', text: new_phone)
-        print node
         parent = node.find(:xpath, '..')
 
         within(parent) do

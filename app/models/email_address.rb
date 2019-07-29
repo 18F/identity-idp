@@ -4,7 +4,6 @@ class EmailAddress < ApplicationRecord
   encrypted_attribute_without_setter(name: :email)
 
   belongs_to :user, inverse_of: :email_addresses
-  validates :user_id, presence: true
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
 

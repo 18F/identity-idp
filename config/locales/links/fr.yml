@@ -6,6 +6,7 @@ fr:
       reactivate:
         with_key: J'ai ma clé
         without_key: Je n'ai pas ma clé
+    back_to_account: Retour à Login.gov
     back_to_sp: Retour à %{sp}
     cancel: Annuler
     cancel_account_creation: "‹ Annuler la création du compte"
