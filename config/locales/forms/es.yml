@@ -20,8 +20,8 @@ es:
       regenerate: Regenerar
       subinfo: "<b><u>No pierdas estos códigos</u></b>. Descarga, imprime, o copialos.
         Cada código solo se puede usar una vez. Después de que haya utilizado el décimo
-        código, le daremos 10 códigos nuevos. Mantenga sus códigos
-        tan seguros como una contraseña."
+        código, le daremos 10 códigos nuevos. Mantenga sus códigos tan seguros como
+        una contraseña."
       subtitle: Tus códigos de respaldo
       title: Códigos de respaldo
     backup_code_regenerate:
