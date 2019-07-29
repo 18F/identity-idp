@@ -84,10 +84,15 @@ module Users
       form = @user_phone_form
       if form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
-        confirm_phone
-      else
-        redirect_to account_url
+
+        OtpPreferenceUpdater.new(
+          user: current_user,
+          preference: form.otp_delivery_preference,
+          default: form.otp_make_default_number,
+          phone_id: user_session[:phone_id],
+          ).call
       end
+      redirect_to account_url
     end
 
     def confirm_phone
