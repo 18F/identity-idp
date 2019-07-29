@@ -6,7 +6,7 @@ feature 'cac proofing enter info step' do
   before do
     enable_cac_proofing
     sign_in_and_2fa_user
-    complete_cac_proofing_steps_before_present_cac_step
+    complete_cac_proofing_steps_before_enter_info_step
   end
 
   it 'is on the correct page' do
