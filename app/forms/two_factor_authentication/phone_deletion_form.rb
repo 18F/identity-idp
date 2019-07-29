@@ -1,6 +1,7 @@
 module TwoFactorAuthentication
   class PhoneDeletionForm
     include ActiveModel::Model
+    include RememberDeviceConcern
 
     attr_reader :user, :configuration
 
@@ -32,17 +33,12 @@ module TwoFactorAuthentication
     def configuration_destroyed
       if configuration.destroy != false
         user.phone_configurations.reload
-        update_remember_device_revoked_at
+        revoke_remember_device
         true
       else
         errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')
         false
       end
-    end
-
-    def update_remember_device_revoked_at
-      attributes = { remember_device_revoked_at: Time.zone.now }
-      UpdateUser.new(user: user, attributes: attributes).call
     end
   end
 end

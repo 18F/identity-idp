@@ -2,6 +2,7 @@ class UserPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
+  include RememberDeviceConcern
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
@@ -25,7 +26,7 @@ class UserPhoneForm
     success = valid?
     self.phone = submitted_phone unless success
 
-    update_remember_device_revoked_at if success
+    revoke_remember_device if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -87,11 +88,6 @@ class UserPhoneForm
 
   def default_phone_configuration?
     phone_configuration == user.default_phone_configuration
-  end
-
-  def update_remember_device_revoked_at
-    attributes = { remember_device_revoked_at: Time.zone.now }
-    UpdateUser.new(user: user, attributes: attributes).call
   end
 
   def formatted_user_phone

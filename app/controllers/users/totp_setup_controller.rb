@@ -2,7 +2,7 @@ module Users
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
-    include UserRevokeRememberDevice
+    include RememberDeviceConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -83,6 +83,13 @@ module Users
       revoke_remember_device
       revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
+    end
+
+    def revoke_otp_secret_key
+      UpdateUser.new(
+        user: current_user,
+        attributes: { otp_secret_key: nil},
+      ).call
     end
 
     def mark_user_as_fully_authenticated
