@@ -39,7 +39,7 @@ module RememberDeviceConcern
   end
 
   def revoke_remember_device(user)
-    return if sign_up_incomplete
+    return if sign_up_incomplete(user)
     UpdateUser.new(
       user: user,
       attributes: { remember_device_revoked_at: Time.zone.now },
