@@ -3,9 +3,7 @@
 <% end %>
 
 <h1 class='h3 my0'><%= t('doc_auth.headings.welcome') %></h1>
-
 <p class='mt-tiny mb3'><%= t('doc_auth.info.welcome') %></p>
-
 <h1 class='h3 mb2'><%= t('doc_auth.instructions.welcome') %></h1>
 
 <ul class='list-reset'>
@@ -67,7 +65,6 @@
   </li>
 </ul>
 
-<!-- ahhhh fix these??? -->
 <%= simple_form_for :doc_auth,
                     url: url_for,
                     method: 'put',
@@ -77,8 +74,8 @@
     <div class="checkbox">
       <%= check_box_tag :ial2_consent_given, true, false %>
       <span class="indicator"></span>
-      By checking this box, you are letting login.gov ask for, use, keep, and share your personal information.
-      We will only use it to verify your identity. <%= link_to('Learn more.', 'https://login.gov/policy/', target: '_blank') %>
+      <%= t('doc_auth.instructions.consent') %>
+      <%= link_to(t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/', target: '_blank') %>
     </div>
   </label>
   <%= f.button :submit, t('doc_auth.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6 no-auto-enable' %>
