@@ -10,10 +10,12 @@ class ServiceProviderSeeder
       next unless write_service_provider?(config)
 
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.approved = true
-        sp.active = true
-        sp.native = true
-        sp.friendly_name = config["friendly_name"]
+        sp.update({
+          approved: true,
+          active: true,
+          native: true,
+          friendly_name: config["friendly_name"]
+        })
       end.update!(config.except('restrict_to_deploy_env', 'uuid_priority'))
     end
   end
