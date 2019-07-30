@@ -158,8 +158,9 @@ development:
     ial: 2
     push_notification_url: http://localhost:9292/api/push_notifications
     redirect_uris:
-      - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
