@@ -8,23 +8,6 @@ feature 'taking an action that revokes remember device' do
   context 'phone' do
     let(:user) { create(:user, :signed_up) }
 
-    it 'revokes remember device when modified' do
-      sign_in_with_remember_device_and_sign_out
-
-      sign_in_user(user)
-      click_link(
-        t('forms.buttons.manage'),
-        href: manage_phone_url(id: user.phone_configurations.first.id),
-      )
-      fill_in 'user_phone_form_phone', with: '7032231000'
-      click_button t('forms.buttons.submit.confirm_change')
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      first(:link, t('links.sign_out')).click
-
-      expect_mfa_to_be_required_for_user(user)
-    end
-
     it 'revokes remember device when removed' do
       create(:webauthn_configuration, user: user) # The user needs multiple methods to delete phone
 
@@ -94,7 +77,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_user(user)
       click_on t('forms.backup_code.regenerate')
       click_on t('account.index.backup_code_confirm_regenerate')
-      expect(page).to have_content(t('forms.backup_code.warn'))
+      expect(page).to have_content(t('forms.backup_code.subtitle'))
       click_continue
       first(:link, t('links.sign_out')).click
 

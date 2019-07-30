@@ -44,6 +44,9 @@ Dir.chdir APP_ROOT do
   geo_data_file = Dir['geo_data/GeoLite2-City_*/GeoLite2-City.mmdb'].sort.last
   run "mv #{geo_data_file} geo_data/GeoLite2-City.mmdb"
 
+  puts "== Copying sample pwned passwords list =="
+  run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
+
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
     run 'docker-compose run --rm web yarn install'

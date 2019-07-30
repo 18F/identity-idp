@@ -2,7 +2,7 @@
   background-position: 1rem center;
   background-repeat: no-repeat;
   background-size: 1rem;
-  padding-left: 2.5rem;
+  padding-left: 2.6rem;
 
   &-copy {
     background-image: url(image-path('ico-copy.svg'));
@@ -38,4 +38,9 @@
       width: $h4;
     }
   }
+}
+
+.ico-heading {
+  display: inline-block;
+  vertical-align: middle;
 }

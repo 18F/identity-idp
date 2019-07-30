@@ -184,7 +184,8 @@ describe Users::TotpSetupController, devise: true do
         end
 
         it 'redirects to setup another factor without a flash message' do
-          expect(response).to redirect_to(two_factor_options_url)
+          expect(response).to redirect_to(two_factor_options_success_url)
+          redirect_to(two_factor_options_url)
           expect(flash[:success]).to be_nil
           expect(subject.user_session[:new_totp_secret]).to be_nil
 

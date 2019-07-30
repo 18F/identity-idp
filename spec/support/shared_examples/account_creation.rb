@@ -80,6 +80,8 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     visit_idp_from_sp_with_loa1(sp)
     register_user_with_piv_cac
 
+    click_continue
+
     expect(page).to have_current_path(two_factor_options_path)
 
     select_2fa_option('phone')
@@ -113,8 +115,8 @@ shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
-    expect(current_path).to eq webauthn_setup_success_path
-    click_button t('forms.buttons.continue')
+    expect(current_path).to eq two_factor_options_success_path
+    click_continue
     select_2fa_option('backup_code')
     click_continue
     fill_out_idv_jurisdiction_ok

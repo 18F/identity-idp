@@ -1,0 +1,35 @@
+<% title t('titles.verify_email') %>
+
+<% if @resend_confirmation %>
+  <div class="alert alert-thumb" role="alert"><%= t('notices.resend_confirmation_email.success') %></div>
+<% end %>
+
+<div class="mtn2">
+  <%= image_tag asset_url('check-email.svg'), width: 24, class: 'left-0 right-0 ico-heading' %>
+  <h1 class="mt2 ml1 h3 ico-heading"><%= t('headings.verify_email') %></h1>
+</div>
+
+<p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
+   <strong><%= email %></strong>
+   <%= t('notices.signed_up_and_confirmed.first_paragraph_end') %>
+</p>
+
+<div class="col-3">
+  <hr class="my3 bw3 border-teal rounded"/>
+</div>
+
+<%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
+<%= button_to(t('links.resend'), add_email_resend_path, method: :post, class: 'btn btn-link ml1', form_class: 'inline-block') %>
+
+<p><% link = link_to(t('notices.use_diff_email.link'), add_email_path) %></p>
+
+<p><%= t('notices.use_diff_email.text_html', link: link) %></p>
+<p><%= t('devise.registrations.close_window') %></p>
+
+<% if FeatureManagement.enable_load_testing_mode? %>
+  <%= link_to('CONFIRM NOW',
+    sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+    id: 'confirm-now') %>
+<% end %>
+
+<%= link_to t('idv.messages.return_to_profile'), profile_path %>

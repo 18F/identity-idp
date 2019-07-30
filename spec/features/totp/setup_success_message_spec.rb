@@ -6,12 +6,8 @@ feature 'success message for TOTP setup' do
       sign_up_and_set_password
       set_up_2fa_with_authenticator_app
 
-      expect(page).to have_content(
-        t(
-          'two_factor_authentication.first_factor_enabled',
-          device: t('two_factor_authentication.devices.auth_app'),
-        ),
-      )
+      click_continue
+
       expect(page).to_not have_content(t('notices.totp_configured'))
     end
   end
@@ -20,6 +16,9 @@ feature 'success message for TOTP setup' do
     it 'shows the TOTP setup success message' do
       sign_up_and_set_password
       set_up_2fa_with_valid_phone
+
+      click_continue
+
       set_up_2fa_with_authenticator_app
 
       expect(page).to have_content(t('notices.totp_configured'))

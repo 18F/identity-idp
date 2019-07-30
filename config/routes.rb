@@ -63,6 +63,13 @@ Rails.application.routes.draw do
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
 
+      if FeatureManagement.allow_piv_cac_login?
+        get '/login/piv_cac' => 'users/piv_cac_login#new'
+        get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
+        get '/login/password' => 'password_capture#new', as: :capture_password
+        post '/login/password' => 'password_capture#create'
+      end
+
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
       unless FeatureManagement.disallow_ial2_recovery?
@@ -139,7 +146,6 @@ Rails.application.routes.draw do
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
     delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-    get '/webauthn_setup_success' => 'users/webauthn_setup#success'
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
@@ -176,6 +182,7 @@ Rails.application.routes.draw do
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    get '/two_factor_options_success' => 'users/two_factor_authentication_setup#success'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',

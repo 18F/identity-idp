@@ -7,6 +7,7 @@ module SpAuthHelper
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
     set_up_2fa_with_valid_phone
+    click_continue
     select_2fa_option('backup_code')
     click_continue
     visit sign_out_url

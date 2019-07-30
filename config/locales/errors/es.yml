@@ -20,8 +20,8 @@ es:
     doc_auth:
       acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
         Por favor, inténtelo de nuevo más tarde.
-      acuant_throttle: To prevent abuse we limit the amount of times you can attempt
-        to validate a document.  Please try again later.
+      acuant_throttle: Para evitar abusos, limitamos el número de veces que puede
+        intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
       general_error: Su identificación emitida por el estado no pudo ser verificada.
         Por favor, intente cargar diferentes imágenes comenzando con el frente de
         su identificación emitida por el estado.
@@ -75,7 +75,10 @@ es:
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista
         de contraseñas conocidas expuestas en violaciones de datos.
       twilio_inbound_sms_invalid: El mensaje de Twilio SMS de entrada falló la validación.
-      twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.
+      twilio_timeout: El servidor tardó demasiado en responder. Vuelve a intentarlo.<br><br>El
+        servicio de mensajes de texto puede estar teniendo problemas. Puede consultar
+        el estado con <a href="https://status.twilio.com/" target='_blank'>nuestro
+        proveedor de servicios de mensajes</a>.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
@@ -91,4 +94,6 @@ es:
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
+        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles con
+        las claves de seguridad FIDO. Internet Explorer no lo hace.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

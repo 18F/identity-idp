@@ -80,6 +80,7 @@ jobs:
             cp certs/samlcloudhsm.crt.example certs/samlcloudhsm.crt
             cp keys/saml2018.key.enc.example keys/saml2018.key.enc
             cp keys/saml2019.key.enc.example keys/saml2019.key.enc
+            cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile
 

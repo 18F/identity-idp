@@ -1,6 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
     include MfaSetupConcern
+    include RememberDeviceConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -20,6 +21,7 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
     end
 
@@ -30,7 +32,7 @@ module Users
     end
 
     def download
-      data = user_session[:backup_codes].join("\n") + "\n"
+      data = user_session[:backup_codes].join("\r\n") + "\r\n"
       send_data data, filename: 'backup_codes.txt'
     end
 
@@ -58,13 +60,7 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-      revoke_remember_device
-    end
-
-    def revoke_remember_device
-      UpdateUser.new(
-        user: current_user, attributes: { remember_device_revoked_at: Time.zone.now },
-      ).call
+      revoke_remember_device(current_user)
     end
 
     def generator

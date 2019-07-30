@@ -53,5 +53,30 @@ describe AccountsController do
         expect(response).to_not be_redirect
       end
     end
+
+    context 'when logging in with piv/cac' do
+      context 'when the user is proofed' do
+        it 'renders a locked profile' do
+          user = create(
+            :user,
+            :signed_up,
+            profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
+          )
+
+          sign_in user
+
+          view_model = AccountShow.new(
+            decrypted_pii: nil,
+            personal_key: nil,
+            decorated_user: user.decorate,
+          )
+          allow(subject).to receive(:view_model).and_return(view_model)
+
+          get :show
+
+          expect(response).to_not be_redirect
+        end
+      end
+    end
   end
 end
