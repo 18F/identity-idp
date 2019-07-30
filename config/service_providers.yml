@@ -97,6 +97,7 @@ development:
     friendly_name: 'Awesome test SP'
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+    friendly_name: 'Test SAML SP'
     acs_url: 'http://localhost:4567/consume'
     sp_initiated_login_url: 'http://localhost:4567/test/saml'
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
@@ -209,6 +210,7 @@ production:
   <%# Currently we run the sample apps in sandbox environments only %>
   <% if LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain == 'identitysandbox.gov' %>
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:<%= LoginGov::Hostdata.env %>':
+    friendly_name: 'Sinatra Example'
     acs_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/consume'
     assertion_consumer_logout_service_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/slo_logout'
     sp_initiated_login_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/test/saml'
