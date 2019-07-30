@@ -22,7 +22,7 @@ describe EmailConfirmationTokenValidator do
 
     context 'the email address exists and the token is expired' do
       let(:email_address) do
-        create(:email_address, confirmed_at: nil,confirmation_sent_at: 3.days.ago)
+        create(:email_address, confirmed_at: nil, confirmation_sent_at: 3.days.ago)
       end
 
       it 'returns an unsuccessful result' do

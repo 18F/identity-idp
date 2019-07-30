@@ -5,28 +5,35 @@ class TwoFactorOptionsPresenter
   attr_reader :current_user, :service_provider
 
   # :reek:BooleanParameter
-  def initialize(current_user, sp, signingup = false)
+  def initialize(current_user, sp)
     @current_user = current_user
     @service_provider = sp
-    @signing_up = signingup
   end
 
   def step
     no_factors_enabled? ? '3' : '4'
   end
 
+  # i18n-tasks-use t('titles.two_factor_setup')
+  # i18n-tasks-use t('titles.two_factor_recovery_setup')
   def title
     t("titles.two_factor_#{recovery}setup")
   end
 
+  # i18n-tasks-use t('two_factor_authentication.two_factor_choice')
+  # i18n-tasks-use t('two_factor_authentication.two_factor_recovery_choice')
   def heading
     t("two_factor_authentication.two_factor_#{recovery}choice")
   end
 
-  def info
-    t("two_factor_authentication.two_factor_#{recovery}choice_intro")
+  # i18n-tasks-use t('two_factor_authentication.two_factor_choice_intro_paragraphs')
+  # i18n-tasks-use t('two_factor_authentication.two_factor_recovery_choice_intro_paragraphs')
+  def intro_parapraphs
+    t("two_factor_authentication.two_factor_#{recovery}choice_intro_paragraphs")
   end
 
+  # i18n-tasks-use t('forms.two_factor_choice.legend')
+  # i18n-tasks-use t('forms.two_factor_recovery_choice.legend')
   def label
     t("forms.two_factor_#{recovery}choice.legend") + ':'
   end
@@ -89,16 +96,10 @@ class TwoFactorOptionsPresenter
   end
 
   def backup_code_option
-    return backup_code_option_value unless
-      TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-    return backup_code_option_value if @signing_up
-    []
-  end
-
-  def backup_code_option_value
-    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(
-      @signing_up &&
-      TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?,
-    )]
+    if TwoFactorAuthentication::BackupCodePolicy.new(current_user).enrollable?
+      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(current_user)]
+    else
+      []
+    end
   end
 end

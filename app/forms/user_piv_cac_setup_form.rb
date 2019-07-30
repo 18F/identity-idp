@@ -1,6 +1,7 @@
 class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
+  include RememberDeviceConcern
 
   attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type
 
@@ -21,7 +22,8 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    attributes = { x509_dn_uuid: x509_dn_uuid, remember_device_revoked_at: Time.zone.now }
+    revoke_remember_device(user)
+    attributes = { x509_dn_uuid: x509_dn_uuid }
     UpdateUser.new(user: user, attributes: attributes).call
     true
   rescue PG::UniqueViolation

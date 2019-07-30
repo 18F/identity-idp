@@ -1,8 +1,8 @@
 module Users
-  # rubocop:disable Metrics/ClassLength
   class WebauthnSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
+    include RememberDeviceConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -57,15 +57,9 @@ module Users
     def handle_successful_delete
       create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
-      revoke_remember_device
+      revoke_remember_device(current_user)
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
-    end
-
-    def revoke_remember_device
-      UpdateUser.new(
-        user: current_user, attributes: { remember_device_revoked_at: Time.zone.now },
-      ).call
     end
 
     def handle_failed_delete
@@ -90,6 +84,7 @@ module Users
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       save_remember_device_preference
+      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       redirect_to two_2fa_setup
     end
 
@@ -112,5 +107,4 @@ module Users
       TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe OtpDeliveryPreferenceUpdater do
+describe OtpPreferenceUpdater do
   subject do
-    OtpDeliveryPreferenceUpdater.new(
+    OtpPreferenceUpdater.new(
       user: build_stubbed(:user, otp_delivery_preference: 'sms'),
       preference: 'sms',
       phone_id: 1,
@@ -22,12 +22,14 @@ describe OtpDeliveryPreferenceUpdater do
       context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
         it 'updates the user' do
           user = build_stubbed(:user, otp_delivery_preference: 'voice')
-          updater = OtpDeliveryPreferenceUpdater.new(
+          updater = OtpPreferenceUpdater.new(
             user: user,
             preference: 'sms',
             phone_id: 1,
           )
-          attributes = { otp_delivery_preference: 'sms' }
+          attributes = { :otp_delivery_preference=>"sms",
+                         :otp_make_default_number=>nil,
+                         :phone_id=>1}
 
           updated_user = instance_double(UpdateUser)
           allow(UpdateUser).to receive(:new).
@@ -42,7 +44,7 @@ describe OtpDeliveryPreferenceUpdater do
 
     context 'when user is nil' do
       it 'does not update the user' do
-        updater = OtpDeliveryPreferenceUpdater.new(
+        updater = OtpPreferenceUpdater.new(
           user: nil,
           preference: 'sms',
           phone_id: 1,

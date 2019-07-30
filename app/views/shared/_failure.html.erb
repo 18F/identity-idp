@@ -1,0 +1,30 @@
+<% title presenter.title %>
+
+<%= image_tag(asset_url(presenter.state_icon),
+              alt: presenter.state_alt_text, width: 54) %>
+
+<h1 class="h3 mb1 mt3 my0">
+  <%= presenter.header %>
+</h1>
+
+<p>
+  <%= presenter.description %>
+</p>
+
+<% if presenter.message.present? %>
+  <div class="col-2">
+    <hr class="mt3 mb2 bw4 rounded border-<%= presenter.state_color %>" />
+  </div>
+
+  <h2 class="h4 mb2 mt3 my0">
+    <%= presenter.message %>
+  </h2>
+<% end %>
+
+<%= render 'shared/failure_url', presenter: presenter %>
+
+<% presenter.next_steps.each do |step| %>
+  <p><%= step %></p>
+<% end; if presenter.js %>
+  <%= nonced_javascript_tag presenter.js %>
+<% end %>

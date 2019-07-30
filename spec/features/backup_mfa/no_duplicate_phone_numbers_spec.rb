@@ -29,22 +29,6 @@ feature 'OTP delivery selection' do
       choose_phone_as_backup_mfa
     end
 
-    it 'should prevent changing one phone to the other number' do
-      choose_phone_as_backup_mfa
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      expect(current_path).to eq(account_path)
-
-      first_phone = user.phone_configurations.first
-      second_phone = user.phone_configurations.last
-      visit manage_phone_path(id: first_phone.id)
-      fill_in 'user_phone_form[phone]', with: second_phone.phone
-      click_button t('forms.buttons.submit.confirm_change')
-
-      expect(page).to have_content(t('errors.messages.phone_duplicate'))
-    end
-
     def choose_phone_as_backup_mfa
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option(:phone)

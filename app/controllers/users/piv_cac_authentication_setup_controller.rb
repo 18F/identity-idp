@@ -3,6 +3,7 @@ module Users
     include UserAuthenticator
     include PivCacConcern
     include MfaSetupConcern
+    include RememberDeviceConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup,
@@ -37,7 +38,8 @@ module Users
     private
 
     def remove_piv_cac
-      attributes = { x509_dn_uuid: nil, remember_device_revoked_at: Time.zone.now }
+      revoke_remember_device(current_user)
+      attributes = { x509_dn_uuid: nil }
       UpdateUser.new(user: current_user, attributes: attributes).call
     end
 
@@ -79,11 +81,12 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
+      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       redirect_to next_step
     end
 
     def next_step
-      if MfaPolicy.new(current_user, user_session[:signing_up]).sufficient_factors_enabled?
+      if MfaPolicy.new(current_user).sufficient_factors_enabled?
         account_url
       else
         two_factor_options_success_url

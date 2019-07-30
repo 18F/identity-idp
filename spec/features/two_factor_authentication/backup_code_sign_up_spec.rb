@@ -4,10 +4,10 @@ feature 'sign up with backup code' do
   include DocAuthHelper
   include SamlAuthHelper
 
-  it 'works' do
+  it 'allows backup code only MFA configurations' do
     user = sign_up_and_set_password
     expect(FirstMfaEnabledForUser.call(user)).to eq(:error)
-    select_2fa_option('backup_code')
+    select_2fa_option('backup_code_only')
 
     expect(page).to have_link(t('forms.backup_code.download'))
     expect(current_path).to eq backup_code_setup_path
@@ -15,9 +15,9 @@ feature 'sign up with backup code' do
     click_on 'Continue'
     click_continue
 
-    expect(page).to have_selector('#two_factor_options_form_selection_backup_code_only', count: 1)
-    expect(current_path).to eq two_factor_options_path
+    expect(current_path).to eq account_path
     expect(FirstMfaEnabledForUser.call(user)).to eq(:backup_code)
+    expect(user.backup_code_configurations.count).to eq(10)
   end
 
   it 'does not show download button on a mobile device' do
@@ -25,7 +25,7 @@ feature 'sign up with backup code' do
 
     sign_up_and_set_password
 
-    select_2fa_option('backup_code')
+    select_2fa_option('backup_code_only')
 
     expect(page).to_not have_link(t('forms.backup_code.download'))
   end
@@ -45,7 +45,7 @@ feature 'sign up with backup code' do
         click_on 'Continue'
 
         expect(current_path).to eq backup_code_create_path
-        expect(page).to have_content(t('forms.backup_code.warn'))
+        expect(page).to have_content(t('forms.backup_code.subtitle'))
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 
@@ -58,28 +58,11 @@ feature 'sign up with backup code' do
     end
   end
 
-  it 'allows backup code only MFA configurations' do
-    user = sign_up_and_set_password
-
-    expect(current_path).to eq two_factor_options_path
-    select_2fa_option('backup_code')
-    click_on 'Continue'
-    click_continue
-
-    expect(current_path).to eq two_factor_options_path
-    expect(user.backup_code_configurations.count).to eq(10)
-    select_2fa_option('backup_code_only')
-
-    expect(current_path).to eq account_path
-  end
-
   it 'directs backup code only users to the SP during sign up' do
     visit_idp_from_sp_with_loa1(:oidc)
     sign_up_and_set_password
-    select_2fa_option('backup_code')
-    click_on 'Continue'
-    click_continue
     select_2fa_option('backup_code_only')
+    click_continue
 
     expect(page).to have_current_path(sign_up_completed_path)
 
