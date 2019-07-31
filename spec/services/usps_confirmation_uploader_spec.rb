@@ -22,6 +22,10 @@ RSpec.describe UspsConfirmationUploader do
     ]
   end
 
+  before do
+    allow(Figaro.env).to receive(:usps_upload_enabled).and_return('true')
+  end
+
   describe '#generate_export' do
     subject { uploader.send(:generate_export, confirmations) }
 
@@ -54,6 +58,14 @@ RSpec.describe UspsConfirmationUploader do
       expect(Net::SFTP).to receive(:start).with(*sftp_options).and_yield(sftp_connection)
       expect(StringIO).to receive(:new).with(export).and_return(string_io)
       expect(sftp_connection).to receive(:upload!).with(string_io, upload_folder)
+
+      subject
+    end
+
+    it 'does not upload when USPS upload is disabled' do
+      allow(Figaro.env).to receive(:usps_upload_enabled).and_return('false')
+
+      expect(Net::SFTP).to_not receive(:start).with(*sftp_options).and_yield(sftp_connection)
 
       subject
     end
