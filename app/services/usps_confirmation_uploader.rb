@@ -15,6 +15,7 @@ class UspsConfirmationUploader
   end
 
   def upload_export(export)
+    return unless FeatureManagement.usps_upload_enabled?
     io = StringIO.new(export)
     Net::SFTP.start(*sftp_config) do |sftp|
       sftp.upload!(io, remote_path)
