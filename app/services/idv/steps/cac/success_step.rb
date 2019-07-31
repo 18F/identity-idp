@@ -19,7 +19,7 @@ module Idv
             state: 'NY',
             zipcode: '11364',
             dob: '10/05/1938',
-            ssn: '900-33-2222',
+            ssn: SecureRandom.uuid,
             phone: '456',
           }.freeze
 
