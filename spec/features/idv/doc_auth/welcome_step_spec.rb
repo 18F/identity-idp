@@ -6,8 +6,7 @@ feature 'doc auth welcome step' do
   context 'button is disabled when JS is enabled', :js do
     before do
       enable_doc_auth
-      sign_in_and_2fa_user(user_with_2fa)
-      visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+      complete_doc_auth_steps_before_welcome_step
     end
 
     it 'does not allow the user to continue without checking the checkbox' do
@@ -26,8 +25,7 @@ feature 'doc auth welcome step' do
   context 'button is clickable when JS is disabled' do
     before do
       enable_doc_auth
-      sign_in_and_2fa_user(user_with_2fa)
-      visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+      complete_doc_auth_steps_before_welcome_step
     end
 
     it 'renders error when user continues without checking the checkbox' do
