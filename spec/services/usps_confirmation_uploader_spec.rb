@@ -65,7 +65,7 @@ RSpec.describe UspsConfirmationUploader do
     it 'does not upload when USPS upload is disabled' do
       allow(Figaro.env).to receive(:usps_upload_enabled).and_return('false')
 
-      expect(Net::SFTP).to_not receive(:start).with(*sftp_options).and_yield(sftp_connection)
+      expect(Net::SFTP).to_not receive(:start)
 
       subject
     end
