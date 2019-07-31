@@ -33,6 +33,7 @@ en:
     buttons:
       back: Back
       cancel: Yes, cancel
+      cac: Present CAC card
       continue: Continue
       delete: Delete
       disable: Disable

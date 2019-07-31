@@ -36,6 +36,7 @@ fr:
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     buttons:
       back: Retour
+      cac: Present CAC card
       cancel: Oui, annuler
       continue: Continuer
       delete: Effacer

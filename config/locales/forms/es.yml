@@ -37,6 +37,7 @@ es:
         seguridad?"
     buttons:
       back: Atrás
+      cac: Present CAC card
       cancel: Sí, cancelar
       continue: Continuar
       delete: Borrar
