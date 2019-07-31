@@ -121,4 +121,8 @@ class FeatureManagement
   def self.in_person_proofing_enabled?
     Figaro.env.in_person_proofing_enabled == 'true'
   end
+
+  def self.usps_upload_enabled?
+    Figaro.env.usps_upload_enabled == 'true'
+  end
 end

@@ -49,7 +49,7 @@ es:
       delete_account: Eliminar
       regenerate_personal_key: Obtenga una clave nueva.
     login:
-      piv_cac: Empleados del Gobierno
+      piv_cac: Inicie sesión con su identificación de empleado del gobierno
       piv_cac_info:
         ial1: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
           de su correo electrónico y contraseña.

@@ -96,4 +96,6 @@ es:
       general_error: Hubo un error al agregar su clave de seguridad de hardware. Inténtalo
         de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
+        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles con
+        las claves de seguridad FIDO. Internet Explorer no lo hace.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

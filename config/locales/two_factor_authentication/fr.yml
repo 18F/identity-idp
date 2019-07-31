@@ -38,6 +38,12 @@ fr:
       auth_app: Application d'authentification
       auth_app_info_html: Utilisez votre application d'authentification pour obtenir
         votre code de sécurité
+      backup_code: Codes de sauvegarde
+      backup_code_info_html: Utilisez un code de sauvegarde de votre liste de codes
+        de sauvegarde pour vous connecter.
+      backup_code_only: Codes de sauvegarde
+      backup_code_only_info_html: Utilisez un code de sauvegarde de votre liste de
+        codes de sauvegarde pour vous connecter.
       personal_key: Clé personnelle
       personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
         avez utilisée lors de la création du compte.
