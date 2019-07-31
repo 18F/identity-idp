@@ -22,9 +22,6 @@
   border-radius: $border-radius-lg;
 
   &:disabled {
-    background-color: $gray-dark;
-    color: $white;
-    cursor: default;
     opacity: .6;
   }
 }
@@ -90,8 +87,8 @@
 
 .btn-disabled {
   background-color: $gray-light;
-  border-color: $gray;
-  color: $gray;
+  color: $gray-dark;
+  cursor: not-allowed;
 }
 
 .btn-account-action {
