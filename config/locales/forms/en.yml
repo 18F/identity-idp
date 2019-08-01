@@ -2,31 +2,30 @@
 en:
   forms:
     backup_code:
-      are_you_sure_continue: continue with backup codes
+      are_you_sure_continue: Continue
       are_you_sure_continue_prologue: If you don’t have access to any other authentication
         method,
-      are_you_sure_desc: Backup codes are not recommended because they can easily
-        be lost or stolen. If you have access to another authentication method, please
-        choose another option.
-      are_you_sure_other_option: Choose another option
-      are_you_sure_title: Are you sure this is your only option?
+      are_you_sure_desc: "<br><b>Backup codes are not very safe</b> because they can
+        easily be lost or stolen. <b>If you can, choose a different method</b> (use
+        a phone, download an authentication application, or use a security key). <br><br><b>If
+        you continue with backup codes, keep them safe</b>.  We'll give you 10 codes
+        that you can download, print, copy or write down.  Later, you'll have to enter
+        one every time you sign in."
+      are_you_sure_other_option: Choose a different method
+      are_you_sure_title: Are you sure?  We'll give you backup codes to save and use.
       depleted_desc: You used all of your backup codes. We will generate new backup
         codes after you click continue. Save them in a safe place to make sure you
         can sign in again in the future.
       depleted_title: Create new backup codes
       download: Download
       generate: Generate
-      info: Use backup codes if you cannot access your phone to sign in
-      instructions: You will be asked for a backup code <strong>each time you sign
-        in</strong> to your login.gov account.
       print: Print
       regenerate: Regenerate
-      subinfo: Each code may only be used once, once the 10th code has been used you
-        will be prompted to download a new list.  Treat your recovery codes with the
-        same level of attention as you would your password.
+      subinfo: "<b>Don't lose these codes</b>. Download, print, or copy them. Each
+        code can only be used once. After you’ve used all 10 codes, we’ll give you
+        10 new codes.  Keep your codes as safe as your password."
       subtitle: Your backup codes
       title: Backup Codes
-      warn: Download, print, or write down your personal security codes.
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of backup
         codes. Your original backup codes will no longer be valid.
@@ -69,6 +68,8 @@ en:
     phone:
       buttons:
         delete: Remove Phone
+    piv_cac_login:
+      submit: Present PIV/CAC card
     piv_cac_mfa:
       submit: Present PIV/CAC card
     piv_cac_setup:
@@ -112,6 +113,7 @@ en:
       backup_code: Security code
       code: One-time security code
       personal_key: Personal key
+      success: Next, you'll set up another method.
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
@@ -136,7 +138,4 @@ en:
         keys as you want, and we recommend at least two for easier account recovery.
       login_text: Press the button on your security key to sign in with login.gov
       nickname: Security key nickname
-      success_text: Each time you sign in to login.gov, we will ask you to use your
-        security key.  If you do not have your security key, you can use any other
-        authentication methods you have enabled.
       success_title: You have added a security key as your authentication method

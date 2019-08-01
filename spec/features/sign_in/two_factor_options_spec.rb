@@ -1,5 +1,14 @@
 require 'rails_helper'
 
+describe 'when using PIV/CAC to sign in' do
+  let(:user) { user_with_piv_cac }
+
+  it 'does not show any MFA options' do
+    sign_in_user_with_piv(user)
+    expect(page).to_not have_content t('two_factor_authentication.login_options_link_text')
+  end
+end
+
 describe '2FA options when signing in' do
   context 'when the user only has SMS configured' do
     it 'only displays SMS, Voice and Personal key' do

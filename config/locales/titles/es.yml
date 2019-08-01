@@ -20,6 +20,8 @@ es:
     personal_key: Por si acaso
     phone_setup: Envíe su código de seguridad a través de un mensaje de texto o de
       una llamada telefónica
+    piv_cac_login:
+      new: Use su PIV / CAC para iniciar sesión en su cuenta
     piv_cac_setup:
       certificate:
         bad: Error de certificado PIV/CAC
@@ -49,6 +51,7 @@ es:
       new: Configure la autenticación de dos factores
     two_factor_recovery_setup: Añadir un método de autenticación de copia de seguridad
     two_factor_setup: Configuración de autenticación de dos factores
+    two_factor_setup_success: Configurar con éxito el primer método de autenticación
     verify_email: Revise su email
     verify_profile: Active su cuenta
     visitors:

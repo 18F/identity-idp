@@ -44,14 +44,6 @@ describe SendSignUpEmailConfirmation do
       expect(email_address.confirmed_at).to eq(nil)
     end
 
-    it 'updates the confirmation values on the user record' do
-      subject.call(request_id: request_id)
-
-      expect(user.confirmation_token).to eq(confirmation_token)
-      expect(user.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
-      expect(user.confirmed_at).to eq(nil)
-    end
-
     context 'when the user already has a confirmation token' do
       let(:user) do
         create(:user, confirmation_token: 'old-token', confirmation_sent_at: 5.minutes.ago)

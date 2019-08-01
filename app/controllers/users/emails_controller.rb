@@ -49,11 +49,7 @@ module Users
       if session_email.blank?
         redirect_to add_email_url
       else
-        email = session_email
-        @register_user_email_form = RegisterUserEmailForm.new
-        @register_user_email_form.user.email = email
-
-        render :verify, locals: { email: email }
+        render :verify, locals: { email: session_email }
       end
     end
 

@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
   include EmailAddressCallback
+  include DeprecatedUserAttributes
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
@@ -43,6 +44,7 @@ class User < ApplicationRecord
   has_one :doc_capture, dependent: :destroy
   has_one :account_recovery_request, dependent: :destroy
   has_many :throttles, dependent: :destroy
+  has_one :registration_log, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

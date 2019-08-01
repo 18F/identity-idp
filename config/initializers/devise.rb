@@ -1,7 +1,6 @@
 require 'saml_idp_constants'
 require 'custom_devise_failure_app'
 
-# rubocop:disable Metrics/BlockLength
 Devise.setup do |config|
   include Mailable
   require 'devise/orm/active_record'
@@ -32,4 +31,3 @@ Devise.setup do |config|
     manager.failure_app = CustomDeviseFailureApp
   end
 end
-# rubocop:enable Metrics/BlockLength

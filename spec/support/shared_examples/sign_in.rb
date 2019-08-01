@@ -34,6 +34,12 @@ shared_examples 'signing in as LOA1 with personal key' do |sp|
   end
 end
 
+shared_examples 'signing in as LOA1 with piv/cac' do |sp|
+  it 'redirects to the SP after authenticating', email: true do
+    loa1_sign_in_with_piv_cac_goes_to_sp(sp)
+  end
+end
+
 shared_examples 'visiting 2fa when fully authenticated' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
@@ -79,6 +85,16 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
+  end
+end
+
+shared_examples 'signing in as LOA3 with piv/cac' do |sp|
+  it 'redirects to the SP after authenticating and getting the password', :email do
+    loa3_sign_in_with_piv_cac_goes_to_sp(sp)
+  end
+
+  it 'gets bad password error', :email do
+    loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
 
@@ -179,12 +195,13 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     visit_idp_from_sp_with_loa1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
+
     visit_piv_cac_service(login_two_factor_piv_cac_path,
                           uuid: user.x509_dn_uuid,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
 
-    expect(current_path).to eq two_factor_options_path
+    expect(current_path).to eq two_factor_options_success_path
 
     visit_idp_from_sp_with_loa1(sp)
 
@@ -236,4 +253,70 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
+end
+
+def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
+  user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+  visit_idp_from_sp_with_loa1(sp)
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  click_continue
+  return unless sp == :oidc
+  redirect_uri = URI(current_url)
+
+  expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+end
+
+def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
+  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+
+  visit_idp_from_sp_with_loa3(sp)
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  # capture password before redirecting to SP
+  expect(current_url).to eq capture_password_url
+
+  if sp == :oidc
+    expect(page.response_headers['Content-Security-Policy']).
+      to(include('form-action \'self\' http://localhost:7654'))
+  end
+
+  fill_in_password_and_submit(user.password)
+
+  if sp == :saml
+    expect(current_url).to eq @saml_authn_request
+  elsif sp == :oidc
+    redirect_uri = URI(current_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
+end
+
+def loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
+  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+
+  visit_idp_from_sp_with_loa3(sp)
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  expect(current_url).to eq capture_password_url
+
+  max_allowed_attempts = Figaro.env.password_max_attempts.to_i
+  (max_allowed_attempts - 1).times do
+    fill_in 'user_password', with: 'badpassword'
+    click_button t('links.next')
+    expect(page).to have_content(t('errors.confirm_password_incorrect'))
+  end
+
+  fill_in 'user_password', with: 'badpassword'
+  click_button t('links.next')
+  expect(page).to have_content(t('errors.max_password_attempts_reached'))
 end

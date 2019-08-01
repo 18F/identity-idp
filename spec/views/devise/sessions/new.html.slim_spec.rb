@@ -7,6 +7,7 @@ describe 'devise/sessions/new.html.slim' do
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
     allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+    assign(:ial, 1)
   end
 
   it 'sets autocomplete attribute off' do

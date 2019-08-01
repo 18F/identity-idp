@@ -95,7 +95,7 @@ feature 'idv profile step' do
       fill_in :profile_ssn, with: ssn
       click_continue
 
-      expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail')))
+      expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail_html')))
       expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
     end
   end

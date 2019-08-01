@@ -1,0 +1,38 @@
+<% title t('titles.verify_email') %>
+<% request_id = params[:request_id] || sp_session[:request_id] %>
+
+<% if @view_model.resend.present? %>
+  <%= render 'forgot_password/resend_alert' %>
+<% else %>
+  <%= render 'shared/null' %>
+<% end %>
+
+<div class="mtn2">
+  <%= image_tag asset_url('check-email.svg'), width: 24, class: 'left-0 right-0 ico-heading' %>
+  <h1 class="mt2 ml1 h3 ico-heading"><%= t('headings.verify_email') %></h1>
+</div>
+
+<p><%= t('notices.forgot_password.first_paragraph_start') %>
+   <strong><%= @view_model.email %></strong>
+   <%= t('notices.forgot_password.first_paragraph_end') %>
+</p>
+
+<div class="col-3">
+  <hr class="my3 bw3 border-teal rounded"/>
+</div>
+
+<%= simple_form_for @view_model.password_reset_email_form,
+                    html: { autocomplete: 'off', method: :post, role: 'form', class: 'mb2' },
+                    url: user_password_path do |f| %>
+
+  <%= f.input :email, as: :hidden, wrapper: false %>
+  <%= f.input :resend, as: :hidden, wrapper: false %>
+  <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
+  <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
+  <%= f.button :submit, t('links.resend'), class: 'btn-link ml-tiny' %></p>
+
+  <% link = link_to(t('notices.forgot_password.use_diff_email.link'),
+           sign_up_email_path(request_id: request_id)) %>
+  <p><%= t('notices.forgot_password.use_diff_email.text_html', link: link) %></p>
+  <p><%= t('instructions.forgot_password.close_window') %></p>
+<% end %>

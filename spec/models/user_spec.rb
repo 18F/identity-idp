@@ -33,7 +33,7 @@ describe User do
     end
 
     it 'mirrors the info from the user object on creation' do
-      user = create(:user, :with_email)
+      user = create(:user)
       email_address = user.email_addresses.first
       expect(email_address).to be_present
       expect(email_address.encrypted_email).to eq user.encrypted_email
@@ -42,7 +42,7 @@ describe User do
     end
 
     it 'mirrors the info from an unconfirmed user object' do
-      user = create(:user, :unconfirmed, :with_email)
+      user = create(:user, :unconfirmed)
       email_address = user.email_addresses.first
       expect(email_address).to be_present
       expect(email_address.encrypted_email).to eq user.encrypted_email
@@ -78,7 +78,7 @@ describe User do
     end
 
     it 'uses a DB index to enforce uniqueness' do
-      user1 = create(:user, :with_email)
+      user1 = create(:user)
       user1.save
       user2 = create(:user, email: "mkuniqu.#{user1.email}")
       user2.uuid = user1.uuid

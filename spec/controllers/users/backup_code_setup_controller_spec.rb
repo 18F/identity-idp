@@ -8,7 +8,7 @@ describe Users::BackupCodeSetupController do
     controller.user_session[:backup_codes] = codes
     get :download
 
-    expect(response.body).to eq(codes.join("\n") + "\n")
+    expect(response.body).to eq(codes.join("\r\n") + "\r\n")
     expect(response.header['Content-Type']).to eq('text/plain')
   end
 end

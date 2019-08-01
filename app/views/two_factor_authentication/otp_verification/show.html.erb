@@ -1,0 +1,50 @@
+<% title t('titles.enter_2fa_code') %>
+
+<%= render 'partials/step_indicator', presenter: @presenter %>
+<h1 class="h3 my0">
+  <%= @presenter.header %>
+</h1>
+
+<p>
+  <%= @presenter.phone_number_message %>
+</p>
+
+<%= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3') do %>
+  <%= render @presenter.reauthn_hidden_field_partial %>
+  <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'), class: 'block bold' %>
+  <div class="col-12 sm-col-5 mb2 sm-mb0 sm-mr-20p inline-block">
+    <%= text_field_tag(:code, '', value: @presenter.code_value, required: true, autofocus: true,
+                       pattern: '[0-9]*', class: 'col-12 field monospace mfa',
+                       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
+                       autocomplete: 'off', type: 'tel') %>
+  </div>
+  <%= hidden_field_tag 'otp_make_default_number', @presenter.otp_make_default_number %>
+  <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12' %>
+
+  <br/><br/>
+  <%= link_to(t('links.two_factor_authentication.get_another_code'),
+              otp_send_path(otp_delivery_selection_form:
+                { otp_delivery_preference: @presenter.otp_delivery_preference, resend: true }),
+              class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
+              form_class: 'inline-block') %>
+
+  <inline-block class="span" style="white-space:nowrap">
+    <%= check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1' %>
+    <%= label_tag 'remember_device',
+                t('forms.messages.remember_device'),
+                class: 'blue' %>
+  </inline-block>
+<% end %>
+
+<% if @presenter.update_phone_link.present? %>
+  <br />
+  <%= @presenter.update_phone_link %>
+<% else %>
+  <%= render 'shared/fallback_links', presenter: @presenter %>
+<% end %>
+
+<% if MfaPolicy.new(current_user).sufficient_factors_enabled? %>
+  <%= render 'shared/cancel', link: @presenter.cancel_link %>
+<% else %>
+  <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>

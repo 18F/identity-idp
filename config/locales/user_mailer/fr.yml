@@ -73,7 +73,7 @@ fr:
           compte login.gov, mais nous ne possédons pas de compte associé à cette adresse
           courriel. Si vous souhaitez créer un nouveau compte associé à cette adresse
           courriel, confirmez votre adresse courriel ci-dessous.
-        unconfirmed: Merci d'avoir créé un compte.
+        unconfirmed: Merci d'avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
       header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
         le lien complet dans votre navigateur."

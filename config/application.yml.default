@@ -76,6 +76,8 @@ twilio_timeout: '5'
 usps_download_sftp_timeout: '5'
 usps_upload_sftp_timeout: '5'
 
+google_analytics_timeout: '5'
+
 piv_cac_email_domains: >-
   [
     ".eop.gov", ".mil", ".treas.gov", ".dhs.gov",
@@ -167,6 +169,7 @@ development:
   lexisnexis_request_mode: 'testing'
   lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '10'
+  login_with_piv_cac: 'true'
   logins_per_ip_limit: '5'
   logins_per_ip_period: '60'
   logins_per_ip_track_only_mode: 'false'
@@ -205,6 +208,7 @@ development:
   send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   telephony_disabled: 'true'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
@@ -289,6 +293,7 @@ production:
   lexisnexis_request_mode: 'testing'
   lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '10'
+  login_with_piv_cac: 'false'
   logins_per_ip_limit: '5'
   logins_per_ip_period: '60'
   logins_per_ip_track_only_mode: 'true'
@@ -323,6 +328,7 @@ production:
   send_new_device_sms: 'false'
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   twilio_numbers: # Add JSON encoded array of phone numbers
   twilio_sid: # Twilio SID
   twilio_auth_token: # Twilio auth token
@@ -412,6 +418,7 @@ test:
   lexisnexis_request_mode: 'testing'
   lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '5'
+  login_with_piv_cac: 'true'
   logins_per_ip_limit: '3'
   logins_per_ip_period: '60'
   logins_per_ip_track_only_mode: 'false'
@@ -447,6 +454,7 @@ test:
   send_new_device_sms: 'true'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
+  show_user_attribute_deprecation_warnings: 'false'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
   twilio_auth_token: 'token1'

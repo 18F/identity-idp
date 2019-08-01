@@ -1,19 +1,22 @@
 <h1 class="h3 my0 mt0"><%= @presenter.title %></h1>
-<p class="mt-tiny mb3"><%= @presenter.description %></p>
+<p class="mt-tiny mb3"><%== @presenter.description %></p>
 
 <% if @presenter.other_option_display %>
-  <%= link_to @presenter.other_option_title, @presenter.other_option_path, class: 'btn btn-primary btn-wide' %>
-  <br><br>
-  <%= @presenter.continue_bttn_prologue %>
-<% end %>
-
-<%= form_tag(backup_code_setup_path, method: :patch, role: 'form') do %>
-  <div class="clearfix mxn1">
-    <div class="col col-12 sm-col-8 px1">
-      <%= button_tag @presenter.continue_bttn_title, type: 'submit', class: @presenter.continue_bttn_class %>
+  <%= form_tag(backup_code_setup_path, method: :patch, role: 'form') do %>
+    <div class="clearfix mxn1">
+      <div class="col col-12 sm-col-8 px1">
+        <%= button_tag @presenter.continue_bttn_title, type: 'submit', class: 'btn btn-primary btn-wide' %>
+      </div>
     </div>
-  </div>
+  <% end %>
 <% end %>
+<br>
+<div class="mt2 pt1 border-top">
+  <% if MfaPolicy.new(current_user).sufficient_factors_enabled? %>
+    <%= link_to t('links.cancel'), account_path, class: 'h5' %>
+  <% else %>
+    <%= link_to @presenter.other_option_title, two_factor_options_path %>
+  <% end %>
+</div>
 
-<div class="mt2 pt1 border-top"></div>
 <%= javascript_pack_tag("webauthn-unhide-signup") %>

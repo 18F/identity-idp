@@ -1,0 +1,15 @@
+- title t('titles.visitors.index')
+
+= simple_form_for(current_user,
+                  as: :user,
+                  url: capture_password_url,
+                  method: :post,
+                  html: { autocomplete: 'off', role: 'form' }) do |f|
+  = f.input :password, label: t('account.index.password'), required: true
+  div
+    = f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3'
+
+.clearfix.pt1.border-top
+  .sm-col-right.mxn1
+    = link_to t('links.passwords.forgot'), new_user_password_url, \
+      class: 'px1'

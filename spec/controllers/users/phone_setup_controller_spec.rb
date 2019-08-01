@@ -4,8 +4,6 @@ describe Users::PhoneSetupController do
   describe 'GET index' do
     context 'when signed out' do
       it 'redirects to sign in page' do
-        expect(PhoneSetupPresenter).to_not receive(:new)
-
         get :index
 
         expect(response).to redirect_to(new_user_session_url)
@@ -20,7 +18,6 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
-        expect(PhoneSetupPresenter).to receive(:new).with(user, false, user.otp_delivery_preference)
         expect(UserPhoneForm).to receive(:new).with(user, nil)
 
         get :index

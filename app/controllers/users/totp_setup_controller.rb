@@ -2,6 +2,7 @@ module Users
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
+    include RememberDeviceConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -44,8 +45,7 @@ module Users
 
     def track_event
       properties = {
-        user_signed_up: MfaPolicy.new(current_user, user_session[:signing_up]).
-                   sufficient_factors_enabled?,
+        user_signed_up: MfaPolicy.new(current_user).sufficient_factors_enabled?,
         totp_secret_present: new_totp_secret.present?,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
@@ -56,12 +56,17 @@ module Users
     end
 
     def process_valid_code
-      create_user_event(:authenticator_enabled)
+      create_events
       mark_user_as_fully_authenticated
       save_remember_device_preference
       flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
-      redirect_to url_after_entering_valid_code
+      redirect_to two_2fa_setup
       user_session.delete(:new_totp_secret)
+    end
+
+    def create_events
+      create_user_event(:authenticator_enabled)
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
     end
 
     def should_show_totp_configured_message?
@@ -74,32 +79,21 @@ module Users
     def process_successful_disable
       analytics.track_event(Analytics::TOTP_USER_DISABLED)
       create_user_event(:authenticator_disabled)
-      revoke_remember_device
+      revoke_remember_device(current_user)
+      revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
     end
 
-    def revoke_remember_device
+    def revoke_otp_secret_key
       UpdateUser.new(
         user: current_user,
-        attributes: { otp_secret_key: nil, remember_device_revoked_at: Time.zone.now },
+        attributes: { otp_secret_key: nil},
       ).call
     end
 
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-    end
-
-    def url_after_entering_valid_code
-      return account_url if user_already_has_a_personal_key?
-
-      policy = PersonalKeyForNewUserPolicy.new(user: current_user, session: session)
-
-      if policy.show_personal_key_after_initial_2fa_setup?
-        two_2fa_setup
-      else
-        idv_jurisdiction_url
-      end
     end
 
     def user_already_has_a_personal_key?

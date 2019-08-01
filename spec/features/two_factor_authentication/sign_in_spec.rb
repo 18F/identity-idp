@@ -18,6 +18,7 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('titles.phone_setup')
 
+
       send_security_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
@@ -327,14 +328,21 @@ feature 'Two Factor Authentication' do
     end
 
     context 'user with Voice preference sends SMS, causing a Twilio error' do
+      let(:user) do
+        create(:user, :signed_up,
+               otp_delivery_preference: 'voice',
+               with: { phone: '+17035551212', delivery_preference: 'voice' })
+      end
+      let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: '+17035551212') }
+
       it 'does not change their OTP delivery preference' do
         allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
         allow(Twilio::FakeVerifyAdapter).to receive(:post).
           and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
+        allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)
+        allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
+          and_return(false)
 
-        user = create(:user, :signed_up,
-                      otp_delivery_preference: 'voice',
-                      with: { phone: '+17035551212', delivery_preference: 'voice' })
         sign_in_user(user)
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
