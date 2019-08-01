@@ -4,7 +4,7 @@ en:
     buttons:
       change_address: change
       change_ssn: change
-      get_started: Get started
+      continue: Continue
       start_over: Start over
       use_computer: Use your computer
       use_phone: Use your phone
@@ -55,8 +55,11 @@ en:
       bullet2: Confirm your address
       bullet3: Secure your account
       bullet4: Account recovery
+      consent: By checking this box, you are letting login.gov ask for, use, keep,
+        and share your personal information. We will only use it to verify your identity.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
+      learn_more: Learn more.
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take pictures of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
