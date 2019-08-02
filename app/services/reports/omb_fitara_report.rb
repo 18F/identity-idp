@@ -1,17 +1,46 @@
+require 'login_gov/hostdata'
+
+# these metrics are not particularly useful
+# rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
 module Reports
   class OmbFitaraReport
     MOST_RECENT_MONTHS_COUNT = 2
-    S3_BUCKET = Figaro.env.omb_fitara_bucket
-    S3_FILENAME = Figaro.env.omb_fitara_filename
+    S3_BUCKET = gen_s3_bucket_name.freeze unless Figaro.env.s3_reports_enabled! == 'false'
 
     def call
       body = results_json
-      if Rails.env.production? && S3_FILENAME
-        Aws::S3::Resource.new.bucket(S3_BUCKET).object(S3_FILENAME).put(
-          body: results_json, acl: 'private', content_type: 'application/json',
-        )
+
+      # When S3 reports are not enabled in config, just return the JSON and
+      # save it as the result on the JobRun object.
+      if Figaro.env.s3_reports_enabled! == 'false'
+        Rails.logger.info('Not uploading report to S3, s3_reports_enabled is false')
+        return body
       end
-      body
+
+      path = self.class.generate_s3_path
+      url = "s3://#{S3_BUCKET}/#{path}"
+      Rails.logger.info("#{self.class.name}: uploading to #{url}")
+      Aws::S3::Resource.new.bucket(S3_BUCKET).object(path).put(
+        body: body, acl: 'private', content_type: 'application/json',
+      )
+
+      # Save the uploaded report URL as the job result
+      url
+    end
+
+    # Load info about our environment such as account ID and region
+    def self.ec2_data
+      @ec2_data ||= LoginGov::Hostdata::EC2.load
+    end
+
+    def self.gen_s3_bucket_name
+      "#{Figaro.env.s3_report_bucket_prefix!}.#{ec2_data.account_id}-#{ec2_data.region}"
+    end
+
+    def self.generate_s3_path(suffix: 'omb-fitara-report.json')
+      now = Time.zone.now
+      "#{LoginGov::Hostdata.env}/omb-fitara-report/#{now.year}/#{now.strftime('%F')}.#{suffix}"
     end
 
     private
@@ -57,3 +86,4 @@ module Reports
     end
   end
 end
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
