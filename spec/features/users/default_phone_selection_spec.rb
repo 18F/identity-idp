@@ -59,7 +59,6 @@ describe 'phone configuration' do
           new_phone_config = phone_config if phone_config.phone.include? new_phone
         }
 
-        print new_phone_config.id
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
         check 'user_phone_form_otp_make_default_number'
