@@ -48,8 +48,8 @@ en:
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
       welcome: We verify your identity to make sure you are you—not someone pretending
-        to be you.  Verifying your identity lets you access services that handle 
-        sensitive information.
+        to be you.  Verifying your identity lets you access services that handle sensitive
+        information.
     instructions:
       bullet1: Upload your ID
       bullet2: Confirm your address
