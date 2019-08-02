@@ -49,6 +49,9 @@ queue_health_check_frequency_seconds: '30'
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
+# add JSON job configuration names here to disable them from running
+recurring_jobs_disabled_names: '[]'
+
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
 # ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
@@ -443,6 +446,7 @@ test:
   recaptcha_enabled_percent: '0'
   recaptcha_site_key: 'key1'
   recaptcha_secret_key: 'key2'
+  recurring_jobs_disabled_names: '["disabled job"]'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_hours_aal_1: '720'
