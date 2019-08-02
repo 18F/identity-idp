@@ -50,8 +50,8 @@ es:
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
-        no alguien que pretende ser usted. La verificación de su identidad también
-        le permite acceder a servicios que manejan información de identificación personal.
+        no alguien que pretende ser usted. Verificar su identidad le permite acceder a
+        servicios que manejan información confidencial.
     instructions:
       bullet1: Sube tu ID
       bullet2: Confirma tu direccion

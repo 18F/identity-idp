@@ -59,8 +59,7 @@ fr:
         TIFF et JPG.
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
-        permet également d'accéder à des services traitant des informations personnelles
-        identifiables.
+        permet d'accéder à des services traitant des informations sensibles.
     instructions:
       bullet1: Téléchargez votre identifiant
       bullet2: Confirmez votre adresse
