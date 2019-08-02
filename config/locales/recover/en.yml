@@ -9,6 +9,21 @@ en:
         that you are the owner of this account.  Please click the link below or copy
         and paste the entire link into your browser.  This link will expire in 15
         minutes.
+    instructions:
+      bullet1: Upload your ID
+      bullet2: Enter your Social Security Number
+      bullet3: Make sure we have the right information
+      consent: By checking this box, you are letting login.gov ask for, use, keep,
+        and share your personal information. We will only use it to verify your identity.
+      heading: 'What you''ll need to do:'
+      learn_more: Learn more.
+      text1: take a picture or upload a file
+      text2: we need it to find you in identity verification databases
+      text3: you'll be able to edit it if something's wrong
+    overview:
+      description: We re-verify your identity to make sure you are you - not someone
+        pretending to be you.
+      heading: We need to re-verify your identity
     request:
       confirm_email: First, let's confirm your email address
       email_sent: Link sent to %{email}. Please check your email and follow instructions
@@ -25,18 +40,3 @@ en:
       success: You have successfully recovered your account.  To prevent having to
         recover your account in the future, please add another authentication method
         from the two-factor authentication options below.
-    overview:
-      heading: We need to re-verify your identity
-      description: We re-verify your identity to make sure you are you - not someone
-        pretending to be you.
-    instructions:
-      bullet1: Upload your ID
-      bullet2: Enter your Social Security Number
-      bullet3: Make sure we have the right information
-      consent: By checking this box, you are letting login.gov ask for, use, keep,
-        and share your personal information. We will only use it to verify your identity.
-      heading: 'What you''ll need to do:'
-      learn_more: Learn more.
-      text1: take a picture or upload a file
-      text2: we need it to find you in identity verification databases
-      text3: you'll be able to edit it if something's wrong
