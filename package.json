@@ -11,20 +11,24 @@
     "build": "true"
   },
   "dependencies": {
-    "@rails/webpacker": "^4.0.7",
+    "@rails/webpacker": "3.5",
     "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
     "clipboard": "^1.6.1",
     "coffeescript": "1.12.7",
+    "event-hooks-webpack-plugin": "^1.0.0",
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
+    "fs-extra": "^8.1.0",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.2",
     "intl-tel-input": "^12.1.15",
     "jquery": "^3.3.1",
     "libphonenumber-js": "^0.4.23",
+    "local-time": "^2.1.0",
     "normalize.css": "^4.2.0",
+    "rails-erb-loader": "^5.5.2",
     "sinon": "^1.17.7",
     "zxcvbn": "^4.4.2"
   },
@@ -39,6 +43,7 @@
     "eslint-config-airbnb-base": "^11.2.0bass",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^6.1.4",
-    "proxyquire": "^1.8.0"
+    "proxyquire": "^1.8.0",
+    "webpack-dev-server": "2.11.2"
   }
 }

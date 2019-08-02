@@ -8,7 +8,7 @@ footer.footer.bg-light-blue.sm-bg-navy
         .i18n-mobile-toggle.center
           = link_to '#', class: 'block text-decoration-none blue fs-13p',
             'aria-expanded': 'false' do
-            = image_tag asset_url('globe-blue.svg'), width: 12, class: 'mr1', alt: '',
+            = image_tag asset_pack_path('application/images/globe-blue.svg'), width: 12, class: 'mr1', alt: '',
               'aria-hidden': 'true'
             = t('i18n.language')
             span.caret.inline-block.ml-tiny(aria-hidden="true")
@@ -30,7 +30,7 @@ footer.footer.bg-light-blue.sm-bg-navy
               = link_to '#',
                 class: 'white text-decoration-none border border-blue rounded-lg px1 py-tiny',
                 'aria-expanded': 'false' do
-                = image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: '',
+                = image_tag asset_pack_path('application/images/globe-white.svg'), width: 12, class: 'mr1', alt: '',
                   'aria-hidden': 'true'
                 = t('i18n.language')
                 span.caret.inline-block.ml-tiny(aria-hidden="true")
@@ -51,9 +51,9 @@ footer.footer.bg-light-blue.sm-bg-navy
         = link_to('https://gsa.gov',
           class: 'flex flex-center text-decoration-none white h6',
           target: '_blank') do
-          = image_tag asset_url('sp-logos/square-gsa.svg'),
+          = image_tag asset_pack_path('application/images/sp-logos/square-gsa.svg'),
             width: 20, class: 'mr1 sm-show', alt: 'GSA homepage'
-          = image_tag asset_url('sp-logos/square-gsa-dark.svg'),
+          = image_tag asset_pack_path('application/images/sp-logos/square-gsa-dark.svg'),
             width: 20, class: 'mr1 sm-hide', alt: 'GSA homepage'
           span.sm-show
            = t('shared.footer_lite.gsa')

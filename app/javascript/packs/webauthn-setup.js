@@ -1,4 +1,4 @@
-const WebAuthn = require('../app/webauthn');
+const WebAuthn = require('../application/javascripts/webauthn');
 
 function webauthn() {
   if (location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {

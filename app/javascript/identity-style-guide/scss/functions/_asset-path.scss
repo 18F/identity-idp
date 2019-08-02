@@ -1,0 +1,17 @@
+/*
+----------------------------------------
+asset-path-if-exists()
+----------------------------------------
+Defines a no-op function, which does not
+override a previous definition, to look
+up asset paths (Rails).
+----------------------------------------
+*/
+
+@function asset-path-if-exists($path) {
+  @if function-exists(asset-path) {
+    @return asset-path($path);
+  }
+
+  @return $path;
+}

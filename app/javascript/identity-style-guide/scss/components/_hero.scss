@@ -1,0 +1,27 @@
+.usa-hero {
+  background-color: color('primary-darker');
+  background-image: none;
+  background-position: calc(50% - 300px) 50%;
+  background-size: 650px;
+  background-repeat: no-repeat;
+
+  @include at-media('tablet') {
+    background-image: url(asset-path-if-exists("#{$theme-image-path}/hero.png"));
+  }
+}
+
+.usa-hero__callout {
+  background-color: transparent;
+  padding: 0;
+
+  @include at-media('tablet') {
+    @include grid-offset(5);
+    @include grid-col(7);
+    max-width: unset;
+  }
+}
+
+.usa-hero__callout--alt {
+  color: #fff;
+  display: block;
+}

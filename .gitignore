@@ -80,3 +80,8 @@ saml_*.shr
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity

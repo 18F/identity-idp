@@ -1,0 +1,41 @@
+.usa-footer__primary-section {
+  padding-top: units(4);
+  padding-bottom: units(4);
+}
+
+.usa-footer__secondary-section {
+  background-color: color('primary-darker');
+  color: color('white');
+  font-size: font-size($theme-banner-font-family, 1);
+  line-height: line-height($theme-banner-font-family, 2);
+  padding-top: units(2);
+  padding-bottom: units(2);
+
+  a {
+    color: unset;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+}
+
+.usa-footer__return-to-top {
+  .usa-button {
+    text-decoration: none;
+
+    &:visited {
+      color: color('primary');
+    }
+  }
+}
+
+.usa-footer__logo-img {
+  .usa-footer__slim &,
+  .usa-footer__medium & {
+    max-width: units(3);
+    vertical-align: middle;
+  }
+}

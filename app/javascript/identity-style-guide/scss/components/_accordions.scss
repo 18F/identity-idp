@@ -1,0 +1,90 @@
+$border-width: 1px;
+$icon-size: 1.5;
+
+.usa-accordion__button {
+  @include u-border($border-width, 'primary-light');
+  @include u-radius('lg');
+  @include u-text('normal');
+
+  background-color: color('transparent');
+  color: color('primary');
+
+  &:hover {
+    background-color: color('primary-lightest');
+    color: color('primary');
+  }
+  &:active {
+    background-color: color('primary-lighter');
+    color: color('primary');
+  }
+}
+
+.usa-accordion__close-button {
+  @extend .usa-accordion__button;
+  @include typeset($theme-accordion-font-family, $theme-body-font-size, 1);
+  background-image: none;
+  background-color: color('primary-lightest');
+  color: color('primary');
+  text-align: center;
+  padding: units(2) units(2.5);
+
+  &:hover {
+    background-color: color('primary-lighter');
+    color: color('primary');
+  }
+
+  &:active {
+    background-color: color('primary-light');
+    color: color('primary-dark');
+  }
+
+  &:before {
+    @include add-background-svg('angle-arrow-up');
+    background-position: center;
+    background-size: units($icon-size);
+    overflow: visible;
+    width: units($icon-size);
+    height: font-size($theme-accordion-font-family, $theme-body-font-size);
+    display: inline-block;
+    position: absolute;
+    margin-left: - units($icon-size) - units(1);
+    content: '';
+  }
+}
+
+.usa-accordion--bordered {
+  .usa-accordion__heading {
+    margin-block-end: 0;
+  }
+
+  .usa-accordion__button {
+    @include u-radius('lg');
+    background-color: transparent;
+  }
+
+  .usa-accordion__button[aria-expanded='true'] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .usa-accordion__container {
+    @include u-border($border-width, 'primary-light');
+    @include u-radius('lg');
+    border-top-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .usa-accordion__content {
+    border-width: 0;
+  }
+
+  .usa-accordion__close-button {
+    @include u-radius('lg');
+    background-color: color('primary-lightest');
+    font-weight: 400;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-width: $border-width 0 0 0;
+  }
+}

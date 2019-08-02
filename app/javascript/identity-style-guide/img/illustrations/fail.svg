@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>fail</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="20.90625%" y1="11.4791667%" x2="75.9166667%" y2="84.3229167%" id="linearGradient-1">
+            <stop stop-color="#EA4D67" offset="0%"></stop>
+            <stop stop-color="#E21C3D" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="20.3602193%" y1="19.4656984%" x2="79.1960324%" y2="81.6236545%" id="linearGradient-2">
+            <stop stop-color="#A50025" offset="0%"></stop>
+            <stop stop-color="#E21C3D" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="40.1666667%" y1="-5.73958333%" x2="59.8333333%" y2="105.739583%" id="linearGradient-3">
+            <stop stop-color="#EA4D67" offset="0%"></stop>
+            <stop stop-color="#A50025" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Styles" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Illustration" transform="translate(-450.000000, -916.000000)">
+            <g id="fail" transform="translate(450.000000, 916.000000)">
+                <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="96" height="96" rx="8"></rect>
+                <path d="M19.38,75.51 L38.36,96 L88,96 C92.418278,96 96,92.418278 96,88 L96,40.25 L75.37,18.89 L19.38,75.51 Z" id="Path" fill="url(#linearGradient-2)"></path>
+                <circle id="Oval" fill="#820025" cx="87" cy="87" r="3"></circle>
+                <circle id="Oval" fill="#820025" cx="9" cy="87" r="3"></circle>
+                <circle id="Oval" fill="#820025" cx="87" cy="9" r="3"></circle>
+                <circle id="Oval" fill="#820025" cx="9" cy="9" r="3"></circle>
+                <path d="M56.11,47.58 L75.8,27.89 C77.3353971,26.3775631 77.9416684,24.1578302 77.3882711,22.0748849 C76.8348738,19.9919397 75.2068352,18.3658186 73.1232392,17.8148766 C71.0396432,17.2639345 68.8206263,17.8728215 67.31,19.41 L47.63,39.09 L27.94,19.41 C25.5928169,17.0979165 21.8203717,17.1110142 19.4892999,19.4393404 C17.1582281,21.7676665 17.1406844,25.5400937 19.45,27.89 L39.14,47.58 L19.45,67.27 C17.9146029,68.7824369 17.3083316,71.0021698 17.8617289,73.0851151 C18.4151262,75.1680603 20.0431648,76.7941814 22.1267608,77.3451234 C24.2103568,77.8960655 26.4293737,77.2871785 27.94,75.75 L47.63,56.06 L67.31,75.75 C69.6571831,78.0620835 73.4296283,78.0489858 75.7607001,75.7206596 C78.0917719,73.3923335 78.1093156,69.6199063 75.8,67.27 L56.11,47.58 Z" id="Path" fill="#FFFFFF"></path>
+                <path d="M88,2 C91.3137085,2 94,4.6862915 94,8 L94,88 C94,91.3137085 91.3137085,94 88,94 L8,94 C4.6862915,94 2,91.3137085 2,88 L2,8 C2,4.6862915 4.6862915,2 8,2 L88,2 Z M88,0 L8,0 C3.581722,1.73547709e-16 5.41083001e-16,3.581722 0,8 L0,88 C5.41083001e-16,92.418278 3.581722,96 8,96 L88,96 C92.418278,96 96,92.418278 96,88 L96,8 C96,3.581722 92.418278,7.1463071e-16 88,0 Z" id="Shape" fill="url(#linearGradient-3)" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,40 @@
+{
+  "name": "basscss-sass",
+  "version": "3.0.0",
+  "description": "Transpiled Basscss Sass partials",
+  "scripts": {
+    "build": "node build",
+    "test": "mocha test"
+  },
+  "keywords": [
+    "basscss",
+    "css",
+    "oocss",
+    "sass",
+    "scss"
+  ],
+  "author": "Brent Jackson",
+  "license": "MIT",
+  "dependencies": {
+    "basscss": "^7.0.4"
+  },
+  "devDependencies": {
+    "css-scss": "0.0.7",
+    "cssnext": "^1.8.0",
+    "mocha": "^2.2.4",
+    "node-sass": "^3.2.0",
+    "postcss": "^4.1.14"
+  },
+  "main": "build.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/basscss/basscss-sass.git"
+  },
+  "bugs": {
+    "url": "https://github.com/basscss/basscss-sass/issues"
+  },
+  "homepage": "https://github.com/basscss/basscss-sass"
+}

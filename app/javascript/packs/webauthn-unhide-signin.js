@@ -1,4 +1,4 @@
-const WebAuthn = require('../app/webauthn');
+const WebAuthn = require('../application/javascripts/webauthn');
 
 function unhideWebauthn() {
   if (WebAuthn.isWebAuthnEnabled()) {

@@ -5,19 +5,24 @@ default: &default
   source_entry_path: packs
   public_output_path: packs
   cache_path: tmp/cache/webpacker
+  webpack_compile_output: true
 
   # Additional paths webpack should lookup modules
   # ['app/assets', 'engine/foo/app/assets']
   resolved_paths: []
 
   # Reload manifest.json on all requests so we reload latest compiled packs
-  cache_manifest: false
+  cache_manifest: true
 
   extensions:
+    - .erb
     - .js
     - .sass
     - .scss
     - .css
+    - .module.sass
+    - .module.scss
+    - .module.css
     - .png
     - .svg
     - .gif
@@ -45,7 +50,7 @@ development:
     headers:
       'Access-Control-Allow-Origin': '*'
     watch_options:
-      ignored: /node_modules/
+      ignored: '**/node_modules/**'
 
 
 test:

@@ -1,0 +1,88 @@
+/*
+* * * * * ==============================
+* * * * * ==============================
+* * * * * ==============================
+* * * * * ==============================
+========================================
+========================================
+========================================
+----------------------------------------
+USWDS GENERAL SETTINGS
+----------------------------------------
+-
+Read more about settings and
+USWDS style tokens in the documentation:
+https://v2.designsystem.digital.gov/style-tokens
+-
+----------------------------------------
+*/
+
+/*
+----------------------------------------
+Paths
+----------------------------------------
+Relative font and image file paths
+----------------------------------------
+*/
+
+$theme-font-path: if(variable-exists(font-path), $font-path, '../fonts');
+$theme-image-path: if(variable-exists(image-path), $image-path, '../img');
+
+/*
+----------------------------------------
+Show compile warnings
+----------------------------------------
+Show Sass warnings when functions and
+mixins use nonstanard or false tokens.
+----------------------------------------
+*/
+
+$theme-show-compile-warnings: true;
+
+/*
+----------------------------------------
+Namespace
+----------------------------------------
+*/
+
+$theme-namespace: (
+  'grid': (
+    namespace:  'grid-',
+    output:     true,
+  ),
+  'utility': (
+    namespace:  'u-',
+    output:     false,
+  ),
+);
+
+/*
+----------------------------------------
+Border box sizing
+----------------------------------------
+When set to true, sets the box-sizing
+property of all site elements to
+`border-box`.
+----------------------------------------
+*/
+
+$theme-global-border-box-sizing: true;
+
+/*
+----------------------------------------
+Focus styles
+----------------------------------------
+*/
+
+$theme-focus-color:  'primary';
+$theme-focus-offset: 1px;
+$theme-focus-style:  solid;
+$theme-focus-width:  2px;
+
+/*
+----------------------------------------
+Icons
+----------------------------------------
+*/
+
+$theme-icon-image-size: 2;

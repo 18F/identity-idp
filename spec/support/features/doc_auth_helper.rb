@@ -218,7 +218,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def attach_image
-    attach_file 'doc_auth_image', 'app/assets/images/logo.png'
+    attach_file 'doc_auth_image', 'app/javascript/application/images/logo.png'
   end
 
   def assure_id_results_with_result_2

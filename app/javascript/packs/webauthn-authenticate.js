@@ -1,4 +1,4 @@
-const WebAuthn = require('../app/webauthn');
+const WebAuthn = require('../application/javascripts/webauthn');
 
 function webauthn() {
   // If webauthn is not supported redirect back to the 2fa options list

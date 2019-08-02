@@ -1,0 +1,23 @@
+{
+  "name": "basscss-sass",
+  "homepage": "https://github.com/basscss/basscss-sass",
+  "authors": [
+    "Brent Jackson <jacksonblack@gmail.com>"
+  ],
+  "description": "Transpiled Basscss Sass partials",
+  "main": "basscss.scss",
+  "keywords": [
+    "basscss",
+    "css",
+    "oocss",
+    "sass"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,76 @@
+.usa-prose {
+  @include add-knockout-font-smoothing;
+}
+
+.usa-prose > {
+  h1, h2, h3, h4 {
+    + * {
+      margin-top: 0.4em;
+    }
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.2px;
+  }
+
+  h1 {
+    * + & {
+      margin-top: 1.9em;
+    }
+  }
+
+  h2, h3 {
+    * + & {
+      margin-top: 1.7em;
+    }
+  }
+  h4 {
+    letter-spacing: -0.1px;
+
+    * + & {
+      margin-top: 2.5em;
+    }
+  }
+  h5, h6 {
+    @include u-font-family('sans');
+    text-transform: uppercase;
+
+    * + & {
+      margin-top: 3em;
+    }
+    + * {
+      margin-top: 0.2em;
+    }
+  }
+  h5 {
+    letter-spacing: 0.2px;
+  }
+  h6 {
+    @include u-font-size('sans', 'micro');
+    @include u-font-weight('bold');
+    letter-spacing: 0.3px;
+  }
+
+  // https://github.com/uswds/uswds/pull/2906
+  ol, ul {
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    li {
+      max-width: measure($theme-text-measure);
+    }
+  }
+}
+
+.usa-intro {
+  @include u-font-size('sans', 'md');
+
+  @include at-media('mobile-lg') {
+    @include u-font-size('sans', $theme-lead-font-size);
+  }
+}
+
+.usa-display {
+  @include typeset-h1;
+}

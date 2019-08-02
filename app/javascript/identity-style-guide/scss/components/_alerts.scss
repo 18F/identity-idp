@@ -1,0 +1,35 @@
+$horizontal-padding: 2;
+$vertial-padding: 1.5;
+$icon-size: 3;
+
+.usa-alert {
+  border-radius: radius('lg');
+  padding: units($vertial-padding) units($horizontal-padding);
+  background-position: units($vertial-padding) units($horizontal-padding);
+  background-size: units($icon-size);
+
+  // Hide left border
+  &::before {
+    display: none;
+  }
+}
+
+.usa-alert__text:only-child {
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
+.usa-alert--success,
+.usa-alert--warning,
+.usa-alert--error,
+.usa-alert--info {
+  .usa-alert__body {
+    padding-left: units($icon-size);
+  }
+}
+
+// Temporarily supporting this class until USWDS formally supports this again
+// or has an alternate recommendation.
+.usa-alert__paragraph {
+  max-width: 66ch;
+}

@@ -2,7 +2,7 @@
 - help_link = link_to t('links.what_is_webauthn'),
               MarketingSite.help_hardware_security_key_url, target: :_blank
 
-= image_tag asset_url('security-key.svg'), width: '90', class: 'ml1'
+= image_tag asset_pack_path('application/images/security-key.svg'), width: '90', class: 'ml1'
 = render 'partials/step_indicator', presenter: @presenter
 h1.h3.my0 = t('headings.webauthn_setup.new')
 p.mt-tiny.mb3 = t('forms.webauthn_setup.intro_html', link: help_link)
@@ -35,8 +35,8 @@ div
 .spinner[id='spinner', class='hidden']
   br
   .center
-    = image_tag(asset_url('spinner.gif'),
-            srcset: asset_url('spinner@2x.gif'),
+    = image_tag(asset_pack_path('application/images/spinner.gif'),
+            srcset: asset_pack_path('application/images/spinner@2x.gif'),
             height: 144,
             width: 144,
             alt: '')
