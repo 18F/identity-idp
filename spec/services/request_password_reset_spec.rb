@@ -19,7 +19,9 @@ describe RequestPasswordReset do
         )
 
         RequestPasswordReset.new(email).perform
-        expect(User.find_with_email(email)).to be_present
+        user = User.find_with_email(email)
+        expect(user).to be_present
+        expect(RegistrationLog.first.user_id).to eq(user.id)
       end
     end
 
