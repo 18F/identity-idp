@@ -47,8 +47,8 @@ describe NullServiceProvider do
   end
 
   describe '#friendly_name' do
-    it 'returns false' do
-      expect(subject.friendly_name).to be_nil
+    it 'returns a default name' do
+      expect(subject.friendly_name).to be_present
     end
   end
 

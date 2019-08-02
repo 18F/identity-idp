@@ -97,17 +97,11 @@ describe Identity do
       expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
     end
 
-    it 'returns service_provider agency if friendly_name is missing' do
-      service_provider.friendly_name = nil
-      service_provider.save
-      expect(identity_with_sp.display_name).to eq(service_provider.agency)
-    end
-
-    it 'returns service_provider issuer if friendly_name and agency are missing' do
-      service_provider.friendly_name = nil
+    it 'returns service_provider friendly_name if agency is missing' do
+      service_provider.friendly_name = "Only Friendly Name"
       service_provider.agency = nil
       service_provider.save
-      expect(identity_with_sp.display_name).to eq(service_provider.issuer)
+      expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
     end
   end
 
@@ -122,11 +116,11 @@ describe Identity do
       expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
     end
 
-    it 'returns service_provider issuer if friendly_name and agency are missing' do
-      service_provider.friendly_name = nil
+    it 'returns service_provider friendly_name if agency is missing' do
+      service_provider.friendly_name = "Only Friendly Name"
       service_provider.agency = nil
       service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.issuer)
+      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
     end
   end
 

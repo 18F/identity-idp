@@ -39,6 +39,12 @@ es:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Use su aplicación de autenticación para obtener el código
         de seguridad.
+      backup_code: Códigos de respaldo
+      backup_code_info_html: Use un código de respaldo de su lista de códigos de respaldo
+        para iniciar sesión.
+      backup_code_only: Códigos de respaldo
+      backup_code_only_info_html: Use un código de respaldo de su lista de códigos
+        de respaldo para iniciar sesión.
       personal_key: Clave personal
       personal_key_info_html: Use la clave personal de 16 caracteres que usó en la
         creación de la cuenta.

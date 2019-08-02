@@ -7,6 +7,8 @@ feature 'sign up with backup code' do
   it 'allows backup code only MFA configurations' do
     user = sign_up_and_set_password
     expect(FirstMfaEnabledForUser.call(user)).to eq(:error)
+    expect(page).to_not \
+      have_content t('two_factor_authentication.login_options.backup_code_info_html')
     select_2fa_option('backup_code_only')
 
     expect(page).to have_link(t('forms.backup_code.download'))
@@ -34,6 +36,9 @@ feature 'sign up with backup code' do
     user = create(:user, :signed_up, :with_authentication_app, :with_backup_code)
     BackupCodeGenerator::NUMBER_OF_CODES.times do |index|
       signin(user.email, user.password)
+      visit login_two_factor_options_path
+      expect(page).to \
+        have_content t('two_factor_authentication.login_options.backup_code_info_html')
       code = user.backup_code_configurations[index].code
       visit login_two_factor_backup_code_path
       fill_in :backup_code_verification_form_backup_code, with: code

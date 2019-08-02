@@ -1,0 +1,32 @@
+---
+en:
+  cac_proofing:
+    buttons:
+      get_started: Get started
+    headings:
+      enter_info: Enter in your information
+      present_cac: Present your CAC card to verify your account
+      success: We've verified your information and CAC card.
+      verify: Verify your information
+      welcome: We need to verify your identity
+    info:
+      present_cac: After clicking "Present CAC" your browser will prompt you for your
+        CAC PIN and have you select a certificate.
+      welcome: We verify your identity to make sure you are you—not someone pretending
+        to be you.  Verifying your identity also allows you to access services that
+        handle Personal Identifiable Information.
+    instructions:
+      bullet1: Present your CAC card
+      bullet2: Enter your information
+      bullet3: Confirm your address
+      bullet4: Secure your account
+      bullet5: Account recovery
+      text1: your government issued ID card
+      text2: Social Security Number, date of birth, and address
+      text3: using a phone number or mailing address
+      text4: by re-entering your login.gov password
+      text5: make sure you always have access
+      welcome: 'What you''ll need to do:'
+    step: Verify your identity with CAC card - Step %{step} of 5
+    titles:
+      cac_proofing: Verify your identity with a CAC card
