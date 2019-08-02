@@ -29,7 +29,7 @@ module CacProofingHelper
 
   def complete_cac_proofing_steps_before_present_cac_step
     complete_cac_proofing_steps_before_welcome_step
-    click_on t('doc_auth.buttons.get_started')
+    click_on t('cac_proofing.buttons.get_started')
   end
 
   def complete_cac_proofing_steps_before_enter_info_step
