@@ -1,0 +1,46 @@
+<% title t('idv.titles.jurisdiction') %>
+<%= image_tag(asset_url('state-id-none@3x.png'),
+    alt: t('idv.titles.jurisdiction'),
+    width: 210) %>
+<h1 class="h3"><%= t('idv.messages.jurisdiction.why') %></h1>
+
+<p class="mt4 mb0" id="jurisdiction-label">
+  <%= t('idv.messages.jurisdiction.where') %>
+</p>
+
+<%= simple_form_for(@jurisdiction_form, url: idv_jurisdiction_path,
+    html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
+  <%= f.error_notification %>
+  <div class='clearfix mxn1'>
+    <div class='sm-col sm-col-6 px1'>
+      <%= f.input :state, collection: us_states_territories,
+          label: false, required: true,
+          selected: @jurisdiction_form.state, prompt: t('forms.select'),
+          wrapper_html: { class: 'jurisdiction-select' },
+          input_html: { 'aria-labelledBy': 'jurisdiction-label' } %>
+    </div>
+  </div>
+  <div class="mt2 mb3">
+    <label for="jurisdiction_ial2_consent_given">
+      <div class="checkbox">
+        <%= check_box_tag 'jurisdiction[ial2_consent_given]', true, false %>
+        <span class="indicator"></span>
+        <%= t('doc_auth.instructions.consent') %>
+        <%= link_to(t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/', target: '_blank') %>
+      </div>
+    </label>
+    <% if @jurisdiction_form.errors[:ial2_consent_given?].any? %>
+      <div class="mt-tiny h5 red error-message">
+        <%= @jurisdiction_form.errors[:ial2_consent_given?].first %>
+      </div>
+    <% end %>
+  </div>
+  <p><%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_failure_path(:no_id) %></p>
+  <%= f.button :submit,
+      t('forms.buttons.continue'),
+      class: 'btn btn-primary btn-wide sm-col-6 col-6 mt4 no-auto-enable' %>
+<% end %>
+
+<div class='mt2 pt1 border-top'>
+  <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
+</div>

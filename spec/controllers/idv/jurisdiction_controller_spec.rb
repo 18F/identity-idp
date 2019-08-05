@@ -39,7 +39,12 @@ describe Idv::JurisdictionController do
     it 'tracks analytics' do
       result = { success: true, errors: {} }
 
-      post :create, params: { jurisdiction: { state: supported_jurisdiction } }
+      post(
+        :create,
+        params: {
+          jurisdiction: { state: supported_jurisdiction, ial2_consent_given: true },
+        },
+      )
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::IDV_JURISDICTION_FORM, result
@@ -47,14 +52,24 @@ describe Idv::JurisdictionController do
     end
 
     it 'puts the jurisdiction into the user session' do
-      post :create, params: { jurisdiction: { state: supported_jurisdiction } }
+      post(
+        :create,
+        params: {
+          jurisdiction: { state: supported_jurisdiction, ial2_consent_given: true },
+        },
+      )
 
       expect(controller.user_session[:idv][:selected_jurisdiction]).to eq(supported_jurisdiction)
     end
 
     context 'with an unsupported jurisdiction' do
       it 'redirects to the unsupported jurisdiction fail page' do
-        post :create, params: { jurisdiction: { state: unsupported_jurisdiction } }
+        post(
+          :create,
+          params: {
+            jurisdiction: { state: unsupported_jurisdiction, ial2_consent_given: true },
+          },
+        )
 
         expect(response).to redirect_to(idv_jurisdiction_failure_url(:unsupported_jurisdiction))
       end
@@ -62,7 +77,12 @@ describe Idv::JurisdictionController do
 
     context 'when the form is valid' do
       it 'redirects to the profile page' do
-        post :create, params: { jurisdiction: { state: supported_jurisdiction } }
+        post(
+          :create,
+          params: {
+            jurisdiction: { state: supported_jurisdiction, ial2_consent_given: true },
+          },
+        )
 
         expect(response).to redirect_to(idv_session_url)
       end

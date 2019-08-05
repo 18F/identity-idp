@@ -23,6 +23,7 @@ module IdvStepHelper
   def complete_idv_steps_before_profile_step(user = user_with_2fa)
     complete_idv_steps_before_jurisdiction_step(user)
     select 'Virginia', from: 'jurisdiction_state'
+    page.find('#jurisdiction_ial2_consent_given').click
     click_idv_continue
   end
 
