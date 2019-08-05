@@ -1,9 +1,9 @@
 module Reports
   class OmbFitaraReport
+    OLDEST_TIMESTAMP = '2016-01-01 00:00:00'.freeze
     MOST_RECENT_MONTHS_COUNT = 2
     S3_BUCKET = Figaro.env.omb_fitara_bucket
     S3_FILENAME = Figaro.env.omb_fitara_filename
-    OLDEST_TIMESTAMP = '2016-01-01 00:00:00'.freeze
 
     def call
       body = results_json
