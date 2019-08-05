@@ -21,9 +21,8 @@ html lang="#{I18n.locale}" class='no-js'
 
     == stylesheet_pack_tag 'application', media: 'all'
     <!--[if IE 8]>
-      = javascript_include_tag 'es5-shim.min'
+      script src='packs/es5-shim.min.js'
     <![endif]-->
-    == javascript_include_tag 'application'
     == javascript_pack_tag 'application'
     == csrf_meta_tags
 
@@ -35,12 +34,12 @@ html lang="#{I18n.locale}" class='no-js'
     meta name='theme-color' content='#ffffff'
 
     <!--[if IE 9]>
-      = stylesheet_link_tag 'ie9.css', media: 'all'
+      = stylesheet_pack_tag 'ie9', media: 'all'
     <![endif]-->
     <!--[if lt IE 9]>
-      = javascript_include_tag 'html5shiv'
-      = stylesheet_link_tag 'ie8.css', media: 'all'
-      = javascript_include_tag 'respond.min'
+      script src='packs/html5shiv.js'
+      = stylesheet_pack_tag 'ie8', media: 'all'
+      script src='packs/respond.min.js'
     <![endif]-->
 
     - if Figaro.env.google_analytics_key.present? && !page_with_trust?

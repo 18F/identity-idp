@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>ID number</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="90.59375%" y1="91%" x2="32.684375%" y2="32.51375%" id="linearGradient-1">
+            <stop stop-color="#00BFE7" offset="0%"></stop>
+            <stop stop-color="#99D7F4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="55.3860784%" y1="54.9103149%" x2="100%" y2="113.713732%" id="linearGradient-2">
+            <stop stop-color="#4398BF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Element/ID-number" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ID-number">
+            <g id="Doc_2">
+                <g id="Background" fill-rule="nonzero">
+                    <rect id="Rectangle-path" fill="url(#linearGradient-1)" x="0" y="0" width="40" height="40" rx="3.33333333"></rect>
+                    <path d="M40,14.4888316 L40,36.6666667 C40,38.5076158 38.5076158,40 36.6666667,40 L14.3877883,40 L6.55009138,32.3376925 L34.7583232,7.63032779 L40,14.4888316 Z" id="Combined-Shape" fill="url(#linearGradient-2)"></path>
+                    <circle id="Oval" fill="#112E51" cx="36.25" cy="36.25" r="1.25"></circle>
+                    <circle id="Oval" fill="#112E51" cx="3.75" cy="36.25" r="1.25"></circle>
+                    <circle id="Oval" fill="#112E51" cx="36.25" cy="3.75" r="1.25"></circle>
+                    <circle id="Oval" fill="#112E51" cx="3.75" cy="3.75" r="1.25"></circle>
+                </g>
+                <rect id="Rectangle" stroke="#112E51" stroke-width="1.66666667" fill="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" x="6.25" y="7.5" width="28.3333333" height="24.5833333" rx="1.66666667"></rect>
+                <g id="Text-lines" transform="translate(19.166667, 14.166667)" fill="#112E51" fill-rule="nonzero">
+                    <rect id="Rectangle-path" x="0.395833333" y="0.0708333333" width="7.91666667" height="1" rx="0.208333333"></rect>
+                    <rect id="Rectangle-path" x="0.395833333" y="1.65833333" width="9.16666667" height="1" rx="0.208333333"></rect>
+                    <rect id="Rectangle-path" x="0.395833333" y="3.24583333" width="4.58333333" height="1" rx="0.208333333"></rect>
+                </g>
+                <g id="Text-lines-Copy" transform="translate(19.166667, 20.000000)" fill="#112E51" fill-rule="nonzero">
+                    <rect id="Rectangle-path" x="0.395833333" y="0.0708333333" width="9.58333333" height="1" rx="0.208333333"></rect>
+                    <rect id="Rectangle-path" x="0.395833333" y="1.65833333" width="11.2708333" height="1" rx="0.208333333"></rect>
+                    <rect id="Rectangle-path" x="0.395833333" y="3.24583333" width="4.58333333" height="1" rx="0.208333333"></rect>
+                </g>
+                <path d="M8.54166667,10 L32.2916667,10 C32.406726,10 32.5,10.093274 32.5,10.2083333 L32.5,11.4583333 C32.5,11.5733927 32.406726,11.6666667 32.2916667,11.6666667 L8.54166667,11.6666667 C8.42660734,11.6666667 8.33333333,11.5733927 8.33333333,11.4583333 L8.33333333,10.2083333 C8.33333333,10.093274 8.42660734,10 8.54166667,10 Z" id="Rectangle-path-Copy" fill="#112E51" fill-rule="nonzero"></path>
+                <path d="M8.54166667,26.6666667 L32.2916667,26.6666667 C32.406726,26.6666667 32.5,26.7599407 32.5,26.875 L32.5,27.2916667 C32.5,27.406726 32.406726,27.5 32.2916667,27.5 L8.54166667,27.5 C8.42660734,27.5 8.33333333,27.406726 8.33333333,27.2916667 L8.33333333,26.875 C8.33333333,26.7599407 8.42660734,26.6666667 8.54166667,26.6666667 Z" id="Rectangle-path-Copy-2" fill="#112E51" fill-rule="nonzero"></path>
+                <circle id="Oval-Copy" fill="#00BFE7" fill-rule="nonzero" cx="28.3333333" cy="27.0833333" r="2.91666667"></circle>
+                <path d="M16.9129391,21.8791667 C15.4296058,21.25 13.7879391,20.4666667 13.6462725,19.9791667 L13.6462725,19.4666667 C13.9838396,19.06255 14.2208675,18.5842105 14.3379391,18.0708333 C14.6954886,17.77193 14.7593216,17.2466757 14.4837725,16.8708333 L14.4837725,15.7416667 C14.4837725,14.5583333 13.8837725,13.75 12.5171058,13.75 C11.1504391,13.75 10.5546058,14.5416667 10.5546058,15.7416667 L10.5546058,16.8875 C10.2790567,17.2633424 10.3428897,17.7885967 10.7004391,18.0875 C10.8175107,18.6008772 11.0545386,19.0792166 11.3921058,19.4833333 L11.3921058,19.9958333 C11.2546058,20.4833333 9.60877246,21.2458333 8.12543912,21.8958333 C7.99448966,21.9584476 7.91280252,22.0924145 7.91710579,22.2375 L7.91710579,23.5166667 C7.90762952,23.7062042 8.05266199,23.8679712 8.24210579,23.8791667 L16.7962725,23.8791667 C16.9857163,23.8679712 17.1307487,23.7062042 17.1212725,23.5166667 L17.1212725,22.2208333 C17.1255757,22.0757479 17.0438886,21.941781 16.9129391,21.8791667 Z" id="Shape" fill="#112E51" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

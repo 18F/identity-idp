@@ -22,7 +22,7 @@ module ApplicationHelper
   def tooltip(text)
     content_tag(
       :span, \
-      image_tag(asset_pack_path('application/images/tooltip.svg'), width: 16, class: 'px1 img-tooltip'), \
+      image_tag(asset_pack_path('app/assets/images/tooltip.svg'), width: 16, class: 'px1 img-tooltip'), \
       class: 'hint--top hint--no-animate', \
       'aria-label': text, \
       'tabindex': '0',

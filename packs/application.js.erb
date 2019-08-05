@@ -1,0 +1,33 @@
+/* eslint no-console:0 */
+// This file is automatically compiled by Webpack, along with any other files
+// present in this directory. You're encouraged to place your actual application logic in
+// a relevant structure within app/javascript and only use these pack files to reference
+// that code so it'll be compiled.
+//
+// To reference this file, add <%%= javascript_pack_tag 'application' %> to the appropriate
+// layout file, like app/views/layouts/application.html.erb
+
+// importAll - require all files in a directory or matching pattern
+const cache = {};
+function importAll (r) {
+  r.keys().forEach(key => cache[key] = r(key));
+}
+
+// fonts
+importAll(require.context('../vendor/assets/fonts/', true, /\.(eot|ttf|woff|woff2)$/i));
+importAll(require.context('../node_modules/identity-style-guide/dist/assets/fonts/', true, /\.(eot|ttf|woff|woff2)$/i));
+
+// images
+importAll(require.context('../app/assets/images/', true, /\.(png|svg|jpg|jpeg|gif)$/i));
+importAll(require.context('../node_modules/identity-style-guide/dist/assets/img/', true, /\.(png|svg|jpg|jpeg|gif)$/i));
+import '../vendor/assets/images/intl-tel-number/flags.png'
+import '../vendor/assets/images/intl-tel-number/flags@2x.png'
+
+// stylesheets
+import '../app/assets/stylesheets/index.css.scss'
+import '../node_modules/identity-style-guide/dist/assets/scss/_styles';
+
+// javascript
+import '../node_modules/identity-style-guide/dist/assets/js/main.js';
+
+

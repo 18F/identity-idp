@@ -1,0 +1,78 @@
+$ico-size: 1rem;
+$ico-offset: 1rem;
+
+.alert {
+  background-color: $blue-lighter;
+  border-radius: $space-1;
+  color: #5b616a;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  margin-bottom: $space-4;
+  padding: 12px $space-2;
+  position: relative;
+
+  &::before {
+    background-image: none;
+    background-repeat: no-repeat;
+    content: '';
+    height: $ico-size;
+    left: $ico-offset;
+    position: absolute;
+    top: $ico-offset;
+    width: $ico-size;
+  }
+}
+
+.alert-inline {
+  background-color: #fffdd7;
+  color: #5b616a;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 12px $space-2 12px $space-5;
+  position: relative;
+
+  &::before {
+    background-image: url(image-path('alert/warning.svg'));
+    background-repeat: no-repeat;
+    content: '';
+    height: $ico-size;
+    left: 2rem;
+    position: absolute;
+    top: $ico-offset;
+    width: $ico-size;
+  }
+}
+
+.alert-success {
+  background-color: #ebfcef;
+  padding-left: $space-4;
+
+  &::before { background-image: url(image-path('alert/success.svg')); }
+}
+
+.alert-thumb {
+  background-color: #ebfcef;
+  padding-left: $space-4;
+
+  &::before { background-image: url(image-path('alert/ico-thumb.svg')); }
+}
+
+.alert-error,
+.alert-alert {
+  background-color: #fff0f3;
+  padding-left: $space-4;
+
+  &::before { background-image: url(image-path('alert/error.svg')); }
+}
+
+.alert-warning {
+  background-color: #fffdd7;
+  padding-left: $space-4;
+
+  &::before { background-image: url(image-path('alert/warning.svg')); }
+}
+
+.alert-notice {
+  padding-left: $space-4;
+  &::before { background-image: url(image-path('alert/notice.svg')); }
+}

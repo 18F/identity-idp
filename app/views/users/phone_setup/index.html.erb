@@ -1,5 +1,5 @@
 <% title t('titles.phone_setup') %>
-<%= image_tag asset_pack_path('application/images/2FA-voice.svg'), width: 200, class: 'mb2' %>
+<%= image_tag asset_pack_path('app/assets/images/2FA-voice.svg'), width: 200, class: 'mb2' %>
 
 <div class="h5 caps bold my1 accent-blue"><%= t('sign_up.current_step', step: @presenter.step) %></div>
 <h1 class="h3 my0">
@@ -20,6 +20,6 @@
 <div class="mt2 pt1 border-top">
   <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
 
-  <%= stylesheet_link_tag 'intl-tel-number/intlTelInput' %>
+  <%= stylesheet_pack_tag 'intlTelInput' %>
   <%= javascript_pack_tag 'intl-tel-input' %>
 </div>

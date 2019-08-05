@@ -193,7 +193,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
     context 'service provider has a remote logo' do
       it 'returns the remote logo' do
-        logo = 'https://raw.githubusercontent.com/18F/identity-idp/master/app/javascript/application/images/sp-logos/generic.svg'
+        logo = 'https://raw.githubusercontent.com/18F/identity-idp/master/app/assets/images/sp-logos/generic.svg'
         sp = build_stubbed(:service_provider, logo: logo)
 
         subject = ServiceProviderSessionDecorator.new(

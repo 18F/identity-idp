@@ -13,8 +13,8 @@
     )
       span.mb0.mr2
         = header_text
-      = image_tag asset_pack_path('application/images/plus.svg'), width: 16, class: 'plus-icon display-none'
-      = image_tag asset_pack_path('application/images/minus.svg'), width: 16, class: 'minus-icon display-none'
+      = image_tag asset_pack_path('app/assets/images/plus.svg'), width: 16, class: 'plus-icon display-none'
+      = image_tag asset_pack_path('app/assets/images/minus.svg'), width: 16, class: 'minus-icon display-none'
   .accordion-content.clearfix.pt1(
     id="#{target_id}"
     role="region"
@@ -28,5 +28,5 @@
         tabindex="0"
       )
         .pb-tiny.pt-tiny
-          = image_tag(asset_pack_path('application/images/up-carat-thin.svg'), width: 14, class: 'mr1')
+          = image_tag(asset_pack_path('app/assets/images/up-carat-thin.svg'), width: 14, class: 'mr1')
           = t('users.personal_key.close')

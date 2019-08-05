@@ -6,7 +6,7 @@
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
     = t('headings.account.account_history')
-    = image_tag asset_pack_path('application/images/history.svg'), width: 12, class: 'ml1'
+    = image_tag asset_pack_path('app/assets/images/history.svg'), width: 12, class: 'ml1'
     br
     = @device.device_name
   - @events.each do |event|

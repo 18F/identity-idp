@@ -1,7 +1,7 @@
 - if decorated_session.sp_name
   hr
     .mb2.mt2
-      .right = link_to image_tag(asset_pack_path('application/images/carat-right.svg'), size: '10'),
+      .right = link_to image_tag(asset_pack_path('app/assets/images/carat-right.svg'), size: '10'),
         decorated_session.failure_to_proof_url, class: 'bold block btn-link text-decoration-none'
       - if request.path.starts_with?('/verify/')
         = link_to t('idv.failure.help.get_help_html', sp_name: decorated_session.sp_name),

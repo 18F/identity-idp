@@ -1,4 +1,0 @@
-<% fonts_glob = Rails.application.root.join('app', 'javascript', 'identity-style-guide', 'fonts', '**', '*.{eot,ttf,woff,woff2}') %>
-<% Dir.glob(fonts_glob).each do |font| %>
-  import '<%= font %>';
-<% end %>

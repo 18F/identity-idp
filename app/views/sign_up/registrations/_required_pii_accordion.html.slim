@@ -1,32 +1,32 @@
 p.clearfix
-  = image_tag(asset_pack_path('application/images/get-started/ID.svg'),
+  = image_tag(asset_pack_path('app/assets/images/get-started/ID.svg'),
           size: '40', alt: '', class: 'mt-tiny col col-1')
   span.col.col-11.pl2 = t('idv.index.id.need_html')
 
 .mt2
   = accordion('you-will-need', t('devise.registrations.start.accordion')) do
     p.clearfix
-      = image_tag(asset_pack_path('application/images/get-started/email-password.svg'),
+      = image_tag(asset_pack_path('app/assets/images/get-started/email-password.svg'),
           size: '40', alt: '', class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_1_html')
     p.clearfix
-      = image_tag(asset_pack_path('application/images/get-started/2FA.svg'), size: '40', alt: '',
+      = image_tag(asset_pack_path('app/assets/images/get-started/2FA.svg'), size: '40', alt: '',
         class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_2_html')
     p.clearfix
-      = image_tag(asset_pack_path('application/images/get-started/personal-details.svg'),
+      = image_tag(asset_pack_path('app/assets/images/get-started/personal-details.svg'),
           size: '40', alt: '', class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_3_html')
     p.clearfix
-      = image_tag(asset_pack_path('application/images/get-started/personal-details.svg'),
+      = image_tag(asset_pack_path('app/assets/images/get-started/personal-details.svg'),
           size: '40', alt: '', class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_4_html')
     p.clearfix
-      = image_tag(asset_pack_path('application/images/get-started/financial.svg'),
+      = image_tag(asset_pack_path('app/assets/images/get-started/financial.svg'),
         size: '40', alt: '', class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_5_html')
     p.clearfix
-      = image_tag(asset_pack_path('application/images/p-key.svg'), size: '40', alt: '', class: 'mt-tiny col col-1')
+      = image_tag(asset_pack_path('app/assets/images/p-key.svg'), size: '40', alt: '', class: 'mt-tiny col col-1')
       span.col.col-11.pl2 = t('devise.registrations.start.bullet_6_html')
     p.mb3 = link_to t('devise.registrations.start.learn_more'),
       MarketingSite.help_url,

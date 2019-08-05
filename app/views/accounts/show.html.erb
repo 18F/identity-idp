@@ -15,7 +15,7 @@
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue py1 px2 h6 caps">
     <%= t('account.index.login') %>
-    <%= image_tag asset_pack_path('application/images/sign-in.svg'), width: 12, class: 'ml1' %>
+    <%= image_tag asset_pack_path('app/assets/images/sign-in.svg'), width: 12, class: 'ml1' %>
   </div>
   <%= render 'emails' %>
   <%= render 'account_item',
@@ -28,7 +28,7 @@
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue py1 px2 h6 caps">
     <%= t('headings.account.two_factor') %>
-    <%= image_tag asset_pack_path('application/images/2fa-account.svg'), width: 8, class: 'ml1' %>
+    <%= image_tag asset_pack_path('app/assets/images/2fa-account.svg'), width: 8, class: 'ml1' %>
   </div>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
@@ -62,7 +62,7 @@
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
     <%= t('headings.account.connected_apps') %>
-    <%= image_tag asset_pack_path('application/images/connected_apps.png'), width: 12, class: 'ml1' %>
+    <%= image_tag asset_pack_path('app/assets/images/connected_apps.png'), width: 12, class: 'ml1' %>
   </div>
   <% @view_model.connected_apps.each do |identity| %>
     <%= render identity.connected_app_partial, identity: identity %>
@@ -71,7 +71,7 @@
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
     <%= t('headings.account.devices') %>
-    <%= image_tag asset_pack_path('application/images/history.svg'), width: 12, class: 'ml1' %>
+    <%= image_tag asset_pack_path('app/assets/images/history.svg'), width: 12, class: 'ml1' %>
   </div>
   <% @view_model.recent_devices.each do |device| %>
     <%= render device.device_partial, device: device %>
@@ -80,7 +80,7 @@
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
     <%= t('headings.account.account_history') %>
-    <%= image_tag asset_pack_path('application/images/history.svg'), width: 12, class: 'ml1' %>
+    <%= image_tag asset_pack_path('app/assets/images/history.svg'), width: 12, class: 'ml1' %>
   </div>
   <% @view_model.recent_events.each do |event| %>
     <%= render event.event_partial, event: event %>

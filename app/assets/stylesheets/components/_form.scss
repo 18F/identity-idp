@@ -1,0 +1,174 @@
+$radio-checkbox-space: 1.5rem;
+
+@media #{$breakpoint-sm} {
+  input,
+  select,
+  textarea {
+    font-size: $form-field-font-size-sm;
+  }
+}
+
+legend {
+  // short-circuits line-height to stop inheritance
+  font: $small-font-size $serif-font-family;
+  font-weight: $heading-font-weight;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: $space-tiny;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.field {
+  background-color: #f2f9ff;
+  color: $gray;
+  font-weight: $bold-font-weight;
+
+  &[type=number],
+  &.phone {
+    font-family: $monospace-font-family;
+  }
+
+  &:focus,
+  &.is-focused {
+    border-color: $field-focus-color;
+    box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
+    outline: none;
+  }
+
+  &:invalid,
+  &.is-error {
+    border-color: $border-color;
+  }
+}
+
+.radio-extra {
+  margin-left: $radio-checkbox-space;
+}
+
+
+// error states
+.has-error input {
+  background-image: url(image-path('alert/error.svg'));
+  background-position: center right $form-field-padding-x;
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+  border-color: $red;
+
+  &.date,
+  &.select {
+    background-image: none;
+  }
+
+  &:focus {
+    border-color: $red;
+    box-shadow: 0 0 0 2px rgba($red, .5);
+  }
+}
+
+// hide number field input spin box as per:
+// http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
+// and added .mfa class selector as per CodeClimate warning to:
+// 'Avoid qualifying attribute selectors with an element.'
+.mfa {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+// wtf-forms.css
+.checkbox,
+.radio {
+  cursor: pointer;
+  padding-left: 24px;
+  position: relative;
+}
+
+.checkbox input,
+.radio input, {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.radio .visible {
+  opacity: 1;
+  position: relative;
+  z-index: inherit;
+}
+
+// scss-lint:disable VendorPrefix
+.indicator {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: .5rem .5rem;
+  box-sizing: border-box;
+  display: block;
+  font-size: 65%;
+  height: 1rem;
+  left: 0;
+  line-height: 1rem;
+  position: absolute;
+  text-align: center;
+  top: .25rem;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 1rem;
+}
+
+.checkbox input:focus ~ .indicator,
+.radio input:focus ~ .indicator {
+  box-shadow: 0 0 0 2px rgba($blue, .5);
+}
+
+.checkbox input:checked ~ .indicator,
+.radio input:checked ~ .indicator {
+  background-color: $blue;
+  color: $white;
+}
+
+.checkbox input:active ~ .indicator,
+.radio input:active ~ .indicator {
+  background-color: $blue-light;
+  color: $white;
+}
+
+.checkbox .indicator {
+  background-color: $white;
+  border: $border-width solid $blue;
+  border-radius: .25rem;
+}
+
+.checkbox input:checked ~ .indicator {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNy4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgOCA4IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA4IDgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTYuNCwxTDUuNywxLjdMMi45LDQuNUwyLjEsMy43TDEuNCwzTDAsNC40bDAuNywwLjdsMS41LDEuNWwwLjcsMC43bDAuNy0wLjdsMy41LTMuNWwwLjctMC43TDYuNCwxTDYuNCwxeiINCgkvPg0KPC9zdmc+DQo=);
+}
+
+.radio .indicator {
+  background-color: #f2f9ff;
+  border: $border-width solid $blue;
+  border-radius: 50%;
+}
+
+.radio input:checked ~ .indicator {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNy4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgOCA4IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA4IDgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTQsMUMyLjMsMSwxLDIuMywxLDRzMS4zLDMsMywzczMtMS4zLDMtM1M1LjcsMSw0LDF6Ii8+DQo8L3N2Zz4NCg==);
+}
+
+.radio input:disabled ~ .indicator {
+  background-color: $gray-light;
+  border-color: $gray;
+}
+
+.text-hint {
+  color: #707070;
+}

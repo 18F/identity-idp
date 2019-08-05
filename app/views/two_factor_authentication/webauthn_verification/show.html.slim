@@ -16,8 +16,8 @@ h1.h3.my0 = t('two_factor_authentication.webauthn_header_text')
   #webauthn-auth-in-progress
     .spinner[id='spinner']
       .col-12.center.mb2
-        = image_tag(asset_pack_path('application/images/spinner.gif'),
-                srcset: asset_pack_path('application/images/spinner@2x.gif'),
+        = image_tag(asset_pack_path('app/assets/images/spinner.gif'),
+                srcset: asset_pack_path('app/assets/images/spinner@2x.gif'),
                 height: 144,
                 width: 144,
                 alt: '')
@@ -26,7 +26,7 @@ h1.h3.my0 = t('two_factor_authentication.webauthn_header_text')
     = render 'shared/fallback_links', presenter: @presenter
   #webauthn-auth-successful.hidden
     .col-12.center.mb2
-      = image_tag(asset_pack_path('application/images/webauthn-verified.svg'),
+      = image_tag(asset_pack_path('app/assets/images/webauthn-verified.svg'),
         height: 144,
         width: 144,
         alt: '')

@@ -1,0 +1,1 @@
+import '../app/assets/javascripts/i18n-strings.js'

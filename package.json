@@ -17,10 +17,10 @@
     "classlist.js": "^1.1.20150312",
     "clipboard": "^1.6.1",
     "coffeescript": "1.12.7",
-    "event-hooks-webpack-plugin": "^1.0.0",
+    "copy-webpack-plugin": "^4.6.0",
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
-    "fs-extra": "^8.1.0",
+    "foundation-emails": "^2.2.1",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.2",
     "intl-tel-input": "^12.1.15",
@@ -29,7 +29,9 @@
     "local-time": "^2.1.0",
     "normalize.css": "^4.2.0",
     "rails-erb-loader": "^5.5.2",
+    "resolve-url-loader": "^3.1.0",
     "sinon": "^1.17.7",
+    "string-replace-loader": "^2.2.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
