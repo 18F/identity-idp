@@ -39,7 +39,7 @@ module IdvHelper
 
   def fill_out_idv_jurisdiction_ok
     select 'Washington', from: 'jurisdiction_state'
-    page.find('#jurisdiction_ial2_consent_given').click
+    page.find('label[for=jurisdiction_ial2_consent_given]').click
     expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
   end
 
