@@ -1,4 +1,5 @@
 Rails.application.configure do
+  config.serve_static_files = true
   config.active_job.queue_adapter = :test
   config.cache_classes = true
   config.eager_load = false

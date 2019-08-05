@@ -48,6 +48,10 @@ RSpec.configure do |config|
   config.include TwilioHelper
 
   config.before(:suite) do
+    Webpacker.compile
+  end
+
+  config.before(:suite) do
     Rails.application.load_seed
   end
 

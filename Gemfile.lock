@@ -762,7 +762,7 @@ DEPENDENCIES
   webauthn
   webdrivers (~> 3.0)
   webmock
-  webpacker (~> 3.5.2)
+  webpacker (~> 3.5.5)
   xmlenc (~> 0.6)
   zonebie
   zxcvbn-js
