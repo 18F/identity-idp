@@ -62,7 +62,5 @@ module Upaya
       Rack::TwilioWebhookAuthentication,
       Figaro.env.twilio_auth_token, '/api/voice/otp'
     )
-
-    config.assets.enabled = false
   end
 end

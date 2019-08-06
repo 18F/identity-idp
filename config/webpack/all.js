@@ -26,6 +26,7 @@ module.exports = {
       },
     ]),
   ],
+
   resolve: {
     modules: [
       path.join(__dirname, '../public/packs'),
