@@ -77,15 +77,19 @@ module TwoFactorAuthentication
       @personal_key_form.personal_key
     end
 
+    # rubocop:disable Metrics/AbcSize
     def handle_valid_otp
       handle_valid_otp_for_authentication_context
       if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
+      elsif MfaPolicy.new(current_user).sufficient_factors_enabled?
+        redirect_to after_multiple_2fa_sign_up
       else
-        redirect_to two_2fa_setup
+        redirect_to two_factor_options_url
       end
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end

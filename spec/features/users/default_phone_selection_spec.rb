@@ -44,25 +44,42 @@ describe 'phone configuration' do
 
     context 'when the user edits exiting phone and sets it as default' do
       it 'displays the new default number for 2FA with sms message' do
-        sign_in_visit_manage_phone_path(user, phone_config2)
+        new_phone = '202-555-3111'
+        sign_in_visit_add_phone_path(user, phone_config2)
+        fill_in :user_phone_form_phone, with: new_phone
+        click_continue
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect(page).to have_current_path(account_path)
+        user.reload
+
+        new_phone_config = nil
+        user.phone_configurations.map { |phone_config|
+          new_phone_config = phone_config if phone_config.phone.include? new_phone
+        }
+
+        sign_in_visit_manage_phone_path(user, new_phone_config)
 
         check 'user_phone_form_otp_make_default_number'
         click_button t('forms.buttons.submit.confirm_change')
-
-        submit_prefilled_otp_code(user, 'sms')
+        user.reload
 
         expect(page).to have_current_path(account_path)
-        expect(page).to have_content t('account.index.default')
+
+        node = page.first('div', text: new_phone)
+        parent = node.find(:xpath, '..')
+
+        within(parent) do
+          expect(page).to have_content t('account.index.default')
+        end
 
         sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
-                                       number: '***-***-2323',
-                                       expiration: Figaro.env.otp_valid_for)
       end
     end
   end
 
-  describe 'voice delivery prefrence' do
+  describe 'voice delivery preference' do
     context 'when the user creates a new default phone number' do
       it 'displays the new default number for 2FA' do
         sign_in_visit_add_phone_path(user, phone_config2)
@@ -84,26 +101,6 @@ describe 'phone configuration' do
         sign_out_sign_in(user)
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '***-***-3434',
-                                       expiration: Figaro.env.otp_valid_for)
-      end
-    end
-
-    context 'when the user edits exiting phone and sets it as default' do
-      it 'displays the new default number for 2FA with voice message' do
-        sign_in_visit_manage_phone_path(user, phone_config2)
-
-        check 'user_phone_form_otp_make_default_number'
-        choose 'user_phone_form_otp_delivery_preference_voice'
-        click_button t('forms.buttons.submit.confirm_change')
-
-        submit_prefilled_otp_code(user, 'voice')
-
-        expect(page).to have_current_path(account_path)
-        expect(page).to have_content t('account.index.default')
-
-        sign_out_sign_in(user)
-        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
-                                       number: '***-***-2323',
                                        expiration: Figaro.env.otp_valid_for)
       end
     end

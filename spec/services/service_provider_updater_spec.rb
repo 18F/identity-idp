@@ -41,12 +41,14 @@ describe ServiceProviderUpdater do
       },
       {
         issuer: 'http://localhost:3000',
+        friendly_name: 'trying to override a test SP',
         agency: 'trying to override a test SP',
         acs_url: 'http://nasty-override.example.org/saml/login',
         active: true,
       },
       {
         issuer: openid_connect_issuer,
+        friendly_name: 'a service provider',
         agency: 'a service provider',
         redirect_uris: openid_connect_redirect_uris,
         active: true,

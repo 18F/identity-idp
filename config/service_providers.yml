@@ -39,12 +39,14 @@ test:
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
     cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
 
   'http://test.host':
     acs_url: 'http://test.host/test/saml/decode_assertion'
     block_encryption: 'aes256-cbc'
     metadata_url: 'http://test.host/test/saml/metadata'
     sp_initiated_login_url: 'http://test.host/test/saml'
+    friendly_name: 'Test SP'
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
@@ -95,6 +97,7 @@ development:
     friendly_name: 'Awesome test SP'
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+    friendly_name: 'Test SAML SP'
     acs_url: 'http://localhost:4567/consume'
     sp_initiated_login_url: 'http://localhost:4567/test/saml'
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
@@ -158,8 +161,9 @@ development:
     ial: 2
     push_notification_url: http://localhost:9292/api/push_notifications
     redirect_uris:
-      - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -207,6 +211,7 @@ production:
   <%# Currently we run the sample apps in sandbox environments only %>
   <% if LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain == 'identitysandbox.gov' %>
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:<%= LoginGov::Hostdata.env %>':
+    friendly_name: 'Sinatra Example'
     acs_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/consume'
     assertion_consumer_logout_service_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/slo_logout'
     sp_initiated_login_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/test/saml'
@@ -1124,6 +1129,21 @@ production:
     redirect_uris:
       - 'https://beta.sam.gov/'
       - 'https://beta.sam.gov/openid_connect_login'
+    attribute_bundle:
+      - 'email'
+    restrict_to_deploy_env: 'prod'
+
+  # GSA - OPP - Touchpoints
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa-tts-opp:touchpoints':
+    friendly_name: 'Touchpoints'
+    agency: 'GSA'
+    agency_id: 9
+    logo: 'square-gsa.svg'
+    cert: 'touchpoints_prod'
+    ial: 1
+    return_to_sp_url: 'https://touchpoints.app.cloud.gov'
+    redirect_uris:
+      - 'https://touchpoints.app.cloud.gov/users/auth/login_dot_gov/callback'
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'

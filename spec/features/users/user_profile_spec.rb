@@ -21,7 +21,6 @@ feature 'User profile' do
 
   context 'loa1 user clicks the delete account button' do
     let(:push_notification_url) { 'http://localhost/push_notifications' }
-    let(:payload) { { uuid: '1234' } }
 
     it 'deletes the account and signs the user out with a flash message' do
       user = sign_in_and_2fa_user
@@ -48,15 +47,14 @@ feature 'User profile' do
 
       click_link(t('account.links.delete_account'))
 
-      Timecop.travel(Time.zone.now) do
-        request = stub_request(:post, push_notification_url).
-                  with(headers: push_notification_headers(push_notification_url, payload)).
-                  with(body: '').
-                  to_return(body: '')
+      request = stub_push_notification_request(
+        sp_push_notification_endpoint: push_notification_url,
+        topic: 'account_delete',
+        payload: { 'uuid' => '1234' },
+      )
 
-        click_button t('users.delete.actions.delete')
-        expect(request).to have_been_requested
-      end
+      click_button t('users.delete.actions.delete')
+      expect(request).to have_been_requested
     end
   end
 

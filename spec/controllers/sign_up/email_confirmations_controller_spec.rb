@@ -9,7 +9,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.blank')] },
+        errors: { confirmation_token: [t('errors.messages.not_found')] },
         user_id: nil,
       }
 
@@ -25,7 +25,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.blank')] },
+        errors: { confirmation_token: [t('errors.messages.not_found')] },
         user_id: nil,
       }
 
@@ -41,7 +41,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a single-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.invalid')] },
+        errors: { confirmation_token: [t('errors.messages.not_found')] },
         user_id: nil,
       }
 
@@ -57,7 +57,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.invalid')] },
+        errors: { confirmation_token: [t('errors.messages.not_found')] },
         user_id: nil,
       }
 
@@ -134,9 +134,9 @@ describe SignUp::EmailConfirmationsController do
       allow_any_instance_of(SignUp::EmailConfirmationsController).
         to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
 
-       get :create, params: { confirmation_token: 'foo' }
+      get :create, params: { confirmation_token: 'foo' }
 
-       expect(flash[:error]).
+      expect(flash[:error]).
         to eq t('devise.confirmations.already_confirmed',
                 action: t('devise.confirmations.sign_in'))
       expect(response).to redirect_to root_url

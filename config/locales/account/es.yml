@@ -48,6 +48,14 @@ es:
     links:
       delete_account: Eliminar
       regenerate_personal_key: Obtenga una clave nueva.
+    login:
+      piv_cac: Inicie sesión con su identificación de empleado del gobierno
+      piv_cac_info:
+        ial1: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
+          de su correo electrónico y contraseña.
+        ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
+          de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
+          su perfil.
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.

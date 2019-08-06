@@ -5,11 +5,13 @@ feature 'OTP delivery selection' do
     before do
       sign_in_user
       select_2fa_option(:phone)
+      expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
       select_phone_delivery_option(:voice)
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
     end
 
     it 'allows the user to setup SMS for backup MFA' do
@@ -32,6 +34,7 @@ feature 'OTP delivery selection' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+      click_continue
     end
 
     it 'allows the user to voice for backup MFA' do
@@ -54,6 +57,7 @@ feature 'OTP delivery selection' do
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
+    click_continue
     select_2fa_option(:phone)
     select_phone_delivery_option(:voice)
 

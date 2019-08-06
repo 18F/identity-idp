@@ -7,16 +7,10 @@ module Users
     def add
       user_session[:phone_id] = nil
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, current_user.otp_delivery_preference
-      )
     end
 
     def create
       @user_phone_form = UserPhoneForm.new(current_user, nil)
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, current_user.otp_delivery_preference
-      )
       if @user_phone_form.submit(user_params).success?
         confirm_phone
         bypass_sign_in current_user
@@ -29,15 +23,9 @@ module Users
       set_phone_id
       # memoized for view
       user_phone_form
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, delivery_preference
-      )
     end
 
     def update
-      @presenter = PhoneSetupPresenter.new(
-        current_user, user_fully_authenticated?, delivery_preference
-      )
       if user_phone_form.submit(user_params).success? && !already_has_phone?
         process_updates
         bypass_sign_in current_user
@@ -96,10 +84,15 @@ module Users
       form = @user_phone_form
       if form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
-        confirm_phone
-      else
-        redirect_to account_url
+
+        OtpPreferenceUpdater.new(
+          user: current_user,
+          preference: form.otp_delivery_preference,
+          default: form.otp_make_default_number,
+          phone_id: user_session[:phone_id],
+          ).call
       end
+      redirect_to account_url
     end
 
     def confirm_phone

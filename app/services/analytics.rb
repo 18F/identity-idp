@@ -67,6 +67,7 @@ class Analytics
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
+  CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
@@ -140,6 +141,7 @@ class Analytics
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PHONE_DELETION_REQUESTED = 'Phone Number Deletion: requested'.freeze
+  PIV_CAC_LOGIN = 'PIV/CAC Login'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze

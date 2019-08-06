@@ -4,7 +4,7 @@ es:
     buttons:
       change_address: cambio
       change_ssn: cambio
-      get_started: Empezar
+      continue: Continue
       start_over: Comenzar de nuevo
       use_computer: Usa tu computadora
       use_phone: Usa tu telefono
@@ -50,15 +50,19 @@ es:
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
-        no alguien que pretende ser usted. La verificación de su identidad también
-        le permite acceder a servicios que manejan información de identificación personal.
+        no alguien que pretende ser usted. Verificar su identidad le permite acceder
+        a servicios que manejan información confidencial.
     instructions:
       bullet1: Sube tu ID
       bullet2: Confirma tu direccion
       bullet3: Asegure su cuenta
       bullet4: Recuperación de cuenta
+      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
+        conserve y comparta su información personal. Solo lo usaremos para verificar
+        su identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
+      learn_more: Aprende más.
       send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace.
         Siga ese enlace a su navegador para tomar fotografías de la parte delantera
         y trasera de su identificación.

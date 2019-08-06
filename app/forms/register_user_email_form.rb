@@ -5,6 +5,8 @@ class RegisterUserEmailForm
 
   validate :service_provider_request_exists
 
+  attr_reader :email_address
+
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
@@ -18,7 +20,7 @@ class RegisterUserEmailForm
   end
 
   def email
-    @email || user.email
+    email_address&.email
   end
 
   def resend
@@ -26,13 +28,13 @@ class RegisterUserEmailForm
   end
 
   def submit(params, instructions = nil)
-    user.email = params[:email]
-    @request_id = params[:request_id]
+    build_user_and_email_address_with_email(params[:email])
+    self.request_id = params[:request_id]
 
     if valid_form?
       process_successful_submission(request_id, instructions)
     else
-      @success = @allow && process_errors(request_id)
+      self.success = @allow && process_errors(request_id)
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -40,9 +42,16 @@ class RegisterUserEmailForm
 
   private
 
-  attr_writer :email
-  attr_reader :success
-  attr_reader :request_id
+  attr_writer :email, :email_address
+  attr_accessor :success, :request_id
+
+  def build_user_and_email_address_with_email(email)
+    self.email_address = user.email_addresses.build(
+      user: user,
+      email: email,
+    )
+    user.email = email # Delete this when email address is retired
+  end
 
   def valid_form?
     @allow && valid? && !email_taken?
@@ -55,8 +64,9 @@ class RegisterUserEmailForm
   end
 
   def process_successful_submission(request_id, instructions)
-    @success = true
+    self.success = true
     user.save!
+    Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(request_id: request_id, instructions: instructions)
   end
 

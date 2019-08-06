@@ -1,0 +1,39 @@
+.mb3.profile-info-box
+  .bg-lightest-blue.py1.px2.h6.caps.clearfix
+    .col.col-11
+      = t('headings.account.profile_info')
+      = image_tag asset_url('user.svg'), width: 8, class: 'ml1'
+    .col.col-1.right-align
+      = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
+  .p2
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1.bold = t('account.index.full_name')
+      .sm-col.sm-col-8.px1.truncate = '***** **********'
+
+  .p2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1.bold = t('account.index.address')
+      .sm-col.sm-col-8.px1
+        | ************************* <br>
+        | *************, ** *****
+
+  .p2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1.bold = t('account.index.dob')
+      .sm-col.sm-col-8.px1 = '******* **, ****'
+
+  .p2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1.bold = t('account.index.ssn')
+      .sm-col.sm-col-8.px1 = '***-**-****'
+
+  .p2.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1.bold = t('account.index.phone')
+      .sm-col.sm-col-8.px1 = '**********'
+
+  .bg-gray-lighter.px2.py1.clearfix.fs-12p
+    .col.col-12.sm-col-6
+      = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
+      = t('account.security.text')
+    = link_to t('account.security.link'), MarketingSite.help_url

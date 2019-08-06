@@ -34,6 +34,13 @@ GIT
     proofer (2.7.0)
 
 GIT
+  remote: https://github.com/18F/identity-validations.git
+  revision: 087594b98207a412a9a3458fd475859a8169f37c
+  branch: master
+  specs:
+    identity_validations (0.2.0)
+
+GIT
   remote: https://github.com/18F/saml_idp.git
   revision: 70494010f977958434ead1d3eb7e9697bd2c3a76
   tag: v0.8.0-18f
@@ -687,6 +694,7 @@ DEPENDENCIES
   httparty
   i18n-tasks
   identity-hostdata!
+  identity_validations!
   json-jwt
   knapsack
   lexisnexis!

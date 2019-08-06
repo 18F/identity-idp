@@ -34,6 +34,8 @@ feature 'Remembering a phone' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
+      click_continue
+
       select_2fa_option('phone')
       fill_in :user_phone_form_phone, with: '2025551212'
       click_send_security_code
@@ -46,37 +48,6 @@ feature 'Remembering a phone' do
     end
 
     it_behaves_like 'remember device'
-  end
-
-  context 'update phone number' do
-    def remember_device_and_sign_out_user
-      user = user_with_2fa
-      sign_in_and_2fa_user(user)
-      visit manage_phone_path
-      fill_in 'user_phone_form_phone', with: '2022347193'
-      click_button t('forms.buttons.submit.confirm_change')
-      check :remember_device
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      first(:link, t('links.sign_out')).click
-      user
-    end
-
-    it_behaves_like 'remember device'
-
-    it 'requires the user to confirm a new phone number' do
-      user = user_with_2fa
-      sign_in_user(user)
-      check :remember_device
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      visit manage_phone_path
-      fill_in 'user_phone_form_phone', with: '2022347193'
-      click_button t('forms.buttons.submit.confirm_change')
-
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
-    end
   end
 
   context 'identity verification' do

@@ -3,6 +3,7 @@ module Users
     include ::ActionView::Helpers::DateHelper
     include SecureHeadersConcern
     include RememberDeviceConcern
+    include Ial2ProfileConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -18,6 +19,7 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
+      @ial = sp_session && sp_session_ial > 1 ? 2 : 1
       super
     end
 
@@ -87,7 +89,7 @@ module Users
 
     def handle_valid_authentication
       sign_in(resource_name, resource)
-      cache_active_profile
+      cache_active_profile(auth_params[:password])
       create_user_event(:sign_in_before_2fa)
       update_last_sign_in_at_on_email
       redirect_to user_two_factor_authentication_url
@@ -126,19 +128,6 @@ module Users
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)
     end
 
-    def cache_active_profile
-      cacher = Pii::Cacher.new(current_user, user_session)
-      profile = current_user.decorate.active_or_pending_profile
-      begin
-        cacher.save(auth_params[:password], profile)
-      rescue Encryption::EncryptionError => err
-        if profile
-          profile.deactivate(:encryption_error)
-          analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
-        end
-      end
-    end
-
     def update_last_sign_in_at_on_email
       email_address = current_user.email_addresses.find_with_email(params[:user][:email])
       email_address.update!(last_sign_in_at: Time.zone.now)
@@ -160,6 +149,10 @@ module Users
 
     def request_id
       params.fetch(:request_id, '')
+    end
+
+    def sp_session_ial
+      sp_session[:loa3] ? 2 : 1
     end
   end
 end

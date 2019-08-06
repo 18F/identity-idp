@@ -56,6 +56,8 @@ feature 'Sign Up' do
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
     sign_up_and_set_password
     select_2fa_option('phone')
+    expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
+
     fill_in 'user_phone_form_phone', with: '202-555-1212'
     click_send_security_code
 
@@ -126,6 +128,7 @@ feature 'Sign Up' do
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
     set_up_2fa_with_authenticator_app
+    click_continue
     set_up_2fa_with_backup_code
 
     expect(page).to have_current_path account_path

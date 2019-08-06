@@ -22,6 +22,8 @@ fr:
         réessayer plus tard.
       acuant_throttle: Pour éviter les abus, nous limitons le nombre de fois où vous
         pouvez essayer de valider un document. Veuillez réessayer plus tard.
+      consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
+        Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       general_error: Votre identité émise par l'état n'a pas pu être vérifiée. S'il
         vous plaît essayez de télécharger des images différentes en commençant par
         le devant de votre ID émis par l'État.
@@ -80,6 +82,9 @@ fr:
         dans une liste de mots de passe connus exposés dans les violations de données.
       twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
       twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
+        Le service de messagerie texte peut avoir des problèmes. Vous pouvez vérifier
+        le statut avec <a href="https://status.twilio.com/" target='_blank'>notre
+        fournisseur de service de messages</a>.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé
@@ -97,5 +102,6 @@ fr:
       general_error: Une erreur s'est produite lors de l'ajout de votre clé de sécurité
         physique. Veuillez réessayer.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
-        FIDO.
+        FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent en
+        charge les clés de sécurité FIDO. Internet Explorer ne le fait pas.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.

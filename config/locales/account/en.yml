@@ -47,6 +47,14 @@ en:
     links:
       delete_account: Delete
       regenerate_personal_key: Get a new key
+    login:
+      piv_cac: Sign in with your government employee ID
+      piv_cac_info:
+        ial1: If you have added your PIV/CAC card to your account, you may use it
+          instead of your email and password.
+        ial2: If you have added your PIV/CAC card to your account, you may use it
+          instead of your email. You will need to provide your password to unlock
+          your profile.
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

@@ -1,5 +1,7 @@
 class UserPivCacSetupForm
   include ActiveModel::Model
+  include PivCacFormHelpers
+  include RememberDeviceConcern
 
   attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type
 
@@ -8,7 +10,7 @@ class UserPivCacSetupForm
   validates :user, presence: true
 
   def submit
-    success = valid? && valid_token?
+    success = valid? && valid_submission?
 
     FormResponse.new(
       success: success && process_valid_submission,
@@ -20,7 +22,8 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    attributes = { x509_dn_uuid: x509_dn_uuid, remember_device_revoked_at: Time.zone.now }
+    revoke_remember_device(user)
+    attributes = { x509_dn_uuid: x509_dn_uuid }
     UpdateUser.new(user: user, attributes: attributes).call
     true
   rescue PG::UniqueViolation
@@ -28,36 +31,10 @@ class UserPivCacSetupForm
     false
   end
 
-  def valid_token?
+  def valid_submission?
     user_has_no_piv_cac &&
-      token_decoded &&
-      token_has_correct_nonce &&
-      not_error_token &&
+      valid_token? &&
       piv_cac_not_already_associated
-  end
-
-  def token_decoded
-    @data = PivCacService.decode_token(@token)
-    true
-  end
-
-  def not_error_token
-    possible_error = @data['error']
-    if possible_error
-      self.error_type = possible_error
-      false
-    else
-      true
-    end
-  end
-
-  def token_has_correct_nonce
-    if @data['nonce'] == nonce
-      true
-    else
-      self.error_type = 'token.invalid'
-      false
-    end
   end
 
   def piv_cac_not_already_associated

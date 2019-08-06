@@ -18,6 +18,8 @@ feature 'setting up a second phone as backup MFA' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
+    click_continue
+
     expect(page).to have_content(
       t('two_factor_authentication.two_factor_choice_options.second_phone'),
     )

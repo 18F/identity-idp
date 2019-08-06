@@ -49,6 +49,7 @@ module SignUp
         user: @user,
         attributes: { password: password },
       ).call
+      Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
     end
 
@@ -66,6 +67,9 @@ module SignUp
 
     def process_unsuccessful_password_creation
       @confirmation_token = params[:confirmation_token]
+      @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
       render :new, locals: { request_id: sp_request_id }
     end
 

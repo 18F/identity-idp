@@ -1,0 +1,16 @@
+<% title t('titles.two_factor_setup_success') %>
+
+<%= image_tag asset_url('alert/success.svg'), alt: t('headings.mfa_success'), width: 90 %>
+
+<h1 class="h3 mb2 mt3 my0"><%= t('headings.mfa_success', method: @presenter.first_mfa_enabled) %></h1>
+
+<div class="col-2">
+  <hr class="mt3 mb3 bw4 border-green rounded"/>
+</div>
+
+<h2 class="h2 h3 mb6 my0"><%= t('forms.two_factor.success') %></h2>
+
+<%= button_to t('forms.buttons.continue'), two_factor_options_path,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12', method: :get %>
+
+<%= render 'shared/cancel', link: destroy_user_session_path %>
