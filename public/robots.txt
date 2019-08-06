@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /users/password/edit
+Disallow: /sign_up/enter_password
+Disallow: /sign_up/email/confirm
