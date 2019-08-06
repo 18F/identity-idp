@@ -9,16 +9,16 @@ feature 'recovery overview step' do
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: good_ssn }) }
 
+  def expect_doc_auth_upload_step
+    expect(page).to have_current_path(idv_recovery_upload_step)
+  end
+
   context 'button is disabled when JS is enabled', :js do
     before do
       sign_in_before_2fa(user)
       enable_doc_auth
       mock_assure_id_ok
       complete_recovery_steps_before_overview_step(user)
-    end
-
-    def expect_doc_auth_upload_step
-      expect(page).to have_current_path(idv_recovery_upload_step)
     end
 
     it_behaves_like 'ial2 consent with js'
@@ -34,10 +34,6 @@ feature 'recovery overview step' do
 
     def expect_doc_auth_first_step
       expect(page).to have_current_path(idv_recovery_overview_step)
-    end
-
-    def expect_doc_auth_upload_step
-      expect(page).to have_current_path(idv_recovery_upload_step)
     end
 
     it_behaves_like 'ial2 consent without js'
