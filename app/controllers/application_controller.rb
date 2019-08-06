@@ -132,6 +132,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
+    increment_monthly_auth_count
     user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
       signed_in_url
   end
@@ -222,6 +223,17 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def set_locale
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
+  end
+
+  def increment_monthly_auth_count
+    return unless current_user
+    issuer = sp_session[:issuer]
+    return if issuer.blank?
+    authenticated_to_sp_token = "auth-counted-#{issuer}"
+    authenticated_to_sp = user_session[authenticated_to_sp_token]
+    return if authenticated_to_sp
+    user_session[authenticated_to_sp_token] = true
+    MonthlyAuthCount.increment(current_user.id, issuer)
   end
 
   def sp_session
