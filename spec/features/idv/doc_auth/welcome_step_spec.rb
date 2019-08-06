@@ -9,17 +9,11 @@ feature 'doc auth welcome step' do
       complete_doc_auth_steps_before_welcome_step
     end
 
-    it 'does not allow the user to continue without checking the checkbox' do
-      expect(page).to have_button('Continue', disabled: true)
-    end
-
-    it 'allows the user to continue after checking the checkbox' do
-      find('span[class="indicator"]').set(true)
-      expect(page).to have_button('Continue', disabled: false)
-      click_on t('doc_auth.buttons.continue')
-
+    def expect_doc_auth_upload_step
       expect(page).to have_current_path(idv_doc_auth_upload_step)
     end
+
+    it_behaves_like 'ial2 consent with js'
   end
 
   context 'button is clickable when JS is disabled' do
@@ -28,18 +22,14 @@ feature 'doc auth welcome step' do
       complete_doc_auth_steps_before_welcome_step
     end
 
-    it 'renders error when user continues without checking the checkbox' do
-      click_on t('doc_auth.buttons.continue')
-
+    def expect_doc_auth_first_step
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
-      expect(page).to have_content(t('errors.doc_auth.consent_form'))
     end
 
-    it 'allows the user to continue after checking the checkbox' do
-      find('input[name="ial2_consent_given"]').set(true)
-      click_on t('doc_auth.buttons.continue')
-
+    def expect_doc_auth_upload_step
       expect(page).to have_current_path(idv_doc_auth_upload_step)
     end
+
+    it_behaves_like 'ial2 consent without js'
   end
 end
