@@ -49,6 +49,9 @@ queue_health_check_frequency_seconds: '30'
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
+# add JSON job configuration names here to disable them from running
+recurring_jobs_disabled_names: '[]'
+
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
 # ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
@@ -202,6 +205,7 @@ development:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
@@ -323,6 +327,8 @@ production:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  s3_report_bucket_prefix: 'login-gov.reports'
+  s3_reports_enabled: 'true'
   saml_endpoint_configs:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
@@ -443,6 +449,7 @@ test:
   recaptcha_enabled_percent: '0'
   recaptcha_site_key: 'key1'
   recaptcha_secret_key: 'key2'
+  recurring_jobs_disabled_names: '["disabled job"]'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_hours_aal_1: '720'
@@ -450,6 +457,7 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
+  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
