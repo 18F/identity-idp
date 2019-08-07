@@ -9,17 +9,17 @@ module Users
     before_action :set_setup_presenter
 
     def index
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @add_phone_form = AddPhoneForm.new(current_user, nil)
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     def create
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @add_phone_form = AddPhoneForm.new(current_user, nil)
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
       if result.success?
-        handle_create_success(@user_phone_form.phone)
+        handle_create_success(@add_phone_form.phone)
       else
         render :index
       end
@@ -34,8 +34,8 @@ module Users
     def handle_create_success(phone)
       if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
         prompt_to_confirm_phone(id: nil,
-                                phone: @user_phone_form.phone,
-                                selected_delivery_method: @user_phone_form.otp_delivery_preference)
+                                phone: @add_phone_form.phone,
+                                selected_delivery_method: @add_phone_form.otp_delivery_preference)
       else
         flash[:error] = t('errors.messages.phone_duplicate')
         redirect_to phone_setup_url
@@ -47,7 +47,7 @@ module Users
     end
 
     def user_phone_form_params
-      params.require(:user_phone_form).permit(:phone, :international_code,
+      params.require(:add_phone_form).permit(:phone, :international_code,
                                               :otp_delivery_preference,
                                               :otp_make_default_number)
     end
