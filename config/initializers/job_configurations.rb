@@ -14,6 +14,8 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   interval: 5 * 60, # 5 minutes
   timeout: 4 * 60,
   callback: -> { AccountReset::GrantRequestsAndSendEmails.new.call },
+  health_critical: true,
+  failures_before_alarm: 2,
 )
 
 # Send OMB Fitara report to s3
