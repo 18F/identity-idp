@@ -19,7 +19,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 # Send OMB Fitara report to s3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'OMB Fitara report',
-  interval: 24 * 60 * 60, # 5 minutes
+  interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::OmbFitaraReport.new.call },
 )

@@ -1,13 +1,30 @@
 require 'login_gov/hostdata'
 
-# these metrics are not particularly useful
-# rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-
 module Reports
   class OmbFitaraReport
     MOST_RECENT_MONTHS_COUNT = 2
+
+    # Load info about our environment such as account ID and region
+    def self.ec2_data
+      @ec2_data ||= LoginGov::Hostdata::EC2.load
+    end
+
+    # Generate the appropriate S3 bucket name based on the prefix from
+    #   Figaro.env, the AWS account ID and region.
+    # @return [String]
+    def self.gen_s3_bucket_name
+      "#{Figaro.env.s3_report_bucket_prefix!}.#{ec2_data.account_id}-#{ec2_data.region}"
+    end
+
+    # Reports S3 bucket
     S3_BUCKET = gen_s3_bucket_name.freeze unless Figaro.env.s3_reports_enabled! == 'false'
 
+    # Main job entrypoint
+    #
+    # @return [String] If S3 uploads are enabled, return the URL of the
+    #   uploaded S3 file. If they are not enabled, return the full JSON content
+    #   that would have been uploaded to S3.
+    #
     def call
       body = results_json
 
@@ -19,31 +36,43 @@ module Reports
       end
 
       path = self.class.generate_s3_path
-      url = "s3://#{S3_BUCKET}/#{path}"
-      Rails.logger.info("#{self.class.name}: uploading to #{url}")
-      Aws::S3::Resource.new.bucket(S3_BUCKET).object(path).put(
-        body: body, acl: 'private', content_type: 'application/json',
-      )
+      url = upload_to_s3(path: path, body: body, content_type: 'application/json')
+
+      latest_path = self.class.generate_s3_path(latest: true)
+      upload_to_s3(path: latest_path, body: body, content_type: 'application/json')
 
       # Save the uploaded report URL as the job result
       url
     end
 
-    # Load info about our environment such as account ID and region
-    def self.ec2_data
-      @ec2_data ||= LoginGov::Hostdata::EC2.load
-    end
-
-    def self.gen_s3_bucket_name
-      "#{Figaro.env.s3_report_bucket_prefix!}.#{ec2_data.account_id}-#{ec2_data.region}"
-    end
-
-    def self.generate_s3_path(suffix: 'omb-fitara-report.json')
-      now = Time.zone.now
-      "#{LoginGov::Hostdata.env}/omb-fitara-report/#{now.year}/#{now.strftime('%F')}.#{suffix}"
+    # Generate the appropriate path to upload files in S3.
+    # Paths will include the environment, a directory, the date, and a suffix.
+    # @param [String] directory Next directory under environment
+    # @param [String] suffix Filename suffix
+    # @param [Boolean] latest If true, then use "latest" instead of the
+    #   current date and year directory prefixes.
+    #
+    # @return [String]
+    def self.generate_s3_path(directory: 'omb-fitara-report', suffix: 'omb-fitara-report.json',
+                              latest: false)
+      if latest
+        "#{LoginGov::Hostdata.env}/#{directory}/latest.#{suffix}"
+      else
+        now = Time.zone.now
+        "#{LoginGov::Hostdata.env}/#{directory}/#{now.year}/#{now.strftime('%F')}.#{suffix}"
+      end
     end
 
     private
+
+    def upload_to_s3(path:, body:, content_type:, bucket: S3_BUCKET)
+      url = "s3://#{bucket}/#{path}"
+      Rails.logger.info("#{self.class.name}: uploading to #{url}")
+      obj = Aws::S3::Resource.new.bucket(bucket).object(path)
+      obj.put(body: body, acl: 'private', content_type: content_type)
+      Rails.logger.debug("#{self.class.name}: upload completed to #{url}")
+      url
+    end
 
     def results_json
       month, year = current_month
@@ -86,4 +115,3 @@ module Reports
     end
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
