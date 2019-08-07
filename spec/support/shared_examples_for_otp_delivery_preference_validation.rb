@@ -1,45 +1,60 @@
 shared_examples 'an otp delivery preference form' do
-  let(:phone) { '+1 (703) 555-5000' }
-  let(:params) do
-    {
-      phone: phone,
-      otp_delivery_preference: 'voice',
-      international_code: 'US',
-    }
-  end
+  let(:voice_unsupported_phone) { '242-302-2000' } # A phone number from the Bahamas
 
-  context 'voice' do
-    it 'is valid when supported for the phone' do
-      update_user = instance_double(UpdateUser)
-      attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
-        and_return(update_user)
-      expect(update_user).to receive(:call)
-
-      capabilities = spy(PhoneNumberCapabilities)
-      allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)
-      allow(capabilities).to receive(:sms_only?).and_return(false)
-
-      result = subject.submit(params)
-
-      expect(result.success?).to eq(true)
+  context 'when otp_delivery_preference is voice and phone number does not support voice' do
+    let(:params) do
+      super().merge(
+        phone: '242-302-2000',
+        international_code: 'BS',
+        otp_delivery_preference: 'voice',
+      )
     end
 
-    it 'is invalid when unsupported for the phone' do
-      update_user = instance_double(UpdateUser)
-      attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
-        and_return(update_user)
-      expect(update_user).to_not receive(:call)
+    it 'is invalid' do
+      result = subject.submit(params)
+      expect(result.success?).to eq(false)
+      expect(result.errors[:phone].first).to eq(
+        I18n.t(
+          'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Bahamas',
+        ),
+      )
+    end
+  end
 
-      capabilities = spy(PhoneNumberCapabilities)
-      allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)
-      allow(capabilities).to receive(:sms_only?).and_return(true)
+  context 'when otp_delivery_preference is not voice or sms' do
+    let(:params) { super().merge(otp_delivery_preference: 'foo') }
 
+    it 'is invalid' do
       result = subject.submit(params)
 
       expect(result.success?).to eq(false)
-      expect(result.errors).to include(:phone)
+      expect(result.errors[:otp_delivery_preference]).to_not be_empty
+    end
+  end
+
+  context 'when otp_delivery_preference is empty' do
+    let(:params) { super().merge(otp_delivery_preference: '') }
+
+    it 'is invalid' do
+      result = subject.submit(params)
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:otp_delivery_preference]).to_not be_empty
+    end
+  end
+
+  context 'when otp_delivery_preference param is not present' do
+    let(:params) do
+      hash = super()
+      hash.delete(:otp_delivery_preference)
+      hash
+    end
+
+    it 'is valid' do
+      result = subject.submit(params)
+
+      expect(result.success?).to eq(true)
     end
   end
 end

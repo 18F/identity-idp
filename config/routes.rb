@@ -170,8 +170,8 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    get '/add/phone' => 'users/phones#add'
-    post '/add/phone' => 'users/phones#create'
+    get '/add/phone' => 'users/add_phone#new'
+    post '/add/phone' => 'users/add_phone#create'
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
     delete '/manage/phone' => 'users/phones#delete'

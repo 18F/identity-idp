@@ -4,21 +4,6 @@ module Users
 
     before_action :confirm_two_factor_authenticated
 
-    def add
-      user_session[:phone_id] = nil
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
-    end
-
-    def create
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
-      if @user_phone_form.submit(user_params).success?
-        confirm_phone
-        bypass_sign_in current_user
-      else
-        render :add
-      end
-    end
-
     def edit
       set_phone_id
       # memoized for view
@@ -59,9 +44,6 @@ module Users
       render :edit
     end
 
-    # we only allow editing of the first configuration since we'll eventually be
-    # doing away with this controller. Once we move to multiple phones, we'll allow
-    # adding and deleting, but not editing.
     def phone_configuration
       MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
     end
@@ -81,17 +63,12 @@ module Users
     end
 
     def process_updates
-      form = @user_phone_form
-      if form.phone_config_changed?
-        analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
-
-        OtpPreferenceUpdater.new(
-          user: current_user,
-          preference: form.otp_delivery_preference,
-          default: form.otp_make_default_number,
-          phone_id: user_session[:phone_id],
-          ).call
-      end
+      OtpPreferenceUpdater.new(
+        user: current_user,
+        preference: form.otp_delivery_preference,
+        default: form.otp_make_default_number,
+        phone_id: user_session[:phone_id],
+      ).call
       redirect_to account_url
     end
 

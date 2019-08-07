@@ -44,13 +44,6 @@ class UserPhoneForm
     formatted_user_phone != phone && user.phone_configurations.map(&:phone).include?(phone)
   end
 
-  def phone_config_changed?
-    return true if formatted_user_phone != phone
-    return true if phone_configuration&.delivery_preference != otp_delivery_preference
-    return true if otp_make_default_number && !default_phone_configuration?
-    false
-  end
-
   # :reek:FeatureEnvy
   def masked_number
     phone_number = phone_configuration == nil ? nil : phone_configuration.phone
