@@ -1,12 +1,31 @@
 ---
 es:
   recover:
+    buttons:
+      continue: Continuar
     email:
       confirm: Confirme su email
       instructions: Confirmar su dirección de correo electrónico nos permitirá ayudarlo
         a volver a verificar que usted es el propietario de esta cuenta. Haga clic
         en el enlace de abajo o copie y pegue el enlace completo en su navegador.
         Este enlace caducará en 15 minutos.
+    instructions:
+      bullet1: Sube tu ID
+      bullet2: Ingrese su número de seguro social
+      bullet3: Asegúrese de tener la información correcta
+      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
+        conserve y comparta su información personal. Solo lo usaremos para verificar
+        su identidad.
+      heading: 'Lo que deberás hacer:'
+      learn_more: Aprende más.
+      text1: tomar una foto o subir un archivo
+      text2: lo necesitamos para encontrarlo en las bases de datos de verificación
+        de identidad
+      text3: podrás editarlo si algo anda mal
+    overview:
+      description: Verificamos nuevamente su identidad para asegurarnos de que usted
+        es usted, no alguien que finge ser usted.
+      heading: Necesitamos volver a verificar su identidad
     request:
       confirm_email: Primero, confirmemos tu dirección de correo electrónico
       email_sent: Enlace enviado a %{email}. Por favor revise su correo electrónico

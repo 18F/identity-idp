@@ -5,9 +5,15 @@ module RecoveryHelper
     dc.request_token
   end
 
-  def complete_recovery_steps_before_upload_step(user = user_with_2fa)
+  def complete_recovery_steps_before_overview_step(user = user_with_2fa)
     complete_recovery_steps_before_recover_step(user)
     click_idv_continue
+  end
+
+  def complete_recovery_steps_before_upload_step(user = user_with_2fa)
+    complete_recovery_steps_before_overview_step(user)
+    find('input[name="ial2_consent_given"]').set(true)
+    click_on t('recover.buttons.continue')
   end
 
   def complete_recovery_steps_before_front_image_step(user = user_with_2fa)
@@ -41,6 +47,10 @@ module RecoveryHelper
 
   def idv_recovery_recover_step(token)
     idv_recovery_step_path(step: :recover, token: token)
+  end
+
+  def idv_recovery_overview_step
+    idv_recovery_step_path(step: :overview)
   end
 
   def idv_recovery_upload_step
