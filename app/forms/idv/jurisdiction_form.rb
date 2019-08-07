@@ -1,11 +1,14 @@
 module Idv
+  # :reek:InstanceVariableAssumption
   class JurisdictionForm
     include ActiveModel::Model
     include FormJurisdictionValidator
 
-    ATTRIBUTES = [:state].freeze
+    validates :ial2_consent_given?, acceptance: { message: I18n.t('errors.doc_auth.consent_form') }
 
-    attr_accessor :state
+    ATTRIBUTES = %i[state ial2_consent_given].freeze
+
+    attr_accessor :state, :ial2_consent_given
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Jurisdiction')
@@ -15,6 +18,10 @@ module Idv
       consume_params(params)
 
       FormResponse.new(success: valid?, errors: errors.messages)
+    end
+
+    def ial2_consent_given?
+      @ial2_consent_given == 'true'
     end
 
     private
