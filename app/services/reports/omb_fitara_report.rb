@@ -1,5 +1,6 @@
 module Reports
   class OmbFitaraReport
+    OLDEST_TIMESTAMP = '2016-01-01 00:00:00'.freeze
     MOST_RECENT_MONTHS_COUNT = 2
     S3_BUCKET = Figaro.env.omb_fitara_bucket
     S3_FILENAME = Figaro.env.omb_fitara_filename
@@ -27,10 +28,9 @@ module Reports
     end
 
     def count_for_month(month, year)
-      start = "#{year}-#{month}-01 00:00:00"
       month, year = next_month(month, year)
       finish = "#{year}-#{month}-01 00:00:00"
-      Funnel::Registration::RangeRegisteredCount.call(start, finish)
+      Funnel::Registration::RangeRegisteredCount.call(OLDEST_TIMESTAMP, finish)
     end
 
     def current_month
