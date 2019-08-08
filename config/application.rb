@@ -62,5 +62,9 @@ module Upaya
       Rack::TwilioWebhookAuthentication,
       Figaro.env.twilio_auth_token, '/api/voice/otp'
     )
+    config.middleware.use(
+      Rack::TwilioWebhookAuthentication,
+      Figaro.env.twilio_auth_token, '/api/twilio_voice'
+    )
   end
 end
