@@ -11,8 +11,8 @@ RSpec.describe Health::HealthController do
         allow(DatabaseHealthChecker).to receive(:simple_query).and_return('foo')
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
-        allow(JobRunner::HealthChecker).to receive(:check).
-          and_return(JobRunner::HealthChecker::Summary.new(true, 'foo'))
+        allow(JobRunner::HealthCheckerCritical).to receive(:check).
+          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -21,7 +21,7 @@ RSpec.describe Health::HealthController do
         expect(json[:healthy]).to eq(true)
         expect(json[:statuses][:database][:healthy]).to eq(true)
         expect(json[:statuses][:account_reset][:healthy]).to eq(true)
-        expect(json[:statuses][:job_runner][:healthy]).to eq(true)
+        expect(json[:statuses][:job_runner_critical][:healthy]).to eq(true)
       end
     end
 
@@ -31,8 +31,8 @@ RSpec.describe Health::HealthController do
           and_raise(RuntimeError.new('canceling statement due to statement timeout'))
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
-        allow(JobRunner::HealthChecker).to receive(:check).
-          and_return(JobRunner::HealthChecker::Summary.new(true, 'foo'))
+        allow(JobRunner::HealthCheckerCritical).to receive(:check).
+          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -41,7 +41,7 @@ RSpec.describe Health::HealthController do
         expect(json[:statuses][:database][:result]).
           to include('canceling statement due to statement timeout')
         expect(json[:statuses][:account_reset][:healthy]).to eq(true)
-        expect(json[:statuses][:job_runner][:healthy]).to eq(true)
+        expect(json[:statuses][:job_runner_critical][:healthy]).to eq(true)
         expect(response.status).to eq(500)
       end
     end
@@ -52,8 +52,8 @@ RSpec.describe Health::HealthController do
           and_raise(RuntimeError.new('canceling statement due to statement timeout'))
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(false, 'foo'))
-        allow(JobRunner::HealthChecker).to receive(:check).
-          and_return(JobRunner::HealthChecker::Summary.new(false, 'foo'))
+        allow(JobRunner::HealthCheckerCritical).to receive(:check).
+          and_return(JobRunner::HealthCheckerCritical::Summary.new(false, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -62,7 +62,7 @@ RSpec.describe Health::HealthController do
         expect(json[:statuses][:database][:result]).
           to include('canceling statement due to statement timeout')
         expect(json[:statuses][:account_reset][:healthy]).to eq(false)
-        expect(json[:statuses][:job_runner][:healthy]).to eq(false)
+        expect(json[:statuses][:job_runner_critical][:healthy]).to eq(false)
         expect(response.status).to eq(500)
       end
     end
@@ -82,7 +82,7 @@ RSpec.describe Health::HealthController do
         expect(json[:healthy]).to eq(true)
         expect(json[:statuses][:database][:healthy]).to eq(true)
         expect(json[:statuses][:account_reset][:healthy]).to eq(true)
-        expect(json[:statuses][:job_runner]).to eq(nil)
+        expect(json[:statuses][:job_runner_critical]).to eq(nil)
       end
     end
   end
