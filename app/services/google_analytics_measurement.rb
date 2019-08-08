@@ -22,7 +22,7 @@ class GoogleAnalyticsMeasurement
       request.body = request_body
     end
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
-    Rails.logger.info("#{self.class.name} post error: #{err.message}")
+    Rails.logger.error("#{self.class.name} post error: #{err.message}")
   end
 
   private
