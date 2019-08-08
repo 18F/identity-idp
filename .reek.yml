@@ -70,7 +70,6 @@ detectors:
       - Idv::ProoferJob#perform
       - Idv::VendorResult#initialize
       - JWT
-      - SmsOtpSenderJob#perform
   RepeatedConditional:
     exclude:
       - Users::ResetPasswordsController
@@ -144,10 +143,6 @@ detectors:
       - X509::Attribute
       - X509::Attributes
       - X509::SessionStore
-  UnusedParameters:
-    exclude:
-      - SmsOtpSenderJob#perform
-      - VoiceOtpSenderJob#perform
   UnusedPrivateMethod:
     exclude:
       - ApplicationController

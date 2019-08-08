@@ -54,10 +54,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: b4e2b8357d7c9a3832521b4153c89e7c5b0b16cb
-  tag: v0.0.3
+  revision: e7d8488495bb9e5239e2ade47869c9971aec113e
+  tag: v0.0.4
   specs:
-    identity-telephony (0.0.3)
+    identity-telephony (0.0.4)
       i18n
       phonelib
       twilio-ruby

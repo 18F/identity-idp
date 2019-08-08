@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'SMS receiving' do
-  include Features::LocalizationHelper
-
   let(:username) { 'auth_username' }
   let(:password) { 'auth_password' }
   let(:access_denied) { 'HTTP Basic: Access denied' }

@@ -18,17 +18,6 @@ describe TwilioService::Utils do
 
       TwilioService::Utils.new
     end
-
-    it 'does not send OTP messages' do
-      SmsOtpSenderJob.perform_now(
-        code: '1234',
-        phone: '17035551212',
-        message: 'jobs.sms_otp_sender_job.verify_message',
-        otp_created_at: Time.zone.now.to_s,
-      )
-
-      expect(Twilio::FakeMessage.messages.size).to eq 0
-    end
   end
 
   context 'when telephony is enabled' do

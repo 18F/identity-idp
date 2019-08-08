@@ -7,8 +7,8 @@ module Users
 
     def show
       non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
-    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception, action: 'show')
+    rescue Telephony::TelephonyError => telephony_error
+      invalid_phone_number(telephony_error, action: 'show')
     end
 
     def send_code
@@ -20,8 +20,8 @@ module Users
       else
         handle_invalid_otp_delivery_preference(result)
       end
-    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception, action: 'send_code')
+    rescue Telephony::TelephonyError => telephony_error
+      invalid_phone_number(telephony_error, action: 'send_code')
     end
 
     private
@@ -64,13 +64,13 @@ module Users
       redirect_to login_two_factor_url(otp_delivery_preference: delivery_preference)
     end
 
-    def invalid_phone_number(exception, action:)
-      capture_analytics_for_exception(exception)
+    def invalid_phone_number(telephony_error, action:)
+      capture_analytics_for_exception(telephony_error)
 
       if action == 'show'
         redirect_to_otp_verification_with_error
       else
-        flash[:error] = error_message(exception.code)
+        flash[:error] = telephony_error.friendly_message
         redirect_back(fallback_location: account_url)
       end
     end
@@ -83,21 +83,15 @@ module Users
       )
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def capture_analytics_for_exception(exception)
+    def capture_analytics_for_exception(telephony_error)
       attributes = {
-        error: exception.message,
-        code: exception.code,
+        error: telephony_error.class.to_s,
+        message: telephony_error.message,
         context: context,
         country: parsed_phone.country,
       }
-      if exception.is_a?(PhoneVerification::VerifyError)
-        attributes[:status] = exception.status
-        attributes[:response] = exception.response
-      end
       analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, attributes)
     end
-    # rubocop:enable Metrics/MethodLength
 
     def parsed_phone
       @parsed_phone ||= Phonelib.parse(phone_to_deliver_to)
@@ -141,27 +135,20 @@ module Users
 
     def send_user_otp(method)
       current_user.create_direct_otp
-
-      job = "#{method.capitalize}OtpSenderJob".constantize
-      job_priority = confirmation_context? ? :perform_now : :perform_later
-      job.send(job_priority,
-               method == 'sms' ? job_params.merge(message: sms_message) : job_params)
-    end
-
-    def job_params
-      {
-        code: current_user.direct_otp,
-        phone: phone_to_deliver_to,
-        otp_created_at: current_user.direct_otp_sent_at.to_s,
-        locale: user_locale,
+      params = {
+        to: phone_to_deliver_to,
+        otp: current_user.direct_otp,
+        expiration: Devise.direct_otp_valid_for.to_i / 60,
+        channel: method.to_sym,
       }
+      Telephony.send(send_otp_method_name, params)
     end
 
-    def sms_message
-      if TwoFactorAuthentication::PhonePolicy.new(current_user).configured?
-        'jobs.sms_otp_sender_job.login_message'
+    def send_otp_method_name
+      if authentication_context?
+        :send_authentication_otp
       else
-        'jobs.sms_otp_sender_job.verify_message'
+        :send_confirmation_otp
       end
     end
 
@@ -183,11 +170,6 @@ module Users
       return phone_configuration&.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
-    end
-
-    def user_locale
-      available_locales = PhoneVerification::AVAILABLE_LOCALES
-      http_accept_language.language_region_compatible_from(available_locales)
     end
 
     def otp_rate_limiter

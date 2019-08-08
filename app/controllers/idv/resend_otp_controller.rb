@@ -16,8 +16,8 @@ module Idv
       else
         redirect_to idv_otp_verification_url
       end
-    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception)
+    rescue Telephony::TelephonyError => telephony_error
+      invalid_phone_number(telephony_error)
     end
 
     private
