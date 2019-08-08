@@ -34,16 +34,27 @@ module CacProofingHelper
 
   def complete_cac_proofing_steps_before_enter_info_step
     complete_cac_proofing_steps_before_present_cac_step
-    click_button t('forms.buttons.cac')
+    click_link t('forms.buttons.cac')
+    visit idv_cac_step_path(step: :present_cac, token: 'foo')
   end
 
   def complete_cac_proofing_steps_before_verify_step
     complete_cac_proofing_steps_before_enter_info_step
+    fill_out_cac_proofing_form_ok
     click_continue
   end
 
   def complete_cac_proofing_steps_before_success_step
     complete_cac_proofing_steps_before_verify_step
     click_continue
+  end
+
+  def fill_out_cac_proofing_form_ok
+    fill_in 'doc_auth[address1]', with: '123 Main St'
+    fill_in 'doc_auth[city]', with: 'Nowhere'
+    select 'Virginia', from: 'doc_auth[state]'
+    fill_in 'doc_auth[zipcode]', with: '66044'
+    fill_in 'doc_auth[dob]', with: '01/02/1980'
+    fill_in 'doc_auth[ssn]', with: '666-66-1234'
   end
 end
