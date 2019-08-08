@@ -21,7 +21,9 @@
   </h2>
 <% end %>
 
-<%= render 'shared/failure_url', presenter: presenter %>
+<% if presenter.display_failure_url %>
+  <%= render 'shared/failure_url', presenter: presenter %>
+<% end %>
 
 <% presenter.next_steps.each do |step| %>
   <p><%= step %></p>

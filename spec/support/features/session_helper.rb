@@ -450,6 +450,12 @@ module Features
       User.find_with_email(email)
     end
 
+    def confirm_email(email)
+      visit sign_up_email_path
+      submit_form_with_valid_email(email)
+      click_confirmation_link_in_email(email)
+    end
+
     def confirm_email_and_password(email)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)

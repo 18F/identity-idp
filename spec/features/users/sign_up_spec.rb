@@ -26,17 +26,50 @@ feature 'Sign Up' do
   end
 
   context 'user cancels on the enter password screen', email: true do
-    it 'sends them to the cancel page' do
-      email = 'test@test.com'
-
-      visit sign_up_email_path
-
-      submit_form_with_valid_email(email)
-      click_confirmation_link_in_email(email)
-
+    before(:each) do
+      confirm_email('test@test.com')
       click_on t('links.cancel_account_creation')
+    end
 
+    it 'sends them to the cancel page' do
       expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
+    end
+  end
+
+  context 'user cancels on 1st MFA screen', email: true do
+    before(:each) do
+      confirm_email('test@test.com')
+      submit_form_with_valid_password
+      click_on t('links.cancel_account_creation')
+    end
+
+    it 'sends them to the cancel page' do
+      expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
+    end
+  end
+
+  context 'user cancels on 2nd MFA screen', email: true do
+    before(:each) do
+      confirm_email('test@test.com')
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      click_on t('links.cancel_account_creation')
+    end
+
+    it 'sends them to the cancel page' do
+      expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
     end
   end
 
