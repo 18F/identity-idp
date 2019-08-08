@@ -21,9 +21,10 @@ module Idv
         end
 
         def form_submit
-          params[:doc_auth][:first_name] = CAC_FIRST_NAME
-          params[:doc_auth][:last_name] = CAC_LAST_NAME
-          Idv::CacForm.new(user: current_user, previous_params: {}).submit(params[:doc_auth])
+          doc_auth_params = params[:doc_auth]
+          doc_auth_params[:first_name] = CAC_FIRST_NAME
+          doc_auth_params[:last_name] = CAC_LAST_NAME
+          Idv::CacForm.new(user: current_user, previous_params: {}).submit(doc_auth_params)
         end
       end
     end
