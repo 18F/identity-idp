@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Reports::UniqueMonthlyAuthsReport do
-  subject { described_class }
+  subject { described_class.new }
 
   let(:issuer) { 'foo' }
   let(:year_month) { '201901' }

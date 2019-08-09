@@ -4,13 +4,13 @@ module Reports
   class OmbFitaraReport < BaseReport
     OLDEST_TIMESTAMP = '2016-01-01 00:00:00'.freeze
     MOST_RECENT_MONTHS_COUNT = 2
-    REPORT_NAME = 'omb-fitara-report'
+    REPORT_NAME = 'omb-fitara-report'.freeze
 
     def call
-      results = self.class.transaction_with_timeout do
+      results = transaction_with_timeout do
         report_hash
       end
-      self.class.save_report(REPORT_NAME, results.to_json)
+      save_report(REPORT_NAME, results.to_json)
     end
 
     private

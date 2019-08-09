@@ -2,9 +2,9 @@ require 'login_gov/hostdata'
 
 module Reports
   class UniqueMonthlyAuthsReport < BaseReport
-    REPORT_NAME = 'unique-monthly-auths-report'
+    REPORT_NAME = 'unique-monthly-auths-report'.freeze
 
-    def self.call
+    def call
       auth_counts = transaction_with_timeout do
         Db::MonthlyAuthCount::UniqueMonthlyAuthCounts.call
       end
