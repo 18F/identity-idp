@@ -30,36 +30,33 @@ module Reports
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end
-      upload_to_s3_timestamped_and_latest(report_name, body)
+      upload_file_to_s3_timestamped_and_latest(report_name, body)
     end
 
-    def upload_to_s3_timestamped_and_latest(report_name, body)
-      path = generate_s3_path(name: report_name)
-      url = upload_to_s3(path: path, body: body, content_type: 'application/json')
-
-      latest_path = generate_s3_path(name: report_name, latest: true)
-      upload_to_s3(path: latest_path, body: body, content_type: 'application/json')
-
+    def upload_file_to_s3_timestamped_and_latest(report_name, body)
+      latest_path, path = generate_s3_paths(report_name)
+      url = upload_file_to_s3_bucket(path: path, body: body, content_type: 'application/json')
+      upload_file_to_s3_bucket(path: latest_path, body: body, content_type: 'application/json')
       url
     end
 
-    def generate_s3_path(name:, latest: false)
+    def generate_s3_paths(name)
       host_data_env = LoginGov::Hostdata.env
-      if latest
-        "#{host_data_env}/#{name}/latest.#{name}.json"
-      else
-        now = Time.zone.now
-        "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.json"
-      end
+      latest = "#{host_data_env}/#{name}/latest.#{name}.json"
+      now = Time.zone.now
+      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.json"]
     end
 
     def logger
       Rails.logger
     end
 
-    def upload_to_s3(path:, body:, content_type:, bucket: S3_BUCKET)
+    def class_name
+      self.class.name
+    end
+
+    def upload_file_to_s3_bucket(path:, body:, content_type:, bucket: S3_BUCKET)
       url = "s3://#{bucket}/#{path}"
-      class_name = self.class.name
       logger.info("#{class_name}: uploading to #{url}")
       obj = Aws::S3::Resource.new.bucket(bucket).object(path)
       obj.put(body: body, acl: 'private', content_type: content_type)
