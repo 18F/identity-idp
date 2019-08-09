@@ -2,8 +2,6 @@ require 'login_gov/hostdata'
 
 module Reports
   class BaseReport
-    S3_BUCKET = gen_s3_bucket_name.freeze unless Figaro.env.s3_reports_enabled! == 'false'
-
     private
 
     def ec2_data
@@ -55,7 +53,11 @@ module Reports
       self.class.name
     end
 
-    def upload_file_to_s3_bucket(path:, body:, content_type:, bucket: S3_BUCKET)
+    def bucket
+      @bucket ||= gen_s3_bucket_name
+    end
+
+    def upload_file_to_s3_bucket(path:, body:, content_type:)
       url = "s3://#{bucket}/#{path}"
       logger.info("#{class_name}: uploading to #{url}")
       obj = Aws::S3::Resource.new.bucket(bucket).object(path)
