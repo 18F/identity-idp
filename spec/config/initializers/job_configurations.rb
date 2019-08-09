@@ -37,5 +37,17 @@ describe JobRunner::Runner do
 
       expect(job.callback.call).to eq 'the report test worked'
     end
+
+    it 'runs the monthly unique auths report job' do
+      job = JobRunner::Runner.configurations.find { |c| c.name == 'Unique montly auths report' }
+      expect(job).to be_instance_of(JobRunner::JobConfiguration)
+      expect(job.interval).to eq 24 * 60 * 60
+
+      service = instance_double(Reports::UniqueMonthlyAuthsReport)
+      expect(Reports::UniqueMonthlyAuthsReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
+
+      expect(job.callback.call).to eq 'the report test worked'
+    end
   end
 end
