@@ -1147,3 +1147,18 @@ production:
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'
+
+  # DOE - CESER - BitSight
+  'https://service.bitsighttech.com/saml/metadata/':
+    agency_id: 10
+    friendly_name: 'BitSight Security Ratings'
+    agency: 'DOE'
+    logo: 'bitsight.svg'
+    cert: 'bitsight_prod'
+    ial: 1
+    return_to_sp_url: 'https://service.bitsighttech.com'
+    acs_url: 'https://service.bitsighttech.com/saml/acs/'
+    sp_initiated_login_url: 'https://service.bitsighttech.com'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
