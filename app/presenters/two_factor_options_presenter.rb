@@ -90,8 +90,7 @@ class TwoFactorOptionsPresenter
 
   def piv_cac_option
     policy = TwoFactorAuthentication::PivCacPolicy.new(current_user)
-    return [] if policy.enabled?
-    return [] unless policy.available?
+    return [] if policy.enabled? || !policy.available?
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 
