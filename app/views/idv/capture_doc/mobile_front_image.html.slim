@@ -18,7 +18,6 @@ ul
       button class='btn btn-secondary' id='take_picture' = t('doc_auth.buttons.take_picture')
       = f.input :image, label: false, as: 'file', required: true, input_html: { class: 'hidden' }
 
-
   = render 'idv/doc_auth/error_messages', flow_session: flow_session
 
   div id= 'target'
