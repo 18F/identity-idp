@@ -5,18 +5,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
   describe '#available?' do
     context 'when not configured to be available only based on email' do
-      before(:each) do
-        allow(FeatureManagement).to receive(:allow_piv_cac_by_email_only?).and_return(false)
-      end
-
-      context 'when a user has no identities' do
-        let(:user) { create(:user) }
-
-        it 'does not allow piv/cac' do
-          expect(subject.available?).to be_falsey
-        end
-      end
-
       context 'when a user has an identity' do
         let(:user) { create(:user) }
 
@@ -33,12 +21,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
         before(:each) do
           user.identities << [identity_with_sp]
-        end
-
-        context 'not allowing it' do
-          it 'does not allow piv/cac' do
-            expect(subject.available?).to be_falsey
-          end
         end
 
         context 'allowing it' do
@@ -66,23 +48,11 @@ describe TwoFactorAuthentication::PivCacPolicy do
     end
 
     context 'when configured to be available only based on email' do
-      before(:each) do
-        allow(FeatureManagement).to receive(:allow_piv_cac_by_email_only?).and_return(true)
-      end
-
       context 'when a user has an allowed email address' do
         let(:user) { create(:user, :signed_up) }
 
         it 'allows piv/cac' do
           expect(subject.available?).to be_truthy
-        end
-      end
-
-      context 'when a user does not have an allowed email address' do
-        let(:user) { create(:user, :signed_up) }
-
-        it 'does not allow piv/cac' do
-          expect(subject.available?).to be_falsey
         end
       end
 
