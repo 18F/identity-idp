@@ -107,7 +107,6 @@ describe 'attempting to bypass backup mfa setup' do
     let(:user) { create(:user, :with_piv_or_cac) }
 
     before do
-      allow(PivCacService).to receive(:piv_cac_available_for_email?).and_return(true)
       stub_piv_cac_service
     end
 

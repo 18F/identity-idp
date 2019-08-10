@@ -81,30 +81,6 @@ usps_upload_sftp_timeout: '5'
 
 google_analytics_timeout: '5'
 
-piv_cac_email_domains: >-
-  [
-    ".eop.gov", ".mil", ".treas.gov", ".dhs.gov",
-    "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
-    "bea.gov", "bis.doc.gov",
-    "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
-    "dhs.gov", ".dhs.gov", "doc.gov", "dol.gov", "dra.gov",
-    "eac.gov", "ed.gov", "eda.gov", "epa.gov",
-    "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
-    "gao.gov", "gpo.gov", "gsa.gov",
-    "heritageabroad.gov", ".doe.gov", "hud.gov", "hudoig.gov",
-    "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
-    "jusfc.gov", "justice.gov",
-    "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
-    "nara.gov", "nasa.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
-    "oig.doc.gov", "oig.hhs.gov", "opm.gov",
-    "pclob.gov",
-    "restorethegulf.gov",
-    "sba.gov", "sec.gov", "si.edu", "sss.gov", "state.gov", "stateoig.gov",
-    "trade.gov", "truman.gov", "tsp.gov", "tva.gov",
-    "usadf.gov", "uscc.gov", "usccr.gov", "uscirf.gov", "usdoj.gov",
-    "va.gov", "vef.gov"
-  ]
-
 allow_piv_cac_by_email_only: 'true'
 
 development:

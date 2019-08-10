@@ -73,12 +73,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
       context 'when a user has an allowed email address' do
         let(:user) { create(:user, :signed_up) }
 
-        before(:each) do
-          allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
-            user.email_addresses.map(&:email),
-          ).and_return(true)
-        end
-
         it 'allows piv/cac' do
           expect(subject.available?).to be_truthy
         end
@@ -86,12 +80,6 @@ describe TwoFactorAuthentication::PivCacPolicy do
 
       context 'when a user does not have an allowed email address' do
         let(:user) { create(:user, :signed_up) }
-
-        before(:each) do
-          allow(PivCacService).to receive(:piv_cac_available_for_email?).with(
-            user.email_addresses.map(&:email),
-          ).and_return(false)
-        end
 
         it 'does not allow piv/cac' do
           expect(subject.available?).to be_falsey
