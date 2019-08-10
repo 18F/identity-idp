@@ -7,6 +7,11 @@ function imagePreview() {
     const reader = new FileReader();
     reader.onload = function(file) {
       const img = new Image();
+      img.onload = function () {
+        img.width = this.width;
+        img.height = this.height;
+        $('#target').html(img);
+      };
       img.src = file.target.result;
       $('#target').html(img);
     };
