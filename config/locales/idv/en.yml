@@ -103,7 +103,7 @@ en:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
       activated_link: contact us
-      agencies_login: You can now continue to and log into these agencies.
+      agencies_login: You can now continue to and sign in to these agencies.
       agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
       cancel: To continue, %{app} needs to verify your identity. We need to collect
         some basic personal information as well as some financial information from
@@ -141,7 +141,7 @@ en:
         - not a virtual phone (such as Google Voice or Skype)
         - a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"
-      return_to_sp_html: You can now log into <strong>%{sp}</strong>.
+      return_to_sp_html: You can now sign in to <strong>%{sp}</strong>.
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information

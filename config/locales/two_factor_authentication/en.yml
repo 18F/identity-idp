@@ -76,7 +76,7 @@ en:
       locked because you have presented your piv/cac credential incorrectly too many
       times.
     otp_delivery_preference:
-      instruction: You can change this selection the next time you log in. If you
+      instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select "Phone call" below.
       phone_unsupported: We're unable to make phone calls to people in %{location}
         at this time.
