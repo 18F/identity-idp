@@ -37,10 +37,16 @@ module Idv
       end
 
       def perform_resolution(pii_from_doc)
-        idv_result = Idv::Agent.new(pii_from_doc).proof(:resolution, :state_id)
+        stages = aamva_state?(pii_from_doc) ? [:resolution, :state_id] : [:resolution]
+        idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
         FormResponse.new(
           success: idv_result[:success], errors: idv_result[:errors],
         )
+      end
+
+      def aamva_state?(pii_from_doc)
+        Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.
+          include? pii_from_doc['state_id_jurisdiction']
       end
     end
   end
