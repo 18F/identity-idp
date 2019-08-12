@@ -41,3 +41,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::AgencyUserCountsReport.new.call },
 )
+
+# Send Total Monthly Auths Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Total montly auths report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::TotalMonthlyAuthsReport.new.call },
+)
