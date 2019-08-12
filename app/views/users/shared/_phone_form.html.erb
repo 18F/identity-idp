@@ -5,7 +5,7 @@
 
   <% if @user_phone_form.phone && @user_phone_form.errors.blank?%>
     <div class="mb1 h4">
-      <%= :phone %>:&nbsp;
+      <%= t('two_factor_authentication.phone_label') %>:&nbsp;
       <strong><%= @user_phone_form.masked_number %></strong>
     </div><br/>
 
