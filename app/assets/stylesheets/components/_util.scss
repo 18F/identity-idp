@@ -1,5 +1,9 @@
 // supplemental utility classes
 
+.border-top {
+  border-top: 1px solid $border-color;
+}
+
 .w-60p { width: 60px; }
 
 .no-hover-decoration:hover { text-decoration: none; }
