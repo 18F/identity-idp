@@ -92,7 +92,6 @@ fr:
       first_name: Prénom
       last_name: Nom de famille
       no_alternate_phone_html: Pas de téléphone éligible? <strong>%{link}</strong>
-      other_phone: Autre numéro de téléphone
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale

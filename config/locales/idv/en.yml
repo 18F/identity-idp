@@ -82,7 +82,6 @@ en:
       first_name: First name
       last_name: Last name
       no_alternate_phone_html: No eligible phone? <strong>%{link}</strong>
-      other_phone: Other Phone Number
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
