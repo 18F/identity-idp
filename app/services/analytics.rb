@@ -154,6 +154,7 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
+  SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
