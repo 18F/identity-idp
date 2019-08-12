@@ -10,7 +10,7 @@ A Identity Management System powering login.gov.
 
 ### Local development
 
-#### Dependencies
+#### Dependencies 
 
 - Ruby 2.3
 - [Postgresql](http://www.postgresql.org/download/)
