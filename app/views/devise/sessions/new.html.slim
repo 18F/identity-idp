@@ -22,7 +22,7 @@
     .create-box.bg-light-blue.center.py1.rounded-lg
       = t('links.create_helper')
       = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
-        class: 'pl1'
+        class: 'ml1'
 
 - if FeatureManagement.allow_piv_cac_login? && @ial
   .mxn1.my1
