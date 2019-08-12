@@ -1,24 +1,19 @@
 class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::TranslationHelper
+  include Rails.application.routes.url_helpers
 
   DEFAULT_LOGO = 'generic.svg'.freeze
   CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs',
                            'FMCSA National Registry'].freeze
+  CUSTOM_ALERT_SP_ISSUERS = %w(urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local
+                               urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp
+                               urn:gov:gsa:SAML:2.0.profiles:sp:sso:FMCSANationalRegistryProdSAML:FMCSANationalRegistryProdApp
+                               urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard).freeze
   DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
-
-  # These are SPs that are migrating users and require special help messages
-  CUSTOM_SP_ALERTS = {
-    'CBP Trusted Traveler Programs' => {
-      i18n_name: 'trusted_traveler',
-      learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
-      exclude_paths: ['/sign_up/enter_email'],
-    },
-    'FMCSA National Registry' => {
-      i18n_name: 'fmcsa_natl_registry',
-      learn_more: 'https://login.gov/help/',
-      exclude_paths: ['/es', '/fr'],
-    },
-  }.freeze
+  DEFAULT_ALERT_SP_ISSUERS = %w(urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS
+                                urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam
+                                urn:gov:gsa:openidconnect:profiles:sp:sso:cnic:HOMES
+                                urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1).freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
@@ -32,9 +27,12 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
-
-    t("service_providers.default.#{section}", args)
+    if custom_alert?
+      sp.help_text["#{section}"] % args if Rails.env != 'production'
+      t( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}") if Rails.env == 'production'
+    else
+      t("service_providers.help_texts.default.#{section}", args)
+    end
   end
 
   def sp_logo
@@ -87,8 +85,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_create_link
-    view_context.link_to t('service_providers.default.account_page.create_link'),
-                         view_context.sign_up_email_path(request_id: sp_session[:request_id])
+    view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
 
   def sp_name
@@ -120,11 +117,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_alert?(path)
-    custom_alert? ? alert_not_excluded_for_path?(path) : default_alert?
-  end
-
-  def sp_alert_name
-    CUSTOM_SP_ALERTS.dig(sp_name, :i18n_name)
+    custom_alert? ? alert_included_for_path?(path) : default_alert?
   end
 
   def sp_alert_learn_more
@@ -153,15 +146,21 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def custom_alert?
-    CUSTOM_ALERT_SP_NAMES.include?(sp_name)
+    CUSTOM_ALERT_SP_ISSUERS.include?(sp.issuer)
   end
 
   def default_alert?
-    DEFAULT_ALERT_SP_NAMES.include?(sp_name)
+    DEFAULT_ALERT_SP_ISSUERS.include?(sp.issuer)
   end
 
-  def alert_not_excluded_for_path?(path)
-    !CUSTOM_SP_ALERTS[sp_name][:exclude_paths]&.include?(path)
+  def alert_included_for_path?(path)
+    if path == new_user_session_path
+      !sp.help_text.sign_in.blank?
+    elsif path == sign_up_email_path
+      !sp.help_text.sign_up.blank?
+    else
+      !sp.help_text.forgot_password.blank?
+    end
   end
 
   def request_url

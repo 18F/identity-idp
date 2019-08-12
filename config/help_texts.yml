@@ -1,0 +1,21 @@
+  urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp:
+    sign_in: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID and password won’t work. Please create a login.gov
+                  account below. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Learn more</a>
+    forgot_password: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID and password won't work. Please <a href=%{sp_create_link}>create a login.gov account</a>
+    sign_up: ''
+
+  urn:gov:gsa:SAML:2.0.profiles:sp:sso:FMCSANationalRegistryProdSAML:FMCSANationalRegistryProdApp:
+    sign_in: <b>First time here from FMCSA National Registry?</b><p>If you do not have a Login.gov account, you must create one to access the National Registry. To do so, select "Create an account" and use the same
+                  email address that is your primary email address for your National Registry account. <p><a href="https://login.gov/help/">Learn more</a>
+    forgot_password: If you do not have a Login.gov account, you must create one to access the National Registry. To do so, select "Create an account" and use the same
+               email address that is your primary email address for your National Registry account. <p><a href="https://login.gov/help/">Learn more</a>
+    sign_up: Remind please use the same email address as your primary email address
+                         for your National Registry account when creating your Login.gov account. <p><a href="https://login.gov/help/">Learn more</a>
+
+  default:
+    sign_in: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username and password won’t work. Please <a href=%{sp_create_link}>create a login.gov account</a>
+                  using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn more</a>
+    forgot_password: Your old %{sp_name} username and password won’t work. Please %{link}
+               using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn more</a>
+    sign_up: Please create a login.gov account using the same email address you use
+                         for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>

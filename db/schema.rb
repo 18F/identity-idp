@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725211433) do
+ActiveRecord::Schema.define(version: 20190812151104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,21 @@ ActiveRecord::Schema.define(version: 20190725211433) do
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "help_texts", force: :cascade do |t|
+    t.string "sign_in"
+    t.string "sign_up"
+    t.string "forgot_password"
+    t.integer "service_provider_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "sign_in_es"
+    t.string "sign_up_es"
+    t.string "forgot_password_es"
+    t.string "sign_in_fr"
+    t.string "sign_up_fr"
+    t.string "forgot_password_fr"
   end
 
   create_table "identities", force: :cascade do |t|
