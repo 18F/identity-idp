@@ -105,7 +105,7 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
       activated_link: Contáctenos
-      agencies_login: Ahora puedes continuar e iniciar sesión en estas agencias.
+      agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
       agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
       cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
         información personal básica, así como su información financiera para completar
@@ -147,7 +147,7 @@ es:
         - no es un número de teléfono prepago
         - un número de EE. UU.
       return_to_profile: "‹ Volver a tu perfil de login.gov"
-      return_to_sp_html: Ahora puedes iniciar sesión en <strong>%{sp}</strong>.
+      return_to_sp_html: Ahora puede iniciar sesión en <strong>%{sp}</strong>.
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
