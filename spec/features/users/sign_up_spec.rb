@@ -134,16 +134,6 @@ feature 'Sign Up' do
     expect(page).to have_current_path account_path
   end
 
-  it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
-    allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(false)
-    begin_sign_up_with_sp_and_loa(loa3: false)
-
-    expect(page).to have_current_path two_factor_options_path
-    expect(page).not_to have_content(
-      t('two_factor_authentication.two_factor_choice_options.piv_cac'),
-    )
-  end
-
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
     user = create(:user, :signed_up)
     sign_in_user(user)

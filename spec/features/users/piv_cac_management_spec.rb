@@ -166,7 +166,7 @@ feature 'PIV/CAC Management' do
 
       form = find_form(page, action: disable_piv_cac_url)
       expect(form).to be_nil
-      expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+      expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       user.reload
       expect(user.x509_dn_uuid).to be_nil

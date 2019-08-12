@@ -476,7 +476,6 @@ production:
       - 'https://training.vgihub.geointservices.io/op_redirect'
       - 'https://wiki.vgihub.geointservices.io/op_redirect'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NGA GEOWorks Landing Page
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:landingpage':
@@ -495,7 +494,6 @@ production:
       - 'https://nga-geoworks.io/auth/login-gov/callback/loa-1'
       - 'https://ngageoworks.io/auth/login-gov/callback/loa-1'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NGA GEOINT Viewer
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:geoint_viewer':
@@ -513,7 +511,6 @@ production:
       - 'https://gv.nga-geoworks.io/protected/callback'
       - 'https://gv.ngageoworks.io/protected/callback'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NGA HiPER CLOUD
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:hiper_look':
@@ -539,7 +536,6 @@ production:
       - 'https://hiperlook.nga-geoworks.com/auth_redirect'
       - 'https://hiperlook.nga-geoworks.com:443/auth_redirect'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NGA MAGE
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:mage':
@@ -557,7 +553,6 @@ production:
       - 'https://mage.nga-geoworks.io/auth/login-gov/callback/loa-1'
       - 'https://mage.ngageoworks.io/auth/login-gov/callback/loa-1'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NGA ROME
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:rome-prod':
@@ -570,7 +565,6 @@ production:
     redirect_uris:
       - 'https://rome.geogeo.xyz/callback'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # DOT
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:login':
@@ -601,7 +595,6 @@ production:
       - 'https://symphony.nga-geoworks.com/guacamole/#/'
       - 'https://symphony.nga-geoworks.com/secured'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # Secret Service PIX
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:usss:pix':
@@ -632,7 +625,6 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # A DoD system that allows tsps to manage moves.
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:tspmovemilprod':
@@ -648,7 +640,6 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # Office Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:officemovemilprod':
@@ -667,7 +658,6 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-    piv_cac: true
 
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
@@ -686,7 +676,6 @@ production:
     attribute_bundle:
       - x509_subject
       - x509_presented
-    piv_cac: true
 
   # DOT – National Registry of Certified Medical Examiners App
   'urn:gov:dot:openidconnect.profiles:sp:sso:dot:nr_auth':
@@ -731,8 +720,6 @@ production:
       - 'https://sam.gov/portal/SAM'
       - 'https://www.sam.gov/portal/SAM'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
-    piv_cac_scoped_by_email: true
 
   # SAM – System for Award Management / testing prod from UAT
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam_uat':
@@ -745,8 +732,6 @@ production:
     redirect_uris:
       - 'https://uat.sam.gov/portal/SAM'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
-    piv_cac_scoped_by_email: true
 
   # DOE - Fossil Energy - Import/Export Authorization Portal for Natural Gas
   'urn:gov:gsa:openidconnect.profiles:sp:sso:doe:fergas':
@@ -859,7 +844,6 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # Pre-mod SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:pmsam':
@@ -873,8 +857,6 @@ production:
       - 'https://sam.gov/SAM'
       - 'https://www.sam.gov/SAM'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
-    piv_cac_scoped_by_email: true
 
   # OPM Secure Portal
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:OPM:TibcoMFT':
@@ -1086,7 +1068,6 @@ production:
       - 'https://api.data.gov/admins/auth/login.gov/callback'
       - 'https://api.data.gov/admin/logout/callback'
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
 
   # NLRB - My Account aka public self-service portal - https://apps.nlrb.gov
   'urn:gov:gsa:openidconnect.profiles:sp:sso:nlrb:my_account':

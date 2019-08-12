@@ -109,10 +109,6 @@ feature 'backup mfa setup on sign up' do
   end
 
   context 'piv/cac sign up' do
-    before do
-      allow(PivCacService).to receive(:piv_cac_available_for_email?).and_return(true)
-    end
-
     def choose_and_confirm_mfa
       set_up_2fa_with_piv_cac
       :piv_cac
