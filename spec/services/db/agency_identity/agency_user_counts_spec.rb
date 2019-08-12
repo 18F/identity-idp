@@ -10,6 +10,7 @@ describe Db::AgencyIdentity::AgencyUserCounts do
   end
 
   it 'returns the total user counts per agency' do
+    Agency.create(id: 3, name: 'USDS') unless Agency.find_by(id: 3)
     AgencyIdentity.create(user_id: 1, agency_id: 3, uuid: 'foo1')
     AgencyIdentity.create(user_id: 2, agency_id: 3, uuid: 'foo2')
 
