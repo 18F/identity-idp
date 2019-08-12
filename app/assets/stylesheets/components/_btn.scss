@@ -112,3 +112,11 @@
   font-weight: normal;
   line-height: $line-height;
 }
+
+iframe:focus,
+[href]:focus,
+[tabindex]:focus,
+[contentEditable=true]:focus {
+  outline: initial;
+  outline-offset: initial;
+}
