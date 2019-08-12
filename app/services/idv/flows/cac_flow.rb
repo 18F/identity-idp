@@ -11,6 +11,7 @@ module Idv
 
       ACTIONS = {
         reset: Idv::Actions::ResetAction,
+        redo_enter_info: Idv::Actions::RedoEnterInfoAction,
       }.freeze
 
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow
