@@ -896,6 +896,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+        expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
         generate_saml_response(user)
       end
@@ -919,6 +920,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+        expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
         generate_saml_response(user)
       end
