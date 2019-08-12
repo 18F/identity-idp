@@ -1,6 +1,9 @@
 import $ from 'jquery';
 
 function imagePreview() {
+  $('#take_picture').on('click', function() {
+    document.getElementById('doc_auth_image').click();
+  });
   $('#doc_auth_image').on('change', function(event) {
     const files = event.target.files;
     const image = files[0];

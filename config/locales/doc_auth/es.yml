@@ -6,6 +6,7 @@ es:
       change_ssn: cambio
       continue: Continue
       start_over: Comenzar de nuevo
+      take_picture: Tomar la foto
       use_computer: Usa tu computadora
       use_phone: Usa tu telefono
     forms:

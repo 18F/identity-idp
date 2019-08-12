@@ -3,6 +3,7 @@ class SmsDocAuthLinkJob < ApplicationJob
   include Rails.application.routes.url_helpers
 
   def perform(phone:, link:, app:)
+    puts("link=#{link}")
     message = I18n.t(
       'jobs.sms_doc_auth_link_job.message',
       link: link,
