@@ -60,7 +60,7 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-      revoke_remember_device(current_user)
+      revoke_remember_device(current_user) unless user_session['signing_up']
     end
 
     def generator

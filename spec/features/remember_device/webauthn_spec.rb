@@ -59,7 +59,7 @@ describe 'Remembering a webauthn device' do
     it_behaves_like 'remember device'
   end
 
-  context 'sign up with remember_device first' do
+  context 'sign up with remember_device and phone as 2nd MFA' do
     def remember_device_and_sign_out_user
       mock_webauthn_setup_challenge
       user = sign_up_and_set_password
@@ -77,6 +77,81 @@ describe 'Remembering a webauthn device' do
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
+
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
+    it_behaves_like 'remember device'
+  end
+
+  context 'sign up with remember_device and totp as 2nd MFA' do
+    def remember_device_and_sign_out_user
+      mock_webauthn_setup_challenge
+      user = sign_up_and_set_password
+      user.password = Features::SessionHelper::VALID_PASSWORD
+
+      select_2fa_option('webauthn')
+      fill_in_nickname_and_click_continue
+      check :remember_device
+      mock_press_button_on_hardware_key_on_setup
+
+      click_continue
+
+      select_2fa_option('auth_app')
+      secret = find('#qr-code').text
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      click_continue
+
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
+    it_behaves_like 'remember device'
+  end
+
+  context 'sign up with remember_device and webauthn as 2nd MFA' do
+    def remember_device_and_sign_out_user
+      mock_webauthn_setup_challenge
+      user = sign_up_and_set_password
+      user.password = Features::SessionHelper::VALID_PASSWORD
+
+      select_2fa_option('webauthn')
+      fill_in_nickname_and_click_continue
+      check :remember_device
+      mock_press_button_on_hardware_key_on_setup
+
+      click_continue
+
+      mock_webauthn_setup_challenge
+      select_2fa_option('webauthn')
+      fill_in_nickname_and_click_continue(nickname: 'my2ndkey')
+      mock_press_button_on_hardware_key_on_setup
+
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
+    it_behaves_like 'remember device'
+  end
+
+  context 'sign up with remember_device and backup codes as 2nd MFA' do
+    def remember_device_and_sign_out_user
+      mock_webauthn_setup_challenge
+      user = sign_up_and_set_password
+      user.password = Features::SessionHelper::VALID_PASSWORD
+
+      select_2fa_option('webauthn')
+      fill_in_nickname_and_click_continue
+      check :remember_device
+      mock_press_button_on_hardware_key_on_setup
+
+      click_continue
+
+      select_2fa_option('backup_code')
+      click_continue
 
       first(:link, t('links.sign_out')).click
       user
