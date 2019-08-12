@@ -24,6 +24,9 @@ Rails.application.routes.draw do
         via: %i[get post],
         as: :voice_otp,
         defaults: { format: :xml }
+  match '/api/twilio/voice' => 'twilio_voice#show',
+        via: %i[get post],
+        format: :xml
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
