@@ -73,7 +73,7 @@ en:
         warning_2: You'll have to re-enter your personal information, like your name,
           state ID number, etc.
     form:
-      activate_by_mail: get a code via mail instead ›
+      activate_by_mail: Get a code by mail ›
       address1: Address
       address2: Address (optional)
       city: City
@@ -81,8 +81,7 @@ en:
       dob_hint: 'example: 01/17/1964'
       first_name: First name
       last_name: Last name
-      no_alternate_phone_html: 'No phone? No problem: %{link}'
-      other_phone: Other Phone Number
+      no_alternate_phone_html: No eligible phone? <strong>%{link}</strong>
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
@@ -132,14 +131,16 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert: This phone number <strong>must be</strong>
-        description: We're checking records to make sure you are who you say you are,
-          and that you have ownership of your account.
+        alert: "<strong>This phone number must...</strong>"
+        description: We'll check this number with phone bill records.  This is to
+          help verify your identity; we won't use it to call or text you.
+        final_note: "<strong>If you set up a phone for two-factor authentication</strong>,
+          this can be a different number."
         phone_of_record: Phone of record
         rules:
-        - on a phone plan with your name on it
-        - not a virtual phone (such as Google Voice or Skype)
-        - a U.S. number
+        - be on a phone plan with your name on it
+        - not be a virtual phone (such as Google Voice or Skype)
+        - be a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -189,7 +190,7 @@ en:
       review: Review and submit
       select_verification: Choose how to confirm your address
       session:
-        phone: Enter a phone number to help verify your identity
+        phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to encrypt your data
         success: We've verified the information on your state-issued ID.
       sessions: Information about you
