@@ -20,7 +20,7 @@ module Deploy
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      download_from_s3_and_update_permissions('/common/GeoLite2-City.mmdb', geolocation_db_path)
+      download_from_s3_and_update_permissions('/common/GeoIP2-City.mmdb', geolocation_db_path)
       download_from_s3_and_update_permissions('/common/pwned-passwords.txt', pwned_passwords_path)
     end
 
