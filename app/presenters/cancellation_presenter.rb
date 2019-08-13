@@ -4,12 +4,11 @@ class CancellationPresenter < FailurePresenter
 
   delegate :request, to: :view_context
 
-  attr_reader :view_context, :user_session
+  attr_reader :view_context
 
-  def initialize(view_context:, user_session:)
+  def initialize(view_context:)
     super(:warning)
     @view_context = view_context
-    @user_session = user_session
   end
 
   def title
@@ -30,12 +29,6 @@ class CancellationPresenter < FailurePresenter
 
   def go_back_path
     referer_path || two_factor_options_path
-  end
-
-  def display_failure_url
-    return false if user_session.nil?
-    return false if user_session['signing_up']
-    true
   end
 
   private

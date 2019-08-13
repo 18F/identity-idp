@@ -5,8 +5,7 @@ module SignUp
     def new
       properties = ParseControllerFromReferer.new(request.referer).call
       analytics.track_event(Analytics::USER_REGISTRATION_CANCELLATION, properties)
-      @presenter = CancellationPresenter.new(view_context: view_context,
-                                             user_session: user_session)
+      @presenter = CancellationPresenter.new(view_context: view_context)
     end
 
     private

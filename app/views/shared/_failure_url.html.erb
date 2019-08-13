@@ -14,7 +14,7 @@
       <% end %>
     </div>
   </hr><hr/>
-<% else %>
+<% elsif presenter.display_back_to_account? %>
   <%= link_to t('links.back_to_account'), account_url,
               class: 'block btn-link text-decoration-none' %>
 <% end %>
