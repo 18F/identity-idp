@@ -1,9 +1,10 @@
 class NullServiceProvider
-  attr_accessor :issuer
+  attr_accessor :issuer, :friendly_name
   attr_accessor :ial
 
-  def initialize(issuer:)
+  def initialize(issuer:, friendly_name: "Null ServiceProvider")
     @issuer = issuer
+    @friendly_name = friendly_name
   end
 
   def active?
@@ -27,8 +28,6 @@ class NullServiceProvider
   def ssl_cert; end
 
   def logo; end
-
-  def friendly_name; end
 
   def failure_to_proof_url; end
 

@@ -65,3 +65,27 @@
   text-align: center;
   width: 300px;
 }
+
+
+// Temporary Classes for Overriding during design system migration
+
+
+.border-top {
+  border-top: 1px solid $border-color;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $border-color;
+}
+
+.border-light-blue {
+  border-color: $border-color;
+}
+
+.border-green {
+  border-color: #68e380;
+}
+
+.flex-center {
+  justify-content: center;
+}

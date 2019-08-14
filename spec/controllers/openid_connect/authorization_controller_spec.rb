@@ -46,6 +46,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  client_id: client_id,
                  errors: {},
                  user_fully_authenticated: true)
+          expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+
+          IdentityLinker.new(user, client_id).link_identity(ial: 1)
+          user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
           action
         end
@@ -143,6 +147,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  client_id: client_id,
                  errors: hash_including(:prompt),
                  user_fully_authenticated: true)
+          expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
         end
@@ -164,6 +169,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  client_id: nil,
                  errors: hash_including(:client_id),
                  user_fully_authenticated: true)
+          expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
         end

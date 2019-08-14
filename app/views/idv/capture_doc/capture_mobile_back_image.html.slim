@@ -15,7 +15,8 @@ ul
     method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   .clearfix.mxn1
     .sm-col.sm-col-9.px1
-      = f.input :image, label: false, as: 'file', required: true
+      button class='btn btn-secondary' id='take_picture' = t('doc_auth.buttons.take_picture')
+      = f.input :image, label: false, as: 'file', required: true, input_html: {class: 'hidden'}
 
   = render 'idv/doc_auth/error_messages', flow_session: flow_session
 

@@ -22,7 +22,7 @@ class GoogleAnalyticsMeasurement
       request.body = request_body
     end
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
-    NewRelic::Agent.notice_error(err)
+    Rails.logger.error("#{self.class.name} post error: #{err.message}")
   end
 
   private

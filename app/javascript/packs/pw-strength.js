@@ -17,6 +17,13 @@ const scale = {
 // fallback if zxcvbn lookup fails / field is empty
 const fallback = ['pw-na', '...'];
 
+function clearErrors() {
+  const x = document.getElementsByClassName('error-message');
+  if (x.length > 0) {
+    x[0].innerHTML = '';
+  }
+}
+
 function getStrength(z) {
   // override the strength value to 2 if the password is < 12
   if (!(z && z.password.length && z.password.length >= 12)) {
@@ -79,6 +86,7 @@ function analyzePw() {
     pwStrength.innerHTML = strength;
     pwFeedback.innerHTML = feedback;
 
+    clearErrors();
     disableSubmit(submit, z.password.length, z.score);
   }
 

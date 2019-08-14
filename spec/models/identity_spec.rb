@@ -97,17 +97,11 @@ describe Identity do
       expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
     end
 
-    it 'returns service_provider agency if friendly_name is missing' do
-      service_provider.friendly_name = nil
-      service_provider.save
-      expect(identity_with_sp.display_name).to eq(service_provider.agency)
-    end
-
-    it 'returns service_provider issuer if friendly_name and agency are missing' do
-      service_provider.friendly_name = nil
+    it 'returns service_provider friendly_name if agency is missing' do
+      service_provider.friendly_name = "Only Friendly Name"
       service_provider.agency = nil
       service_provider.save
-      expect(identity_with_sp.display_name).to eq(service_provider.issuer)
+      expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
     end
   end
 
@@ -122,37 +116,11 @@ describe Identity do
       expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
     end
 
-    it 'returns service_provider issuer if friendly_name and agency are missing' do
-      service_provider.friendly_name = nil
+    it 'returns service_provider friendly_name if agency is missing' do
+      service_provider.friendly_name = "Only Friendly Name"
       service_provider.agency = nil
       service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.issuer)
-    end
-  end
-
-  describe '#piv_cac_available?' do
-    context 'when sp is configured to support piv/cac' do
-      before(:each) do
-        allow(PivCacService).to receive(:piv_cac_available_for_sp?).with(
-          service_provider, identity_with_sp.user.email_addresses.map(&:email)
-        ).and_return(true)
-      end
-
-      it 'returns truthy' do
-        expect(identity_with_sp.piv_cac_available?).to be_truthy
-      end
-    end
-
-    context 'when sp is not configured to support piv/cac' do
-      before(:each) do
-        allow(PivCacService).to receive(:piv_cac_available_for_sp?).with(
-          service_provider, identity_with_sp.user.email_addresses.map(&:email)
-        ).and_return(false)
-      end
-
-      it 'returns falsey' do
-        expect(identity_with_sp.piv_cac_available?).to be_falsey
-      end
+      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
     end
   end
 

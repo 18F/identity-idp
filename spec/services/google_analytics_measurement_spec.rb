@@ -42,7 +42,7 @@ describe GoogleAnalyticsMeasurement do
       allow(subject.adapter).to receive(:post).
         and_raise(Faraday::ConnectionFailed.new('error'))
 
-      expect(NewRelic::Agent).to receive(:notice_error)
+      expect(Rails.logger).to receive(:error)
       subject.send_event
     end
 
@@ -50,7 +50,7 @@ describe GoogleAnalyticsMeasurement do
       allow(subject.adapter).to receive(:post).
         and_raise(Faraday::TimeoutError.new('error'))
 
-      expect(NewRelic::Agent).to receive(:notice_error)
+      expect(Rails.logger).to receive(:error)
       subject.send_event
     end
   end

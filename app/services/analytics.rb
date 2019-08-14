@@ -67,6 +67,7 @@ class Analytics
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
+  CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
@@ -153,6 +154,7 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
+  SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze

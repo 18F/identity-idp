@@ -22,17 +22,6 @@ describe Idv::PhoneForm do
           expect(result.errors).to be_empty
         end
       end
-
-      context 'when "other" is selected and a phone number is provided' do
-        let(:params) { { phone: 'other', other_phone: '703-555-1212' } }
-
-        it 'returns a successful form response' do
-          expect(result).to be_kind_of(FormResponse)
-          expect(result.success?).to eq(true)
-          expect(result.errors).to be_empty
-          # expect(subject.phone).to eq '+1 703-555-1212'
-        end
-      end
     end
 
     context 'when the form is invalid' do

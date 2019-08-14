@@ -1,0 +1,25 @@
+-title t('cac_proofing.titles.cac_proofing')
+
+h5.my1.caps.bold.accent-blue = t('cac_proofing.step', step: 2)
+br
+h1.h3.my0 = t('cac_proofing.headings.verify')
+
+.mt3.mb2
+  div = "#{t('in_person_proofing.forms.first_name')}: #{flow_session[:pii_from_doc][:first_name]}"
+  div = "#{t('in_person_proofing.forms.last_name')}: #{flow_session[:pii_from_doc][:last_name]}"
+  hr
+  .right = button_to(t('in_person_proofing.buttons.change_address'),
+          idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'btn btn-link')
+  div = "#{t('in_person_proofing.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}"
+  div = "#{t('in_person_proofing.forms.city')}: #{flow_session[:pii_from_doc][:city]}"
+  div = "#{t('in_person_proofing.forms.state')}: #{flow_session[:pii_from_doc][:state]}"
+  div = "#{t('in_person_proofing.forms.zip_code')}: #{flow_session[:pii_from_doc][:zipcode]}"
+  hr
+  .right = button_to(t('in_person_proofing.buttons.change_ssn'),
+    idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'btn btn-link')
+  div = "#{t('in_person_proofing.forms.dob')}: #{flow_session[:pii_from_doc][:dob]}"
+  = "#{t('in_person_proofing.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}"
+  .mt4 = button_to(t('forms.buttons.continue'), url_for, method: :put,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12')
+
+= render 'idv/cac/start_over_or_cancel'

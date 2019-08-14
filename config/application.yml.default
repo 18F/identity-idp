@@ -49,6 +49,9 @@ queue_health_check_frequency_seconds: '30'
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
+# add JSON job configuration names here to disable them from running
+recurring_jobs_disabled_names: '[]'
+
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
 # ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
@@ -77,30 +80,6 @@ usps_download_sftp_timeout: '5'
 usps_upload_sftp_timeout: '5'
 
 google_analytics_timeout: '5'
-
-piv_cac_email_domains: >-
-  [
-    ".eop.gov", ".mil", ".treas.gov", ".dhs.gov",
-    "abilityone.gov", "achp.gov", "acus.gov", "afrh.gov", "arc.gov",
-    "bea.gov", "bis.doc.gov",
-    "census.gov", "cftc.gov", "cigie.gov", "cns.gov",
-    "dhs.gov", ".dhs.gov", "doc.gov", "dol.gov", "dra.gov",
-    "eac.gov", "ed.gov", "eda.gov", "epa.gov",
-    "fbi.gov", "fca.gov", "fcc.gov", "fcsic.gov", "federalreserve.gov", "ferc.gov", "fhfa.gov", "fhfaoig.gov", "fira.gov", "fmc.gov", "fmcs.gov", "fmshrc.gov", "ftc.gov",
-    "gao.gov", "gpo.gov", "gsa.gov",
-    "heritageabroad.gov", ".doe.gov", "hud.gov", "hudoig.gov",
-    "iaf.gov", "ibwc.gov", "imls.gov", "ios.doi.gov",
-    "jusfc.gov", "justice.gov",
-    "macpac.gov", "mail.frtib.gov", "mbda.gov", "mmc.gov",
-    "nara.gov", "nasa.gov", "nbrc.gov", "ncua.gov", "nea.gov", "neh.gov", "nist.gov", "nlrb.gov", "noaa.gov", "nsf.gov", "ntia.doc.gov", "ntis.gov", "ntsb.gov",
-    "oig.doc.gov", "oig.hhs.gov", "opm.gov",
-    "pclob.gov",
-    "restorethegulf.gov",
-    "sba.gov", "sec.gov", "si.edu", "sss.gov", "state.gov", "stateoig.gov",
-    "trade.gov", "truman.gov", "tsp.gov", "tva.gov",
-    "usadf.gov", "uscc.gov", "usccr.gov", "uscirf.gov", "usdoj.gov",
-    "va.gov", "vef.gov"
-  ]
 
 allow_piv_cac_by_email_only: 'true'
 
@@ -202,6 +181,7 @@ development:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: 'development_secret_key_base'
@@ -209,6 +189,7 @@ development:
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   show_user_attribute_deprecation_warnings: 'false'
+  telephony_adapter: 'test'
   telephony_disabled: 'true'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
@@ -217,6 +198,7 @@ development:
   twilio_http_basic_auth_password: '' # https://www.twilio.com/docs/usage/security
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
+  twilio_voice_callback_encryption_key: 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
@@ -226,6 +208,7 @@ development:
   usps_download_sftp_username: 'brady'
   usps_download_sftp_password: 'test'
   usps_download_token: '123ABC'
+  usps_upload_enabled: 'false'
   usps_upload_sftp_directory: '/gsa_order'
   usps_upload_sftp_host: 'localhost'
   usps_upload_sftp_username: 'brady'
@@ -322,6 +305,8 @@ production:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  s3_report_bucket_prefix: 'login-gov.reports'
+  s3_reports_enabled: 'true'
   saml_endpoint_configs:
   scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
   secret_key_base: # generate via `rake secret`
@@ -329,6 +314,7 @@ production:
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
   show_user_attribute_deprecation_warnings: 'false'
+  telephony_adapter: 'twilio'
   twilio_numbers: # Add JSON encoded array of phone numbers
   twilio_sid: # Twilio SID
   twilio_auth_token: # Twilio auth token
@@ -337,6 +323,7 @@ production:
   twilio_messaging_service_sid: # Twilio CoPilot SID
   twilio_record_voice: 'false'
   twilio_verify_api_key: 'change-me'
+  twilio_voice_callback_encryption_key: # Change this
   use_kms: 'true'
   usps_confirmation_max_days: '30'
   enable_load_testing_mode: 'false'
@@ -345,6 +332,7 @@ production:
   usps_download_sftp_username:
   usps_download_sftp_password:
   usps_download_token:
+  usps_upload_enabled: 'false'
   usps_upload_sftp_directory:
   usps_upload_sftp_host:
   usps_upload_sftp_username:
@@ -441,6 +429,7 @@ test:
   recaptcha_enabled_percent: '0'
   recaptcha_site_key: 'key1'
   recaptcha_secret_key: 'key2'
+  recurring_jobs_disabled_names: '["disabled job"]'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_hours_aal_1: '720'
@@ -448,6 +437,7 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
+  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
@@ -455,6 +445,7 @@ test:
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   show_user_attribute_deprecation_warnings: 'false'
+  telephony_adapter: 'test'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
   twilio_auth_token: 'token1'
@@ -463,6 +454,7 @@ test:
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
   twilio_verify_api_key: 'secret'
+  twilio_voice_callback_encryption_key: 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
   use_kms: 'false'
   usps_confirmation_max_days: '10'
   enable_load_testing_mode: 'false'
@@ -471,6 +463,7 @@ test:
   usps_download_sftp_username:
   usps_download_sftp_password:
   usps_download_token: 'test_token'
+  usps_upload_enabled: 'false'
   usps_upload_sftp_directory: '/directory'
   usps_upload_sftp_host: 'example.com'
   usps_upload_sftp_username: 'user'

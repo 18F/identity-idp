@@ -37,7 +37,7 @@ module InPersonHelper
 
   def complete_in_person_steps_before_find_usps_step
     complete_in_person_steps_before_welcome_step
-    click_on t('doc_auth.buttons.get_started')
+    click_on t('in_person_proofing.buttons.get_started')
   end
 
   def complete_in_person_steps_before_usps_list_step

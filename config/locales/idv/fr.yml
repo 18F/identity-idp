@@ -83,7 +83,7 @@ fr:
         warning_2: Vous devrez ressaisir vos informations personnelles, comme votre
           nom, votre numéro d’identification, etc.
     form:
-      activate_by_mail: obtenir un code par courrier à la place ›
+      activate_by_mail: Recevez un code par mail ›
       address1: Adresse
       address2: Adresse (optional)
       city: Ville
@@ -91,8 +91,7 @@ fr:
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: 'Pas de téléphone? aucun problème: %{link}'
-      other_phone: Autre numéro de téléphone
+      no_alternate_phone_html: Pas de téléphone éligible? <strong>%{link}</strong>
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale
@@ -113,7 +112,7 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
-      agencies_login: Vous pouvez maintenant accéder et vous connecter à ces agences.
+      agencies_login: Vous pouvez maintenant continuer à vous connecter à ces agences.
       agency_login_html: Vous pouvez maintenant accéder et vous connecter à <br><strong>%{sp}</strong>.
       cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons recueillir
         quelques informations personnelles de base ainsi que certaines informations
@@ -150,6 +149,8 @@ fr:
         alert: Ce numéro de téléphone <strong>doit être</strong>
         description: Nous vérifions les dossiers pour vous assurer que vous êtes ce
           que vous dites et que vous êtes propriétaire de votre compte.
+        final_note: "<strong>Si vous configurez un téléphone pour l'authentification
+          à deux facteurs</strong>, il peut s'agir d'un numéro différent."
         phone_of_record: numéro de téléphone enregistré
         rules:
         - sur un plan de téléphone avec votre nom dessus
