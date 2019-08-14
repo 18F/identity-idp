@@ -7,12 +7,7 @@
     <div class="mb1 h4">
       <%= t('two_factor_authentication.phone_label') %>:&nbsp;
       <strong><%= @user_phone_form.masked_number %></strong>
-    </div><br/>
-
-    <div style="display:none">
-      <%= f.hidden_field :international_code, :value => @user_phone_form.international_code %>
-      <%= f.hidden_field :phone, :value => @user_phone_form.phone %>
-    </div>
+      </div><br/>
   <% else %>
     <%= render 'users/shared/phone_number_edit', f: f %>
   <% end %>
