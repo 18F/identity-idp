@@ -24,6 +24,7 @@ describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::PivCacSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
       ]
     end
@@ -36,6 +37,7 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SecondPhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
@@ -48,6 +50,7 @@ describe TwoFactorOptionsPresenter do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
@@ -61,6 +64,7 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
       end
@@ -74,6 +78,7 @@ describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
       end
     end

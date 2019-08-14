@@ -450,6 +450,12 @@ module Features
       User.find_with_email(email)
     end
 
+    def confirm_email(email)
+      visit sign_up_email_path
+      submit_form_with_valid_email(email)
+      click_confirmation_link_in_email(email)
+    end
+
     def confirm_email_and_password(email)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
@@ -475,7 +481,6 @@ module Features
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')
-      allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(

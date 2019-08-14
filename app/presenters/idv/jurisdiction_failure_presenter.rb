@@ -37,6 +37,10 @@ module Idv
       []
     end
 
+    def display_back_to_account?
+      true
+    end
+
     private
 
     def i18n_args

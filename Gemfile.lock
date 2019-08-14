@@ -42,8 +42,7 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 70494010f977958434ead1d3eb7e9697bd2c3a76
-  tag: v0.8.0-18f
+  revision: aa22a148b4b4f824c60c33bd0fb3ee67cf067298
   specs:
     saml_idp (0.8.0.pre.18f)
       activesupport
@@ -52,6 +51,17 @@ GIT
       nokogiri (>= 1.6.2)
       pkcs11
       uuid
+
+GIT
+  remote: https://github.com/18f/identity-telephony.git
+  revision: b4e2b8357d7c9a3832521b4153c89e7c5b0b16cb
+  tag: v0.0.3
+  specs:
+    identity-telephony (0.0.3)
+      i18n
+      phonelib
+      twilio-ruby
+      typhoeus
 
 GEM
   remote: https://rubygems.org/
@@ -694,6 +704,7 @@ DEPENDENCIES
   httparty
   i18n-tasks
   identity-hostdata!
+  identity-telephony!
   identity_validations!
   json-jwt
   knapsack

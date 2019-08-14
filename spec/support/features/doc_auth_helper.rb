@@ -26,6 +26,9 @@ module DocAuthHelper
       dob: '10/05/1938',
       ssn: '123',
       phone: '456',
+      state_id_jurisdiction: nil,
+      state_id_number: nil,
+      state_id_type: 'drivers_license',
     }.freeze
 
   def session_from_completed_flow_steps(finished_step)

@@ -76,7 +76,7 @@ es:
         warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
           número de identificación del estado, etc.
     form:
-      activate_by_mail: obtener un código por correo electrónico en su lugar ›
+      activate_by_mail: Obtenga un código por correo ›
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
@@ -84,8 +84,7 @@ es:
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: "¿Sin teléfono? No hay problema %{link}"
-      other_phone: Otro teléfono
+      no_alternate_phone_html: "¿No tienes un teléfono elegible? <strong>%{link}</strong>"
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
@@ -106,7 +105,7 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
       activated_link: Contáctenos
-      agencies_login: Ahora puedes continuar e iniciar sesión en estas agencias.
+      agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
       agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
       cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
         información personal básica, así como su información financiera para completar
@@ -139,6 +138,8 @@ es:
         alert: Este número de teléfono <strong>debe ser</strong>
         description: Verificamos los registros para asegurarnos de que eres quien
           eres, y de que eres el propietario de tu cuenta.
+        final_note: "<strong>Si configura un teléfono para la autenticación de dos
+          factores</strong>, este puede ser un número diferente."
         phone_of_record: Teléfono del registro
         rules:
         - en un plan de teléfono con su nombre en él
@@ -146,7 +147,7 @@ es:
         - no es un número de teléfono prepago
         - un número de EE. UU.
       return_to_profile: "‹ Volver a tu perfil de login.gov"
-      return_to_sp_html: Ahora puedes iniciar sesión en <strong>%{sp}</strong>.
+      return_to_sp_html: Ahora puede iniciar sesión en <strong>%{sp}</strong>.
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
