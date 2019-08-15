@@ -3,6 +3,7 @@ module Users
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
+    before_action :redirect_if_not_phone_owner, only: :edit
 
     def add
       user_session[:phone_id] = nil
@@ -20,13 +21,16 @@ module Users
     end
 
     def edit
-      set_phone_id
+      phone_id = params[:id]
+      #TODO clara @hooper does it make sense to even do this? if !present? user_session[:phone_id] will just be nil
+      user_session[:phone_id] = phone_id if phone_id.present?
+
       # memoized for view
       user_phone_form
     end
 
     def update
-      if user_phone_form.submit(user_params).success? && !already_has_phone?
+      if user_phone_form.submit(user_params, user_session[:phone_id]).success?
         process_updates
         bypass_sign_in current_user
       else
@@ -107,9 +111,9 @@ module Users
       create_user_event(:phone_removed)
     end
 
-    def set_phone_id
-      phone_id = params[:id]
-      user_session[:phone_id] = phone_id if phone_id.present?
+    def redirect_if_not_phone_owner
+      phone_config = MfaContext.new(current_user).phone_configuration(params[:id])
+      redirect_to account_url if phone_config.nil?
     end
   end
 end

@@ -20,10 +20,10 @@ class UserPhoneForm
     self.otp_make_default_number = true if default_phone_configuration?
   end
 
-  def submit(params)
+  def submit(params, phone_id = nil)
     ingest_submitted_params(params)
 
-    success = valid?
+    success =  phone_id || valid?
     self.phone = submitted_phone unless success
 
     revoke_remember_device(user) if success
