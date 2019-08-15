@@ -21,9 +21,7 @@ module Users
     end
 
     def edit
-      phone_id = params[:id]
-      #TODO clara @hooper does it make sense to even do this? if !present? user_session[:phone_id] will just be nil
-      user_session[:phone_id] = phone_id if phone_id.present?
+      user_session[:phone_id] = params[:id]
 
       # memoized for view
       user_phone_form
