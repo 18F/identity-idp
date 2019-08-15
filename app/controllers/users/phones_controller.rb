@@ -28,7 +28,7 @@ module Users
     end
 
     def update
-      if user_phone_form.submit(user_params, user_session[:phone_id]).success?
+      if user_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
       else
