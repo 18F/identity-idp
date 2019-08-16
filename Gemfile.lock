@@ -54,8 +54,8 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: e7d8488495bb9e5239e2ade47869c9971aec113e
-  tag: v0.0.4
+  revision: 0361b782da46f4dd3caab8cb67144029ce4174ca
+  branch: jmhooper-add-alerts
   specs:
     identity-telephony (0.0.4)
       i18n

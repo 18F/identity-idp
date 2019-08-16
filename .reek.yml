@@ -168,7 +168,6 @@ detectors:
       - LocaleHelper#locale_url_param
       - IdvSession#timed_out_vendor_error
       - JWT::Signature#sign
-      - SmsAccountResetCancellationNotifierJob#perform
 directories:
   'app/controllers':
     InstanceVariableAssumption:

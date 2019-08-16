@@ -25,14 +25,12 @@ describe AccountReset::Cancel do
 
       it 'notifies the user via SMS of the account reset cancellation' do
         token = create_account_reset_request_for(user)
-        allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
+        allow(Telephony).to receive(:perform_now)
 
         AccountReset::Cancel.new(token).call
 
-        expect(
-          SmsAccountResetCancellationNotifierJob,
-        ).to have_received(:perform_now).with(
-          phone: MfaContext.new(user).phone_configurations.first.phone,
+        expect(Telephony::Test::Message.messages.last.body).to eq(
+          I18n.t('account_reset_cancellation_notice'),
         )
       end
     end
@@ -40,12 +38,11 @@ describe AccountReset::Cancel do
     context 'when the user does not have a phone enabled for SMS' do
       it 'does not notify the user via SMS' do
         token = create_account_reset_request_for(user)
-        allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
         MfaContext.new(user).phone_configurations.clear
 
         AccountReset::Cancel.new(token).call
 
-        expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
+        expect(Telephony::Test::Message.messages.length).to eq(0)
       end
     end
 
@@ -78,22 +75,19 @@ describe AccountReset::Cancel do
   context 'when the token is not valid' do
     context 'when the user has a phone enabled for SMS' do
       it 'does not notify the user via SMS of the account reset cancellation' do
-        allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
-
         AccountReset::Cancel.new('foo').call
 
-        expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
+        expect(Telephony::Test::Message.messages.length).to eq(0)
       end
     end
 
     context 'when the user does not have a phone enabled for SMS' do
       it 'does not notify the user via SMS' do
-        allow(SmsAccountResetCancellationNotifierJob).to receive(:perform_now)
         MfaContext.new(user).phone_configurations.first.update!(mfa_enabled: false)
 
         AccountReset::Cancel.new('foo').call
 
-        expect(SmsAccountResetCancellationNotifierJob).to_not have_received(:perform_now)
+        expect(Telephony::Test::Message.messages.length).to eq(0)
       end
     end
 
