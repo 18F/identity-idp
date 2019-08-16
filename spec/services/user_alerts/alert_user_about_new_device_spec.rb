@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe UserAlerts::AlertUserAboutNewDevice do
   describe '#call' do
-    let(:user) { create(:user, phone_configurations: phone_configurations) }
+    let(:user) { create(:user, :signed_up) }
     let(:disavowal_token) { 'the_disavowal_token' }
     let(:device) { create(:device, user: user) }
 
