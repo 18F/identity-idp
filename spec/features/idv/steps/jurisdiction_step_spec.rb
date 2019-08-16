@@ -17,6 +17,7 @@ feature 'idv jurisdiction step' do
     context 'and selecting a supported jurisdiction' do
       it 'allows the user to continue to the profile step' do
         select 'Virginia', from: 'jurisdiction_state'
+        page.find('#jurisdiction_ial2_consent_given').click
         click_idv_continue
 
         expect(page).to have_current_path(idv_session_path)
@@ -27,6 +28,7 @@ feature 'idv jurisdiction step' do
     context 'and selecting an unsupported jurisdiction' do
       it 'fails the user' do
         select 'Alabama', from: 'jurisdiction_state'
+        page.find('#jurisdiction_ial2_consent_given').click
         click_idv_continue
 
         expect(page).
@@ -41,6 +43,22 @@ feature 'idv jurisdiction step' do
 
         expect(page).to have_current_path(idv_jurisdiction_failure_path(reason: :no_id))
         expect(page).to have_content(t('idv.titles.no_id'))
+      end
+    end
+
+    describe 'data sharing consent' do
+      it 'requires the user to consent to advance' do
+        select 'Virginia', from: 'jurisdiction_state'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_jurisdiction_path)
+        expect(page).to have_content(t('errors.doc_auth.consent_form'))
+
+        page.find('#jurisdiction_ial2_consent_given').click
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_session_path)
+        expect(page).to_not have_content(t('errors.doc_auth.consent_form'))
       end
     end
   end

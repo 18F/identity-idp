@@ -1,36 +1,34 @@
+require 'login_gov/hostdata'
+
 module Reports
-  class OmbFitaraReport
+  class OmbFitaraReport < BaseReport
+    OLDEST_TIMESTAMP = '2016-01-01 00:00:00'.freeze
     MOST_RECENT_MONTHS_COUNT = 2
-    S3_BUCKET = Figaro.env.omb_fitara_bucket
-    S3_FILENAME = Figaro.env.omb_fitara_filename
+    REPORT_NAME = 'omb-fitara-report'.freeze
 
     def call
-      body = results_json
-      if Rails.env.production? && S3_FILENAME
-        Aws::S3::Resource.new.bucket(S3_BUCKET).object(S3_FILENAME).put(
-          body: results_json, acl: 'private', content_type: 'application/json',
-        )
+      results = transaction_with_timeout do
+        report_hash
       end
-      body
+      save_report(REPORT_NAME, results.to_json)
     end
 
     private
 
-    def results_json
+    def report_hash
       month, year = current_month
       counts = []
       MOST_RECENT_MONTHS_COUNT.times do
         counts << { month: "#{year}#{format('%02d', month)}", count: count_for_month(month, year) }
         month, year = previous_month(month, year)
       end
-      { counts: counts }.to_json
+      { counts: counts }
     end
 
     def count_for_month(month, year)
-      start = "#{year}-#{month}-01 00:00:00"
       month, year = next_month(month, year)
       finish = "#{year}-#{month}-01 00:00:00"
-      Funnel::Registration::RangeRegisteredCount.call(start, finish)
+      Funnel::Registration::RangeRegisteredCount.call(OLDEST_TIMESTAMP, finish)
     end
 
     def current_month

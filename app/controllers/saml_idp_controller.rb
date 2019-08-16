@@ -75,6 +75,7 @@ class SamlIdpController < ApplicationController
   end
 
   def handle_successful_handoff
+    analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
     delete_branded_experience
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end

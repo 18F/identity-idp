@@ -27,6 +27,6 @@ feature 'recovery doc fail step' do
 
     click_idv_continue
 
-    expect(page).to have_current_path(idv_recovery_upload_step)
+    expect(page).to have_current_path(idv_recovery_overview_step)
   end
 end

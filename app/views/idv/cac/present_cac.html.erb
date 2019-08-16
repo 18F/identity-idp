@@ -1,0 +1,17 @@
+<%= simple_form_for(:cac, url: url_for, method: 'PUT',
+                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+
+  <h5 class="my1 caps bold accent-blue"><%= t('cac_proofing.step', step: 1) %></h5>
+    <h1 class="h3 my0"><%= t('cac_proofing.headings.present_cac') %></h1>
+    <div class="no-spinner">
+      <p class="mt-tiny mb3">
+        <%= t('cac_proofing.info.present_cac') %></p>
+    </div>
+
+
+  <div>
+    <%= link_to t('forms.buttons.cac'), redirect_to_piv_cac_service_url, class:"btn btn-primary" %>
+  </div>
+<% end %>
+
+<%= render 'idv/cac/start_over_or_cancel' %>

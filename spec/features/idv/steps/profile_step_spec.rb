@@ -14,6 +14,7 @@ feature 'idv profile step' do
       abbrev = 'WA'
       state = 'Washington'
       select state, from: 'jurisdiction_state'
+      page.find('label[for=jurisdiction_ial2_consent_given]').click
       click_idv_continue
 
       expect(page).to have_selector("option[selected='selected'][value='#{abbrev}']")

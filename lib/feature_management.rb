@@ -20,10 +20,6 @@ class FeatureManagement
       !env.piv_cac_verify_token_url
   end
 
-  def self.allow_piv_cac_by_email_only?
-    Figaro.env.allow_piv_cac_by_email_only == 'true'
-  end
-
   def self.allow_piv_cac_login?
     Figaro.env.login_with_piv_cac == 'true'
   end
@@ -120,5 +116,9 @@ class FeatureManagement
 
   def self.in_person_proofing_enabled?
     Figaro.env.in_person_proofing_enabled == 'true'
+  end
+
+  def self.usps_upload_enabled?
+    Figaro.env.usps_upload_enabled == 'true'
   end
 end

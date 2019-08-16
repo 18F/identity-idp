@@ -77,8 +77,8 @@ Dir.chdir APP_ROOT do
   run 'bin/rake parallel:setup'
 
   puts "\n== Cleaning up old assets =="
-  run "rake assets:clobber"
-  run "RAILS_ENV=test rake assets:clobber"
+  run "bin/rake assets:clobber"
+  run "RAILS_ENV=test bin/rake assets:clobber"
 
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"

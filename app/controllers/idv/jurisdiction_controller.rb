@@ -19,6 +19,8 @@ module Idv
 
       if result.success?
         redirect_to idv_session_url
+      elsif ial2_consent_missing?
+        handle_missing_ial2_consent
       else
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
@@ -52,6 +54,15 @@ module Idv
                     include? selected_jurisdiction
 
       redirect_to idv_session_url unless selected_jurisdiction.nil?
+    end
+
+    def ial2_consent_missing?
+      !@jurisdiction_form.ial2_consent_given?
+    end
+
+    def handle_missing_ial2_consent
+      idv_session.selected_jurisdiction = nil
+      render :new
     end
 
     def failure_url(reason)

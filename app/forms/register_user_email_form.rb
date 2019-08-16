@@ -66,6 +66,7 @@ class RegisterUserEmailForm
   def process_successful_submission(request_id, instructions)
     self.success = true
     user.save!
+    Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(request_id: request_id, instructions: instructions)
   end
 

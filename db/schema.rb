@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725211433) do
+ActiveRecord::Schema.define(version: 20190805215030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,14 @@ ActiveRecord::Schema.define(version: 20190725211433) do
     t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
     t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
     t.index ["job_name"], name: "index_job_runs_on_job_name"
+  end
+
+  create_table "monthly_auth_counts", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.string "year_month", null: false
+    t.integer "user_id", null: false
+    t.integer "auth_count", default: 1, null: false
+    t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
   end
 
   create_table "otp_requests_trackers", force: :cascade do |t|

@@ -28,21 +28,6 @@ module PivCacService
       Figaro.env.piv_cac_verify_token_url
     end
 
-    def piv_cac_available_for_sp?(sp, emails = [])
-      sp.piv_cac? || sp.piv_cac_scoped_by_email? && piv_cac_available_for_email?(emails)
-    end
-
-    def piv_cac_available_for_email?(emails)
-      return unless emails.any?
-
-      piv_cac_email_domains = Figaro.env.piv_cac_email_domains || '[]'
-      supported_domains = JSON.parse(piv_cac_email_domains)
-
-      email_domains = emails.map { |email| email.split(/@/, 2).last }
-
-      emails_match_domains?(email_domains, supported_domains)
-    end
-
     private
 
     def emails_match_domains?(email_domains, supported_domains)
