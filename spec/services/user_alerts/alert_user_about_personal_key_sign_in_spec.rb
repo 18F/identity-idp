@@ -14,7 +14,7 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
       ]
 
       allow(UserMailer).to receive(:personal_key_sign_in).and_call_original
-      allow(SmsPersonalKeySignInNotifierJob).to receive(:perform_now)
+      allow(Telephony).to receive(:send_personal_key_sign_in_notice)
 
       described_class.call(user, disavowal_token)
 
@@ -23,9 +23,9 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
         with(confirmed_email_addresses[0].email, disavowal_token: disavowal_token)
       expect(UserMailer).to have_received(:personal_key_sign_in).
         with(confirmed_email_addresses[1].email, disavowal_token: disavowal_token)
-      expect(SmsPersonalKeySignInNotifierJob).to have_received(:perform_now).
+      expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
         with(phone: phone_configurations[0].phone)
-      expect(SmsPersonalKeySignInNotifierJob).to have_received(:perform_now).
+      expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
         with(phone: phone_configurations[1].phone)
     end
   end

@@ -163,7 +163,6 @@ detectors:
       - SessionTimeoutWarningHelper#start
       - SessionTimeoutWarningHelper#warning
       - SessionDecorator
-      - SmsDocAuthLinkJob#perform
       - UserEncryptedAttributeOverrides#create_fingerprint
       - LocaleHelper#locale_url_param
       - IdvSession#timed_out_vendor_error
