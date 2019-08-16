@@ -71,6 +71,7 @@ RSpec.configure do |config|
     Twilio::FakeMessage.messages = []
     Twilio::FakeCall.calls = []
     Telephony::Test::Call.clear_calls
+    Telephony::Test::Message.clear_messages
   end
 
   config.around(:each, user_flow: true) do |example|
