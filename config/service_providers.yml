@@ -1159,3 +1159,8 @@ production:
       - 'email'
     restrict_to_deploy_env: 'prod'
 
+  'default_alert_sp_issuers':
+    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS'
+    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam'
+    - 'urn:gov:gsa:openidconnect:profiles:sp:sso:cnic:HOMES'
+    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1'

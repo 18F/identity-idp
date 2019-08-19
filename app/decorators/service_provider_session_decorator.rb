@@ -3,17 +3,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   include Rails.application.routes.url_helpers
 
   DEFAULT_LOGO = 'generic.svg'.freeze
-  CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs',
-                           'FMCSA National Registry'].freeze
-  CUSTOM_ALERT_SP_ISSUERS = %w(urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local
-                               urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp
-                               urn:gov:gsa:SAML:2.0.profiles:sp:sso:FMCSANationalRegistryProdSAML:FMCSANationalRegistryProdApp
-                               urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard).freeze
-  DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
-  DEFAULT_ALERT_SP_ISSUERS = %w(urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS
-                                urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam
-                                urn:gov:gsa:openidconnect:profiles:sp:sso:cnic:HOMES
-                                urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1).freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
@@ -27,9 +16,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    if custom_alert?
-      sp.help_text["#{section}"] % args if Rails.env != 'production'
-      t( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}") if Rails.env == 'production'
+    if custom_alert?(section) && Rails.env == 'production'
+      t( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}") % args if Rails.env == 'production'
+    elsif custom_alert?(section) && Rails.env != 'production'
+      sp.help_text[section][I18n.locale.to_s] % args if Rails.env != 'production'
     else
       t("service_providers.help_texts.default.#{section}", args)
     end
@@ -117,11 +107,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_alert?(path)
-    custom_alert? ? alert_included_for_path?(path) : default_alert?
-  end
-
-  def sp_alert_learn_more
-    custom_alert? ? CUSTOM_SP_ALERTS.dig(sp_name, :learn_more) : 'https://login.gov/help/'
+    alert_included_for_path?(path) || default_alert?
   end
 
   # :reek:DuplicateMethodCall
@@ -145,21 +131,26 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.ial || 1
   end
 
-  def custom_alert?
-    CUSTOM_ALERT_SP_ISSUERS.include?(sp.issuer)
+  def custom_alert?(section)
+    if Rails.env == 'production'
+      I18n.exists?( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}")
+    else
+      sp.help_text[section][I18n.locale.to_s].present?
+    end
   end
 
   def default_alert?
-    DEFAULT_ALERT_SP_ISSUERS.include?(sp.issuer)
+    return unless SP_CONFIG['default_alert_sp_issuers']
+    SP_CONFIG['default_alert_sp_issuers'].include?(sp.issuer)
   end
 
   def alert_included_for_path?(path)
     if path == new_user_session_path
-      !sp.help_text.sign_in.blank?
+      custom_alert?('sign_in')
     elsif path == sign_up_email_path
-      !sp.help_text.sign_up.blank?
+      custom_alert?('sign_up')
     else
-      !sp.help_text.forgot_password.blank?
+      custom_alert?('forgot_password')
     end
   end
 

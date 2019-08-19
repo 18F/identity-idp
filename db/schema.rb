@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190812151104) do
+ActiveRecord::Schema.define(version: 20190808192157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,18 +143,13 @@ ActiveRecord::Schema.define(version: 20190812151104) do
   end
 
   create_table "help_texts", force: :cascade do |t|
-    t.string "sign_in"
-    t.string "sign_up"
-    t.string "forgot_password"
-    t.integer "service_provider_id"
+    t.bigint "service_provider_id"
+    t.json "sign_in", default: {}
+    t.json "sign_up", default: {}
+    t.json "forgot_password", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "sign_in_es"
-    t.string "sign_up_es"
-    t.string "forgot_password_es"
-    t.string "sign_in_fr"
-    t.string "sign_up_fr"
-    t.string "forgot_password_fr"
+    t.index ["service_provider_id"], name: "index_help_texts_on_service_provider_id"
   end
 
   create_table "identities", force: :cascade do |t|

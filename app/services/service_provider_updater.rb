@@ -1,9 +1,16 @@
 # Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
-  PROTECTED_ATTRIBUTES = %i[
+  SP_PROTECTED_ATTRIBUTES = %i[
     created_at
     id
-    native
+    nativeqq
+    updated_at
+  ].to_set.freeze
+
+  HT_PROTECTED_ATTRIBUTES = %i[
+    id
+    created_at
+    service_provider_id
     updated_at
   ].to_set.freeze
 
@@ -38,13 +45,14 @@ class ServiceProviderUpdater
     if sp.is_a?(NullServiceProvider)
       ServiceProvider.create!(cleaned_attributes)
     else
-      sp.attributes = cleaned_attributes
+      sp.attributes = cleaned_attributes.except('help_text')
       sp.save!
+      sp.help_text.update_attributes(cleaned_attributes['help_text'].except(*HT_PROTECTED_ATTRIBUTES))
     end
   end
 
   def cleaned_service_provider(service_provider)
-    service_provider.except(*PROTECTED_ATTRIBUTES)
+    service_provider.except(*SP_PROTECTED_ATTRIBUTES)
   end
 
   def url
