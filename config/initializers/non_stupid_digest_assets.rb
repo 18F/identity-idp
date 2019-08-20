@@ -1,5 +1,5 @@
 # This code was grabbed from this issue: code taken from: https://github.com/alexspeller/non-stupid-digest-assets/issues/48
-# rubocop:disable
+# rubocop:disable all
 
 module NonStupidDigestAssets
   mattr_accessor :whitelist
@@ -62,4 +62,4 @@ module Sprockets
   end
 end
 
-# rubocop:enable
+# rubocop:enable all
