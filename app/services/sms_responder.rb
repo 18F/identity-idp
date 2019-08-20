@@ -3,7 +3,7 @@ class SmsResponder
 
   JOIN_KEYWORDS = %w[join].freeze
   HELP_KEYWORDS = %w[help].freeze
-  STOP_KEYWORDS = %w[stop cancel end quit unsubscribe]
+  STOP_KEYWORDS = %w[stop cancel end quit unsubscribe].freeze
 
   def initialize(url, params, signature)
     @url = url
