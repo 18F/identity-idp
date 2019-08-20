@@ -4,10 +4,11 @@ module SignUp
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
+    before_action :proceed_if_valid_token
 
     def new
       password_form # Memoize the password form to use in the view
-      validate_token
+      process_confirmation
     end
 
     def create
