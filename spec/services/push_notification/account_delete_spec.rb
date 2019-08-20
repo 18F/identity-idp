@@ -16,7 +16,13 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        "subject"=> {
+          "subject_type"=>"iss-sub",
+          "iss"=>"urn:gov:gsa:openidconnect:test",
+          "sub"=>"1234"
+        }
+      },
     )
 
     subject.call(user_id)
@@ -32,13 +38,25 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        "subject"=> {
+          "subject_type"=>"iss-sub",
+          "iss"=>"urn:gov:gsa:openidconnect:test",
+          "sub"=>"1234"
+        }
+      },
     )
 
     request2 = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url2,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        "subject"=> {
+          "subject_type"=>"iss-sub",
+          "iss"=>"urn:gov:gsa:openidconnect:test:loa1",
+          "sub"=>"1234"
+        }
+      },
     )
 
     subject.call(user_id)
@@ -58,13 +76,19 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: { "subject"=> {
+                   "subject_type"=>"iss-sub",
+                   "iss"=>"urn:gov:gsa:openidconnect:test",
+                   "sub"=>"1234"}},
     )
 
     request2 = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url2,
       topic: 'account_delete',
-      payload: { 'uuid' => '4567' },
+      payload: { "subject"=> {
+                   "subject_type"=>"iss-sub",
+                   "iss"=>"urn:gov:gsa:openidconnect:test:loa1",
+                   "sub"=>"4567"}},
     )
 
     subject.call(user_id)
