@@ -5,7 +5,7 @@ require 'rails_helper'
 # user data from being logged.
 describe ActiveJob::Logging::LogSubscriber do
   it 'overrides the default job logger to output only specified parameters in JSON format' do
-    class FakeJob < ApplicationJob
+    class FakeJob < ActiveJob::Base
       def perform(sensitive_param:); end
     end
 
