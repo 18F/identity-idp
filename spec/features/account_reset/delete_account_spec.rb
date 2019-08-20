@@ -86,10 +86,13 @@ describe 'Account Reset Request: Delete Account', email: true do
         request = stub_push_notification_request(
           sp_push_notification_endpoint: push_notification_url,
           topic: 'account_delete',
-          payload: { "subject"=> {
-                       "subject_type"=>"iss-sub",
-                       "iss"=>"urn:gov:gsa:openidconnect:test",
-                       "sub"=>"1234"}},
+          payload: {
+            'subject' => {
+              'subject_type' => 'iss-sub',
+              'iss' => 'urn:gov:gsa:openidconnect:test',
+              'sub' => '1234',
+            },
+          },
         )
 
         AccountReset::GrantRequestsAndSendEmails.new.call

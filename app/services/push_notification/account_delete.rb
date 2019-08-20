@@ -14,7 +14,10 @@ module PushNotification
       push_notification_sps.each do |sp|
         agency_id = sp.agency_id
         next unless agency_ids.index(agency_id)
-        push_notify(sp, agency_id_to_uuid_hash[agency_id], agency_id)
+        push_notify(sp.issuer,
+                    sp.push_notification_url,
+                    agency_id_to_uuid_hash[agency_id],
+                    agency_id)
       end
     end
 
@@ -30,9 +33,9 @@ module PushNotification
       ServiceProvider.all.where("push_notification_url is NOT NULL and push_notification_url!=''")
     end
 
-    def push_notify(service_provider, uuid, agency_id)
-      payload = build_payload(service_provider, uuid)
-      result = post_to_push_notification_url(service_provider.push_notification_url, payload)
+    def push_notify(issuer, push_notification_url, uuid, agency_id)
+      payload = build_payload(issuer, push_notification_url, uuid)
+      result = post_to_push_notification_url(push_notification_url, payload)
       handle_failure("status=#{result.status}", agency_id, uuid) unless result.success?
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
       handle_failure(exception.message, agency_id, uuid)
@@ -40,18 +43,27 @@ module PushNotification
 
     # Payload format per
     # https://openid.net/specs/openid-risc-event-types-1_0-ID1.html#account-purged
-    def build_payload(service_provider, uuid)
-      iat = Time.now.to_i
-      { iss: Rails.application.routes.url_helpers.root_url,
+    # rubocop:disable Metrics/MethodLength
+    def build_payload(issuer, push_notification_url, uuid)
+      iat = Time.zone.now.to_i
+      {
+        iss: Rails.application.routes.url_helpers.root_url,
         iat: iat,
         exp: iat + 12.hours.to_i,
         jti: jti(iat),
-        aud: service_provider.push_notification_url,
-        events: { EVENT_TYPE_URI => { subject: {
-              subject_type: "iss-sub",
-              iss: service_provider.issuer,
-              sub: uuid }}}}
+        aud: push_notification_url,
+        events: {
+          EVENT_TYPE_URI => {
+            subject: {
+              subject_type: 'iss-sub',
+              iss: issuer,
+              sub: uuid,
+            },
+          },
+        },
+      }
     end
+    # rubocop:enable Metrics/MethodLength
 
     # :reek:FeatureEnvy
     def post_to_push_notification_url(push_to_url, payload)
@@ -72,7 +84,7 @@ module PushNotification
 
     def jti(iat)
       jti_raw = [RequestKeyManager.public_key, iat].join(':').to_s
-      jti = Digest::MD5.hexdigest(jti_raw)
+      Digest::MD5.hexdigest(jti_raw)
     end
 
     def handle_failure(message, agency_id, uuid)

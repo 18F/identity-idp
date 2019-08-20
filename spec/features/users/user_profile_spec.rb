@@ -51,11 +51,11 @@ feature 'User profile' do
         sp_push_notification_endpoint: push_notification_url,
         topic: 'account_delete',
         payload: {
-          "subject"=> {
-            "subject_type"=>"iss-sub",
-            "iss"=>"urn:gov:gsa:openidconnect:test",
-            "sub"=>"1234"
-          }
+          'subject' => {
+            'subject_type' => 'iss-sub',
+            'iss' => 'urn:gov:gsa:openidconnect:test',
+            'sub' => '1234',
+          },
         },
       )
 
