@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe SignUp::RegistrationsController, devise: true do
   include Features::MailerHelper
-  include Features::ActiveJobHelper
 
   describe '#new' do
     it 'allows user to visit the sign up page' do
