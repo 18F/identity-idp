@@ -1,3 +1,6 @@
+# This code was grabbed from this issue: code taken from: https://github.com/alexspeller/non-stupid-digest-assets/issues/48
+# rubocop:disable
+
 module NonStupidDigestAssets
   mattr_accessor :whitelist
   @@whitelist = []
@@ -58,3 +61,5 @@ module Sprockets
     prepend NonDigest
   end
 end
+
+# rubocop:enable
