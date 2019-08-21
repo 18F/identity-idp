@@ -2,7 +2,7 @@ module TwoFactorAuthentication
   class BackupCodeSelectionPresenter < SelectionPresenter
     def initialize(user)
       @user = user
-      super(user&.backup_code_configurations&.first)
+      super(user&.backup_code_configurations&.take)
     end
 
     def method
