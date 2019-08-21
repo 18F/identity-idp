@@ -36,7 +36,10 @@ module PushNotification
     def push_notify(issuer, push_notification_url, uuid, agency_id)
       payload = build_payload(issuer, push_notification_url, uuid)
       result = post_to_push_notification_url(push_notification_url, payload)
-      raise PushNotification::PushNotificationError.new("status=#{result.status}") unless result.success?
+      unless result.success?
+        raise(PushNotification::PushNotificationError,
+              "status=#{result.status}")
+      end
     rescue Faraday::TimeoutError,
            Faraday::ConnectionFailed,
            PushNotification::PushNotificationError => exception

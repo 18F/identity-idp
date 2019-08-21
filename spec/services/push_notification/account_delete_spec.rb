@@ -130,7 +130,6 @@ describe PushNotification::AccountDelete do
   end
 
   it 'writes to NewRelic on bad status' do
-    error = PushNotification::PushNotificationError.new("status=400")
     allow_any_instance_of(PushNotification::AccountDelete).
       to receive(:post_to_push_notification_url).and_return(Faraday::Response.new(status: 400))
 
