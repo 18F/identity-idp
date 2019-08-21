@@ -22,7 +22,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     'The FMCSA Drug & Alcohol Clearinghouse' => {
       i18n_name: 'fmcsa_drug_alcohol_clearinghouse',
       exclude_paths: ['/es', '/fr'],
-    }
+    },
   }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
@@ -34,15 +34,17 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   delegate :redirect_uris, to: :sp, prefix: true
 
+  # :reek:DuplicateMethodCall
+  # rubocop:disable Style/StringLiterals, Metrics/LineLength, Rails/OutputSafety
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-
     return t("service_providers.#{sp_alert_name}.#{section}", args).html_safe if sp.friendly_name == "The FMCSA Drug & Alcohol Clearinghouse" && custom_alert?
     return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
 
     t("service_providers.default.#{section}", args)
   end
+  # rubocop:enable Style/StringLiterals, Metrics/LineLength, Rails/OutputSafety
 
   def sp_logo
     sp.logo || DEFAULT_LOGO
@@ -148,7 +150,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def exclude_learn_more?
-    sp.friendly_name == "The FMCSA Drug & Alcohol Clearinghouse"
+    sp.friendly_name == 'The FMCSA Drug & Alcohol Clearinghouse'
   end
 
   private
