@@ -3,7 +3,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   DEFAULT_LOGO = 'generic.svg'.freeze
   CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs',
-                           'FMCSA National Registry'].freeze
+                           'FMCSA National Registry',
+                           'The FMCSA Drug & Alcohol Clearinghouse'].freeze
   DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
 
   # These are SPs that are migrating users and require special help messages
@@ -18,6 +19,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
       learn_more: 'https://login.gov/help/',
       exclude_paths: ['/es', '/fr'],
     },
+    'The FMCSA Drug & Alcohol Clearinghouse' => {
+      i18n_name: 'fmcsa_drug_alcohol_clearinghouse',
+      exclude_paths: ['/es', '/fr'],
+    }
   }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
@@ -32,6 +37,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
+
+    return t("service_providers.#{sp_alert_name}.#{section}", args).html_safe if sp.friendly_name == "The FMCSA Drug & Alcohol Clearinghouse" && custom_alert?
     return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
 
     t("service_providers.default.#{section}", args)
@@ -138,6 +145,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
     aal_1_expiration
+  end
+
+  def exclude_learn_more?
+    sp.friendly_name == "The FMCSA Drug & Alcohol Clearinghouse"
   end
 
   private
