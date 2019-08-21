@@ -26,7 +26,7 @@ describe 'Device tracking' do
     it 'renders a 404 error' do
       visit account_events_path(id: 'dne')
 
-      expect(page).to have_content(t('pages.page_not_found.header'))
+      expect(page.status_code).to eq 404
     end
   end
 end
