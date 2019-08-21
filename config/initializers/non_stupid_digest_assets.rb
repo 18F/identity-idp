@@ -1,6 +1,7 @@
 # This code was grabbed from this issue: code taken from: https://github.com/alexspeller/non-stupid-digest-assets/issues/48
 # rubocop:disable all
 
+# :reek:ClassVariable
 module NonStupidDigestAssets
   mattr_accessor :whitelist
   @@whitelist = []
@@ -13,6 +14,8 @@ module NonStupidDigestAssets
 
     private
 
+    # :reek:DuplicateMethodCall
+    # :reek:NestedIterators
     def whitelisted_files(files)
       files.select do |file, info|
         whitelist.any? do |item|
@@ -29,6 +32,7 @@ module NonStupidDigestAssets
 end
 
 module NonDigest
+  # :reek:TooManyStatements
   def compile *args
     super *args
 
