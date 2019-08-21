@@ -98,10 +98,6 @@ class FeatureManagement
     Figaro.env.doc_auth_exclusive == 'true'
   end
 
-  def self.send_new_device_sms?
-    Figaro.env.send_new_device_sms == 'true'
-  end
-
   def self.disallow_ial2_recovery?
     Figaro.env.disallow_ial2_recovery == 'true'
   end
