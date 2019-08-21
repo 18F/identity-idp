@@ -36,9 +36,11 @@ module PushNotification
     def push_notify(issuer, push_notification_url, uuid, agency_id)
       payload = build_payload(issuer, push_notification_url, uuid)
       result = post_to_push_notification_url(push_notification_url, payload)
-      handle_failure("status=#{result.status}", agency_id, uuid) unless result.success?
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
-      handle_failure(exception.message, agency_id, uuid)
+      raise PushNotification::PushNotificationError.new("status=#{result.status}") unless result.success?
+    rescue Faraday::TimeoutError,
+           Faraday::ConnectionFailed,
+           PushNotification::PushNotificationError => exception
+      handle_failure(exception, agency_id, uuid)
     end
 
     # Payload format per
@@ -87,9 +89,10 @@ module PushNotification
       Digest::MD5.hexdigest(jti_raw)
     end
 
-    def handle_failure(message, agency_id, uuid)
-      Rails.logger.error "Push message failed #{message}"
+    def handle_failure(exception, agency_id, uuid)
+      Rails.logger.error "Push message failed #{exception.message}"
       PushAccountDelete.create(created_at: Time.zone.now, agency_id: agency_id, uuid: uuid)
+      NewRelic::Agent.notice_error(exception)
     end
 
     def faraday_adapter(url)

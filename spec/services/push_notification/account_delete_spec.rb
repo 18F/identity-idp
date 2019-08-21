@@ -128,4 +128,23 @@ describe PushNotification::AccountDelete do
     expect(push_account_delete.agency_id).to eq(1)
     expect(push_account_delete.created_at).to be_present
   end
+
+  it 'writes to NewRelic on bad status' do
+    error = PushNotification::PushNotificationError.new("status=400")
+    allow_any_instance_of(PushNotification::AccountDelete).
+      to receive(:post_to_push_notification_url).and_return(Faraday::Response.new(status: 400))
+
+    expect(NewRelic::Agent).to receive(:notice_error).
+      with(instance_of(PushNotification::PushNotificationError))
+    subject.call(user_id)
+  end
+
+  it 'writes to NewRelic on conection errors' do
+    error = Faraday::ConnectionFailed.new('error')
+    allow_any_instance_of(PushNotification::AccountDelete).
+      to receive(:post_to_push_notification_url).and_raise(error)
+
+    expect(NewRelic::Agent).to receive(:notice_error).with(error)
+    subject.call(user_id)
+  end
 end
