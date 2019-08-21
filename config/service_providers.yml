@@ -1143,3 +1143,30 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # RRB - myRRB
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:myRRB':
+    friendly_name: 'myRRB'
+    agency: 'RRB'
+    agency_id: 4
+    logo: 'rrb_myrrb.svg'
+    cert: 'rrb_myrrb_prod'
+    ial: 2
+    return_to_sp_url: 'https://rrb.rrb.gov/Benefits/myRRB'
+    redirect_uris:
+      - 'https://secure.rrb.gov/myRRB/Account/SignInCallback'
+    failure_to_proof_url: 'https://rrb.rrb.gov/Benefits/myRRB/AccountSupport'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - dob
+      - ssn
+      - phone
+    restrict_to_deploy_env: 'prod'
