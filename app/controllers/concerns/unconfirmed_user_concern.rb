@@ -29,7 +29,7 @@ module UnconfirmedUserConcern
   end
 
   def proceed_if_valid_token
-    process_unsuccessful_confirmation unless @email_address.blank?
+    process_unsuccessful_confirmation if @email_address.blank?
   end
 
   def process_confirmation

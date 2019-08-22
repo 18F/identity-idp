@@ -108,6 +108,7 @@ module Features
 
     def sign_up_and_set_password
       user = sign_up
+      print page.body
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
@@ -181,6 +182,7 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
+      print page.body
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
