@@ -8,7 +8,7 @@ module UnconfirmedUserConcern
   end
 
   def confirm_user_needs_sign_up_confirmation
-    return unless @user&.confirmed?
+    return unless !@user&.confirmed?
     process_already_confirmed_user
   end
 
@@ -28,8 +28,16 @@ module UnconfirmedUserConcern
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
   end
 
-  def proceed_if_valid_token
-    process_unsuccessful_confirmation if @email_address.blank?
+  def stop_if_invalid_token
+    if @email_address.blank?
+      hash = {
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.not_found')] },
+        user_id: nil,
+      }
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
+      process_unsuccessful_confirmation
+    end
   end
 
   def process_confirmation
