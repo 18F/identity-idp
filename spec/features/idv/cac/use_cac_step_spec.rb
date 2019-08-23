@@ -8,7 +8,7 @@ feature 'use cac step' do
     strip_tags(t('doc_auth.info.use_cac_html', link: t('doc_auth.info.use_cac_link')))
   end
 
-  it 'cac proofing option is available if cac proofing is enabled' do
+  it 'shows cac proofing option if cac proofing is enabled' do
     enable_cac_proofing
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_upload_step
@@ -19,7 +19,7 @@ feature 'use cac step' do
     expect(page).to have_current_path(idv_cac_proofing_welcome_step)
   end
 
-  it 'cac proofing option is not available if cac proofing is disabled' do
+  it 'does not show cac proofing option if cac proofing is disabled' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_upload_step
 
