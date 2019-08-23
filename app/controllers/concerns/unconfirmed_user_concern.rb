@@ -29,11 +29,11 @@ module UnconfirmedUserConcern
   end
 
   def stop_if_invalid_token
-    return unless @email_address.blank?
+    return if @email_address.present?
     hash = {
-        success: false,
-        errors: { confirmation_token: [t('errors.messages.not_found')] },
-        user_id: nil,
+      success: false,
+      errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+      user_id: nil,
     }
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
     process_unsuccessful_confirmation
