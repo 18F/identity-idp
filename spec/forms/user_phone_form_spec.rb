@@ -37,8 +37,8 @@ describe UserPhoneForm do
 
   describe 'phone validation' do
     it do
-      should validate_inclusion_of(:international_code).
-        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys) unless subject.phone_configuration.present?
+      unless subject.phone_configuration.present? should validate_inclusion_of(:international_code).
+        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
     end
 
     it 'validates that the number matches the requested international code' do
