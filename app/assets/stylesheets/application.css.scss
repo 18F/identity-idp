@@ -5,3 +5,8 @@
 @import 'identity-style-guide/dist/assets/scss/styles';
 @import 'components/all';
 @import 'print';
+
+
+body {
+  background-image: asset-url('dne.png');
+}
