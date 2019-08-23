@@ -12,7 +12,6 @@ module Users
 
     def add
       @register_user_email_form = AddUserEmailForm.new
-
       result = @register_user_email_form.submit(current_user, permitted_params)
 
       if result.success?
@@ -20,6 +19,9 @@ module Users
       else
         render :show
       end
+    rescue ActiveRecord::RecordNotUnique
+      flash[:error] = t('email_addresses.add.duplicate')
+      render :show
     end
 
     def resend
