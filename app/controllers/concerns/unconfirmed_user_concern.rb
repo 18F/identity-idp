@@ -53,6 +53,8 @@ module UnconfirmedUserConcern
     @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.new(@email_address)
   end
 
+
+  #TODO Clara <- some of this is missing in the current process
   def process_valid_confirmation_token
     @confirmation_token = params[:confirmation_token]
     @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
