@@ -10,6 +10,10 @@
       <%= t('two_factor_authentication.phone_label') %>
     </strong>
   <% end %>
+  <div class="mb1 text-hint">
+    <span><%= t('forms.example') %></span>
+    <span id="ex-phone"></span>
+  </div>
   <%= f.input :phone, as: :tel, label: false, required: true,
               input_html: { class: 'phone col-8 mb4' } %>
 </div>
