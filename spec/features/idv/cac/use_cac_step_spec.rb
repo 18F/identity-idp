@@ -14,6 +14,9 @@ feature 'use cac step' do
     complete_doc_auth_steps_before_upload_step
 
     expect(page).to have_content use_cac_content
+
+    click_link t('doc_auth.info.use_cac_link')
+    expect(page).to have_current_path(idv_cac_proofing_welcome_step)
   end
 
   it 'cac proofing option is not available if cac proofing is disabled' do
