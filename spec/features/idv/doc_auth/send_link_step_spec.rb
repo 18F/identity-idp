@@ -36,5 +36,6 @@ feature 'doc auth send link step' do
 
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
     expect(page).to have_content telephony_error.friendly_message
+
   end
 end
