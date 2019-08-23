@@ -48,6 +48,8 @@ en:
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
+      use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
+      use_cac_link: Use your CAC card instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
         information.
