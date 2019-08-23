@@ -179,6 +179,7 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
+
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
