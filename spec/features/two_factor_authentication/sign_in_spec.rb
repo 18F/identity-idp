@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Two Factor Authentication' do
-  include Features::ActiveJobHelper
-
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa

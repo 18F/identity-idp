@@ -4,13 +4,12 @@ module Idv
       def call
         capture_doc = CaptureDoc::CreateRequest.call(current_user.id)
         begin
-          SmsDocAuthLinkJob.perform_now(
-            phone: permit(:phone)[:phone],
+          Telephony.send_doc_auth_link(
+            to: permit(:phone)[:phone],
             link: link(capture_doc.request_token),
-            app: 'login.gov',
           )
-        rescue Twilio::REST::RestError
-          return failure(I18n.t('errors.messages.invalid_phone_number'))
+        rescue Telephony::TelephonyError => err
+          return failure(err.friendly_message)
         end
       end
 

@@ -17,8 +17,8 @@ feature 'View personal key' do
         expect(UserMailer).to receive(:personal_key_regenerated).
           with(user.email).
           and_return(personal_key_sign_in_mail)
-        expect(SmsPersonalKeyRegenerationNotifierJob).to receive(:perform_now).
-          with(phone: user.phone_configurations.first.phone)
+        expect(Telephony).to receive(:send_personal_key_regeneration_notice).
+          with(to: user.phone_configurations.first.phone)
 
         click_button t('account.links.regenerate_personal_key')
 

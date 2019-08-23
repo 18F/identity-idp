@@ -40,7 +40,6 @@ detectors:
       - ServiceProviderSeeder#run
       - OtpDeliverySelectionForm#unsupported_phone?
       - fallback_to_english
-      - TwilioService::Utils#request_data
       - UserEncryptedAttributeOverrides#find_with_email
       - Utf8Sanitizer#event_attributes
       - Utf8Sanitizer#remote_ip
@@ -58,7 +57,6 @@ detectors:
   NestedIterators:
     exclude:
       - UserFlowExporter#self.massage_html
-      - TwilioService::Utils#sanitize_phone_number
       - ServiceProviderSeeder#run
       - UspsConfirmationUploader#upload_export
   NilCheck:
@@ -106,7 +104,6 @@ detectors:
       - Idv::Agent#proof
       - Idv::VendorResult#initialize
       - SamlIdpController#auth
-      - TwilioService::Utils#sanitize_errors
       - Upaya::QueueConfig#self.choose_queue_adapter
       - Upaya::RandomTools#self.random_weighted_sample
       - UserFlowFormatter#stop
@@ -163,12 +160,10 @@ detectors:
       - SessionTimeoutWarningHelper#start
       - SessionTimeoutWarningHelper#warning
       - SessionDecorator
-      - SmsDocAuthLinkJob#perform
       - UserEncryptedAttributeOverrides#create_fingerprint
       - LocaleHelper#locale_url_param
       - IdvSession#timed_out_vendor_error
       - JWT::Signature#sign
-      - SmsAccountResetCancellationNotifierJob#perform
 directories:
   'app/controllers':
     InstanceVariableAssumption:
