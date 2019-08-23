@@ -33,7 +33,7 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with empty email address' do
     sign_up_with('')
 
-    expect(page).to have_content(invalid_email_message)
+    expect(page).to have_content(t('valid_email.validations.email.invalid'))
   end
 
   context 'user signs up and sets password, tries to sign up again' do

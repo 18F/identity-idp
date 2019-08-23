@@ -18,8 +18,8 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
       return render_new_with_error_message unless result.success?
       send_phone_confirmation_otp_and_handle_result
-    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
-      invalid_phone_number(exception)
+    rescue Telephony::TelephonyError => telephony_error
+      invalid_phone_number(telephony_error)
     end
 
     private

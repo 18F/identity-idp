@@ -1,10 +1,9 @@
 module Idv
   # Ignore instance variable assumption on @user_locked_out :reek:InstanceVariableAssumption
   class SendPhoneConfirmationOtp
-    def initialize(user:, idv_session:, locale:)
+    def initialize(user:, idv_session:)
       @user = user
       @idv_session = idv_session
-      @locale = locale
     end
 
     def call
@@ -28,7 +27,7 @@ module Idv
 
     private
 
-    attr_reader :user, :idv_session, :locale
+    attr_reader :user, :idv_session
 
     def too_many_otp_sends_response
       FormResponse.new(
@@ -61,21 +60,20 @@ module Idv
     end
 
     def send_sms_otp
-      SmsOtpSenderJob.perform_later(
-        code: idv_session.phone_confirmation_otp,
-        phone: phone,
-        otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-        message: 'jobs.sms_otp_sender_job.verify_message',
-        locale: locale,
+      Telephony.send_confirmation_otp(
+        otp: idv_session.phone_confirmation_otp,
+        to: phone,
+        expiration: Devise.direct_otp_valid_for.to_i / 60,
+        channel: :sms,
       )
     end
 
     def send_voice_otp
-      VoiceOtpSenderJob.perform_later(
-        code: idv_session.phone_confirmation_otp,
-        phone: phone,
-        otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-        locale: locale,
+      Telephony.send_confirmation_otp(
+        otp: idv_session.phone_confirmation_otp,
+        to: phone,
+        expiration: Devise.direct_otp_valid_for.to_i / 60,
+        channel: :voice,
       )
     end
 

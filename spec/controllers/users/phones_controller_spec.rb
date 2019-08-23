@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe Users::PhonesController do
   include Features::MailerHelper
-  include Features::LocalizationHelper
 
   describe '#phone' do
     let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1234' }) }

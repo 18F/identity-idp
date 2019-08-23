@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Users::VerifyAccountController do
-  include Features::LocalizationHelper
-
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }
