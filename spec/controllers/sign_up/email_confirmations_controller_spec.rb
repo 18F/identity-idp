@@ -131,8 +131,7 @@ describe SignUp::EmailConfirmationsController do
   describe 'Two users simultaneously confirm email with race condition' do
     it 'does not throw a 500 error' do
       create(:user, :unconfirmed, confirmation_token: 'foo')
-      allow_any_instance_of(SignUp::EmailConfirmationsController).
-        to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
+      allow(subject).to receive(:process_confirmation).and_raise(ActiveRecord::RecordNotUnique)
 
       get :create, params: { confirmation_token: 'foo' }
 
