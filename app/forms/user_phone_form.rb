@@ -1,6 +1,5 @@
 class UserPhoneForm
   include ActiveModel::Model
-  include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
   include RememberDeviceConcern
 
@@ -23,7 +22,7 @@ class UserPhoneForm
   def submit(params)
     ingest_submitted_params(params)
 
-    success = phone_configuration || valid?
+    success = valid?
     self.phone = submitted_phone unless success
 
     revoke_remember_device(user) if success
