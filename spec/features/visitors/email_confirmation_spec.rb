@@ -80,4 +80,22 @@ feature 'Email confirmation during sign up' do
       expect(current_url).to eq new_user_session_url
     end
   end
+
+  context 'user tries to register again after a link is expired' do
+    it 'sends a new link that works' do
+      email = 'test@example.com'
+
+      sign_up_with(email)
+      open_last_email
+      click_email_link_matching(%r{confirmation_token})
+      expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
+
+      Timecop.travel 48.hours.from_now do
+        sign_up_with(email)
+        open_last_email
+        click_email_link_matching(%r{confirmation_token})
+        expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
+      end
+    end
+  end
 end
