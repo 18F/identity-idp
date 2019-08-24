@@ -13,6 +13,7 @@ module UserAccessKeyOverrides
       digest: encrypted_password_digest,
       user_uuid: uuid,
     )
+    @password = password if result
     log_password_verification_failure unless result
     result
   end
@@ -41,6 +42,18 @@ module UserAccessKeyOverrides
       password: new_personal_key,
       user_uuid: uuid || generate_uuid,
     )
+  end
+
+  # This is a callback initiated by Devise after successfully authenticating.
+  def after_database_authentication
+    rotate_stale_password_digest
+  end
+
+  def rotate_stale_password_digest
+    return unless Encryption::PasswordVerifier.new.stale_digest?(
+      encrypted_password_digest,
+    )
+    update!(password: password)
   end
 
   # This is a devise method, which we are overriding. This should not be removed

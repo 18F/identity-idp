@@ -1,11 +1,15 @@
 require 'rails_helper'
 
 feature 'legacy passwords' do
-  scenario 'signing in with a password digested by the uak verifier grants access' do
+  scenario 'signing in with a password digested by the uak verifier updates the digest' do
     user = create(:user, :signed_up)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
     )
+
+    expect(
+      Encryption::PasswordVerifier.new.stale_digest?(user.encrypted_password_digest),
+    ).to eq(true)
 
     signin(user.email, 'legacy password')
 
@@ -13,6 +17,9 @@ feature 'legacy passwords' do
       login_otp_path(otp_delivery_preference: :sms, reauthn: false),
     )
     expect(page).to have_content(t('two_factor_authentication.header_text'))
+    expect(
+      Encryption::PasswordVerifier.new.stale_digest?(user.reload.encrypted_password_digest),
+    ).to eq(false)
   end
 
   scenario 'signing in with an incorrect uak password digest does not grant access' do
