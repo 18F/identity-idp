@@ -20,6 +20,11 @@ class EmailAddress < ApplicationRecord
     Pii::Fingerprinter.stale?(email, email_fingerprint)
   end
 
+  def confirmation_period_expired?
+    expiration_time = confirmation_sent_at + Figaro.env.add_email_link_valid_for_hours.to_i.hours
+    Time.zone.now > expiration_time
+  end
+
   class << self
     def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?
