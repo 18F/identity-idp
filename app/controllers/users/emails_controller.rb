@@ -10,6 +10,7 @@ module Users
       @register_user_email_form = AddUserEmailForm.new
     end
 
+    # :reek:DuplicateMethodCall
     def add
       @register_user_email_form = AddUserEmailForm.new
       result = @register_user_email_form.submit(current_user, permitted_params)
