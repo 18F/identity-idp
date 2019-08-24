@@ -9,9 +9,7 @@ describe EmailAddress do
 
   let(:email) { 'jd@example.com' }
   let(:email_address) { create(:email_address, email: email) }
-  let(:valid_for_hours) {
-    Figaro.env.add_email_link_valid_for_hours.to_i.hours
-  }
+  let(:valid_for_hours) { Figaro.env.add_email_link_valid_for_hours.to_i.hours }
 
   describe 'creation' do
     it 'stores an encrypted form of the email address' do
