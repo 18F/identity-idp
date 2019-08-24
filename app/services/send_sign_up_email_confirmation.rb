@@ -23,7 +23,7 @@ class SendSignUpEmailConfirmation
   end
 
   def confirmation_period_expired?
-    @confirmation_period_expired ||= user.confirmation_period_expired?
+    @confirmation_period_expired ||= email_address.confirmation_period_expired?
   end
 
   # :reek:DuplicateMethodCall
