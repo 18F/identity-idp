@@ -87,13 +87,13 @@ feature 'Email confirmation during sign up' do
 
       sign_up_with(email)
       open_last_email
-      click_email_link_matching(%r{confirmation_token})
+      click_email_link_matching(/confirmation_token/)
       expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
 
       Timecop.travel 48.hours.from_now do
         sign_up_with(email)
         open_last_email
-        click_email_link_matching(%r{confirmation_token})
+        click_email_link_matching(/confirmation_token/)
         expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
       end
     end
