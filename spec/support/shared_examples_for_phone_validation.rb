@@ -3,7 +3,6 @@ require 'shoulda/matchers'
 shared_examples 'a phone form' do
   describe 'phone presence validation' do
     it 'is invalid when phone is blank' do
-      warn params
       params[:phone] = ''
       subject.submit(params)
 
