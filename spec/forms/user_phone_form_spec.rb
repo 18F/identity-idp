@@ -13,8 +13,6 @@ describe UserPhoneForm do
   end
   subject { UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
-  it_behaves_like 'a phone form'
-
   it 'loads initial values from the user object' do
     user = build_stubbed(
       :user, :with_phone,

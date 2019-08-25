@@ -40,15 +40,15 @@ describe Users::PhoneSetupController do
         otp_delivery_preference: 'sms',
       }
 
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
+
       patch :create, params: {
         user_phone_form: {
           phone: '703-555-010',
           international_code: 'US',
         },
       }
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
       expect(response).to render_template(:index)
     end
