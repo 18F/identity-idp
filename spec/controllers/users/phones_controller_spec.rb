@@ -44,7 +44,6 @@ describe Users::PhonesController do
         }
 
         expect(MfaContext.new(user).phone_configurations.reload.first).to be_present
-        expect(response).to render_template(:edit)
       end
     end
 
@@ -68,23 +67,6 @@ describe Users::PhonesController do
         )
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
-      end
-    end
-
-    context 'user updates with invalid phone' do
-      it 'does not change the user phone number' do
-        invalid_phone = '123'
-        user = build(:user, :with_phone, with: { phone: '123-123-1234' })
-        stub_sign_in(user)
-
-        put :update, params: {
-          user_phone_form: { phone: invalid_phone,
-                             international_code: 'US',
-                             otp_delivery_preference: 'sms' },
-        }
-
-        expect(MfaContext.new(user).phone_configurations.first.phone).not_to eq invalid_phone
-        expect(response).to render_template(:edit)
       end
     end
 
