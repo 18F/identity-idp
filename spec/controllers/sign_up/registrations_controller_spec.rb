@@ -45,6 +45,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: true,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: user.uuid,
@@ -71,6 +72,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: true,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: user.uuid,
@@ -114,6 +116,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: false,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: 'anonymous-uuid',
@@ -141,6 +144,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: false,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: 'anonymous-uuid',
@@ -168,6 +172,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: false,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: 'anonymous-uuid',
@@ -189,6 +194,7 @@ describe SignUp::RegistrationsController, devise: true do
       captcha_h = mock_captcha(enabled: true, present: true, valid: true)
       analytics_hash = {
         success: true,
+        throttled: false,
         errors: {},
         email_already_exists: true,
         user_id: existing_user.uuid,
@@ -208,6 +214,7 @@ describe SignUp::RegistrationsController, devise: true do
       captcha_h = mock_captcha(enabled: true, present: true, valid: true)
       analytics_hash = {
         success: false,
+        throttled: false,
         errors: { email: [t('valid_email.validations.email.invalid')] },
         email_already_exists: false,
         user_id: 'anonymous-uuid',
