@@ -14,7 +14,8 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
 
   def send_reset_password_instructions
     token = user.set_reset_password_token
-    UserMailer.reset_password_instructions(email, token: token).deliver_now
+    throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reset_password_email)
+    UserMailer.reset_password_instructions(email, token: token).deliver_now unless throttled
   end
 
   def instructions

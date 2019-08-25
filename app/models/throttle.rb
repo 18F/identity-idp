@@ -4,8 +4,9 @@ class Throttle < ApplicationRecord
 
   enum throttle_type: {
     idv_acuant: 1,
-    register_unconfirmed_email: 2,
-    register_confirmed_email: 3,
+    reg_unconfirmed_email: 2,
+    reg_confirmed_email: 3,
+    reset_password_email: 4,
   }
 
   THROTTLE_CONFIG = {
@@ -13,13 +14,17 @@ class Throttle < ApplicationRecord
       max_attempts: (Figaro.env.acuant_max_attempts || 3).to_i,
       attempt_window: (Figaro.env.acuant_attempt_window_in_minutes || 86_400).to_i,
     },
-    register_unconfirmed_email: {
-      max_attempts: (Figaro.env.register_unconfirmed_email_max_attempts || 1).to_i,
-      attempt_window: (Figaro.env.register_unconfirmed_email_window_in_minutes || 86_400).to_i,
+    reg_unconfirmed_email: {
+      max_attempts: (Figaro.env.reg_unconfirmed_email_max_attempts || 1).to_i,
+      attempt_window: (Figaro.env.reg_unconfirmed_email_window_in_minutes || 86_400).to_i,
     },
-    register_confirmed_email: {
-      max_attempts: (Figaro.env.register_confirmed_email_max_attempts || 1).to_i,
-      attempt_window: (Figaro.env.register_confirmed_email_window_in_minutes || 86_400).to_i,
+    reg_confirmed_email: {
+      max_attempts: (Figaro.env.reg_confirmed_email_max_attempts || 1).to_i,
+      attempt_window: (Figaro.env.reg_confirmed_email_window_in_minutes || 86_400).to_i,
+    },
+    reset_password_email: {
+      max_attempts: (Figaro.env.reset_password_email_max_attempts || 1).to_i,
+      attempt_window: (Figaro.env.reset_password_email_window_in_minutes || 86_400).to_i,
     },
   }.freeze
 
