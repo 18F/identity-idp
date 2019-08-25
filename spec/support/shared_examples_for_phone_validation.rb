@@ -6,7 +6,7 @@ shared_examples 'a phone form' do
       params[:phone] = ''
       subject.submit(params)
 
-      expect(subject).to_not be_valid if subject.phone_configuration.nil?
+      expect(subject).to_not be_valid if subject.phone.nil?
     end
   end
 
