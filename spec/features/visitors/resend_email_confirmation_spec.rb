@@ -26,7 +26,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
       visit sign_up_email_resend_path
       fill_in 'Email', with: user.email
       click_button t('forms.buttons.resend_confirmation')
-      expect(unread_emails_for(user.email).size).to eq(i+1)
+      expect(unread_emails_for(user.email).size).to eq(i + 1)
     end
 
     visit sign_up_email_resend_path
