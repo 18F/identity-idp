@@ -4,11 +4,11 @@ es:
     buttons:
       continue: Continuar
     email:
-      confirm: Confirme su email
+      confirm: Confirme el correo electrónico
       instructions: Confirmar su dirección de correo electrónico nos permitirá ayudarlo
         a volver a verificar que usted es el propietario de esta cuenta. Haga clic
-        en el enlace de abajo o copie y pegue el enlace completo en su navegador.
-        Este enlace caducará en 15 minutos.
+        en el enlace debajo o copie y pegue el enlace completo en su navegador.
+        Este enlace expira en 15 minutos.
     instructions:
       bullet1: Sube tu ID
       bullet2: Ingrese su número de seguro social
