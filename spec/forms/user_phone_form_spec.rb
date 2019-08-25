@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UserPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
-  let(:user) {build(:user, :signed_up)}
+  let(:user) { build(:user, :signed_up) }
   let(:params) do
     {
       phone: '703-555-5000',
@@ -11,14 +11,14 @@ describe UserPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject {UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)}
+  subject { UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
   it_behaves_like 'a phone form'
 
   it 'loads initial values from the user object' do
     user = build_stubbed(
       :user, :with_phone,
-      with: {phone: '+1 (703) 500-5000'},
+      with: { phone: '+1 (703) 500-5000' },
       otp_delivery_preference: 'voice'
     )
     subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
@@ -29,7 +29,7 @@ describe UserPhoneForm do
   end
 
   it 'infers the international code from the user phone number' do
-    user = build_stubbed(:user, :with_phone, with: {phone: '+81 744 21 1234'})
+    user = build_stubbed(:user, :with_phone, with: { phone: '+81 744 21 1234' })
     subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
 
     expect(subject.international_code).to eq('JP')
@@ -39,7 +39,7 @@ describe UserPhoneForm do
     it do
       if subject.phone_configuration.blank?
         should validate_inclusion_of(:international_code).
-        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+          in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
       end
     end
 
@@ -70,8 +70,8 @@ describe UserPhoneForm do
         result = subject.submit(params)
 
         expect(result.extra).to eq(
-                                  otp_delivery_preference: params[:otp_delivery_preference],
-                                )
+          otp_delivery_preference: params[:otp_delivery_preference],
+        )
       end
 
       it 'does not update the user phone attribute' do
@@ -99,7 +99,7 @@ describe UserPhoneForm do
     end
 
     context 'when otp_delivery_preference is voice and phone number does not support voice' do
-      let(:unsupported_phone) {'242-327-0143'}
+      let(:unsupported_phone) { '242-327-0143' }
       let(:params) do
         {
           phone: unsupported_phone,
@@ -211,4 +211,3 @@ describe UserPhoneForm do
     end
   end
 end
-

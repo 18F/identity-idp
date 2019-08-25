@@ -7,7 +7,7 @@ shared_examples 'a phone form' do
       params[:phone] = ''
       subject.submit(params)
 
-      expect(subject).to_not be_valid unless subject.phone_configuration.present?
+      expect(subject).to_not be_valid if subject.phone_configuration.blank?
     end
   end
 
