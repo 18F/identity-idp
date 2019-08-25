@@ -19,6 +19,29 @@ feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email)).to be_present
   end
 
+  scenario 'user throttled sending confirmation emails and can send again after wait period' do
+    user.save!
+
+    3.times do |i|
+      visit sign_up_email_resend_path
+      fill_in 'Email', with: user.email
+      click_button t('forms.buttons.resend_confirmation')
+      expect(unread_emails_for(user.email).size).to eq(i+1)
+    end
+
+    visit sign_up_email_resend_path
+    fill_in 'Email', with: user.email
+    click_button t('forms.buttons.resend_confirmation')
+    expect(unread_emails_for(user.email).size).to eq(3)
+
+    Timecop.travel(Time.zone.now + 2.days) do
+      visit sign_up_email_resend_path
+      fill_in 'Email', with: user.email
+      click_button t('forms.buttons.resend_confirmation')
+      expect(unread_emails_for(user.email).size).to eq(4)
+    end
+  end
+
   scenario 'user enters email with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
