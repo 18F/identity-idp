@@ -7,7 +7,6 @@ class Throttle < ApplicationRecord
     reg_unconfirmed_email: 2,
     reg_confirmed_email: 3,
     reset_password_email: 4,
-    test_throttle: 5,
   }
 
   THROTTLE_CONFIG = {
@@ -26,10 +25,6 @@ class Throttle < ApplicationRecord
     reset_password_email: {
       max_attempts: (Figaro.env.reset_password_email_max_attempts || 1).to_i,
       attempt_window: (Figaro.env.reset_password_email_window_in_minutes || 86_400).to_i,
-    },
-    test_throttle: {
-      max_attempts: 3,
-      attempt_window: 1,
     },
   }.freeze
 
