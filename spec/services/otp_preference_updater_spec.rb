@@ -18,18 +18,8 @@ describe OtpPreferenceUpdater do
             user: user,
             preference: 'sms',
             phone_id: 1,
-          )
-          attributes = { :otp_delivery_preference=>"sms",
-                         :otp_make_default_number=>nil,
-                         :phone_id=>1}
-
-          updated_user = instance_double(UpdateUser)
-          allow(UpdateUser).to receive(:new).
-            with(user: user, attributes: attributes).and_return(updated_user)
-
-          expect(updated_user).to_not receive(:call)
-
-          updater.call
+          ).call
+          expect(UpdateUser).to_not receive(:new)
         end
       end
 
