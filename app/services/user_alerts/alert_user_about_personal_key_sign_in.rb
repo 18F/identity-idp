@@ -7,7 +7,7 @@ module UserAlerts
         ).deliver_now
       end
       MfaContext.new(user).phone_configurations.each do |phone_configuration|
-        SmsPersonalKeySignInNotifierJob.perform_now(phone: phone_configuration.phone)
+        Telephony.send_personal_key_sign_in_notice(to: phone_configuration.phone)
       end
     end
   end
