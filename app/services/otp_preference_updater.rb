@@ -22,8 +22,4 @@ class OtpPreferenceUpdater
   def phone_configuration
     MfaContext.new(user).phone_configuration(phone_id)
   end
-
-  def not_default_phone_configuration?
-    phone_configuration != user.default_phone_configuration
-  end
 end
