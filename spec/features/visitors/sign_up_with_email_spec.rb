@@ -64,4 +64,22 @@ feature 'Visitor signs up with email address' do
       expect(page).to have_content 'Bad request'
     end
   end
+
+  it 'throttles sending confirmations after user submitted and then resumes after wait period' do
+    email = 'test@test.com'
+    sign_up_with(email)
+
+    3.times do |i|
+      sign_up_with(email)
+      expect(unread_emails_for(email).size).to eq(i + 2)
+    end
+
+    sign_up_with(email)
+    expect(unread_emails_for(email).size).to eq(4)
+
+    Timecop.travel(Time.zone.now + 2.days) do
+      sign_up_with(email)
+      expect(unread_emails_for(email).size).to eq(5)
+    end
+  end
 end
