@@ -261,18 +261,20 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
     email = user.email
 
-    3.times do |i|
+    max_attempts = Figaro.env.reset_password_email_max_attempts.to_i
+    max_attempts.times do |i|
       submit_email_for_password_reset(email)
       expect(unread_emails_for(email).size).to eq(i + 1)
     end
 
-    expect(unread_emails_for(email).size).to eq(3)
+    expect(unread_emails_for(email).size).to eq(max_attempts)
     submit_email_for_password_reset(email)
-    expect(unread_emails_for(email).size).to eq(3)
+    expect(unread_emails_for(email).size).to eq(max_attempts)
 
-    Timecop.travel(Time.zone.now + 2.days) do
+    window_in_minutes = Figaro.env.reset_password_email_window_in_minutes.to_i + 1
+    Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       submit_email_for_password_reset(email)
-      expect(unread_emails_for(email).size).to eq(4)
+      expect(unread_emails_for(email).size).to eq(max_attempts + 1)
     end
   end
 

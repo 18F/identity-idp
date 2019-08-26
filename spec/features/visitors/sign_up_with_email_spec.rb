@@ -70,18 +70,20 @@ feature 'Visitor signs up with email address' do
     sign_up_with(email)
 
     starting_count = unread_emails_for(email).size
-    3.times do |i|
+    max_attempts = Figaro.env.reg_unconfirmed_email_max_attempts.to_i
+    max_attempts.times do |i|
       sign_up_with(email)
       expect(unread_emails_for(email).size).to eq(starting_count + i + 1)
     end
 
-    expect(unread_emails_for(email).size).to eq(starting_count + 3)
+    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts)
     sign_up_with(email)
-    expect(unread_emails_for(email).size).to eq(starting_count + 3)
+    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts)
 
-    Timecop.travel(Time.zone.now + 2.days) do
+    window_in_minutes = Figaro.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       sign_up_with(email)
-      expect(unread_emails_for(email).size).to eq(starting_count + 4)
+      expect(unread_emails_for(email).size).to eq(starting_count + max_attempts + 1)
     end
   end
 end
