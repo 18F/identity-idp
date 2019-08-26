@@ -20,7 +20,6 @@ class OtpPreferenceUpdater
   attr_reader :user, :preference, :phone_id, :default
 
   def phone_configuration_changed?
-    return true if preference != user.otp_delivery_preference
     return true if preference != phone_delivery_preference
     return true if default && not_default_phone_configuration?
     false
