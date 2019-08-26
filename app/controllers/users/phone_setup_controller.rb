@@ -9,12 +9,12 @@ module Users
     before_action :set_setup_presenter
 
     def index
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @user_phone_form = UserPhoneForm.new(current_user)
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     def create
-      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      @user_phone_form = UserPhoneForm.new(current_user)
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 

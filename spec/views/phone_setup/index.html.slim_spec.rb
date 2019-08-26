@@ -6,7 +6,7 @@ describe 'users/phone_setup/index.html.erb' do
 
     allow(view).to receive(:current_user).and_return(user)
 
-    @user_phone_form = UserPhoneForm.new(user, nil)
+    @user_phone_form = UserPhoneForm.new(user)
     @presenter = SetupPresenter.new(user, false)
     render
   end
