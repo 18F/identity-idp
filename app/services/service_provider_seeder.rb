@@ -8,7 +8,6 @@ class ServiceProviderSeeder
   def run
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
-
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
         sp.update({
           approved: true,
@@ -16,7 +15,10 @@ class ServiceProviderSeeder
           native: true,
           friendly_name: config["friendly_name"]
         })
-      end.update!(config.except('restrict_to_deploy_env', 'uuid_priority'))
+        HelpText.find_or_create_by!(service_provider_id: sp.id) do |ht|
+          sp.help_text = ht
+        end
+      end.update!(config.except('restrict_to_deploy_env', 'uuid_priority', 'help_text', 'default_help_text'))
     end
   end
 

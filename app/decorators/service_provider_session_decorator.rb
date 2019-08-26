@@ -16,12 +16,12 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    if custom_alert?(section) && Rails.env == 'production'
-      t( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}") % args if Rails.env == 'production'
-    elsif custom_alert?(section) && Rails.env != 'production'
-      sp.help_text[section][I18n.locale.to_s] % args if Rails.env != 'production'
+    if custom_alert?(section) && !FeatureManagement.use_dashboard_service_providers?
+      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(I18n.locale.to_s)&.dig(section) % args
+    elsif custom_alert?(section) && FeatureManagement.use_dashboard_service_providers?
+      sp.help_text[section][I18n.locale.to_s] % args
     else
-      t("service_providers.help_texts.default.#{section}", args)
+      t("service_providers.help_text.default.#{section}", args)
     end
   end
 
@@ -132,16 +132,15 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def custom_alert?(section)
-    if Rails.env == 'production'
-      I18n.exists?( "service_providers.help_texts.#{sp.issuer.gsub(/:/, '_')}.#{section}")
-    else
+    if FeatureManagement.use_dashboard_service_providers?
       sp.help_text[section][I18n.locale.to_s].present?
+    else
+      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(I18n.locale.to_s)&.dig(section).present?
     end
   end
 
   def default_alert?
-    return unless SP_CONFIG['default_alert_sp_issuers']
-    SP_CONFIG['default_alert_sp_issuers'].include?(sp.issuer)
+    SP_CONFIG[sp.issuer]&.dig('default_help_text')
   end
 
   def alert_included_for_path?(path)

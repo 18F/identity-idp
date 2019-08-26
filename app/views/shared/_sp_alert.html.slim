@@ -6,4 +6,4 @@
       - elsif current_page?(sign_up_email_path)
         == decorated_session.sp_msg('sign_up')
       - else
-        == decorated_session.sp_msg('forgot_password', sp_create_linkk: sp_create_link)
+        == decorated_session.sp_msg('forgot_password', sp_create_link: decorated_session.sp_create_link)

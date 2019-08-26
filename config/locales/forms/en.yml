@@ -32,8 +32,8 @@ en:
       confirm: Are you sure you want to regenerate your backup codes?
     buttons:
       back: Back
-      cancel: Yes, cancel
       cac: Present CAC card
+      cancel: Yes, cancel
       continue: Continue
       delete: Delete
       disable: Disable

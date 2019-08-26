@@ -7,5 +7,6 @@ FactoryBot.define do
     issuer { SecureRandom.uuid }
     return_to_sp_url { '/' }
     agency { 'Test Agency' }
+    association :help_text, factory: :help_text
   end
 end

@@ -82,6 +82,24 @@ test:
     assertion_consumer_logout_service_url: ''
     ial: 2
 
+  'test_sp_with_default_help_text':
+    agency_id: 2
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP with default help text'
+    ial: 2
+    default_help_text: true
+
+  'test_sp_with_custom_help_text':
+    agency_id: 2
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP with custom help text'
+    ial: 2
+    help_text:
+      en:
+        forgot_password: ""
+        sign_up: ""
+        sign_in: "custom sign in help text for %{sp_name}"
+
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     agency_id: 2
@@ -378,11 +396,35 @@ production:
       - 'https://ttp.dhs.gov/login'
       - 'https://ttp.dhs.gov/login?logout=logout&undefined'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
-    help_texts:
-      sign_in: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID and password won’t work. Please create a login.gov
-                          account below. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Learn more</a>
-      forgot_password: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID and password won't work. Please <a href=%{sp_create_link}>create a login.gov account</a>
-      sign_up: ''
+    help_text:
+      en:
+        forgot_password: <b>Coming from Trusted Traveler Programs?</b><p>Your old
+                GOES userID and password won't work. Please <a href=%{sp_create_link}>create
+                a login.gov account</a>
+        sign_in: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID
+                and password won’t work. Please create a login.gov account below. <p><a
+                href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Learn
+                more</a>
+        sign_up: ''
+      es:
+        forgot_password: <b>¿Ha venido de Trusted Traveler Programs?</b><p>Su antiguo
+                ID de usuario y contraseña de GOES no funcionarán. Favor de. <a href=%{sp_create_link}>crear
+                un nueva cuenta de login.gov.</a>
+        sign_in: <b>¿Ha venido de Trusted Traveler Programs?</b><p>Su antiguo ID de
+                usuario y contraseña de GOES no funcionarán. Favor de crear un nueva cuenta
+                de login.gov. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Obtenga
+                más información.</a>
+        sign_up: ''
+      fr:
+        forgot_password: <b>Êtes-vous venu(e) de Trusted Traveler Programs?</b><p>Votre
+                ancien nom d'utilisateur et mot de passe GOES ne marchera pas. Veuillez
+                <a href=%{sp_create_link}>créer un nouveau compte login.gov.</a>
+        sign_in: <b>Êtes-vous venu(e) de Trusted Traveler Programs?</b><p>Votre ancien
+                nom d'utilisateur et mot de passe GOES ne marchera pas. Veuillez créer un
+                nouveau compte login.gov. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">En
+                savoir plus.</a>
+        sign_up: ''
+
   # CBP ROAM (formerly OARS)
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
     agency_id: 1
@@ -417,6 +459,7 @@ production:
       - 'https://login.test.usajobs.gov/externalloggedout'
     return_to_sp_url: 'https://www.test.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
+    default_help_text: true
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
     agency_id: 2
@@ -737,6 +780,7 @@ production:
     restrict_to_deploy_env: 'prod'
     piv_cac: true
     piv_cac_scoped_by_email: true
+    default_help_text: true
 
   # SAM – System for Award Management / testing prod from UAT
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam_uat':
@@ -864,6 +908,7 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
     piv_cac: true
+    default_help_text: true
 
   # Pre-mod SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:pmsam':
@@ -907,6 +952,7 @@ production:
       - 'https://rule19d1.sec.gov/auth/login-gov/callback/loa-1'
       - 'https://rule19d1.sec.gov/auth/login-gov/logout'
     restrict_to_deploy_env: 'prod'
+    default_help_text: true
 
   # Foreign Labor Application Gateway
   'urn:gov:gsa:openidconnect.profiles:sp:sso:doloflc:flagapp':
@@ -957,13 +1003,27 @@ production:
     ial: 1
     restrict_to_deploy_env: 'prod'
     help_text:
-    sign_in: <b>First time here from FMCSA National Registry?</b><p>If you do not have a Login.gov account, you must create one to access the National Registry. To do so, select "Create an account" and use the same
-                        email address that is your primary email address for your National Registry account. <p><a href="https://login.gov/help/">Learn more</a>
-    forgot_password: If you do not have a Login.gov account, you must create one to access the National Registry. To do so, select "Create an account" and use the same
-               email address that is your primary email address for your National Registry account. <p><a href="https://login.gov/help/">Learn more</a>
-    sign_up: Remind please use the same email address as your primary email address
-                         for your National Registry account when creating your Login.gov account. <p><a href="https://login.gov/help/">Learn more</a>
-
+      en:
+        forgot_password: If you do not have a Login.gov account, you must create one
+                         to access the National Registry. To do so, select "Create an account" and
+                         use the same email address that is your primary email address for your National
+                         Registry account. <p><a href="https://login.gov/help/">Learn more</a>
+        sign_in: <b>First time here from FMCSA National Registry?</b><p>If you do
+                 not have a Login.gov account, you must create one to access the National
+                 Registry. To do so, select "Create an account" and use the same email address
+                 that is your primary email address for your National Registry account. <p><a
+                 href="https://login.gov/help/">Learn more</a>
+        sign_up: Reminder - please use the same email address as your primary email address
+                 for your National Registry account when creating your Login.gov account.
+                 <p><a href="https://login.gov/help/">Learn more</a>
+      es:
+        forgot_password: ''
+        sign_in: ''
+        sign_up: ''
+      fr:
+        forgot_password: ''
+        sign_in: ''
+        sign_up: ''
   # DOT – LMS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:lms':
     agency_id: 6
@@ -1158,9 +1218,3 @@ production:
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'
-
-  'default_alert_sp_issuers':
-    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS'
-    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam'
-    - 'urn:gov:gsa:openidconnect:profiles:sp:sso:cnic:HOMES'
-    - 'urn:gov:gsa:openidconnect.profiles:sp:sso:SEC:19d1'

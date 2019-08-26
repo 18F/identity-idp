@@ -8,7 +8,6 @@ class HelpTextSeeder
   def run
     help_texts.each do |sp_issuer, config|
       service_provider = ServiceProvider.find_by(issuer: sp_issuer)
-      binding.pry
       help_text = service_provider.help_text
       if help_text
         help_text.update!(config)

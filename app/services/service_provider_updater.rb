@@ -3,7 +3,7 @@ class ServiceProviderUpdater
   SP_PROTECTED_ATTRIBUTES = %i[
     created_at
     id
-    nativeqq
+    native
     updated_at
   ].to_set.freeze
 
@@ -43,11 +43,15 @@ class ServiceProviderUpdater
 
   def sync_model(sp, cleaned_attributes)
     if sp.is_a?(NullServiceProvider)
-      ServiceProvider.create!(cleaned_attributes)
+      new_sp = ServiceProvider.create!(cleaned_attributes.except('help_text'))
+      return new_sp unless cleaned_attributes['help_text']
+      new_sp.help_text = HelpText.create!(cleaned_attributes['help_text'].except(*HT_PROTECTED_ATTRIBUTES))
+      new_sp
     else
       sp.attributes = cleaned_attributes.except('help_text')
+      return unless cleaned_attributes['help_text']
+      sp.help_text.update_attributes(cleaned_attributes['help_text']&.except(*HT_PROTECTED_ATTRIBUTES))
       sp.save!
-      sp.help_text.update_attributes(cleaned_attributes['help_text'].except(*HT_PROTECTED_ATTRIBUTES))
     end
   end
 
