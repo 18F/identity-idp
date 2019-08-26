@@ -31,7 +31,7 @@ class OtpPreferenceUpdater
   end
 
   def phone_delivery_preference
-    return nil unless phone_configuration.present?
+    return nil if phone_configuration.blank?
     phone_configuration.delivery_preference
   end
 
