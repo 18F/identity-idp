@@ -708,6 +708,21 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # DOT Delphi eInvoicing
+  # This additional config removes the port 4443 requirement
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DOT:EINVOICE_DCC_PROD':
+    agency: 'DOT'
+    agency_id: 6
+    friendly_name: 'Delphi eInvoicing'
+    logo: 'dot.svg'
+    cert: 'dot_einvoicing_prod'
+    acs_url: 'https://einvoice.esc.gov/oam/server/fed/sp/sso'
+    return_to_sp_url: 'https://einvoice.esc.gov'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
   # SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam':
     agency_id: 9
