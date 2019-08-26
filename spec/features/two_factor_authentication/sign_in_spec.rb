@@ -18,7 +18,6 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('titles.phone_setup')
 
-
       send_security_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path

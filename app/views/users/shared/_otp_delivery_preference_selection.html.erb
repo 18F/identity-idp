@@ -12,7 +12,7 @@
     >
       <div class="radio">
         <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
-          :sms, @user_phone_form.delivery_preference_sms?,
+          :sms, form_obj.delivery_preference_sms?,
           class: :otp_delivery_preference_sms %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
@@ -24,7 +24,7 @@
     >
       <div class="radio">
         <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
-            :voice, @user_phone_form.delivery_preference_voice?,
+            :voice, form_obj.delivery_preference_voice?,
             class: :otp_delivery_preference_voice %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_delivery_preference.voice') %>

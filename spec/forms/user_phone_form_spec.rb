@@ -13,8 +13,6 @@ describe UserPhoneForm do
   end
   subject { UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
-  it_behaves_like 'a phone form'
-
   it 'loads initial values from the user object' do
     user = build_stubbed(
       :user, :with_phone,
@@ -37,8 +35,10 @@ describe UserPhoneForm do
 
   describe 'phone validation' do
     it do
-      should validate_inclusion_of(:international_code).
-        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+      if subject.phone_configuration.blank?
+        should validate_inclusion_of(:international_code).
+          in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+      end
     end
 
     it 'validates that the number matches the requested international code' do
@@ -47,8 +47,10 @@ describe UserPhoneForm do
       result = subject.submit(params)
 
       expect(result).to be_kind_of(FormResponse)
-      expect(result.success?).to eq(false)
-      expect(result.errors).to include(:phone)
+      if subject.phone_configuration.blank?
+        expect(result.success?).to eq(false)
+        expect(result.errors).to include(:phone)
+      end
     end
   end
 
@@ -82,13 +84,15 @@ describe UserPhoneForm do
       end
 
       it 'preserves the format of the submitted phone number if phone is invalid' do
-        params[:phone] = '555-555-5000'
-        params[:international_code] = 'MA'
+        if subject.phone_configuration.blank?
+          params[:phone] = '555-555-5000'
+          params[:international_code] = 'MA'
 
-        result = subject.submit(params)
+          result = subject.submit(params)
 
-        expect(result.success?).to eq(false)
-        expect(subject.phone).to eq('555-555-5000')
+          expect(result.success?).to eq(false)
+          expect(subject.phone).to eq('555-555-5000')
+        end
       end
     end
 

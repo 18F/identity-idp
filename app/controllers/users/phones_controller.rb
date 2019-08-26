@@ -22,15 +22,15 @@ module Users
     def edit
       set_phone_id
       # memoized for view
-      user_phone_form
+      edit_phone_form
     end
 
     def update
-      if user_phone_form.submit(user_params).success? && !already_has_phone?
+      if edit_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
       else
-        render_edit
+        render :edit
       end
     end
 
@@ -50,8 +50,8 @@ module Users
 
     private
 
-    def user_phone_form
-      @user_phone_form ||= UserPhoneForm.new(current_user, phone_configuration)
+    def edit_phone_form
+      @edit_phone_form ||= EditPhoneForm.new(current_user, phone_configuration)
     end
 
     def render_edit
@@ -81,7 +81,7 @@ module Users
     end
 
     def process_updates
-      form = @user_phone_form
+      form = @user_phone_form || @edit_phone_form
       if form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
 
