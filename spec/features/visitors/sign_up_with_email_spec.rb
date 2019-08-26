@@ -69,17 +69,19 @@ feature 'Visitor signs up with email address' do
     email = 'test@test.com'
     sign_up_with(email)
 
+    starting_count = unread_emails_for(email).size
     3.times do |i|
       sign_up_with(email)
-      expect(unread_emails_for(email).size).to eq(i + 2)
+      expect(unread_emails_for(email).size).to eq(starting_count + i + 1)
     end
 
+    expect(unread_emails_for(email).size).to eq(starting_count + 3)
     sign_up_with(email)
-    expect(unread_emails_for(email).size).to eq(4)
+    expect(unread_emails_for(email).size).to eq(starting_count + 3)
 
     Timecop.travel(Time.zone.now + 2.days) do
       sign_up_with(email)
-      expect(unread_emails_for(email).size).to eq(5)
+      expect(unread_emails_for(email).size).to eq(starting_count + 4)
     end
   end
 end
