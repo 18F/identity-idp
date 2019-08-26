@@ -22,7 +22,6 @@ class EditPhoneForm
   end
 
   def delivery_preference_sms?
-    return true if phone_configuration.blank?
     phone_configuration&.delivery_preference == 'sms'
   end
 
@@ -38,7 +37,7 @@ class EditPhoneForm
 
   # :reek:FeatureEnvy
   def masked_number
-    phone_number = phone_configuration == nil ? nil : phone_configuration.phone
+    phone_number = phone_configuration.phone
     return '' if !phone_number || phone_number.blank?
     "***-***-#{phone_number[-4..-1]}"
   end
@@ -47,7 +46,6 @@ class EditPhoneForm
 
   attr_accessor :user, :submitted_phone
 
-
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
@@ -55,7 +53,6 @@ class EditPhoneForm
   end
 
   def ingest_submitted_params(params)
-
     delivery_prefs = params[:otp_delivery_preference]
     default_prefs = params[:otp_make_default_number]
 
@@ -66,5 +63,4 @@ class EditPhoneForm
   def default_phone_configuration?
     phone_configuration == user.default_phone_configuration
   end
-
 end

@@ -22,11 +22,12 @@ module Users
     def edit
       set_phone_id
       # memoized for view
-      edit_phone_form
+      @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
     end
 
     def update
-      if edit_phone_form.submit(user_params).success?
+      @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
+      if @edit_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
       else
@@ -49,10 +50,6 @@ module Users
     end
 
     private
-
-    def edit_phone_form
-      @edit_phone_form ||= EditPhoneForm.new(current_user, phone_configuration)
-    end
 
     def render_edit
       flash.now[:error] = t('errors.messages.phone_duplicate') if already_has_phone?
@@ -81,8 +78,7 @@ module Users
     end
 
     def process_updates
-      form = @user_phone_form || @edit_phone_form
-      if form.phone_config_changed?
+      if @edit_phone_form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
 
         OtpPreferenceUpdater.new(
