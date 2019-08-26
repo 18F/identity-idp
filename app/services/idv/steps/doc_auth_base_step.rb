@@ -1,6 +1,6 @@
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
-
+# rubocop:disable Metrics/ClassLength
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -57,6 +57,7 @@ module Idv
 
       def extract_pii_from_doc(data)
         flow_session[:pii_from_doc] = test_credentials? ? pii_from_test_doc : parse_pii(data)
+        flow_session[:pii_from_doc]['uuid'] = current_user.uuid
       end
 
       def pii_from_test_doc
@@ -133,3 +134,4 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
