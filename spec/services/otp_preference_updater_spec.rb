@@ -26,8 +26,10 @@ describe OtpPreferenceUpdater do
           updated_user = instance_double(UpdateUser)
           allow(UpdateUser).to receive(:new).
             with(user: user, attributes: attributes).and_return(updated_user)
-          updater.call
+
           expect(updated_user).to_not receive(:call)
+
+          updater.call
         end
       end
 
