@@ -13,9 +13,21 @@ describe OtpPreferenceUpdater do
     context 'with authentication context' do
       context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
         it 'does not update the user' do
-          expect(UpdateUser).to_not receive(:new)
+          user = build_stubbed(:user, :with_phone, otp_delivery_preference: 'sms')
+          updater = OtpPreferenceUpdater.new(
+            user: user,
+            preference: 'sms',
+            phone_id: 1,
+          )
+          attributes = { :otp_delivery_preference=>"sms",
+                         :otp_make_default_number=>nil,
+                         :phone_id=>1}
 
-          subject.call
+          updated_user = instance_double(UpdateUser)
+          allow(UpdateUser).to receive(:new).
+            with(user: user, attributes: attributes).and_return(updated_user)
+          updater.call
+          expect(updated_user).to_not receive(:call)
         end
       end
 
