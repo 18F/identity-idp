@@ -21,7 +21,7 @@ describe OtpPreferenceUpdater do
 
       context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
         it 'updates the user' do
-          user = build_stubbed(:user, otp_delivery_preference: 'voice')
+          user = build_stubbed(:user, :with_phone, otp_delivery_preference: 'voice')
           updater = OtpPreferenceUpdater.new(
             user: user,
             preference: 'sms',
