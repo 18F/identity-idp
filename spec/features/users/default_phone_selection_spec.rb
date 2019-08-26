@@ -58,7 +58,6 @@ describe 'phone configuration' do
         user.phone_configurations.map { |phone_config|
           new_phone_config = phone_config if phone_config.phone.include? new_phone
         }
-
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
         check 'user_phone_form_otp_make_default_number'
@@ -67,14 +66,15 @@ describe 'phone configuration' do
 
         expect(page).to have_current_path(account_path)
 
-        node = page.first('div', text: new_phone)
-        parent = node.find(:xpath, '..')
-
-        within(parent) do
-          expect(page).to have_content t('account.index.default')
-        end
+        node = page.first('.account-list-item', text: new_phone)
+        expect(node).to have_content '202-555-3111'
+        parent = node.first(:xpath, './/..')
+        expect(parent).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
+        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
+                                       number: '***-***-3111',
+                                       expiration: Figaro.env.otp_valid_for)
       end
     end
   end
