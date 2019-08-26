@@ -21,23 +21,19 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
   scenario 'user throttled sending confirmation emails and can send again after wait period' do
     user.save!
+    email = user.email
 
     3.times do |i|
-      visit sign_up_email_resend_path
-      fill_in 'Email', with: user.email
-      click_button t('forms.buttons.resend_confirmation')
+      submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(i + 1)
     end
 
-    visit sign_up_email_resend_path
-    fill_in 'Email', with: user.email
-    click_button t('forms.buttons.resend_confirmation')
+    expect(unread_emails_for(user.email).size).to eq(3)
+    submit_resend_email_confirmation(email)
     expect(unread_emails_for(user.email).size).to eq(3)
 
     Timecop.travel(Time.zone.now + 2.days) do
-      visit sign_up_email_resend_path
-      fill_in 'Email', with: user.email
-      click_button t('forms.buttons.resend_confirmation')
+      submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(4)
     end
   end
@@ -81,5 +77,11 @@ feature 'Visit requests confirmation instructions again during sign up' do
     click_button t('forms.buttons.resend_confirmation')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
+  end
+
+  def submit_resend_email_confirmation(email)
+    visit sign_up_email_resend_path
+    fill_in 'Email', with: email
+    click_button t('forms.buttons.resend_confirmation')
   end
 end
