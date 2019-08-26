@@ -75,10 +75,6 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
-  def confirmation_period_expired?
-    super
-  end
-
   def set_reset_password_token
     super
   end
