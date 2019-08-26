@@ -68,7 +68,7 @@ describe 'phone configuration' do
 
         node = page.first('.account-list-item', text: new_phone)
         expect(node).to have_content '202-555-3111'
-        parent = node.first(:xpath,".//..")
+        parent = node.first(:xpath, './/..')
         expect(parent).to have_content t('account.index.default')
 
         sign_out_sign_in(user)
