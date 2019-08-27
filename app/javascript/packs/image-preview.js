@@ -11,7 +11,10 @@ function imagePreview() {
     reader.onload = function(file) {
       const img = new Image();
       img.onload = function () {
-        img.width = '500';
+        let display_width = '500';
+        let ratio = (this.height/this.width);
+        img.width = display_width;
+        img.height = (display_width*ratio);
         $('#target').html(img);
       };
       img.src = file.target.result;
