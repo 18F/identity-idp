@@ -78,7 +78,9 @@ module Users
     end
 
     def process_updates
+      warn "has the config changed?"
       if @edit_phone_form.phone_config_changed?
+        warn "yes"
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
 
         OtpPreferenceUpdater.new(

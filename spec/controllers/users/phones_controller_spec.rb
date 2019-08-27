@@ -22,14 +22,6 @@ describe Users::PhonesController do
                              otp_delivery_preference: 'sms' },
         }
       end
-
-      it 'lets user know they need to confirm their new phone' do
-        expect(
-          MfaContext.new(user).phone_configurations.reload.first.phone,
-        ).to_not eq '+1 202-555-4321'
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::PHONE_CHANGE_REQUESTED)
-      end
     end
 
     context 'user enters an empty phone' do
@@ -43,29 +35,6 @@ describe Users::PhonesController do
         }
 
         expect(MfaContext.new(user).phone_configurations.reload.first).to be_present
-      end
-    end
-
-    context "user changes phone to another user's phone" do
-      before do
-        stub_sign_in(user)
-
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-
-        put :update, params: {
-          user_phone_form: { phone: MfaContext.new(second_user).phone_configurations.first.phone,
-                             international_code: 'US',
-                             otp_delivery_preference: 'sms' },
-        }
-      end
-
-      it 'processes successfully and informs user' do
-        expect(MfaContext.new(user).phone_configurations.reload.first.phone).to_not eq(
-          MfaContext.new(second_user).phone_configurations.first.phone,
-        )
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::PHONE_CHANGE_REQUESTED)
       end
     end
 
@@ -198,22 +167,6 @@ describe Users::PhonesController do
     it 'gives the user a form to enter a new phone number' do
       get :add
       expect(response).to render_template(:add)
-    end
-
-    it 'lets user know they need to confirm their new phone' do
-      put :create, params: {
-        user_phone_form: { phone: new_phone,
-                           international_code: 'US',
-                           otp_delivery_preference: 'sms' },
-      }
-      expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-      expect(
-        MfaContext.new(user).phone_configurations.reload.first.phone,
-      ).to_not eq '+1 202-555-4321'
-      expect(response).to redirect_to(otp_send_path(otp_delivery_selection_form:
-                                                      { otp_delivery_preference: 'sms',
-                                                        otp_make_default_number: nil }))
-      expect(subject.user_session[:context]).to eq 'confirmation'
     end
   end
 end
