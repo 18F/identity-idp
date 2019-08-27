@@ -48,7 +48,7 @@ describe 'devise/passwords/new.html.slim' do
   end
 
   it 'has sp alert for certain service providers' do
-    @sp.issuer = SP_CONFIG.select { |_issuer, attributes| attributes['default_help_text'] }.keys.first
+    @sp.issuer = SP_CONFIG.select { |_issuer, attrs| attrs['default_help_text'] }.keys.first
 
     render
 

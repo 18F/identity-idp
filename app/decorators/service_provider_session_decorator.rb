@@ -29,7 +29,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     if FeatureManagement.use_dashboard_service_providers?
       sp.help_text[section][language] % args
     else
-      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(language)&.dig(section) % args
+      SP_CONFIG.dig(sp.issuer, 'help_text', language, section) % args
     end
   end
 
@@ -115,7 +115,9 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_alert?(path)
-    path_to_section_map = {'/': 'sign_in', '/sign_up/enter_email': 'sign_up', '/forgot_password': 'forgot_password', }
+    path_to_section_map = { '/': 'sign_in',
+                            '/sign_up/enter_email': 'sign_up',
+                            '/forgot_password': 'forgot_password' }
     custom_alert?(path_to_section_map[path.to_sym]) || default_alert?
   end
 
@@ -145,7 +147,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     if FeatureManagement.use_dashboard_service_providers?
       sp.help_text[section][language].present?
     else
-      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(language)&.dig(section).present?
+      SP_CONFIG.dig(sp.issuer, 'help_text', language, section).present?
     end
   end
 
