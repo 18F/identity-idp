@@ -1185,3 +1185,24 @@ production:
       - ssn
       - phone
     restrict_to_deploy_env: 'prod'
+
+  # DOT - FMCSA - Drug and Alcohol Clearinghouse
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:fmcsa:clearinghouse':
+    friendly_name: 'The FMCSA Drug & Alcohol Clearinghouse'
+    agency: 'DOT'
+    agency_id: 6
+    logo: 'dot_fmcsa_clearinghouse.svg'
+    cert: 'dot_fmcsa_clearinghouse_prod'
+    ial: 1
+    return_to_sp_url: 'https://clearinghouse.fmcsa.dot.gov'
+    redirect_uris:
+      - 'https://clearinghouse-beta.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse-cie.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/GATS/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/Live/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/Sprint/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse.fmcsa.dot.gov/signin-oidc'
+    attribute_bundle:
+      - 'email'
+    restrict_to_deploy_env: 'prod'
