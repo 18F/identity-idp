@@ -16,12 +16,20 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    if custom_alert?(section) && !FeatureManagement.use_dashboard_service_providers?
-      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(I18n.locale.to_s)&.dig(section) % args
-    elsif custom_alert?(section) && FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section][I18n.locale.to_s] % args
+    if custom_alert?(section)
+      generate_custom_alert(section, args)
     else
       t("service_providers.help_text.default.#{section}", args)
+    end
+  end
+
+  def generate_custom_alert(section, args)
+    language = I18n.locale.to_s
+
+    if FeatureManagement.use_dashboard_service_providers?
+      sp.help_text[section][language] % args
+    else
+      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(language)&.dig(section) % args
     end
   end
 
@@ -107,7 +115,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_alert?(path)
-    alert_included_for_path?(path) || default_alert?
+    path_to_section_map = {'/': 'sign_in', '/sign_up/enter_email': 'sign_up', '/forgot_password': 'forgot_password', }
+    custom_alert?(path_to_section_map[path.to_sym]) || default_alert?
   end
 
   # :reek:DuplicateMethodCall
@@ -132,25 +141,16 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def custom_alert?(section)
+    language = I18n.locale.to_s
     if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section][I18n.locale.to_s].present?
+      sp.help_text[section][language].present?
     else
-      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(I18n.locale.to_s)&.dig(section).present?
+      SP_CONFIG[sp.issuer]&.dig("help_text")&.dig(language)&.dig(section).present?
     end
   end
 
   def default_alert?
     SP_CONFIG[sp.issuer]&.dig('default_help_text')
-  end
-
-  def alert_included_for_path?(path)
-    if path == new_user_session_path
-      custom_alert?('sign_in')
-    elsif path == sign_up_email_path
-      custom_alert?('sign_up')
-    else
-      custom_alert?('forgot_password')
-    end
   end
 
   def request_url
