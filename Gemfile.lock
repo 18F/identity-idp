@@ -54,10 +54,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 2749925829f87c63c89e51ab3c32a00d57b05ff4
-  tag: v0.0.5
+  revision: 63892cd69648f29adac5617170039f5f7add9896
+  tag: v0.0.6
   specs:
-    identity-telephony (0.0.5)
+    identity-telephony (0.0.6)
       aws-sdk-pinpoint
       i18n
       phonelib
