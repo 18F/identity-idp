@@ -4,31 +4,31 @@
 </h1>
 
 <%= simple_form_for(@edit_phone_form,
-                    html: { autocomplete: 'off', method: :put, role: 'form' },
-                    data: { international_phone_form: true },
+                    html: {autocomplete: 'off', method: :put, role: 'form'},
+                    data: {international_phone_form: true},
                     url: manage_phone_path) do |f| %>
 
-    <div class="mb1 h4">
-      <%= t('two_factor_authentication.phone_label') %>:&nbsp;
-      <strong><%= @edit_phone_form.masked_number %></strong>
-    </div><br/>
+  <div class="mb1 h4">
+    <%= t('two_factor_authentication.phone_label') %>:&nbsp;
+    <strong><%= @edit_phone_form.masked_number %></strong>
+  </div><br/>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
-             form_obj: @edit_phone_form%>
+             form_obj: @edit_phone_form %>
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
-               form_obj: @edit_phone_form%>
+               form_obj: @edit_phone_form %>
   <% end %>
   <%= f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'no-auto-enable btn-wide' %>
 <% end %>
 
 
-<% if MfaPolicy.new(current_user).more_than_two_factors_enabled? && @edit_phone_form.phone.present? %>
-  <br />
+<% if MfaPolicy.new(current_user).more_than_two_factors_enabled? %>
+  <br/>
   <div class="sm-col-8 mb3">
     <%= button_to t('forms.phone.buttons.delete'), manage_phone_path(id: params[:id]),
-        class: 'btn btn-danger btn-wide',
-        method: :delete %>
+                  class: 'btn btn-danger btn-wide',
+                  method: :delete %>
   </div>
 <% end %>
 

@@ -181,31 +181,4 @@ describe UserPhoneForm do
       expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
     end
   end
-
-  describe '#phone_config_changed?' do
-    it 'returns true if the user phone has changed' do
-      params[:phone] = '+1 504 444 1643'
-      subject.submit(params)
-
-      expect(subject.phone_config_changed?).to eq(true)
-    end
-
-    it 'returns false if the user phone has not changed' do
-      params[:phone] = MfaContext.new(user).phone_configurations.first.phone
-      subject.submit(params)
-
-      expect(subject.phone_config_changed?).to eq(false)
-    end
-
-    context 'when a user has no phone' do
-      it 'returns true' do
-        MfaContext.new(user).phone_configurations.clear
-
-        params[:phone] = '+1 504 444 1643'
-        subject.submit(params)
-
-        expect(subject.phone_config_changed?).to eq(true)
-      end
-    end
-  end
 end

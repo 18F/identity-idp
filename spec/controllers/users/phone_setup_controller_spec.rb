@@ -18,7 +18,7 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
-        expect(UserPhoneForm).to receive(:new).with(user, nil)
+        expect(UserPhoneForm).to receive(:new).with(user)
 
         get :index
 
