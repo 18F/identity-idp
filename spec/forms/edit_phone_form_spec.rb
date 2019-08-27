@@ -11,27 +11,7 @@ describe EditPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject { UserPhoneForm.new(user) }
-
-  it 'loads initial values from the user object' do
-    user = build_stubbed(
-      :user, :with_phone,
-      with: { phone: '+1 (703) 500-5000' },
-      otp_delivery_preference: 'voice'
-    )
-    subject = UserPhoneForm.new(user)
-
-    expect(subject.phone).to eq(MfaContext.new(user).phone_configurations.first.phone)
-    expect(subject.international_code).to eq('US')
-    expect(subject.otp_delivery_preference).to eq(user.otp_delivery_preference)
-  end
-
-  it 'infers the international code from the user phone number' do
-    user = build_stubbed(:user, :with_phone, with: { phone: '+81 744 21 1234' })
-    subject = UserPhoneForm.new(user)
-
-    expect(subject.international_code).to eq('JP')
-  end
+  subject { EditPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
   describe 'phone validation' do
     it do
@@ -74,7 +54,7 @@ describe EditPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = UserPhoneForm.new(user)
+        subject = EditPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
@@ -120,14 +100,6 @@ describe EditPhoneForm do
           international_code: 'US',
           otp_delivery_preference: 'foo',
         }
-      end
-
-      it 'is invalid' do
-        result = subject.submit(params)
-
-        expect(result.success?).to eq(false)
-        expect(result.errors[:otp_delivery_preference].first).
-          to eq 'is not included in the list'
       end
     end
 
