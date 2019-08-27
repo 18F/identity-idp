@@ -90,14 +90,12 @@ module Idv
       end
 
       def throttle_post_front_image
-        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
-        increment_attempts
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors { assure_id.post_front_image(image.read) }
       end
 
       def throttle_post_back_image
-        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled?
-        increment_attempts
+        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors { assure_id.post_back_image(image.read) }
       end
 
@@ -107,12 +105,8 @@ module Idv
           ['text/x-yaml', 'text/plain'].include?(image.content_type)
       end
 
-      def increment_attempts
-        Throttler::Increment.call(user_id, :idv_acuant)
-      end
-
-      def throttled?
-        Throttler::IsThrottled.call(user_id, :idv_acuant)
+      def throttled_else_increment
+        Throttler::IsThrottledElseIncrement.call(user_id, :idv_acuant)
       end
 
       def user_id

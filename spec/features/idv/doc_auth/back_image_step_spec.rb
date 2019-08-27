@@ -81,7 +81,7 @@ shared_examples 'back image step' do |simulate|
         complete_doc_auth_steps_before_back_image_step(user)
         attach_image
         click_idv_continue
-        expect(page).to have_current_path(idv_doc_auth_back_image_step)
+        expect(page).to have_current_path(idv_doc_auth_ssn_step)
       end
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190805215030) do
+ActiveRecord::Schema.define(version: 20190826141526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -311,6 +311,7 @@ ActiveRecord::Schema.define(version: 20190805215030) do
     t.integer "throttle_type", null: false
     t.datetime "attempted_at"
     t.integer "attempts", default: 0
+    t.integer "throttled_count"
     t.index ["user_id", "throttle_type"], name: "index_throttles_on_user_id_and_throttle_type"
   end
 

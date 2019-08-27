@@ -309,6 +309,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
+          throttled: false,
           errors: {},
           email_already_exists: false,
           user_id: User.find_with_email(email).uuid,
