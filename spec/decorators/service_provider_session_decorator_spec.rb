@@ -60,7 +60,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'uses the default template' do
         sp_with_default_ht = SP_CONFIG.find { |_issuer, attr| attr['default_help_text'] }.last
         sp_name = sp_with_default_ht['friendly_name']
-        allow(subject).to receive(:issuer).and_return('test_sp_with_default_ht')
+        allow(sp).to receive(:issuer).and_return('test_sp_with_default_help_text')
         allow(subject).to receive(:sp_name).and_return(sp_name)
 
         expect(subject.sp_msg('sign_in', sp_name: sp_name)).
@@ -79,7 +79,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'uses the custom template' do
         sp_with_custom_ht = SP_CONFIG.find { |_issuer, attr| attr['help_text'].present? }.last
         sp_name = sp_with_custom_ht['friendly_name']
-        allow(subject).to receive(:issuer).and_return('test_sp_with_custom_ht')
+        allow(sp).to receive(:issuer).and_return('test_sp_with_custom_help_text')
         allow(subject).to receive(:sp_name).and_return(sp_name)
 
         expect(subject.sp_msg('sign_in')).

@@ -44,14 +44,14 @@ class ServiceProviderUpdater
   def sync_model(sp, cleaned_attributes)
     if sp.is_a?(NullServiceProvider)
       new_sp = ServiceProvider.create!(cleaned_attributes.except('help_text'))
-      return new_sp unless cleaned_attributes['help_text']
+      return new_sp unless cleaned_attributes['help_text'].present?
       new_sp.help_text = HelpText.create!(cleaned_attributes['help_text'].except(*HT_PROTECTED_ATTRIBUTES))
       new_sp
     else
       sp.attributes = cleaned_attributes.except('help_text')
-      return unless cleaned_attributes['help_text']
-      sp.help_text.update_attributes(cleaned_attributes['help_text']&.except(*HT_PROTECTED_ATTRIBUTES))
       sp.save!
+      return unless cleaned_attributes['help_text'].present?
+      sp.help_text.update(cleaned_attributes['help_text']&.except(*HT_PROTECTED_ATTRIBUTES))
     end
   end
 
