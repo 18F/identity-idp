@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPhoneForm do
+describe EditPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { build(:user, :signed_up) }
