@@ -9,7 +9,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.not_found')] },
+        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
         user_id: nil,
       }
 
@@ -25,7 +25,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.not_found')] },
+        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
         user_id: nil,
       }
 
@@ -41,7 +41,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a single-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.not_found')] },
+        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
         user_id: nil,
       }
 
@@ -57,7 +57,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.not_found')] },
+        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
         user_id: nil,
       }
 
@@ -131,8 +131,7 @@ describe SignUp::EmailConfirmationsController do
   describe 'Two users simultaneously confirm email with race condition' do
     it 'does not throw a 500 error' do
       create(:user, :unconfirmed, confirmation_token: 'foo')
-      allow_any_instance_of(SignUp::EmailConfirmationsController).
-        to receive(:validate_token).and_raise(ActiveRecord::RecordNotUnique)
+      allow(subject).to receive(:process_confirmation).and_raise(ActiveRecord::RecordNotUnique)
 
       get :create, params: { confirmation_token: 'foo' }
 

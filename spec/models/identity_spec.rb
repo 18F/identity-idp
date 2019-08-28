@@ -124,32 +124,6 @@ describe Identity do
     end
   end
 
-  describe '#piv_cac_available?' do
-    context 'when sp is configured to support piv/cac' do
-      before(:each) do
-        allow(PivCacService).to receive(:piv_cac_available_for_sp?).with(
-          service_provider, identity_with_sp.user.email_addresses.map(&:email)
-        ).and_return(true)
-      end
-
-      it 'returns truthy' do
-        expect(identity_with_sp.piv_cac_available?).to be_truthy
-      end
-    end
-
-    context 'when sp is not configured to support piv/cac' do
-      before(:each) do
-        allow(PivCacService).to receive(:piv_cac_available_for_sp?).with(
-          service_provider, identity_with_sp.user.email_addresses.map(&:email)
-        ).and_return(false)
-      end
-
-      it 'returns falsey' do
-        expect(identity_with_sp.piv_cac_available?).to be_falsey
-      end
-    end
-  end
-
   describe 'uniqueness validation for service provider per user' do
     it 'raises an error when uniqueness constraint is broken' do
       Identity.create(user_id: user.id, service_provider: 'externalapp')

@@ -43,7 +43,6 @@ module SignUp
       user = @register_user_email_form.user
       unless @register_user_email_form.email_taken?
         create_user_event(:account_created, user)
-        Funnel::Registration::Create.call(user.id)
       end
 
       resend_confirmation = params[:user][:resend]

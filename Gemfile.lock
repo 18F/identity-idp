@@ -35,15 +35,14 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: d112abe3707b62ee53987dfbdc89faa70a4c976f
+  revision: 087594b98207a412a9a3458fd475859a8169f37c
   branch: master
   specs:
-    identity_validations (0.1.0)
+    identity_validations (0.2.0)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 70494010f977958434ead1d3eb7e9697bd2c3a76
-  tag: v0.8.0-18f
+  revision: aa22a148b4b4f824c60c33bd0fb3ee67cf067298
   specs:
     saml_idp (0.8.0.pre.18f)
       activesupport
@@ -52,6 +51,18 @@ GIT
       nokogiri (>= 1.6.2)
       pkcs11
       uuid
+
+GIT
+  remote: https://github.com/18f/identity-telephony.git
+  revision: 63892cd69648f29adac5617170039f5f7add9896
+  tag: v0.0.6
+  specs:
+    identity-telephony (0.0.6)
+      aws-sdk-pinpoint
+      i18n
+      phonelib
+      twilio-ruby
+      typhoeus
 
 GEM
   remote: https://rubygems.org/
@@ -117,6 +128,9 @@ GEM
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
     aws-sdk-kms (1.23.0)
+      aws-sdk-core (~> 3, >= 3.58.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-pinpoint (1.26.0)
       aws-sdk-core (~> 3, >= 3.58.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.45.0)
@@ -518,17 +532,15 @@ GEM
     safe_yaml (1.0.5)
     safely_block (0.2.1)
       errbase
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.7)
-      railties (>= 4.0.0, < 6)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
+    sassc (2.0.1)
+      ffi (~> 1.9)
+      rake
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
@@ -696,6 +708,7 @@ DEPENDENCIES
   httparty
   i18n-tasks
   identity-hostdata!
+  identity-telephony!
   identity_validations!
   json-jwt
   knapsack
@@ -742,7 +755,7 @@ DEPENDENCIES
   ruby-saml
   safe_target_blank
   saml_idp!
-  sass-rails (~> 5.0)
+  sassc-rails (~> 2.1.2)
   scrypt
   secure_headers (~> 6.0)
   shoulda-matchers (~> 4.0.1)

@@ -39,10 +39,10 @@ es:
         para confirmar y completar la eliminación de su cuenta.</strong>"
       subject: Eliminar su cuenta
     add_email:
-      footer: Este enlace expirará en %{confirmation_period}.
-      header: Gracias por agregar un email. Haga clic en el enlace de abajo o copie
-        y pegue el enlace completo en su navegador.
-      subject: Confirme su email
+      footer: Este enlace expira en %{confirmation_period}.
+      header: Gracias por enviar su correo electrónico. Haga clic en el enlace debajo
+        o copie y pegue el enlace completo en su navegador.
+      subject: Confirme su correo electrónico
     add_email_associated_with_another_account:
       help: Si no solicitó un nuevo correo electrónico o sospecha de un error, visite
         %{app} %{help_link} o %{contact_link}.

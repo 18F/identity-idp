@@ -17,6 +17,7 @@ describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: true,
+          throttled: false,
           user_id: existing_user.uuid,
           domain_name: 'gmail.com',
         }
@@ -44,6 +45,7 @@ describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: true,
+          throttled: false,
           user_id: user.uuid,
           domain_name: 'test.com',
         }
@@ -63,6 +65,7 @@ describe RegisterUserEmailForm do
         submit_form = subject.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
+          throttled: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
           domain_name: 'gmail.com',
         }
@@ -80,6 +83,7 @@ describe RegisterUserEmailForm do
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
+          throttled: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
           domain_name: 'gmail.com',
           recaptcha_valid: true,
@@ -100,6 +104,7 @@ describe RegisterUserEmailForm do
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
+          throttled: false,
           user_id: 'anonymous-uuid',
           domain_name: 'gmail.com',
           recaptcha_valid: false,
@@ -119,6 +124,7 @@ describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: false,
+          throttled: false,
           user_id: 'anonymous-uuid',
           domain_name: 'invalid_email',
         }
@@ -140,6 +146,7 @@ describe RegisterUserEmailForm do
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
+          throttled: false,
           user_id: 'anonymous-uuid',
         }
 
@@ -159,6 +166,7 @@ describe RegisterUserEmailForm do
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
+          throttled: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 
@@ -176,6 +184,7 @@ describe RegisterUserEmailForm do
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
+          throttled: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 

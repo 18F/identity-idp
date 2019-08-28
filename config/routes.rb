@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
+  get '/api/health/jobs' => 'health/jobs#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
@@ -23,6 +24,9 @@ Rails.application.routes.draw do
         via: %i[get post],
         as: :voice_otp,
         defaults: { format: :xml }
+  match '/api/twilio/voice' => 'twilio_voice#show',
+        via: %i[get post],
+        format: :xml
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'

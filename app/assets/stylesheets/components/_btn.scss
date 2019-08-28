@@ -20,6 +20,10 @@
 
 .btn-primary {
   border-radius: $border-radius-lg;
+
+  &:disabled {
+    opacity: .6;
+  }
 }
 
 .btn-secondary {
@@ -83,8 +87,8 @@
 
 .btn-disabled {
   background-color: $gray-light;
-  border-color: $gray;
-  color: $gray;
+  color: $gray-dark;
+  cursor: not-allowed;
 }
 
 .btn-account-action {

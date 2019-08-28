@@ -44,14 +44,12 @@ module Features
 
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
     end
 
     def signin_with_piv(user = user_with_piv_cac)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)
@@ -181,6 +179,7 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
+
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
@@ -450,6 +449,12 @@ module Features
       User.find_with_email(email)
     end
 
+    def confirm_email(email)
+      visit sign_up_email_path
+      submit_form_with_valid_email(email)
+      click_confirmation_link_in_email(email)
+    end
+
     def confirm_email_and_password(email)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
@@ -475,7 +480,6 @@ module Features
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')
-      allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(true)
       confirm_email_and_password(email)
       expect(page).to have_current_path two_factor_options_path
       expect(page).to have_content(

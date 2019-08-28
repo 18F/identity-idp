@@ -26,17 +26,50 @@ feature 'Sign Up' do
   end
 
   context 'user cancels on the enter password screen', email: true do
-    it 'sends them to the cancel page' do
-      email = 'test@test.com'
-
-      visit sign_up_email_path
-
-      submit_form_with_valid_email(email)
-      click_confirmation_link_in_email(email)
-
+    before(:each) do
+      confirm_email('test@test.com')
       click_on t('links.cancel_account_creation')
+    end
 
+    it 'sends them to the cancel page' do
       expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
+    end
+  end
+
+  context 'user cancels on 1st MFA screen', email: true do
+    before(:each) do
+      confirm_email('test@test.com')
+      submit_form_with_valid_password
+      click_on t('links.cancel_account_creation')
+    end
+
+    it 'sends them to the cancel page' do
+      expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
+    end
+  end
+
+  context 'user cancels on 2nd MFA screen', email: true do
+    before(:each) do
+      confirm_email('test@test.com')
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      click_on t('links.cancel_account_creation')
+    end
+
+    it 'sends them to the cancel page' do
+      expect(current_path).to eq sign_up_cancel_path
+    end
+
+    it 'does not display a link to get back to their account' do
+      expect(page).to_not have_content t('links.back_to_account')
     end
   end
 
@@ -48,12 +81,10 @@ feature 'Sign Up' do
     end
   end
 
-  scenario 'renders an error when twilio api responds with an error' do
-    twilio_error = Twilio::REST::RestError.new(
-      '', FakeTwilioErrorResponse.new(21_614)
-    )
+  scenario 'renders an error when the telephony gem responds with an error' do
+    telephony_error = Telephony::TelephonyError.new('error message')
 
-    allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
@@ -62,7 +93,7 @@ feature 'Sign Up' do
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
-    expect(page).to have_content(unsupported_sms_message)
+    expect(page).to have_content(telephony_error.friendly_message)
   end
 
   context 'with js', js: true do
@@ -132,16 +163,6 @@ feature 'Sign Up' do
     set_up_2fa_with_backup_code
 
     expect(page).to have_current_path account_path
-  end
-
-  it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
-    allow(PivCacService).to receive(:piv_cac_available_for_sp?).and_return(false)
-    begin_sign_up_with_sp_and_loa(loa3: false)
-
-    expect(page).to have_current_path two_factor_options_path
-    expect(page).not_to have_content(
-      t('two_factor_authentication.two_factor_choice_options.piv_cac'),
-    )
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do

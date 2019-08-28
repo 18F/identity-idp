@@ -68,6 +68,7 @@ feature 'idv unsuported state selection' do
     complete_idv_steps_before_jurisdiction_step
 
     select 'Alabama', from: 'jurisdiction_state'
+    page.find('#jurisdiction_ial2_consent_given').click
     click_idv_continue
 
     expect(page).to have_content t('idv.messages.jurisdiction.unsupported_jurisdiction_failure',
@@ -82,6 +83,7 @@ feature 'idv unsuported state selection' do
     visit idv_jurisdiction_url
 
     select 'Alabama', from: 'jurisdiction_state'
+    page.find('#jurisdiction_ial2_consent_given').click
     click_idv_continue
 
     expect(page).to have_content t('idv.messages.jurisdiction.unsupported_jurisdiction_failure',
@@ -96,6 +98,7 @@ feature 'idv unsuported state selection' do
     visit idv_jurisdiction_url
 
     select 'Alabama', from: 'jurisdiction_state'
+    page.find('#jurisdiction_ial2_consent_given').click
     click_idv_continue
     expect(page).to have_content t('links.back_to_account')
   end
@@ -106,6 +109,7 @@ feature 'idv unsuported state selection' do
     complete_idv_steps_before_jurisdiction_step
 
     select 'Alabama', from: 'jurisdiction_state'
+    page.find('#jurisdiction_ial2_consent_given').click
     click_idv_continue
     expect(page).to have_content strip_tags(t('idv.failure.help.get_help_html', sp_name: sp_name))
   end

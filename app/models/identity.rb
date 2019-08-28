@@ -27,11 +27,4 @@ class Identity < ApplicationRecord
   def decorate
     IdentityDecorator.new(self)
   end
-
-  def piv_cac_available?
-    PivCacService.piv_cac_available_for_sp?(
-      ServiceProvider.from_issuer(service_provider),
-      user.email_addresses.map(&:email),
-    )
-  end
 end

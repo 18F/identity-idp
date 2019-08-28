@@ -14,8 +14,12 @@ feature 'cac proofing present cac step' do
   end
 
   it 'proceeds to the next page' do
-    click_button t('forms.buttons.cac')
+    click_link t('forms.buttons.cac')
 
-    expect(page).to have_current_path(idv_cac_proofing_enter_info_step)
+    expect(page.current_url.include?("/\?nonce=")).to eq(true)
+
+    visit idv_cac_step_path(step: :present_cac, token: 'foo')
+
+    expect(page.current_path).to eq(idv_cac_proofing_enter_info_step)
   end
 end

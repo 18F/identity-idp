@@ -14,6 +14,7 @@ feature 'cac proofing enter info step' do
   end
 
   it 'proceeds to the next page' do
+    fill_out_cac_proofing_form_ok
     click_continue
 
     expect(page).to have_current_path(idv_cac_proofing_verify_step)

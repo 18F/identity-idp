@@ -20,10 +20,6 @@ class FeatureManagement
       !env.piv_cac_verify_token_url
   end
 
-  def self.allow_piv_cac_by_email_only?
-    Figaro.env.allow_piv_cac_by_email_only == 'true'
-  end
-
   def self.allow_piv_cac_login?
     Figaro.env.login_with_piv_cac == 'true'
   end
@@ -100,10 +96,6 @@ class FeatureManagement
 
   def self.doc_auth_exclusive?
     Figaro.env.doc_auth_exclusive == 'true'
-  end
-
-  def self.send_new_device_sms?
-    Figaro.env.send_new_device_sms == 'true'
   end
 
   def self.disallow_ial2_recovery?

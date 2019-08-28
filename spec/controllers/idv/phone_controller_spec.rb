@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Idv::PhoneController do
-  include Features::LocalizationHelper
   include IdvHelper
 
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }

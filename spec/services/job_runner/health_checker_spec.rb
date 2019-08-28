@@ -5,13 +5,14 @@ describe JobRunner::HealthChecker do
     configurations = []
     configurations << JobRunner::JobConfiguration.new(
       name: 'test job 1',
-      interval: 5 * 60,
+      interval: 5 * 60, # 5 minutes
       timeout: 60,
       callback: -> { 'test job 1 result' },
+      failures_before_alarm: 3,
     )
     configurations << JobRunner::JobConfiguration.new(
       name: 'test job 2',
-      interval: 60 * 60,
+      interval: 60 * 60, # hourly
       timeout: 60 * 30,
       callback: -> { 'test job 2 result' },
     )
@@ -20,7 +21,7 @@ describe JobRunner::HealthChecker do
 
   context 'when all of the jobs have run as scheduled' do
     it 'returns a healthy summary' do
-      create(:job_run, job_name: 'test job 1', created_at: 9.minutes.ago)
+      create(:job_run, job_name: 'test job 1', created_at: 14.minutes.ago)
       create(:job_run, job_name: 'test job 2', created_at: 20.minutes.ago)
 
       expected_summary = { healthy: true, result: { 'test job 1' => true, 'test job 2' => true } }
@@ -35,7 +36,7 @@ describe JobRunner::HealthChecker do
 
   context 'when there is a job that has not run' do
     it 'returns an unhealthy summary' do
-      create(:job_run, job_name: 'test job 1', created_at: 11.minutes.ago)
+      create(:job_run, job_name: 'test job 1', created_at: 16.minutes.ago)
       create(:job_run, job_name: 'test job 2', created_at: 20.minutes.ago)
 
       expected_summary = { healthy: false, result: { 'test job 1' => false, 'test job 2' => true } }

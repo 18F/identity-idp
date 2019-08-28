@@ -10,6 +10,8 @@ module Idv
         'Address State' => :state,
         'Address Postal Code' => :zipcode,
         'Birth Date' => :dob,
+        'Document Number' => :state_id_number,
+        'Issuing State Code' => :state_id_jurisdiction,
       }.freeze
 
       def initialize(id_data_fields)
@@ -23,6 +25,7 @@ module Idv
         VALUE.each do |key, value|
           hash[value] = @name_to_value[key]
         end
+        hash[:state_id_type] = 'drivers_license'
         hash[:dob] = convert_date(hash[:dob])
         hash[:phone] = phone
         hash

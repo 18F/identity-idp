@@ -256,4 +256,31 @@ feature 'Password Recovery' do
         to(include('style-src \'self\' \'unsafe-inline\''))
     end
   end
+
+  it 'throttles reset passwords requests and resumes after wait period' do
+    user = create(:user, :signed_up)
+    email = user.email
+
+    max_attempts = Figaro.env.reset_password_email_max_attempts.to_i
+    max_attempts.times do |i|
+      submit_email_for_password_reset(email)
+      expect(unread_emails_for(email).size).to eq(i + 1)
+    end
+
+    expect(unread_emails_for(email).size).to eq(max_attempts)
+    submit_email_for_password_reset(email)
+    expect(unread_emails_for(email).size).to eq(max_attempts)
+
+    window_in_minutes = Figaro.env.reset_password_email_window_in_minutes.to_i + 1
+    Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
+      submit_email_for_password_reset(email)
+      expect(unread_emails_for(email).size).to eq(max_attempts + 1)
+    end
+  end
+
+  def submit_email_for_password_reset(email)
+    visit new_user_password_path
+    fill_in 'Email', with: email
+    click_button t('forms.buttons.continue')
+  end
 end
