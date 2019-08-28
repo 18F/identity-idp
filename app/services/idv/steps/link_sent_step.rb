@@ -17,8 +17,9 @@ module Idv
 
       def check_if_take_photo_with_phone_successful
         dac = DocCapture.find_by(user_id: current_user.id)
-        if dac.acuant_token
-          flow_session[:instance_id] = dac.acuant_token
+        token = dac.acuant_token
+        if token
+          flow_session[:instance_id] = token
           false
         else
           failure(I18n.t('errors.doc_auth.phone_step_incomplete'))
