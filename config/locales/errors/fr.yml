@@ -38,6 +38,8 @@ fr:
         <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
         <li class="mxn3">Le fond est visible derrière le document</li>
         </ul>
+      phone_step_incomplete: You must go to your phone and upload photos of your ID
+        before continuing. We sent you a link with instructions.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
