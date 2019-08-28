@@ -44,14 +44,12 @@ module Features
 
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
     end
 
     def signin_with_piv(user = user_with_piv_cac)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)
@@ -181,6 +179,7 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
+
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )

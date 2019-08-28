@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'SMS receiving' do
-  include Features::LocalizationHelper
-
   let(:username) { 'auth_username' }
   let(:password) { 'auth_password' }
   let(:access_denied) { 'HTTP Basic: Access denied' }
@@ -55,11 +53,10 @@ describe 'SMS receiving' do
           receive(:validate).and_return(false),
         )
 
-        expect(SmsReplySenderJob).to_not receive(:perform_later)
-
         post_message(help_message)
 
         expect(response).to have_http_status(:forbidden)
+        expect(Telephony::Test::Message.messages.length).to eq(0)
       end
 
       it 'responds with a 200 status when signature is valid' do
@@ -67,11 +64,10 @@ describe 'SMS receiving' do
           receive(:validate).and_return(true),
         )
 
-        expect(SmsReplySenderJob).to_not receive(:perform_later)
-
         post_message(invalid_message)
 
         expect(response).to have_http_status(:ok)
+        expect(Telephony::Test::Message.messages.length).to eq(0)
       end
     end
 
@@ -81,7 +77,7 @@ describe 'SMS receiving' do
           receive(:validate).and_return(true),
         )
 
-        expect(SmsReplySenderJob).to receive(:perform_later)
+        expect(Telephony).to receive(:send_help_keyword_response)
 
         post_message(help_message)
 

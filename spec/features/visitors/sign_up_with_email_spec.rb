@@ -33,7 +33,7 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with empty email address' do
     sign_up_with('')
 
-    expect(page).to have_content(invalid_email_message)
+    expect(page).to have_content(t('valid_email.validations.email.invalid'))
   end
 
   context 'user signs up and sets password, tries to sign up again' do
@@ -62,6 +62,28 @@ feature 'Visitor signs up with email address' do
     suppress_output do
       sign_up_with("test@\xFFbar\xF8.com")
       expect(page).to have_content 'Bad request'
+    end
+  end
+
+  it 'throttles sending confirmations after user submitted and then resumes after wait period' do
+    email = 'test@test.com'
+    sign_up_with(email)
+
+    starting_count = unread_emails_for(email).size
+    max_attempts = Figaro.env.reg_unconfirmed_email_max_attempts.to_i
+    max_attempts.times do |i|
+      sign_up_with(email)
+      expect(unread_emails_for(email).size).to eq(starting_count + i + 1)
+    end
+
+    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts)
+    sign_up_with(email)
+    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts)
+
+    window_in_minutes = Figaro.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
+      sign_up_with(email)
+      expect(unread_emails_for(email).size).to eq(starting_count + max_attempts + 1)
     end
   end
 end

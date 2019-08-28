@@ -68,14 +68,14 @@ feature 'OTP delivery selection' do
 
     expect(page).to have_content(t('titles.phone_setup'))
 
-    Twilio::FakeCall.calls = []
-    Twilio::FakeMessage.messages = []
+    Telephony::Test::Call.clear_calls
+    Telephony::Test::Message.clear_messages
 
     fill_in :user_phone_form_phone, with: '202-555-1313'
     click_send_security_code
 
-    expect(Twilio::FakeCall.calls.length).to eq(0)
-    expect(Twilio::FakeMessage.messages.length).to eq(1)
+    expect(Telephony::Test::Call.calls.length).to eq(0)
+    expect(Telephony::Test::Message.messages.length).to eq(1)
 
     expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 

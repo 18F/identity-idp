@@ -1,21 +1,20 @@
 module TwilioHelper
   def last_sms_otp(phone: nil)
-    Twilio::FakeMessage.last_otp(phone: phone)
-  end
-
-  def last_international_sms_otp(phone: nil)
-    Twilio::FakeVerifyMessage.last_otp(phone: phone)
+    Telephony::Test::Message.last_otp(phone: phone)
   end
 
   def last_voice_otp(phone: nil)
-    Twilio::FakeCall.last_otp(phone: phone)
+    Telephony::Test::Call.last_otp(phone: phone)
   end
 
   def last_phone_otp
     [
-      Twilio::FakeMessage.last_message,
-      Twilio::FakeCall.last_call,
-      Twilio::FakeVerifyMessage.last_message,
-    ].compact.max_by(&:sent_at)&.otp
+      Telephony::Test::Message.messages,
+      Telephony::Test::Call.calls,
+    ].flatten.compact.sort_by(&:sent_at).reverse.each do |message_or_call|
+      otp = message_or_call.otp
+      return otp if otp.present?
+    end
+    nil
   end
 end

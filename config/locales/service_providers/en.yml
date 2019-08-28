@@ -13,6 +13,23 @@ en:
         body: Please create a login.gov account using the same email address you use
           for %{sp_name}
       header: First time here from %{sp_name}?
+    fmcsa_drug_alcohol_clearinghouse:
+      account_page:
+        body: |-
+          FMCSA enforcement and SDLA staff do not need to create a login.gov account to
+          access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
+          <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
+      body_html: |-
+        FMCSA enforcement and SDLA staff do not need to create a login.gov account to
+        access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
+        <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
+      create_account_link: ''
+      create_account_page:
+        body: |-
+          FMCSA enforcement and SDLA staff do not need to create a login.gov account to
+          access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
+          <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
+      header: Are you FMCSA or State Driver Licensing Agency personnel?
     fmcsa_natl_registry:
       account_page:
         body: |-

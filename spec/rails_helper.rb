@@ -38,7 +38,6 @@ RSpec.configure do |config|
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
-  config.include Features::LocalizationHelper, type: :feature
   config.include Features::MailerHelper, type: :feature
   config.include Features::SessionHelper, type: :feature
   config.include Features::StripTagsHelper, type: :feature
@@ -68,11 +67,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    allow(PhoneVerification).to receive(:adapter).and_return(Twilio::FakeVerifyAdapter)
-    allow(TwilioService::Utils).to receive(:telephony_service).and_return(Twilio::FakeRestClient)
-    Twilio::FakeMessage.messages = []
-    Twilio::FakeCall.calls = []
-    Twilio::FakeVerifyMessage.messages = []
+    Telephony::Test::Message.clear_messages
+    Telephony::Test::Call.clear_calls
   end
 
   config.around(:each, user_flow: true) do |example|

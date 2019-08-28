@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Users::DeleteController do
-  include Features::LocalizationHelper
   include Features::MailerHelper
 
   describe '#show' do

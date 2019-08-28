@@ -13,6 +13,7 @@ class RegisterUserEmailForm
 
   def initialize(recaptcha_results = [true, {}])
     @allow, @recaptcha_h = recaptcha_results
+    @throttled = false
   end
 
   def user
@@ -75,6 +76,7 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
+      throttled: @throttled,
     }.merge(@recaptcha_h)
   end
 
@@ -82,14 +84,24 @@ class RegisterUserEmailForm
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
-      SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
+      send_sign_up_unconfirmed_email(request_id)
       true
     elsif email_taken?
-      UserMailer.signup_with_your_email(email).deliver_later
+      send_sign_up_confirmed_email
       true
     else
       false
     end
+  end
+
+  def send_sign_up_unconfirmed_email(request_id)
+    @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_unconfirmed_email)
+    SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id) unless @throttled
+  end
+
+  def send_sign_up_confirmed_email
+    @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_confirmed_email)
+    UserMailer.signup_with_your_email(email).deliver_later unless @throttled
   end
 
   def user_unconfirmed?

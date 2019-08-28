@@ -28,12 +28,12 @@ describe Idv::SendPhoneConfirmationOtp do
       and_return(exceeded_otp_send_limit)
   end
 
-  subject { described_class.new(user: user, idv_session: idv_session, locale: 'en') }
+  subject { described_class.new(user: user, idv_session: idv_session) }
 
   describe '#call' do
     context 'with sms' do
       it 'sends an sms' do
-        allow(SmsOtpSenderJob).to receive(:perform_later)
+        allow(Telephony).to receive(:send_confirmation_otp)
 
         result = subject.call
 
@@ -43,12 +43,11 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(idv_session.phone_confirmation_otp).to eq(phone_confirmation_otp)
         expect(sent_at).to be_within(1.second).of(Time.zone.now)
-        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
-          otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-          code: phone_confirmation_otp,
-          phone: parsed_phone,
-          message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: 'en',
+        expect(Telephony).to have_received(:send_confirmation_otp).with(
+          otp: phone_confirmation_otp,
+          to: parsed_phone,
+          expiration: 10,
+          channel: :sms,
         )
       end
     end
@@ -57,7 +56,7 @@ describe Idv::SendPhoneConfirmationOtp do
       let(:otp_delivery_preference) { 'voice' }
 
       it 'makes a phone call' do
-        allow(VoiceOtpSenderJob).to receive(:perform_later)
+        allow(Telephony).to receive(:send_confirmation_otp)
 
         result = subject.call
 
@@ -67,11 +66,11 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(idv_session.phone_confirmation_otp).to eq(phone_confirmation_otp)
         expect(sent_at).to be_within(1.second).of(Time.zone.now)
-        expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
-          otp_created_at: idv_session.phone_confirmation_otp_sent_at,
-          code: phone_confirmation_otp,
-          phone: parsed_phone,
-          locale: 'en',
+        expect(Telephony).to have_received(:send_confirmation_otp).with(
+          otp: phone_confirmation_otp,
+          to: parsed_phone,
+          expiration: 10,
+          channel: :voice,
         )
       end
     end
@@ -80,10 +79,8 @@ describe Idv::SendPhoneConfirmationOtp do
       let(:exceeded_otp_send_limit) { true }
 
       it 'does not make a phone call or send an sms' do
-        expect(SmsOtpSenderJob).to_not receive(:perform_later)
-        expect(SmsOtpSenderJob).to_not receive(:perform_now)
-        expect(VoiceOtpSenderJob).to_not receive(:perform_later)
-        expect(VoiceOtpSenderJob).to_not receive(:perform_now)
+        expect(Telephony).to_not receive(:send_authentication_otp)
+        expect(Telephony).to_not receive(:send_confirmation_otp)
 
         result = subject.call
 
