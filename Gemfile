@@ -82,8 +82,6 @@ group :development do
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'reek'
-  gem 'rubocop', '~> 0.72.0', require: false
-  gem 'rubocop-rails', require: false
 end
 
 group :development, :test do
@@ -96,6 +94,8 @@ group :development, :test do
   gem 'puma'
   gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
+  gem 'rubocop', '~> 0.72.0', require: false
+  gem 'rubocop-rails', require: false
 end
 
 group :test do
