@@ -54,11 +54,12 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 63892cd69648f29adac5617170039f5f7add9896
-  tag: v0.0.6
+  revision: 9d3eeec324fd78ab154137f39b882a91c50c1096
+  tag: v0.0.7
   specs:
-    identity-telephony (0.0.6)
+    identity-telephony (0.0.7)
       aws-sdk-pinpoint
+      aws-sdk-pinpointsmsvoice
       i18n
       phonelib
       twilio-ruby
@@ -131,6 +132,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.58.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-pinpoint (1.26.0)
+      aws-sdk-core (~> 3, >= 3.58.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-pinpointsmsvoice (1.11.0)
       aws-sdk-core (~> 3, >= 3.58.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.45.0)
