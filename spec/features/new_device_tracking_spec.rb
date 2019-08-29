@@ -10,7 +10,6 @@ describe 'New device tracking' do
 
     it 'sends a user notification on signin' do
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
 
       sign_in_user(user)
 
@@ -26,21 +25,17 @@ describe 'New device tracking' do
           'From 127.0.0.1 (IP address potentially located in United States)',
           instance_of(String),
         )
-      expect(SmsNewDeviceSignInNotifierJob).to have_received(:perform_now).
-        with(phone: user.phone_configurations.first.phone)
     end
   end
 
   context 'user does not have existing devices' do
     it 'should not send any notifications' do
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
 
       sign_in_user(user)
 
       expect(user.devices.length).to eq 1
       expect(UserMailer).not_to have_received(:new_device_sign_in)
-      expect(SmsNewDeviceSignInNotifierJob).not_to have_received(:perform_now)
     end
   end
 
@@ -53,7 +48,6 @@ describe 'New device tracking' do
 
     it 'does not send an SMS' do
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      allow(SmsNewDeviceSignInNotifierJob).to receive(:perform_now)
 
       sign_in_user(user)
 
@@ -69,7 +63,6 @@ describe 'New device tracking' do
           'From 127.0.0.1 (IP address potentially located in United States)',
           instance_of(String),
         )
-      expect(SmsNewDeviceSignInNotifierJob).to_not have_received(:perform_now)
     end
   end
 end

@@ -15,6 +15,14 @@ fr:
         body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
           avez utilisée pour %{sp_name}.
       header: Êtes-vous venu(e) de %{sp_name}?
+    fmcsa_drug_alcohol_clearinghouse:
+      account_page:
+        body: ''
+      body_html: ''
+      create_account_link: ''
+      create_account_page:
+        body: ''
+      header: ''
     fmcsa_natl_registry:
       account_page:
         body: ''

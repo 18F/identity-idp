@@ -368,20 +368,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#send_new_device_sms?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:send_new_device_sms) { 'true' }
-
-      expect(FeatureManagement.send_new_device_sms?).to eq(true)
-    end
-
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:send_new_device_sms) { 'false' }
-
-      expect(FeatureManagement.send_new_device_sms?).to eq(false)
-    end
-  end
-
   describe '#disallow_ial2_recovery?' do
     it 'returns true when Figaro setting is true' do
       allow(Figaro.env).to receive(:disallow_ial2_recovery) { 'true' }

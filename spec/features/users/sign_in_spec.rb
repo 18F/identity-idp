@@ -412,9 +412,8 @@ feature 'Sign in' do
                     otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
       signin(user.email, user.password)
 
-      expect(Twilio::FakeCall.calls).to eq([])
-      expect(Twilio::FakeMessage.messages).to eq([])
-      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -432,9 +431,8 @@ feature 'Sign in' do
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
 
-      expect(Twilio::FakeCall.calls).to eq([])
-      expect(Twilio::FakeMessage.messages).to eq([])
-      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
@@ -454,9 +452,8 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(Twilio::FakeCall.calls).to eq([])
-      expect(Twilio::FakeMessage.messages).to eq([])
-      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
@@ -476,9 +473,8 @@ feature 'Sign in' do
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
       )
 
-      expect(Twilio::FakeCall.calls).to eq([])
-      expect(Twilio::FakeMessage.messages).to eq([])
-      expect(Twilio::FakeVerifyMessage.messages.length).to eq(1)
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(

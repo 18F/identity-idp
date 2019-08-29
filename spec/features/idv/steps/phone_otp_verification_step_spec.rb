@@ -53,7 +53,7 @@ feature 'phone otp verification step spec' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
-    expect(SmsOtpSenderJob).to receive(:perform_later)
+    expect(Telephony).to receive(:send_confirmation_otp)
 
     click_on t('links.two_factor_authentication.get_another_code')
 
@@ -70,30 +70,26 @@ feature 'phone otp verification step spec' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
-    generic_exception = Twilio::REST::RestError.new(
-      '', FakeTwilioErrorResponse.new(123)
-    )
-    allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(generic_exception)
+    telephony_error = Telephony::TelephonyError.new('error message')
+    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
 
     click_on t('links.two_factor_authentication.get_another_code')
 
-    expect(page).to have_content(t('errors.messages.otp_failed'))
+    expect(page).to have_content(telephony_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)
 
-    allow(SmsOtpSenderJob).to receive(:perform_later).and_call_original
+    allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
     fill_out_phone_form_ok
     click_idv_continue
     choose_idv_otp_delivery_method_sms
 
-    calling_area_exception = Twilio::REST::RestError.new(
-      '', FakeTwilioErrorResponse.new(21_215)
-    )
-    allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(calling_area_exception)
+    calling_area_error = Telephony::InvalidCallingAreaError.new('error message')
+    allow(Telephony).to receive(:send_confirmation_otp).and_raise(calling_area_error)
 
     click_on t('links.two_factor_authentication.get_another_code')
 
-    expect(page).to have_content(t('errors.messages.invalid_calling_area'))
+    expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)
   end
 

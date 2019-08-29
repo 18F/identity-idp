@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::TwoFactorAuthenticationController do
-  include Features::LocalizationHelper
-
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
@@ -148,35 +146,22 @@ describe Users::TwoFactorAuthenticationController do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
         @old_otp = subject.current_user.direct_otp
-        allow(SmsOtpSenderJob).to receive(:perform_later)
+        allow(Telephony).to receive(:send_authentication_otp)
       end
 
-      it 'sends OTP via SMS for login' do
+      it 'sends OTP via SMS for sign in' do
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
 
-        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
-          code: subject.current_user.direct_otp,
-          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
-          otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
-          message: 'jobs.sms_otp_sender_job.login_message',
-          locale: nil,
+        expect(Telephony).to have_received(:send_authentication_otp).with(
+          otp: subject.current_user.direct_otp,
+          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          expiration: 10,
+          channel: :sms,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
           login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false),
-        )
-      end
-
-      it 'sends OTP via SMS for signing in' do
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-
-        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
-          code: subject.current_user.direct_otp,
-          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
-          otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
-          message: 'jobs.sms_otp_sender_job.login_message',
-          locale: nil,
         )
       end
 
@@ -231,7 +216,7 @@ describe Users::TwoFactorAuthenticationController do
         user = create(:user, :signed_up, otp_delivery_preference: 'voice')
         sign_in_before_2fa(user)
         @old_otp = subject.current_user.direct_otp
-        allow(VoiceOtpSenderJob).to receive(:perform_later)
+        allow(Telephony).to receive(:send_authentication_otp)
       end
 
       it 'sends OTP via voice' do
@@ -239,11 +224,11 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
         }
 
-        expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
-          code: subject.current_user.direct_otp,
-          phone: MfaContext.new(subject.current_user).phone_configurations.first.phone,
-          otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
-          locale: nil,
+        expect(Telephony).to have_received(:send_authentication_otp).with(
+          otp: subject.current_user.direct_otp,
+          to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
+          expiration: 10,
+          channel: :voice,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -286,144 +271,26 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP inline when confirming phone' do
-        allow(SmsOtpSenderJob).to receive(:perform_now)
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-
-        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
-          code: subject.current_user.direct_otp,
-          phone: @unconfirmed_phone,
-          otp_created_at: subject.current_user.direct_otp_sent_at.to_s,
-          message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: nil,
-        )
-      end
-
-      it 'flashes an sms error when twilio responds with an sms error' do
-        twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(21_614)
-        )
-
-        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-
-        expect(flash[:error]).to eq(unsupported_sms_message)
-      end
-
-      it 'flashes an invalid error when twilio responds with an invalid error' do
-        twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(21_211)
-        )
-
-        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-
-        expect(flash[:error]).to eq(unsupported_phone_message)
-      end
-
-      it 'flashes an error when twilio responds with an invalid calling area error' do
-        twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(21_215)
-        )
-
-        allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        params = { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
-        get :send_code, params: params
-
-        expect(flash[:error]).to eq(unsupported_calling_area)
-      end
-
-      it 'flashes an error when twilio responds with an invalid voice number' do
-        twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(13_224)
-        )
-
-        allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        params = { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
-        get :send_code, params: params
-
-        expect(flash[:error]).to eq t('errors.messages.invalid_voice_number')
-      end
-
-      it 'flashes a failed to send error when twilio responds with an unknown error' do
-        twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new
-        )
-
-        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
-
-        expect(flash[:error]).to eq(failed_to_send_otp)
-      end
-
-      it 'records an analytics event when Twilio responds with a RestError' do
-        stub_analytics
-        twilio_error = Twilio::REST::RestError.new(
-          'error message', FakeTwilioErrorResponse.new
-        )
-        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
-        analytics_hash = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'sms',
-          resend: nil,
-          context: 'confirmation',
-          country_code: 'US',
-          area_code: '202',
-        }
-        twilio_error = "[HTTP 400]  : error message\n\n"
-
-        twilio_error_hash = {
-          error: twilio_error,
-          code: '',
-          context: 'confirmation',
-          country: 'US',
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_hash)
+        allow(Telephony).to receive(:send_confirmation_otp)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(Telephony).to have_received(:send_confirmation_otp).with(
+          otp: subject.current_user.direct_otp,
+          to: @unconfirmed_phone,
+          expiration: 10,
+          channel: :sms,
+        )
       end
 
-      it 'records an analytics event when Twilio responds with a VerifyError' do
-        stub_analytics
-        code = 60_033
-        error_message = 'error'
-        response = '{"error_code":"60004"}'
-        status = 400
-        verify_error = PhoneVerification::VerifyError.new(
-          code: code, message: error_message, status: status, response: response,
-        )
+      it 'flashes an sms error when the telephony gem responds with an sms error' do
+        telephony_error = Telephony::TelephonyError.new('error message')
 
-        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(verify_error)
-        analytics_hash = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'sms',
-          resend: nil,
-          context: 'confirmation',
-          country_code: 'US',
-          area_code: '202',
-        }
-        twilio_error_hash = {
-          error: error_message,
-          code: code,
-          context: 'confirmation',
-          country: 'US',
-          status: status,
-          response: response,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_hash)
+        allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(flash[:error]).to eq(telephony_error.friendly_message)
       end
     end
 

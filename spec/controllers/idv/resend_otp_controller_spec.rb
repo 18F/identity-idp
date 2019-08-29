@@ -58,58 +58,29 @@ describe Idv::ResendOtpController do
     end
 
     context 'twilio raises an exception' do
-      let(:twilio_error_analytics_hash) do
+      let(:telephony_error_analytics_hash) do
         {
-          error: "[HTTP 400]  : error message\n\n",
-          code: '',
+          error: 'Telephony::TelephonyError',
+          message: 'error message',
           context: 'idv',
           country: 'US',
         }
       end
-      let(:twilio_error) do
-        Twilio::REST::RestError.new('error message', FakeTwilioErrorResponse.new)
+      let(:telephony_error) do
+        Telephony::TelephonyError.new('error message')
       end
 
       before do
         stub_analytics
-        allow(SmsOtpSenderJob).to receive(:perform_later).and_raise(twilio_error)
+        allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
       end
 
-      context 'twilio rest error' do
-        it 'tracks an analytics events' do
-          expect(@analytics).to receive(:track_event).ordered.with(
-            Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_analytics_hash
-          )
+      it 'tracks an analytics events' do
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::TWILIO_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
+        )
 
-          post :create
-        end
-      end
-
-      context 'phone verification verify error' do
-        let(:twilio_error_analytics_hash) do
-          super().merge(
-            error: 'error',
-            code: 60_033,
-            status: 400,
-            response: '{"error_code":"60004"}',
-          )
-        end
-        let(:twilio_error) do
-          PhoneVerification::VerifyError.new(
-            code: 60_033,
-            message: 'error',
-            status: 400,
-            response: '{"error_code":"60004"}',
-          )
-        end
-
-        it 'tracks an analytics event' do
-          expect(@analytics).to receive(:track_event).ordered.with(
-            Analytics::TWILIO_PHONE_VALIDATION_FAILED, twilio_error_analytics_hash
-          )
-
-          post :create
-        end
+        post :create
       end
     end
   end

@@ -52,7 +52,7 @@ module Users
         UserMailer.personal_key_regenerated(email_address.email).deliver_now
       end
       MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
-        SmsPersonalKeyRegenerationNotifierJob.perform_now(phone: phone_configuration.phone)
+        Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
       end
     end
   end

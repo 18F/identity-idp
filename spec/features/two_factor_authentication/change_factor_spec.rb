@@ -26,7 +26,7 @@ feature 'Changing authentication factor' do
 
     context 'resending OTP code to old phone' do
       it 'resends OTP and prompts user to enter their code' do
-        allow(SmsOtpSenderJob).to receive(:perform_later)
+        allow(Telephony).to receive(:send_authentication_otp)
 
         user = sign_in_and_2fa_user
         old_phone = MfaContext.new(user).phone_configurations.first.phone
@@ -36,14 +36,12 @@ feature 'Changing authentication factor' do
           complete_2fa_confirmation_without_entering_otp
           click_link t('links.two_factor_authentication.get_another_code')
 
-          expect(SmsOtpSenderJob).to have_received(:perform_later).
-            with(
-              code: user.reload.direct_otp,
-              phone: old_phone,
-              otp_created_at: user.reload.direct_otp_sent_at.to_s,
-              message: 'jobs.sms_otp_sender_job.login_message',
-              locale: nil,
-            )
+          expect(Telephony).to have_received(:send_authentication_otp).with(
+            otp: user.reload.direct_otp,
+            to: old_phone,
+            expiration: 10,
+            channel: :sms,
+          )
 
           expect(current_path).
             to eq login_two_factor_path(otp_delivery_preference: 'sms')

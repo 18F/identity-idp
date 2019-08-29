@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Two Factor Authentication' do
-  include Features::ActiveJobHelper
-
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa
@@ -18,7 +16,6 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('titles.phone_setup')
 
-
       send_security_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
@@ -33,7 +30,7 @@ feature 'Two Factor Authentication' do
 
       submit_2fa_setup_form_with_valid_phone
 
-      expect(page).to_not have_content invalid_phone_message
+      expect(page).to_not have_content t('errors.messages.improbable_phone')
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(MfaContext.new(user).phone_configurations).to be_empty
       expect(user.sms?).to eq true
@@ -95,40 +92,6 @@ feature 'Two Factor Authentication' do
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
         expect(phone_field.value).to eq('12345678901234567890')
-      end
-    end
-
-    context 'with SMS option, international number, and locale header' do
-      it 'passes locale to SmsOtpSenderJob' do
-        page.driver.header 'Accept-Language', 'ar'
-        allow(SmsOtpSenderJob).to receive(:perform_now)
-
-        user = sign_in_before_2fa
-        select_2fa_option('phone')
-        select 'Morocco', from: 'user_phone_form_international_code'
-        fill_in 'user_phone_form_phone', with: '6 61 28 93 24'
-        click_send_security_code
-
-        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
-          code: user.reload.direct_otp,
-          phone: '+212 661-289324',
-          otp_created_at: user.direct_otp_sent_at.to_s,
-          message: 'jobs.sms_otp_sender_job.verify_message',
-          locale: 'ar',
-        )
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      end
-    end
-
-    context 'with voice option and US number' do
-      it 'sends the code via VoiceOtpSenderJob and redirects to prompt for the code' do
-        sign_in_before_2fa
-        select_2fa_option(:phone)
-        select_phone_delivery_option(:voice)
-        fill_in 'user_phone_form_phone', with: '7035551212'
-        click_send_security_code
-
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
       end
     end
   end
@@ -211,8 +174,8 @@ feature 'Two Factor Authentication' do
 
       choose_another_security_option('voice')
 
-      expect(Twilio::FakeMessage.messages.length).to eq(1)
-      expect(Twilio::FakeCall.calls.length).to eq(1)
+      expect(Telephony::Test::Message.messages.length).to eq(1)
+      expect(Telephony::Test::Call.calls.length).to eq(1)
     end
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
@@ -294,39 +257,6 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end
 
-    context 'with SMS, international number, and locale header' do
-      it 'passes locale to SmsOtpSenderJob' do
-        page.driver.header 'Accept-Language', 'ar'
-        allow(SmsOtpSenderJob).to receive(:perform_later)
-
-        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
-        sign_in_user(user)
-
-        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
-          code: user.reload.direct_otp,
-          phone: '+212 661-289324',
-          otp_created_at: user.direct_otp_sent_at.to_s,
-          message: 'jobs.sms_otp_sender_job.login_message',
-          locale: 'ar',
-        )
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      end
-    end
-
-    context 'with SMS and international number that Verify does not think is valid' do
-      it 'rescues the VerifyError' do
-        allow(Twilio::FakeVerifyAdapter).to receive(:post).
-          and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
-
-        user = create(:user, :signed_up, with: { phone: '+212 661-289324' })
-        sign_in_user(user)
-
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(page).
-          to have_content t('errors.messages.phone_unsupported')
-      end
-    end
-
     context 'user with Voice preference sends SMS, causing a Twilio error' do
       let(:user) do
         create(:user, :signed_up,
@@ -337,8 +267,9 @@ feature 'Two Factor Authentication' do
 
       it 'does not change their OTP delivery preference' do
         allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
-        allow(Twilio::FakeVerifyAdapter).to receive(:post).
-          and_return(Twilio::FakeVerifyAdapter::ErrorResponse.new)
+
+        telephony_error = Telephony::TelephonyError.new('error message')
+        allow(Telephony).to receive(:send_authentication_otp).and_raise(telephony_error)
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)
         allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
           and_return(false)
@@ -349,7 +280,7 @@ feature 'Two Factor Authentication' do
 
         choose_another_security_option('sms')
 
-        expect(page).to have_content t('errors.messages.invalid_phone_number')
+        expect(page).to have_content telephony_error.friendly_message
         expect(user.reload.otp_delivery_preference).to eq 'voice'
       end
     end
