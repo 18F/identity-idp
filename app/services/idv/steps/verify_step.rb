@@ -42,7 +42,7 @@ module Idv
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
-          extra: idv_extra(idv_result),
+          extra: { proofing_results: idv_extra(idv_result) },
         )
       end
 
