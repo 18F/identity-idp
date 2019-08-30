@@ -36,8 +36,8 @@ shared_examples 'link sent step' do |simulate|
 
     it 'proceeds to the next page if the user does not have a phone' do
       user = create(:user, :with_authentication_app, :with_piv_or_cac)
-      mock_doc_captured(user.id)
       complete_doc_auth_steps_before_link_sent_step(user)
+      mock_doc_captured(user.id)
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
