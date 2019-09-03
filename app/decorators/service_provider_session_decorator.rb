@@ -117,7 +117,13 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_alert?(path)
     path_to_section_map = { '/': 'sign_in',
                             '/sign_up/enter_email': 'sign_up',
-                            '/forgot_password': 'forgot_password' }
+                            '/users/password/new': 'forgot_password',
+                            '/es': 'sign_in',
+                            '/es/sign_up/enter_email': 'sign_up',
+                            '/es/users/password/new': 'forgot_password',
+                            '/fr': 'sign_in',
+                            '/fr/sign_up/enter_email': 'sign_up',
+                            '/fr/users/password/new': 'forgot_password' }
     custom_alert?(path_to_section_map[path.to_sym]) || default_alert?
   end
 
