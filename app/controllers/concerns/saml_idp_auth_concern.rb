@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
 
@@ -27,8 +28,10 @@ module SamlIdpAuthConcern
   end
 
   def store_saml_request
+    # pp saml_request
+
     ServiceProviderRequestHandler.new(
-      url: request.original_url,
+      url: request_url,
       session: session,
       protocol_request: saml_request,
       protocol: FederatedProtocols::Saml,
@@ -114,4 +117,53 @@ module SamlIdpAuthConcern
   def current_issuer
     @_issuer ||= saml_request.service_provider.identifier
   end
+
+  def request_url
+    # puts "Original URL: #{request.original_url}"
+    url = URI.parse request.original_url
+    query_params = parse_query_params url.query
+    unless query_params['SAMLRequest']
+      orig_request = saml_request.options[:get_params][:SAMLRequest]
+      query_params['SAMLRequest'] = orig_request
+    end
+
+    url.query = query_hash_to_string(query_params)
+    # puts "Modified URL: #{url.to_s}"
+    url.to_s
+  end
+
+  # :reek:FeatureEnvy
+  # :reek:TooManyStatements
+  # rubocop:disable Metrics/MethodLength
+  # Derived from https://github.com/postmodern/uri-query_params/blob/master/lib/uri/query_params/query_params.rb#L44-L65
+  def parse_query_params(query_string)
+    return {} unless query_string.presence
+
+    query_params = {}
+
+    query_string.split('&').each do |param|
+      # skip empty params
+      next if param.empty?
+
+      name, value = param.split('=')
+      value = if value
+                CGI.unescape(value)
+              else
+                ''
+              end
+
+      query_params[name] = value
+    end
+
+    query_params
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def query_hash_to_string(query_hash)
+    query_string = query_hash.keys.map do |key|
+      "#{key}=#{CGI.escape query_hash[key]}"
+    end.join('&')
+    query_string.presence
+  end
 end
+# rubocop:enable Metrics/ModuleLength
