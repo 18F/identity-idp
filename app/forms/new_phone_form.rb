@@ -1,4 +1,4 @@
-class UserPhoneForm
+class NewPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPhoneForm do
+describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { build(:user, :signed_up) }
@@ -9,7 +9,7 @@ describe UserPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject { UserPhoneForm.new(user) }
+  subject { NewPhoneForm.new(user) }
 
   describe '#submit' do
     context 'when phone is valid' do
@@ -23,7 +23,7 @@ describe UserPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = UserPhoneForm.new(user)
+        subject = NewPhoneForm.new(user)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)

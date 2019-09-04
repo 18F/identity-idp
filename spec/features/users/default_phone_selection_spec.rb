@@ -23,7 +23,7 @@ describe 'phone configuration' do
         sign_in_visit_add_phone_path(user, phone_config2)
 
         enter_phone_number('202-555-3434')
-        check 'user_phone_form_otp_make_default_number'
+        check 'new_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
@@ -46,7 +46,7 @@ describe 'phone configuration' do
       it 'displays the new default number for 2FA with sms message' do
         new_phone = '202-555-3111'
         sign_in_visit_add_phone_path(user, phone_config2)
-        fill_in :user_phone_form_phone, with: new_phone
+        fill_in :new_phone_form_phone, with: new_phone
         click_continue
         fill_in_code_with_last_phone_otp
         click_submit_default
@@ -60,7 +60,7 @@ describe 'phone configuration' do
         }
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
-        check 'user_phone_form_otp_make_default_number'
+        check 'new_phone_form_otp_make_default_number'
         click_button t('forms.buttons.submit.confirm_change')
         user.reload
 
@@ -85,8 +85,8 @@ describe 'phone configuration' do
         sign_in_visit_add_phone_path(user, phone_config2)
 
         enter_phone_number('202-555-3434')
-        choose 'user_phone_form_otp_delivery_preference_voice'
-        check 'user_phone_form_otp_make_default_number'
+        choose 'new_phone_form_otp_delivery_preference_voice'
+        check 'new_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
@@ -119,7 +119,7 @@ describe 'phone configuration' do
   end
 
   def enter_phone_number(phone)
-    fill_in 'user_phone_form[phone]', with: phone
+    fill_in 'new_phone_form[phone]', with: phone
   end
 
   def sign_in_visit_manage_phone_path(user, phone_config2)

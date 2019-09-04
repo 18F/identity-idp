@@ -8,10 +8,10 @@
     </p>
     <label
       class="btn-border col-12 sm-col-5 sm-mr2 mb2 sm-mb0"
-      for="user_phone_form_otp_delivery_preference_sms"
+      for="new_phone_form_otp_delivery_preference_sms"
     >
       <div class="radio">
-        <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
+        <%= radio_button_tag 'new_phone_form[otp_delivery_preference]',
           :sms, form_obj.delivery_preference_sms?,
           class: :otp_delivery_preference_sms %>
         <span class="indicator"></span>
@@ -20,10 +20,10 @@
     </label>
     <label
       class="btn-border col-12 sm-col-5 mb0"
-      for="user_phone_form_otp_delivery_preference_voice"
+      for="new_phone_form_otp_delivery_preference_voice"
     >
       <div class="radio">
-        <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
+        <%= radio_button_tag 'new_phone_form[otp_delivery_preference]',
             :voice, form_obj.delivery_preference_voice?,
             class: :otp_delivery_preference_voice %>
         <span class="indicator"></span>

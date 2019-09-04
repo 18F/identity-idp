@@ -16,7 +16,7 @@ describe Users::PhonesController do
         allow(@analytics).to receive(:track_event)
 
         put :update, params: {
-          user_phone_form: { phone: new_phone,
+          new_phone_form: { phone: new_phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }
@@ -28,7 +28,7 @@ describe Users::PhonesController do
         stub_sign_in(user)
 
         put :update, params: {
-          user_phone_form: { phone: '',
+          new_phone_form: { phone: '',
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }
@@ -42,7 +42,7 @@ describe Users::PhonesController do
         stub_sign_in(user)
 
         put :update, params: {
-          user_phone_form: { phone: MfaContext.new(user).phone_configurations.first.phone,
+          new_phone_form: { phone: MfaContext.new(user).phone_configurations.first.phone,
                              international_code: 'US',
                              otp_delivery_preference: 'sms' },
         }
