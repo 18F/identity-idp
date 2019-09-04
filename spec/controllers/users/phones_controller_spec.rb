@@ -17,8 +17,8 @@ describe Users::PhonesController do
 
         put :update, params: {
           new_phone_form: { phone: new_phone,
-                             international_code: 'US',
-                             otp_delivery_preference: 'sms' },
+                            international_code: 'US',
+                            otp_delivery_preference: 'sms' },
         }
       end
     end
@@ -29,8 +29,8 @@ describe Users::PhonesController do
 
         put :update, params: {
           new_phone_form: { phone: '',
-                             international_code: 'US',
-                             otp_delivery_preference: 'sms' },
+                            international_code: 'US',
+                            otp_delivery_preference: 'sms' },
         }
 
         expect(MfaContext.new(user).phone_configurations.reload.first).to be_present
@@ -43,8 +43,8 @@ describe Users::PhonesController do
 
         put :update, params: {
           new_phone_form: { phone: MfaContext.new(user).phone_configurations.first.phone,
-                             international_code: 'US',
-                             otp_delivery_preference: 'sms' },
+                            international_code: 'US',
+                            otp_delivery_preference: 'sms' },
         }
 
         expect(response).to redirect_to account_url

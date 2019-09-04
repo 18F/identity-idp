@@ -65,8 +65,8 @@ module Users
 
     def user_params
       params.require(:new_phone_form).permit(:phone, :international_code,
-                                              :otp_delivery_preference,
-                                              :otp_make_default_number)
+                                             :otp_delivery_preference,
+                                             :otp_make_default_number)
     end
 
     def already_has_phone?
@@ -86,7 +86,7 @@ module Users
           preference: form.otp_delivery_preference,
           default: form.otp_make_default_number,
           phone_id: user_session[:phone_id],
-          ).call
+        ).call
       end
       redirect_to account_url
     end

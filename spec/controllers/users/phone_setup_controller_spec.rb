@@ -73,7 +73,7 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             new_phone_form: { phone: '703-555-0100',
-                               international_code: 'US' },
+                              international_code: 'US' },
           },
         )
 
@@ -107,7 +107,7 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             new_phone_form: { phone: '703-555-0100',
-                               international_code: 'US' },
+                              international_code: 'US' },
           },
         )
 
@@ -140,7 +140,7 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             new_phone_form: { phone: '703-555-0100',
-                               international_code: 'US' },
+                              international_code: 'US' },
           },
         )
 

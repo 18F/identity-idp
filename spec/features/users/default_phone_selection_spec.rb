@@ -55,9 +55,9 @@ describe 'phone configuration' do
         user.reload
 
         new_phone_config = nil
-        user.phone_configurations.map { |phone_config|
+        user.phone_configurations.map do |phone_config|
           new_phone_config = phone_config if phone_config.phone.include? new_phone
-        }
+        end
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
         check 'new_phone_form_otp_make_default_number'

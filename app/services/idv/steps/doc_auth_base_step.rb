@@ -1,6 +1,5 @@
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
-# rubocop:disable Metrics/ClassLength
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
