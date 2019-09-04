@@ -32,9 +32,7 @@ describe EditPhoneForm do
       it 'includes otp preference in the form response extra' do
         result = subject.submit(params)
 
-        expect(result.extra).to eq(
-                                  otp_delivery_preference: params[:otp_delivery_preference],
-                                  )
+        expect(result.extra).to eq(otp_delivery_preference: params[:otp_delivery_preference])
       end
     end
 
