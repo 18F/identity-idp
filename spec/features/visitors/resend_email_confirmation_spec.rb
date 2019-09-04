@@ -19,6 +19,27 @@ feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email)).to be_present
   end
 
+  scenario 'user throttled sending confirmation emails and can send again after wait period' do
+    user.save!
+    email = user.email
+
+    max_attempts = Figaro.env.reg_unconfirmed_email_max_attempts.to_i
+    max_attempts.times do |i|
+      submit_resend_email_confirmation(email)
+      expect(unread_emails_for(user.email).size).to eq(i + 1)
+    end
+
+    expect(unread_emails_for(user.email).size).to eq(max_attempts)
+    submit_resend_email_confirmation(email)
+    expect(unread_emails_for(user.email).size).to eq(max_attempts)
+
+    window_in_minutes = Figaro.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
+      submit_resend_email_confirmation(email)
+      expect(unread_emails_for(user.email).size).to eq(max_attempts + 1)
+    end
+  end
+
   scenario 'user enters email with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
@@ -58,5 +79,11 @@ feature 'Visit requests confirmation instructions again during sign up' do
     click_button t('forms.buttons.resend_confirmation')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
+  end
+
+  def submit_resend_email_confirmation(email)
+    visit sign_up_email_resend_path
+    fill_in 'Email', with: email
+    click_button t('forms.buttons.resend_confirmation')
   end
 end

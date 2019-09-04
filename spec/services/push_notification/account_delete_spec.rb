@@ -16,7 +16,13 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        'subject' => {
+          'subject_type' => 'iss-sub',
+          'iss' => 'urn:gov:gsa:openidconnect:test',
+          'sub' => '1234',
+        },
+      },
     )
 
     subject.call(user_id)
@@ -32,13 +38,25 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        'subject' => {
+          'subject_type' => 'iss-sub',
+          'iss' => 'urn:gov:gsa:openidconnect:test',
+          'sub' => '1234',
+        },
+      },
     )
 
     request2 = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url2,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        'subject' => {
+          'subject_type' => 'iss-sub',
+          'iss' => 'urn:gov:gsa:openidconnect:test:loa1',
+          'sub' => '1234',
+        },
+      },
     )
 
     subject.call(user_id)
@@ -58,13 +76,25 @@ describe PushNotification::AccountDelete do
     request = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url,
       topic: 'account_delete',
-      payload: { 'uuid' => '1234' },
+      payload: {
+        'subject' => {
+          'subject_type' => 'iss-sub',
+          'iss' => 'urn:gov:gsa:openidconnect:test',
+          'sub' => '1234',
+        },
+      },
     )
 
     request2 = stub_push_notification_request(
       sp_push_notification_endpoint: push_notification_url2,
       topic: 'account_delete',
-      payload: { 'uuid' => '4567' },
+      payload: {
+        'subject' => {
+          'subject_type' => 'iss-sub',
+          'iss' => 'urn:gov:gsa:openidconnect:test:loa1',
+          'sub' => '4567',
+        },
+      },
     )
 
     subject.call(user_id)
@@ -97,5 +127,23 @@ describe PushNotification::AccountDelete do
     expect(push_account_delete.uuid).to eq('1234')
     expect(push_account_delete.agency_id).to eq(1)
     expect(push_account_delete.created_at).to be_present
+  end
+
+  it 'writes to NewRelic on bad status' do
+    allow_any_instance_of(PushNotification::AccountDelete).
+      to receive(:post_to_push_notification_url).and_return(Faraday::Response.new(status: 400))
+
+    expect(NewRelic::Agent).to receive(:notice_error).
+      with(instance_of(PushNotification::PushNotificationError))
+    subject.call(user_id)
+  end
+
+  it 'writes to NewRelic on conection errors' do
+    error = Faraday::ConnectionFailed.new('error')
+    allow_any_instance_of(PushNotification::AccountDelete).
+      to receive(:post_to_push_notification_url).and_raise(error)
+
+    expect(NewRelic::Agent).to receive(:notice_error).with(error)
+    subject.call(user_id)
   end
 end

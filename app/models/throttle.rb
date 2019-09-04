@@ -4,14 +4,33 @@ class Throttle < ApplicationRecord
 
   enum throttle_type: {
     idv_acuant: 1,
+    reg_unconfirmed_email: 2,
+    reg_confirmed_email: 3,
+    reset_password_email: 4,
   }
 
   THROTTLE_CONFIG = {
     idv_acuant: {
       max_attempts: (Figaro.env.acuant_max_attempts || 3).to_i,
-      attempt_window: (Figaro.env.acuant_attempt_window_in_minutes || 86_400).to_i,
+      attempt_window: (Figaro.env.acuant_attempt_window_in_minutes || 1440).to_i,
+    },
+    reg_unconfirmed_email: {
+      max_attempts: (Figaro.env.reg_unconfirmed_email_max_attempts || 20).to_i,
+      attempt_window: (Figaro.env.reg_unconfirmed_email_window_in_minutes || 60).to_i,
+    },
+    reg_confirmed_email: {
+      max_attempts: (Figaro.env.reg_confirmed_email_max_attempts || 20).to_i,
+      attempt_window: (Figaro.env.reg_confirmed_email_window_in_minutes || 60).to_i,
+    },
+    reset_password_email: {
+      max_attempts: (Figaro.env.reset_password_email_max_attempts || 20).to_i,
+      attempt_window: (Figaro.env.reset_password_email_window_in_minutes || 60).to_i,
     },
   }.freeze
+
+  def throttled?
+    !expired? && maxed?
+  end
 
   def expired?
     return true if attempted_at.blank?

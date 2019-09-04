@@ -11,13 +11,13 @@ br
   table
     tr
       td.p0
-        .monospace.bold
+        code.bold.h2
           - @codes[0..@codes.length / 2 - 1].each do |code|
             = code.upcase.insert(8, '-').insert(4, '-')
             br
             br
       td
-        .monospace.bold
+        code.bold.h2
           - @codes[@codes.length / 2..-1].each do |code|
             = code.upcase.insert(8, '-').insert(4, '-')
             br

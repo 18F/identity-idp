@@ -1,10 +1,10 @@
 module Throttler
-  class Increment
+  class IsThrottledElseIncrement
     def self.call(user_id, throttle_type)
-      throttle = Throttler::FindOrCreate.call(user_id, throttle_type)
-      return throttle if throttle.maxed?
+      throttle = FindOrCreate.call(user_id, throttle_type)
+      return throttle if throttle.throttled?
       throttle.update(attempts: throttle.attempts + 1, attempted_at: Time.zone.now)
-      throttle
+      false
     end
   end
 end

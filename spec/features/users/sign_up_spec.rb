@@ -81,12 +81,10 @@ feature 'Sign Up' do
     end
   end
 
-  scenario 'renders an error when twilio api responds with an error' do
-    twilio_error = Twilio::REST::RestError.new(
-      '', FakeTwilioErrorResponse.new(21_614)
-    )
+  scenario 'renders an error when the telephony gem responds with an error' do
+    telephony_error = Telephony::TelephonyError.new('error message')
 
-    allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
@@ -95,7 +93,7 @@ feature 'Sign Up' do
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
-    expect(page).to have_content(unsupported_sms_message)
+    expect(page).to have_content(telephony_error.friendly_message)
   end
 
   context 'with js', js: true do

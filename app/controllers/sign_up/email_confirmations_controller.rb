@@ -4,9 +4,10 @@ module SignUp
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
+    before_action :stop_if_invalid_token
 
     def create
-      validate_token
+      process_confirmation
     rescue ActiveRecord::RecordNotUnique
       process_already_confirmed_user
     end

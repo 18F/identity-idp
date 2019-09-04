@@ -708,6 +708,21 @@ production:
       - email
     restrict_to_deploy_env: 'prod'
 
+  # DOT Delphi eInvoicing
+  # This additional config removes the port 4443 requirement
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DOT:EINVOICE_DCC_PROD':
+    agency: 'DOT'
+    agency_id: 6
+    friendly_name: 'Delphi eInvoicing'
+    logo: 'dot.svg'
+    cert: 'dot_einvoicing_prod'
+    acs_url: 'https://einvoice.esc.gov/oam/server/fed/sp/sso'
+    return_to_sp_url: 'https://einvoice.esc.gov'
+    block_encryption: 'aes256-cbc'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
+
   # SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam':
     agency_id: 9
@@ -1142,4 +1157,52 @@ production:
     sp_initiated_login_url: 'https://service.bitsighttech.com'
     attribute_bundle:
       - email
+    restrict_to_deploy_env: 'prod'
+
+  # RRB - myRRB
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:myRRB':
+    friendly_name: 'myRRB'
+    agency: 'RRB'
+    agency_id: 4
+    logo: 'rrb_myrrb.svg'
+    cert: 'rrb_myrrb_prod'
+    ial: 2
+    return_to_sp_url: 'https://rrb.rrb.gov/Benefits/myRRB'
+    redirect_uris:
+      - 'https://secure.rrb.gov/myRRB/Account/SignInCallback'
+    failure_to_proof_url: 'https://rrb.rrb.gov/Benefits/myRRB/AccountSupport'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - dob
+      - ssn
+      - phone
+    restrict_to_deploy_env: 'prod'
+
+  # DOT - FMCSA - Drug and Alcohol Clearinghouse
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:fmcsa:clearinghouse':
+    friendly_name: 'The FMCSA Drug & Alcohol Clearinghouse'
+    agency: 'DOT'
+    agency_id: 6
+    logo: 'dot_fmcsa_clearinghouse.svg'
+    cert: 'dot_fmcsa_clearinghouse_prod'
+    ial: 1
+    return_to_sp_url: 'https://clearinghouse.fmcsa.dot.gov'
+    redirect_uris:
+      - 'https://clearinghouse-beta.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse-cie.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/GATS/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/Live/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/Sprint/signin-oidc'
+      - 'https://clearinghouse-dev.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse.fmcsa.dot.gov/signin-oidc'
+    attribute_bundle:
+      - 'email'
     restrict_to_deploy_env: 'prod'

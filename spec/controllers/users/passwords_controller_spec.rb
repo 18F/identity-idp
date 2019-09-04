@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Users::PasswordsController do
-  include Features::LocalizationHelper
   include Features::MailerHelper
 
   describe '#update' do

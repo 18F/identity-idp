@@ -9,8 +9,8 @@ feature 'Signing in via one-time use personal key' do
     personal_key_sign_in_mail = double
     expect(personal_key_sign_in_mail).to receive(:deliver_now)
     expect(UserMailer).to receive(:personal_key_sign_in).and_return(personal_key_sign_in_mail)
-    expect(SmsPersonalKeySignInNotifierJob).to receive(:perform_now).
-      with(phone: '+1 (202) 345-6789')
+    expect(Telephony).to receive(:send_personal_key_sign_in_notice).
+      with(to: '+1 (202) 345-6789')
 
     sign_in_before_2fa(user)
     choose_another_security_option('personal_key')
