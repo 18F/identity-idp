@@ -46,8 +46,8 @@ describe NewPhoneForm do
         result = subject.submit(params)
 
         expect(result.extra).to eq(
-                                  otp_delivery_preference: params[:otp_delivery_preference],
-                                  )
+          otp_delivery_preference: params[:otp_delivery_preference],
+        )
       end
 
       it 'does not update the user phone attribute' do
@@ -157,5 +157,4 @@ describe NewPhoneForm do
       expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
     end
   end
-
 end

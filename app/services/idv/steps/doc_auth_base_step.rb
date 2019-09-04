@@ -127,4 +127,3 @@ module Idv
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
