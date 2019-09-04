@@ -6,19 +6,48 @@ describe NewPhoneForm do
   let(:user) { build(:user, :signed_up) }
   let(:params) do
     {
+      phone: '703-555-5000',
+      international_code: 'US',
       otp_delivery_preference: 'sms',
     }
   end
   subject { NewPhoneForm.new(user) }
 
+  it_behaves_like 'a phone form'
+
+  describe 'phone validation' do
+    it do
+      should validate_inclusion_of(:international_code).
+        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+    end
+
+    it 'validates that the number matches the requested international code' do
+      params[:phone] = '123 123 1234'
+      params[:international_code] = 'MA'
+      result = subject.submit(params)
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to include(:phone)
+    end
+  end
+
   describe '#submit' do
     context 'when phone is valid' do
+      it 'is valid' do
+        result = subject.submit(params)
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
+
       it 'includes otp preference in the form response extra' do
         result = subject.submit(params)
 
         expect(result.extra).to eq(
-          otp_delivery_preference: params[:otp_delivery_preference],
-        )
+                                  otp_delivery_preference: params[:otp_delivery_preference],
+                                  )
       end
 
       it 'does not update the user phone attribute' do
@@ -31,11 +60,40 @@ describe NewPhoneForm do
         user.reload
         expect(MfaContext.new(user).phone_configurations).to be_empty
       end
+
+      it 'preserves the format of the submitted phone number if phone is invalid' do
+        params[:phone] = '555-555-5000'
+        params[:international_code] = 'MA'
+
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+        expect(subject.phone).to eq('555-555-5000')
+      end
+    end
+
+    context 'when otp_delivery_preference is voice and phone number does not support voice' do
+      let(:unsupported_phone) { '242-327-0143' }
+      let(:params) do
+        {
+          phone: unsupported_phone,
+          international_code: 'US',
+          otp_delivery_preference: 'voice',
+        }
+      end
+
+      it 'is invalid' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+      end
     end
 
     context 'when otp_delivery_preference is not voice or sms' do
       let(:params) do
         {
+          phone: '703-555-1212',
+          international_code: 'US',
           otp_delivery_preference: 'foo',
         }
       end
@@ -92,5 +150,12 @@ describe NewPhoneForm do
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
     end
+
+    it 'revokes the users rememder device sessions' do
+      subject.submit(params)
+
+      expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
+    end
   end
+
 end
