@@ -291,7 +291,7 @@ describe SamlIdpController do
         @post_request = saml_post_auth(@saml_request)
         @stored_request_url = @post_request.request.original_url +
                               '?SAMLRequest=' +
-                              @saml_request # CGI.escape(@saml_request)
+                              @saml_request
       end
 
       it 'stores SP metadata in session' do
