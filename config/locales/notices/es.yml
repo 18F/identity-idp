@@ -2,6 +2,7 @@
 es:
   notices:
     account_reactivation: "¡Estupendo! Tiene su clave personal."
+    backup_codes_configured: Códigos de respaldo configurados con éxito.
     dap_participation: Participamos en el programa analítico del Gobierno de Estados
       Unidos. Vea los datos en analytics.usa.gov (en inglés).
     forgot_password:
