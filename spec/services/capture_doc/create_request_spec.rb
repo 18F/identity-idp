@@ -17,7 +17,12 @@ describe CaptureDoc::CreateRequest do
   end
 
   it 'update a request if one already exists' do
-    DocCapture.create(user_id: user_id, request_token: 'foo', requested_at: old_timestamp)
+    DocCapture.create(
+      user_id: user_id,
+      request_token: 'foo',
+      requested_at: old_timestamp,
+      acuant_token: 'foo',
+    )
 
     result = subject.call(user_id)
     expect(result).to be_kind_of(DocCapture)

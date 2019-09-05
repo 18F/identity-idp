@@ -22,7 +22,7 @@ gem 'hiredis'
 gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.7'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.8'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt'
 gem 'local_time'
@@ -120,6 +120,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.1'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.2'
   gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end
