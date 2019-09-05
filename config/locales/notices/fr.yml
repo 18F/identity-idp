@@ -53,4 +53,5 @@ fr:
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Or, %{link}
+    webauthn_configured: Ha permitido una clé de sécurité.
     webauthn_deleted: Vous avez supprimé une clé de sécurité.
