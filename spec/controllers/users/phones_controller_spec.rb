@@ -8,7 +8,7 @@ describe Users::PhonesController do
     let(:second_user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-5678' }) }
     let(:new_phone) { '202-555-4321' }
 
-    context 'user changes phone' do
+    context 'user tries to change phone settings' do
       before do
         stub_sign_in(user)
 
@@ -16,39 +16,26 @@ describe Users::PhonesController do
         allow(@analytics).to receive(:track_event)
 
         put :update, params: {
-          new_phone_form: { phone: new_phone,
-                            international_code: 'US',
-                            otp_delivery_preference: 'sms' },
+          edit_phone_form: { otp_delivery_preference: 'foo' },
         }
+      end
+
+      it 'does not allow the user to change the delivery preference to something other than sms or voice' do
+        expect(response).to render_template(:edit)
       end
     end
 
-    context 'user enters an empty phone' do
-      it 'does not delete the phone' do
+    context 'user creates a phone with existing number' do
+      it 'does not allow the user to have two duplicate phones' do
         stub_sign_in(user)
 
-        put :update, params: {
-          new_phone_form: { phone: '',
+        put :create, params: {
+          new_phone_form: { phone: '202-555-1234',
                             international_code: 'US',
                             otp_delivery_preference: 'sms' },
         }
-
-        expect(MfaContext.new(user).phone_configurations.reload.first).to be_present
-      end
-    end
-
-    context 'user submits the form without changing their phone' do
-      it 'redirects to profile page without any messages' do
-        stub_sign_in(user)
-
-        put :update, params: {
-          new_phone_form: { phone: MfaContext.new(user).phone_configurations.first.phone,
-                            international_code: 'US',
-                            otp_delivery_preference: 'sms' },
-        }
-
-        expect(response).to redirect_to account_url
-        expect(flash.keys).to be_empty
+        # t('errors.messages.phone_duplicate')
+        expect(response).to render_template(:edit)
       end
     end
   end

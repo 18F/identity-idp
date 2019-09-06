@@ -27,7 +27,7 @@ module Users
 
     def update
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
-      if @edit_phone_form.submit(user_params).success?
+      if @edit_phone_form.submit(edit_params).success?
         process_updates
         bypass_sign_in current_user
       else
@@ -67,6 +67,11 @@ module Users
       params.require(:new_phone_form).permit(:phone, :international_code,
                                              :otp_delivery_preference,
                                              :otp_make_default_number)
+    end
+
+    def edit_params
+      params.require(:edit_phone_form).permit(:otp_delivery_preference,
+                                              :otp_make_default_number)
     end
 
     def already_has_phone?
