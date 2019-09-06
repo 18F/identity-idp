@@ -50,4 +50,5 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
+    webauthn_configured: You enabled a security key.
     webauthn_deleted: You removed a security key.
