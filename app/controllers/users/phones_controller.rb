@@ -88,8 +88,8 @@ module Users
 
         OtpPreferenceUpdater.new(
           user: current_user,
-          preference: form.otp_delivery_preference,
-          default: form.otp_make_default_number,
+          preference: @edit_phone_form.otp_delivery_preference,
+          default: @edit_phone_form.otp_make_default_number,
           phone_id: user_session[:phone_id],
         ).call
       end

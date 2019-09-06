@@ -1,3 +1,8 @@
+<%
+  form_name = form_obj.class.name.underscore.to_s
+  form_name_label = form_name + "[otp_make_default_number]"
+%>
+
 <div class="mb3">
   <fieldset class="m0 p0 border-none">
     <legend class="mb1 h4 serif bold">
@@ -8,7 +13,7 @@
     </p>
     <label class="btn-border col-8">
       <div class="checkbox">
-        <%= check_box_tag 'new_phone_form[otp_make_default_number]',
+        <%= check_box_tag form_name_label,
             :otp_make_default_number, form_obj.otp_make_default_number %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_make_default_number.label') %>
