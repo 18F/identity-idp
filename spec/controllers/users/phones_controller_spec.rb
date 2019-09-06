@@ -20,7 +20,7 @@ describe Users::PhonesController do
         }
       end
 
-      it 'does not allow the user to change the delivery preference to something other than sms or voice' do
+      it 'does not allow delivery preference to something other than sms or voice' do
         expect(response).to render_template(:edit)
       end
     end
@@ -35,7 +35,7 @@ describe Users::PhonesController do
                             otp_delivery_preference: 'sms' },
         }
         # t('errors.messages.phone_duplicate')
-        #expect(response).to render_template(:edit)
+        # expect(response).to render_template(:edit)
       end
     end
   end

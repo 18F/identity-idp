@@ -60,7 +60,7 @@ describe 'phone configuration' do
         end
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
-        check 'new_phone_form_otp_make_default_number'
+        check 'edit_phone_form_otp_make_default_number'
         click_button t('forms.buttons.submit.confirm_change')
         user.reload
 
