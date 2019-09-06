@@ -18,6 +18,9 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      # When setting up a method as a first MFA the user will see a success screen. The success
+      # flash for phone should not display because it would be duplicative.
+      expect(page).to_not have_content(t('notices.phone_confirmed'))
       select_2fa_option(:backup_code)
       click_continue
 
@@ -57,6 +60,7 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      expect(page).to have_content(t('notices.phone_confirmed'))
       expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference.to_s).to eq(delivery_method.to_s)
@@ -108,6 +112,8 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      expect(page).to have_content(t('notices.phone_confirmed'))
+      expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
     end

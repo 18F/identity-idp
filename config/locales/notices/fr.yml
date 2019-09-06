@@ -15,6 +15,7 @@ fr:
         link: Créer un nouveau compte
         text_html: Ou, %{link} en utilisant une adresse courriel différente.
     password_changed: Vous avez changé votre mot de passe.
+    phone_confirmed: Téléphone confirmé avec succès.
     piv_cac_configured: Carte PIV/CAC liée avec succès.
     piv_cac_disabled: Carte PIV/CAC dissociée avec succès.
     resend_confirmation_email:
