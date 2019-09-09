@@ -1247,7 +1247,7 @@ production:
     agency: 'RRB'
     agency_id: 4
     logo: 'rrb.svg'
-    cert: 'my_rrb_bn_test_staging'
+    cert: 'rrb_bos_aa3_staging'
     return_to_sp_url: 'https://onlinetest.rrb.gov/AA3/login/login/RRBHome'
     failure_to_proof_url: 'https://rrbtest.rrb.gov/Benefits/myRRB/AccountSupport'
     redirect_uris:
