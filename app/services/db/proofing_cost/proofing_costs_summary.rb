@@ -22,7 +22,7 @@ module Db
       def execute_summary_sql
         sep = ''
         ::ProofingCost.new.attributes.keys.each do |attribute|
-          append_sql(sql_a, attribute, sep)
+          next unless append_sql(sql_a, attribute, sep)
           sep = ','
         end
         sql_a << ' FROM proofing_costs'
@@ -32,6 +32,7 @@ module Db
       def append_sql(sql_a, attribute, sep)
         return if SKIP_FIELDS.index(attribute)
         sql_a << aggregate_sql(attribute, sep)
+        true
       end
 
       def sql_a
