@@ -5,10 +5,10 @@ module Reports
     REPORT_NAME = 'doc-auth-funnel-report'.freeze
 
     def call
-      user_counts = transaction_with_timeout do
-        Db::Identity::SpUserCounts.call
+      report = transaction_with_timeout do
+        Db::DocAuthLog::DocAuthFunnelSummaryStats.new.call
       end
-      save_report(REPORT_NAME, user_counts.to_json)
+      save_report(REPORT_NAME, report.to_json)
     end
   end
 end

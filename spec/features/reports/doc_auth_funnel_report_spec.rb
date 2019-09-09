@@ -4,7 +4,7 @@ feature 'Doc Auth Funnel report' do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:subject) { Db::DocAuthLog::DocAuthFunnelSuccessRates }
+  let(:subject) { Db::DocAuthLog::DocAuthFunnelSummaryStats }
   let(:user) { create(:user, :signed_up) }
   let(:user2) { create(:user, :signed_up) }
   let(:summary1) do

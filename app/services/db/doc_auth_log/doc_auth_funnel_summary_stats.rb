@@ -1,6 +1,6 @@
 module Db
   module DocAuthLog
-    class DocAuthFunnelSuccessRates
+    class DocAuthFunnelSummaryStats
       SKIP_FIELDS = %w[id user_id].freeze
 
       def call
