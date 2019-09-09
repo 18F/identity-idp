@@ -114,17 +114,17 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.failure_to_proof_url || sp_return_url
   end
 
+  #:reek:TooManyStatements
   def sp_alert?(path)
-    path_to_section_map = { '/': 'sign_in',
-                            '/sign_up/enter_email': 'sign_up',
-                            '/users/password/new': 'forgot_password',
-                            '/es': 'sign_in',
-                            '/es/sign_up/enter_email': 'sign_up',
-                            '/es/users/password/new': 'forgot_password',
-                            '/fr': 'sign_in',
-                            '/fr/sign_up/enter_email': 'sign_up',
-                            '/fr/users/password/new': 'forgot_password' }
-    custom_alert?(path_to_section_map[path.to_sym]) || default_alert?
+    current_locale = I18n.locale
+    sign_in_path =
+      current_locale == :en ? new_user_session_path : new_user_session_path(locale: current_locale)
+    sign_up_path = sign_up_email_path(locale: current_locale)
+    new_user_password_path = new_user_password_path(locale: current_locale)
+    path_to_section_map = { sign_in_path => 'sign_in',
+                            sign_up_path => 'sign_up',
+                            new_user_password_path => 'forgot_password' }
+    custom_alert?(path_to_section_map[path]) || default_alert?
   end
 
   # :reek:DuplicateMethodCall
@@ -158,7 +158,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def default_alert?
-    SP_CONFIG[sp.issuer]&.dig('default_help_text')
+    SP_CONFIG.dig(sp.issuer, 'default_help_text')
   end
 
   def request_url
