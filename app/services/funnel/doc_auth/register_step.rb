@@ -19,7 +19,8 @@ module Funnel
         doc_success
         usps_address
         personal_key
-      ]
+      ].freeze
+
       def self.call(user_id, token, step_type, success)
         doc_auth_log = DocAuthLog.find_or_create_by(user_id: user_id)
         return unless TOKEN_WHITELIST.index(token.to_sym)

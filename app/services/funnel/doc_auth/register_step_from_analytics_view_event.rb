@@ -7,10 +7,11 @@ module Funnel
         Analytics::IDV_FINAL => :verified,
         Analytics::IDV_USPS_ADDRESS_VISITED => :usps_address,
         Analytics::IDV_FINAL => :personal_key,
-      }
+      }.freeze
+
       def self.call(user_id, event, result)
         token = ANALYTICS_EVENT_TO_DOC_AUTH_LOG_TOKEN[event]
-        Funnel::DocAuth::RegisterStep.call(user_id, token, :view, result=='success') if token
+        Funnel::DocAuth::RegisterStep.call(user_id, token, :view, result == 'success') if token
       end
     end
   end

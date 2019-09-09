@@ -68,7 +68,6 @@ feature 'Doc Auth Funnel report' do
     }
   end
 
-
   it 'works for no records' do
     expect(subject.new.call).to eq({})
   end
