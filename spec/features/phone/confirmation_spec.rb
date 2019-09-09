@@ -10,11 +10,6 @@ describe 'phone otp confirmation' do
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
 
-    context 'with an international phone number' do
-      let(:phone) { '+81543543643' }
-      it_behaves_like 'phone otp confirmation', :sms
-    end
-
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: phone
@@ -23,6 +18,9 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      # When setting up a method as a first MFA the user will see a success screen. The success
+      # flash for phone should not display because it would be duplicative.
+      expect(page).to_not have_content(t('notices.phone_confirmed'))
       select_2fa_option(:backup_code)
       click_continue
 
@@ -45,11 +43,6 @@ describe 'phone otp confirmation' do
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
 
-    context 'with an international phone number' do
-      let(:phone) { '+81543543643' }
-      it_behaves_like 'phone otp confirmation', :sms
-    end
-
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:phone)
       fill_in :user_phone_form_phone, with: '2025551313'
@@ -67,6 +60,7 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      expect(page).to have_content(t('notices.phone_confirmed'))
       expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference.to_s).to eq(delivery_method.to_s)
@@ -86,15 +80,6 @@ describe 'phone otp confirmation' do
 
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
-
-    context 'with an international phone number' do
-      before do
-        user.phone_configurations.first.update!(phone: formatted_phone)
-      end
-
-      let(:phone) { '+81543543643' }
-      it_behaves_like 'phone otp confirmation', :sms
-    end
 
     def visit_otp_confirmation(delivery_method)
       user.phone_configurations.first.update!(delivery_preference: delivery_method)
@@ -118,11 +103,6 @@ describe 'phone otp confirmation' do
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
 
-    context 'with an international phone number' do
-      let(:phone) { '+81543543643' }
-      it_behaves_like 'phone otp confirmation', :sms
-    end
-
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
       click_on t('account.index.phone_add')
@@ -132,6 +112,8 @@ describe 'phone otp confirmation' do
     end
 
     def expect_successful_otp_confirmation(delivery_method)
+      expect(page).to have_content(t('notices.phone_confirmed'))
+      expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
     end
