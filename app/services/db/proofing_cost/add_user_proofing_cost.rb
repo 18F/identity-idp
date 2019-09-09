@@ -6,6 +6,8 @@ module Db
         acuant_back_image
         aamva
         lexis_nexis_resolution
+        lexis_nexis_address
+        gpo_letter
       ].freeze
 
       def self.call(user_id, token)

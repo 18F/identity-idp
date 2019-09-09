@@ -116,6 +116,7 @@ module Idv
         profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
+      Db::ProofingCost::AddUserProofingCost.call(current_user.id, token)
       confirmation_maker
     end
 

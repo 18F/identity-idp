@@ -7,6 +7,7 @@ module Idv
     def submit(step_params)
       self.step_params = step_params
       self.idv_result = Idv::Agent.new(applicant).proof(:address)
+      Db::ProofingCost::AddUserProofingCost.call(idv_session.current_user.id, :lexis_nexis_address)
       increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       update_idv_session if success

@@ -289,6 +289,8 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.integer "acuant_back_image_count", default: 0
     t.integer "aamva_count", default: 0
     t.integer "lexis_nexis_resolution_count", default: 0
+    t.integer "lexis_nexis_address_count", default: 0
+    t.integer "gpo_letter_count", default: 0
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 
