@@ -51,6 +51,7 @@ feature 'Doc Auth Funnel report' do
       'upload_view_percent' => 100,
       'usps_address_submit_count_average' => 0,
       'usps_address_submit_percent' => 0,
+      'usps_address_error_count_average' => 0,
       'usps_address_view_count_average' => 0,
       'usps_address_view_percent' => 0,
       'usps_letter_sent_view_count_average' => 0,
