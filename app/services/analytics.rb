@@ -14,7 +14,8 @@ class Analytics
       user_id: attributes[:user_id] || user.uuid,
     }
     ahoy.track(event, analytics_hash.merge!(request_attributes))
-    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success]) if user.respond_to? :id
+    return unless user.respond_to? :id
+    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success])
   end
 
   # :reek:FeatureEnvy

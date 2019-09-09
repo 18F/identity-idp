@@ -42,6 +42,7 @@ class CreateDocAuthLogs < ActiveRecord::Migration[5.1]
       t.integer  :usps_letter_sent_view_count, default: 0
       t.datetime :usps_address_submit_at
       t.integer  :usps_address_submit_count, default: 0
+      t.integer  :usps_address_error_count, default: 0
       t.datetime :encrypt_view_at
       t.integer  :encrypt_view_count, default: 0
       t.datetime :verified_view_at
