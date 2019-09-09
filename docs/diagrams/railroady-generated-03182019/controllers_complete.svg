@@ -840,7 +840,7 @@
 <text text-anchor="start" x="169" y="-992.3" font-family="Times,serif" font-size="14.00" fill="#000000">_layout</text>
 <text text-anchor="start" x="169" y="-978.3" font-family="Times,serif" font-size="14.00" fill="#000000">delivery_preference</text>
 <text text-anchor="start" x="169" y="-964.3" font-family="Times,serif" font-size="14.00" fill="#000000">two_factor_enabled?</text>
-<text text-anchor="start" x="169" y="-950.3" font-family="Times,serif" font-size="14.00" fill="#000000">user_phone_form_params</text>
+<text text-anchor="start" x="169" y="-950.3" font-family="Times,serif" font-size="14.00" fill="#000000">new_phone_form_params</text>
 </g>
 <!-- Users::BackupCodeSetupController -->
 <g id="node52" class="node">

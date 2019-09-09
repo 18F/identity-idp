@@ -13,7 +13,7 @@ describe 'phone rate limitting' do
       def visit_otp_confirmation(delivery_method)
         select_2fa_option(:phone)
         select_phone_delivery_option(delivery_method)
-        fill_in :user_phone_form_phone, with: phone
+        fill_in :new_phone_form_phone, with: phone
         click_send_security_code
       end
     end
@@ -25,7 +25,7 @@ describe 'phone rate limitting' do
       def visit_otp_confirmation(delivery_method)
         select_2fa_option(:phone)
         select_phone_delivery_option(:sms)
-        fill_in :user_phone_form_phone, with: '2025551313'
+        fill_in :new_phone_form_phone, with: '2025551313'
         click_send_security_code
         fill_in_code_with_last_phone_otp
         click_submit_default
@@ -34,7 +34,7 @@ describe 'phone rate limitting' do
 
         select_2fa_option(:phone)
         select_phone_delivery_option(delivery_method)
-        fill_in :user_phone_form_phone, with: phone
+        fill_in :new_phone_form_phone, with: phone
         click_send_security_code
       end
     end
@@ -64,7 +64,7 @@ describe 'phone rate limitting' do
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
       click_on t('account.index.phone_add')
-      fill_in :user_phone_form_phone, with: phone
+      fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
       click_continue
     end

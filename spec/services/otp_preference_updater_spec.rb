@@ -31,9 +31,9 @@ describe OtpPreferenceUpdater do
             preference: 'sms',
             phone_id: 1,
           )
-          attributes = { :otp_delivery_preference=>"sms",
-                         :otp_make_default_number=>nil,
-                         :phone_id=>1}
+          attributes = { otp_delivery_preference: 'sms',
+                         otp_make_default_number: nil,
+                         phone_id: 1 }
 
           updated_user = instance_double(UpdateUser)
           allow(UpdateUser).to receive(:new).
