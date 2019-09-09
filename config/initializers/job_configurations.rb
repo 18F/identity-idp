@@ -57,3 +57,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::SpUserCountsReport.new.call },
 )
+
+# Send Doc Auth Funnel Success Rates Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Doc Auth Funnel Report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::DocAuthFunnelReport.new.call },
+  )

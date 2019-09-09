@@ -16,6 +16,7 @@ module Flow
     def show
       step = params[:step]
       analytics.track_event(analytics_visited, step: step) if @analytics_id
+      Funnel::DocAuth::RegisterStep.call(current_user.id, step, :view, true)
       render_step(step, flow.flow_session)
     end
 
@@ -23,6 +24,7 @@ module Flow
       step = params[:step]
       result = flow.handle(step)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
+      Funnel::DocAuth::RegisterStep.call(current_user.id, step, :update, result.success?)
       flow_finish and return unless next_step
       render_update(step, result)
     end

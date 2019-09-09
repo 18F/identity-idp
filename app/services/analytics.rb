@@ -14,6 +14,7 @@ class Analytics
       user_id: attributes[:user_id] || user.uuid,
     }
     ahoy.track(event, analytics_hash.merge!(request_attributes))
+    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success]) if user.respond_to? :id
   end
 
   # :reek:FeatureEnvy
@@ -111,7 +112,9 @@ class Analytics
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
+  IDV_USPS_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'.freeze
   IDV_USPS_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
+  IDV_USPS_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190826141526) do
+ActiveRecord::Schema.define(version: 20190830220344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,56 @@ ActiveRecord::Schema.define(version: 20190826141526) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
+  end
+
+  create_table "doc_auth_logs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "welcome_view_at"
+    t.integer "welcome_view_count", default: 0
+    t.datetime "upload_view_at"
+    t.integer "upload_view_count", default: 0
+    t.datetime "send_link_view_at"
+    t.integer "send_link_view_count", default: 0
+    t.datetime "link_sent_view_at"
+    t.integer "link_sent_view_count", default: 0
+    t.datetime "email_sent_view_at"
+    t.integer "email_sent_view_count", default: 0
+    t.datetime "front_image_view_at"
+    t.integer "front_image_view_count", default: 0
+    t.integer "front_image_submit_count", default: 0
+    t.integer "front_image_error_count", default: 0
+    t.datetime "back_image_view_at"
+    t.integer "back_image_view_count", default: 0
+    t.integer "back_image_submit_count", default: 0
+    t.integer "back_image_error_count", default: 0
+    t.datetime "mobile_front_image_view_at"
+    t.integer "mobile_front_image_view_count", default: 0
+    t.datetime "mobile_back_image_view_at"
+    t.integer "mobile_back_image_view_count", default: 0
+    t.datetime "ssn_view_at"
+    t.integer "ssn_view_count", default: 0
+    t.datetime "verify_view_at"
+    t.integer "verify_view_count", default: 0
+    t.integer "verify_submit_count", default: 0
+    t.integer "verify_error_count", default: 0
+    t.datetime "doc_success_view_at"
+    t.integer "doc_success_view_count", default: 0
+    t.datetime "verify_phone_view_at"
+    t.integer "verify_phone_view_count", default: 0
+    t.datetime "usps_address_view_at"
+    t.integer "usps_address_view_count", default: 0
+    t.datetime "usps_letter_sent_view_at"
+    t.integer "usps_letter_sent_view_count", default: 0
+    t.datetime "usps_address_submit_at"
+    t.integer "usps_address_submit_count", default: 0
+    t.datetime "encrypt_view_at"
+    t.integer "encrypt_view_count", default: 0
+    t.datetime "verified_view_at"
+    t.integer "verified_view_count", default: 0
+    t.datetime "personal_key_view_at"
+    t.integer "personal_key_view_count", default: 0
+    t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
+    t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
 
   create_table "doc_auths", force: :cascade do |t|
