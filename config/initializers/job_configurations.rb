@@ -73,3 +73,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::SpUserCountsReport.new.call },
 )
+
+# Proofing Costs Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Proofing Costs Report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::ProofingCostsReport.new.call },
+)

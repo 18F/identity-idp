@@ -39,11 +39,22 @@ module Idv
       def perform_resolution(pii_from_doc)
         stages = aamva_state?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
         idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
+        add_proofing_costs(stages)
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
           extra: { proofing_results: idv_extra(idv_result) },
         )
+      end
+
+      def add_proofing_costs(stages)
+        user_id = current_user.id
+        add_proofing_cost(user_id, :aamva) if stages.index(:state_id)
+        add_proofing_cost(user_id, :lexis_nexis_resolution) if stages.index(:resolution)
+      end
+
+      def add_proofing_cost(user_id, token)
+        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def idv_success(idv_result)
