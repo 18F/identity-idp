@@ -119,8 +119,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     current_locale = I18n.locale
     sign_in_path =
       current_locale == :en ? new_user_session_path : new_user_session_path(locale: current_locale)
-    sign_up_path = sign_up_email_path(locale: current_locale)
-    new_user_password_path = new_user_password_path(locale: current_locale)
+    sign_up_path =
+      current_locale == :en ? sign_up_email_path : sign_up_email_path(locale: current_locale)
+    new_user_password_path =
+        current_locale == :en ? new_user_password_path : new_user_password_path(locale: current_locale)
     path_to_section_map = { sign_in_path => 'sign_in',
                             sign_up_path => 'sign_up',
                             new_user_password_path => 'forgot_password' }
