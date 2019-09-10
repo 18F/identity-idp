@@ -27,7 +27,7 @@ describe ServiceProviderUpdater do
       active: true,
       native: true,
       approved: true,
-      help_text: new_help_text_hash
+      help_text: new_help_text_hash,
     }
   end
   let(:old_sp) do
@@ -96,9 +96,12 @@ describe ServiceProviderUpdater do
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].stringify_keys
-        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].stringify_keys
-        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].stringify_keys
+        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].
+          stringify_keys
+        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].
+          stringify_keys
+        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].
+          stringify_keys
       end
 
       it 'updates existing dashboard-provided Service Providers' do
@@ -117,9 +120,12 @@ describe ServiceProviderUpdater do
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].stringify_keys
-        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].stringify_keys
-        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].stringify_keys
+        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].
+          stringify_keys
+        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].
+          stringify_keys
+        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].
+          stringify_keys
       end
 
       it 'removes inactive Service Providers' do

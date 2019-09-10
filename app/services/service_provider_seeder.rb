@@ -5,16 +5,15 @@ class ServiceProviderSeeder
     @deploy_env = deploy_env
   end
 
+  # rubocop:disable Metrics/MethodLength
   def run
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.update({
-          approved: true,
-          active: true,
-          native: true,
-          friendly_name: config["friendly_name"]
-        })
+        sp.update(approved: true,
+                  active: true,
+                  native: true,
+                  friendly_name: config['friendly_name'])
         HelpText.find_or_create_by!(service_provider_id: sp.id) do |ht|
           sp.help_text = ht
         end
@@ -24,6 +23,7 @@ class ServiceProviderSeeder
                                 'default_help_text'))
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
