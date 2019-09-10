@@ -114,20 +114,21 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.failure_to_proof_url || sp_return_url
   end
 
-  #:reek:TooManyStatements
+  # rubocop:disable Metrics/AbcSize
+  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def sp_alert?(path)
-    current_locale = I18n.locale
     sign_in_path =
-      current_locale == :en ? new_user_session_path : new_user_session_path(locale: current_locale)
+      I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
     sign_up_path =
-      current_locale == :en ? sign_up_email_path : sign_up_email_path(locale: current_locale)
+      I18n.locale == :en ? sign_up_email_path : sign_up_email_path(locale: I18n.locale)
     new_user_password_path =
-        current_locale == :en ? new_user_password_path : new_user_password_path(locale: current_locale)
+      I18n.locale == :en ? new_user_password_path : new_user_password_path(locale: I18n.locale)
     path_to_section_map = { sign_in_path => 'sign_in',
                             sign_up_path => 'sign_up',
                             new_user_password_path => 'forgot_password' }
     custom_alert?(path_to_section_map[path]) || default_alert?
   end
+  # rubocop:enable Metrics/AbcSize
 
   # :reek:DuplicateMethodCall
   def mfa_expiration_interval
