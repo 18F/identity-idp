@@ -24,12 +24,16 @@ module Flow
       step = params[:step]
       result = flow.handle(step)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
-      Funnel::DocAuth::RegisterStep.call(current_user&.id, step, :update, result.success?)
+      register_update_step(step)
       flow_finish and return unless next_step
       render_update(step, result)
     end
 
     private
+
+    def register_update_step(step)
+      Funnel::DocAuth::RegisterStep.call(current_user&.id, step, :update, result.success?)
+    end
 
     def fsm_initialize
       klass = self.class

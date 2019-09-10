@@ -6,16 +6,20 @@ module Db
       def call
         total_count = ::DocAuthLog.count
         return {} if total_count.zero?
-        results.each do |key, value|
-          multiplier = key.end_with?('_percent') ? 100.0 : 1.0
-          results[key] = (value * multiplier / total_count).round
-        end
+        convert_percentages(total_count)
         results['total_verified_users_count'] = ::DocAuthLog.verified_users_count
         results['total_verify_attempted_users_count'] = total_count
         results
       end
 
       private
+
+      def convert_percentages(total_count)
+        results.each do |key, value|
+          multiplier = key.end_with?('_percent') ? 100.0 : 1.0
+          results[key] = (value * multiplier / total_count).round
+        end
+      end
 
       def results
         @results ||= execute_funnel_sql
