@@ -21,8 +21,8 @@ module Funnel
         personal_key
       ].freeze
       STEP_TYPE_TO_CLASS = {
-        update:  RegisterSubmitStep,
-        view: RegisterViewStep
+        update: RegisterSubmitStep,
+        view: RegisterViewStep,
       }.freeze
 
       def self.call(user_id, token, step_type, success)
