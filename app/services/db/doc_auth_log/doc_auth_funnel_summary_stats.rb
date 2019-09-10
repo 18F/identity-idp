@@ -24,12 +24,17 @@ module Db
       def execute_funnel_sql
         sep = ''
         ::DocAuthLog.new.attributes.keys.each do |attribute|
-          next if SKIP_FIELDS.index(attribute)
-          sql_a << aggregate_sql(attribute, sep)
+          next unless append_sql(sql_a, attribute, sep)
           sep = ','
         end
         sql_a << ' FROM doc_auth_logs'
         ActiveRecord::Base.connection.execute(sql_a.join)[0]
+      end
+
+      def append_sql(sql_a, attribute, sep)
+        return if SKIP_FIELDS.index(attribute)
+        sql_a << aggregate_sql(attribute, sep)
+        true
       end
 
       def sql_a
