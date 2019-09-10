@@ -14,6 +14,10 @@ class Analytics
       user_id: attributes[:user_id] || user.uuid,
     }
     ahoy.track(event, analytics_hash.merge!(request_attributes))
+    register_step_from_analytics_event(event, attributes)
+  end
+
+  def register_step_from_analytics_event(event, attributes)
     return unless user && user.class != AnonymousUser
     Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success])
   end
