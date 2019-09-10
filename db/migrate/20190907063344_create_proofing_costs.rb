@@ -10,6 +10,7 @@ class CreateProofingCosts < ActiveRecord::Migration[5.1]
       t.integer  :lexis_nexis_resolution_count, default: 0
       t.integer  :lexis_nexis_address_count, default: 0
       t.integer  :gpo_letter_count, default: 0
+      t.integer  :phone_otp, default: 0
     end
     add_index :proofing_costs, %i[user_id], algorithm: :concurrently, unique: true
   end

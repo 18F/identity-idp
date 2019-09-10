@@ -25,6 +25,7 @@ feature 'Proofing Costs report' do
       'lexis_nexis_resolution_count_average' => 1.0,
       'gpo_letter_count_average' => 0.0,
       'lexis_nexis_address_count_average' => 0.0,
+      'phone_otp' => 0.0,
     }
   end
 

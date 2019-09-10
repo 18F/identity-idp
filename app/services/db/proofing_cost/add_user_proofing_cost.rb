@@ -8,6 +8,7 @@ module Db
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
+        phone_otp
       ].freeze
 
       def self.call(user_id, token)
