@@ -151,7 +151,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def custom_alert?(section)
     language = I18n.locale.to_s
     if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section][language].present?
+      sp.help_text[section].dig(language).present?
     else
       SP_CONFIG.dig(sp.issuer, 'help_text', language, section).present?
     end
