@@ -8,10 +8,9 @@ module Funnel
           doc_auth_log.save
         end
         error_count = "#{token}_error_count".to_sym
-        if doc_auth_log.respond_to?(error_count) && !success
-          doc_auth_log.send("#{error_count}=".to_sym, doc_auth_log.send(error_count).to_i + 1)
-          doc_auth_log.save
-        end
+        return unless doc_auth_log.respond_to?(error_count) && !success
+        doc_auth_log.send("#{error_count}=".to_sym, doc_auth_log.send(error_count).to_i + 1)
+        doc_auth_log.save
       end
     end
   end
