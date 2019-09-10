@@ -23,6 +23,8 @@ feature 'Proofing Costs report' do
       'acuant_back_image_count_average' => 1.0,
       'aamva_count_average' => 0.0,
       'lexis_nexis_resolution_count_average' => 1.0,
+      'gpo_letter_count_average' => 0.0,
+      'lexis_nexis_address_count_average' => 0.0,
     }
   end
 
