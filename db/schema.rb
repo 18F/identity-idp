@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190830220344) do
+ActiveRecord::Schema.define(version: 20190907063344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,8 +133,6 @@ ActiveRecord::Schema.define(version: 20190830220344) do
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
-    t.datetime "personal_key_view_at"
-    t.integer "personal_key_view_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end

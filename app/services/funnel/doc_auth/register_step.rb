@@ -18,7 +18,6 @@ module Funnel
         verified
         doc_success
         usps_address
-        personal_key
       ].freeze
       STEP_TYPE_TO_CLASS = {
         update: RegisterSubmitStep,

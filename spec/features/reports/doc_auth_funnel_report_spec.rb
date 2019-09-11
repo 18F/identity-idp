@@ -41,8 +41,6 @@ feature 'Doc Auth Funnel report' do
       'mobile_back_image_view_percent' => 0,
       'mobile_front_image_view_count_average' => 0,
       'mobile_front_image_view_percent' => 0,
-      'personal_key_view_count_average' => 0,
-      'personal_key_view_percent' => 0,
       'send_link_view_count_average' => 0,
       'send_link_view_percent' => 0,
       'ssn_view_count_average' => 1,
