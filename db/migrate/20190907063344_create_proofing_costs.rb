@@ -1,6 +1,4 @@
 class CreateProofingCosts < ActiveRecord::Migration[5.1]
-  disable_ddl_transaction!
-
   def change
     create_table :proofing_costs do |t|
       t.integer  :user_id, null: false
@@ -11,7 +9,8 @@ class CreateProofingCosts < ActiveRecord::Migration[5.1]
       t.integer  :lexis_nexis_address_count, default: 0
       t.integer  :gpo_letter_count, default: 0
       t.integer  :phone_otp_count, default: 0
+      t.timestamps
     end
-    add_index :proofing_costs, %i[user_id], algorithm: :concurrently, unique: true
+    add_index :proofing_costs, %i[user_id], unique: true
   end
 end

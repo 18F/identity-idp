@@ -292,6 +292,8 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.integer "lexis_nexis_address_count", default: 0
     t.integer "gpo_letter_count", default: 0
     t.integer "phone_otp_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 
