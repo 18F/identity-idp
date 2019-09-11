@@ -41,9 +41,7 @@ module SignUp
 
     def process_successful_creation
       user = @register_user_email_form.user
-      unless @register_user_email_form.email_taken?
-        create_user_event(:account_created, user)
-      end
+      create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
 
       resend_confirmation = params[:user][:resend]
       session[:email] = @register_user_email_form.email

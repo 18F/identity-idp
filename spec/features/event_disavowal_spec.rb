@@ -41,10 +41,10 @@ feature 'disavowing an action' do
     sign_in_and_2fa_user(user)
     visit add_phone_path
 
-    fill_in 'user_phone_form[phone]', with: '202-555-3434'
+    fill_in 'new_phone_form[phone]', with: '202-555-3434'
 
-    choose 'user_phone_form_otp_delivery_preference_sms'
-    check 'user_phone_form_otp_make_default_number'
+    choose 'new_phone_form_otp_delivery_preference_sms'
+    check 'new_phone_form_otp_make_default_number'
     click_button t('forms.buttons.continue')
 
     submit_prefilled_otp_code(user, 'sms')
