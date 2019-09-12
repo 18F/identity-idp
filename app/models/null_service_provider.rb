@@ -2,7 +2,7 @@ class NullServiceProvider
   attr_accessor :issuer, :friendly_name
   attr_accessor :ial
 
-  def initialize(issuer:, friendly_name: "Null ServiceProvider")
+  def initialize(issuer:, friendly_name: 'Null ServiceProvider')
     @issuer = issuer
     @friendly_name = friendly_name
   end

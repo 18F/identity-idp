@@ -43,8 +43,8 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
         select_phone_delivery_option(:voice)
-        select 'Bahamas', from: 'user_phone_form_international_code'
-        fill_in 'user_phone_form_phone', with: unsupported_phone
+        select 'Bahamas', from: 'new_phone_form_international_code'
+        fill_in 'new_phone_form_phone', with: unsupported_phone
         click_send_security_code
 
         expect(current_path).to eq phone_setup_path
@@ -63,19 +63,19 @@ feature 'Two Factor Authentication' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        fill_in 'user_phone_form_phone', with: '+81 54 354 3643'
+        fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
 
-        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
+        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
-        fill_in 'user_phone_form_phone', with: ''
-        fill_in 'user_phone_form_phone', with: '+212 5376'
+        fill_in 'new_phone_form_phone', with: ''
+        fill_in 'new_phone_form_phone', with: '+212 5376'
 
-        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'MA'
+        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
-        fill_in 'user_phone_form_phone', with: ''
-        fill_in 'user_phone_form_phone', with: '+81 54354'
+        fill_in 'new_phone_form_phone', with: ''
+        fill_in 'new_phone_form_phone', with: '+81 54354'
 
-        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
+        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
@@ -85,7 +85,7 @@ feature 'Two Factor Authentication' do
         # Because javascript is enabled and we do some fancy pants stuff with radio buttons, we need
         # to click on the radio buttons parent to make a selection
         voice_radio_button = page.find(
-          '#user_phone_form_otp_delivery_preference_voice', visible: false
+          '#new_phone_form_otp_delivery_preference_voice', visible: false
         )
         voice_radio_button.find(:xpath, '..').click
 
@@ -97,7 +97,7 @@ feature 'Two Factor Authentication' do
   end
 
   def phone_field
-    find('#user_phone_form_phone')
+    find('#new_phone_form_phone')
   end
 
   def select_country_and_type_phone_number(country:, number:)
@@ -115,17 +115,17 @@ feature 'Two Factor Authentication' do
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
-    fill_in 'user_phone_form_phone', with: ''
+    fill_in 'new_phone_form_phone', with: ''
     click_send_security_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
-    fill_in 'user_phone_form_phone', with: 'five one zero five five five four three two one'
+    fill_in 'new_phone_form_phone', with: 'five one zero five five five four three two one'
     click_send_security_code
   end
 
   def submit_2fa_setup_form_with_valid_phone
-    fill_in 'user_phone_form_phone', with: '703-555-1212'
+    fill_in 'new_phone_form_phone', with: '703-555-1212'
     click_send_security_code
   end
 

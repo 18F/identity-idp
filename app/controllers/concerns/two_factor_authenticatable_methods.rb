@@ -119,6 +119,14 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session[:authn_at] = Time.zone.now
     Funnel::Registration::AddMfa.call(current_user.id, 'phone')
     assign_phone
+    flash[:success] = t('notices.phone_confirmed') if should_show_phone_confirmed_message?
+  end
+
+  def should_show_phone_confirmed_message?
+    # If the user's only MFA method is the one they just setup, then they will be redirected to
+    # the mfa option screen which will show them the first MFA success message. In that case we
+    # do not want to show this additional flash message here.
+    MfaPolicy.new(current_user).multiple_factors_enabled?
   end
 
   def handle_valid_otp_for_authentication_context

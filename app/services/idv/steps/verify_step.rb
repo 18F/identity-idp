@@ -37,12 +37,12 @@ module Idv
       end
 
       def perform_resolution(pii_from_doc)
-        stages = aamva_state?(pii_from_doc) ? [:resolution, :state_id] : [:resolution]
+        stages = aamva_state?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
         idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
-          extra: idv_extra(idv_result),
+          extra: { proofing_results: idv_extra(idv_result) },
         )
       end
 
