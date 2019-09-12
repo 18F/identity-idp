@@ -45,7 +45,7 @@ html lang="#{I18n.locale}" class='no-js'
       = render 'shared/newrelic/browser_instrumentation'
 
   body class="#{Rails.env}-env site #{yield(:background_cls)}"
-    .site-wrap
+    .site-wrap.bg-light-blue
       - if FeatureManagement.fake_banner_mode?
         = render 'shared/fake_banner'
       - else
