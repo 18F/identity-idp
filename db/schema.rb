@@ -133,6 +133,8 @@ ActiveRecord::Schema.define(version: 20190907063344) do
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end

@@ -1,7 +1,7 @@
 module Db
   module DocAuthLog
     class DocAuthFunnelSummaryStats
-      SKIP_FIELDS = %w[id user_id].freeze
+      SKIP_FIELDS = %w[id user_id created_at updated_at].freeze
 
       def call
         total_count = ::DocAuthLog.count

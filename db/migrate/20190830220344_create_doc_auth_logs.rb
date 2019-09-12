@@ -1,6 +1,4 @@
 class CreateDocAuthLogs < ActiveRecord::Migration[5.1]
-  disable_ddl_transaction!
-
   def change
     create_table :doc_auth_logs do |t|
       t.integer  :user_id, null: false
@@ -47,8 +45,9 @@ class CreateDocAuthLogs < ActiveRecord::Migration[5.1]
       t.integer  :encrypt_view_count, default: 0
       t.datetime :verified_view_at
       t.integer  :verified_view_count, default: 0
+      t.timestamps
     end
-    add_index :doc_auth_logs, %i[user_id], algorithm: :concurrently, unique: true
-    add_index :doc_auth_logs, %i[verified_view_at], algorithm: :concurrently
+    add_index :doc_auth_logs, %i[user_id], unique: true
+    add_index :doc_auth_logs, %i[verified_view_at]
   end
 end
