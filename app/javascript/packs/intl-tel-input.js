@@ -4,9 +4,9 @@ import 'intl-tel-input/build/js/utils.js';
 import 'intl-tel-input';
 
 // Setting variables that jQuery is using with a $ at the start of the const name
-const $telInput = $('#user_phone_form_phone');
-const telInput = document.querySelector('#user_phone_form_phone');
-const $intlCode = $('#user_phone_form_international_code');
+const $telInput = $('#new_phone_form_phone');
+const telInput = document.querySelector('#new_phone_form_phone');
+const $intlCode = $('#new_phone_form_international_code');
 
 // initialise plugin
 $telInput.intlTelInput({

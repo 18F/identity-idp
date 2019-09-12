@@ -255,6 +255,7 @@ production:
     redirect_uris:
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/result'
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
+      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/logout'
   <% end %>
 
   # CBP Jobs
@@ -1185,6 +1186,91 @@ production:
       - ssn
       - phone
     restrict_to_deploy_env: 'prod'
+
+  # RRB - ORA/ BOS - BOS AA1 Pre-Prod Environment
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:BOS_AA1_PreProd':
+    friendly_name: 'OpenId-RRB:BOS Pre-Prod'
+    agency: 'RRB'
+    agency_id: 4
+    logo: 'rrb.svg'
+    cert: 'my_rrb_staging'
+    return_to_sp_url: 'https://onlinetest.rrb.gov/AA1/login/login/RRBHome'
+    failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
+    redirect_uris:
+      - 'https://onlinetest.rrb.gov/AA1/login/login/RRBHome'
+      - 'https://onlinetest.rrb.gov/AA1/login/login/SignInCallback'
+    ial: 2
+    attribute_bundle:
+      - address1
+      - address2
+      - city
+      - dob
+      - email
+      - first_name
+      - last_name
+      - middle_name
+      - phone
+      - ssn
+      - state
+      - zipcode
+    restrict_to_deploy_env: 'staging'
+
+  # RRB - Benefit Connect - ATT TEST server
+  'urn:gov:rrb:OIDC:V0.1:BenefitConnnect:app-bn-test':
+    friendly_name: 'myRRB'
+    agency: 'RRB'
+    agency_id: 4
+    logo: 'rrb.svg'
+    cert: 'my_rrb_bn_test_staging'
+    return_to_sp_url: 'https://rrbtest.rrb.gov/Benefits/myRRB'
+    failure_to_proof_url: 'https://rrbtest.rrb.gov/Benefits/myRRB/AccountSupport'
+    redirect_uris:
+      - 'https://securetest.rrb.gov/myRRB/Account/SignInCallback'
+    ial: 2
+    attribute_bundle:
+      - address1
+      - address2
+      - city
+      - dob
+      - email
+      - first_name
+      - last_name
+      - middle_name
+      - phone
+      - ssn
+      - state
+      - zipcode
+    restrict_to_deploy_env: 'staging'
+
+  # RRB - ORA/ BOS - BOS AA3 Pre-Prod Environment
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:RRB:BOS_AA3_PreProd':
+    friendly_name: 'OpenId-RRB:BOS AA3 Pre-Prod'
+    agency: 'RRB'
+    agency_id: 4
+    logo: 'rrb.svg'
+    cert: 'rrb_bos_aa3_staging'
+    return_to_sp_url: 'https://onlinetest.rrb.gov/AA3/login/login/RRBHome'
+    failure_to_proof_url: 'https://rrbtest.rrb.gov/Benefits/myRRB/AccountSupport'
+    redirect_uris:
+      - 'https://onlinetest.rrb.gov/AA3/login/login/RRBHome'
+      - 'https://onlinetest.rrb.gov/AA3/login/login/SignInCallback'
+    ial: 2
+    attribute_bundle:
+      - address1
+      - address2
+      - city
+      - dob
+      - email
+      - first_name
+      - last_name
+      - middle_name
+      - phone
+      - ssn
+      - state
+      - x509_presented
+      - x509_subject
+      - zipcode
+    restrict_to_deploy_env: 'staging'
 
   # DOT - FMCSA - Drug and Alcohol Clearinghouse
   'urn:gov:gsa:openidconnect.profiles:sp:sso:fmcsa:clearinghouse':

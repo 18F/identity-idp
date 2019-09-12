@@ -38,6 +38,8 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
+      phone_step_incomplete: You must go to your phone and upload photos of your ID
+        before continuing. We sent you a link with instructions.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You've entered too many incorrect passwords. You

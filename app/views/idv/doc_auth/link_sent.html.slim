@@ -7,7 +7,10 @@ br
   .sm-col.sm-col-9.px1.h1.h2.mb2.mt0.my0 = t('doc_auth.info.link_sent')
 
 .mt0
-br
+- if flow_session[:error_message]
+  p.alert.alert-error = flow_session[:error_message]
+- else
+  br
 = button_to(t('forms.buttons.continue'), url_for, method: :put,
     class: 'btn btn-primary btn-wide sm-col-6 col-12')
 br
