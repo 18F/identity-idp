@@ -15,8 +15,7 @@ module Db
         return unless user_id
         proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
         return unless TOKEN_WHITELIST.index(token.to_sym)
-        value = proofing_cost.send("#{token}_count".to_sym).to_i
-        proofing_cost.send("#{token}_count=".to_sym, value + 1)
+        proofing_cost["#{token}_count"] += 1
         proofing_cost.save
       end
     end
