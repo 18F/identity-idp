@@ -40,7 +40,7 @@ describe 'Remembering a webauthn device' do
       user.password = Features::SessionHelper::VALID_PASSWORD
 
       select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551313'
+      fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -73,7 +73,7 @@ describe 'Remembering a webauthn device' do
       click_continue
 
       select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551313'
+      fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default

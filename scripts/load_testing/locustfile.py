@@ -277,16 +277,16 @@ def signup(t, signup_url=None):
     # so we can then turn around and post the confirmation token back.
     resp = t.client.get(resp.url)
     dom = resp_to_dom(resp)
-    auth_token = authenticity_token(dom, '#new_new_phone_form')
+    auth_token = authenticity_token(dom, '#new_user_phone_form')
 
     # Now post with the correct tokens
     phone_post = t.client.post(
         resp.url,
         data={
             '_method': 'patch',
-            'new_phone_form[international_code]': 'US',
-            'new_phone_form[phone]': phone_numbers[randint(1, 1000)],
-            'new_phone_form[otp_delivery_preference]': 'sms',
+            'user_phone_form[international_code]': 'US',
+            'user_phone_form[phone]': phone_numbers[randint(1, 1000)],
+            'user_phone_form[otp_delivery_preference]': 'sms',
             'authenticity_token': auth_token,
             'commit': 'Send security code',
         },

@@ -17,7 +17,7 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = './tmp/rspec-examples.txt'
 
   # show the n slowest tests at the end of the test run
-  config.profile_examples = 10
+  # config.profile_examples = 10
 
   # Skip user_flow specs in default tasks
   config.filter_run_excluding user_flow: true

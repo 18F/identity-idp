@@ -175,11 +175,6 @@ module SamlAuthHelper
     get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
   end
 
-  def saml_post_auth(saml_request)
-    # POST redirect binding Authn Request
-    post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
-  end
-
   private
 
   def link_user_to_identity(user, link, settings)

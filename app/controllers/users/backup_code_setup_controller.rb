@@ -28,7 +28,6 @@ module Users
     def edit; end
 
     def continue
-      flash[:success] = t('notices.backup_codes_configured')
       redirect_to two_2fa_setup
     end
 

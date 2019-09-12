@@ -13,7 +13,7 @@ feature 'setting up a second phone as backup MFA' do
     )
 
     select_2fa_option(:phone)
-    fill_in :new_phone_form_phone, with: '2025551234'
+    fill_in :user_phone_form_phone, with: '2025551234'
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -31,7 +31,7 @@ feature 'setting up a second phone as backup MFA' do
     )
 
     select_2fa_option(:phone)
-    fill_in :new_phone_form_phone, with: '2025555678'
+    fill_in :user_phone_form_phone, with: '2025555678'
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default

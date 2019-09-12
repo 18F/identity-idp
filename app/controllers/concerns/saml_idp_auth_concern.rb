@@ -28,7 +28,7 @@ module SamlIdpAuthConcern
 
   def store_saml_request
     ServiceProviderRequestHandler.new(
-      url: request_url,
+      url: request.original_url,
       session: session,
       protocol_request: saml_request,
       protocol: FederatedProtocols::Saml,
@@ -113,18 +113,5 @@ module SamlIdpAuthConcern
 
   def current_issuer
     @_issuer ||= saml_request.service_provider.identifier
-  end
-
-  # :reek:FeatureEnvy
-  def request_url
-    url = URI.parse request.original_url
-    query_params = Rack::Utils.parse_nested_query url.query
-    unless query_params['SAMLRequest']
-      orig_request = saml_request.options[:get_params][:SAMLRequest]
-      query_params['SAMLRequest'] = orig_request
-    end
-
-    url.query = Rack::Utils.build_query(query_params).presence
-    url.to_s
   end
 end

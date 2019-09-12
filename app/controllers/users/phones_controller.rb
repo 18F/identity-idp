@@ -6,12 +6,12 @@ module Users
 
     def add
       user_session[:phone_id] = nil
-      @new_phone_form = NewPhoneForm.new(current_user)
+      @user_phone_form = UserPhoneForm.new(current_user, nil)
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(current_user)
-      if @new_phone_form.submit(user_params).success?
+      @user_phone_form = UserPhoneForm.new(current_user, nil)
+      if @user_phone_form.submit(user_params).success?
         confirm_phone
         bypass_sign_in current_user
       else
@@ -22,16 +22,15 @@ module Users
     def edit
       set_phone_id
       # memoized for view
-      @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
+      user_phone_form
     end
 
     def update
-      @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
-      if @edit_phone_form.submit(edit_params).success?
+      if user_phone_form.submit(user_params).success? && !already_has_phone?
         process_updates
         bypass_sign_in current_user
       else
-        render :edit
+        render_edit
       end
     end
 
@@ -51,6 +50,10 @@ module Users
 
     private
 
+    def user_phone_form
+      @user_phone_form ||= UserPhoneForm.new(current_user, phone_configuration)
+    end
+
     def render_edit
       flash.now[:error] = t('errors.messages.phone_duplicate') if already_has_phone?
       render :edit
@@ -64,18 +67,13 @@ module Users
     end
 
     def user_params
-      params.require(:new_phone_form).permit(:phone, :international_code,
-                                             :otp_delivery_preference,
-                                             :otp_make_default_number)
-    end
-
-    def edit_params
-      params.require(:edit_phone_form).permit(:otp_delivery_preference,
+      params.require(:user_phone_form).permit(:phone, :international_code,
+                                              :otp_delivery_preference,
                                               :otp_make_default_number)
     end
 
     def already_has_phone?
-      @user_has_phone ||= @new_phone_form.already_has_phone?
+      @user_has_phone ||= @user_phone_form.already_has_phone?
     end
 
     def delivery_preference
@@ -83,24 +81,25 @@ module Users
     end
 
     def process_updates
-      if @edit_phone_form.phone_config_changed?
+      form = @user_phone_form
+      if form.phone_config_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
 
         OtpPreferenceUpdater.new(
           user: current_user,
-          preference: @edit_phone_form.otp_delivery_preference,
-          default: @edit_phone_form.otp_make_default_number,
+          preference: form.otp_delivery_preference,
+          default: form.otp_make_default_number,
           phone_id: user_session[:phone_id],
-        ).call
+          ).call
       end
       redirect_to account_url
     end
 
     def confirm_phone
       flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
-      prompt_to_confirm_phone(id: user_session[:phone_id], phone: @new_phone_form.phone,
-                              selected_delivery_method: @new_phone_form.otp_delivery_preference,
-                              selected_default_number: @new_phone_form.otp_make_default_number)
+      prompt_to_confirm_phone(id: user_session[:phone_id], phone: @user_phone_form.phone,
+                              selected_delivery_method: @user_phone_form.otp_delivery_preference,
+                              selected_default_number: @user_phone_form.otp_make_default_number)
     end
 
     def handle_successful_delete

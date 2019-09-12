@@ -11,17 +11,13 @@ feature 'webauthn sign up' do
     end
 
     def expect_webauthn_setup_success
-      # When setting up a method as a first MFA the user will see a success screen. The success
-      # flash for webauthn should not display because it would be duplicative.
-      expect(page).to_not have_content(t('notices.webauthn_configured'))
-
       expect(current_path).to eq two_factor_options_success_path
       click_continue
 
       expect(page).to have_current_path(two_factor_options_path)
 
       select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551313'
+      fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -37,7 +33,7 @@ feature 'webauthn sign up' do
   context 'as second MFA method' do
     def visit_webauthn_setup
       select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551313'
+      fill_in :user_phone_form_phone, with: '2025551313'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -47,7 +43,6 @@ feature 'webauthn sign up' do
     end
 
     def expect_webauthn_setup_success
-      expect(page).to have_content(t('notices.webauthn_configured'))
       expect(page).to have_current_path(account_path)
     end
 

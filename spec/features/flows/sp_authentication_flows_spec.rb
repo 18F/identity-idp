@@ -330,6 +330,6 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
   def complete_phone_form_with_valid_phone
     phone = Faker::PhoneNumber.cell_phone
     phone = Faker::PhoneNumber.cell_phone until Phonelib.valid_for_country?(phone, 'US')
-    fill_in 'new_phone_form_phone', with: phone
+    fill_in 'user_phone_form_phone', with: phone
   end
 end

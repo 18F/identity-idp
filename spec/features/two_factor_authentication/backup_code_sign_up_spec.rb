@@ -17,7 +17,6 @@ feature 'sign up with backup code' do
     click_on 'Continue'
     click_continue
 
-    expect(page).to have_content(t('notices.backup_codes_configured'))
     expect(current_path).to eq account_path
     expect(FirstMfaEnabledForUser.call(user)).to eq(:backup_code)
     expect(user.backup_code_configurations.count).to eq(10)
@@ -55,7 +54,6 @@ feature 'sign up with backup code' do
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 
-        expect(page).to have_content(t('notices.backup_codes_configured'))
         expect(current_path).to eq account_path
         expect(user.backup_code_configurations.count).to eq(10)
       else

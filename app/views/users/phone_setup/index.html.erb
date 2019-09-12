@@ -12,22 +12,10 @@
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
 </p>
 
-<%= simple_form_for(@new_phone_form,
-                    html: { autocomplete: 'off', method: :patch, role: 'form' },
-                    data: { international_phone_form: true },
-                    url: phone_setup_path) do |f| %>
-
-    <%= render 'users/shared/phone_number_edit', f: f %>
-
-  <%= render 'users/shared/otp_delivery_preference_selection',
-             form_obj: @new_phone_form%>
-  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
-    <%= render 'users/shared/otp_make_default_number',
-               form_obj: @new_phone_form%>
-  <% end %>
-  <%= f.button :submit, t('forms.buttons.send_security_code'), class: 'no-auto-enable btn-wide' %>
-<% end %>
-
+<%= render 'users/shared/phone_form',
+    http_method: :patch,
+    target_url: phone_setup_path,
+    button: t('forms.buttons.send_security_code') %>
 
 <div class="mt2 pt1 border-top">
   <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>

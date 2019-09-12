@@ -37,7 +37,7 @@
     "dirty-chai": "^1.2.2",
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^11.2.0bass",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.2.0",
     "mocha": "^6.1.4",
     "proxyquire": "^1.8.0"
   }
