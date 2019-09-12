@@ -18,7 +18,7 @@ describe Users::PhoneSetupController do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
-        expect(NewPhoneForm).to receive(:new).with(user)
+        expect(UserPhoneForm).to receive(:new).with(user, nil)
 
         get :index
 
@@ -44,7 +44,7 @@ describe Users::PhoneSetupController do
         with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
       patch :create, params: {
-        new_phone_form: {
+        user_phone_form: {
           phone: '703-555-010',
           international_code: 'US',
         },
@@ -72,8 +72,8 @@ describe Users::PhoneSetupController do
         patch(
           :create,
           params: {
-            new_phone_form: { phone: '703-555-0100',
-                              international_code: 'US' },
+            user_phone_form: { phone: '703-555-0100',
+                               international_code: 'US' },
           },
         )
 
@@ -106,8 +106,8 @@ describe Users::PhoneSetupController do
         patch(
           :create,
           params: {
-            new_phone_form: { phone: '703-555-0100',
-                              international_code: 'US' },
+            user_phone_form: { phone: '703-555-0100',
+                               international_code: 'US' },
           },
         )
 
@@ -139,8 +139,8 @@ describe Users::PhoneSetupController do
         patch(
           :create,
           params: {
-            new_phone_form: { phone: '703-555-0100',
-                              international_code: 'US' },
+            user_phone_form: { phone: '703-555-0100',
+                               international_code: 'US' },
           },
         )
 

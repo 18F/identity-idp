@@ -85,15 +85,7 @@ module Users
       mark_user_as_fully_authenticated
       save_remember_device_preference
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
-      flash[:success] = t('notices.webauthn_configured') if should_show_webauthn_configured_message?
       redirect_to two_2fa_setup
-    end
-
-    def should_show_webauthn_configured_message?
-      # If the user's only MFA method is the one they just setup, then they will be redirected to
-      # the mfa option screen which will show them the first MFA success message. In that case we
-      # do not want to show this additional flash message here.
-      MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def process_invalid_webauthn(form)

@@ -7,7 +7,7 @@ feature 'OTP delivery selection' do
       select_2fa_option(:phone)
       expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
       select_phone_delivery_option(:voice)
-      fill_in 'new_phone_form[phone]', with: '202-555-1212'
+      fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -18,7 +18,7 @@ feature 'OTP delivery selection' do
       expect(page).to have_current_path(two_factor_options_path)
       select_2fa_option('phone')
       expect(page).to have_content t('titles.phone_setup')
-      fill_in 'new_phone_form[phone]', with: '202-555-1213'
+      fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.sms.number_message_html',
                                      number: '+1 202-555-1213',
@@ -30,7 +30,7 @@ feature 'OTP delivery selection' do
     before do
       sign_in_user
       select_2fa_option('phone')
-      fill_in 'new_phone_form[phone]', with: '202-555-1212'
+      fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -42,7 +42,7 @@ feature 'OTP delivery selection' do
       select_2fa_option(:phone)
       select_phone_delivery_option(:voice)
       expect(page).to have_content t('titles.phone_setup')
-      fill_in 'new_phone_form[phone]', with: '202-555-1213'
+      fill_in 'user_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('instructions.mfa.voice.number_message_html',
                                      number: '+1 202-555-1213',
@@ -53,7 +53,7 @@ feature 'OTP delivery selection' do
   it 'allows the user to select a backup delivery method and then change that selection' do
     sign_in_user
     select_2fa_option(:phone)
-    fill_in :new_phone_form_phone, with: '202-555-1212'
+    fill_in :user_phone_form_phone, with: '202-555-1212'
     click_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -71,7 +71,7 @@ feature 'OTP delivery selection' do
     Telephony::Test::Call.clear_calls
     Telephony::Test::Message.clear_messages
 
-    fill_in :new_phone_form_phone, with: '202-555-1313'
+    fill_in :user_phone_form_phone, with: '202-555-1313'
     click_send_security_code
 
     expect(Telephony::Test::Call.calls.length).to eq(0)

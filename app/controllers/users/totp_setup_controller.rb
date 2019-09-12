@@ -87,7 +87,7 @@ module Users
     def revoke_otp_secret_key
       UpdateUser.new(
         user: current_user,
-        attributes: { otp_secret_key: nil },
+        attributes: { otp_secret_key: nil},
       ).call
     end
 

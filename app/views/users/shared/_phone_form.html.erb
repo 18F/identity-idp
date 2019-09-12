@@ -1,0 +1,25 @@
+<%= simple_form_for(@user_phone_form,
+    html: { autocomplete: 'off', method: http_method, role: 'form' },
+    data: { international_phone_form: true },
+    url: target_url) do |f| %>
+
+  <% if @user_phone_form.phone && @user_phone_form.errors.blank?%>
+    <div class="mb1 h4">
+      <%= :phone %>:&nbsp;
+      <strong><%= @user_phone_form.masked_number %></strong>
+    </div><br/>
+
+    <div style="display:none">
+      <%= f.hidden_field :international_code, :value => @user_phone_form.international_code %>
+      <%= f.hidden_field :phone, :value => @user_phone_form.phone %>
+    </div>
+  <% else %>
+    <%= render 'users/shared/phone_number_edit', f: f %>
+  <% end %>
+
+  <%= render 'users/shared/otp_delivery_preference_selection' %>
+  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
+    <%= render 'users/shared/otp_make_default_number' %>
+  <% end %>
+  <%= f.button :submit, button, class: 'no-auto-enable btn-wide' %>
+<% end %>

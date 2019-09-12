@@ -13,13 +13,7 @@ feature 'Backup codes' do
       old_backup_code = user.backup_code_configurations.sample
       click_link t('forms.backup_code.regenerate'), href: backup_code_regenerate_path
       click_on t('account.index.backup_code_confirm_regenerate')
-
       expect(BackupCodeConfiguration.where(id: old_backup_code.id).any?).to eq(false)
-
-      click_continue
-
-      expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_path)
     end
   end
 
@@ -48,8 +42,6 @@ feature 'Backup codes' do
 
       expected_message = "#{t('account.index.backup_codes_exist')}\n#{formatted_generated_at}"
 
-      expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_path)
       expect(page).to have_content(expected_message)
     end
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe NewPhoneForm do
+describe UserPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { build(:user, :signed_up) }
@@ -11,9 +11,29 @@ describe NewPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject { NewPhoneForm.new(user) }
+  subject { UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
 
   it_behaves_like 'a phone form'
+
+  it 'loads initial values from the user object' do
+    user = build_stubbed(
+      :user, :with_phone,
+      with: { phone: '+1 (703) 500-5000' },
+      otp_delivery_preference: 'voice'
+    )
+    subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
+
+    expect(subject.phone).to eq(MfaContext.new(user).phone_configurations.first.phone)
+    expect(subject.international_code).to eq('US')
+    expect(subject.otp_delivery_preference).to eq(user.otp_delivery_preference)
+  end
+
+  it 'infers the international code from the user phone number' do
+    user = build_stubbed(:user, :with_phone, with: { phone: '+81 744 21 1234' })
+    subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
+
+    expect(subject.international_code).to eq('JP')
+  end
 
   describe 'phone validation' do
     it do
@@ -52,7 +72,7 @@ describe NewPhoneForm do
 
       it 'does not update the user phone attribute' do
         user = create(:user)
-        subject = NewPhoneForm.new(user)
+        subject = UserPhoneForm.new(user, MfaContext.new(user).phone_configurations.first)
         params[:phone] = '+1 504 444 1643'
 
         subject.submit(params)
@@ -155,6 +175,33 @@ describe NewPhoneForm do
       subject.submit(params)
 
       expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
+    end
+  end
+
+  describe '#phone_config_changed?' do
+    it 'returns true if the user phone has changed' do
+      params[:phone] = '+1 504 444 1643'
+      subject.submit(params)
+
+      expect(subject.phone_config_changed?).to eq(true)
+    end
+
+    it 'returns false if the user phone has not changed' do
+      params[:phone] = MfaContext.new(user).phone_configurations.first.phone
+      subject.submit(params)
+
+      expect(subject.phone_config_changed?).to eq(false)
+    end
+
+    context 'when a user has no phone' do
+      it 'returns true' do
+        MfaContext.new(user).phone_configurations.clear
+
+        params[:phone] = '+1 504 444 1643'
+        subject.submit(params)
+
+        expect(subject.phone_config_changed?).to eq(true)
+      end
     end
   end
 end

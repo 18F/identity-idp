@@ -35,7 +35,7 @@ module Users
 
     def backup_code_only_processing
       if user_session[:signing_up] &&
-         @two_factor_options_form.selection == 'backup_code_only'
+        @two_factor_options_form.selection == 'backup_code_only'
         user_session[:signing_up] = false
       end
     end
