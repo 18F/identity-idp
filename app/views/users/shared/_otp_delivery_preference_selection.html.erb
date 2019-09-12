@@ -1,3 +1,10 @@
+<%
+  form_name = form_obj.class.name.underscore.to_s
+  form_name_label = form_name + "[otp_delivery_preference]"
+  form_name_tag_sms = form_name + "_otp_delivery_preference_sms"
+  form_name_tag_voice = form_name + "_otp_delivery_preference_voice"
+%>
+
 <div class="mb3">
   <fieldset class="m0 p0 border-none">
     <legend class="mb1 h4 serif bold">
@@ -8,11 +15,11 @@
     </p>
     <label
       class="btn-border col-12 sm-col-5 sm-mr2 mb2 sm-mb0"
-      for="user_phone_form_otp_delivery_preference_sms"
+      for= <%= form_name_tag_sms %>
     >
       <div class="radio">
-        <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
-          :sms, @user_phone_form.delivery_preference_sms?,
+        <%= radio_button_tag form_name_label,
+          :sms, form_obj.delivery_preference_sms?,
           class: :otp_delivery_preference_sms %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
@@ -20,11 +27,11 @@
     </label>
     <label
       class="btn-border col-12 sm-col-5 mb0"
-      for="user_phone_form_otp_delivery_preference_voice"
+      for=<%= form_name_tag_voice %>
     >
       <div class="radio">
-        <%= radio_button_tag 'user_phone_form[otp_delivery_preference]',
-            :voice, @user_phone_form.delivery_preference_voice?,
+        <%= radio_button_tag form_name_label,
+            :voice, form_obj.delivery_preference_voice?,
             class: :otp_delivery_preference_voice %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_delivery_preference.voice') %>

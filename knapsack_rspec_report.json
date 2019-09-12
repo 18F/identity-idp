@@ -330,7 +330,7 @@
   "spec/services/remote_settings_service_spec.rb": 2.9266886711120605,
   "spec/features/idv/doc_auth/cancel_spec.rb": 1.1743090152740479,
   "spec/forms/sms_form_spec.rb": 0.005517244338989258,
-  "spec/forms/user_phone_form_spec.rb": 2.0735747814178467,
+  "spec/forms/new_phone_form_spec.rb": 2.0735747814178467,
   "spec/presenters/openid_connect_user_info_presenter_spec.rb": 0.3493504524230957,
   "spec/lib/deploy/activate_spec.rb": 0.07233405113220215,
   "spec/models/remote_setting_spec.rb": 0.010719776153564453,

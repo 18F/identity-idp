@@ -8,7 +8,7 @@ feature 'OTP delivery selection' do
       sign_in_user(user)
       select_2fa_option(:phone)
       select_phone_delivery_option(:voice)
-      fill_in 'user_phone_form[phone]', with: '202-555-1212'
+      fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -20,7 +20,7 @@ feature 'OTP delivery selection' do
       select_2fa_option(:phone)
       select_phone_delivery_option(:voice)
       expect(page).to have_content t('titles.phone_setup')
-      fill_in 'user_phone_form[phone]', with: '202-555-1212'
+      fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
       expect(page).to have_content(t('errors.messages.phone_duplicate'))
     end
@@ -34,7 +34,7 @@ feature 'OTP delivery selection' do
       select_2fa_option(:phone)
       select_phone_delivery_option(:voice)
       expect(page).to have_content t('titles.phone_setup')
-      fill_in 'user_phone_form[phone]', with: '202-555-1213'
+      fill_in 'new_phone_form[phone]', with: '202-555-1213'
       click_send_security_code
       expect(page).to have_content(t('two_factor_authentication.header_text'))
     end

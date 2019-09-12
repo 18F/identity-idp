@@ -26,4 +26,12 @@ class FakeSamlRequest
   def request_id
     '123'
   end
+
+  def options
+    {
+      get_params: {
+        SAMLRequest: 'FakeSamlRequest',
+      },
+    }
+  end
 end

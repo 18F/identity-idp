@@ -15,6 +15,7 @@ describe 'webauthn management' do
   end
 
   def expect_webauthn_setup_success
+    expect(page).to have_content(t('notices.webauthn_configured'))
     expect(page).to have_current_path(account_path)
   end
 

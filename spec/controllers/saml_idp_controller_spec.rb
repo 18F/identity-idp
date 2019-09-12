@@ -284,6 +284,28 @@ describe SamlIdpController do
       end
     end
 
+    context 'POST to auth correctly stores SP in session' do
+      before do
+        @user = create(:user, :signed_up)
+        @saml_request = saml_request(saml_settings)
+        @post_request = saml_post_auth(@saml_request)
+        @stored_request_url = @post_request.request.original_url +
+                              '?SAMLRequest=' +
+                              @saml_request
+      end
+
+      it 'stores SP metadata in session' do
+        sp_request_id = ServiceProviderRequest.last.uuid
+        expect(session[:sp]).to eq(
+          issuer: saml_settings.issuer,
+          loa3: false,
+          request_url: @stored_request_url,
+          request_id: sp_request_id,
+          requested_attributes: ['email'],
+        )
+      end
+    end
+
     context 'service provider is valid' do
       before do
         @user = create(:user, :signed_up)
