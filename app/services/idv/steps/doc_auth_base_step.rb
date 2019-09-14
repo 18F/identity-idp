@@ -50,13 +50,17 @@ module Idv
         return failure(data, analytics_hash) unless back_image_verified
 
         if data['Result'] == GOOD_RESULT
-          Db::ProofingComponent::Add.call(current_user.id, :document_check, 'acuant')
-          Db::ProofingComponent::Add.call(current_user.id, :document_type, 'state_id')
+          save_proofing_components
           return [nil, data]
         end
 
         mark_step_incomplete(reset_step)
         failure(I18n.t('errors.doc_auth.general_error'), data)
+      end
+
+      def save_proofing_components
+        Db::ProofingComponent::Add.call(user_id, :document_check, 'acuant')
+        Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
       end
 
       def extract_pii_from_doc(data)
