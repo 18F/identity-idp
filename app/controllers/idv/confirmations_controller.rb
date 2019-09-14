@@ -40,6 +40,7 @@ module Idv
         new_phone_added: !configured_phones.include?(idv_session.applicant['phone']),
       }
       analytics.track_event(Analytics::IDV_FINAL, result)
+      Db::ProofingComponent::Add.call(current_user.id, :verified_at, Time.zone.now)
     end
 
     def finish_idv_session

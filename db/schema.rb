@@ -283,6 +283,20 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "proofing_components", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "document_check"
+    t.string "document_type"
+    t.string "source_check"
+    t.string "resolution_check"
+    t.string "address_check"
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
+    t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
+  end
+
   create_table "proofing_costs", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "acuant_front_image_count", default: 0

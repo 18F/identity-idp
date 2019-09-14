@@ -49,7 +49,11 @@ module Idv
         data[:notice] = I18n.t('errors.doc_auth.general_info')
         return failure(data, analytics_hash) unless back_image_verified
 
-        return [nil, data] if data['Result'] == GOOD_RESULT
+        if data['Result'] == GOOD_RESULT
+          Db::ProofingComponent::Add.call(current_user.id, :document_check, 'acuant')
+          Db::ProofingComponent::Add.call(current_user.id, :document_type, 'state_id')
+          return [nil, data]
+        end
 
         mark_step_incomplete(reset_step)
         failure(I18n.t('errors.doc_auth.general_error'), data)
