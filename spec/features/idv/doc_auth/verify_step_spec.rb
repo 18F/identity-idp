@@ -5,10 +5,11 @@ feature 'doc auth verify step' do
   include DocAuthHelper
   include InPersonHelper
 
+  let(:user) { user_with_2fa }
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   before do
     enable_doc_auth
-    complete_doc_auth_steps_before_verify_step
+    complete_doc_auth_steps_before_verify_step(user)
   end
 
   it 'is on the correct page' do
@@ -20,6 +21,8 @@ feature 'doc auth verify step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_success_step)
+    expect(user.proofing_component.resolution_check).to eq('lexis_nexis')
+    expect(user.proofing_component.source_check).to eq('aamva')
   end
 
   it 'proceeds to the address page if the user clicks change address' do
