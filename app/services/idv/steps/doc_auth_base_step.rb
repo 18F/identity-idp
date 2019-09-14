@@ -49,13 +49,16 @@ module Idv
         data[:notice] = I18n.t('errors.doc_auth.general_info')
         return failure(data, analytics_hash) unless back_image_verified
 
-        if data['Result'] == GOOD_RESULT
-          save_proofing_components
-          return [nil, data]
-        end
+        return [nil, data] if process_good_result(data)
 
         mark_step_incomplete(reset_step)
         failure(I18n.t('errors.doc_auth.general_error'), data)
+      end
+
+      def process_good_result(data)
+        return unless data['Result'] == GOOD_RESULT
+        save_proofing_components
+        true
       end
 
       def save_proofing_components
@@ -73,9 +76,7 @@ module Idv
       end
 
       def parse_pii(data)
-        Idv::Utils::PiiFromDoc.new(data).call(
-          current_user&.phone_configurations&.take&.phone,
-        )
+        Idv::Utils::PiiFromDoc.new(data).call(current_user&.phone_configurations&.take&.phone)
       end
 
       def user_id_from_token
