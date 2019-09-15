@@ -9,6 +9,7 @@ module Db
           requested_at: Time.zone.now,
         )
       rescue ActiveRecord::RecordNotUnique
+        nil
       end
     end
   end
