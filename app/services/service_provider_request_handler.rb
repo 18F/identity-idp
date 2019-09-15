@@ -12,7 +12,9 @@ class ServiceProviderRequestHandler
     delete_sp_request_if_session_has_matching_request_id
     ServiceProviderRequest.create!(attributes)
 
-    StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+    metadata = StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+
+    Db::SpReturnLog::CreateRequest.call(request_id, 1, metadata[:issuer])
   end
 
   private
