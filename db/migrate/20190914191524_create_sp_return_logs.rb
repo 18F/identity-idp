@@ -10,6 +10,6 @@ class CreateSpReturnLogs < ActiveRecord::Migration[5.1]
     end
     add_index :sp_return_logs, %i[requested_at]
     add_index :sp_return_logs, %i[request_id], unique: true
-    add_index :sp_return_logs, %i[user_id requested at]
+    add_index :sp_return_logs, %i[user_id requested_at]
   end
 end
