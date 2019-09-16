@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:18F/identity-aamva-api-client-gem
+  remote: https://github.com/18F/identity-aamva-api-client-gem.git
   revision: 5268fd1841cd7982f2262544bbe1e0a3f2751e64
   tag: v3.2.2
   specs:
@@ -11,21 +11,21 @@ GIT
       xmldsig
 
 GIT
-  remote: git@github.com:18F/identity-lexisnexis-api-client-gem
-  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
-  tag: v1.2.0
-  specs:
-    lexisnexis (1.2.0)
-      dotenv
-      typhoeus
-
-GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: b5587588601670f762bbc79f0f4a8468064d9401
   branch: master
   specs:
     identity-hostdata (0.3.3)
       aws-sdk-s3 (~> 1.8)
+
+GIT
+  remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
+  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
+  tag: v1.2.0
+  specs:
+    lexisnexis (1.2.0)
+      dotenv
+      typhoeus
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
