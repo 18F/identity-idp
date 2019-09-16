@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190826141526) do
+ActiveRecord::Schema.define(version: 20190916151457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,7 +264,7 @@ ActiveRecord::Schema.define(version: 20190826141526) do
 
   create_table "service_provider_requests", force: :cascade do |t|
     t.string "issuer", null: false
-    t.string "loa", null: false
+    t.string "ial", null: false
     t.string "url", null: false
     t.string "uuid", null: false
     t.datetime "created_at", null: false
