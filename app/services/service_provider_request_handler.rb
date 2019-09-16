@@ -14,12 +14,16 @@ class ServiceProviderRequestHandler
 
     metadata = StoreSpMetadataInSession.new(session: session, request_id: request_id).call
 
-    Db::SpReturnLog::CreateRequest.call(request_id, 1, metadata[:issuer])
+    Db::SpReturnLog::CreateRequest.call(request_id, ial, metadata[:issuer])
   end
 
   private
 
   attr_reader :url, :session, :protocol_request, :protocol
+
+  def ial
+    protocol.loa[-1] == '3' ? 2 : 1
+  end
 
   def current_sp
     protocol.issuer

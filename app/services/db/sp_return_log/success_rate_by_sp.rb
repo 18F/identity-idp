@@ -3,9 +3,9 @@ module Db
     class SuccessRateBySp
       def self.call
         sql = <<~SQL
-          SELECT issuer, count(returned_at)::float/count(requested_at) as return_rate
+          SELECT issuer, ial, count(returned_at)::float/count(requested_at) as return_rate
           FROM sp_return_logs
-          GROUP BY issuer ORDER BY issuer
+          GROUP BY issuer, ial ORDER BY issuer, ial
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
