@@ -31,6 +31,7 @@ fr:
         account_not_found: "<strong>%{sign_in}</strong> with you email address and
           password.<br><br>Add your PIV/CAC to your account.<br><br><strong>Don't
           have a login.gov account?</strong> %{create_account}"
+        back_to_sign_in: Go back to sign in
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
