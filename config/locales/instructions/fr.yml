@@ -33,7 +33,6 @@ fr:
           have a login.gov account?</strong> %{create_account}"
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
-        create_account_link: 
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
           this is an error, %{try_again}.  If this problem continues, contact your
           agency administrator.

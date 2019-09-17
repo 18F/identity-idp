@@ -17,11 +17,9 @@ module Users
       redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
     end
 
-    def account_not_found
-    end
+    def account_not_found; end
 
-    def did_not_work
-    end
+    def did_not_work; end
 
     private
 

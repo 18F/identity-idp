@@ -29,7 +29,6 @@ en:
           password.<br><br>Add your PIV/CAC to your account.<br><br><strong>Don't
           have a login.gov account?</strong> %{create_account}"
         confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
-        create_account_link: 
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
           this is an error, %{try_again}.  If this problem continues, contact your
           agency administrator.

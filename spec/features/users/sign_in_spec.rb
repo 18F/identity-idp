@@ -29,7 +29,7 @@ feature 'Sign in' do
     user = build(:user, x509_dn_uuid: 'unknown-pivcac-uuid')
     signin_with_piv(user)
 
-    expect(current_path).to eq new_user_session_path
+    expect(current_path).to eq login_piv_cac_account_not_found_path
   end
 
   it 'does not throw an exception if the email contains invalid bytes' do
