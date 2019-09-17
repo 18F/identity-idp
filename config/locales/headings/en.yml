@@ -36,7 +36,9 @@ en:
       forgot: Forgot your password?
     personal_key: Always have access to your account with your personal key
     piv_cac_login:
-      new: Use your PIV/CAC to sign in to your account
+      account_not_found: Your PIV/CAC is not connected to an account
+      did_not_work: Your PIV/CAC did not work
+      new: Sign in with your PIV or CAC
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.

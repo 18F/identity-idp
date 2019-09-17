@@ -37,6 +37,8 @@ fr:
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Ayez toujours accès à votre compte avec votre clé personnelle
     piv_cac_login:
+      account_not_found: Your PIV/CAC is not connected to an account
+      did_not_work: Your PIV/CAC did not work
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
     piv_cac_setup:
       certificate:
