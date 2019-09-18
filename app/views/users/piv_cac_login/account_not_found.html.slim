@@ -1,0 +1,11 @@
+- title t('headings.piv_cac_login.account_not_found')
+
+h1.h3.my0 = t('headings.piv_cac_login.account_not_found', )
+p.mt2.mb2 == t('instructions.mfa.piv_cac.account_not_found',
+        sign_in: link_to(t('headings.sign_in_without_sp'), root_url),
+        add_piv_cac: link_to(t('instructions.mfa.piv_cac.add_piv_cac'),
+          'https://login.gov/help/creating-an-account/two-factor-authentication/',
+          target: '_blank'),
+        create_account: link_to(I18n.t('links.create_account'), sign_up_email_url))
+
+= render 'shared/cancel', link: new_user_session_url

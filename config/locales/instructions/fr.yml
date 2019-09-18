@@ -28,8 +28,20 @@ fr:
           le code correspondant à %{email} à %{app}.%{tooltip}
         or: or
       piv_cac:
+        account_not_found: "<strong>%{sign_in}</strong> votre adresse e-mail et votre
+          mot de passe.<br><br>%{add_piv_cac}<br><br><strong>Vous n'avez pas de compte
+          login.gov?</strong> %{create_account}"
+        add_piv_cac: Découvrez comment ajouter un PIV/CAC à votre compte.
+        back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
+        did_not_work: Il peut y avoir un problème avec votre PIV / CAC ou votre code
+          PIN. Si vous pensez que c'est une erreur, %{try_again}.  Si le problème
+          persiste, contactez l'administrateur de votre agence.
+        sign_in: Assurez-vous que <strong>vous disposez d'un compte login.gov</strong>
+          et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
+          d'authentification à deux facteurs.
+        try_again: réessayer
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.
           Les frais liés aux messages texte peuvent s'appliquer.

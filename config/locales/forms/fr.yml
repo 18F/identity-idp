@@ -75,7 +75,7 @@ fr:
       buttons:
         delete: Supprimer le numéro de teléfono
     piv_cac_login:
-      submit: Veuillez présenter une carte PIV/CAC
+      submit: Insérez votre PIV/CAC
     piv_cac_mfa:
       submit: Veuillez présenter une carte PIV/CAC
     piv_cac_setup:
