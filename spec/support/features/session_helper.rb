@@ -77,10 +77,7 @@ module Features
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service
-      visit_piv_cac_service(current_url,
-                            nonce: nil,
-                            uuid: nil,
-                            subject: nil)
+      visit(current_url + '?token=foo')
     end
 
     def fill_in_credentials_and_submit(email, password)
