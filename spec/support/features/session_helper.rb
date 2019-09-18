@@ -59,7 +59,7 @@ module Features
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
-      fill_in_bad_piv_cac_credentials_and_submit(user)
+      fill_in_bad_piv_cac_credentials_and_submit
     end
 
     def fill_in_piv_cac_credentials_and_submit(user)
@@ -73,11 +73,10 @@ module Features
                             subject: 'SomeIgnoredSubject')
     end
 
-    def fill_in_bad_piv_cac_credentials_and_submit(user)
+    def fill_in_bad_piv_cac_credentials_and_submit
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
       visit_piv_cac_service(current_url,
                             nonce: nil,
                             uuid: nil,
