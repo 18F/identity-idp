@@ -10,6 +10,7 @@ module Idv
     before_action :max_attempts_reached, only: [:update]
 
     def index
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_VISITED)
       @presenter = UspsPresenter.new(current_user)
     end
 
@@ -18,6 +19,7 @@ module Idv
       idv_session.address_verification_mechanism = :usps
 
       if current_user.decorate.pending_profile_requires_verification?
+        analytics.track_event(Analytics::IDV_USPS_ADDRESS_LETTER_REQUESTED)
         resend_letter
         redirect_to idv_come_back_later_url
       else
