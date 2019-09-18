@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190907063344) do
+ActiveRecord::Schema.define(version: 20190914191524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -355,6 +355,18 @@ ActiveRecord::Schema.define(version: 20190907063344) do
     t.boolean "pkce"
     t.string "push_notification_url"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "sp_return_logs", force: :cascade do |t|
+    t.datetime "requested_at", null: false
+    t.string "request_id", null: false
+    t.integer "ial", null: false
+    t.string "issuer", null: false
+    t.integer "user_id"
+    t.datetime "returned_at"
+    t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
+    t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
+    t.index ["user_id", "requested_at"], name: "index_sp_return_logs_on_user_id_and_requested_at"
   end
 
   create_table "throttles", force: :cascade do |t|
