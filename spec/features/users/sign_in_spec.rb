@@ -34,7 +34,7 @@ feature 'Sign in' do
 
   scenario 'user cannot sign in with an unregistered piv/cac card' do
     user = build(:user)
-    signin_with_bad_piv(user)
+    signin_with_bad_piv
 
     expect(current_path).to eq login_piv_cac_did_not_work_path
   end
