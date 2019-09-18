@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 module Idv
@@ -133,3 +134,4 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
