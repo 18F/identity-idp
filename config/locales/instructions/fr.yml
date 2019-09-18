@@ -29,8 +29,9 @@ fr:
         or: or
       piv_cac:
         account_not_found: "<strong>%{sign_in}</strong> votre adresse e-mail et votre
-          mot de passe.<br><br>Ajoutez votre PIV / CAC à votre compte.<br><br><strong>Vous
-          n'avez pas de compte login.gov?</strong> %{create_account}"
+          mot de passe.<br><br>%{add_piv_cac}<br><br><strong>Vous n'avez pas de compte
+          login.gov?</strong> %{create_account}"
+        add_piv_cac: Découvrez comment ajouter un PIV/CAC à votre compte.
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
