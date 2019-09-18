@@ -26,17 +26,17 @@ es:
           a %{email} en %{app}.%{tooltip}
         or: o
       piv_cac:
-        account_not_found: "<strong>%{sign_in}</strong> with you email address and
-          password.<br><br>Add your PIV/CAC to your account.<br><br><strong>Don't
-          have a login.gov account?</strong> %{create_account}"
-        back_to_sign_in: Go back to sign in
+        account_not_found: "<strong>%{sign_in}</strong> con su dirección de correo
+          electrónico y contraseña.<br><br>Agregue su PIV/CAC a su cuenta.<br><br><strong>¿No
+          tiene una cuenta login.gov?</strong> %{create_account}"
+        back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
-        did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
-          this is an error, %{try_again}.  If this problem continues, contact your
-          agency administrator.
-        sign_in: Make sure <strong>you have a login.gov account</strong> and <strong>you've
-          set up PIV/CAC</strong> as a two-factor authentication method.
-        try_again: try again
+        did_not_work: Puede haber un problema con su PIV / CAC o PIN. Si cree que
+          esto es un error, %{try_again}.  Si este problema continúa, comuníquese
+          con el administrador de su agencia.
+        sign_in: Asegúrese de que <strong>tenga una cuenta login.gov</strong> y <strong>haya
+          configurado PIV/CAC</strong> como método de autenticación de dos factores.
+        try_again: inténtalo de nuevo
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."
