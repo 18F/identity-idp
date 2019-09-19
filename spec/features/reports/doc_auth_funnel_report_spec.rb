@@ -75,6 +75,9 @@ feature 'Doc Auth Funnel report' do
     complete_doc_auth_steps_before_doc_success_step(user)
 
     expect(subject.new.call).to eq(doc_success_funnel.merge(summary1))
+
+    Funnel::DocAuth::ResetSteps.call(user.id)
+    expect(subject.new.call).to_not eq(doc_success_funnel.merge(summary1))
   end
 
   it 'works for two flows' do
