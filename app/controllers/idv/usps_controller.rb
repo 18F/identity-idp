@@ -116,7 +116,12 @@ module Idv
         profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
+      add_proofing_cost
       confirmation_maker
+    end
+
+    def add_proofing_cost
+      Db::ProofingCost::AddUserProofingCost.call(current_user.id, :gpo_letter)
     end
 
     def idv_form

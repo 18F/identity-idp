@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 module Idv
@@ -90,12 +91,18 @@ module Idv
 
       def throttle_post_front_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
-        rescue_network_errors { assure_id.post_front_image(image.read) }
+        rescue_network_errors do
+          Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_front_image)
+          assure_id.post_front_image(image.read)
+        end
       end
 
       def throttle_post_back_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
-        rescue_network_errors { assure_id.post_back_image(image.read) }
+        rescue_network_errors do
+          Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_back_image)
+          assure_id.post_back_image(image.read)
+        end
       end
 
       def test_credentials?
@@ -127,3 +134,4 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -283,6 +283,20 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "proofing_costs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "acuant_front_image_count", default: 0
+    t.integer "acuant_back_image_count", default: 0
+    t.integer "aamva_count", default: 0
+    t.integer "lexis_nexis_resolution_count", default: 0
+    t.integer "lexis_nexis_address_count", default: 0
+    t.integer "gpo_letter_count", default: 0
+    t.integer "phone_otp_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
+  end
+
   create_table "push_account_deletes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "agency_id", null: false
