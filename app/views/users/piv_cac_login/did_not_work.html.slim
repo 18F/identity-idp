@@ -1,0 +1,10 @@
+- title t('headings.piv_cac_login.did_not_work')
+
+h1.h3.my0 = t('headings.piv_cac_login.did_not_work')
+p.mt2.mb2 == t('instructions.mfa.piv_cac.did_not_work',
+               try_again: link_to(I18n.t('instructions.mfa.piv_cac.try_again'), login_piv_cac_url))
+
+.mt3
+  = link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button'
+
+= render 'shared/cancel', link: new_user_session_url

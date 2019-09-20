@@ -57,6 +57,7 @@ module Idv
       elsif otp_delivery_preference == :voice
         send_voice_otp
       end
+      Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
     end
 
     def send_sms_otp

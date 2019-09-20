@@ -69,6 +69,8 @@ Rails.application.routes.draw do
 
       if FeatureManagement.allow_piv_cac_login?
         get '/login/piv_cac' => 'users/piv_cac_login#new'
+        get '/login/piv_cac_account_not_found' => 'users/piv_cac_login#account_not_found'
+        get '/login/piv_cac_did_not_work' => 'users/piv_cac_login#did_not_work'
         get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
         get '/login/password' => 'password_capture#new', as: :capture_password
         post '/login/password' => 'password_capture#create'

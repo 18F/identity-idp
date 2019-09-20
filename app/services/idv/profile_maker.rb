@@ -14,11 +14,17 @@ module Idv
         user: user,
       )
       profile.encrypt_pii(pii_attributes, user_password)
+      profile.proofing_components = current_proofing_components_to_json
       profile.save!
       profile
     end
 
     private
+
+    def current_proofing_components_to_json
+      proofing_component = ProofingComponent.find_by(user_id: user.id)
+      (proofing_component || {}).to_json
+    end
 
     attr_accessor :user, :user_password, :phone_confirmed
     attr_writer :pii_attributes

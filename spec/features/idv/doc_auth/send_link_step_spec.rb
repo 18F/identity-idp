@@ -15,6 +15,9 @@ feature 'doc auth send link step' do
   end
 
   it 'proceeds to the next page with valid info' do
+    expect(Telephony).to receive(:send_doc_auth_link).
+      with(hash_including(to: '+1 415-555-0199'))
+
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
 
