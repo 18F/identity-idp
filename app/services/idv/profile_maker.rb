@@ -23,7 +23,7 @@ module Idv
 
     def current_proofing_components_to_json
       proofing_component = ProofingComponent.find_by(user_id: user.id)
-      (proofing_component ? proofing_component : {}).to_json
+      (proofing_component || {}).to_json
     end
 
     attr_accessor :user, :user_password, :phone_confirmed
