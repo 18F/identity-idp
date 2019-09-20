@@ -12,7 +12,17 @@ module Idv
       private
 
       def summarize_result_and_throttle_failures(summary_result)
-        summary_result.success? ? summary_result : idv_failure(summary_result)
+        if summary_result.success?
+          add_proofing_components
+          summary_result
+        else
+          idv_failure(summary_result)
+        end
+      end
+
+      def add_proofing_components
+        Db::ProofingComponent::Add.call(user_id, :resolution_check, 'lexis_nexis')
+        Db::ProofingComponent::Add.call(user_id, :source_check, 'aamva')
       end
 
       def check_ssn(pii_from_doc)

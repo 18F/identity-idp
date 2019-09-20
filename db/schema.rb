@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190914191524) do
+ActiveRecord::Schema.define(version: 20190920122649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -276,11 +276,26 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
+    t.jsonb "proofing_components"
     t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "proofing_components", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "document_check"
+    t.string "document_type"
+    t.string "source_check"
+    t.string "resolution_check"
+    t.string "address_check"
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
+    t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
 
   create_table "proofing_costs", force: :cascade do |t|
