@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 5268fd1841cd7982f2262544bbe1e0a3f2751e64
-  tag: v3.2.2
+  revision: 4e7a644c2ea7c61e3fc8b57bc12d35a075e94df5
+  tag: v3.2.3
   specs:
-    aamva (3.2.2)
+    aamva (3.2.3)
       dotenv
       faraday
       hashie
