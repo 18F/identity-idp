@@ -15,7 +15,7 @@ describe Idv::ProfileMaker do
     end
 
     it 'creates a Profile with encrypted PII' do
-      proofing_component = ProofingComponent.create(user_id: user.id, document_check:'acuant')
+      proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
       profile = subject.save_profile
       pii = subject.pii_attributes
 
