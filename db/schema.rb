@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190914191524) do
+ActiveRecord::Schema.define(version: 20190920122649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -276,6 +276,7 @@ ActiveRecord::Schema.define(version: 20190914191524) do
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
+    t.jsonb "proofing_components"
     t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
