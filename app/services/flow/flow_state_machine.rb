@@ -16,7 +16,7 @@ module Flow
     def show
       step = params[:step]
       analytics.track_event(analytics_visited, step: step) if @analytics_id
-      Funnel::DocAuth::RegisterStep.call(current_user&.id, step, :view, true)
+      Funnel::DocAuth::RegisterStep.call(user_id, step, :view, true)
       render_step(step, flow.flow_session)
     end
 
@@ -31,8 +31,16 @@ module Flow
 
     private
 
+    def user_id
+      current_user ? current_user.id : user_id_from_token
+    end
+
+    def user_id_from_token
+      current_session[:doc_capture_user_id]
+    end
+
     def register_update_step(step, result)
-      Funnel::DocAuth::RegisterStep.call(current_user&.id, step, :update, result.success?)
+      Funnel::DocAuth::RegisterStep.call(user_id, step, :update, result.success?)
     end
 
     def fsm_initialize
