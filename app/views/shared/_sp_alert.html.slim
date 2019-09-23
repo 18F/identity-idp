@@ -2,9 +2,12 @@
   .alert.alert-notice.sm-left-align
     p.mb1
       - if current_page?(new_user_session_path)
-        == decorated_session.sp_msg('sign_in')
+        == sanitize decorated_session.sp_msg('sign_in'),
+                tags: %w[a b br p], attributes: %w[href]
       - elsif current_page?(sign_up_email_path)
-        == decorated_session.sp_msg('sign_up')
+        == sanitize decorated_session.sp_msg('sign_up'),
+                tags: %w[a b br p], attributes: %w[href]
       - else
-        == decorated_session.sp_msg('forgot_password',
-                                    sp_create_link: decorated_session.sp_create_link)
+        == sanitize decorated_session.sp_msg('forgot_password',
+                                    sp_create_link: decorated_session.sp_create_link),
+                tags: %w[a b br p], attributes: %w[href]
