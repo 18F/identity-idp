@@ -133,8 +133,6 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
-    t.integer "personal_key_submit_count", default: 0
-    t.integer "personal_key_error_count", default: 0
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
