@@ -71,7 +71,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'SP success rate report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Reports::SpUserCountsReport.new.call },
+  callback: -> { Reports::SpSuccessRateReport.new.call },
 )
 
 # Proofing Costs Report to S3
