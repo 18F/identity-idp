@@ -17,7 +17,7 @@ module Db
       def convert_percentages(total_count)
         results.each do |key, value|
           multiplier = key.end_with?('_percent') ? 100.0 : 1.0
-          results[key] = (value * multiplier / total_count).round
+          results[key] = (value * multiplier / total_count).round(2)
         end
       end
 
