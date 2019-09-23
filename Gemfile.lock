@@ -1,23 +1,14 @@
 GIT
-  remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: 5268fd1841cd7982f2262544bbe1e0a3f2751e64
-  tag: v3.2.2
+  remote: https://github.com/18F/identity-aamva-api-client-gem.git
+  revision: 4e7a644c2ea7c61e3fc8b57bc12d35a075e94df5
+  tag: v3.2.3
   specs:
-    aamva (3.2.2)
+    aamva (3.2.3)
       dotenv
       faraday
       hashie
       typhoeus
       xmldsig
-
-GIT
-  remote: git@github.com:18F/identity-lexisnexis-api-client-gem
-  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
-  tag: v1.2.0
-  specs:
-    lexisnexis (1.2.0)
-      dotenv
-      typhoeus
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
@@ -26,6 +17,15 @@ GIT
   specs:
     identity-hostdata (0.3.3)
       aws-sdk-s3 (~> 1.8)
+
+GIT
+  remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
+  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
+  tag: v1.2.0
+  specs:
+    lexisnexis (1.2.0)
+      dotenv
+      typhoeus
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
@@ -55,10 +55,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: e6cc91355e754f56229f2fea580bb0dd61013e6a
-  tag: v0.0.9
+  revision: fdebb2950810c2104f469ff0bdd6b38e3cb45c31
+  tag: v0.0.11
   specs:
-    identity-telephony (0.0.9)
+    identity-telephony (0.0.11)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n

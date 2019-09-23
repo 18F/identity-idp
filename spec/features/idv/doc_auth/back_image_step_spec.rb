@@ -30,6 +30,8 @@ shared_examples 'back image step' do |simulate|
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
+      expect(user.proofing_component.document_check).to eq('acuant')
+      expect(user.proofing_component.document_type).to eq('state_id')
     end
 
     it 'proceeds to the next page if the user does not have a phone' do

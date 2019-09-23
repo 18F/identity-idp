@@ -23,4 +23,8 @@ class PivCacAuthenticationLoginPresenter
   def heading
     t('headings.piv_cac_login.new')
   end
+
+  def info
+    t('instructions.mfa.piv_cac.sign_in')
+  end
 end

@@ -22,7 +22,7 @@ gem 'hiredis'
 gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.9'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.11'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt'
 gem 'local_time'
@@ -83,8 +83,6 @@ group :development do
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'reek'
-  gem 'rubocop', '~> 0.72.0', require: false
-  gem 'rubocop-rails', require: false
 end
 
 group :development, :test do
@@ -96,6 +94,8 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 3.7'
+  gem 'rubocop', '~> 0.72.0', require: false
+  gem 'rubocop-rails', require: false
   gem 'slim_lint'
 end
 
@@ -120,6 +120,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.2.2'
-  gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.2.3'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end
