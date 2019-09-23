@@ -1284,7 +1284,7 @@ production:
     friendly_name: 'OpenId-RRB:BOS Pre-Prod'
     agency: 'RRB'
     agency_id: 4
-    logo: 'rrb.svg'
+    logo: 'rrb_myrrb.svg'
     cert: 'my_rrb_staging'
     return_to_sp_url: 'https://onlinetest.rrb.gov/AA1/login/login/RRBHome'
     failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
@@ -1312,7 +1312,7 @@ production:
     friendly_name: 'myRRB'
     agency: 'RRB'
     agency_id: 4
-    logo: 'rrb.svg'
+    logo: 'rrb_myrrb.svg'
     cert: 'my_rrb_bn_test_staging'
     return_to_sp_url: 'https://rrbtest.rrb.gov/Benefits/myRRB'
     failure_to_proof_url: 'https://rrbtest.rrb.gov/Benefits/myRRB/AccountSupport'
@@ -1339,7 +1339,7 @@ production:
     friendly_name: 'OpenId-RRB:BOS AA3 Pre-Prod'
     agency: 'RRB'
     agency_id: 4
-    logo: 'rrb.svg'
+    logo: 'rrb_myrrb.svg'
     cert: 'rrb_bos_aa3_staging'
     return_to_sp_url: 'https://onlinetest.rrb.gov/AA3/login/login/RRBHome'
     failure_to_proof_url: 'https://rrbtest.rrb.gov/Benefits/myRRB/AccountSupport'

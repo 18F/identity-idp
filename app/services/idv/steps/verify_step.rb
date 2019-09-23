@@ -12,7 +12,17 @@ module Idv
       private
 
       def summarize_result_and_throttle_failures(summary_result)
-        summary_result.success? ? summary_result : idv_failure(summary_result)
+        if summary_result.success?
+          add_proofing_components
+          summary_result
+        else
+          idv_failure(summary_result)
+        end
+      end
+
+      def add_proofing_components
+        Db::ProofingComponent::Add.call(user_id, :resolution_check, 'lexis_nexis')
+        Db::ProofingComponent::Add.call(user_id, :source_check, 'aamva')
       end
 
       def check_ssn(pii_from_doc)
@@ -39,11 +49,25 @@ module Idv
       def perform_resolution(pii_from_doc)
         stages = aamva_state?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
         idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
+        add_proofing_costs(idv_result)
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
           extra: { proofing_results: idv_extra(idv_result) },
         )
+      end
+
+      def add_proofing_costs(results)
+        user_id = current_user.id
+        vendors = results[:context][:stages]
+        vendors.each do |hash|
+          add_proofing_cost(user_id, :aamva) if hash[:state_id]
+          add_proofing_cost(user_id, :lexis_nexis_resolution) if hash[:resolution]
+        end
+      end
+
+      def add_proofing_cost(user_id, token)
+        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def idv_success(idv_result)

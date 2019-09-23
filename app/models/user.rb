@@ -45,6 +45,7 @@ class User < ApplicationRecord
   has_one :account_recovery_request, dependent: :destroy
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
+  has_one :proofing_component, dependent: :destroy
 
   validates :x509_dn_uuid, uniqueness: true, allow_nil: true
 

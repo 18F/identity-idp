@@ -60,7 +60,7 @@ RSpec.describe MarketingSite do
   describe '.help_authentication_app_url' do
     it 'points to the authentication app section of the help page' do
       expect(MarketingSite.help_authentication_app_url).to eq(
-        'https://www.login.gov/help/signing-in/what-is-an-authentication-app/',
+        'https://www.login.gov/help/creating-an-account/authentication-application/',
       )
     end
 
@@ -69,7 +69,7 @@ RSpec.describe MarketingSite do
 
       it 'points to the authentication app section of the help page with the locale appended' do
         expect(MarketingSite.help_authentication_app_url).to eq(
-          'https://www.login.gov/es/help/signing-in/what-is-an-authentication-app/',
+          'https://www.login.gov/es/help/creating-an-account/authentication-application/',
         )
       end
     end

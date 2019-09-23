@@ -16,4 +16,4 @@ linters:
     exclude:
       - 'app/views/voice/otp/show.xml.slim'
   RuboCop:
-    enabled: true
+    enabled: false
