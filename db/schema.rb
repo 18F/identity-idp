@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190922124029) do
+ActiveRecord::Schema.define(version: 20190924195715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,6 +133,8 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
@@ -352,6 +354,7 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "requested_attributes", default: [], array: true
+    t.string "ial"
     t.index ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true
   end
 
