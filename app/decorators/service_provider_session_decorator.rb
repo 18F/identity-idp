@@ -11,7 +11,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   CUSTOM_SP_ALERTS = {
     'CBP Trusted Traveler Programs' => {
       i18n_name: 'trusted_traveler',
-      learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
+      learn_more: 'https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/',
       exclude_paths: ['/sign_up/enter_email'],
     },
     'FMCSA National Registry' => {
