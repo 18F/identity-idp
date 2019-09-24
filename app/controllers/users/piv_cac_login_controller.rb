@@ -7,8 +7,6 @@ module Users
     def new
       if params.key?(:token)
         process_piv_cac_login
-      elsif flash[:error_type].present?
-        render_error
       else
         render_prompt
       end
@@ -19,15 +17,14 @@ module Users
       redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
     end
 
+    def account_not_found; end
+
+    def did_not_work; end
+
     private
 
     def two_factor_authentication_method
       'piv_cac'
-    end
-
-    def render_error
-      @presenter = PivCacAuthenticationErrorPresenter.new(error: flash[:error_type])
-      render :error
     end
 
     def render_prompt
@@ -86,8 +83,11 @@ module Users
     end
 
     def process_invalid_submission
-      flash[:error_type] = piv_cac_login_form.error_type
-      redirect_to root_url
+      if piv_cac_login_form.valid_token?
+        redirect_to login_piv_cac_account_not_found_url
+      else
+        redirect_to login_piv_cac_did_not_work_url
+      end
     end
 
     def mark_user_session_authenticated(authentication_type)

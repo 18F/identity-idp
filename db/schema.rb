@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190916151457) do
+ActiveRecord::Schema.define(version: 20190922124029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,59 @@ ActiveRecord::Schema.define(version: 20190916151457) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
+  end
+
+  create_table "doc_auth_logs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "welcome_view_at"
+    t.integer "welcome_view_count", default: 0
+    t.datetime "upload_view_at"
+    t.integer "upload_view_count", default: 0
+    t.datetime "send_link_view_at"
+    t.integer "send_link_view_count", default: 0
+    t.datetime "link_sent_view_at"
+    t.integer "link_sent_view_count", default: 0
+    t.datetime "email_sent_view_at"
+    t.integer "email_sent_view_count", default: 0
+    t.datetime "front_image_view_at"
+    t.integer "front_image_view_count", default: 0
+    t.integer "front_image_submit_count", default: 0
+    t.integer "front_image_error_count", default: 0
+    t.datetime "back_image_view_at"
+    t.integer "back_image_view_count", default: 0
+    t.integer "back_image_submit_count", default: 0
+    t.integer "back_image_error_count", default: 0
+    t.datetime "mobile_front_image_view_at"
+    t.integer "mobile_front_image_view_count", default: 0
+    t.datetime "mobile_back_image_view_at"
+    t.integer "mobile_back_image_view_count", default: 0
+    t.datetime "ssn_view_at"
+    t.integer "ssn_view_count", default: 0
+    t.datetime "verify_view_at"
+    t.integer "verify_view_count", default: 0
+    t.integer "verify_submit_count", default: 0
+    t.integer "verify_error_count", default: 0
+    t.datetime "doc_success_view_at"
+    t.integer "doc_success_view_count", default: 0
+    t.datetime "verify_phone_view_at"
+    t.integer "verify_phone_view_count", default: 0
+    t.datetime "usps_address_view_at"
+    t.integer "usps_address_view_count", default: 0
+    t.datetime "usps_letter_sent_view_at"
+    t.integer "usps_letter_sent_view_count", default: 0
+    t.datetime "usps_address_submit_at"
+    t.integer "usps_address_submit_count", default: 0
+    t.integer "usps_address_error_count", default: 0
+    t.datetime "encrypt_view_at"
+    t.integer "encrypt_view_count", default: 0
+    t.datetime "verified_view_at"
+    t.integer "verified_view_count", default: 0
+    t.integer "mobile_front_image_submit_count", default: 0
+    t.integer "mobile_front_image_error_count", default: 0
+    t.integer "mobile_back_image_submit_count", default: 0
+    t.integer "mobile_back_image_error_count", default: 0
+    t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
+    t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
 
   create_table "doc_auths", force: :cascade do |t|
@@ -225,11 +278,40 @@ ActiveRecord::Schema.define(version: 20190916151457) do
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
+    t.jsonb "proofing_components"
     t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "proofing_components", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "document_check"
+    t.string "document_type"
+    t.string "source_check"
+    t.string "resolution_check"
+    t.string "address_check"
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
+    t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
+  end
+
+  create_table "proofing_costs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "acuant_front_image_count", default: 0
+    t.integer "acuant_back_image_count", default: 0
+    t.integer "aamva_count", default: 0
+    t.integer "lexis_nexis_resolution_count", default: 0
+    t.integer "lexis_nexis_address_count", default: 0
+    t.integer "gpo_letter_count", default: 0
+    t.integer "phone_otp_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 
   create_table "push_account_deletes", force: :cascade do |t|
@@ -264,7 +346,7 @@ ActiveRecord::Schema.define(version: 20190916151457) do
 
   create_table "service_provider_requests", force: :cascade do |t|
     t.string "issuer", null: false
-    t.string "ial", null: false
+    t.string "loa", null: false
     t.string "url", null: false
     t.string "uuid", null: false
     t.datetime "created_at", null: false
@@ -304,6 +386,18 @@ ActiveRecord::Schema.define(version: 20190916151457) do
     t.boolean "pkce"
     t.string "push_notification_url"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "sp_return_logs", force: :cascade do |t|
+    t.datetime "requested_at", null: false
+    t.string "request_id", null: false
+    t.integer "ial", null: false
+    t.string "issuer", null: false
+    t.integer "user_id"
+    t.datetime "returned_at"
+    t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
+    t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
+    t.index ["user_id", "requested_at"], name: "index_sp_return_logs_on_user_id_and_requested_at"
   end
 
   create_table "throttles", force: :cascade do |t|
