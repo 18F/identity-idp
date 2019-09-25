@@ -571,8 +571,8 @@ feature 'Sign in' do
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1(:saml)
-      visit_idp_from_sp_with_loa1(:oidc)
+      visit_idp_from_sp_with_ial1(:saml)
+      visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default

@@ -221,11 +221,11 @@ describe 'OpenID Connect' do
 
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
     it 'displays the branded page' do
-      visit_idp_from_sp_with_loa1
+      visit_idp_from_sp_with_ial1
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
-      visit_idp_from_sp_with_loa1
+      visit_idp_from_sp_with_ial1
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
@@ -270,7 +270,7 @@ describe 'OpenID Connect' do
     it 'links back to the SP from the sign in page' do
       state = SecureRandom.hex
 
-      visit_idp_from_sp_with_loa1(state: state)
+      visit_idp_from_sp_with_ial1(state: state)
 
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
@@ -307,13 +307,13 @@ describe 'OpenID Connect' do
     it 'signs the user out and returns to the home page' do
       user = create(:user, :signed_up)
 
-      visit_idp_from_sp_with_loa1
+      visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       visit destroy_user_session_url
 
-      visit_idp_from_sp_with_loa1
+      visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')

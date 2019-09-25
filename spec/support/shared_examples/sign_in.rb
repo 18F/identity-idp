@@ -3,7 +3,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
     user = create(:user, :signed_up)
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
 
     if sp == :oidc
@@ -105,7 +105,7 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
   it 'redirects to SP', email: true do
     user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
     choose_another_security_option('personal_key')
@@ -160,7 +160,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
     it 'links to forgot password page with locale and request_id' do
       Capybara.current_session.driver.header('Accept-Language', 'es')
 
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
@@ -175,7 +175,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
       Capybara.current_session.driver.header('Accept-Language', 'es')
 
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sp_request_id = ServiceProviderRequest.last.uuid
       fill_in_credentials_and_submit(user.email, 'password')
 
@@ -192,7 +192,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
 
     user = create(:user, :with_piv_or_cac)
     MfaContext.new(user).phone_configurations.clear
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
@@ -203,7 +203,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
 
     expect(current_path).to eq two_factor_options_success_path
 
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
 
     expect(current_path).to eq two_factor_options_path
   end
@@ -213,7 +213,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
 
     user = create(:user, :with_piv_or_cac, :with_authentication_app)
     MfaContext.new(user).phone_configurations.clear
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
@@ -238,7 +238,7 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   Timecop.freeze Time.zone.now do
     user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
@@ -258,7 +258,7 @@ end
 def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
-  visit_idp_from_sp_with_loa1(sp)
+  visit_idp_from_sp_with_ial1(sp)
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)

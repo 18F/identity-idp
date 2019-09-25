@@ -207,7 +207,7 @@ module SamlAuthHelper
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
 
-  def visit_idp_from_sp_with_loa1(sp)
+  def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       @saml_authn_request = auth_request.create(saml_settings)
       visit @saml_authn_request

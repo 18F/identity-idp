@@ -1,7 +1,7 @@
 shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user
 
     if sp == :oidc
@@ -22,7 +22,7 @@ end
 
 shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   it 'redirects to the SP', email: true do
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user_with_authenticator_app
 
     if sp == :oidc
@@ -77,7 +77,7 @@ end
 
 shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   it 'redirects to the SP', email: true do
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user_with_piv_cac
 
     click_continue
@@ -155,7 +155,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
     second_email = 'test2@test.com'
 
     perform_in_browser(:one) do
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sign_up_user_from_sp_without_confirming_email(first_email)
     end
 
@@ -173,7 +173,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
     end
 
     perform_in_browser(:one) do
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sign_up_user_from_sp_without_confirming_email(second_email)
     end
 
