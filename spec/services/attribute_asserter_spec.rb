@@ -139,7 +139,7 @@ describe AttributeAsserter do
         described_class.new(
           user: user,
           service_provider: service_provider,
-          authn_request: ial2_authn_request,
+          authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
         )
       end

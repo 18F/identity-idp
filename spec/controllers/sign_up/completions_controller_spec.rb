@@ -162,7 +162,7 @@ describe SignUp::CompletionsController do
           requested_attributes: %w[email first_name],
         }
         expect(@linker).to receive(:link_identity).
-          with(ial: 3, verified_attributes: %w[email first_name])
+          with(ial: 2, verified_attributes: %w[email first_name])
         patch :update
       end
     end
