@@ -9,7 +9,7 @@ class IdvController < ApplicationController
   def index
     if active_profile?
       redirect_to idv_activated_url
-w``    elsif idv_attempter_throttled?
+    elsif idv_attempter_throttled?
       redirect_to idv_fail_url
     elsif doc_auth_enabled_and_exclusive?
       redirect_to idv_doc_auth_url

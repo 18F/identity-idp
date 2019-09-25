@@ -6,10 +6,9 @@ module IdvSession
   end
 
   def confirm_idv_attempts_allowed
-    if idv_attempter_throttled?
-      analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
-      redirect_to failure_url(:fail)
-    end
+    return unless idv_attempter_throttled?
+    analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
+    redirect_to failure_url(:fail)
   end
 
   def confirm_idv_needed

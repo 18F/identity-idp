@@ -14,6 +14,7 @@ module IdvStepConcern
   def idv_max_attempts
     Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
   end
+
   def remaining_step_attempts
     idv_max_attempts - idv_session.step_attempts[step_name]
   end

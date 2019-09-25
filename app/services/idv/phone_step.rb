@@ -17,7 +17,7 @@ module Idv
     end
 
     def failure_reason
-      return :fail if idv_session.step_attempts[:phone] if throttled?
+      return :fail if throttled?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
