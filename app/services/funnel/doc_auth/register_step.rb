@@ -18,6 +18,7 @@ module Funnel
         verified
         doc_success
         usps_address
+        usps_letter_sent
       ].freeze
       STEP_TYPE_TO_CLASS = {
         update: RegisterSubmitStep,
