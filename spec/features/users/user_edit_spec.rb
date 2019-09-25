@@ -21,7 +21,6 @@ feature 'User edit' do
       scenario 'delete is an option that works' do
         expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq true
 
-        warn page.body
         expect(page).to have_button(t('forms.phone.buttons.delete'))
         click_button t('forms.phone.buttons.delete')
         expect(page).to have_current_path(account_path)

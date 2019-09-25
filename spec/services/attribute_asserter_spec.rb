@@ -229,7 +229,7 @@ describe AttributeAsserter do
         end
 
         it 'includes only UUID' do
-          expect(loa1_user.asserted_attributes.keys).to eq([:uuid])
+          expect(ial1_user.asserted_attributes.keys).to eq([:uuid])
         end
       end
 
@@ -242,7 +242,7 @@ describe AttributeAsserter do
         end
 
         it 'only includes UUID and email' do
-          expect(loa1_user.asserted_attributes.keys).to eq(%i[uuid email])
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email])
         end
       end
     end
@@ -250,7 +250,7 @@ describe AttributeAsserter do
     context 'unverified user and IAL2 request' do
       let(:subject) do
         described_class.new(
-          user: loa1_user,
+          user: ial1_user,
           service_provider: service_provider,
           authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,

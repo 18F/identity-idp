@@ -57,7 +57,7 @@ feature 'Email confirmation during sign up' do
 
   context 'confirmed user is signed in and tries to confirm again' do
     it 'redirects the user to the profile' do
-      sign_up_and_2fa_loa1_user
+      sign_up_and_2fa_ial1_user
 
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 

@@ -329,7 +329,7 @@ describe 'OpenID Connect' do
       email = 'test@test.com'
 
       perform_in_browser(:one) do
-        visit_idp_from_mobile_app_with_loa1
+        visit_idp_from_mobile_app_with_ial1
         sign_up_user_from_sp_without_confirming_email(email)
       end
 

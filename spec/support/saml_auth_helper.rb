@@ -215,7 +215,7 @@ module SamlAuthHelper
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_loa1(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial1(state: @state, client_id: @client_id, nonce: @nonce)
     end
   end
 

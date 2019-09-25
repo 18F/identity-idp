@@ -50,7 +50,7 @@ class SignUpCompletionsShow
   end
 
   def image_name
-    "user-signup-#{requested_loa}.svg"
+    "user-signup-#{requested_ial}.svg"
   end
 
   def requested_attributes_partial
