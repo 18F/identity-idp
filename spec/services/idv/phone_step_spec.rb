@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::PhoneStep do
+  include IdvHelper
+
   let(:user) { build(:user) }
   let(:idv_session) do
     idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)

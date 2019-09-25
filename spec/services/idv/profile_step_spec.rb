@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ProfileStep do
+  include IdvHelper
+
   let(:user) { create(:user) }
   let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: nil) }
   let(:user_attrs) do
