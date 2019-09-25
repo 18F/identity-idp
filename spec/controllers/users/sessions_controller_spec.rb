@@ -273,7 +273,7 @@ describe Users::SessionsController, devise: true do
       end
     end
 
-    context 'LOA3 user' do
+    context 'IAL2 user' do
       before do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end

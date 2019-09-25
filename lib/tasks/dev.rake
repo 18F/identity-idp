@@ -14,8 +14,8 @@ namespace :dev do
       setup_totp_user(user, ee: ee, pw: pw)
     end
 
-    loa3_user = User.find_by(email_fingerprint: fingerprint('test2@test.com'))
-    profile = Profile.new(user: loa3_user)
+    ial2_user = User.find_by(email_fingerprint: fingerprint('test2@test.com'))
+    profile = Profile.new(user: ial2_user)
     pii = Pii::Attributes.new_from_hash(
       ssn: '660-00-1234',
       dob: '1920-01-01',
@@ -26,7 +26,7 @@ namespace :dev do
     profile.verified_at = Time.zone.now
     profile.activate
 
-    Rails.logger.warn "email=#{loa3_user.email} personal_key=#{personal_key}"
+    Rails.logger.warn "email=#{ial2_user.email} personal_key=#{personal_key}"
   end
 
   # protip: set ATTRIBUTE_COST and SCRYPT_COST env vars to '800$8$1$'

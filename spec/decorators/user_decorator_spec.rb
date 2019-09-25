@@ -269,7 +269,7 @@ describe UserDecorator do
         to eq t('users.delete.bullet_2_loa1', app: APP_NAME)
     end
 
-    it 'returns loa3 if identity is verified' do
+    it 'returns ial2 if identity is verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(true)
       expect(user_decorator.delete_account_bullet_key).
         to eq t('users.delete.bullet_2_loa3', app: APP_NAME)

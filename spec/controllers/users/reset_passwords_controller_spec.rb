@@ -205,7 +205,7 @@ describe Users::ResetPasswordsController, devise: true do
       end
     end
 
-    context 'LOA3 user submits valid new password' do
+    context 'ial2 user submits valid new password' do
       it 'deactivates the active profile and redirects' do
         stub_analytics
         allow(@analytics).to receive(:track_event)

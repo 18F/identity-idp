@@ -60,18 +60,18 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
   end
 end
 
-shared_examples 'signing in as LOA3 with personal key' do |sp|
+shared_examples 'signing in as IAL2 with personal key' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
 
   it 'redirects to the SP after acknowledging new personal key', :email do
-    user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
-    visit_idp_from_sp_with_loa3(sp)
+    visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
+    enter_personal_key(personal_key: personal_key_for_ial2_user(user, pii))
     click_submit_default
 
     expect(page).to have_current_path(manage_personal_key_path)
@@ -88,13 +88,13 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
   end
 end
 
-shared_examples 'signing in as LOA3 with piv/cac' do |sp|
+shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating and getting the password', :email do
-    loa3_sign_in_with_piv_cac_goes_to_sp(sp)
+    ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 
   it 'gets bad password error', :email do
-    loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
+    ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
 
@@ -122,14 +122,14 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
   end
 end
 
-shared_examples 'signing in as LOA3 with personal key after resetting password' do |sp|
+shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
   xit 'redirects to SP after reactivating account', :email do
-    user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
-    visit_idp_from_sp_with_loa3(sp)
+    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+    visit_idp_from_sp_with_ial2(sp)
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
     choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: personal_key_for_loa3_user(user, pii))
+    enter_personal_key(personal_key: personal_key_for_ial2_user(user, pii))
     click_submit_default
 
     expect(current_path).to eq manage_personal_key_path
@@ -225,7 +225,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
   end
 end
 
-def personal_key_for_loa3_user(user, pii)
+def personal_key_for_ial2_user(user, pii)
   pii_attrs = Pii::Attributes.new_from_hash(pii)
   profile = user.profiles.last
   personal_key = profile.encrypt_pii(pii_attrs, user.password)
@@ -270,11 +270,11 @@ def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
 end
 
-def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
-  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
+  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
 
-  visit_idp_from_sp_with_loa3(sp)
+  visit_idp_from_sp_with_ial2(sp)
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
@@ -298,11 +298,11 @@ def loa3_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 end
 
-def loa3_sign_in_with_piv_cac_gets_bad_password_error(sp)
-  user = create_loa3_account_go_back_to_sp_and_sign_out(sp)
+def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
+  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
 
-  visit_idp_from_sp_with_loa3(sp)
+  visit_idp_from_sp_with_ial2(sp)
 
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)

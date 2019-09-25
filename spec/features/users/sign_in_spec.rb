@@ -491,14 +491,14 @@ feature 'Sign in' do
     end
   end
 
-  it_behaves_like 'signing in as LOA1 with personal key', :saml
-  it_behaves_like 'signing in as LOA1 with personal key', :oidc
-  it_behaves_like 'signing in as LOA3 with personal key', :saml
-  it_behaves_like 'signing in as LOA3 with personal key', :oidc
-  it_behaves_like 'signing in as LOA1 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA1 with piv/cac', :oidc
-  it_behaves_like 'signing in as LOA3 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA3 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL1 with personal key', :saml
+  it_behaves_like 'signing in as IAL1 with personal key', :oidc
+  it_behaves_like 'signing in as IAL2 with personal key', :saml
+  it_behaves_like 'signing in as IAL2 with personal key', :oidc
+  it_behaves_like 'signing in as IAL1 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL1 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL2 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml

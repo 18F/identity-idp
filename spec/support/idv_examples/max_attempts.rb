@@ -31,7 +31,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       end
 
       # Blocked if visiting from an SP
-      visit_idp_from_sp_with_loa3(:oidc)
+      visit_idp_from_sp_with_ial2(:oidc)
       if step == :phone
         advance_to_phone_step
         expect_user_to_fail_at_phone_step
@@ -52,7 +52,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       reattempt_interval = (Figaro.env.idv_attempt_window_in_hours.to_i + 1).hours
 
       Timecop.travel reattempt_interval do
-        visit_idp_from_sp_with_loa3(:oidc)
+        visit_idp_from_sp_with_ial2(:oidc)
         sign_in_live_with_2fa(user)
 
         expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))

@@ -48,13 +48,13 @@ module ApplicationHelper
       current_page?(controller: 'users/reset_passwords', action: 'edit')
   end
 
-  def loa3_requested?
-    sp_session && sp_session[:loa3]
+  def ial2_requested?
+    sp_session && sp_session[:ial2]
   end
 
   def user_verifying_identity?
     return unless current_user
-    sp_session && sp_session[:loa3] && multiple_factors_enabled?
+    sp_session && sp_session[:ial2] && multiple_factors_enabled?
   end
 
   def sign_up_or_idv_no_js_link

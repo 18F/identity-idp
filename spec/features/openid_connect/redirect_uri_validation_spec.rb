@@ -166,7 +166,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com.evil.com/auth/result',
       state: state,
@@ -182,7 +182,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: ':aaaa',
       state: state,
@@ -198,7 +198,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -214,7 +214,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -230,7 +230,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com',
       state: state,
@@ -246,7 +246,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://test.host',
       state: state,

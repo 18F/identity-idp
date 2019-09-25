@@ -50,7 +50,7 @@ shared_examples 'setting up backup mfa on sign up' do
 
   def visit_idp_from_sp_and_sign_up
     email = Faker::Internet.safe_email
-    visit_idp_from_sp_with_loa1(:oidc)
+    visit_idp_from_sp_with_ial1(:oidc)
     confirm_email_and_password(email)
     User.find_with_email(email)
   end

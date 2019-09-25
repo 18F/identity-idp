@@ -97,7 +97,7 @@ describe SamlIdpController do
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
 
-    context 'with LOA3 and the identity is already verified' do
+    context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
       let(:pii) do
         Pii::Attributes.new_from_hash(
@@ -108,13 +108,13 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
-        raw_req = CGI.unescape loa3_authnrequest.split('SAMLRequest').last
+        raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.from_issuer(loa3_saml_settings.issuer),
+          service_provider: ServiceProvider.from_issuer(ial2_saml_settings.issuer),
           authn_request: this_authn_request,
           decrypted_pii: pii,
         )
@@ -122,7 +122,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, loa3_saml_settings.issuer).link_identity(ial: 3)
+        IdentityLinker.new(user, ial2_saml_settings.issuer).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -132,22 +132,22 @@ describe SamlIdpController do
       it 'calls AttributeAsserter#build' do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
-        saml_get_auth(loa3_saml_settings)
+        saml_get_auth(ial2_saml_settings)
       end
 
-      it 'sets identity loa to 3' do
-        saml_get_auth(loa3_saml_settings)
-        expect(user.identities.last.ial).to eq(3)
+      it 'sets identity ial to 2' do
+        saml_get_auth(ial2_saml_settings)
+        expect(user.identities.last.ial).to eq(2)
       end
 
       it 'does not redirect the user to the IdV URL' do
-        saml_get_auth(loa3_saml_settings)
+        saml_get_auth(ial2_saml_settings)
 
         expect(response).to_not be_redirect
       end
 
       it 'contains verified attributes' do
-        saml_get_auth(loa3_saml_settings)
+        saml_get_auth(ial2_saml_settings)
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
@@ -162,16 +162,16 @@ describe SamlIdpController do
       end
     end
 
-    context 'with LOA3 and the identity is not already verified' do
-      it 'redirects to IdV URL for LOA3 proofer' do
+    context 'with IAL2 and the identity is not already verified' do
+      it 'redirects to IdV URL for IAL2 proofer' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, loa3_saml_settings)
+        generate_saml_response(user, ial2_saml_settings)
 
         expect(response).to redirect_to idv_path
       end
     end
 
-    context 'with LOA1' do
+    context 'with IAL1' do
       it 'does not redirect the user to the IdV URL' do
         user = create(:user, :signed_up)
         generate_saml_response(user, saml_settings)
@@ -204,7 +204,7 @@ describe SamlIdpController do
     end
 
     context 'authn_context is missing' do
-      it 'defaults to LOA1' do
+      it 'defaults to IAL1' do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
@@ -219,7 +219,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -246,7 +246,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
-          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'invalid_provider',
         }
 
@@ -298,7 +298,7 @@ describe SamlIdpController do
         sp_request_id = ServiceProviderRequest.last.uuid
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          loa3: false,
+          ial2: false,
           request_url: @stored_request_url,
           request_id: sp_request_id,
           requested_attributes: ['email'],
@@ -317,14 +317,14 @@ describe SamlIdpController do
 
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          loa3: false,
+          ial2: false,
           request_url: @saml_request.request.original_url,
           request_id: sp_request_id,
           requested_attributes: ['email'],
         )
       end
 
-      context 'after successful assertion of loa1' do
+      context 'after successful assertion of ial1' do
         let(:user_identity) do
           @user.identities.find_by(service_provider: saml_settings.issuer)
         end
@@ -345,7 +345,7 @@ describe SamlIdpController do
           expect(user_identity.verified_attributes).to eq([])
         end
 
-        it 'sets user identity loa value to 1 after verifying attributes' do
+        it 'sets user identity ial value to 1 after verifying attributes' do
           saml_get_auth(saml_settings)
           expect(user_identity.ial).to eq(1)
         end
@@ -811,8 +811,8 @@ describe SamlIdpController do
             expect(subject).to_not be_nil
           end
 
-          it 'has contents set to LOA1' do
-            expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+          it 'has contents set to IAL1' do
+            expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           end
         end
       end
@@ -848,7 +848,7 @@ describe SamlIdpController do
           expect(uuid['FriendlyName']).to eq('uuid')
         end
 
-        it 'does not include the phone Attribute element when authn_context is LOA1' do
+        it 'does not include the phone Attribute element when authn_context is IAL1' do
           phone = xmldoc.phone_number
 
           expect(phone).to be_nil
@@ -877,7 +877,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          authn_context: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+          authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: true,
           finish_profile: false,
@@ -911,7 +911,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -935,7 +935,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: true,

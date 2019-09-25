@@ -7,9 +7,9 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
   I18n.available_locales.each do |locale|
     context "with locale=#{locale}" do
       context 'with a valid SP' do
-        context 'when LOA3' do
+        context 'when IAL2' do
           before do
-            visit "#{loa3_authnrequest}&locale=#{locale}"
+            visit "#{ial2_authnrequest}&locale=#{locale}"
           end
 
           it 'prompts the user to create an account or sign in' do

@@ -4,7 +4,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:params) do
     {
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       client_id: client_id,
       nonce: SecureRandom.hex,
       prompt: 'select_account',
@@ -54,8 +54,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
         end
 
-        context 'with loa3 requested' do
-          before { params[:acr_values] = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+        context 'with ial2 requested' do
+          before { params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
           context 'account is already verified' do
             let(:user) { create(:profile, :active, :verified).user }
@@ -208,7 +208,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         sp_request_id = ServiceProviderRequest.last.uuid
 
         expect(session[:sp]).to eq(
-          loa3: false,
+          ial2: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,

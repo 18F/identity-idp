@@ -48,7 +48,7 @@ feature 'signing into an SP with multiple emails enabled' do
     visit openid_connect_authorize_path(
       client_id: 'urn:gov:gsa:openidconnect:sp:server',
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: SecureRandom.hex,

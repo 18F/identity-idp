@@ -15,7 +15,7 @@ class OpenidConnectUserInfoPresenter
       email_verified: true,
     }.
            merge(x509_attributes).
-           merge(loa3_attributes)
+           merge(ial2_attributes)
 
     OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
@@ -31,14 +31,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   # rubocop:disable Metrics/AbcSize
-  def loa3_attributes
-    phone = stringify_attr(loa3_data.phone)
+  def ial2_attributes
+    phone = stringify_attr(ial2_data.phone)
 
     {
-      given_name: stringify_attr(loa3_data.first_name),
-      family_name: stringify_attr(loa3_data.last_name),
-      birthdate: stringify_attr(loa3_data.dob),
-      social_security_number: stringify_attr(loa3_data.ssn),
+      given_name: stringify_attr(ial2_data.first_name),
+      family_name: stringify_attr(ial2_data.last_name),
+      birthdate: stringify_attr(ial2_data.dob),
+      social_security_number: stringify_attr(ial2_data.ssn),
       address: address,
       phone: phone,
       phone_verified: phone.present? ? true : nil,
@@ -54,35 +54,35 @@ class OpenidConnectUserInfoPresenter
   end
 
   def address
-    return nil if loa3_data.address1.blank?
+    return nil if ial2_data.address1.blank?
 
     {
       formatted: formatted_address,
       street_address: street_address,
-      locality: stringify_attr(loa3_data.city),
-      region: stringify_attr(loa3_data.state),
-      postal_code: stringify_attr(loa3_data.zipcode),
+      locality: stringify_attr(ial2_data.city),
+      region: stringify_attr(ial2_data.state),
+      postal_code: stringify_attr(ial2_data.zipcode),
     }
   end
 
   def formatted_address
     [
       street_address,
-      "#{loa3_data.city}, #{loa3_data.state} #{loa3_data.zipcode}",
+      "#{ial2_data.city}, #{ial2_data.state} #{ial2_data.zipcode}",
     ].compact.join("\n")
   end
 
   def street_address
-    [loa3_data.address1, loa3_data.address2].compact.join(' ')
+    [ial2_data.address1, ial2_data.address2].compact.join(' ')
   end
 
   def stringify_attr(attribute)
     attribute.to_s.presence
   end
 
-  def loa3_data
-    @loa3_data ||= begin
-      if loa3_session?
+  def ial2_data
+    @ial2_data ||= begin
+      if ial2_session?
         Pii::SessionStore.new(identity.rails_session_id).load
       else
         Pii::Attributes.new_from_hash({})
@@ -90,8 +90,8 @@ class OpenidConnectUserInfoPresenter
     end
   end
 
-  def loa3_session?
-    identity.ial == 3
+  def ial2_session?
+    identity.ial == 2
   end
 
   def x509_data

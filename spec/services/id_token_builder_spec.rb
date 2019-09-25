@@ -52,7 +52,7 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the acr to the request acr' do
-      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     end
 
     it 'sets the jti to something meaningful' do

@@ -31,14 +31,14 @@ class StoreSpMetadataInSession
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
-      loa3: loa3_requested?,
+      ial2: ial2_requested?,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
     }
   end
 
-  def loa3_requested?
-    sp_request.loa == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+  def ial2_requested?
+    sp_request.ial == Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
   end
 end

@@ -40,7 +40,7 @@ describe StoreSpMetadataInSession do
 
         app_session_hash = {
           issuer: 'issuer',
-          loa3: false,
+          ial2: false,
           request_url: 'http://issuer.gov',
           request_id: request_id,
           requested_attributes: %w[email],

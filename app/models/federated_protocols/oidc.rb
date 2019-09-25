@@ -8,7 +8,7 @@ module FederatedProtocols
       request.client_id
     end
 
-    def loa
+    def ial
       request.acr_values.sort.max
     end
 

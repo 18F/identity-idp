@@ -5,7 +5,7 @@ describe 'sign_up/completions/show.html.slim' do
     @user = User.new
     @view_model = SignUpCompletionsShow.new(
       current_user: @user,
-      loa3_requested: false,
+      ial2_requested: false,
       decorated_session: SessionDecorator.new,
       handoff: false,
     )
@@ -33,7 +33,7 @@ describe 'sign_up/completions/show.html.slim' do
     before do
       @view_model = SignUpCompletionsShow.new(
         current_user: @user,
-        loa3_requested: false,
+        ial2_requested: false,
         decorated_session: SessionDecorator.new,
         handoff: true,
       )

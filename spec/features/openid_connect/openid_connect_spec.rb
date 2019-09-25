@@ -64,7 +64,7 @@ describe 'OpenID Connect' do
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
@@ -94,7 +94,7 @@ describe 'OpenID Connect' do
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
@@ -137,7 +137,7 @@ describe 'OpenID Connect' do
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
         redirect_uri: 'gov.gsa.openidconnect.test://result',
         state: state,
@@ -181,7 +181,7 @@ describe 'OpenID Connect' do
         visit openid_connect_authorize_path(
           client_id: client_id,
           response_type: 'code',
-          acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           scope: 'openid email',
           redirect_uri: 'gov.gsa.openidconnect.test://result',
           state: state,
@@ -240,7 +240,7 @@ describe 'OpenID Connect' do
       oidc_path =  openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
@@ -368,7 +368,7 @@ describe 'OpenID Connect' do
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
         redirect_uri: 'gov.gsa.openidconnect.test://result',
         state: state,
@@ -403,14 +403,14 @@ describe 'OpenID Connect' do
     end
   end
 
-  def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
+  def visit_idp_from_sp_with_ial1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -419,14 +419,14 @@ describe 'OpenID Connect' do
     )
   end
 
-  def visit_idp_from_mobile_app_with_loa1(state: SecureRandom.hex)
+  def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:test'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
@@ -449,7 +449,7 @@ describe 'OpenID Connect' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
@@ -501,7 +501,7 @@ describe 'OpenID Connect' do
     params = {
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -560,7 +560,7 @@ describe 'OpenID Connect' do
     expect(sub).to be_present
     expect(decoded_id_token[:nonce]).to eq(nonce)
     expect(decoded_id_token[:aud]).to eq(client_id)
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
     expect(decoded_id_token[:given_name]).to eq('John')
