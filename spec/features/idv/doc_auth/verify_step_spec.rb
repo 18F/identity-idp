@@ -6,7 +6,7 @@ feature 'doc auth verify step' do
   include InPersonHelper
 
   let(:user) { user_with_2fa }
-  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
+  let(:max_attempts) { idv_max_attempts }
   before do
     enable_doc_auth
     complete_doc_auth_steps_before_verify_step(user)

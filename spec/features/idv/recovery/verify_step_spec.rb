@@ -7,7 +7,7 @@ feature 'recovery verify step' do
 
   let(:user) { create(:user) }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
-  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
+  let(:max_attempts) { idv_max_attempts }
   before do
     sign_in_before_2fa(user)
     enable_doc_auth

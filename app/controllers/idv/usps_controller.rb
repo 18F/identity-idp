@@ -146,8 +146,20 @@ module Idv
       FormResponse.new(success: success, errors: result[:errors])
     end
 
+    def idv_throttle_params
+      [idv_session.current_user.id, :idv_resolution]
+    end
+
+    def idv_attempter_increment
+      Throttler::Increment.call(*idv_throttle_params)
+    end
+
+    def idv_attempter_throttled?
+      Throttler::IsThrottled.call(*idv_throttle_params)
+    end
+
     def throttle_failure
-      attempter.increment
+      idv_attempter_increment
       flash_error
     end
 
@@ -157,15 +169,11 @@ module Idv
     end
 
     def max_attempts_reached
-      flash_error if attempter.exceeded?
+      flash_error if idv_attempter_throttled?
     end
 
     def error_message
-      I18n.t('idv.failure.sessions.' + (attempter.exceeded? ? 'fail' : 'heading'))
-    end
-
-    def attempter
-      @attempter ||= Idv::Attempter.new(idv_session.current_user)
+      I18n.t('idv.failure.sessions.' + (idv_attempter_throttled? ? 'fail' : 'heading'))
     end
 
     def send_reminder

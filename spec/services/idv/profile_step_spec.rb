@@ -90,7 +90,7 @@ describe Idv::ProfileStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        user.update(idv_attempts: Idv::Attempter.idv_max_attempts - 1)
+        user.update(idv_attempts: idv_max_attempts - 1)
 
         subject.submit(user_attrs.merge(first_name: 'Bad'))
 
