@@ -1306,3 +1306,4 @@ production:
       - email
     logo: 'doi.svg'
     ial: '1'
+    restrict_to_deploy_env: 'prod'
