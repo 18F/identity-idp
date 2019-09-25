@@ -22,7 +22,7 @@ class ServiceProviderRequestHandler
   attr_reader :url, :session, :protocol_request, :protocol
 
   def ial
-    protocol.loa[-1] == '3' ? 2 : 1
+    protocol.ial[-1] == '2' ? 2 : 1
   end
 
   def current_sp
