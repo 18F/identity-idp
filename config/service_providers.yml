@@ -1292,3 +1292,29 @@ production:
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'
+
+  # HHS - OIG Utils
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:hhs:oigutils':
+    friendly_name: 'HHS OIG Utils'
+    agency: 'HHS'
+    agency_id: 19
+    logo: 'hhs_oig.png'
+    cert: 'hhs_oigutils_prod'
+    acs_url: 'https://hhsoigutils.service-now.com/navpage.do'
+    assertion_consumer_logout_service_url: 'https://hhsoigutils.service-now.com/external_logout_complete.do'
+    block_encryption: 'aes256-cbc'
+    sp_initiated_login_url: 'https://hhsoigutils.service-now.com'
+    return_to_sp_url: 'https://hhsoigutils.service-now.com'
+    ial: 2
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - phone
+    restrict_to_deploy_env: 'prod'
