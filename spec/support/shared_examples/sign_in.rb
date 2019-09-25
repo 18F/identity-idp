@@ -28,13 +28,13 @@ shared_examples 'signing in with the site in Spanish' do |sp|
   end
 end
 
-shared_examples 'signing in as LOA1 with personal key' do |sp|
+shared_examples 'signing in as IAL1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
     loa1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
-shared_examples 'signing in as LOA1 with piv/cac' do |sp|
+shared_examples 'signing in as IAL1 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating', email: true do
     loa1_sign_in_with_piv_cac_goes_to_sp(sp)
   end
@@ -98,7 +98,7 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   end
 end
 
-shared_examples 'signing in as LOA1 with personal key after resetting password' do |sp|
+shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
 
