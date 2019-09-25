@@ -130,7 +130,7 @@ module SamlAuthHelper
     settings
   end
 
-  def ial_with_bundle_saml_settings
+  def ial1_with_bundle_saml_settings
     settings = sp1_saml_settings
     settings.authn_context = [
       settings.authn_context,

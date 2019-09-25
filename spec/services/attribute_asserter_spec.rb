@@ -22,7 +22,7 @@ describe AttributeAsserter do
   let(:raw_ial1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
   let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
   let(:ial1_authn_request) do
-    SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
+    SamlIdp::Request.from_deflated_request(raw_ial1_authn_request)
   end
   let(:ial2_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
@@ -183,7 +183,7 @@ describe AttributeAsserter do
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
           let(:raw_loa1_authn_request) do
             CGI.unescape(
-              auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last,
+              auth_request.create(ial1_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 

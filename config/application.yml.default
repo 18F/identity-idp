@@ -84,6 +84,7 @@ google_analytics_timeout: '5'
 allow_piv_cac_by_email_only: 'true'
 
 development:
+  valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
