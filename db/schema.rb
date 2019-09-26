@@ -124,21 +124,16 @@ ActiveRecord::Schema.define(version: 20190924195715) do
     t.integer "verify_phone_view_count", default: 0
     t.datetime "usps_address_view_at"
     t.integer "usps_address_view_count", default: 0
-    t.datetime "usps_letter_sent_view_at"
-    t.integer "usps_letter_sent_view_count", default: 0
-    t.datetime "usps_address_submit_at"
-    t.integer "usps_address_submit_count", default: 0
-    t.integer "usps_address_error_count", default: 0
     t.datetime "encrypt_view_at"
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
     t.integer "mobile_back_image_error_count", default: 0
+    t.integer "usps_letter_sent_submit_count", default: 0
+    t.integer "usps_letter_sent_error_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
