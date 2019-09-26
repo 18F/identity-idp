@@ -9,7 +9,6 @@ module FederatedProtocols
     end
 
     def ial
-      context = request.acr_values.sort.max
       case context
       when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         1
@@ -23,6 +22,11 @@ module FederatedProtocols
     end
 
     private
+
+    def context
+      return request.acr_values if request.acr_values.is_a? String
+      request.acr_values.sort.max
+    end
 
     attr_reader :request
   end

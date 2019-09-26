@@ -9,8 +9,7 @@ module FederatedProtocols
     end
 
     def ial
-      context = request.requested_authn_context || default_authn_context
-      case context.sort.max
+      case context
       when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         1
       when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -25,6 +24,12 @@ module FederatedProtocols
     end
 
     private
+
+    def context
+      ctx = request.requested_authn_context || default_authn_context
+      return ctx if ctx.is_a? String
+      ctx.sort.max
+    end
 
     attr_reader :request
 
