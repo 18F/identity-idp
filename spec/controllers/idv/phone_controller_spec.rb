@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::PhoneController do
   include IdvHelper
 
-  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
+  let(:max_attempts) { idv_max_attempts }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }

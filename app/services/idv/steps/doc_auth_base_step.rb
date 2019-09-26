@@ -33,13 +33,21 @@ module Idv
         Figaro.env.acuant_simulator == 'true'
       end
 
-      def attempter
-        @attempter ||= Idv::Attempter.new(current_user)
+      def idv_throttle_params
+        [current_user.id, :idv_resolution]
+      end
+
+      def attempter_increment
+        Throttler::Increment.call(*idv_throttle_params)
+      end
+
+      def attempter_throttled?
+        Throttler::IsThrottled.call(*idv_throttle_params)
       end
 
       def idv_failure(result)
-        attempter.increment
-        type = attempter.exceeded? ? :fail : :warning
+        attempter_increment
+        type = attempter_throttled? ? :fail : :warning
         redirect_to idv_session_failure_url(reason: type)
         result
       end
