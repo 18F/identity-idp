@@ -73,7 +73,8 @@ stale_session_window: '180'
 
 use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3",
+"http://idmanagement.gov/ns/assurance/ial1/1", "http://idmanagement.gov/ns/assurance/ial/2"]'
 
 twilio_timeout: '5'
 usps_download_sftp_timeout: '5'
@@ -84,7 +85,6 @@ google_analytics_timeout: '5'
 allow_piv_cac_by_email_only: 'true'
 
 development:
-  valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
