@@ -404,7 +404,7 @@ production:
                 a login.gov account</a>
         sign_in: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID
                 and password won’t work. Please create a login.gov account below. <p><a
-                href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Learn
+                href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">Learn
                 more</a>
         sign_up: ''
       es:
@@ -413,7 +413,7 @@ production:
                 un nueva cuenta de login.gov.</a>
         sign_in: <b>¿Ha venido de Trusted Traveler Programs?</b><p>Su antiguo ID de
                 usuario y contraseña de GOES no funcionarán. Favor de crear un nueva cuenta
-                de login.gov. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">Obtenga
+                de login.gov. <p><a href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">Obtenga
                 más información.</a>
         sign_up: ''
       fr:
@@ -422,7 +422,7 @@ production:
                 <a href=%{sp_create_link}>créer un nouveau compte login.gov.</a>
         sign_in: <b>Êtes-vous venu(e) de Trusted Traveler Programs?</b><p>Votre ancien
                 nom d'utilisateur et mot de passe GOES ne marchera pas. Veuillez créer un
-                nouveau compte login.gov. <p><a href="https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/">En
+                nouveau compte login.gov. <p><a href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">En
                 savoir plus.</a>
         sign_up: ''
 

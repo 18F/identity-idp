@@ -15,11 +15,10 @@ module Idv
     end
 
     def create
-      create_user_event(:usps_mail_sent, current_user)
+      update_tracking
       idv_session.address_verification_mechanism = :usps
 
       if current_user.decorate.pending_profile_requires_verification?
-        analytics.track_event(Analytics::IDV_USPS_ADDRESS_LETTER_REQUESTED)
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -38,6 +37,12 @@ module Idv
     end
 
     private
+
+    def update_tracking
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_LETTER_REQUESTED)
+      create_user_event(:usps_mail_sent, current_user)
+      Db::ProofingComponent::Add.call(current_user.id, :address_check, 'gpo_letter')
+    end
 
     def submit_form_and_perform_resolution
       result = idv_form.submit(profile_params)
@@ -116,12 +121,7 @@ module Idv
         profile: current_user.decorate.pending_profile,
       )
       confirmation_maker.perform
-      add_proofing_cost
       confirmation_maker
-    end
-
-    def add_proofing_cost
-      Db::ProofingCost::AddUserProofingCost.call(current_user.id, :gpo_letter)
     end
 
     def idv_form
