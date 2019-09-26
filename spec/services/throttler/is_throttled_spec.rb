@@ -25,7 +25,7 @@ describe Throttler::IsThrottled do
                     attempted_at: Time.zone.now)
     result = subject.call(user_id, throttle_type)
 
-    expect(result).to be_nil
+    expect(result).to be(false)
   end
 
   it 'returns nil if the attempts <= max_attempts but the window is expired' do
@@ -35,6 +35,6 @@ describe Throttler::IsThrottled do
                     attempted_at: Time.zone.now - attempt_window_in_minutes.minutes)
     result = subject.call(user_id, throttle_type)
 
-    expect(result).to be_nil
+    expect(result).to be(false)
   end
 end

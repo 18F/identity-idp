@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ProfileStep do
+  include IdvHelper
+
   let(:user) { create(:user) }
   let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: nil) }
   let(:user_attrs) do
@@ -65,7 +67,9 @@ describe Idv::ProfileStep do
     end
 
     it 'increments attempts count' do
-      expect { subject.submit(user_attrs) }.to change(user, :idv_attempts).by(1)
+      expect(Throttler::Increment).to receive(:call).with(user.id, :idv_resolution)
+
+      subject.submit(user_attrs)
     end
 
     it 'does not increment attempts count when the vendor request times out' do
@@ -90,7 +94,12 @@ describe Idv::ProfileStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        user.update(idv_attempts: Idv::Attempter.idv_max_attempts - 1)
+        Throttle.create(
+          throttle_type: 5,
+          user_id: user.id,
+          attempts: idv_max_attempts,
+          attempted_at: Time.zone.now,
+        )
 
         subject.submit(user_attrs.merge(first_name: 'Bad'))
 

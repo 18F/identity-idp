@@ -1,8 +1,8 @@
 module Throttler
-  class IsThrottled
+  class RemainingCount
     def self.call(user_id, throttle_type)
       throttle = FindOrCreate.call(user_id, throttle_type)
-      throttle.throttled? ? throttle : false
+      throttle.remaining_count
     end
   end
 end
