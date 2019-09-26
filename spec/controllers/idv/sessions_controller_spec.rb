@@ -67,7 +67,7 @@ describe Idv::SessionsController do
           throttle_type: 5,
           user_id: user.id,
           attempts: max_attempts,
-          attempted_at: Time.zone.now
+          attempted_at: Time.zone.now,
         )
 
         get :new
