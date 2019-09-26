@@ -29,7 +29,7 @@ class Throttle < ApplicationRecord
     },
     idv_resolution: {
       max_attempts: (Figaro.env.idv_max_attempts || 3).to_i,
-      attempt_window: (Figaro.env.idv_attempt_window_in_hours * 60).to_i,
+      attempt_window: (Figaro.env.idv_attempt_window_in_hours || 24).to_i * 60,
     },
   }.freeze
 
