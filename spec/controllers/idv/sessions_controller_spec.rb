@@ -63,8 +63,12 @@ describe Idv::SessionsController do
 
     context 'max attempts exceeded' do
       it 'redirects to fail' do
-        user.idv_attempts = max_attempts
-        user.idv_attempted_at = Time.zone.now
+        Throttle.create(
+          throttle_type: 5,
+          user_id: user.id,
+          attempts: max_attempts,
+          attempted_at: Time.zone.now
+        )
 
         get :new
 
