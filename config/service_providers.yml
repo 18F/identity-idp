@@ -1303,7 +1303,6 @@ production:
     acs_url: 'https://hhsoigutils.service-now.com/navpage.do'
     assertion_consumer_logout_service_url: 'https://hhsoigutils.service-now.com/external_logout_complete.do'
     block_encryption: 'aes256-cbc'
-    sp_initiated_login_url: 'https://hhsoigutils.service-now.com'
     return_to_sp_url: 'https://hhsoigutils.service-now.com'
     ial: 2
     attribute_bundle:
