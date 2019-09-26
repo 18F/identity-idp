@@ -7,6 +7,7 @@ class Throttle < ApplicationRecord
     reg_unconfirmed_email: 2,
     reg_confirmed_email: 3,
     reset_password_email: 4,
+    idv_resolution: 5,
   }
 
   THROTTLE_CONFIG = {
@@ -26,10 +27,20 @@ class Throttle < ApplicationRecord
       max_attempts: (Figaro.env.reset_password_email_max_attempts || 20).to_i,
       attempt_window: (Figaro.env.reset_password_email_window_in_minutes || 60).to_i,
     },
+    idv_resolution: {
+      max_attempts: (Figaro.env.idv_max_attempts || 3).to_i,
+      attempt_window: (Figaro.env.idv_attempt_window_in_hours || 24).to_i * 60,
+    },
   }.freeze
 
   def throttled?
     !expired? && maxed?
+  end
+
+  def remaining_count
+    return 0 if throttled?
+    max_attempts, _attempt_window_in_minutes = Throttle.config_values(throttle_type)
+    max_attempts - attempts
   end
 
   def expired?

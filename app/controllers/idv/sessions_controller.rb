@@ -76,7 +76,7 @@ module Idv
     end
 
     def remaining_step_attempts
-      Idv::Attempter.idv_max_attempts - current_user.idv_attempts
+      Throttler::RemainingCount.call(current_user.id, :idv_resolution)
     end
 
     def set_idv_form

@@ -34,8 +34,7 @@ describe 'IdvStepConcern' do
 
     context 'user has exceeded IdV max attempts in a single session' do
       before do
-        user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now
+        create_maxed_throttle
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         get :show
       end
@@ -48,8 +47,7 @@ describe 'IdvStepConcern' do
     context 'user has exceeded IdV max attempts in a single period' do
       before do
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now
+        create_maxed_throttle
         get :show
       end
 
@@ -61,8 +59,7 @@ describe 'IdvStepConcern' do
     context 'user attempts IdV after window has passed' do
       before do
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now - 25.hours
+        create_maxed_throttle(Time.zone.now - 25.hours)
         get :show
       end
 
@@ -164,5 +161,14 @@ describe 'IdvStepConcern' do
         expect(response.status).to eq 200
       end
     end
+  end
+
+  def create_maxed_throttle(attempted_at = Time.zone.now)
+    Throttle.create(
+      throttle_type: 5,
+      user_id: user.id,
+      attempts: 3,
+      attempted_at: attempted_at,
+    )
   end
 end
