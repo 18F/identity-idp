@@ -12,6 +12,5 @@ FactoryBot.define do
         'sign_up': { en: '<b>Some sign-up help text</b>' },
         'forgot_password': { en: '<b>Some forgot password help text</b>' } }
     end
-
   end
 end

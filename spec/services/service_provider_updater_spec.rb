@@ -9,6 +9,7 @@ describe ServiceProviderUpdater do
   let(:openid_connect_issuer) { 'sp:test:foo:bar' }
   let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app://result] }
 
+  # rubocop:disable Style/TrailingCommaInHashLiteral
   let(:friendly_sp) do
     {
       id: 'big number',
@@ -27,9 +28,10 @@ describe ServiceProviderUpdater do
       approved: true,
       help_text: { 'sign_in': { en: '<b>A new different sign-in help text</b>' },
                    'sign_up': { en: '<b>A new different help text</b>' },
-                   'forgot_password': { en: '<b>A new different forgot password help text</b>' } }
+                   'forgot_password': { en: '<b>A new different forgot password help text</b>' }, }
     }
   end
+  # rubocop:enable Style/TrailingCommaInHashLiteral
   let(:old_sp) do
     {
       id: 'small number',
