@@ -94,7 +94,12 @@ describe Idv::ProfileStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        user.update(idv_attempts: idv_max_attempts - 1)
+        Throttle.create(
+          throttle_type: 5,
+          user_id: user.id,
+          attempts: idv_max_attempts,
+          attempted_at: Time.zone.now,
+        )
 
         subject.submit(user_attrs.merge(first_name: 'Bad'))
 
