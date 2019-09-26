@@ -8,7 +8,7 @@ describe SignUp::CompletionsController do
         allow(@analytics).to receive(:track_event)
       end
 
-      context 'LOA1' do
+      context 'IAL1' do
         it 'tracks page visit' do
           user = create(:user)
           stub_sign_in(user)
@@ -102,7 +102,7 @@ describe SignUp::CompletionsController do
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
-    context 'LOA1' do
+    context 'IAL1' do
       it 'tracks analytics' do
         stub_sign_in
         subject.session[:sp] = {

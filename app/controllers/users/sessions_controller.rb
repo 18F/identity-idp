@@ -152,7 +152,7 @@ module Users
     end
 
     def sp_session_ial
-      sp_session[:ial] ? 2 : 1
+      sp_session[:ial2] ? 2 : 1
     end
   end
 end

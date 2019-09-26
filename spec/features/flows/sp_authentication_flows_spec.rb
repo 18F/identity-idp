@@ -185,7 +185,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
           end
         end
 
-        context 'when LOA1' do
+        context 'when IAL1' do
           before do
             visit "#{authnrequest_get}&locale=#{locale}"
           end

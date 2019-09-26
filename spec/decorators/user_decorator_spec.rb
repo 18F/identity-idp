@@ -263,7 +263,7 @@ describe UserDecorator do
   describe '#delete_account_bullet_key' do
     let(:user_decorator) { UserDecorator.new(build_stubbed(:user)) }
 
-    it 'returns loa1 if identity is not verified' do
+    it 'returns ial1 if identity is not verified' do
       allow(user_decorator).to receive(:identity_verified?).and_return(false)
       expect(user_decorator.delete_account_bullet_key).
         to eq t('users.delete.bullet_2_loa1', app: APP_NAME)

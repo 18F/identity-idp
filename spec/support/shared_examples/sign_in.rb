@@ -30,13 +30,13 @@ end
 
 shared_examples 'signing in as IAL1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
-    loa1_sign_in_with_personal_key_goes_to_sp(sp)
+    ial1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
 shared_examples 'signing in as IAL1 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating', email: true do
-    loa1_sign_in_with_piv_cac_goes_to_sp(sp)
+    ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 end
 
@@ -45,7 +45,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
   after { Timecop.return }
 
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
-    loa1_sign_in_with_personal_key_goes_to_sp(sp)
+    ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
     visit login_two_factor_options_path
 
@@ -103,7 +103,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
   after { Timecop.return }
 
   it 'redirects to SP', email: true do
-    user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+    user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.email)
@@ -234,9 +234,9 @@ def personal_key_for_ial2_user(user, pii)
   personal_key
 end
 
-def loa1_sign_in_with_personal_key_goes_to_sp(sp)
+def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   Timecop.freeze Time.zone.now do
-    user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+    user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
@@ -255,8 +255,8 @@ def loa1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
-def loa1_sign_in_with_piv_cac_goes_to_sp(sp)
-  user = create_loa1_account_go_back_to_sp_and_sign_out(sp)
+def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
+  user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
   user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
   visit_idp_from_sp_with_ial1(sp)
 

@@ -1,5 +1,5 @@
 module SpAuthHelper
-  def create_loa1_account_go_back_to_sp_and_sign_out(sp)
+  def create_ial1_account_go_back_to_sp_and_sign_out(sp)
     email = 'test@test.com'
     visit_idp_from_sp_with_ial1(sp)
     click_link t('links.create_account')

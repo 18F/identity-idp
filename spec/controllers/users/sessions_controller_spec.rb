@@ -263,7 +263,7 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
-    context 'LOA1 user' do
+    context 'IAL1 user' do
       it 'computes one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
 

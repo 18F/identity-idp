@@ -161,7 +161,7 @@ describe Users::ResetPasswordsController, devise: true do
       end
     end
 
-    context 'LOA1 user submits valid new password' do
+    context 'IAL1 user submits valid new password' do
       it 'redirects to sign in page' do
         stub_analytics
         allow(@analytics).to receive(:track_event)

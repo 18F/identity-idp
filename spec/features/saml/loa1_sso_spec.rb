@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'LOA1 Single Sign On' do
+feature 'IAL1 Single Sign On' do
   include SamlAuthHelper
 
   context 'First time registration', email: true do

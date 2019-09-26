@@ -141,7 +141,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
       end
 
-      context 'when the identity only has loa1 access' do
+      context 'when the identity only has ial1 access' do
         before { identity.ial = 1 }
 
         it 'does not return ial2 attributes' do

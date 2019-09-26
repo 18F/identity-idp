@@ -181,7 +181,7 @@ describe AttributeAsserter do
         end
 
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
-          let(:raw_loa1_authn_request) do
+          let(:raw_ial1_authn_request) do
             CGI.unescape(
               auth_request.create(ial1_with_bundle_saml_settings).split('SAMLRequest').last,
             )
