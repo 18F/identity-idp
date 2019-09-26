@@ -96,6 +96,7 @@ module OpenidConnect
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
+      warn "1"
       return unless pii_requested_but_locked?
       redirect_to capture_password_url
     end

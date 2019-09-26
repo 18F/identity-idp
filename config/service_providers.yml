@@ -61,7 +61,7 @@ test:
     ial: 2
     push_notification_url: http://localhost/push_notifications
 
-  'urn:gov:gsa:openidconnect:test:loa1':
+  'urn:gov:gsa:openidconnect:test:ial1':
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
       - 'gov.gsa.openidconnect.test://result/logout'
