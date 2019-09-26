@@ -28,10 +28,10 @@ fr:
           le code correspondant à %{email} à %{app}.%{tooltip}
         or: or
       piv_cac:
-        account_not_found: "<strong>%{sign_in}</strong> votre adresse e-mail et votre
-          mot de passe.<br><br>Connectez-vous avec votre adresse email et votre mot
-          de passe. Ajoutez ensuite votre PIV/CAC à votre compte. <br><br><strong>Vous
-          n'avez pas de compte login.gov?</strong> %{create_account}"
+        account_not_found:
+          paragraph_1: "<strong>%{sign_in}</strong> votre adresse email et votre mot
+            de passe. Ajoutez ensuite votre PIV/CAC à votre compte."
+          paragraph_2: "<strong>Vous n'avez pas de compte login.gov?</strong> %{create_account}"
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
