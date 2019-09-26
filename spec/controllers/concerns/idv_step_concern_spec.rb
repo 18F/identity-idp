@@ -169,6 +169,6 @@ describe 'IdvStepConcern' do
       user_id: user.id,
       attempts: 3,
       attempted_at: attempted_at,
-  )
+    )
   end
 end
