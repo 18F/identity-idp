@@ -8,8 +8,6 @@ describe ServiceProviderUpdater do
   let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
   let(:openid_connect_issuer) { 'sp:test:foo:bar' }
   let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app://result] }
-  let(:old_help_text) { build(:help_text) }
-  let(:new_help_text_hash) { attributes_for(:help_text) }
 
   let(:friendly_sp) do
     {
@@ -27,7 +25,9 @@ describe ServiceProviderUpdater do
       active: true,
       native: true,
       approved: true,
-      help_text: new_help_text_hash,
+      help_text: { 'sign_in': { en: '<b>A new different sign-in help text</b>' },
+                   'sign_up': { en: '<b>A new different help text</b>' },
+                   'forgot_password': { en: '<b>A new different forgot password help text</b>' } }
     }
   end
   let(:old_sp) do
@@ -96,16 +96,16 @@ describe ServiceProviderUpdater do
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
           stringify_keys
-        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
           stringify_keys
-        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
           stringify_keys
       end
 
       it 'updates existing dashboard-provided Service Providers' do
-        sp = create(:service_provider, issuer: dashboard_sp_issuer, help_text: old_help_text)
+        sp = create(:service_provider, issuer: dashboard_sp_issuer)
         old_id = sp.id
 
         subject.run
@@ -120,11 +120,11 @@ describe ServiceProviderUpdater do
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text.sign_in).to eq friendly_sp[:help_text][:sign_in].
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
           stringify_keys
-        expect(sp.help_text.sign_up).to eq friendly_sp[:help_text][:sign_up].
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
           stringify_keys
-        expect(sp.help_text.forgot_password).to eq friendly_sp[:help_text][:forgot_password].
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
           stringify_keys
       end
 

@@ -27,7 +27,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     language = I18n.locale.to_s
 
     if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section][language] % args
+      sp.help_text.dig(section, language) % args
     else
       SP_CONFIG.dig(sp.issuer, 'help_text', language, section) % args
     end

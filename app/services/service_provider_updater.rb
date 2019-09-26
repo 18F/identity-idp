@@ -7,13 +7,6 @@ class ServiceProviderUpdater
     updated_at
   ].to_set.freeze
 
-  HT_PROTECTED_ATTRIBUTES = %i[
-    id
-    created_at
-    service_provider_id
-    updated_at
-  ].to_set.freeze
-
   def run
     dashboard_service_providers.each do |service_provider|
       update_local_caches(HashWithIndifferentAccess.new(service_provider))
@@ -42,25 +35,10 @@ class ServiceProviderUpdater
   end
 
   def sync_model(sp, cleaned_attributes)
-    clean_sp_attributes = cleaned_attributes.except('help_text')
     if sp.is_a?(NullServiceProvider)
-      new_sp = ServiceProvider.create!(clean_sp_attributes)
-      create_or_update_help_text(new_sp, cleaned_attributes)
-      new_sp
+      ServiceProvider.create!(cleaned_attributes)
     else
-      sp.update(clean_sp_attributes)
-      create_or_update_help_text(sp, cleaned_attributes)
-    end
-  end
-
-  def create_or_update_help_text(sp, cleaned_attributes)
-    clean_ht_attributes = cleaned_attributes['help_text']
-    ht = sp.help_text
-    return if clean_ht_attributes.blank?
-    if ht.present?
-      ht.update(clean_ht_attributes&.except(*HT_PROTECTED_ATTRIBUTES))
-    else
-      sp.help_text = HelpText.create!(clean_ht_attributes.except(*HT_PROTECTED_ATTRIBUTES))
+      sp.update(cleaned_attributes)
     end
   end
 

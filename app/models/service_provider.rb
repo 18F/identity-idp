@@ -6,8 +6,6 @@ class ServiceProvider < ApplicationRecord
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
 
-  has_one :help_text, dependent: :destroy
-
   scope(:active, -> { where(active: true) })
 
   def self.from_issuer(issuer)

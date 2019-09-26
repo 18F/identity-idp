@@ -14,12 +14,8 @@ class ServiceProviderSeeder
                   active: true,
                   native: true,
                   friendly_name: config['friendly_name'])
-        HelpText.find_or_create_by!(service_provider_id: sp.id) do |ht|
-          sp.help_text = ht
-        end
       end.update!(config.except('restrict_to_deploy_env',
                                 'uuid_priority',
-                                'help_text',
                                 'default_help_text'))
     end
   end
