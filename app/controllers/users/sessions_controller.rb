@@ -19,8 +19,8 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
-      #TODO clara
-      @ial = sp_session && sp_session_ial > 1 ? 2 : 1
+
+      @ial = sp_session ? sp_session_ial : 1
       super
     end
 

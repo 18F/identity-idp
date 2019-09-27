@@ -8,17 +8,6 @@ module FederatedProtocols
       request.client_id
     end
 
-=begin
-    def ial
-      case context
-      when ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-        1
-      when ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-        2
-      end
-    end
-=end
-
     def ial
       request.acr_values.sort.max
     end
@@ -28,15 +17,6 @@ module FederatedProtocols
     end
 
     private
-
-=begin
-    # :reek:FeatureEnvy
-    def context
-      vals = request.acr_values
-      return vals if vals.is_a? String
-      vals.sort.max
-    end
-=end
 
     attr_reader :request
   end
