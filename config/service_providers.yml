@@ -1304,6 +1304,7 @@ production:
     assertion_consumer_logout_service_url: 'https://hhsoigutils.service-now.com/external_logout_complete.do'
     block_encryption: 'aes256-cbc'
     return_to_sp_url: 'https://hhsoigutils.service-now.com'
+    failure_to_proof_url: 'https://hhsoigutils.service-now.com'
     ial: 2
     attribute_bundle:
       - email
