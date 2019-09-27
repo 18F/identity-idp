@@ -109,16 +109,18 @@ module Idv
       def throttle_post_front_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
+          result = assure_id.post_front_image(image.read)
           Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_front_image)
-          assure_id.post_front_image(image.read)
+          result
         end
       end
 
       def throttle_post_back_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
+          result = assure_id.post_back_image(image.read)
           Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_back_image)
-          assure_id.post_back_image(image.read)
+          result
         end
       end
 
