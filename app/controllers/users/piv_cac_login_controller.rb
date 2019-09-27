@@ -77,7 +77,7 @@ module Users
     def request_is_ial2?
       request_ial == 2
     end
-
+  #TODO clara
     def request_ial
       sp_session && sp_session_ial > 1 ? 2 : 1
     end

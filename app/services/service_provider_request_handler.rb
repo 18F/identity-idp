@@ -20,9 +20,9 @@ class ServiceProviderRequestHandler
   private
 
   attr_reader :url, :session, :protocol_request, :protocol
-
+  #TODO clara
   def ial
-    protocol.ial
+    protocol.ial == ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF ? 2 : 1
   end
 
   def current_sp
