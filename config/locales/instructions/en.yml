@@ -26,9 +26,9 @@ en:
         or: or
       piv_cac:
         account_not_found:
-          paragraph_1: "<strong>%{sign_in}</strong> with your email address and password.
+          paragraph_1_html: "<strong>%{sign_in}</strong> with your email address and password.
             Then add your PIV/CAC to your account."
-          paragraph_2: "<strong>Don't have a login.gov account?</strong> %{create_account}"
+          paragraph_2_html: "<strong>Don't have a login.gov account?</strong> %{create_account}"
         back_to_sign_in: Go back to sign in
         confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
