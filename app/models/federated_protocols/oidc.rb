@@ -24,8 +24,9 @@ module FederatedProtocols
     private
 
     def context
-      return request.acr_values if request.acr_values.is_a? String
-      request.acr_values.sort.max
+      vals = request.acr_values
+      return vals if vals.is_a? String
+      vals.sort.max
     end
 
     attr_reader :request
