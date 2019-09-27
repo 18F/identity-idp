@@ -10,9 +10,9 @@ module FederatedProtocols
 
     def ial
       case context
-      when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      when ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         1
-      when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      when ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         2
       end
     end

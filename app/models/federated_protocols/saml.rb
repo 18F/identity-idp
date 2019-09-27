@@ -9,10 +9,11 @@ module FederatedProtocols
     end
 
     def ial
+      context = get_context
       case context
-      when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      when ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         1
-      when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      when ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         2
       end
     end
@@ -25,7 +26,7 @@ module FederatedProtocols
 
     private
 
-    def context
+    def get_context
       ctx = request.requested_authn_context || default_authn_context
       return ctx if ctx.is_a? String
       ctx.sort.max
