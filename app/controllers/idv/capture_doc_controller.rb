@@ -1,7 +1,7 @@
 module Idv
   class CaptureDocController < ApplicationController
-    include Flow::FlowStateMachine
     before_action :ensure_user_id_in_session
+    include Flow::FlowStateMachine
 
     FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
@@ -13,7 +13,7 @@ module Idv
     private
 
     def ensure_user_id_in_session
-      return if session[:doc_capture_user_id]
+      return if session[:doc_capture_user_id] && token.blank?
       result = CaptureDoc::ValidateRequestToken.new(token).call
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
@@ -21,6 +21,7 @@ module Idv
 
     def process_result(result)
       if result.success?
+        reset_session
         session[:doc_capture_user_id] = result.extra[:for_user_id]
       else
         flash[:error] = t('errors.capture_doc.invalid_link')
