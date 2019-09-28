@@ -230,4 +230,20 @@ feature 'Sign Up' do
       end
     end
   end
+
+  context 'legacy (pre multi email) user w/expired confirmation token on user and email_address' do
+    it 'does not return an error and redirect to root after confirming and entering password' do
+      email = 'test@test.com'
+      User.create!(confirmation_token: 'foo', uuid: 'foo', email: email,
+                   confirmation_sent_at: Time.zone.now)
+      Timecop.travel 1.year.from_now do
+        visit sign_up_email_path
+        submit_form_with_valid_email(email)
+        click_confirmation_link_in_email(email)
+        submit_form_with_valid_password
+
+        expect(page).to have_current_path(two_factor_options_path)
+      end
+    end
+  end
 end
