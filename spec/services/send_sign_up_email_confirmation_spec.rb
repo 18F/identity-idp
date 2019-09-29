@@ -7,7 +7,6 @@ describe SendSignUpEmailConfirmation do
     let(:request_id) { '1234-abcd' }
     let(:instructions) { 'do the things' }
     let(:confirmation_token) { 'confirm-me' }
-    let(:old_token) { 'old-token' }
 
     before do
       allow(Devise).to receive(:friendly_token).once.and_return(confirmation_token)
