@@ -21,10 +21,10 @@
   </h2>
 <% end %>
 
-<% if FeatureManagement.doc_auth_enabled? %>
-  <%= render 'shared/failure_url', presenter: presenter %>
-<% else %>
+<% if FeatureManagement.doc_auth_exclusive? %>
   <hr>
+<% else %>
+  <%= render 'shared/failure_url', presenter: presenter %>
 <% end %>
 
 <% presenter.next_steps.each do |step| %>
