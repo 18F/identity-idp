@@ -7,6 +7,7 @@ describe SendSignUpEmailConfirmation do
     let(:request_id) { '1234-abcd' }
     let(:instructions) { 'do the things' }
     let(:confirmation_token) { 'confirm-me' }
+    let(:old_token) { 'old-token' }
 
     before do
       allow(Devise).to receive(:friendly_token).once.and_return(confirmation_token)
@@ -72,7 +73,7 @@ describe SendSignUpEmailConfirmation do
 
       it 'does not regenerate a token if the token is not expired' do
         email_address.update!(
-          confirmation_token: user.confirmation_token,
+          confirmation_token: old_token,
           confirmation_sent_at: user.confirmation_sent_at,
         )
         user.reload
@@ -80,12 +81,12 @@ describe SendSignUpEmailConfirmation do
         mail = double
         expect(mail).to receive(:deliver_later)
         expect(UserMailer). to receive(:email_confirmation_instructions).with(
-          user, email_address.email, 'old-token', instance_of(Hash)
+          user, email_address.email, old_token, instance_of(Hash)
         ).and_return(mail)
 
         subject.call
 
-        expect(email_address.reload.confirmation_token).to eq('old-token')
+        expect(email_address.reload.confirmation_token).to eq(old_token)
         expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(5.minutes.ago)
       end
     end
