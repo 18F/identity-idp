@@ -246,4 +246,16 @@ feature 'Sign Up' do
       end
     end
   end
+
+  it 'does not regenerate a confirmation token if the token is not expired' do
+    email = 'test@test.com'
+
+    visit sign_up_email_path
+    submit_form_with_valid_email(email)
+    token = User.find_with_email(email).email_addresses.first.confirmation_token
+
+    visit sign_up_email_path
+    submit_form_with_valid_email(email)
+    expect(token).to eq(User.find_with_email(email).email_addresses.first.confirmation_token)
+  end
 end
