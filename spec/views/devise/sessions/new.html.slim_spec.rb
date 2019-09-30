@@ -86,8 +86,7 @@ describe 'devise/sessions/new.html.slim' do
     end
 
     it 'has sp alert for certain service providers' do
-      sps_with_default_ht = SP_CONFIG.select { |_issuer, attrs| attrs['default_help_text'] }
-      @sp.issuer = sps_with_default_ht.keys.first
+      @sp.friendly_name = ServiceProviderSessionDecorator::DEFAULT_ALERT_SP_NAMES.sample
 
       render
 
