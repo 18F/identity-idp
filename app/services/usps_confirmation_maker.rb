@@ -15,6 +15,7 @@ class UspsConfirmationMaker
       profile: profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
+    update_proofing_cost
   end
 
   private
@@ -41,5 +42,9 @@ class UspsConfirmationMaker
   def generate_otp
     # Crockford encoding is 5 bits per character
     Base32::Crockford.encode(SecureRandom.random_number(2**(5 * 10)), length: 10)
+  end
+
+  def update_proofing_cost
+    Db::ProofingCost::AddUserProofingCost.call(profile.user.id, :gpo_letter)
   end
 end
