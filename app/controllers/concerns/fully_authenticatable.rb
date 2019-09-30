@@ -1,6 +1,7 @@
 module FullyAuthenticatable
   def delete_branded_experience
-    ServiceProviderRequest.from_uuid(request_id).delete
+    #TODO clara re-add
+    # ServiceProviderRequest.from_uuid(request_id).delete
   end
 
   def request_id

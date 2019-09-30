@@ -36,7 +36,8 @@ class ServiceProviderRequestHandler
 
   def delete_sp_request_if_session_has_matching_request_id
     return if sp_request_id.blank?
-    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
+    #TODO clara re-add
+    #ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
   end
 
   # :reek:DuplicateMethodCall
