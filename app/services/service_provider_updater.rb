@@ -1,6 +1,6 @@
 # Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
-  PROTECTED_ATTRIBUTES = %i[
+  SP_PROTECTED_ATTRIBUTES = %i[
     created_at
     id
     native
@@ -38,13 +38,12 @@ class ServiceProviderUpdater
     if sp.is_a?(NullServiceProvider)
       ServiceProvider.create!(cleaned_attributes)
     else
-      sp.attributes = cleaned_attributes
-      sp.save!
+      sp.update(cleaned_attributes)
     end
   end
 
   def cleaned_service_provider(service_provider)
-    service_provider.except(*PROTECTED_ATTRIBUTES)
+    service_provider.except(*SP_PROTECTED_ATTRIBUTES)
   end
 
   def url

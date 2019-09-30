@@ -1,15 +1,13 @@
 - if decorated_session.sp_alert?(request.path)
   .alert.alert-notice.sm-left-align
-    .bold = decorated_session.sp_msg('header')
     p.mb1
       - if current_page?(new_user_session_path)
-        == decorated_session.sp_msg('account_page.body')
+        == sanitize decorated_session.sp_msg('sign_in'),
+                tags: %w[a b br p], attributes: %w[href]
       - elsif current_page?(sign_up_email_path)
-        = decorated_session.sp_msg('create_account_page.body')
+        == sanitize decorated_session.sp_msg('sign_up'),
+                tags: %w[a b br p], attributes: %w[href]
       - else
-        - account_link = link_to decorated_session.sp_msg('create_account_link'),
-          sign_up_email_url(request_id: params[:request_id])
-        = decorated_session.sp_msg('body_html', link: account_link)
-    p.mb0
-      - unless decorated_session.exclude_learn_more?
-        = link_to t('service_providers.learn_more'), decorated_session.sp_alert_learn_more
+        == sanitize decorated_session.sp_msg('forgot_password',
+                                    sp_create_link: decorated_session.sp_create_link),
+                tags: %w[a b br p], attributes: %w[href]

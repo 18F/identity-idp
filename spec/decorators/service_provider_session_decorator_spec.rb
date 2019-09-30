@@ -12,6 +12,8 @@ RSpec.describe ServiceProviderSessionDecorator do
   end
   let(:sp) { build_stubbed(:service_provider) }
   let(:sp_name) { subject.sp_name }
+  let(:sp_create_link) { '/sign_up/enter_email' }
+
   before do
     allow(view_context).to receive(:sign_up_email_path).
       and_return('/sign_up/enter_email')
@@ -54,36 +56,34 @@ RSpec.describe ServiceProviderSessionDecorator do
   end
 
   describe '#sp_msg' do
-    context 'sp_name is included in list of SPs that see the default alert' do
+    context 'sp is flagged to see the default alert' do
       it 'uses the default template' do
-        random_sp_name = ServiceProviderSessionDecorator::DEFAULT_ALERT_SP_NAMES.sample
-        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+        sp_with_default_ht = SP_CONFIG.find { |_issuer, attr| attr['default_help_text'] }.last
+        sp_name = sp_with_default_ht['friendly_name']
+        allow(sp).to receive(:issuer).and_return('test_sp_with_default_help_text')
+        allow(subject).to receive(:sp_name).and_return(sp_name)
 
-        expect(subject.sp_msg('create_account_link')).
-          to eq I18n.t('service_providers.default.create_account_link')
+        expect(subject.sp_msg('sign_in', sp_name: sp_name)).
+          to eq I18n.t('service_providers.help_text.default.sign_in',
+                       sp_name: sp_name,
+                       sp_create_link: sp_create_link)
       end
 
       it 'interpolates the sp_name' do
-        sp_msg = subject.sp_msg('account_page.body')
+        sp_msg = subject.sp_msg('sign_in', sp_name: sp_name)
         expect(sp_msg).to include(sp_name)
-      end
-
-      it 'interpolates the link parameter' do
-        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
       end
     end
 
-    context 'sp_name is included in list of SPs that see the custom alert' do
+    context 'sp has custom alert' do
       it 'uses the custom template' do
-        random_sp_name = ServiceProviderSessionDecorator::CUSTOM_ALERT_SP_NAMES.sample
-        allow(subject).to receive(:sp_name).and_return(random_sp_name)
+        sp_with_custom_ht = SP_CONFIG.find { |_issuer, attr| attr['help_text'].present? }.last
+        sp_name = sp_with_custom_ht['friendly_name']
+        allow(sp).to receive(:issuer).and_return('test_sp_with_custom_help_text')
+        allow(subject).to receive(:sp_name).and_return(sp_name)
 
-        expect(subject.sp_msg('create_account_link')).
-          to eq I18n.t("service_providers.#{subject.sp_alert_name}.create_account_link")
-      end
-
-      it 'interpolates the link parameter' do
-        expect(subject.sp_msg('body_html', link: 'FOO')).to include('FOO')
+        expect(subject.sp_msg('sign_in')).
+          to eq "custom sign in help text for #{sp_name}"
       end
     end
   end
