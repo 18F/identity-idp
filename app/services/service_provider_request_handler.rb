@@ -36,15 +36,14 @@ class ServiceProviderRequestHandler
 
   def delete_sp_request_if_session_has_matching_request_id
     return if sp_request_id.blank?
-    #TODO clara re-add
-    #ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
+    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
   end
 
   # :reek:DuplicateMethodCall
   def attributes
     {
       issuer: protocol.issuer,
-      loa: (protocol.ial == 2 ? 3 : 1),
+      loa: protocol.ial,
       ial: protocol.ial,
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
