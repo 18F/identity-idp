@@ -35,6 +35,8 @@ test:
     name: 'SBA'
   18:
     name: 'NLRB'
+  19:
+    name: 'HHS'
 
 development:
   1:
@@ -73,6 +75,8 @@ development:
     name: 'SBA'
   18:
     name: 'NLRB'
+  19:
+    name: 'HHS'
 
 production:
   1:
@@ -111,3 +115,5 @@ production:
     name: 'SBA'
   18:
     name: 'NLRB'
+  19:
+    name: 'HHS'

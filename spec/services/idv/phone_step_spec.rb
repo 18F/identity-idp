@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::PhoneStep do
+  include IdvHelper
+
   let(:user) { build(:user) }
   let(:idv_session) do
     idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
@@ -97,7 +99,7 @@ describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        idv_session.step_attempts[:phone] = Idv::Attempter.idv_max_attempts - 1
+        idv_session.step_attempts[:phone] = idv_max_attempts - 1
 
         subject.submit(phone: bad_phone)
 
