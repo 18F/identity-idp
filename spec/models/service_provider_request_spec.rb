@@ -5,9 +5,17 @@ describe ServiceProviderRequest do
     context 'when the record exists' do
       it 'returns the record matching the uuid' do
         sp_request = ServiceProviderRequest.create(
-          uuid: '123', issuer: 'foo', url: 'http://bar.com', loa: '1',
+          uuid: '123', issuer: 'foo', url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         )
+        warn sp_request
+        expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
+      end
 
+      it 'both loa and ial values return the same thing' do
+        sp_request = ServiceProviderRequest.create(
+          uuid: '123', issuer: 'foo', url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          )
+        warn sp_request
         expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
       end
     end
