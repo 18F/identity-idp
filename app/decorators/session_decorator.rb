@@ -55,6 +55,8 @@ class SessionDecorator
 
   def sp_alert?(_path); end
 
+  def sp_alert_learn_more; end
+
   private
 
   attr_reader :view_context

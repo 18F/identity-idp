@@ -82,24 +82,6 @@ test:
     assertion_consumer_logout_service_url: ''
     ial: 2
 
-  'test_sp_with_default_help_text':
-    agency_id: 2
-    cert: 'saml_test_sp'
-    friendly_name: 'Test SP with default help text'
-    ial: 2
-    default_help_text: true
-
-  'test_sp_with_custom_help_text':
-    agency_id: 2
-    cert: 'saml_test_sp'
-    friendly_name: 'Test SP with custom help text'
-    ial: 2
-    help_text:
-      en:
-        forgot_password: ""
-        sign_up: ""
-        sign_in: "custom sign in help text for %{sp_name}"
-
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     agency_id: 2
@@ -397,34 +379,6 @@ production:
       - 'https://ttp.dhs.gov/login'
       - 'https://ttp.dhs.gov/login?logout=logout&undefined'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
-    help_text:
-      en:
-        forgot_password: <b>Coming from Trusted Traveler Programs?</b><p>Your old
-                GOES userID and password won't work. Please <a href=%{sp_create_link}>create
-                a login.gov account</a>
-        sign_in: <b>Coming from Trusted Traveler Programs?</b><p>Your old GOES userID
-                and password won’t work. Please create a login.gov account below. <p><a
-                href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">Learn
-                more</a>
-        sign_up: ''
-      es:
-        forgot_password: <b>¿Ha venido de Trusted Traveler Programs?</b><p>Su antiguo
-                ID de usuario y contraseña de GOES no funcionarán. Favor de. <a href=%{sp_create_link}>crear
-                un nueva cuenta de login.gov.</a>
-        sign_in: <b>¿Ha venido de Trusted Traveler Programs?</b><p>Su antiguo ID de
-                usuario y contraseña de GOES no funcionarán. Favor de crear un nueva cuenta
-                de login.gov. <p><a href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">Obtenga
-                más información.</a>
-        sign_up: ''
-      fr:
-        forgot_password: <b>Êtes-vous venu(e) de Trusted Traveler Programs?</b><p>Votre
-                ancien nom d'utilisateur et mot de passe GOES ne marchera pas. Veuillez
-                <a href=%{sp_create_link}>créer un nouveau compte login.gov.</a>
-        sign_in: <b>Êtes-vous venu(e) de Trusted Traveler Programs?</b><p>Votre ancien
-                nom d'utilisateur et mot de passe GOES ne marchera pas. Veuillez créer un
-                nouveau compte login.gov. <p><a href="https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/">En
-                savoir plus.</a>
-        sign_up: ''
 
   # CBP ROAM (formerly OARS)
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
@@ -460,7 +414,6 @@ production:
       - 'https://login.test.usajobs.gov/externalloggedout'
     return_to_sp_url: 'https://www.test.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
-    default_help_text: true
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
     agency_id: 2
@@ -907,8 +860,6 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
-    piv_cac: true
-    default_help_text: true
 
   # Pre-mod SAM – System for Award Management
   'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:pmsam':
@@ -950,7 +901,6 @@ production:
       - 'https://rule19d1.sec.gov/auth/login-gov/callback/loa-1'
       - 'https://rule19d1.sec.gov/auth/login-gov/logout'
     restrict_to_deploy_env: 'prod'
-    default_help_text: true
 
   # Foreign Labor Application Gateway
   'urn:gov:gsa:openidconnect.profiles:sp:sso:doloflc:flagapp':
@@ -1000,49 +950,7 @@ production:
       - email
     ial: 1
     restrict_to_deploy_env: 'prod'
-    help_text:
-      en:
-        forgot_password: If you do not have a Login.gov account, you must create one
-                         to access the National Registry. To do so, select "Create an account" and
-                         use the same email address that is your primary email address for your National
-                         Registry account. <p><a href="https://login.gov/help/">Learn more</a>
-        sign_in: <b>First time here from FMCSA National Registry?</b><p>If you do
-                 not have a Login.gov account, you must create one to access the National
-                 Registry. To do so, select "Create an account" and use the same email address
-                 that is your primary email address for your National Registry account. <p><a
-                 href="https://login.gov/help/">Learn more</a>
-        sign_up: Reminder - please use the same email address as your primary email address
-                 for your National Registry account when creating your Login.gov account.
-                 <p><a href="https://login.gov/help/">Learn more</a>
-      es:
-        forgot_password: Si no tiene una cuenta Login.gov, debe crear una para acceder al
-                         Registro Nacional. Para ello, seleccione "Crear una cuenta" y use su
-                         dirección de correo electrónico principal para la cuenta del Registro
-                         Nacional. <p><a href="https://login.gov/es/help/">Más información.</a>
-        sign_in: <b>Es su primera vez aquí en el Registro Nacional FMCSA?</b>
-                 <p>Si no tiene una cuenta Login.gov, debe crear una para acceder
-                 al Registro Nacional. Para ello, seleccione "Crear una cuenta" y use
-                 su dirección de correo electrónico principal para la cuenta del
-                 Registro Nacional. <p><a href="https://login.gov/es/help/">Más información.</a>
-        sign_up: Recordatorio - use la misma dirección de correo electrónico como
-                 su dirección de correo electrónico principal de su cuenta del
-                 Registro Nacional al crear su cuenta Login.gov. Más información.
-                 <p><a href="https://login.gov/es/help/">Más información.</a>
-      fr:
-        forgot_password: Si vous n'avez pas de compte Login.gov, vous devez en créer un pour
-                         accéder au Registre national. Pour ce faire, sélectionnez "Créer un
-                         compte" et utilisez pour votre compte du Registre national la même
-                         adresse e-mail que celle qui est votre adresse e-mail principale.
-                         <p><a href="https://login.gov/fr/help/">En savoir plus</a>
-        sign_in: <b>C'est la première fois que vous vous retrouvez ici depuis le registre
-                 national de la FMCSA ?</b><p>Si vous n'avez pas de compte Login.gov, vous
-                 devez en créer un pour accéder au Registre national. Pour ce faire,
-                 sélectionnez "Créer un compte" et utilisez pour votre compte du Registre
-                 national la même adresse e-mail que celle qui est votre adresse e-mail
-                 principale. <p><a href="https://login.gov/fr/help/">En savoir plus</a>
-        sign_up: Rappel - veuillez s'il vous plaît utiliser la même adresse e-mail que l'adresse
-                 e-mail principale de votre compte du Registre national lors de la création de votre
-                 compte Login.gov.<p><a href="https://login.gov/fr/help/">En savoir plus</a>
+
   # DOT – LMS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:lms':
     agency_id: 6
@@ -1384,55 +1292,6 @@ production:
     attribute_bundle:
       - 'email'
     restrict_to_deploy_env: 'prod'
-    help_text:
-      en:
-        forgot_password: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
-                         FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-                         access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
-        sign_in: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
-                 FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-                 access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
-        sign_up: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
-                 FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-                 access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
-      es:
-        forgot_password: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El personal
-                         operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a Clearinghouse.
-                         Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
-        sign_in: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El personal
-                 operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a Clearinghouse.
-                 Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
-        sign_up: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El
-                 personal operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a
-                 Clearinghouse. Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
-      fr:
-        forgot_password: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des
-                         permis de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation
-                         de la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
-                         d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
-                         public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                         de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous
-                         sur la page d'ouverture de session des utilisateurs gouvernementaux.</a>
-        sign_in: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des permis
-                 de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation de
-                 la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
-                 d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
-                 public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous sur
-                 la page d'ouverture de session des utilisateurs gouvernementaux.</a>
-        sign_up: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des permis
-                 de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation
-                 de la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
-                 d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
-                 public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous sur
-                 la page d'ouverture de session des utilisateurs gouvernementaux.</a>
 
   # HHS - OIG Utils
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:hhs:oigutils':
@@ -1459,4 +1318,3 @@ production:
       - zipcode
       - phone
     restrict_to_deploy_env: 'prod'
-    

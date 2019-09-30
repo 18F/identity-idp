@@ -1,8 +1,29 @@
 class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
 
   DEFAULT_LOGO = 'generic.svg'.freeze
+  CUSTOM_ALERT_SP_NAMES = ['CBP Trusted Traveler Programs',
+                           'FMCSA National Registry',
+                           'The FMCSA Drug & Alcohol Clearinghouse'].freeze
+  DEFAULT_ALERT_SP_NAMES = ['USAJOBS', 'SAM', 'HOMES.mil', 'HOMES.mil - test', 'Rule 19d-1'].freeze
+
+  # These are SPs that are migrating users and require special help messages
+  CUSTOM_SP_ALERTS = {
+    'CBP Trusted Traveler Programs' => {
+      i18n_name: 'trusted_traveler',
+      learn_more: 'https://www.login.gov/help/trusted-traveler-programs/cant-sign-in-or-reset-my-password-goes-account/',
+      exclude_paths: ['/sign_up/enter_email'],
+    },
+    'FMCSA National Registry' => {
+      i18n_name: 'fmcsa_natl_registry',
+      learn_more: 'https://login.gov/help/',
+      exclude_paths: ['/es', '/fr'],
+    },
+    'The FMCSA Drug & Alcohol Clearinghouse' => {
+      i18n_name: 'fmcsa_drug_alcohol_clearinghouse',
+      exclude_paths: ['/es', '/fr'],
+    },
+  }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
@@ -13,25 +34,17 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   delegate :redirect_uris, to: :sp, prefix: true
 
+  # :reek:DuplicateMethodCall
+  # rubocop:disable Style/StringLiterals, Metrics/LineLength, Rails/OutputSafety
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    if custom_alert?(section)
-      generate_custom_alert(section, args)
-    else
-      t("service_providers.help_text.default.#{section}", args)
-    end
-  end
+    return t("service_providers.#{sp_alert_name}.#{section}", args).html_safe if sp.friendly_name == "The FMCSA Drug & Alcohol Clearinghouse" && custom_alert?
+    return t("service_providers.#{sp_alert_name}.#{section}", args) if custom_alert?
 
-  def generate_custom_alert(section, args)
-    language = I18n.locale.to_s
-
-    if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text.dig(section, language) % args
-    else
-      SP_CONFIG.dig(sp.issuer, 'help_text', language, section) % args
-    end
+    t("service_providers.default.#{section}", args)
   end
+  # rubocop:enable Style/StringLiterals, Metrics/LineLength, Rails/OutputSafety
 
   def sp_logo
     sp.logo || DEFAULT_LOGO
@@ -83,7 +96,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_create_link
-    view_context.sign_up_email_path(request_id: sp_session[:request_id])
+    view_context.link_to t('service_providers.default.account_page.create_link'),
+                         view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
 
   def sp_name
@@ -114,21 +128,17 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.failure_to_proof_url || sp_return_url
   end
 
-  # rubocop:disable Metrics/AbcSize
-  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def sp_alert?(path)
-    sign_in_path =
-      I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
-    sign_up_path =
-      I18n.locale == :en ? sign_up_email_path : sign_up_email_path(locale: I18n.locale)
-    new_user_password_path =
-      I18n.locale == :en ? new_user_password_path : new_user_password_path(locale: I18n.locale)
-    path_to_section_map = { sign_in_path => 'sign_in',
-                            sign_up_path => 'sign_up',
-                            new_user_password_path => 'forgot_password' }
-    custom_alert?(path_to_section_map[path]) || default_alert?
+    custom_alert? ? alert_not_excluded_for_path?(path) : default_alert?
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def sp_alert_name
+    CUSTOM_SP_ALERTS.dig(sp_name, :i18n_name)
+  end
+
+  def sp_alert_learn_more
+    custom_alert? ? CUSTOM_SP_ALERTS.dig(sp_name, :learn_more) : 'https://login.gov/help/'
+  end
 
   # :reek:DuplicateMethodCall
   def mfa_expiration_interval
@@ -137,6 +147,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
     aal_1_expiration
+  end
+
+  def exclude_learn_more?
+    sp.friendly_name == 'The FMCSA Drug & Alcohol Clearinghouse'
   end
 
   private
@@ -151,17 +165,16 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.ial || 1
   end
 
-  def custom_alert?(section)
-    language = I18n.locale.to_s
-    if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section].dig(language).present?
-    else
-      SP_CONFIG.dig(sp.issuer, 'help_text', language, section).present?
-    end
+  def custom_alert?
+    CUSTOM_ALERT_SP_NAMES.include?(sp_name)
   end
 
   def default_alert?
-    SP_CONFIG.dig(sp.issuer, 'default_help_text')
+    DEFAULT_ALERT_SP_NAMES.include?(sp_name)
+  end
+
+  def alert_not_excluded_for_path?(path)
+    !CUSTOM_SP_ALERTS[sp_name][:exclude_paths]&.include?(path)
   end
 
   def request_url
