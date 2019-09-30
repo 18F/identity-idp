@@ -35,6 +35,7 @@ module OpenidConnect
     def handle_successful_handoff
       analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
+      SpRedirectBounce::AddRedirectTimeToSession.call(sp_session)
       redirect_to @authorize_form.success_redirect_uri
       delete_branded_experience
     end
