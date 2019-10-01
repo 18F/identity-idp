@@ -7,7 +7,6 @@ module OpenidConnect
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
-    before_action :check_sp_redirect_bounced, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
@@ -29,6 +28,7 @@ module OpenidConnect
       return unless SpRedirectBounce::IsBounced.call(sp_session)
       analytics.track_event(Analytics::SP_REDIRECT_BOUNCED)
       redirect_to bounced_url
+      true
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
@@ -101,6 +101,7 @@ module OpenidConnect
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
+      return if check_sp_redirect_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
