@@ -318,6 +318,7 @@ GEM
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
     iniparse (1.4.4)
+    irb (1.0.0)
     jaro_winkler (1.5.3)
     jmespath (1.4.0)
     json (2.2.0)
@@ -714,6 +715,7 @@ DEPENDENCIES
   identity-hostdata!
   identity-telephony!
   identity_validations!
+  irb
   json-jwt
   knapsack
   lexisnexis!
