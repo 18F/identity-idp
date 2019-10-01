@@ -12,7 +12,11 @@ class ServiceProviderRequest < ApplicationRecord
     NullServiceProviderRequest.new
   end
 
-  def self.ial
+  def ial
     self.loa
+  end
+
+  def ial=(val)
+    self.loa = val
   end
 end
