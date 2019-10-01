@@ -1,9 +1,11 @@
 module OpenidConnect
+  # rubocop:disable Metrics/ClassLength
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include RememberDeviceConcern
     include VerifyProfileConcern
 
+    before_action :check_sp_redirect_bounced, only: [:index]
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -22,6 +24,12 @@ module OpenidConnect
     end
 
     private
+
+    def check_sp_redirect_bounced
+      return unless SpRedirectBounce::IsBounced.call(sp_session)
+      analytics.track_event(Analytics::SP_REDIRECT_BOUNCED)
+      redirect_to bounced_url
+    end
 
     def confirm_user_is_authenticated_with_fresh_mfa
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
@@ -117,4 +125,5 @@ module OpenidConnect
         user_session[:decrypted_pii].blank?
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

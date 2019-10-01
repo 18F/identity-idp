@@ -584,4 +584,18 @@ feature 'Sign in' do
       expect(ServiceProviderRequest.count).to eq 0
     end
   end
+
+  context 'a prompt login sp redirects back to auth url immediately after we redirect to them' do
+    it 'logs an SP bounce and displays the bounced error screen' do
+      user = create(:user, :signed_up)
+      visit_idp_from_oidc_sp_with_loa1_prompt_login
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_continue
+
+      visit_idp_from_oidc_sp_with_loa1_prompt_login
+      expect(current_path).to eq(bounced_path)
+    end
+  end
 end

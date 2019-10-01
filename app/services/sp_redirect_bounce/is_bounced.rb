@@ -3,7 +3,9 @@ module SpRedirectBounce
     def self.call(session)
       start_time = session[:sp_redirect_start_time]
       return if start_time.blank?
-      Time.zone.now < Figaro.env.sp_redirect_bounce_max_seconds.to_i.seconds + start_time
+      tz = Time.zone
+      start_time = tz.parse(start_time) if start_time.class == String
+      tz.now <= (start_time + Figaro.env.sp_redirect_bounce_max_seconds.to_i.seconds)
     end
   end
 end

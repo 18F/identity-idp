@@ -19,7 +19,6 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
-      return if sp_redirect_bounced
       @ial = sp_session && sp_session_ial > 1 ? 2 : 1
       super
     end
@@ -60,13 +59,6 @@ module Users
     def bounced; end
 
     private
-
-    def sp_redirect_bounced
-      return unless SpRedirectBounce::IsBounced.call(sp_session)
-      analytics.track_event(Analytics::SP_REDIRECT_BOUNCED)
-      redirect_to bounced_url
-      true
-    end
 
     def redirect_to_signin
       controller_info = 'users/sessions#create'
