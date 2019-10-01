@@ -1,43 +1,16 @@
 ---
 es:
   service_providers:
-    default:
-      account_page:
-        body: Si tiene un perfil de %{sp_name} existente, favor de usar la dirección
-          de correo electrónico primaria o secundaria que usó para %{sp_name} para
-          %{sp_create_link}.
-        create_link: crear su nueva cuenta de login.gov
-      body_html: Si tiene un perfil de %{sp_name} existente, favor de usar la dirección
-        de correo electrónico primaria o secundaria que usó para %{sp_name} para %{link}.
-      create_account_link: crear su nueva cuenta de login.gov
-      create_account_page:
-        body: Por favor crea un login.gov cuenta usando la misma dirección de correo
-          electrónico que utiliza para %{sp_name}.
-      header: "¿Ha venido de %{sp_name}?"
-    fmcsa_drug_alcohol_clearinghouse:
-      account_page:
-        body: ''
-      body_html: ''
-      create_account_link: ''
-      create_account_page:
-        body: ''
-      header: ''
-    fmcsa_natl_registry:
-      account_page:
-        body: ''
-      body_html: ''
-      create_account_link: ''
-      create_account_page:
-        body: ''
-      header: ''
-    learn_more: Obtenga más información.
-    trusted_traveler:
-      account_page:
-        body: Su antiguo ID de usuario y contraseña de GOES no funcionarán. Favor
-          de crear un nueva cuenta de login.gov.
-      body_html: Su antiguo ID de usuario y contraseña de GOES no funcionarán. Favor
-        de %{link}
-      create_account_link: crear un nueva cuenta de login.gov.
-      create_account_page:
-        body: ''
-      header: "¿Ha venido de Trusted Traveler Programs?"
+    help_text:
+      default:
+        forgot_password: Si tiene un perfil de %{sp_name} existente, favor de usar
+          la dirección de correo electrónico primaria o secundaria que usó para %{sp_name}
+          para <a href=%{sp_create_link}>crear su nueva cuenta de login.gov</a>. <p><a
+          href="https://login.gov/help/">Obtenga más información.</a>
+        sign_in: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
+          existente, favor de usar la dirección de correo electrónico primaria o secundaria
+          que usó para %{sp_name} para <a href=%{sp_create_link}>crear un nueva cuenta
+          de login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
+        sign_up: Por favor crea un login.gov cuenta usando la misma dirección de correo
+          electrónico que utiliza para %{sp_name}. <p><a href="https://login.gov/help/">Obtenga
+          más información.</a>
