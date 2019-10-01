@@ -76,6 +76,7 @@ dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 twilio_timeout: '5'
+twilio_verify_override_for_intl_sms: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_sftp_timeout: '5'
 
