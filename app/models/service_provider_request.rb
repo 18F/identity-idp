@@ -13,7 +13,7 @@ class ServiceProviderRequest < ApplicationRecord
   end
 
   def ial
-    self.loa
+    loa
   end
 
   def ial=(val)

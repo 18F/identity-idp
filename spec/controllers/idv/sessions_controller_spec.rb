@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe Idv::SessionsController do
-  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
+  include IdvHelper
+
+  let(:max_attempts) { idv_max_attempts }
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:user_attrs) do
     {
@@ -61,8 +63,7 @@ describe Idv::SessionsController do
 
     context 'max attempts exceeded' do
       it 'redirects to fail' do
-        user.idv_attempts = max_attempts
-        user.idv_attempted_at = Time.zone.now
+        create_maxed_throttle
 
         get :new
 
@@ -147,8 +148,7 @@ describe Idv::SessionsController do
       expect(@analytics).to receive(:track_event).ordered.
         with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
 
-      expect { post :create, params: { profile: user_attrs } }.
-        to change(user, :idv_attempts).by(1)
+      post :create, params: { profile: user_attrs }
 
       expect(response).to redirect_to(idv_session_failure_url(:warning))
       expect(idv_session.profile_confirmation).to be_falsy
@@ -170,8 +170,7 @@ describe Idv::SessionsController do
       expect(@analytics).to receive(:track_event).ordered.
         with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
 
-      expect { post :create, params: { profile: user_attrs } }.
-        to change(user, :idv_attempts).by(1)
+      post :create, params: { profile: user_attrs }
 
       expect(response).to redirect_to(idv_session_success_url)
       expect(idv_session.profile_confirmation).to eq(true)
@@ -179,8 +178,7 @@ describe Idv::SessionsController do
     end
 
     it 'redirects to the fail page when max attempts are exceeded' do
-      user.idv_attempts = max_attempts
-      user.idv_attempted_at = Time.zone.now
+      create_maxed_throttle
 
       post :create, params: { profile: user_attrs }
 
@@ -225,5 +223,14 @@ describe Idv::SessionsController do
 
       delete(:destroy)
     end
+  end
+
+  def create_maxed_throttle(attempted_at = Time.zone.now)
+    Throttle.create(
+      throttle_type: 5,
+      user_id: user.id,
+      attempts: 3,
+      attempted_at: attempted_at,
+    )
   end
 end

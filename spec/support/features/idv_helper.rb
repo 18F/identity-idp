@@ -4,7 +4,11 @@ module IdvHelper
   end
 
   def max_attempts_less_one
-    Idv::Attempter.idv_max_attempts - 1
+    idv_max_attempts - 1
+  end
+
+  def idv_max_attempts
+    Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
   end
 
   def user_password

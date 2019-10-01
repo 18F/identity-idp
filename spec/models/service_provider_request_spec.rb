@@ -5,7 +5,9 @@ describe ServiceProviderRequest do
     context 'when the record exists' do
       it 'returns the record matching the uuid' do
         sp_request = ServiceProviderRequest.create(
-          uuid: '123', issuer: 'foo', url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          uuid: '123',
+          issuer: 'foo',
+          url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         )
         warn sp_request
         expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
@@ -13,8 +15,11 @@ describe ServiceProviderRequest do
 
       it 'both loa1 and ial1 values return the same thing' do
         sp_request = ServiceProviderRequest.create(
-          uuid: '123', issuer: 'foo', url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          )
+          uuid: '123',
+          issuer: 'foo',
+          url: 'http://bar.com',
+          ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        )
 
         expect(sp_request.loa).to eq(sp_request.ial)
         expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
@@ -22,8 +27,11 @@ describe ServiceProviderRequest do
 
       it 'both loa3 and ial2 values return the same thing' do
         sp_request = ServiceProviderRequest.create(
-          uuid: '123', issuer: 'foo', url: 'http://bar.com', ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          )
+          uuid: '123',
+          issuer: 'foo',
+          url: 'http://bar.com',
+          ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        )
 
         expect(sp_request.loa).to eq(sp_request.ial)
         expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request

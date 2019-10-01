@@ -92,25 +92,4 @@ feature 'idv unsuported state selection' do
     visit idv_jurisdiction_path
     expect(page).to have_content t('idv.messages.jurisdiction.where')
   end
-
-  it 'shows the user a link to get back to their account' do
-    sign_in_and_2fa_user
-    visit idv_jurisdiction_url
-
-    select 'Alabama', from: 'jurisdiction_state'
-    page.find('#jurisdiction_ial2_consent_given').click
-    click_idv_continue
-    expect(page).to have_content t('links.back_to_account')
-  end
-
-  it 'shows the SP user a link to get help from the SP' do
-    sp_name = 'Test SP'
-    start_idv_from_sp
-    complete_idv_steps_before_jurisdiction_step
-
-    select 'Alabama', from: 'jurisdiction_state'
-    page.find('#jurisdiction_ial2_consent_given').click
-    click_idv_continue
-    expect(page).to have_content strip_tags(t('idv.failure.help.get_help_html', sp_name: sp_name))
-  end
 end

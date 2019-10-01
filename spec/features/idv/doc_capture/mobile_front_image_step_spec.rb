@@ -33,6 +33,16 @@ shared_examples 'capture mobile front image step' do |simulate|
 
       expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
     end
+
+    it 'resets the session if a link is used again' do
+      attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+
+      visit idv_capture_doc_mobile_front_image_step(token)
+      expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(token))
+    end
   end
 end
 

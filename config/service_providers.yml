@@ -797,8 +797,8 @@ production:
     agency_id: 4
     friendly_name: 'Railroad Retirement Board'
     agency: 'RRB'
-    logo: 'rrb.svg'
-    failure_to_proof_url: 'https://online.rrb.gov/AA1/login/login/FailureProof'
+    logo: 'rrb_myrrb.svg'
+    failure_to_proof_url: 'https://rrb.gov/Benefits/myRRB/AccountSupport'
     return_to_sp_url: 'https://online.rrb.gov/AA1'
     redirect_uris:
       - 'https://online.rrb.gov/AA1/login/login/RRBHome'
@@ -1168,10 +1168,10 @@ production:
     logo: 'rrb_myrrb.svg'
     cert: 'rrb_myrrb_prod'
     ial: 2
-    return_to_sp_url: 'https://rrb.rrb.gov/Benefits/myRRB'
+    return_to_sp_url: 'https://rrb.gov/Benefits/myRRB'
     redirect_uris:
       - 'https://secure.rrb.gov/myRRB/Account/SignInCallback'
-    failure_to_proof_url: 'https://rrb.rrb.gov/Benefits/myRRB/AccountSupport'
+    failure_to_proof_url: 'https://rrb.gov/Benefits/myRRB/AccountSupport'
     attribute_bundle:
       - email
       - first_name
@@ -1291,4 +1291,30 @@ production:
       - 'https://clearinghouse.fmcsa.dot.gov/signin-oidc'
     attribute_bundle:
       - 'email'
+    restrict_to_deploy_env: 'prod'
+
+  # HHS - OIG Utils
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:hhs:oigutils':
+    friendly_name: 'HHS OIG Utils'
+    agency: 'HHS'
+    agency_id: 19
+    logo: 'hhs_oig.png'
+    cert: 'hhs_oigutils_prod'
+    acs_url: 'https://hhsoigutils.service-now.com/navpage.do'
+    assertion_consumer_logout_service_url: 'https://hhsoigutils.service-now.com/external_logout_complete.do'
+    block_encryption: 'aes256-cbc'
+    return_to_sp_url: 'https://hhsoigutils.service-now.com'
+    failure_to_proof_url: 'https://hhsoigutils.service-now.com'
+    ial: 2
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - phone
     restrict_to_deploy_env: 'prod'
