@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
       get '/' => 'users/sessions#new', as: :new_user_session
+      get '/bounced' => 'users/sessions#bounced'
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'

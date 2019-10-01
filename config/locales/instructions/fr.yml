@@ -84,3 +84,4 @@ fr:
       safety_html: "<strong>Protégez-vous en privé.</strong> Ne partagez pas votre
         clé personnelle et ne l'utilisez que lorsque vous n'avez pas accès à vos méthodes
         de connexion habituelles."
+    sp_redirect_bounced: You successfully completed sign in. However, your service provider sent you back here to sign in.  Please contact your service provider.
