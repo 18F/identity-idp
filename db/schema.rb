@@ -194,16 +194,6 @@ ActiveRecord::Schema.define(version: 20190924180727) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "help_texts", force: :cascade do |t|
-    t.bigint "service_provider_id"
-    t.json "sign_in", default: {}
-    t.json "sign_up", default: {}
-    t.json "forgot_password", default: {}
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["service_provider_id"], name: "index_help_texts_on_service_provider_id"
-  end
-
   create_table "identities", force: :cascade do |t|
     t.string "service_provider", limit: 255
     t.datetime "last_authenticated_at"
