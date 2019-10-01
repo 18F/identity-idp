@@ -113,7 +113,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def failure_to_proof_url
     sp.failure_to_proof_url || sp_return_url
   end
-git 
+
   # rubocop:disable Metrics/AbcSize
   #:reek:DuplicateMethodCall :reek:TooManyStatements
   def sp_alert?(path)
