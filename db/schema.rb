@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190924133911) do
+ActiveRecord::Schema.define(version: 20190924180727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,8 @@ ActiveRecord::Schema.define(version: 20190924133911) do
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
@@ -382,6 +384,7 @@ ActiveRecord::Schema.define(version: 20190924133911) do
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
     t.string "push_notification_url"
+    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
