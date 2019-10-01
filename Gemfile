@@ -5,8 +5,6 @@ ruby '~> 2.5.3'
 
 gem 'rails', '~> 5.1.3'
 
-gem 'irb'
-
 gem 'ahoy_matey', '~> 2.0'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
@@ -80,6 +78,7 @@ group :development do
   gem 'derailed'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
+  gem 'irb'
   gem 'octokit'
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
