@@ -27,10 +27,12 @@ describe IdvController do
     end
 
     it 'redirects to failure page if number of attempts has been exceeded' do
+      user = create(:user)
       profile = create(
         :profile,
-        user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now),
+        user: user,
       )
+      Throttle.create(throttle_type: 5, user_id: user.id, attempts: 3, attempted_at: Time.zone.now)
 
       stub_sign_in(profile.user)
 
@@ -72,19 +74,6 @@ describe IdvController do
         expect(response).to render_template(:activated)
         expect(subject.idv_session.alive?).to eq false
       end
-
-      it 'resets IdV attempts' do
-        profile = create(:profile, :active, :verified)
-
-        stub_sign_in(profile.user)
-
-        attempter = instance_double(Idv::Attempter, reset: false)
-        allow(Idv::Attempter).to receive(:new).with(profile.user).and_return(attempter)
-
-        expect(attempter).to receive(:reset)
-
-        get :activated
-      end
     end
 
     context 'user does not have an active profile' do
@@ -123,9 +112,16 @@ describe IdvController do
 
     context 'user does not have an active profile and has exceeded IdV attempts' do
       it 'allows direct access' do
+        user = create(:user)
         profile = create(
           :profile,
-          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now),
+          user: user,
+        )
+        Throttle.create(
+          throttle_type: 5,
+          user_id: user.id,
+          attempts: 3,
+          attempted_at: Time.zone.now,
         )
 
         stub_sign_in(profile.user)
