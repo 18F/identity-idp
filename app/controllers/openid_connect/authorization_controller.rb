@@ -5,9 +5,9 @@ module OpenidConnect
     include RememberDeviceConcern
     include VerifyProfileConcern
 
-    before_action :check_sp_redirect_bounced, only: [:index]
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
+    before_action :check_sp_redirect_bounced, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
