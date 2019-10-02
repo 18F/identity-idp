@@ -191,6 +191,8 @@ development:
   telephony_adapter: test
   telephony_disabled: 'true'
   twilio_auth_token: token1
+  twilio_http_basic_auth_password: 123abc
+  twilio_http_basic_auth_username: 123abc
   twilio_messaging_service_sid: 123abc
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_record_voice: 'true'
@@ -291,6 +293,8 @@ production:
   telephony_adapter: twilio
   telephony_disabled:
   twilio_auth_token:
+  twilio_http_basic_auth_password:
+  twilio_http_basic_auth_username:
   twilio_messaging_service_sid:
   twilio_numbers:
   twilio_record_voice: 'false'
@@ -390,6 +394,8 @@ test:
   telephony_adapter: test
   telephony_disabled:
   twilio_auth_token: token1
+  twilio_http_basic_auth_password: 123abc
+  twilio_http_basic_auth_username: 123abc
   twilio_messaging_service_sid: 123abc
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_record_voice: 'true'
