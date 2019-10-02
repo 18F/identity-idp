@@ -56,7 +56,13 @@ module Users
       redirect_to root_url(request_id: request_id)
     end
 
-    def bounced; end
+    def bounced
+      issuer = sp_session[:issuer]
+      return if issuer.blank?
+      service_provider = ServiceProvider.from_issuer(issuer)
+      @sp_name = service_provider.friendly_name
+      @sp_link = service_provider.return_to_sp_url
+    end
 
     private
 

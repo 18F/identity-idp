@@ -77,5 +77,5 @@ es:
       safety_html: "<strong>Manténgalo privado y seguro.</strong> No comparta su clave
         personal, y solo úsela cuando no tenga acceso a sus métodos normales de inicio
         de sesión."
-    sp_redirect_bounced: You successfully completed sign in. However, your service
-      provider sent you back here to sign in.  Please contact your service provider.
+    sp_redirect_bounced: Your sign in was successful, but %{application} sent you
+      back to login.gov. Please contact %{link} for help.
