@@ -75,5 +75,7 @@ en:
         use your personal key for any reason, you'll be issued a new key."
       safety_html: "<strong>Keep it private and safe.</strong> Don't share your personal
         key, and only use it when you do not have access to your normal sign-in methods."
-    sp_redirect_bounced: Your sign in was successful, but %{application} sent you
-      back to login.gov. Please contact %{link} for help.
+    sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you
+      back to login.gov. Please contact %{sp_link} for help.
+    sp_handoff_bounced_with_no_sp: your service provider
+

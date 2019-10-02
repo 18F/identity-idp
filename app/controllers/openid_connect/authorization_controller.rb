@@ -24,9 +24,9 @@ module OpenidConnect
 
     private
 
-    def check_sp_redirect_bounced
-      return unless SpRedirectBounce::IsBounced.call(sp_session)
-      analytics.track_event(Analytics::SP_REDIRECT_BOUNCED)
+    def check_sp_handoff_bounced
+      return unless SpHandoffBounce::IsBounced.call(sp_session)
+      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED)
       redirect_to bounced_url
       true
     end
@@ -43,7 +43,7 @@ module OpenidConnect
     def handle_successful_handoff
       analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
-      SpRedirectBounce::AddRedirectTimeToSession.call(sp_session)
+      SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
       redirect_to @authorize_form.success_redirect_uri
       delete_branded_experience
     end
@@ -101,7 +101,7 @@ module OpenidConnect
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
-      return if check_sp_redirect_bounced
+      return if check_sp_handoff_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 

@@ -83,7 +83,7 @@ google_analytics_timeout: '5'
 
 allow_piv_cac_by_email_only: 'true'
 
-sp_redirect_bounce_max_seconds: '2'
+sp_handoff_bounce_max_seconds: '2'
 
 development:
   aamva_cert_enabled: 'true'
