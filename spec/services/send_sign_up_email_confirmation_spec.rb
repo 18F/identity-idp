@@ -69,25 +69,6 @@ describe SendSignUpEmailConfirmation do
         expect(email_address.reload.confirmation_token).to eq(confirmation_token)
         expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
       end
-
-      it 'does not regenerate a token if the token is not expired' do
-        email_address.update!(
-          confirmation_token: user.confirmation_token,
-          confirmation_sent_at: user.confirmation_sent_at,
-        )
-        user.reload
-
-        mail = double
-        expect(mail).to receive(:deliver_later)
-        expect(UserMailer). to receive(:email_confirmation_instructions).with(
-          user, email_address.email, 'old-token', instance_of(Hash)
-        ).and_return(mail)
-
-        subject.call
-
-        expect(email_address.reload.confirmation_token).to eq('old-token')
-        expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(5.minutes.ago)
-      end
     end
   end
 end
