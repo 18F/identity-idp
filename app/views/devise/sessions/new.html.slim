@@ -1,9 +1,6 @@
 - title t('titles.visitors.index')
 - request_id = params[:request_id] || sp_session[:request_id]
 
-- if @bounced
-  h1.h3.my0 = 'bounced'
-
 - if decorated_session.sp_name
   .center
     = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
