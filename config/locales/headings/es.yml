@@ -60,7 +60,7 @@ es:
     session_timeout_warning: "¿Necesita más tiempo?"
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
-    sp_handoff_bounced: Your sign in did not work
+    sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
     totp_setup:
       new: Permita una app de autenticación
     verify_email: Revise su email
