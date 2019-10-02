@@ -84,6 +84,7 @@ module Flow
     end
 
     def redirect_to_step(step)
+      flow_finish and return unless next_step
       redirect_to send(@step_url, step: step)
     end
 
