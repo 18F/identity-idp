@@ -26,7 +26,7 @@ module OpenidConnect
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
-      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED)
+      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
       redirect_to bounced_url
       true
     end
