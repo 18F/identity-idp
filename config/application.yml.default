@@ -84,6 +84,8 @@ google_analytics_timeout: '5'
 
 allow_piv_cac_by_email_only: 'true'
 
+sp_handoff_bounce_max_seconds: '2'
+
 development:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'

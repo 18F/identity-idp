@@ -85,3 +85,6 @@ fr:
       safety_html: "<strong>Protégez-vous en privé.</strong> Ne partagez pas votre
         clé personnelle et ne l'utilisez que lorsque vous n'avez pas accès à vos méthodes
         de connexion habituelles."
+    sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
+      login.gov. Veuillez contacter %{sp_link} pour obtenir de l'aide.
+    sp_handoff_bounced_with_no_sp: votre fournisseur de service

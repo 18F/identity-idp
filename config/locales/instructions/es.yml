@@ -77,3 +77,6 @@ es:
       safety_html: "<strong>Manténgalo privado y seguro.</strong> No comparta su clave
         personal, y solo úsela cuando no tenga acceso a sus métodos normales de inicio
         de sesión."
+    sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió
+      de regreso a login.gov. Póngase en contacto con %{sp_link} para obtener ayuda.
+    sp_handoff_bounced_with_no_sp: su proveedor de servicios
