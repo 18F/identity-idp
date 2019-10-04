@@ -1,60 +1,15 @@
 ---
 en:
   service_providers:
-    default:
-      account_page:
-        body: Your old %{sp_name} username and password won’t work. Please %{sp_create_link}
-          using the same email address you use for %{sp_name}.
-        create_link: create a login.gov account
-      body_html: Your old %{sp_name} username and password won’t work. Please %{link}
-        using the same email address you use for %{sp_name}.
-      create_account_link: create a login.gov account
-      create_account_page:
-        body: Please create a login.gov account using the same email address you use
-          for %{sp_name}
-      header: First time here from %{sp_name}?
-    fmcsa_drug_alcohol_clearinghouse:
-      account_page:
-        body: |-
-          FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-          access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-          <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
-      body_html: |-
-        FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-        access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-        <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
-      create_account_link: ''
-      create_account_page:
-        body: |-
-          FMCSA enforcement and SDLA staff do not need to create a login.gov account to
-          access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-          <p><a href="https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)">Visit the Government User login</a>
-      header: Are you FMCSA or State Driver Licensing Agency personnel?
-    fmcsa_natl_registry:
-      account_page:
-        body: |-
-          If you do not have a Login.gov account, you must create one to access the
-          National Registry. To do so, select "Create an account" and use the same
-          email address that is your primary email address for your National Registry
-          account.
-      body_html: |-
-        If you do not have a Login.gov account, you must create one to access the
-        National Registry. To do so, select "Create an account" and use the same
-        email address that is your primary email address for your National Registry
-        account.
-      create_account_link: create a login.gov account
-      create_account_page:
-        body: |-
-          Reminder: please use the same email address as your primary email address
-          for your National Registry account when creating your Login.gov account.
-      header: First time here from FMCSA National Registry?
-    learn_more: Learn more.
-    trusted_traveler:
-      account_page:
-        body: Your old GOES userID and password won’t work. Please create a login.gov
-          account below.
-      body_html: Your old GOES userID and password won't work. Please %{link}
-      create_account_link: create a login.gov account.
-      create_account_page:
-        body: ''
-      header: Coming from Trusted Traveler Programs?
+    help_text:
+      default:
+        forgot_password: Your old %{sp_name} username and password won’t work. Please
+          <a href=%{sp_create_link}>create a login.gov account</a> using the same
+          email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
+          more</a>
+        sign_in: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
+          and password won’t work. Please <a href=%{sp_create_link}>create a login.gov
+          account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
+          more</a>
+        sign_up: Please create a login.gov account using the same email address you
+          use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>

@@ -31,7 +31,9 @@ describe 'OpenID Connect' do
 
     it 'succeeds in forcing login with prompt login and prior session' do
       user = oidc_end_client_secret_jwt(prompt: 'login')
-      oidc_end_client_secret_jwt(prompt: 'login', user: user)
+      Timecop.travel((Figaro.env.sp_handoff_bounce_max_seconds.to_i + 1).seconds.from_now) do
+        oidc_end_client_secret_jwt(prompt: 'login', user: user)
+      end
     end
 
     it 'succeeds with prompt select_account no prior session and bad Referer' do
