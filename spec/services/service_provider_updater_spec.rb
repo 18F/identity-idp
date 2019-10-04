@@ -8,53 +8,64 @@ describe ServiceProviderUpdater do
   let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
   let(:openid_connect_issuer) { 'sp:test:foo:bar' }
   let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app://result] }
-  let(:dashboard_service_providers) do
-    [
-      {
-        id: 'big number',
-        created_at: '2010-01-01 00:00:00'.to_datetime,
-        updated_at: '2010-01-01 00:00:00'.to_datetime,
-        issuer: dashboard_sp_issuer,
-        agency: 'a service provider',
-        friendly_name: 'a friendly service provider',
-        description: 'user friendly login.gov dashboard',
-        acs_url: 'http://sp.example.org/saml/login',
-        assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
-        block_encryption: 'aes256-cbc',
-        cert: saml_test_sp_cert,
-        active: true,
-        native: true,
-        approved: true,
-      },
-      {
-        id: 'small number',
-        updated_at: '2010-01-01 00:00:00',
-        issuer: inactive_dashboard_sp_issuer,
-        agency: 'an old service provider',
-        friendly_name: 'an old, stale service provider',
-        description: 'forget about me',
-        acs_url: 'http://oldsp.example.org/saml/login',
-        assertion_consumer_logout_service_url: 'http://oldsp.example.org/saml/logout',
-        block_encryption: 'aes256-cbc',
-        cert: saml_test_sp_cert,
-        active: false,
-      },
-      {
-        issuer: 'http://localhost:3000',
-        friendly_name: 'trying to override a test SP',
-        agency: 'trying to override a test SP',
-        acs_url: 'http://nasty-override.example.org/saml/login',
-        active: true,
-      },
-      {
-        issuer: openid_connect_issuer,
-        friendly_name: 'a service provider',
-        agency: 'a service provider',
-        redirect_uris: openid_connect_redirect_uris,
-        active: true,
-      },
-    ]
+
+  # rubocop:disable Style/TrailingCommaInHashLiteral
+  let(:friendly_sp) do
+    {
+      id: 'big number',
+      created_at: '2010-01-01 00:00:00'.to_datetime,
+      updated_at: '2010-01-01 00:00:00'.to_datetime,
+      issuer: dashboard_sp_issuer,
+      agency: 'a service provider',
+      friendly_name: 'a friendly service provider',
+      description: 'user friendly login.gov dashboard',
+      acs_url: 'http://sp.example.org/saml/login',
+      assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
+      block_encryption: 'aes256-cbc',
+      cert: saml_test_sp_cert,
+      active: true,
+      native: true,
+      approved: true,
+      help_text: { 'sign_in': { en: '<b>A new different sign-in help text</b>' },
+                   'sign_up': { en: '<b>A new different help text</b>' },
+                   'forgot_password': { en: '<b>A new different forgot password help text</b>' }, }
+    }
   end
+  # rubocop:enable Style/TrailingCommaInHashLiteral
+  let(:old_sp) do
+    {
+      id: 'small number',
+      updated_at: '2010-01-01 00:00:00',
+      issuer: inactive_dashboard_sp_issuer,
+      agency: 'an old service provider',
+      friendly_name: 'an old, stale service provider',
+      description: 'forget about me',
+      acs_url: 'http://oldsp.example.org/saml/login',
+      assertion_consumer_logout_service_url: 'http://oldsp.example.org/saml/logout',
+      block_encryption: 'aes256-cbc',
+      cert: saml_test_sp_cert,
+      active: false,
+    }
+  end
+  let(:nasty_sp) do
+    {
+      issuer: 'http://localhost:3000',
+      friendly_name: 'trying to override a test SP',
+      agency: 'trying to override a test SP',
+      acs_url: 'http://nasty-override.example.org/saml/login',
+      active: true,
+    }
+  end
+  let(:openid_connect_sp) do
+    {
+      issuer: openid_connect_issuer,
+      friendly_name: 'a service provider',
+      agency: 'a service provider',
+      redirect_uris: openid_connect_redirect_uris,
+      active: true,
+    }
+  end
+  let(:dashboard_service_providers) { [friendly_sp, old_sp, nasty_sp, openid_connect_sp] }
 
   describe '#run' do
     before do
@@ -79,14 +90,20 @@ describe ServiceProviderUpdater do
 
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
-        expect(sp.agency).to eq dashboard_service_providers.first[:agency]
+        expect(sp.agency).to eq friendly_sp[:agency]
         expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
         expect(sp.id).to_not eq 0
-        expect(sp.updated_at).to_not eq dashboard_service_providers.first[:updated_at]
-        expect(sp.created_at).to_not eq dashboard_service_providers.first[:created_at]
+        expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
+        expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
+          stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
+          stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
+          stringify_keys
       end
 
       it 'updates existing dashboard-provided Service Providers' do
@@ -97,14 +114,20 @@ describe ServiceProviderUpdater do
 
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
-        expect(sp.agency).to eq dashboard_service_providers.first[:agency]
+        expect(sp.agency).to eq friendly_sp[:agency]
         expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
         expect(sp.id).to eq old_id
-        expect(sp.updated_at).to_not eq dashboard_service_providers.first[:updated_at]
-        expect(sp.created_at).to_not eq dashboard_service_providers.first[:created_at]
+        expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
+        expect(sp.created_at).to_not eq friendly_sp[:created_at]
         expect(sp.native).to eq false
         expect(sp.approved).to eq true
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
+          stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
+          stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
+          stringify_keys
       end
 
       it 'removes inactive Service Providers' do
@@ -150,7 +173,7 @@ describe ServiceProviderUpdater do
       end
     end
 
-    context 'a non-native servce provider is invalid' do
+    context 'a non-native service provider is invalid' do
       let(:dashboard_service_providers) do
         [
           {
