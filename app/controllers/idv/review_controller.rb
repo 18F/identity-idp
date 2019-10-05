@@ -1,13 +1,13 @@
 module Idv
   class ReviewController < ApplicationController
-    before_action :personal_key_confirmed
-
     include IdvStepConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
+
+    before_action :personal_key_confirmed
 
     def confirm_idv_steps_complete
       return redirect_to(idv_session_url) unless idv_profile_complete?
