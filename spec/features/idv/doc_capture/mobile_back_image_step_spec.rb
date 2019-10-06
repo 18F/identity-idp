@@ -7,7 +7,7 @@ shared_examples 'doc capture mobile back image step' do |simulate|
     include DocCaptureHelper
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate ? 'true' : 'false')
+      enable_acuant_simulator(simulate)
       enable_doc_auth
       complete_doc_capture_steps_before_mobile_back_image_step
       mock_assure_id_ok

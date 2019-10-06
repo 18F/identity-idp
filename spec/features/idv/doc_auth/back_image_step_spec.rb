@@ -8,7 +8,7 @@ shared_examples 'back image step' do |simulate|
     let(:user) { user_with_2fa }
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate ? 'true' : 'false')
+      enable_acuant_simulator(simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_back_image_step(user)
       mock_assure_id_ok

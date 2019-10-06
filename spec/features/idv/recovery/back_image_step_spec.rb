@@ -13,7 +13,7 @@ shared_examples 'recovery back image step' do |simulate|
 
     before do |example|
       select_user = example.metadata[:no_phone] ? user_no_phone : user
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate ? 'true' : 'false')
+      enable_acuant_simulator(simulate)
       sign_in_before_2fa(user)
       enable_doc_auth
       complete_recovery_steps_before_back_image_step(select_user)
