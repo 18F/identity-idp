@@ -3,6 +3,12 @@ require 'rails_helper'
 feature 'idv review step' do
   include IdvStepHelper
 
+  it 'routes to root if not signed in' do
+    visit idv_review_path
+
+    expect(current_path).to eq(root_path)
+  end
+
   it 'requires the user to enter the correct password to redirect to confirmation step' do
     start_idv_from_sp
     complete_idv_steps_before_review_step
