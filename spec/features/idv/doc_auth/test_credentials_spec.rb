@@ -6,7 +6,7 @@ shared_examples 'test credentials' do |simulate|
     include DocAuthHelper
 
     before do
-      setup_acuant_simulator(enabed: simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
     end
 

@@ -7,7 +7,7 @@ shared_examples 'doc capture mobile back image step' do |simulate|
     include DocCaptureHelper
 
     before do
-      setup_acuant_simulator(enabed: simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       complete_doc_capture_steps_before_mobile_back_image_step
       mock_assure_id_ok
