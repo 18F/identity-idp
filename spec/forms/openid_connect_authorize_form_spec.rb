@@ -18,7 +18,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
   let(:acr_values) do
     [
-      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     ].join(' ')
   end
 
@@ -106,8 +106,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with no authorized acr_values' do
-      let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:client_id) { 'urn:gov:gsa:openidconnect:test:ial1' }
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
@@ -244,31 +244,31 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#loa3_requested?' do
-    subject(:loa3_requested?) { form.loa3_requested? }
-    context 'with loa1' do
-      let(:acr_values) { Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF }
-      it { expect(loa3_requested?).to eq(false) }
+  describe '#ial2_requested?' do
+    subject(:ial2_requested?) { form.ial2_requested? }
+    context 'with ial1' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      it { expect(ial2_requested?).to eq(false) }
     end
 
-    context 'with loa3' do
-      let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-      it { expect(loa3_requested?).to eq(true) }
+    context 'with ial2' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      it { expect(ial2_requested?).to eq(true) }
     end
 
-    context 'with loa1 and loa3' do
+    context 'with ial1 and ial2' do
       let(:acr_values) do
         [
-          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
       end
-      it { expect(loa3_requested?).to eq(true) }
+      it { expect(ial2_requested?).to eq(true) }
     end
 
-    context 'with a malformed loa' do
+    context 'with a malformed ial' do
       let(:acr_values) { 'foobarbaz' }
-      it { expect(loa3_requested?).to eq(false) }
+      it { expect(ial2_requested?).to eq(false) }
     end
   end
 

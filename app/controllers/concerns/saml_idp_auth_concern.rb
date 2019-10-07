@@ -40,7 +40,7 @@ module SamlIdpAuthConcern
   end
 
   def default_authn_context
-    Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
   end
 
   def link_identity_from_session_data
@@ -48,15 +48,15 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    loa3_requested? && current_user.decorate.identity_not_verified?
+    ial2_requested? && current_user.decorate.identity_not_verified?
   end
 
   def ial_level
-    loa3_requested? ? 3 : 1
+    ial2_requested? ? 2 : 1
   end
 
-  def loa3_requested?
-    requested_authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+  def ial2_requested?
+    requested_authn_context == Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def active_identity

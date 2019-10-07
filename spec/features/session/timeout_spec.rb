@@ -4,7 +4,7 @@ feature 'Session Timeout' do
   context 'when SP info no longer in session but request_id params exists' do
     it 'preserves the branded experience' do
       issuer = 'http://localhost:3000'
-      sp_request = ServiceProviderRequest.create(issuer: issuer, url: 'foo', uuid: '123', loa: '1')
+      sp_request = ServiceProviderRequest.create(issuer: issuer, url: 'foo', uuid: '123', ial: '1')
       sp = ServiceProvider.from_issuer(issuer)
 
       visit root_url(request_id: sp_request.uuid)

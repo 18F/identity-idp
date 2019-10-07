@@ -1,7 +1,7 @@
 module SpAuthHelper
-  def create_loa1_account_go_back_to_sp_and_sign_out(sp)
+  def create_ial1_account_go_back_to_sp_and_sign_out(sp)
     email = 'test@test.com'
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
@@ -14,9 +14,9 @@ module SpAuthHelper
     User.find_with_email(email)
   end
 
-  def create_loa3_account_go_back_to_sp_and_sign_out(sp)
+  def create_ial2_account_go_back_to_sp_and_sign_out(sp)
     user = create(:user, :signed_up)
-    visit_idp_from_sp_with_loa3(sp)
+    visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default

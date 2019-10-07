@@ -99,10 +99,10 @@ feature 'Password recovery via personal key' do
     end
   end
 
-  it_behaves_like 'signing in as LOA1 with personal key after resetting password', :saml
-  it_behaves_like 'signing in as LOA1 with personal key after resetting password', :oidc
-  it_behaves_like 'signing in as LOA3 with personal key after resetting password', :saml
-  it_behaves_like 'signing in as LOA3 with personal key after resetting password', :oidc
+  it_behaves_like 'signing in as IAL1 with personal key after resetting password', :saml
+  it_behaves_like 'signing in as IAL1 with personal key after resetting password', :oidc
+  it_behaves_like 'signing in as IAL2 with personal key after resetting password', :saml
+  it_behaves_like 'signing in as IAL2 with personal key after resetting password', :oidc
 
   def reactivate_profile(password, personal_key)
     click_on t('links.account.reactivate.with_key')

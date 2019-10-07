@@ -491,14 +491,14 @@ feature 'Sign in' do
     end
   end
 
-  it_behaves_like 'signing in as LOA1 with personal key', :saml
-  it_behaves_like 'signing in as LOA1 with personal key', :oidc
-  it_behaves_like 'signing in as LOA3 with personal key', :saml
-  it_behaves_like 'signing in as LOA3 with personal key', :oidc
-  it_behaves_like 'signing in as LOA1 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA1 with piv/cac', :oidc
-  it_behaves_like 'signing in as LOA3 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA3 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL1 with personal key', :saml
+  it_behaves_like 'signing in as IAL1 with personal key', :oidc
+  it_behaves_like 'signing in as IAL2 with personal key', :saml
+  it_behaves_like 'signing in as IAL2 with personal key', :oidc
+  it_behaves_like 'signing in as IAL1 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL1 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL2 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
@@ -571,8 +571,8 @@ feature 'Sign in' do
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1(:saml)
-      visit_idp_from_sp_with_loa1(:oidc)
+      visit_idp_from_sp_with_ial1(:saml)
+      visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default

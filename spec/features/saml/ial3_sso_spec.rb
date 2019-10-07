@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature 'LOA3 Single Sign On' do
+feature 'IAL2 Single Sign On' do
   include SamlAuthHelper
   include IdvHelper
   include DocAuthHelper
 
   def perform_id_verification_with_usps_without_confirming_code(user)
-    saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+    saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
     visit saml_authn_request
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
@@ -43,11 +43,11 @@ feature 'LOA3 Single Sign On' do
   context 'First time registration' do
     let(:email) { 'test@test.com' }
     before do
-      @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+      @saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
     end
 
     it 'shows user the start page with accordion' do
-      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+      saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
       sp_content = [
         'Test SP',
         t('headings.create_account_with_sp.sp_text'),
@@ -178,7 +178,7 @@ feature 'LOA3 Single Sign On' do
     context 'returning to verify after canceling during the same session' do
       it 'allows the user to verify' do
         user = create(:user, :signed_up)
-        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+        saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
 
         visit saml_authn_request
         sign_in_live_with_2fa(user)
@@ -203,7 +203,7 @@ feature 'LOA3 Single Sign On' do
     it 'redirects to idv_path' do
       sign_in_and_2fa_user
 
-      visit loa3_authnrequest
+      visit ial2_authnrequest
       visit sign_up_completed_path
 
       expect(current_path).to eq idv_jurisdiction_path

@@ -52,8 +52,8 @@ class OpenidConnectAuthorizeForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def loa3_requested?
-    loa == 3
+  def ial2_requested?
+    ial == 2
   end
 
   def service_provider
@@ -102,17 +102,13 @@ class OpenidConnectAuthorizeForm
     errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
   end
 
-  def loa
-    case acr_values.sort.max
-    when Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-      1
-    when Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-      3
-    end
-  end
-
   def ial
-    loa == 3 ? 3 : 1
+    case acr_values.sort.max
+    when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      1
+    when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      2
+    end
   end
 
   def extra_analytics_attributes
@@ -138,7 +134,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_privileges
-    return unless loa3_requested? && service_provider.ial != 2
+    return unless ial2_requested? && service_provider.ial != 2
     errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
   end
 end

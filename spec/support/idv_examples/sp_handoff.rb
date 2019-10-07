@@ -8,7 +8,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     let(:user) { User.find_with_email(email) }
 
     it 'requires idv and hands off correctly' do
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
       register_user(email)
 
       expect(current_path).to eq idv_jurisdiction_path
@@ -39,7 +39,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     let(:user) { user_with_2fa }
 
     it 'requires idv and hands off successfully' do
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -77,7 +77,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     end
 
     it 'does not require verification and hands off successfully' do
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -95,7 +95,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     let(:user) { user_with_2fa }
 
     before do
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -109,7 +109,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     end
 
     it 'does not require idv or requested attribute verification and hands off successfully' do
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
 
       expect_csp_headers_to_be_present if sp == :oidc
@@ -168,7 +168,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(sub).to be_present
     expect(decoded_id_token[:nonce]).to eq(@nonce)
     expect(decoded_id_token[:aud]).to eq(@client_id)
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
     expect(decoded_id_token[:given_name]).to eq('José')
