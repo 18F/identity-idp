@@ -10,7 +10,7 @@ module Funnel
 
       def self.call(user_id, event, result)
         token = ANALYTICS_EVENT_TO_DOC_AUTH_LOG_TOKEN[event]
-        Funnel::DocAuth::RegisterStep.call(user_id, token, :view, result == 'success') if token
+        Funnel::DocAuth::RegisterStep.call(user_id, token, :view, result) if token
       end
     end
   end
