@@ -6,7 +6,7 @@ shared_examples 'mobile front image step' do |simulate|
     include DocAuthHelper
 
     before do
-      enable_acuant_simulator(simulate)
+      setup_acuant_simulator(enabed: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_mobile_front_image_step
       mock_assure_id_ok

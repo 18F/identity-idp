@@ -9,7 +9,7 @@ shared_examples 'front image step' do |simulate|
     let(:user) { user_with_2fa }
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
     before do
-      enable_acuant_simulator(simulate)
+      setup_acuant_simulator(enabed: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_front_image_step(user)
       mock_assure_id_ok

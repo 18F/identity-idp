@@ -9,7 +9,7 @@ shared_examples 'link sent step' do |simulate|
     let(:user) { user_with_2fa }
 
     before do
-      enable_acuant_simulator(simulate)
+      setup_acuant_simulator(enabed: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_link_sent_step(user)
       mock_assure_id_ok

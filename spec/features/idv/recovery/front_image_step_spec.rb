@@ -10,7 +10,7 @@ shared_examples 'recovery front image step' do |simulate|
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
     before do
-      enable_acuant_simulator(simulate)
+      setup_acuant_simulator(enabed: simulate)
       sign_in_before_2fa(user)
       enable_doc_auth
       complete_recovery_steps_before_front_image_step(user)
