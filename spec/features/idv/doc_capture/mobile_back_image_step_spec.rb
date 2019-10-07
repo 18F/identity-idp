@@ -7,7 +7,7 @@ shared_examples 'doc capture mobile back image step' do |simulate|
     include DocCaptureHelper
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       complete_doc_capture_steps_before_mobile_back_image_step
       mock_assure_id_ok
@@ -31,7 +31,7 @@ shared_examples 'doc capture mobile back image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_capture_doc_capture_complete_step) unless simulate
+      expect(page).to have_current_path(idv_capture_doc_capture_complete_step) if simulate
     end
 
     it 'does not proceed to the next page with result=2' do
@@ -41,13 +41,13 @@ shared_examples 'doc capture mobile back image step' do |simulate|
       click_idv_continue
 
       unless simulate
-        expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+        expect(page).to have_current_path(idv_capture_doc_step_path(step: :mobile_front_image))
       end
     end
   end
 end
 
 feature 'doc capture back image' do
-  it_behaves_like 'doc capture mobile back image step', 'false'
-  it_behaves_like 'doc capture mobile back image step', 'true'
+  it_behaves_like 'doc capture mobile back image step', false
+  it_behaves_like 'doc capture mobile back image step', true
 end

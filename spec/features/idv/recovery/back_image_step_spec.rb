@@ -13,7 +13,7 @@ shared_examples 'recovery back image step' do |simulate|
 
     before do |example|
       select_user = example.metadata[:no_phone] ? user_no_phone : user
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
       enable_doc_auth
       complete_recovery_steps_before_back_image_step(select_user)
@@ -54,14 +54,16 @@ shared_examples 'recovery back image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
+      unless simulate
+        expect(page).to have_current_path(idv_recovery_front_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
+        expect(page).to have_content(strip_tags(I18n.t('errors.doc_auth.general_info'))[0..32])
+      end
     end
   end
 end
 
 feature 'recovery back image' do
-  it_behaves_like 'recovery back image step', 'false'
-  it_behaves_like 'recovery back image step', 'true'
+  it_behaves_like 'recovery back image step', false
+  it_behaves_like 'recovery back image step', true
 end
