@@ -1,0 +1,8 @@
+- title t('headings.sp_handoff_bounced', sp_name: @sp_name)
+
+h1.h3.my0 = t('headings.sp_handoff_bounced', sp_name: @sp_name)
+p.mt2.mb2 == t('instructions.sp_handoff_bounced', sp_name: @sp_name,
+        sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link))
+
+.mt3
+  = link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button'

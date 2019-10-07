@@ -112,6 +112,8 @@ usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
+sp_handoff_bounce_max_seconds: '2'
+
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc

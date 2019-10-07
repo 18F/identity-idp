@@ -1434,6 +1434,21 @@ production:
                  de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous sur
                  la page d'ouverture de session des utilisateurs gouvernementaux.</a>
 
+  # DOI - IBC - FedTalent
+  'https://doitalent.ibc.doi.gov/auth/saml2/sp/metadata.php':
+    friendly_name: 'DOI Talent'
+    acs_url: 'https://doitalent.ibc.doi.gov/auth/saml2/sp/saml2-acs.php/doitalent.ibc.doi.gov'
+    assertion_consumer_logout_service_url: 'https://doitalent.ibc.doi.gov/auth/saml2/sp/saml2-logout.php/doitalent.ibc.doi.gov'
+    cert: 'doi_talent_prod'
+    block_encryption: 'aes256-cbc'
+    return_to_sp_url: 'https://doitalent.ibc.doi.gov'
+    agency_id: 16
+    attribute_bundle:
+      - email
+    logo: 'doi.svg'
+    ial: '1'
+    restrict_to_deploy_env: 'prod'
+
   # HHS - OIG Utils
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:hhs:oigutils':
     friendly_name: 'HHS OIG Utils'
