@@ -30,6 +30,12 @@ class ServiceProviderSeeder
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
     YAML.safe_load(content, aliases: true).fetch(rails_env)
+  rescue Psych::SyntaxError => syntax_error
+    Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
+    raise syntax_error
+  rescue KeyError => key_error
+    Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
+    raise key_error
   end
 
   def remote_setting
