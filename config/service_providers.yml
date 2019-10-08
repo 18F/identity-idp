@@ -1380,6 +1380,7 @@ production:
       - 'https://clearinghouse-dev.fmcsa.dot.gov/Live/signin-oidc'
       - 'https://clearinghouse-dev.fmcsa.dot.gov/Sprint/signin-oidc'
       - 'https://clearinghouse-dev.fmcsa.dot.gov/signin-oidc'
+      - 'https://clearinghouse-test.fmcsa.dot.gov/signin-oidc'
       - 'https://clearinghouse.fmcsa.dot.gov/signin-oidc'
     attribute_bundle:
       - 'email'
@@ -1389,49 +1390,49 @@ production:
         forgot_password: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
                          FMCSA enforcement and SDLA staff do not need to create a login.gov account to
                          access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
+                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visit the Government User login</a>
         sign_in: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
                  FMCSA enforcement and SDLA staff do not need to create a login.gov account to
                  access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
+                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visit the Government User login</a>
         sign_up: <b>Are you FMCSA or State Driver Licensing Agency personnel?</b><p>
                  FMCSA enforcement and SDLA staff do not need to create a login.gov account to
                  access the Clearinghouse. This includes staff from Departments of Motor Vehicles.
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visit the Government User login</a>
+                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visit the Government User login</a>
       es:
         forgot_password: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El personal
                          operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a Clearinghouse.
                          Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
+                         <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visite el Acceso de usuario del Gobierno.</a>
         sign_in: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El personal
                  operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a Clearinghouse.
                  Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
+                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visite el Acceso de usuario del Gobierno.</a>
         sign_up: <b>Es usted empleado de FMCSA o de la Agencia Estatal de Permisos de Conducir (SDLA)?</b><p>El
                  personal operativo de FMCSA o de SDLA no necesitan crear una cuenta ogin.gov para acceder a
                  Clearinghouse. Esto incluye al personal de los Departamentos de Vehículos Automotores (DMV).
-                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Visite el Acceso de usuario del Gobierno.</a>
+                 <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Visite el Acceso de usuario del Gobierno.</a>
       fr:
         forgot_password: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des
                          permis de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation
                          de la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
                          d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
                          public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                         de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous
+                         de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Rendez-vous
                          sur la page d'ouverture de session des utilisateurs gouvernementaux.</a>
         sign_in: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des permis
                  de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation de
                  la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
                  d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
                  public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous sur
+                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Rendez-vous sur
                  la page d'ouverture de session des utilisateurs gouvernementaux.</a>
         sign_up: <b>Êtes-vous membre du personnel de la FMCSA ou de la agence nationale de délivrance des permis
                  de conduire (SDLA)?</b><p>Le personnel chargé de la mise en application de la réglementation
                  de la FMCSA et celui du SDLA n'ont pas besoin de créer un compte login.gov pour accéder au centre
                  d'échange d'informations. Cela inclut le personnel du "Departments of Motor Vehicles" (organisme
                  public chargé, au niveau de chaque état américain, de l'enregistrement des véhicules et des permis
-                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin)'>Rendez-vous sur
+                 de conduire). <p><a href='https://clearinghouse.fmcsa.dot.gov/Account/PortalLogin'>Rendez-vous sur
                  la page d'ouverture de session des utilisateurs gouvernementaux.</a>
 
   # DOI - IBC - FedTalent
