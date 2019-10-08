@@ -1,8 +1,6 @@
 class RemoteSetting < ApplicationRecord
-  if Rails.env.production?
-    validates :url, format: {
-      with:
-        %r{\A(https://raw.githubusercontent.com/18F/identity-idp/|https://login.gov).+\z},
-    }
-  end
+  validates :url, format: {
+    with:
+      /\A(#{Figaro.env.remote_settings_whitelist}).+\z/,
+  }
 end
