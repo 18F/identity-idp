@@ -16,7 +16,8 @@ class ServiceProviderSeeder
                   friendly_name: config['friendly_name'])
       end.update!(config.except('restrict_to_deploy_env',
                                 'uuid_priority',
-                                'default_help_text'))
+                                'protocol',
+                                'native'))
     end
   end
   # rubocop:enable Metrics/MethodLength
@@ -28,7 +29,7 @@ class ServiceProviderSeeder
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
-    YAML.safe_load(content).fetch(rails_env, {})
+    YAML.safe_load(content, aliases: true).fetch(rails_env)
   end
 
   def remote_setting

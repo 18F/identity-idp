@@ -28,6 +28,8 @@ class RemoteSettingsService
   end
 
   def self.remote?(location)
-    location.to_s.starts_with?('https://')
+    loc = location.to_s
+    development = (loc.starts_with?('http://') if Rails.env.development?)
+    development || loc.starts_with?('https://')
   end
 end
