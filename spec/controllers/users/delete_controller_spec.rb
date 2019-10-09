@@ -37,7 +37,7 @@ describe Users::DeleteController do
       expect(Identity.where(user_id: user.id).length).to eq(1)
     end
 
-    it 'deletes profile information for loa3' do
+    it 'deletes profile information for ial2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
       stub_sign_in(profile.user)
       expect(Profile.count).to eq(1)

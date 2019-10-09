@@ -85,7 +85,7 @@ shared_examples 'usps otp verfication step' do |sp|
   end
 
   def sign_in_from_sp(sp)
-    visit_idp_from_sp_with_loa3(sp)
+    visit_idp_from_sp_with_ial2(sp)
 
     if %i[saml oidc].include?(sp)
       sign_in_via_branded_page(user)

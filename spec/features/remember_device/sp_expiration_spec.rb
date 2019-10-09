@@ -8,7 +8,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
   context 'signing in' do
     it "does not require MFA before #{expiration_time.inspect}" do
       Timecop.travel(expiration_time.from_now - 1.day) do
-        visit_idp_from_sp_with_loa1(protocol)
+        visit_idp_from_sp_with_ial1(protocol)
         sign_in_user(user)
 
         expect(page).to have_current_path(sign_up_completed_path)
@@ -17,7 +17,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
 
     it "does require MFA after #{expiration_time.inspect}" do
       Timecop.travel(expiration_time.from_now + 1.day) do
-        visit_idp_from_sp_with_loa1(protocol)
+        visit_idp_from_sp_with_ial1(protocol)
         sign_in_user(user)
 
         expect(page).to have_content(t('two_factor_authentication.header_text'))
@@ -35,7 +35,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
     it "does not require MFA before #{expiration_time.inspect}" do
       Timecop.travel(expiration_time.from_now - 1.day) do
         sign_in_user(user)
-        visit_idp_from_sp_with_loa1(protocol)
+        visit_idp_from_sp_with_ial1(protocol)
 
         expect(page).to have_current_path(sign_up_completed_path)
       end
@@ -45,10 +45,10 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
       Timecop.travel(expiration_time.from_now + 1.day) do
         if expiration_time == 30.days
           sign_in_live_with_2fa(user)
-          visit_idp_from_sp_with_loa1(protocol)
+          visit_idp_from_sp_with_ial1(protocol)
         else
           sign_in_user(user)
-          visit_idp_from_sp_with_loa1(protocol)
+          visit_idp_from_sp_with_ial1(protocol)
 
           expect(page).to have_content(t('two_factor_authentication.header_text'))
           expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))

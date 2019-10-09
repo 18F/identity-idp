@@ -10,7 +10,7 @@ shared_examples 'recovery front image step' do |simulate|
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
       enable_doc_auth
       complete_recovery_steps_before_front_image_step(user)
@@ -40,6 +40,6 @@ shared_examples 'recovery front image step' do |simulate|
 end
 
 feature 'recovery front image' do
-  it_behaves_like 'recovery front image step', 'false'
-  it_behaves_like 'recovery front image step', 'true'
+  it_behaves_like 'recovery front image step', false
+  it_behaves_like 'recovery front image step', true
 end

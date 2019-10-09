@@ -7,7 +7,7 @@ describe 'Account Reset Request: Delete Account', email: true do
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
 
-  context 'as an LOA1 user' do
+  context 'as an IAL1 user' do
     it 'allows the user to delete their account after 24 hours' do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
@@ -109,7 +109,7 @@ describe 'Account Reset Request: Delete Account', email: true do
     end
   end
 
-  context 'as an LOA1 user without a phone' do
+  context 'as an IAL1 user without a phone' do
     let(:user) { create(:user, :with_backup_code, :with_authentication_app) }
 
     it 'does not tell the user that an SMS was sent to their registered phone' do
@@ -138,7 +138,7 @@ describe 'Account Reset Request: Delete Account', email: true do
     end
   end
 
-  context 'as an LOA3 user' do
+  context 'as an IAL2 user' do
     let(:user) do
       create(
         :profile,

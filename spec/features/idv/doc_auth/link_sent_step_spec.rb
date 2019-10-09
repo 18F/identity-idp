@@ -9,7 +9,7 @@ shared_examples 'link sent step' do |simulate|
     let(:user) { user_with_2fa }
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_link_sent_step(user)
       mock_assure_id_ok
@@ -44,9 +44,10 @@ shared_examples 'link sent step' do |simulate|
     end
 
     it 'does not proceed to the next page with invalid info' do
+      DocCapture.first.update(acuant_token: nil)
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_back_image_step) unless simulate
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     end
 
     it 'does not proceed to the next page with result=2' do
@@ -54,12 +55,12 @@ shared_examples 'link sent step' do |simulate|
         and_return([true, assure_id_results_with_result_2])
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_back_image_step) unless simulate
+      expect(page).to have_current_path(idv_doc_auth_send_link_step) unless simulate
     end
   end
 end
 
 feature 'doc auth link sent' do
-  it_behaves_like 'link sent step', 'false'
-  it_behaves_like 'link sent step', 'true'
+  it_behaves_like 'link sent step', false
+  it_behaves_like 'link sent step', true
 end

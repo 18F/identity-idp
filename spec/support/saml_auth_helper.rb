@@ -10,7 +10,7 @@ module SamlAuthHelper
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
-    settings.authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
 
     # SP + IdP Settings
     settings.issuer = 'http://localhost:3000'
@@ -114,14 +114,14 @@ module SamlAuthHelper
     settings
   end
 
-  def loa3_saml_settings
+  def ial2_saml_settings
     settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+    settings.authn_context = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     settings
   end
 
-  def loa3_with_bundle_saml_settings
-    settings = loa3_saml_settings
+  def ial2_with_bundle_saml_settings
+    settings = ial2_saml_settings
     settings.authn_context = [
       settings.authn_context,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
@@ -130,7 +130,7 @@ module SamlAuthHelper
     settings
   end
 
-  def loa1_with_bundle_saml_settings
+  def ial1_with_bundle_saml_settings
     settings = sp1_saml_settings
     settings.authn_context = [
       settings.authn_context,
@@ -148,8 +148,8 @@ module SamlAuthHelper
     auth_request.create(sp2_saml_settings)
   end
 
-  def loa3_authnrequest
-    auth_request.create(loa3_saml_settings)
+  def ial2_authnrequest
+    auth_request.create(ial2_saml_settings)
   end
 
   def missing_authn_context_saml_settings
@@ -189,13 +189,13 @@ module SamlAuthHelper
       user,
       settings.issuer,
     ).link_identity(
-      ial: loa3_requested?(settings) ? true : nil,
+      ial: ial2_requested?(settings) ? true : nil,
       verified_attributes: ['email'],
     )
   end
 
-  def loa3_requested?(settings)
-    settings.authn_context != Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+  def ial2_requested?(settings)
+    settings.authn_context != Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
   end
 
   def saml_request(settings)
@@ -207,7 +207,7 @@ module SamlAuthHelper
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
 
-  def visit_idp_from_sp_with_loa1(sp)
+  def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       @saml_authn_request = auth_request.create(saml_settings)
       visit @saml_authn_request
@@ -215,15 +215,15 @@ module SamlAuthHelper
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_loa1(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial1(state: @state, client_id: @client_id, nonce: @nonce)
     end
   end
 
-  def visit_idp_from_oidc_sp_with_loa1(state: SecureRandom.hex, client_id:, nonce:)
+  def visit_idp_from_oidc_sp_with_ial1(state: SecureRandom.hex, client_id:, nonce:)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

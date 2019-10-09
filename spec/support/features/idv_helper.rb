@@ -84,9 +84,9 @@ module IdvHelper
     click_continue
   end
 
-  def visit_idp_from_sp_with_loa3(sp)
+  def visit_idp_from_sp_with_ial2(sp)
     if sp == :saml
-      settings = loa3_with_bundle_saml_settings
+      settings = ial2_with_bundle_saml_settings
       settings.security[:embed_sign] = false
       if javascript_enabled?
         idp_domain_name = "#{page.server.host}:#{page.server.port}"
@@ -99,15 +99,15 @@ module IdvHelper
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_loa3(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce)
     end
   end
 
-  def visit_idp_from_oidc_sp_with_loa3(state: SecureRandom.hex, client_id:, nonce:)
+  def visit_idp_from_oidc_sp_with_ial2(state: SecureRandom.hex, client_id:, nonce:)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

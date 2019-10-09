@@ -9,7 +9,7 @@ module IdvStepHelper
 
   def start_idv_from_sp(sp = :oidc)
     if sp.present?
-      visit_idp_from_sp_with_loa3(sp)
+      visit_idp_from_sp_with_ial2(sp)
     else
       visit root_path
     end

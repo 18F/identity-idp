@@ -26,7 +26,7 @@ describe StoreSpMetadataInSession do
         request_id = SecureRandom.uuid
         ServiceProviderRequest.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
-          sp_request.loa = 'loa1'
+          sp_request.ial = 'ial1'
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
         end
@@ -40,7 +40,7 @@ describe StoreSpMetadataInSession do
 
         app_session_hash = {
           issuer: 'issuer',
-          loa3: false,
+          ial2: false,
           request_url: 'http://issuer.gov',
           request_id: request_id,
           requested_attributes: %w[email],

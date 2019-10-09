@@ -22,7 +22,7 @@ class ServiceProviderRequestHandler
   attr_reader :url, :session, :protocol_request, :protocol
 
   def ial
-    protocol.loa[-1] == '3' ? 2 : 1
+    protocol.ial == ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF ? 2 : 1
   end
 
   def current_sp
@@ -39,10 +39,12 @@ class ServiceProviderRequestHandler
     ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
   end
 
+  # :reek:DuplicateMethodCall
   def attributes
     {
       issuer: protocol.issuer,
-      loa: protocol.loa,
+      loa: protocol.ial,
+      ial: protocol.ial,
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
       url: url,

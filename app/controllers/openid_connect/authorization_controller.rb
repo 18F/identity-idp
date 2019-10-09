@@ -54,7 +54,7 @@ module OpenidConnect
     end
 
     def profile_or_identity_needs_verification?
-      return false unless @authorize_form.loa3_requested?
+      return false unless @authorize_form.ial2_requested?
       profile_needs_verification? || identity_needs_verification?
     end
 
@@ -75,7 +75,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      @authorize_form.loa3_requested? && current_user.decorate.identity_not_verified?
+      @authorize_form.ial2_requested? && current_user.decorate.identity_not_verified?
     end
 
     def build_authorize_form_from_params

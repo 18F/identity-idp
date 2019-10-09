@@ -164,7 +164,7 @@ describe Idv::ConfirmationsController do
       end
 
       it 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = { loa3: true }
+        subject.session[:sp] = { ial2: true }
         patch :update
 
         expect(response).to redirect_to sign_up_completed_url

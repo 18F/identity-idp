@@ -11,7 +11,7 @@ shared_examples 'recover step' do |simulate|
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       sign_in_before_2fa(user)
       token = complete_recovery_steps_before_recover_step(user)
@@ -32,6 +32,6 @@ shared_examples 'recover step' do |simulate|
 end
 
 feature 'recovery step' do
-  it_behaves_like 'recover step', 'false'
-  it_behaves_like 'recover step', 'true'
+  it_behaves_like 'recover step', false
+  it_behaves_like 'recover step', true
 end

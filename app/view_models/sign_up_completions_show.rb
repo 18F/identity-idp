@@ -1,14 +1,14 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(loa3_requested:, decorated_session:, current_user:, handoff:)
-    @loa3_requested = loa3_requested
+  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:)
+    @ial2_requested = ial2_requested
     @decorated_session = decorated_session
     @current_user = current_user
     @handoff = handoff
   end
 
-  attr_reader :loa3_requested, :decorated_session
+  attr_reader :ial2_requested, :decorated_session
 
   SORTED_ATTRIBUTE_MAPPING = [
     [%i[given_name family_name], :full_name],
@@ -25,7 +25,7 @@ class SignUpCompletionsShow
   # rubocop:disable Rails/OutputSafety
   def heading
     return content_tag(:strong, I18n.t('titles.sign_up.new_sp')) if handoff?
-    if requested_loa == 'loa3'
+    if requested_ial == 'ial2'
       return content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
     end
 
@@ -38,7 +38,7 @@ class SignUpCompletionsShow
   # rubocop:enable Rails/OutputSafety
 
   def title
-    if requested_loa == 'loa3'
+    if requested_ial == 'ial2'
       I18n.t('titles.sign_up.verified')
     else
       I18n.t(
@@ -50,7 +50,7 @@ class SignUpCompletionsShow
   end
 
   def image_name
-    "user-signup-#{requested_loa}.svg"
+    "user-signup-#{requested_ial}.svg"
   end
 
   def requested_attributes_partial
@@ -107,7 +107,7 @@ class SignUpCompletionsShow
     @current_user.decorate.identity_verified?
   end
 
-  def requested_loa
-    user_verified? ? 'loa3' : 'loa1'
+  def requested_ial
+    user_verified? ? 'ial2' : 'ial1'
   end
 end

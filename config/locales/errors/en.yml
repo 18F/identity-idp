@@ -18,13 +18,13 @@ en:
       token_missing: token missing
     confirm_password_incorrect: Incorrect password.
     doc_auth:
-      acuant_network_error: Sorry we are experiencing technical difficulties.  Please
+      acuant_network_error: Sorry we are experiencing technical difficulties. Please
         try again later.
       acuant_throttle: To prevent abuse we limit the number of times you can attempt
         to validate a document.  Please try again later.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
-      general_error: Your state issued ID could not be verified.  Please try using
+      general_error: Your state issued ID could not be verified. Please try using
         different images starting with the front of your state issued ID.
       general_info: |-
         <div class="bold">If you are using a camera please ensure</div>

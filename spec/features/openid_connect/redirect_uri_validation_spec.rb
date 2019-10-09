@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'redirect_uri validation' do
   context 'when the redirect_uri in the request does not match one that is registered' do
     it 'displays error instead of branded landing page' do
-      visit_idp_from_sp_with_loa1_with_disallowed_redirect_uri
+      visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -14,7 +14,7 @@ describe 'redirect_uri validation' do
 
   context 'when the redirect_uri is not a valid URI' do
     it 'displays error instead of branded landing page' do
-      visit_idp_from_sp_with_loa1_with_invalid_redirect_uri
+      visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -49,7 +49,7 @@ describe 'redirect_uri validation' do
   context 'when new non-SP request with redirect_uri is made after initial SP request' do
     it 'does not provide a link to the new redirect_uri' do
       state = SecureRandom.hex
-      visit_idp_from_sp_with_loa1_with_valid_redirect_uri(state: state)
+      visit_idp_from_sp_with_ial1_with_valid_redirect_uri(state: state)
       visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
@@ -74,14 +74,14 @@ describe 'redirect_uri validation' do
       expect(page).
         to have_content t('openid_connect.authorization.errors.bad_client_id')
 
-      visit_idp_from_sp_with_loa1_with_invalid_redirect_uri
+      visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
       expect(page).
         to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
-      visit_idp_from_sp_with_loa1_with_disallowed_redirect_uri
+      visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -93,7 +93,7 @@ describe 'redirect_uri validation' do
   context 'when the user is already signed in via an SP' do
     it 'displays error instead of redirecting' do
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1_with_valid_redirect_uri
+      visit_idp_from_sp_with_ial1_with_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -106,14 +106,14 @@ describe 'redirect_uri validation' do
       expect(page).
         to have_content t('openid_connect.authorization.errors.bad_client_id')
 
-      visit_idp_from_sp_with_loa1_with_invalid_redirect_uri
+      visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
       expect(page).
         to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
-      visit_idp_from_sp_with_loa1_with_disallowed_redirect_uri
+      visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -125,7 +125,7 @@ describe 'redirect_uri validation' do
   context 'when the SP has multiple registered redirect_uris and the second one is requested' do
     it 'considers the request valid and redirects to the one requested' do
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1_with_second_valid_redirect_uri
+      visit_idp_from_sp_with_ial1_with_second_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -159,14 +159,14 @@ describe 'redirect_uri validation' do
     end
   end
 
-  def visit_idp_from_sp_with_loa1_with_disallowed_redirect_uri(state: SecureRandom.hex)
+  def visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com.evil.com/auth/result',
       state: state,
@@ -175,14 +175,14 @@ describe 'redirect_uri validation' do
     )
   end
 
-  def visit_idp_from_sp_with_loa1_with_invalid_redirect_uri(state: SecureRandom.hex)
+  def visit_idp_from_sp_with_ial1_with_invalid_redirect_uri(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: ':aaaa',
       state: state,
@@ -198,7 +198,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -207,14 +207,14 @@ describe 'redirect_uri validation' do
     )
   end
 
-  def visit_idp_from_sp_with_loa1_with_valid_redirect_uri(state: SecureRandom.hex)
+  def visit_idp_from_sp_with_ial1_with_valid_redirect_uri(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -223,14 +223,14 @@ describe 'redirect_uri validation' do
     )
   end
 
-  def visit_idp_from_sp_with_loa1_with_second_valid_redirect_uri(state: SecureRandom.hex)
+  def visit_idp_from_sp_with_ial1_with_second_valid_redirect_uri(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com',
       state: state,
@@ -246,7 +246,7 @@ describe 'redirect_uri validation' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://test.host',
       state: state,

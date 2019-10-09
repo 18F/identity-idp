@@ -87,6 +87,7 @@ module Idv
     end
 
     def personal_key_confirmed
+      return unless current_user
       return unless current_user.active_profile.present? && need_personal_key_confirmation?
       redirect_to idv_confirmations_url
     end

@@ -1,7 +1,7 @@
 shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user
 
     if sp == :oidc
@@ -22,7 +22,7 @@ end
 
 shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   it 'redirects to the SP', email: true do
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user_with_authenticator_app
 
     if sp == :oidc
@@ -41,9 +41,9 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   end
 end
 
-shared_examples 'creating an LOA3 account using authenticator app for 2FA' do |sp|
+shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |sp|
   it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true do
-    visit_idp_from_sp_with_loa3(sp)
+    visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
     fill_out_idv_jurisdiction_ok
     click_idv_continue
@@ -77,7 +77,7 @@ end
 
 shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   it 'redirects to the SP', email: true do
-    visit_idp_from_sp_with_loa1(sp)
+    visit_idp_from_sp_with_ial1(sp)
     register_user_with_piv_cac
 
     click_continue
@@ -107,10 +107,10 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   end
 end
 
-shared_examples 'creating an LOA3 account using webauthn for 2FA' do |sp|
+shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
   it 'does not prompt for recovery code before IdV flow', email: true do
     mock_webauthn_setup_challenge
-    visit_idp_from_sp_with_loa3(sp)
+    visit_idp_from_sp_with_ial2(sp)
     confirm_email_and_password('test@test.com')
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
@@ -155,7 +155,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
     second_email = 'test2@test.com'
 
     perform_in_browser(:one) do
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sign_up_user_from_sp_without_confirming_email(first_email)
     end
 
@@ -173,7 +173,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
     end
 
     perform_in_browser(:one) do
-      visit_idp_from_sp_with_loa1(sp)
+      visit_idp_from_sp_with_ial1(sp)
       sign_up_user_from_sp_without_confirming_email(second_email)
     end
 

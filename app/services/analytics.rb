@@ -19,7 +19,8 @@ class Analytics
 
   def register_doc_auth_step_from_analytics_event(event, attributes)
     return unless user && user.class != AnonymousUser
-    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success])
+    success = attributes.blank? || attributes[:success] == 'success'
+    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, success)
   end
 
   # :reek:FeatureEnvy
