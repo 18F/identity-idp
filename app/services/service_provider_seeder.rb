@@ -26,6 +26,8 @@ class ServiceProviderSeeder
 
   attr_reader :rails_env, :deploy_env
 
+  # rubocop:disable Metrics/AbcSize
+  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
@@ -37,6 +39,7 @@ class ServiceProviderSeeder
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
   end
+  # rubocop:enable Metrics/AbcSize
 
   def remote_setting
     RemoteSetting.find_by(name: 'service_providers.yml')&.contents
