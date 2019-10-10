@@ -5,7 +5,7 @@ describe SamlRequestValidator do
     context 'valid authentication context and service provider' do
       it 'returns FormResponse with success: true' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -26,7 +26,7 @@ describe SamlRequestValidator do
     context 'valid authentication context and invalid service provider' do
       it 'returns FormResponse with success: false' do
         sp = ServiceProvider.from_issuer('foo')
-        authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -50,7 +50,7 @@ describe SamlRequestValidator do
     context 'valid authentication context and unauthorized nameid format' do
       it 'returns FormResponse with success: false' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -74,7 +74,7 @@ describe SamlRequestValidator do
     context 'valid authentication context and authorized nameid format for SP' do
       it 'returns FormResponse with success: true' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
-        authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -91,10 +91,10 @@ describe SamlRequestValidator do
           with(success: true, errors: {}, extra: extra)
       end
 
-      it 'returns FormResponse with success: true for loa3 and an ial:2 sp' do
+      it 'returns FormResponse with success: true for ial2 on ial:2 sp' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
         sp.ial = 2
-        authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -115,7 +115,7 @@ describe SamlRequestValidator do
     context 'invalid authentication context and valid service provider' do
       it 'returns FormResponse with success: false for unknown authn context' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        authn_context = 'LOA11'
+        authn_context = 'IAL1'
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -135,10 +135,10 @@ describe SamlRequestValidator do
           with(success: false, errors: errors, extra: extra)
       end
 
-      it 'returns FormResponse with success: false for loa3 on an ial:1 sp' do
+      it 'returns FormResponse with success: false for ial2 on an ial:1 sp' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         sp.ial = 1
-        authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+        authn_context = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
@@ -162,7 +162,7 @@ describe SamlRequestValidator do
     context 'invalid authentication context and invalid service provider' do
       it 'returns FormResponse with success: false' do
         sp = ServiceProvider.from_issuer('foo')
-        authn_context = 'LOA11'
+        authn_context = 'IAL1'
         allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,

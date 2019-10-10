@@ -6,7 +6,7 @@ shared_examples 'failed idv job' do |step|
   end
 
   before do
-    visit_idp_from_sp_with_loa3(:oidc)
+    visit_idp_from_sp_with_ial2(:oidc)
     complete_idv_steps_before_step(step)
   end
 

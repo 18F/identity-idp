@@ -263,7 +263,7 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
-    context 'LOA1 user' do
+    context 'IAL1 user' do
       it 'computes one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
 
@@ -273,7 +273,7 @@ describe Users::SessionsController, devise: true do
       end
     end
 
-    context 'LOA3 user' do
+    context 'IAL2 user' do
       before do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end

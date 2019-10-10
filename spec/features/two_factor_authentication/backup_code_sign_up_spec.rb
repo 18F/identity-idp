@@ -66,7 +66,7 @@ feature 'sign up with backup code' do
   end
 
   it 'directs backup code only users to the SP during sign up' do
-    visit_idp_from_sp_with_loa1(:oidc)
+    visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
     select_2fa_option('backup_code_only')
     click_continue

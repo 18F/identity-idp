@@ -21,7 +21,7 @@ describe 'signing in with remember device and idling on the sign in page' do
       user, 'urn:gov:gsa:openidconnect:sp:server'
     ).link_identity(verified_attributes: %w[email])
 
-    visit_idp_from_sp_with_loa1(:oidc)
+    visit_idp_from_sp_with_ial1(:oidc)
     request_id = ServiceProviderRequest.last.uuid
 
     Timecop.travel(Devise.timeout_in + 1.minute) do

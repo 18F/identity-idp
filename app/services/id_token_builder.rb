@@ -52,9 +52,9 @@ class IdTokenBuilder
     ial = identity.ial
     case ial
     when 1
-      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-    when 3
-      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    when 2
+      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     else
       raise "Unknown ial #{ial}"
     end

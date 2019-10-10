@@ -33,7 +33,7 @@ describe 'user signs in partially and visits openid_connect/authorize' do
     params = {
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

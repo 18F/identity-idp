@@ -8,7 +8,7 @@ module FederatedProtocols
       request.service_provider.identifier
     end
 
-    def loa
+    def ial
       request.requested_authn_context || default_authn_context
     end
 
@@ -23,7 +23,7 @@ module FederatedProtocols
     attr_reader :request
 
     def default_authn_context
-      ::Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+      ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
     end
 
     def current_service_provider

@@ -29,7 +29,7 @@ module Features
       choose "new_phone_form_otp_delivery_preference_#{delivery_option}"
     end
 
-    def sign_up_and_2fa_loa1_user
+    def sign_up_and_2fa_ial1_user
       user = sign_up_and_set_password
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
@@ -104,14 +104,14 @@ module Features
       user
     end
 
-    def begin_sign_up_with_sp_and_loa(loa3:)
+    def begin_sign_up_with_sp_and_ial(ial2:)
       user = create(:user)
       login_as(user, scope: :user, run_callbacks: false)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        session[:sp] = { loa3: loa3, issuer: sp.issuer, request_id: '123' }
+        session[:sp] = { ial2: ial2, issuer: sp.issuer, request_id: '123' }
       end
 
       visit account_path
@@ -285,22 +285,22 @@ module Features
       field.set(personal_key)
     end
 
-    def loa1_sp_session
+    def ial1_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         session[:sp] = {
-          loa3: false,
+          ial2: false,
           issuer: sp.issuer,
           requested_attributes: [:email],
         }
       end
     end
 
-    def loa3_sp_session(request_url: 'http://localhost:3000')
+    def ial2_sp_session(request_url: 'http://localhost:3000')
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session[:sp] = { loa3: true, request_url: request_url }
+        session[:sp] = { ial2: true, request_url: request_url }
       end
     end
 

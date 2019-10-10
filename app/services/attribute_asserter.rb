@@ -26,7 +26,7 @@ class AttributeAsserter
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
-    add_bundle(attrs) if user.active_profile.present? && loa3_authn_context?
+    add_bundle(attrs) if user.active_profile.present? && ial2_authn_context?
     user.asserted_attributes = attrs
   end
 
@@ -90,8 +90,8 @@ class AttributeAsserter
     SamlRequestParser.new(authn_request).requested_attributes
   end
 
-  def loa3_authn_context?
-    authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+  def ial2_authn_context?
+    authn_context == Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def authn_context

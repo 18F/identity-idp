@@ -9,5 +9,7 @@ class NullServiceProviderRequest
 
   def loa; end
 
+  def ial; end
+
   def requested_attributes; end
 end
