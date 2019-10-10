@@ -31,7 +31,7 @@ describe PushNotification::AccountDelete do
   end
 
   it 'sends updates to two subscribers of the same agency' do
-    sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test:ial1')
+    sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test:loa1')
     sp.push_notification_url = push_notification_url2
     sp.save!
 
@@ -53,7 +53,7 @@ describe PushNotification::AccountDelete do
       payload: {
         'subject' => {
           'subject_type' => 'iss-sub',
-          'iss' => 'urn:gov:gsa:openidconnect:test:ial1',
+          'iss' => 'urn:gov:gsa:openidconnect:test:loa1',
           'sub' => '1234',
         },
       },
@@ -68,7 +68,7 @@ describe PushNotification::AccountDelete do
   it 'sends updates to two subscribers for two different agencies' do
     AgencyIdentity.create(user_id: user_id, agency_id: 2, uuid: '4567')
 
-    sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test:ial1')
+    sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test:loa1')
     sp.push_notification_url = push_notification_url2
     sp.agency_id = 2
     sp.save!
@@ -91,7 +91,7 @@ describe PushNotification::AccountDelete do
       payload: {
         'subject' => {
           'subject_type' => 'iss-sub',
-          'iss' => 'urn:gov:gsa:openidconnect:test:ial1',
+          'iss' => 'urn:gov:gsa:openidconnect:test:loa1',
           'sub' => '4567',
         },
       },
