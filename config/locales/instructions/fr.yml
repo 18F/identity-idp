@@ -42,6 +42,8 @@ fr:
         sign_in: Assurez-vous que <strong>vous disposez d'un compte login.gov</strong>
           et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
           d'authentification à deux facteurs.
+        temporary_error: We are experiencing technical difficulties using your PIV/CAC.  Please
+          %{try_again} later or use your username and password to sign in now.
         try_again: réessayer
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.

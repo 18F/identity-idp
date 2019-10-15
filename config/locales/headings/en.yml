@@ -39,6 +39,7 @@ en:
       account_not_found: Your PIV/CAC is not connected to an account
       did_not_work: Your PIV/CAC did not work
       new: Sign in with your PIV or CAC
+      temporary_error: We are experiencing technical difficulties using your PIV/CAC
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.
