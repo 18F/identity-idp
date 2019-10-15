@@ -19,6 +19,8 @@ module Funnel
         doc_success
         usps_address
         usps_letter_sent
+        capture_mobile_back_image
+        capture_complete
       ].freeze
       STEP_TYPE_TO_CLASS = {
         update: RegisterSubmitStep,
