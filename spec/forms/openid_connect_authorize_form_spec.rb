@@ -107,7 +107,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with no authorized acr_values' do
       let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test:ial1' }
+      let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).

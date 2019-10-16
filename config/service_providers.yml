@@ -523,6 +523,7 @@ production:
       - 'https://tasks.vgihub.geointservices.io/op_redirect'
       - 'https://training.vgihub.geointservices.io/op_redirect'
       - 'https://wiki.vgihub.geointservices.io/op_redirect'
+      - 'https://omar.vgihub.geointservices.io/op_redirect'
     restrict_to_deploy_env: 'prod'
 
   # NGA GEOWorks Landing Page
