@@ -37,8 +37,7 @@ es:
           con el administrador de su agencia.
         sign_in: Asegúrese de que <strong>tenga una cuenta login.gov</strong> y <strong>haya
           configurado PIV/CAC</strong> como método de autenticación de dos factores.
-        temporary_error: We are experiencing technical difficulties using your PIV/CAC.  Please
-          %{try_again} later or use your username and password to sign in now.
+        temporary_error: Please try again later or sign in with your email and password instead.
         try_again: inténtalo de nuevo
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
