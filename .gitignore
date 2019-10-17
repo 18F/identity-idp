@@ -37,6 +37,7 @@ Vagrantfile
 !/cert/*.crt.example
 /config/application.yml
 /config/aws.yml
+/config/service_providers.yml
 /geo_data/*
 /keys/*.key
 /keys/*.pub

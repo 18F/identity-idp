@@ -62,16 +62,17 @@ RSpec.describe ServiceProviderSeeder do
           run
 
           # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp')).
+          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
             to be_present
 
           # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:cert')).
+          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
             to eq(nil)
 
           # restrict_to_deploy_env: nil
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra')).
-            to eq(nil)
+          expect(
+            ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp'),
+          ).to eq(nil)
         end
       end
 
@@ -82,17 +83,17 @@ RSpec.describe ServiceProviderSeeder do
           run
 
           # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp')).
+          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
             to eq(nil)
 
           # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:cert')).
+          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
             to be_present
 
           # restrict_to_deploy_env: nil
           expect(
             ServiceProvider.find_by(
-              issuer: 'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service',
+              issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp',
             ),
           ).to be_present
         end

@@ -210,3 +210,22 @@ development:
     logo: '18f.svg'
     redirect_uris:
       - 'http://localhost:4000/'
+
+# These are fake production service providers needed for the
+# ServiceProviderSeeder tests. They are not actually used in production.
+#
+# Production service providers come from identity-idp-config and shouldn't be
+# added here.
+#
+production:
+
+  'urn:gov:login:test-providers:fake-prod-sp':
+    friendly_name: 'Fake/Test stub SP for prod'
+    restrict_to_deploy_env: 'prod'
+
+  'urn:gov:login:test-providers:fake-staging-sp':
+    friendly_name: 'Fake/Test stub SP for staging'
+    restrict_to_deploy_env: 'staging'
+
+  'urn:gov:login:test-providers:fake-unrestricted-sp':
+    friendly_name: 'Fake/Test stub SP, env unrestricted'
