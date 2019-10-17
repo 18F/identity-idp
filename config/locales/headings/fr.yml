@@ -40,7 +40,7 @@ fr:
       account_not_found: Votre PIV / CAC n'est pas connecté à un compte
       did_not_work: Votre PIV / CAC n'a pas fonctionné
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
-      temporary_error: We are experiencing technical difficulties using your PIV/CAC
+      temporary_error: We’re having technical difficulties using your PIV/CAC
     piv_cac_setup:
       certificate:
         bad: Le certificat que vous avez sélectionné n'est pas valide.
