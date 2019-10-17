@@ -57,7 +57,6 @@ module Features
 
     def signin_with_piv_error(error)
       user = user_with_piv_cac
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       click_on t('account.login.piv_cac')
 
