@@ -66,14 +66,17 @@ module Deploy
       # Inject the logo files into the app's asset folder. deploy/activate is
       # run before deploy/build-post-config, so these will be picked up by the
       # rails asset pipeline.
-      symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos'),
-        File.join(root, 'app/assets/images/sp-logos'),
-      )
+      logos_dir = File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos')
+      Dir.entries(logos_dir).each do |name|
+        target = File.join(logos_dir, name)
+        link = File.join(root, 'app/assets/images/sp-logos', name)
+        symlink_verbose(target, link, force: true)
+      end
     end
 
-    def symlink_verbose(dest, link)
+    def symlink_verbose(dest, link, force: false)
       logger.info("symlink: #{link.inspect} => #{dest.inspect}")
+      File.unlink(link) if force && File.exist?(link)
       File.symlink(dest, link)
     end
 
