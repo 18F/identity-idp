@@ -32,14 +32,9 @@ Dir.chdir APP_ROOT do
   puts "== Copying logstash.conf =="
   run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
 
-  puts "== Copying sample certs and keys =="
-  run "test -L keys/oidc.key || cp keys/oidc.key.example keys/oidc.key"
-  run "test -L keys/oidc.pub || cp keys/oidc.pub.example keys/oidc.pub"
-  run "test -L keys/saml2018.key.enc || cp keys/saml2018.key.enc.example keys/saml2018.key.enc"
-  run "test -L keys/saml2019.key.enc || cp keys/saml2019.key.enc.example keys/saml2019.key.enc"
-  run "test -L certs/saml2018.crt || cp certs/saml2018.crt.example certs/saml2018.crt"
-  run "test -L certs/saml2019.crt || cp certs/saml2019.crt.example certs/saml2019.crt"
-  run "test -L certs/samlcloudhsm.crt || cp certs/samlcloudhsm.crt.example certs/samlcloudhsm.crt"
+  puts "== Linking sample certs and keys =="
+  run "test -L certs || ln -sv certs.example certs"
+  run "test -L keys || ln -sv keys.example keys"
 
   puts "== Copying GeoLite2 City database =="
   run "test -L geo_data/GeoLite2-City.mmdb || mkdir -p geo_data && cd geo_data && " \

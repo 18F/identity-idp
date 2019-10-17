@@ -74,13 +74,8 @@ jobs:
           command: |
             cp config/application.yml.default config/application.yml
             cp config/service_providers.localdev.yml config/service_providers.yml
-            cp keys/oidc.key.example keys/oidc.key
-            cp keys/oidc.pub.example keys/oidc.pub
-            cp certs/saml2018.crt.example certs/saml2018.crt
-            cp certs/saml2019.crt.example certs/saml2019.crt
-            cp certs/samlcloudhsm.crt.example certs/samlcloudhsm.crt
-            cp keys/saml2018.key.enc.example keys/saml2018.key.enc
-            cp keys/saml2019.key.enc.example keys/saml2019.key.enc
+            cp -a keys.example keys
+            cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile

@@ -33,20 +33,12 @@ rerun.txt
 Vagrantfile
 
 # folders
-/certs/*.crt
-!/cert/*.crt.example
+/certs
 /config/application.yml
 /config/aws.yml
 /config/service_providers.yml
 /geo_data/*
-/keys/*.key
-/keys/*.pub
-/keys/*.key.enc
-!/keys/*.key.enc.example
-!/keys/saml_test_sp.key
-/keys/equifax_rsa
-/keys/equifax_gpg.pub.bin
-/keys/equifax_rsa.pub
+/keys
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
@@ -55,7 +47,6 @@ Vagrantfile
 /fixtures
 /kitchen/cookbooks
 /log/*
-/private_certs/*
 /public/system
 /public/user_flows
 /pwned_passwords/*

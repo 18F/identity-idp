@@ -29,6 +29,10 @@ Dir.chdir APP_ROOT do
   puts "== Linking service_providers.yml =="
   run "test -L config/service_providers.yml || ln -sv service_providers.localdev.yml config/service_providers.yml"
 
+  puts "== Linking sample certs and keys =="
+  run "test -L certs || ln -sv certs.example certs"
+  run "test -L keys || ln -sv keys.example keys"
+
   puts "\n== Installing dependencies =="
   run "bundle check || bundle install --without deploy production"
 
