@@ -42,7 +42,7 @@ fr:
         sign_in: Assurez-vous que <strong>vous disposez d'un compte login.gov</strong>
           et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
           d'authentification à deux facteurs.
-        temporary_error: Please try again later or sign in with your email and password instead.
+        temporary_error: Veuillez réessayer ultérieurement ou connectez-vous avec votre adresse électronique et votre mot de passe.
         try_again: réessayer
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.
