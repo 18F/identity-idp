@@ -1476,3 +1476,17 @@ production:
       - zipcode
       - phone
     restrict_to_deploy_env: 'prod'
+
+  # DOL - CIO - Case Management Platform
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DOL:CMPPRD':
+    friendly_name: 'DOL Case Management Platform'
+    agency: 'DOL'
+    agency_id: 14
+    ial: 1
+    logo: 'dol.svg'
+    cert: 'dol_ocio_cmp_prod'
+    acs_url: 'https://cmp.dol.gov/suite/saml/AssertionConsumer'
+    return_to_sp_url: 'https://cmp.dol.gov/suite/'
+    assertion_consumer_logout_service_url: 'https://cmp.dol.gov/suite/saml/LogoutConsumer'
+    attribute_bundle:
+      - email
