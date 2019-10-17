@@ -1,0 +1,9 @@
+- title t('headings.piv_cac_login.temporary_error')
+
+h1.h3.my0 = t('headings.piv_cac_login.temporary_error')
+p.mt2.mb2 == t('instructions.mfa.piv_cac.temporary_error')
+
+.mt3
+  = link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button'
+
+= render 'shared/cancel', link: new_user_session_url

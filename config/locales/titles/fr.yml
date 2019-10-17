@@ -27,7 +27,9 @@ fr:
         expired: Erreur de certificat PIV/CAC
         invalid: Erreur de certificat PIV/CAC
         none: Erreur de certificat PIV/CAC
+        ocsp_error: Erreur de certificat PIV/CAC
         revoked: Erreur de certificat PIV/CAC
+        timeout: Erreur de certificat PIV/CAC
         unverified: Erreur de certificat PIV/CAC
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
       piv_cac:

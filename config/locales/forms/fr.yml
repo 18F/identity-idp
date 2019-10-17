@@ -90,9 +90,13 @@ fr:
           à jour.
         none_html: Veuillez contacter votre administrateur pour vous assurer que votre
           certificat est à jour.
+        ocsp_error_html: Nous avons des difficultés techniques. Veuillez réessayer
+          plus tard.
         revoked_html: Veuillez choisir un certificat différent de votre PIV/CAC ou
           contactez votre administrateur pour vous assurer que votre certificat est
           à jour.
+        timeout_html: Nous avons des difficultés techniques. Veuillez réessayer plus
+          tard.
         unverified_html: Veuillez choisir un certificat différent de votre PIV/CAC
           ou contactez votre administrateur pour vous assurer que votre certificat
           est à jour.

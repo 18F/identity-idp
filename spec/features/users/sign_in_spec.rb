@@ -32,6 +32,20 @@ feature 'Sign in' do
     expect(current_path).to eq login_piv_cac_account_not_found_path
   end
 
+  scenario 'user cannot sign in with certificate timeout error' do
+    signin_with_piv_error('certificate.timeout')
+
+    expect(current_path).to eq login_piv_cac_temporary_error_path
+    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  end
+
+  scenario 'user cannot sign in with certificate ocsp error' do
+    signin_with_piv_error('certificate.ocsp_error')
+
+    expect(current_path).to eq login_piv_cac_temporary_error_path
+    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  end
+
   scenario 'user cannot sign in with an unregistered piv/cac card' do
     signin_with_bad_piv
 

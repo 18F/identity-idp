@@ -21,6 +21,8 @@ module Users
 
     def did_not_work; end
 
+    def temporary_error; end
+
     private
 
     def two_factor_authentication_method
@@ -86,7 +88,12 @@ module Users
       if piv_cac_login_form.valid_token?
         redirect_to login_piv_cac_account_not_found_url
       else
-        redirect_to login_piv_cac_did_not_work_url
+        redirect_to case piv_cac_login_form.error_type
+                    when 'certificate.timeout', 'certificate.ocsp_error'
+                      login_piv_cac_temporary_error_url
+                    else
+                      login_piv_cac_did_not_work_url
+                    end
       end
     end
 
