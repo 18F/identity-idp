@@ -59,6 +59,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'stringex', require: false
 gem 'strong_migrations'
+gem 'subprocess', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'

@@ -596,6 +596,7 @@ GEM
     stringex (2.8.5)
     strong_migrations (0.4.1)
       activerecord (>= 5)
+    subprocess (1.3.2)
     sysexits (1.2.0)
     systemu (2.6.5)
     temple (0.8.2)
@@ -771,6 +772,7 @@ DEPENDENCIES
   slim_lint
   stringex
   strong_migrations
+  subprocess
   timecop
   twilio-ruby
   two_factor_authentication
