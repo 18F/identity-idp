@@ -20,6 +20,3 @@ en:
       generated_on_html: Generated on %{date}
       header: Your personal key
       print: Print this page
-    totp_setup:
-      new:
-        qr_img_alt: QR Code for Authenticator App

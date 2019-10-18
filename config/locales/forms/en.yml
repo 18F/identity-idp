@@ -142,4 +142,3 @@ en:
         keys as you want, and we recommend at least two for easier account recovery.
       login_text: Press the button on your security key to sign in with login.gov
       nickname: Security key nickname
-      success_title: You have added a security key as your authentication method
