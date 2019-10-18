@@ -42,7 +42,7 @@ describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          File.read('keys/saml2018.key.enc'),
+          File.read('keys.example/saml2018.key.enc'),
           'asdf1234',
         ).to_pem,
       )
@@ -110,7 +110,7 @@ describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        File.read('certs/saml2018.crt.example'),
+        File.read('certs.example/saml2018.crt'),
       )
     end
   end
