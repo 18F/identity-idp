@@ -3,13 +3,11 @@ require 'rails_helper'
 describe Encryption::Encryptors::AttributeEncryptor do
   let(:plaintext) { 'some secret text' }
   let(:current_key) { '1' * 32 }
-  let(:current_cost) { '400$8$1$' }
   let(:retired_key) { '2' * 32 }
   let(:retired_cost) { '2000$8$1$' }
 
   before do
     allow(Figaro.env).to receive(:attribute_encryption_key).and_return(current_key)
-    allow(Figaro.env).to receive(:attribute_cost).and_return(current_cost)
     allow(Figaro.env).to receive(:attribute_encryption_key_queue).and_return(
       [{ key: retired_key, cost: retired_cost }].to_json,
     )

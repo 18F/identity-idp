@@ -79,6 +79,7 @@ group :development do
   gem 'derailed'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
+  gem 'irb'
   gem 'octokit'
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false

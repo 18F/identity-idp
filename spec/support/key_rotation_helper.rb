@@ -11,7 +11,7 @@ module KeyRotationHelper
   def rotate_attribute_encryption_key(new_key = '4' * 32, new_cost = '4000$8$2$')
     env = Figaro.env
     old_key = env.attribute_encryption_key
-    old_cost = env.attribute_cost
+    old_cost = '4000$8$4$'
 
     allow(Figaro.env).to receive(:attribute_encryption_key).and_return(new_key)
     allow(Figaro.env).to receive(:attribute_cost).and_return(new_cost)
