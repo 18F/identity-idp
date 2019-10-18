@@ -68,6 +68,7 @@ module Deploy
       # rails asset pipeline.
       logos_dir = File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos')
       Dir.entries(logos_dir).each do |name|
+        next if name.start_with?('.')
         target = File.join(logos_dir, name)
         link = File.join(root, 'app/assets/images/sp-logos', name)
         symlink_verbose(target, link, force: true)
