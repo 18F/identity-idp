@@ -18,7 +18,7 @@ describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(['', '2018', 'cloudhsm'])
+      expect(result).to eq(['2019', '2018', 'cloudhsm'])
     end
   end
 
@@ -28,7 +28,7 @@ describe SamlEndpoint do
 
       expect(result).to eq(
         [
-          { suffix: '', secret_key_passphrase: 'trust-but-verify' },
+          { suffix: '2019', secret_key_passphrase: 'trust-but-verify' },
           { suffix: '2018', secret_key_passphrase: 'asdf1234' },
           { suffix: 'cloudhsm', cloudhsm_key_label: 'key1' },
         ],
