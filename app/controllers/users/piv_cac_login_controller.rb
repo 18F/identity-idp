@@ -88,13 +88,21 @@ module Users
       if piv_cac_login_form.valid_token?
         redirect_to login_piv_cac_account_not_found_url
       else
-        redirect_to case piv_cac_login_form.error_type
-                    when 'certificate.timeout', 'certificate.ocsp_error'
-                      login_piv_cac_temporary_error_url
-                    else
-                      login_piv_cac_did_not_work_url
-                    end
+        process_token_with_error
       end
+    end
+
+    def process_token_with_error
+      redirect_to case piv_cac_login_form.error_type
+                  when 'certificate.timeout'
+                    flash[:error] = t('titles.piv_cac_setup.certificate.timeout')
+                    login_piv_cac_temporary_error_url
+                  when 'certificate.ocsp_error'
+                    flash[:error] = t('titles.piv_cac_setup.certificate.ocsp_error')
+                    login_piv_cac_temporary_error_url
+                  else
+                    login_piv_cac_did_not_work_url
+                  end
     end
 
     def mark_user_session_authenticated(authentication_type)
