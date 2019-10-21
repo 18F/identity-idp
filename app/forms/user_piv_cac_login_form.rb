@@ -10,7 +10,7 @@ class UserPivCacLoginForm
   def submit
     success = valid? && valid_submission?
 
-    errors = success ? {} : { token: error_type }
+    errors = error_type ? { type: error_type } : {}
     FormResponse.new(success: success, errors: errors)
   end
 
