@@ -1,17 +1,15 @@
-const I18n = window.LoginGov.I18n;
-
 function checkbox() {
-  const styledCheckbox = document.querySelectorAll("input[type=checkbox]");
+  const styledCheckbox = document.querySelectorAll('input[type=checkbox]');
 
   if (styledCheckbox) {
-    [].slice.call(styledCheckbox).forEach((input, i) => {
-      input.addEventListener( 'change', function() {
-        let indicator = input.parentNode.querySelector(".indicator")
+    [].slice.call(styledCheckbox).forEach((input) => {
+      input.addEventListener('change', function() {
+        const indicator = input.parentNode.querySelector('.indicator');
         if (indicator) {
-          if(this.checked) {
-              indicator.classList.add("indicator-checked");
+          if (this.checked) {
+            indicator.classList.add('indicator-checked');
           } else {
-              indicator.classList.remove("indicator-checked");
+            indicator.classList.remove('indicator-checked');
           }
         }
       });
