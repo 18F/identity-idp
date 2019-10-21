@@ -12,9 +12,10 @@ class UserPivCacSetupForm
   def submit
     success = valid? && valid_submission?
 
+    errors = error_type ? { type: error_type } : {}
     FormResponse.new(
       success: success && process_valid_submission,
-      errors: {},
+      errors: errors,
       extra: extra_analytics_attributes,
     )
   end
