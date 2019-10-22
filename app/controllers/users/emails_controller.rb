@@ -20,6 +20,9 @@ module Users
       else
         render :show
       end
+    rescue ActiveRecord::RecordNotUnique
+      flash[:error] = t('email_addresses.add.duplicate')
+      render :show
     end
 
     def resend

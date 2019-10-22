@@ -168,6 +168,24 @@ feature 'adding email address' do
     end
   end
 
+  it 'does not raise a 500 if user submits in rapid succession violating a db constraint' do
+    user = create(:user, :signed_up)
+    sign_in_and_2fa_user(user)
+
+    visit account_path
+    click_link t('account.index.email_add')
+
+    fake_email = instance_double(EmailAddress)
+    expect(fake_email).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+    expect(EmailAddress).to receive(:new).and_return(fake_email)
+
+    fill_in 'Email', with: email
+    click_button t('forms.buttons.submit.default')
+
+    expect(page).to have_current_path(add_email_path)
+    expect(page).to have_content(t('email_addresses.add.duplicate'))
+  end
+
   def sign_in_user_and_add_email(user, add_email = true)
     sign_in_and_2fa_user(user)
 
