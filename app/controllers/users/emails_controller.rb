@@ -10,6 +10,7 @@ module Users
       @register_user_email_form = AddUserEmailForm.new
     end
 
+    # :reek:DuplicateMethodCall
     def add
       @register_user_email_form = AddUserEmailForm.new
 
@@ -20,6 +21,9 @@ module Users
       else
         render :show
       end
+    rescue ActiveRecord::RecordNotUnique
+      flash[:error] = t('email_addresses.add.duplicate')
+      render :show
     end
 
     def resend
