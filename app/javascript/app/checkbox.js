@@ -14,7 +14,7 @@ function checkbox() {
         }
       });
       // allow checkbox label to be read by screen readers
-      const label = input.parentNode.textContent.trim()
+      const label = input.parentNode.textContent.trim();
       if (label) {
         input.setAttribute('aria-label', label);
       }
