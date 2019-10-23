@@ -24,7 +24,6 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        increment_monthly_auth_count
         redirect_to sp_session_request_url_without_prompt_login
       end
     end

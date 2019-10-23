@@ -132,7 +132,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def after_sign_in_path_for(_user)
-    increment_monthly_auth_count
     user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
       signed_in_url
   end
