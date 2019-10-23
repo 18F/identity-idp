@@ -9,12 +9,17 @@ namespace :db do
     end
 
     password = Figaro.env.database_readonly_password
-
     sql_statements = [
-      "CREATE USER #{username} WITH ENCRYPTED PASSWORD '#{password}'",
-      "GRANT SELECT ON ALL TABLES IN SCHEMA public TO #{username}",
+      format(
+        "CREATE USER %s WITH ENCRYPTED PASSWORD '%s'",
+        username,
+        password,
+      ),
+      format(
+        "GRANT SELECT ON ALL TABLES IN SCHEMA public TO %s",
+        username,
+      ),
     ]
-
     sql_statements.each { |sql| ActiveRecord::Base.connection.execute(sql) }
   end
 end
