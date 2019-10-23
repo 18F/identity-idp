@@ -7,4 +7,3 @@ es:
     help: Si necesita ayuda, visite %{link}
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Póliza de privacidad
-    sent_from: Enviado desde %{app}

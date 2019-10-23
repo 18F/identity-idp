@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 4e7a644c2ea7c61e3fc8b57bc12d35a075e94df5
-  tag: v3.2.3
+  revision: b48e45089e672f2e201d2946ee42e5ca49cf9415
+  tag: v3.2.4
   specs:
-    aamva (3.2.3)
+    aamva (3.2.4)
       dotenv
       faraday
       hashie
@@ -55,10 +55,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: dacf47c65e35d2427b98a71bfe5597d7eefba120
-  tag: v0.0.12
+  revision: 7d216f9831a39b9b89c704dbd711a82dd3fd395d
+  tag: v0.0.14
   specs:
-    identity-telephony (0.0.12)
+    identity-telephony (0.0.14)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -132,7 +132,7 @@ GEM
     aws-sdk-kms (1.24.0)
       aws-sdk-core (~> 3, >= 3.61.1)
       aws-sigv4 (~> 1.1)
-    aws-sdk-pinpoint (1.27.0)
+    aws-sdk-pinpoint (1.28.0)
       aws-sdk-core (~> 3, >= 3.61.1)
       aws-sigv4 (~> 1.1)
     aws-sdk-pinpointsmsvoice (1.12.0)
@@ -319,6 +319,7 @@ GEM
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
     iniparse (1.4.4)
+    irb (1.0.0)
     jaro_winkler (1.5.3)
     jmespath (1.4.0)
     json (2.2.0)
@@ -596,6 +597,7 @@ GEM
     stringex (2.8.5)
     strong_migrations (0.4.1)
       activerecord (>= 5)
+    subprocess (1.3.2)
     sysexits (1.2.0)
     systemu (2.6.5)
     temple (0.8.2)
@@ -716,6 +718,7 @@ DEPENDENCIES
   identity-hostdata!
   identity-telephony!
   identity_validations!
+  irb
   json-jwt
   knapsack
   lexisnexis!
@@ -771,6 +774,7 @@ DEPENDENCIES
   slim_lint
   stringex
   strong_migrations
+  subprocess
   timecop
   twilio-ruby
   two_factor_authentication

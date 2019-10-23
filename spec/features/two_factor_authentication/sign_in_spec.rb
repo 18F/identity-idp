@@ -266,8 +266,6 @@ feature 'Two Factor Authentication' do
       let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: '+17035551212') }
 
       it 'does not change their OTP delivery preference' do
-        allow(Figaro.env).to receive(:programmable_sms_countries).and_return('CA')
-
         telephony_error = Telephony::TelephonyError.new('error message')
         allow(Telephony).to receive(:send_authentication_otp).and_raise(telephony_error)
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)

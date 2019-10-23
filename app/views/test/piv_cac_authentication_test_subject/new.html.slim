@@ -36,6 +36,14 @@ p.mt-tiny.mb3
               = label_tag(:'error_certificate.revoked', 'Revoked certificate')
           label.btn-border.col-12.mb2
             .radio
+              = radio_button_tag(:error, 'certificate.timeout')
+              = label_tag(:'error_certificate.timeout', 'Certificate timeout')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.ocsp_error')
+              = label_tag(:'error_certificate.ocsp_error', 'Certificate OCSP error')
+          label.btn-border.col-12.mb2
+            .radio
               = radio_button_tag(:error, 'certificate.invalid')
               = label_tag(:'error_certificate.invalid', 'Invalid certificate')
           label.btn-border.col-12.mb2

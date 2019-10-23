@@ -15,479 +15,403 @@
 # Make sure any new entries you add are enclosed in single quotes.
 # Figaro requires all values to be explicit strings.
 
-acuant_max_attempts: '10'
-acuant_attempt_window_in_minutes: '1440'
-
-email_from: 'no-reply@login.gov'
-idv_max_attempts: '3'
-idv_attempt_window_in_hours: '24'
-mailer_domain_name: 'http://localhost:3000'
-max_mail_events: '4'
-max_mail_events_window_in_days: '30'
-aws_http_timeout: '5'
-
-max_emails_per_account: '12'
-add_email_link_valid_for_hours: '24'
-
-# The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the
-# password are less than 10^3, 10^6, 10^8, 10^10, and >= 10^10 respectively.
-# Default minimum is 4 (best).
-# https://github.com/dropbox/zxcvbn#usage
-min_password_score: '3'
-
-# How long to wait for the MX validator to get a response from the DNS server
-mx_timeout: '3'
-
-password_max_attempts: '3'
-
-# If a queue does not have a healthy job after this many seconds, report it as unhealthy
-queue_health_check_dead_interval_seconds: '60'
-
-# How often to enqueue simple jobs to make sure the background queues are running
-queue_health_check_frequency_seconds: '30'
-
-# The number of words in the personal key phrase
-recovery_code_length: '4'
-
-# add JSON job configuration names here to disable them from running
-recurring_jobs_disabled_names: '[]'
-
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
 # ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
-# Set the number of seconds before the session times out that the timeout
-# warning should appear.
-# NOTE: session_timeout_warning_seconds + session_check_delay % 60 should == 0
-session_timeout_warning_seconds: '150'
-# Set the number of seconds in which to delay the start of the session check.
-# NOTE: session_timeout_warning_seconds + session_check_delay % 60 should == 0
+aamva_cert_enabled: 'true'
+account_reset_token_valid_for_days: '1'
+account_reset_wait_period_days: '1'
+acuant_assure_id_password: ''
+acuant_assure_id_subscription_id: ''
+acuant_assure_id_username: ''
+acuant_attempt_window_in_minutes: '1440'
+acuant_facial_match_license_key: ''
+add_email_link_valid_for_hours: '24'
+allow_doc_auth_test_credentials:
+asset_host:
+async_job_refresh_max_wait_seconds: '15'
+available_locales: en es fr
+aws_http_timeout: '5'
+cac_proofing_enabled:
+cloudhsm_enabled: 'false'
+cloudhsm_pin: user:password
+cloudhsm_saml_key_label: key1
+database_statement_timeout: '2500'
+disallow_ial2_recovery:
+doc_auth_exclusive: 'false'
+doc_capture_request_valid_for_minutes: '15'
+email_from: no-reply@login.gov
+enable_load_testing_mode: 'false'
+event_disavowal_expiration_hours: '240'
+google_analytics_key:
+google_analytics_timeout: '5'
+ial2_recovery_request_valid_for_minutes: '15'
+identity_pki_disabled: 'true'
+idv_attempt_window_in_hours: '24'
+idv_max_attempts: '3'
+in_person_proofing_enabled:
+job_run_healthchecks_enabled: 'true'
+lexisnexis_account_id: test_account
+lexisnexis_base_url: https://www.example.com
+lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_password: test_password
+lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
+lexisnexis_request_mode: testing
+lexisnexis_username: test_username
+logins_per_email_and_ip_bantime: '60'
+logins_per_email_and_ip_period: '60'
+logins_per_ip_period: '60'
+mailer_domain_name: http://localhost:3000
+max_emails_per_account: '12'
+max_mail_events_window_in_days: '30'
+min_password_score: '3'
+mx_timeout: '3'
+otp_valid_for: '10'
+password_max_attempts: '3'
+personal_key_retired:
+pinpoint_sms_application_id:
+pinpoint_sms_credential_external_id:
+pinpoint_sms_credential_role_arn:
+pinpoint_sms_credential_role_session_name:
+pinpoint_sms_longcode_pool:
+pinpoint_sms_region:
+pinpoint_sms_shortcode:
+pinpoint_voice_credential_external_id:
+pinpoint_voice_credential_role_arn:
+pinpoint_voice_credential_role_session_name:
+pinpoint_voice_longcode_pool:
+pinpoint_voice_region:
+pkcs11_lib: "/opt/cloudhsm/lib/libcloudhsm_pkcs11.so"
+proofer_mock_fallback: 'true'
+proofer_vendors:
+push_notifications_enabled:
+reauthn_window: '120'
+recaptcha_enabled_percent: '0'
+recaptcha_secret_key: key2
+recaptcha_site_key: key1
+recovery_code_length: '4'
+reg_confirmed_email_window_in_minutes: '60'
+remember_device_expiration_hours_aal_1: '720'
+remember_device_expiration_hours_aal_2: '12'
+report_timeout:
+requests_per_ip_track_only_mode: 'false'
+saml_secret_rotation_enabled:
 session_check_delay: '30'
-# Set the frequency of the session check call in seconds.
-# NOTE: session_timeout_warning_seconds + session_check_frequency % 60 should == 0
 session_check_frequency: '30'
-
-stale_session_window: '180'
-
-use_dashboard_service_providers: 'false'
-dashboard_url: 'https://dashboard.demo.login.gov'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
-
+session_timeout_in_minutes: '15'
+session_timeout_warning_seconds: '150'
+sp_handoff_bounce_max_seconds: '2'
+show_user_attribute_deprecation_warnings: 'false'
 twilio_timeout: '5'
 twilio_verify_override_for_intl_sms: 'false'
 usps_download_sftp_timeout: '5'
+usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-
-google_analytics_timeout: '5'
-
-allow_piv_cac_by_email_only: 'true'
-
-sp_handoff_bounce_max_seconds: '2'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 development:
-  aamva_cert_enabled: 'true'
-  aamva_public_key: '123abc'
-  aamva_private_key: '123abc'
-  aamva_verification_url: 'https://example.org:12345/verification/url'
-  acuant_assure_id_subscription_id: ''
-  acuant_assure_id_username: ''
-  acuant_assure_id_password: ''
+  aamva_private_key: 123abc
+  aamva_public_key: 123abc
+  aamva_verification_url: https://example.org:12345/verification/url
+  account_reset_auth_token: abc123
   acuant_assure_id_url: ''
-  acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_max_attempts: '10'
   acuant_simulator: 'true'
-  account_reset_auth_token: 'abc123'
-  account_reset_token_valid_for_days: '1'
-  account_reset_wait_period_days: '1'
   async_job_refresh_interval_seconds: '5'
-  async_job_refresh_max_wait_seconds: '15'
-  attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
-  attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
-  available_locales: 'en es fr'
-  aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
-  aws_region: 'us-east-1'
-  basic_auth_user_name: 'user'
-  basic_auth_password: 'secret'
+  attribute_cost: 4000$8$4$
+  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
+    "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
+    }]'
+  aws_kms_key_id: alias/login-dot-gov-development-keymaker
+  aws_region: us-east-1
   backup_codes_as_only_2fa: 'true'
-  cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'user:password'
-  cloudhsm_saml_key_label: 'key1'
-  dashboard_api_token: 'test_token'
-  dashboard_url: 'http://localhost:3001/api/service_providers'
+  basic_auth_password: secret
+  basic_auth_user_name: user
+  dashboard_api_token: test_token
+  dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
   database_name: ''
   database_password: ''
   database_pool_idp: '5'
   database_readonly_password: ''
   database_readonly_username: ''
-  database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
+  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   doc_auth_enabled: 'false'
-  doc_auth_exclusive: 'false'
-  doc_capture_request_valid_for_minutes: '15'
-  domain_name: 'localhost:3000'
+  domain_name: localhost:3000
+  email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
-  event_disavowal_expiration_hours: '240'
-  exception_recipients: 'test1@test.com'
-  expired_letters_auth_token: 'abc123'
-  hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
+  exception_recipients: test1@test.com
+  expired_letters_auth_token: abc123
+  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
-  ial2_recovery_request_valid_for_minutes: '15'
-  identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: ''
-  job_run_healthchecks_enabled: 'true'
-  lexisnexis_account_id: 'test_account'
-  lexisnexis_base_url: 'https://www.example.com'
-  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
-  lexisnexis_password: 'test_password'
-  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
-  lexisnexis_request_mode: 'testing'
-  lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'true'
-  logins_per_ip_limit: '5'
-  logins_per_ip_period: '60'
-  logins_per_ip_track_only_mode: 'false'
-  logins_per_email_and_ip_bantime: '60'
   logins_per_email_and_ip_limit: '5'
-  logins_per_email_and_ip_period: '60'
-  newrelic_browser_key: ''
+  logins_per_ip_limit: '5'
+  logins_per_ip_track_only_mode: 'false'
+  max_mail_events: '4'
   newrelic_browser_app_id: ''
+  newrelic_browser_key: ''
   newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  otp_valid_for: '10'
-  password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  piv_cac_verify_token_secret: 'ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12'
-  piv_cac_service_url: 'https://localhost:8443/'
-  piv_cac_verify_token_url: 'https://localhost:8443/'
-  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  programmable_sms_countries: 'US,CA,MX'
-  proofer_mock_fallback: 'true'
+  participate_in_dap:
+  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  piv_cac_service_url: https://localhost:8443/
+  piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  piv_cac_verify_token_url: https://localhost:8443/
   rack_mini_profiler: 'off'
-  RACK_TIMEOUT_SERVICE_TIMEOUT: '30'
-  reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
-  redis_url: 'redis://localhost:6379/0'
-  redis_throttle_url: 'redis://localhost:6379/1'
+  recurring_jobs_disabled_names: "[]"
+  redis_throttle_url: redis://localhost:6379/1
+  redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '20'
-  reg_confirmed_email_window_in_minutes: '60'
   reg_unconfirmed_email_max_attempts: '20'
   reg_unconfirmed_email_window_in_minutes: '60'
-  remember_device_expiration_hours_aal_1: '720'
-  remember_device_expiration_hours_aal_2: '12'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
-  requests_per_ip_track_only_mode: 'false'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
+  s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
-  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
-  secret_key_base: 'development_secret_key_base'
-  send_new_device_sms: 'true'
-  session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
-  session_timeout_in_minutes: '15'
-  show_user_attribute_deprecation_warnings: 'false'
-  telephony_adapter: 'test'
+  scrypt_cost: 10000$8$1$
+  secret_key_base: development_secret_key_base
+  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  telephony_adapter: test
   telephony_disabled: 'true'
+  twilio_auth_token: token1
+  twilio_http_basic_auth_password: 123abc
+  twilio_http_basic_auth_username: 123abc
+  twilio_messaging_service_sid: 123abc
   twilio_numbers: '["9999999999","2222222222"]'
-  twilio_sid: 'sid1'
-  twilio_auth_token: 'token1'
-  twilio_http_basic_auth_username: '' # Twilio console configure Request URL
-  twilio_http_basic_auth_password: '' # https://www.twilio.com/docs/usage/security
-  twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
-  twilio_voice_callback_encryption_key: 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
+  twilio_sid: sid1
+  twilio_verify_api_key:
+  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
-  enable_load_testing_mode: 'false'
-  usps_download_sftp_directory: '/undeliverable'
-  usps_download_sftp_host: 'localhost'
-  usps_download_sftp_username: 'brady'
-  usps_download_sftp_password: 'test'
-  usps_download_token: '123ABC'
-  usps_upload_enabled: 'false'
-  usps_upload_sftp_directory: '/gsa_order'
-  usps_upload_sftp_host: 'localhost'
-  usps_upload_sftp_username: 'brady'
-  usps_upload_sftp_password: 'test'
-  usps_upload_token: '123ABC'
-  email_deletion_enabled: 'true'
+  usps_download_sftp_directory: "/undeliverable"
+  usps_download_sftp_host: localhost
+  usps_download_sftp_password: test
+  usps_download_sftp_username: brady
+  usps_download_token: 123ABC
+  usps_upload_sftp_directory: "/gsa_order"
+  usps_upload_sftp_host: localhost
+  usps_upload_sftp_password: test
+  usps_upload_sftp_username: brady
+  usps_upload_token: 123ABC
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
 #
 production:
-  aamva_cert_enabled: 'true'
-  aamva_public_key: # Base64 encoded public key for AAMVA
-  aamva_private_key: # Base64 encoded private key for AAMVA
-  aamva_verification_url: # DLDV Verification URL
+  aamva_private_key:
+  aamva_public_key:
+  aamva_verification_url:
   account_reset_auth_token:
-  account_reset_token_valid_for_days: '1'
-  account_reset_wait_period_days: '1'
-  acuant_assure_id_subscription_id: ''
-  acuant_assure_id_username: ''
-  acuant_assure_id_password: ''
   acuant_assure_id_url: ''
-  acuant_facial_match_license_key: ''
   acuant_facial_match_url: ''
+  acuant_max_attempts: '10'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
-  async_job_refresh_max_wait_seconds: '15'
-  attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
-  attribute_encryption_key: # generate via `rake secret`
-  attribute_encryption_key_queue: # '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
-  available_locales: 'en es fr'
+  attribute_cost: 4000$8$4$
+  attribute_encryption_key:
+  attribute_encryption_key_queue:
   aws_kms_key_id:
   aws_region:
-  basic_auth_user_name:
+  backup_codes_as_only_2fa:
   basic_auth_password:
-  cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'user:password'
-  cloudhsm_saml_key_label: 'key1'
-  disable_email_sending: 'false'
+  basic_auth_user_name:
   dashboard_api_token:
-  database_statement_timeout: '2500'
+  dashboard_url: https://dashboard.demo.login.gov
+  database_host:
+  database_name:
+  database_password:
+  database_pool_idp:
+  database_readonly_password:
+  database_readonly_username:
+  database_timeout:
+  database_username:
+  disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   doc_auth_enabled: 'false'
-  doc_auth_exclusive: 'false'
-  doc_capture_request_valid_for_minutes: '15'
-  domain_name: 'login.gov'
+  domain_name: login.gov
+  email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
-  event_disavowal_expiration_hours: '240'
-  exception_recipients: 'user1@example.com,user2@example.com'
+  exception_recipients: user1@example.com,user2@example.com
   expired_letters_auth_token:
-  google_analytics_key: # 'UA-XXXXXXXXX-YY'
-  hmac_fingerprinter_key: # generate via `rake secret`
-  hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
-  ial2_recovery_request_valid_for_minutes: '15'
-  identity_pki_disabled: 'true'
-  issuers_with_email_nameid_format: 'sp1,sp2'
-  job_run_healthchecks_enabled: 'true'
-  lexisnexis_account_id: 'test_account'
-  lexisnexis_base_url: 'https://www.example.com'
-  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
-  lexisnexis_password: 'test_password'
-  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
-  lexisnexis_request_mode: 'testing'
-  lexisnexis_username: 'test_username'
+  hmac_fingerprinter_key:
+  hmac_fingerprinter_key_queue:
+  issuers_with_email_nameid_format: sp1,sp2
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'false'
-  logins_per_ip_limit: '5'
-  logins_per_ip_period: '60'
-  logins_per_ip_track_only_mode: 'true'
-  logins_per_email_and_ip_bantime: '60'
   logins_per_email_and_ip_limit: '5'
-  logins_per_email_and_ip_period: '60'
-  newrelic_browser_key: ''
+  logins_per_ip_limit: '5'
+  logins_per_ip_track_only_mode: 'true'
+  max_mail_events: '4'
   newrelic_browser_app_id: ''
+  newrelic_browser_key: ''
   newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  otp_valid_for: '10'
-  participate_in_dap: 'false' # pair with google_analytics_key
-  password_pepper: # generate via `rake secret`
-  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  programmable_sms_countries: 'US,CA,MX'
-  proofer_mock_fallback: 'true'
-  reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
-  redis_url: 'redis://redis.login.gov.internal:6379'
-  redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
+  participate_in_dap: 'false'
+  password_pepper:
+  piv_cac_service_url:
+  piv_cac_verify_token_secret:
+  piv_cac_verify_token_url:
+  rack_mini_profiler:
+  recurring_jobs_disabled_names: "[]"
+  redis_throttle_url: redis://redis.login.gov.internal:6379/1
+  redis_url: redis://redis.login.gov.internal:6379
   reg_confirmed_email_max_attempts: '20'
-  reg_confirmed_email_window_in_minutes: '60'
   reg_unconfirmed_email_max_attempts: '20'
   reg_unconfirmed_email_window_in_minutes: '60'
-  remember_device_expiration_hours_aal_1: '720'
-  remember_device_expiration_hours_aal_2: '12'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
-  requests_per_ip_track_only_mode: 'false'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
-  s3_report_bucket_prefix: 'login-gov.reports'
+  s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
   saml_endpoint_configs:
-  scrypt_cost: '10000$8$1$' # These values are in hex for N, r, and p.
-  secret_key_base: # generate via `rake secret`
-  send_new_device_sms: 'false'
-  session_encryption_key: # generate via `rake secret`
-  session_timeout_in_minutes: '15'
-  show_user_attribute_deprecation_warnings: 'false'
-  telephony_adapter: 'twilio'
-  twilio_numbers: # Add JSON encoded array of phone numbers
-  twilio_sid: # Twilio SID
-  twilio_auth_token: # Twilio auth token
-  twilio_http_basic_auth_username: '' # Twilio console configure Request URL
-  twilio_http_basic_auth_password: '' # https://www.twilio.com/docs/usage/security
-  twilio_messaging_service_sid: # Twilio CoPilot SID
+  scrypt_cost: 10000$8$1$
+  secret_key_base:
+  session_encryption_key:
+  telephony_adapter: twilio
+  telephony_disabled:
+  twilio_auth_token:
+  twilio_http_basic_auth_password:
+  twilio_http_basic_auth_username:
+  twilio_messaging_service_sid:
+  twilio_numbers:
   twilio_record_voice: 'false'
-  twilio_verify_api_key: 'change-me'
-  twilio_voice_callback_encryption_key: # Change this
+  twilio_sid:
+  twilio_verify_api_key: change-me
+  twilio_voice_callback_encryption_key:
+  use_dashboard_service_providers: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
-  enable_load_testing_mode: 'false'
   usps_download_sftp_directory:
   usps_download_sftp_host:
-  usps_download_sftp_username:
   usps_download_sftp_password:
+  usps_download_sftp_username:
   usps_download_token:
-  usps_upload_enabled: 'false'
   usps_upload_sftp_directory:
   usps_upload_sftp_host:
-  usps_upload_sftp_username:
   usps_upload_sftp_password:
+  usps_upload_sftp_username:
   usps_upload_token:
-  email_deletion_enabled: 'false'
 
 test:
-  aamva_cert_enabled: 'true'
-  aamva_public_key: '123abc'
-  aamva_private_key: '123abc'
-  aamva_verification_url: 'https://example.org:12345/verification/url'
-  account_reset_auth_token: 'test'
-  account_reset_token_valid_for_days: '1'
-  account_reset_wait_period_days: '1'
-  acuant_assure_id_subscription_id: ''
-  acuant_assure_id_username: ''
-  acuant_assure_id_password: ''
-  acuant_assure_id_url: 'https://example.com'
-  acuant_facial_match_license_key: ''
-  acuant_facial_match_url: 'https://example.com'
-  acuant_simulator: 'false'
+  aamva_private_key: 123abc
+  aamva_public_key: 123abc
+  aamva_verification_url: https://example.org:12345/verification/url
+  account_reset_auth_token: test
+  acuant_assure_id_url: https://example.com
+  acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
-  acuant_attempt_window_in_minutes: '1440'
+  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
-  async_job_refresh_max_wait_seconds: '15'
-  attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
-  attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
-  available_locales: 'en es fr'
-  aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
-  aws_region: 'us-east-1'
-  basic_auth_user_name: 'user'
-  basic_auth_password: 'secret'
+  attribute_cost: 800$8$1$
+  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
+    "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
+    }]'
+  aws_kms_key_id: alias/login-dot-gov-test-keymaker
+  aws_region: us-east-1
   backup_codes_as_only_2fa: 'true'
-  cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'user:password'
-  cloudhsm_saml_key_label: 'key1'
-  domain_name: 'www.example.com'
+  basic_auth_password: secret
+  basic_auth_user_name: user
+  dashboard_api_token: 123ABC
+  dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
   database_name: ''
   database_password: ''
   database_pool_idp:
   database_readonly_password: ''
   database_readonly_username: ''
-  database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
-  dashboard_api_token: '123ABC'
+  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   doc_auth_enabled: 'true'
-  doc_auth_exclusive: 'false'
-  doc_capture_request_valid_for_minutes: '15'
+  domain_name: www.example.com
+  email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
-  event_disavowal_expiration_hours: '240'
-  exception_recipients: 'test1@test.com'
-  expired_letters_auth_token: 'abc123'
-  hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
+  exception_recipients: test1@test.com
+  expired_letters_auth_token: abc123
+  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
-  ial2_recovery_request_valid_for_minutes: '15'
-  identity_pki_disabled: 'true'
-  issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
-  job_run_healthchecks_enabled: 'true'
-  lexisnexis_account_id: 'test_account'
-  lexisnexis_base_url: 'https://www.example.com'
-  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
-  lexisnexis_password: 'test_password'
-  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
-  lexisnexis_request_mode: 'testing'
-  lexisnexis_username: 'test_username'
+  issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
   lockout_period_in_minutes: '5'
   login_with_piv_cac: 'true'
-  logins_per_ip_limit: '3'
-  logins_per_ip_period: '60'
-  logins_per_ip_track_only_mode: 'false'
-  logins_per_email_and_ip_bantime: '60'
   logins_per_email_and_ip_limit: '2'
-  logins_per_email_and_ip_period: '60'
+  logins_per_ip_limit: '3'
+  logins_per_ip_track_only_mode: 'false'
   max_mail_events: '2'
+  newrelic_browser_app_id:
+  newrelic_browser_key:
+  newrelic_license_key:
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'
-  otp_valid_for: '10'
-  password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c'
-  piv_cac_service_url: 'https://localhost:8443/'
-  piv_cac_verify_token_secret: '3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f'
-  piv_cac_verify_token_url: 'https://localhost:8443/'
-  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
-  programmable_sms_countries: 'US,CA,MX'
-  proofer_mock_fallback: 'true'
-  programmable_sms_countries: 'US,CA'
-  reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
+  participate_in_dap:
+  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  piv_cac_service_url: https://localhost:8443/
+  piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
+  piv_cac_verify_token_url: https://localhost:8443/
+  rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
-  redis_url: 'redis://localhost:6379/0'
-  redis_throttle_url: 'redis://localhost:6379/1'
+  redis_throttle_url: redis://localhost:6379/1
+  redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '3'
-  reg_confirmed_email_window_in_minutes: '60'
   reg_unconfirmed_email_max_attempts: '4'
   reg_unconfirmed_email_window_in_minutes: '70'
-  remember_device_expiration_hours_aal_1: '720'
-  remember_device_expiration_hours_aal_2: '12'
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
-  requests_per_ip_track_only_mode: 'false'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
+  s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
-  scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
-  secret_key_base: 'test_secret_key_base'
-  send_new_device_sms: 'true'
-  session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
-  session_timeout_in_minutes: '15'
-  show_user_attribute_deprecation_warnings: 'false'
-  telephony_adapter: 'test'
+  scrypt_cost: 800$8$1$
+  secret_key_base: test_secret_key_base
+  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  telephony_adapter: test
+  telephony_disabled:
+  twilio_auth_token: token1
+  twilio_http_basic_auth_password: 123abc
+  twilio_http_basic_auth_username: 123abc
+  twilio_messaging_service_sid: 123abc
   twilio_numbers: '["9999999999","2222222222"]'
-  twilio_sid: 'sid1'
-  twilio_auth_token: 'token1'
-  twilio_http_basic_auth_username: '' # Twilio console configure Request URL
-  twilio_http_basic_auth_password: '' # https://www.twilio.com/docs/usage/security
-  twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
-  twilio_verify_api_key: 'secret'
-  twilio_voice_callback_encryption_key: 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
+  twilio_sid: sid1
+  twilio_verify_api_key: secret
+  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
+  use_dashboard_service_providers: 'false'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
-  enable_load_testing_mode: 'false'
-  usps_download_sftp_directory: '/undeliverable'
+  usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host:
-  usps_download_sftp_username:
   usps_download_sftp_password:
-  usps_download_token: 'test_token'
-  usps_upload_enabled: 'false'
-  usps_upload_sftp_directory: '/directory'
-  usps_upload_sftp_host: 'example.com'
-  usps_upload_sftp_username: 'user'
-  usps_upload_sftp_password: 'pass'
-  usps_upload_token: 'test_token'
-  email_deletion_enabled: 'true'
+  usps_download_sftp_username:
+  usps_download_token: test_token
+  usps_upload_sftp_directory: "/directory"
+  usps_upload_sftp_host: example.com
+  usps_upload_sftp_password: pass
+  usps_upload_sftp_username: user
+  usps_upload_token: test_token

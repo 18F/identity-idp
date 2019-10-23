@@ -12,6 +12,15 @@ describe Deploy::Activate do
     @logger = Logger.new('/dev/null')
 
     FakeFS do
+      # Work around fakefs bug with symlinks and Errno::EEXIST
+      # https://github.com/fakefs/fakefs/issues/343
+      if Dir.exist?(config_dir)
+        Dir.entries(config_dir).each do |name|
+          path = File.join(config_dir, name)
+          File.unlink(path) if File.symlink?(path)
+        end
+      end
+
       FakeFS::FileSystem.clone(config_dir)
 
       ex.run
@@ -40,6 +49,10 @@ describe Deploy::Activate do
 
       FileUtils.mkdir_p('/etc/login.gov/info')
       File.open('/etc/login.gov/info/env', 'w') { |file| file.puts 'int' }
+
+      # for now, stub cloning identity-idp-config
+      allow(subject).to receive(:clone_idp_config)
+      allow(subject).to receive(:setup_idp_config_symlinks)
     end
 
     let(:application_yml) do
@@ -89,6 +102,10 @@ describe Deploy::Activate do
     before do
       stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
         to_timeout
+
+      # for now, stub cloning identity-idp-config
+      allow(subject).to receive(:clone_idp_config)
+      allow(subject).to receive(:setup_idp_config_symlinks)
     end
 
     it 'errors' do

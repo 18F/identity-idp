@@ -39,13 +39,16 @@ en:
       account_not_found: Your PIV/CAC is not connected to an account
       did_not_work: Your PIV/CAC did not work
       new: Sign in with your PIV or CAC
+      temporary_error: We’re having technical difficulties using your PIV/CAC
     piv_cac_setup:
       certificate:
         bad: The certificate you selected is invalid.
         expired: The certificate you selected has expired.
         invalid: The certificate you selected is invalid.
         none: We cannot detect a certificate on your PIV/CAC card.
+        ocsp_error: We’re having technical difficulties.  Please try again later.
         revoked: The certificate you selected has been revoked from your card.
+        timeout: We’re having technical difficulties.  Please try again later.
         unverified: The certificate you selected is invalid.
       new: Use your PIV/CAC card to secure your account
       piv_cac:

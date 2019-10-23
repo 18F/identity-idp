@@ -7,4 +7,3 @@ en:
     help: If you need help, visit %{link}
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
-    sent_from: Sent from %{app}
