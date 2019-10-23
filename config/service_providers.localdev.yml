@@ -1,3 +1,41 @@
+help_text: &default_help_text
+  sign_in:
+    en: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
+      and password won’t work. Please <a href=%{sp_create_link}>create a login.gov
+      account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
+      more</a>
+    es: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
+      existente, favor de usar la dirección de correo electrónico primaria o secundaria
+      que usó para %{sp_name} para <a href=%{sp_create_link}>crear un nueva cuenta
+      de login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
+    fr: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
+      %{sp_name}, veuillez utiliser l'adresse e-mail principale ou secondaire
+      que vous avez utilisée pour %{sp_name} pour <a href=%{sp_create_link}> créer
+      votre nouveau compte login.gov</a> <p><a href="https://login.gov/help/">En
+      savoir plus.</a>
+  sign_up:
+    en: Please create a login.gov account using the same email address you
+      use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>
+    es: Por favor crea un login.gov cuenta usando la misma dirección de correo
+      electrónico que utiliza para %{sp_name}. <p><a href="https://login.gov/help/">Obtenga
+      más información.</a>
+    fr: Veuillez créer un compte login.gov avec la même adresse e-mail que
+      vous avez utilisée pour %{sp_name}. <p><a href="https://login.gov/help/">En
+      savoir plus.</a>
+  forgot_password:
+    en: Your old %{sp_name} username and password won’t work. Please
+      <a href=%{sp_create_link}>create a login.gov account</a> using the same
+      email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
+      more</a>
+    es: Si tiene un perfil de %{sp_name} existente, favor de usar
+      la dirección de correo electrónico primaria o secundaria que usó para %{sp_name}
+      para <a href=%{sp_create_link}>crear su nueva cuenta de login.gov</a>. <p><a
+      href="https://login.gov/help/">Obtenga más información.</a>
+    fr: Si vous avez déjà un profil %{sp_name}, veuillez utiliser
+      l'adresse e-mail principale ou secondaire que vous avez utilisée pour %{sp_name}
+      pour <a href=%{sp_create_link}> créer votre nouveau compte login.gov</a>
+      <p><a href="https://login.gov/help/">En savoir plus.</a>
+
 test:
   'http://localhost:3000':
     acs_url: 'http://localhost:3000/test/saml/decode_assertion'
@@ -87,7 +125,8 @@ test:
     cert: 'saml_test_sp'
     friendly_name: 'Test SP with default help text'
     ial: 2
-    default_help_text: true
+    help_text:
+      <<: *default_help_text
 
   'test_sp_with_custom_help_text':
     agency_id: 2
@@ -95,10 +134,18 @@ test:
     friendly_name: 'Test SP with custom help text'
     ial: 2
     help_text:
-      en:
-        forgot_password: ""
-        sign_up: ""
-        sign_in: "custom sign in help text for %{sp_name}"
+      sign_in:
+        en: "custom sign in help text for %{sp_name}"
+        es: ""
+        fr: ""
+      sign_up:
+        en: ""
+        es: ""
+        fr: ""
+      forgot_password:
+        en: ""
+        es: ""
+        fr: ""
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
