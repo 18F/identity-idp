@@ -6,7 +6,7 @@ shared_examples 'doc auth mobile back image step' do |simulate|
     include DocAuthHelper
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_mobile_back_image_step
       mock_assure_id_ok
@@ -49,14 +49,16 @@ shared_examples 'doc auth mobile back image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_mobile_front_image_step) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_mobile_front_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
+        expect(page).to have_content(strip_tags(I18n.t('errors.doc_auth.general_info'))[0..32])
+      end
     end
   end
 end
 
 feature 'doc auth back image' do
-  it_behaves_like 'doc auth mobile back image step', 'false'
-  it_behaves_like 'doc auth mobile back image step', 'true'
+  it_behaves_like 'doc auth mobile back image step', false
+  it_behaves_like 'doc auth mobile back image step', true
 end

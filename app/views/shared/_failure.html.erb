@@ -1,7 +1,6 @@
 <% title presenter.title %>
 
-<%= image_tag(asset_url(presenter.state_icon),
-              alt: presenter.state_alt_text, width: 54) %>
+<%= image_tag(asset_url(presenter.state_icon), width: 54) %>
 
 <h1 class="h3 mb1 mt3 my0">
   <%= presenter.header %>
@@ -21,7 +20,7 @@
   </h2>
 <% end %>
 
-<%= render 'shared/failure_url', presenter: presenter %>
+<hr>
 
 <% presenter.next_steps.each do |step| %>
   <p><%= step %></p>

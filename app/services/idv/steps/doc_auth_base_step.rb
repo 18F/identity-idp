@@ -33,20 +33,28 @@ module Idv
         Figaro.env.acuant_simulator == 'true'
       end
 
-      def attempter
-        @attempter ||= Idv::Attempter.new(current_user)
+      def idv_throttle_params
+        [current_user.id, :idv_resolution]
+      end
+
+      def attempter_increment
+        Throttler::Increment.call(*idv_throttle_params)
+      end
+
+      def attempter_throttled?
+        Throttler::IsThrottled.call(*idv_throttle_params)
       end
 
       def idv_failure(result)
-        attempter.increment
-        type = attempter.exceeded? ? :fail : :warning
+        attempter_increment
+        type = attempter_throttled? ? :fail : :warning
         redirect_to idv_session_failure_url(reason: type)
         result
       end
 
       def verify_back_image(reset_step:)
         back_image_verified, data, analytics_hash = assure_id_results
-        data[:notice] = I18n.t('errors.doc_auth.general_info')
+        data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
         return failure(data, analytics_hash) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
@@ -101,16 +109,18 @@ module Idv
       def throttle_post_front_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
+          result = assure_id.post_front_image(image.read)
           Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_front_image)
-          assure_id.post_front_image(image.read)
+          result
         end
       end
 
       def throttle_post_back_image
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
+          result = assure_id.post_back_image(image.read)
           Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_back_image)
-          assure_id.post_back_image(image.read)
+          result
         end
       end
 

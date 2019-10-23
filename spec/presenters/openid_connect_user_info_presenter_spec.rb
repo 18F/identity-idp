@@ -73,7 +73,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
     end
 
-    context 'when there is decrypted loa3 session data in redis' do
+    context 'when there is decrypted ial2 session data in redis' do
       let(:pii) do
         {
           first_name: 'John',
@@ -93,11 +93,11 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         Pii::SessionStore.new(rails_session_id).put(pii, 5.minutes.to_i)
       end
 
-      context 'when the identity has loa3 access' do
-        before { identity.ial = 3 }
+      context 'when the identity has ial2 access' do
+        before { identity.ial = 2 }
 
         context 'when the scope includes all attributes' do
-          it 'returns loa3 attributes' do
+          it 'returns ial2 attributes' do
             aggregate_failures do
               expect(user_info[:given_name]).to eq('John')
               expect(user_info[:family_name]).to eq('Smith')
@@ -141,10 +141,10 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
       end
 
-      context 'when the identity only has loa1 access' do
+      context 'when the identity only has ial1 access' do
         before { identity.ial = 1 }
 
-        it 'does not return loa3 attributes' do
+        it 'does not return ial2 attributes' do
           aggregate_failures do
             expect(user_info[:given_name]).to eq(nil)
             expect(user_info[:family_name]).to eq(nil)

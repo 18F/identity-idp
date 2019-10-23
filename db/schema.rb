@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190922124029) do
+ActiveRecord::Schema.define(version: 20191022134041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,19 +124,24 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.integer "verify_phone_view_count", default: 0
     t.datetime "usps_address_view_at"
     t.integer "usps_address_view_count", default: 0
-    t.datetime "usps_letter_sent_view_at"
-    t.integer "usps_letter_sent_view_count", default: 0
-    t.datetime "usps_address_submit_at"
-    t.integer "usps_address_submit_count", default: 0
-    t.integer "usps_address_error_count", default: 0
     t.datetime "encrypt_view_at"
     t.integer "encrypt_view_count", default: 0
     t.datetime "verified_view_at"
     t.integer "verified_view_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "mobile_front_image_submit_count", default: 0
     t.integer "mobile_front_image_error_count", default: 0
     t.integer "mobile_back_image_submit_count", default: 0
     t.integer "mobile_back_image_error_count", default: 0
+    t.integer "usps_letter_sent_submit_count", default: 0
+    t.integer "usps_letter_sent_error_count", default: 0
+    t.datetime "capture_mobile_back_image_view_at"
+    t.integer "capture_mobile_back_image_view_count", default: 0
+    t.datetime "capture_complete_view_at"
+    t.integer "capture_complete_view_count", default: 0
+    t.integer "capture_mobile_back_image_submit_count", default: 0
+    t.integer "capture_mobile_back_image_error_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -174,6 +179,7 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.datetime "updated_at", null: false
     t.datetime "last_sign_in_at"
     t.index ["confirmation_token"], name: "index_email_addresses_on_confirmation_token", unique: true
+    t.index ["email_fingerprint", "user_id"], name: "index_email_addresses_on_email_fingerprint_and_user_id", unique: true
     t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
     t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
@@ -385,6 +391,7 @@ ActiveRecord::Schema.define(version: 20190922124029) do
     t.boolean "piv_cac_scoped_by_email", default: false
     t.boolean "pkce"
     t.string "push_notification_url"
+    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

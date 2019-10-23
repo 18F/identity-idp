@@ -6,7 +6,7 @@ shared_examples 'test credentials' do |simulate|
     include DocAuthHelper
 
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
     end
 
@@ -63,5 +63,5 @@ shared_examples 'test credentials' do |simulate|
 end
 
 feature 'doc auth test credentials' do
-  it_behaves_like 'test credentials', 'false'
+  it_behaves_like 'test credentials', false
 end

@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
       get '/' => 'users/sessions#new', as: :new_user_session
+      get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
@@ -71,6 +72,7 @@ Rails.application.routes.draw do
         get '/login/piv_cac' => 'users/piv_cac_login#new'
         get '/login/piv_cac_account_not_found' => 'users/piv_cac_login#account_not_found'
         get '/login/piv_cac_did_not_work' => 'users/piv_cac_login#did_not_work'
+        get '/login/piv_cac_temporary_error' => 'users/piv_cac_login#temporary_error'
         get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
         get '/login/password' => 'password_capture#new', as: :capture_password
         post '/login/password' => 'password_capture#create'

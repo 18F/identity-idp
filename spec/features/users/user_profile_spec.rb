@@ -10,7 +10,7 @@ feature 'User profile' do
       sign_in_live_with_2fa(profile.user)
     end
 
-    context 'LOA3 account' do
+    context 'IAL2 account' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
 
       it 'shows a "Verified Account" badge with no tooltip' do
@@ -19,7 +19,7 @@ feature 'User profile' do
     end
   end
 
-  context 'loa1 user clicks the delete account button' do
+  context 'ial1 user clicks the delete account button' do
     let(:push_notification_url) { 'http://localhost/push_notifications' }
 
     it 'deletes the account and signs the user out with a flash message' do
@@ -75,7 +75,7 @@ feature 'User profile' do
     end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
-  context 'loa3 user clicks the delete account button' do
+  context 'ial2 user clicks the delete account button' do
     it 'deletes the account and signs the user out with a flash message' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
       sign_in_live_with_2fa(profile.user)
@@ -132,7 +132,7 @@ feature 'User profile' do
       expect(current_path).to eq account_path
     end
 
-    context 'LOA3 user' do
+    context 'IAL2 user' do
       it 'generates a new personal key' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         sign_in_live_with_2fa(profile.user)

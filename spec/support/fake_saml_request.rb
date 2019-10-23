@@ -8,7 +8,7 @@ class FakeSamlRequest
   end
 
   def requested_authn_context
-    Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def valid?

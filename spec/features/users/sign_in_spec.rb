@@ -32,6 +32,20 @@ feature 'Sign in' do
     expect(current_path).to eq login_piv_cac_account_not_found_path
   end
 
+  scenario 'user cannot sign in with certificate timeout error' do
+    signin_with_piv_error('certificate.timeout')
+
+    expect(current_path).to eq login_piv_cac_temporary_error_path
+    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  end
+
+  scenario 'user cannot sign in with certificate ocsp error' do
+    signin_with_piv_error('certificate.ocsp_error')
+
+    expect(current_path).to eq login_piv_cac_temporary_error_path
+    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  end
+
   scenario 'user cannot sign in with an unregistered piv/cac card' do
     signin_with_bad_piv
 
@@ -491,14 +505,14 @@ feature 'Sign in' do
     end
   end
 
-  it_behaves_like 'signing in as LOA1 with personal key', :saml
-  it_behaves_like 'signing in as LOA1 with personal key', :oidc
-  it_behaves_like 'signing in as LOA3 with personal key', :saml
-  it_behaves_like 'signing in as LOA3 with personal key', :oidc
-  it_behaves_like 'signing in as LOA1 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA1 with piv/cac', :oidc
-  it_behaves_like 'signing in as LOA3 with piv/cac', :saml
-  it_behaves_like 'signing in as LOA3 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL1 with personal key', :saml
+  it_behaves_like 'signing in as IAL1 with personal key', :oidc
+  it_behaves_like 'signing in as IAL2 with personal key', :saml
+  it_behaves_like 'signing in as IAL2 with personal key', :oidc
+  it_behaves_like 'signing in as IAL1 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL1 with piv/cac', :oidc
+  it_behaves_like 'signing in as IAL2 with piv/cac', :saml
+  it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
@@ -571,8 +585,8 @@ feature 'Sign in' do
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
       user = create(:user, :signed_up)
-      visit_idp_from_sp_with_loa1(:saml)
-      visit_idp_from_sp_with_loa1(:oidc)
+      visit_idp_from_sp_with_ial1(:saml)
+      visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -582,6 +596,20 @@ feature 'Sign in' do
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       expect(ServiceProviderRequest.count).to eq 0
+    end
+  end
+
+  context 'a prompt login sp redirects back to auth url immediately after we redirect to them' do
+    it 'logs an SP bounce and displays the bounced error screen' do
+      user = create(:user, :signed_up)
+      visit_idp_from_oidc_sp_with_loa1_prompt_login
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_continue
+
+      visit_idp_from_oidc_sp_with_loa1_prompt_login
+      expect(current_path).to eq(bounced_path)
     end
   end
 end

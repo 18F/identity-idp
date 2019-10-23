@@ -1,4 +1,5 @@
 module OpenidConnect
+  # rubocop:disable Metrics/ClassLength
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include RememberDeviceConcern
@@ -23,6 +24,13 @@ module OpenidConnect
 
     private
 
+    def check_sp_handoff_bounced
+      return unless SpHandoffBounce::IsBounced.call(sp_session)
+      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
+      redirect_to bounced_url
+      true
+    end
+
     def confirm_user_is_authenticated_with_fresh_mfa
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
@@ -35,6 +43,8 @@ module OpenidConnect
     def handle_successful_handoff
       analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
+      increment_monthly_auth_count
+      SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
       redirect_to @authorize_form.success_redirect_uri
       delete_branded_experience
     end
@@ -45,7 +55,7 @@ module OpenidConnect
     end
 
     def profile_or_identity_needs_verification?
-      return false unless @authorize_form.loa3_requested?
+      return false unless @authorize_form.ial2_requested?
       profile_needs_verification? || identity_needs_verification?
     end
 
@@ -66,7 +76,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      @authorize_form.loa3_requested? && current_user.decorate.identity_not_verified?
+      @authorize_form.ial2_requested? && current_user.decorate.identity_not_verified?
     end
 
     def build_authorize_form_from_params
@@ -92,6 +102,7 @@ module OpenidConnect
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
+      return if check_sp_handoff_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
@@ -116,4 +127,5 @@ module OpenidConnect
         user_session[:decrypted_pii].blank?
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

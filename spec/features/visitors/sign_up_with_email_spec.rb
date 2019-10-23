@@ -51,7 +51,7 @@ feature 'Visitor signs up with email address' do
 
   scenario 'taken to profile page after sign up flow complete' do
     visit sign_up_email_path
-    sign_up_and_2fa_loa1_user
+    sign_up_and_2fa_ial1_user
 
     expect(Funnel::Registration::TotalSubmittedCount.call).to eq(1)
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)

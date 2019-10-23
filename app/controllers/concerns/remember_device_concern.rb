@@ -62,7 +62,6 @@ module RememberDeviceConcern
   end
 
   def handle_valid_remember_device_analytics
-    increment_monthly_auth_count
     analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
     GoogleAnalyticsMeasurement.new(
       category: 'authentication',

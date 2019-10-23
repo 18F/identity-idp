@@ -18,7 +18,7 @@ describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(['', '2018', 'cloudhsm'])
+      expect(result).to eq(['2019', '2018', 'cloudhsm'])
     end
   end
 
@@ -28,7 +28,7 @@ describe SamlEndpoint do
 
       expect(result).to eq(
         [
-          { suffix: '', secret_key_passphrase: 'trust-but-verify' },
+          { suffix: '2019', secret_key_passphrase: 'trust-but-verify' },
           { suffix: '2018', secret_key_passphrase: 'asdf1234' },
           { suffix: 'cloudhsm', cloudhsm_key_label: 'key1' },
         ],
@@ -42,7 +42,7 @@ describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          File.read('keys/saml2018.key.enc'),
+          File.read('keys.example/saml2018.key.enc'),
           'asdf1234',
         ).to_pem,
       )
@@ -110,7 +110,7 @@ describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        File.read('certs/saml2018.crt.example'),
+        File.read('certs.example/saml2018.crt'),
       )
     end
   end

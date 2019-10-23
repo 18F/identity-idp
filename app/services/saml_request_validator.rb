@@ -34,7 +34,7 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(authn_context) ||
-       (authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF &&
+       (authn_context == Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF &&
          service_provider.ial != 2)
       errors.add(:authn_context, :unauthorized_authn_context)
     end

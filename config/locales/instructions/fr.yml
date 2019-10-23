@@ -28,10 +28,11 @@ fr:
           le code correspondant à %{email} à %{app}.%{tooltip}
         or: or
       piv_cac:
-        account_not_found: "<strong>%{sign_in}</strong> votre adresse e-mail et votre
-          mot de passe.<br><br>%{add_piv_cac}<br><br><strong>Vous n'avez pas de compte
-          login.gov?</strong> %{create_account}"
-        add_piv_cac: Découvrez comment ajouter un PIV/CAC à votre compte.
+        account_not_found:
+          paragraph_1_html: "<strong>%{sign_in}</strong> votre adresse email et votre
+            mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte."
+          paragraph_2_html: "<strong>Vous n'avez pas de compte login.gov?</strong>
+            %{create_account}"
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
@@ -41,6 +42,8 @@ fr:
         sign_in: Assurez-vous que <strong>vous disposez d'un compte login.gov</strong>
           et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
           d'authentification à deux facteurs.
+        temporary_error: Veuillez réessayer ultérieurement ou connectez-vous avec
+          votre adresse électronique et votre mot de passe.
         try_again: réessayer
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.
@@ -84,3 +87,6 @@ fr:
       safety_html: "<strong>Protégez-vous en privé.</strong> Ne partagez pas votre
         clé personnelle et ne l'utilisez que lorsque vous n'avez pas accès à vos méthodes
         de connexion habituelles."
+    sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
+      login.gov. Veuillez contacter %{sp_link} pour obtenir de l'aide.
+    sp_handoff_bounced_with_no_sp: votre fournisseur de service

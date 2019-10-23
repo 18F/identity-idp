@@ -8,33 +8,33 @@ describe SignUp::CompletionsController do
         allow(@analytics).to receive(:track_event)
       end
 
-      context 'LOA1' do
+      context 'IAL1' do
         it 'tracks page visit' do
           user = create(:user)
           stub_sign_in(user)
-          subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
+          subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: false,
+            ial2: false,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
           )
         end
       end
 
-      context 'LOA3' do
+      context 'IAL2' do
         it 'tracks page visit' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          subject.session[:sp] = { issuer: 'awesome sp', loa3: true }
+          subject.session[:sp] = { issuer: 'awesome sp', ial2: true }
 
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: true,
+            ial2: true,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
           )
@@ -76,7 +76,7 @@ describe SignUp::CompletionsController do
     it 'renders show if the user has an sp in the active session' do
       user = create(:user)
       stub_sign_in(user)
-      subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
+      subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
       get :show
 
       expect(response).to render_template(:show)
@@ -86,7 +86,7 @@ describe SignUp::CompletionsController do
       user = create(:user)
       create(:identity, user: user)
       stub_sign_in(user)
-      subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
+      subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
       get :show
 
       expect(response).to render_template(:show)
@@ -102,11 +102,11 @@ describe SignUp::CompletionsController do
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
-    context 'LOA1' do
+    context 'IAL1' do
       it 'tracks analytics' do
         stub_sign_in
         subject.session[:sp] = {
-          loa3: false,
+          ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
         }
@@ -115,7 +115,7 @@ describe SignUp::CompletionsController do
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_COMPLETE,
-          loa3: false,
+          ial2: false,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
         )
@@ -124,7 +124,7 @@ describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in
         subject.session[:sp] = {
-          loa3: false,
+          ial2: false,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
@@ -133,13 +133,13 @@ describe SignUp::CompletionsController do
       end
     end
 
-    context 'LOA3' do
+    context 'IAL2' do
       it 'tracks analytics' do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
-          loa3: true,
+          ial2: true,
           request_url: 'http://example.com',
         }
 
@@ -147,7 +147,7 @@ describe SignUp::CompletionsController do
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_COMPLETE,
-          loa3: true,
+          ial2: true,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
         )
@@ -157,12 +157,12 @@ describe SignUp::CompletionsController do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
-          loa3: true,
+          ial2: true,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name],
         }
         expect(@linker).to receive(:link_identity).
-          with(ial: 3, verified_attributes: %w[email first_name])
+          with(ial: 2, verified_attributes: %w[email first_name])
         patch :update
       end
     end

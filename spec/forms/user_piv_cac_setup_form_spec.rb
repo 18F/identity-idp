@@ -43,7 +43,8 @@ describe UserPivCacSetupForm do
           extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: extra).and_return(result)
+            with(success: false, errors: { type: 'user.piv_cac_associated' },
+                 extra: extra).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
           expect(form.error_type).to eq 'user.piv_cac_associated'
@@ -59,7 +60,8 @@ describe UserPivCacSetupForm do
           extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: extra).and_return(result)
+            with(success: false, errors: { type: 'piv_cac.already_associated' },
+                 extra: extra).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
@@ -95,7 +97,7 @@ describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
+          with(success: false, errors: { type: 'token.bad' }, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
         expect(form.error_type).to eq 'token.bad'
@@ -114,7 +116,7 @@ describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
+          with(success: false, errors: { type: 'token.invalid' }, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.invalid'
       end

@@ -1,7 +1,6 @@
 require Rails.root.join('lib', 'config_validator.rb')
 
 Figaro.require_keys(
-  'attribute_cost',
   'attribute_encryption_key',
   'database_statement_timeout',
   'disallow_all_web_crawlers',
@@ -27,8 +26,6 @@ Figaro.require_keys(
   'otp_valid_for',
   'password_max_attempts',
   'password_pepper',
-  'programmable_sms_countries',
-  'queue_health_check_dead_interval_seconds',
   'RACK_TIMEOUT_SERVICE_TIMEOUT',
   'reauthn_window',
   'recovery_code_length',

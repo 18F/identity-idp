@@ -19,7 +19,8 @@ class Analytics
 
   def register_doc_auth_step_from_analytics_event(event, attributes)
     return unless user && user.class != AnonymousUser
-    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, attributes[:success])
+    success = attributes.blank? || attributes[:success] == 'success'
+    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, success)
   end
 
   # :reek:FeatureEnvy
@@ -155,6 +156,8 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
+  SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'.freeze
+  SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'.freeze
   BACKUP_CODE_CREATED = 'Backup Code Created'.freeze
   BACKUP_CODE_DELETED = 'Backup Code Delete'.freeze
   BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'.freeze

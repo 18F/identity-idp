@@ -2,12 +2,12 @@ require 'rails_helper'
 
 describe SamlRequestPresenter do
   describe '#requested_attributes' do
-    context 'LOA1 and bundle contains invalid attributes and LOA3 attributes' do
+    context 'IAL1 and bundle contains invalid attributes and IAL2 attributes' do
       it 'only returns :email' do
         request = instance_double(FakeSamlRequest)
         allow(FakeSamlRequest).to receive(:new).and_return(request)
         allow(request).to receive(:requested_authn_context).
-          and_return(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
+          and_return(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
 
         parser = instance_double(SamlRequestParser)
         allow(SamlRequestParser).to receive(:new).with(request).and_return(parser)
@@ -24,7 +24,7 @@ describe SamlRequestPresenter do
       end
     end
 
-    context 'LOA3 and bundle contains invalid attributes' do
+    context 'IAL2 and bundle contains invalid attributes' do
       it 'only returns valid attributes named per the OpenId Connect spec' do
         request = FakeSamlRequest.new
 
@@ -46,7 +46,7 @@ describe SamlRequestPresenter do
       end
     end
 
-    context 'LOA3 and bundle contains multiple address attributes' do
+    context 'IAL2 and bundle contains multiple address attributes' do
       it 'consolidates address attributes into one :address attribute' do
         request = FakeSamlRequest.new
 

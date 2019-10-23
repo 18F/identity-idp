@@ -1,44 +1,17 @@
 ---
 fr:
   service_providers:
-    default:
-      account_page:
-        body: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
-          e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
-          %{sp_create_link}.
-        create_link: créer votre nouveau compte login.gov
-      body_html: Si vous avez déjà un profil %{sp_name}, veuillez utiliser l'adresse
-        e-mail principale ou secondaire que vous avez utilisée pour %{sp_name} pour
-        %{link}.
-      create_account_link: créer votre nouveau compte login.gov
-      create_account_page:
-        body: Veuillez créer un compte login.gov avec la même adresse e-mail que vous
-          avez utilisée pour %{sp_name}.
-      header: Êtes-vous venu(e) de %{sp_name}?
-    fmcsa_drug_alcohol_clearinghouse:
-      account_page:
-        body: ''
-      body_html: ''
-      create_account_link: ''
-      create_account_page:
-        body: ''
-      header: ''
-    fmcsa_natl_registry:
-      account_page:
-        body: ''
-      body_html: ''
-      create_account_link: ''
-      create_account_page:
-        body: ''
-      header: ''
-    learn_more: En savoir plus.
-    trusted_traveler:
-      account_page:
-        body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
-          Veuillez créer un nouveau compte login.gov.
-      body_html: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
-        Veuillez %{link}
-      create_account_link: créer un nouveau compte login.gov.
-      create_account_page:
-        body: ''
-      header: Êtes-vous venu(e) de Trusted Traveler Programs?
+    help_text:
+      default:
+        forgot_password: Si vous avez déjà un profil %{sp_name}, veuillez utiliser
+          l'adresse e-mail principale ou secondaire que vous avez utilisée pour %{sp_name}
+          pour <a href=%{sp_create_link}> créer votre nouveau compte login.gov</a>
+          <p><a href="https://login.gov/help/">En savoir plus.</a>
+        sign_in: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
+          %{sp_name}, veuillez utiliser l'adresse e-mail principale ou secondaire
+          que vous avez utilisée pour %{sp_name} pour <a href=%{sp_create_link}> créer
+          votre nouveau compte login.gov</a> <p><a href="https://login.gov/help/">En
+          savoir plus.</a>
+        sign_up: Veuillez créer un compte login.gov avec la même adresse e-mail que
+          vous avez utilisée pour %{sp_name}. <p><a href="https://login.gov/help/">En
+          savoir plus.</a>

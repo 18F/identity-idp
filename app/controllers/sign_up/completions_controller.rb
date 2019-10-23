@@ -3,7 +3,7 @@ module SignUp
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :verify_confirmed, if: :loa3?
+    before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: :show
 
     def show
@@ -24,7 +24,6 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        increment_monthly_auth_count
         redirect_to sp_session_request_url_without_prompt_login
       end
     end
@@ -38,7 +37,7 @@ module SignUp
 
     def view_model
       SignUpCompletionsShow.new(
-        loa3_requested: loa3?,
+        ial2_requested: ial2?,
         decorated_session: decorated_session,
         current_user: current_user,
         handoff: new_service_provider_attributes,
@@ -49,8 +48,8 @@ module SignUp
       redirect_to idv_url if current_user.decorate.identity_not_verified?
     end
 
-    def loa3?
-      sp_session[:loa3] == true
+    def ial2?
+      sp_session[:ial2] == true
     end
 
     def return_to_account
@@ -74,7 +73,7 @@ module SignUp
     end
 
     def analytics_attributes(page_occurence)
-      { loa3: sp_session[:loa3],
+      { ial2: sp_session[:ial2],
         service_provider_name: decorated_session.sp_name,
         page_occurence: page_occurence }
     end

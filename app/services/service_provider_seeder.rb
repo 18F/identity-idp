@@ -5,20 +5,21 @@ class ServiceProviderSeeder
     @deploy_env = deploy_env
   end
 
+  # rubocop:disable Metrics/MethodLength
   def run
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
-
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.update(
-          approved: true,
-          active: true,
-          native: true,
-          friendly_name: config['friendly_name'],
-        )
-      end.update!(config.except('restrict_to_deploy_env', 'uuid_priority'))
+        sp.update(approved: true,
+                  active: true,
+                  native: true,
+                  friendly_name: config['friendly_name'])
+      end.update!(config.except('restrict_to_deploy_env',
+                                'uuid_priority',
+                                'default_help_text'))
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 

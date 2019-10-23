@@ -23,6 +23,3 @@ fr:
       generated_on_html: Générée le %{date}
       header: Votre clé personnelle
       print: Imprimer cette page
-    totp_setup:
-      new:
-        qr_img_alt: Code QR pour l'application d'authentification

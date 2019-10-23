@@ -8,7 +8,7 @@ shared_examples 'back image step' do |simulate|
     let(:user) { user_with_2fa }
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       complete_doc_auth_steps_before_back_image_step(user)
       mock_assure_id_ok
@@ -59,9 +59,11 @@ shared_examples 'back image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_front_image_step) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_error')) unless simulate
-      expect(page).to have_content(I18n.t('errors.doc_auth.general_info')) unless simulate
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_front_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
+        expect(page).to have_content(strip_tags(I18n.t('errors.doc_auth.general_info'))[0..32])
+      end
     end
 
     it 'throttles calls to acuant and allows attempts after the attempt window' do
@@ -100,7 +102,7 @@ shared_examples 'back image step' do |simulate|
       end
     end
 
-    it 'catches network timeout errors' do
+    it 'catches network timeout errors posting back image' do
       allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
         and_raise(Faraday::TimeoutError)
 
@@ -112,10 +114,22 @@ shared_examples 'back image step' do |simulate|
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
+
+    it 'catches network timeout errors verifying results' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+        and_raise(Faraday::TimeoutError)
+
+      attach_image
+      click_idv_continue
+      unless simulate
+        expect(page).to have_current_path(idv_doc_auth_back_image_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+    end
   end
 end
 
 feature 'doc auth back image' do
-  it_behaves_like 'back image step', 'false'
-  it_behaves_like 'back image step', 'true'
+  it_behaves_like 'back image step', false
+  it_behaves_like 'back image step', true
 end

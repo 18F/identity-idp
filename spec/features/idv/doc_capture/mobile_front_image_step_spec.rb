@@ -8,7 +8,7 @@ shared_examples 'capture mobile front image step' do |simulate|
 
     token = nil
     before do
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(simulate)
+      setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
       token = complete_doc_capture_steps_before_mobile_front_image_step
       mock_assure_id_ok
@@ -33,10 +33,20 @@ shared_examples 'capture mobile front image step' do |simulate|
 
       expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
     end
+
+    it 'resets the session if a link is used again' do
+      attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+
+      visit idv_capture_doc_mobile_front_image_step(token)
+      expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(token))
+    end
   end
 end
 
 feature 'doc capture front image' do
-  it_behaves_like 'capture mobile front image step', 'false'
-  it_behaves_like 'capture mobile front image step', 'true'
+  it_behaves_like 'capture mobile front image step', false
+  it_behaves_like 'capture mobile front image step', true
 end

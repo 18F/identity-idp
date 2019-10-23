@@ -3,7 +3,7 @@ require 'rails_helper'
 describe AttributeAsserter do
   include SamlAuthHelper
 
-  let(:loa1_user) { create(:user, :signed_up) }
+  let(:ial1_user) { create(:user, :signed_up) }
   let(:user) { create(:profile, :active, :verified).user }
   let(:identity) do
     build(
@@ -19,23 +19,23 @@ describe AttributeAsserter do
       metadata: {},
     )
   end
-  let(:raw_loa1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
-  let(:raw_loa3_authn_request) { CGI.unescape loa3_authnrequest.split('SAMLRequest').last }
-  let(:loa1_authn_request) do
-    SamlIdp::Request.from_deflated_request(raw_loa1_authn_request)
+  let(:raw_ial1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
+  let(:ial1_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_ial1_authn_request)
   end
-  let(:loa3_authn_request) do
-    SamlIdp::Request.from_deflated_request(raw_loa3_authn_request)
+  let(:ial2_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
   end
   let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
 
   describe '#build' do
-    context 'verified user and LOA3 request' do
+    context 'verified user and IAL2 request' do
       let(:subject) do
         described_class.new(
           user: user,
           service_provider: service_provider,
-          authn_request: loa3_authn_request,
+          authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
         )
       end
@@ -95,9 +95,9 @@ describe AttributeAsserter do
         end
 
         context 'authn request specifies bundle' do
-          let(:raw_loa3_authn_request) do
+          let(:raw_ial2_authn_request) do
             CGI.unescape(
-              auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last,
+              auth_request.create(ial2_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 
@@ -134,12 +134,12 @@ describe AttributeAsserter do
       end
     end
 
-    context 'verified user and LOA1 request' do
+    context 'verified user and IAL1 request' do
       let(:subject) do
         described_class.new(
           user: user,
           service_provider: service_provider,
-          authn_request: loa1_authn_request,
+          authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
         )
       end
@@ -156,7 +156,7 @@ describe AttributeAsserter do
           expect(user.asserted_attributes.keys).to eq %i[uuid email]
         end
 
-        it 'does not create a getter function for LOA1 attributes' do
+        it 'does not create a getter function for IAL1 attributes' do
           expected_email = EmailContext.new(user).last_sign_in_email_address.email
           expect(user.asserted_attributes[:email][:getter].call(user)).to eq expected_email
         end
@@ -181,9 +181,9 @@ describe AttributeAsserter do
         end
 
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
-          let(:raw_loa1_authn_request) do
+          let(:raw_ial1_authn_request) do
             CGI.unescape(
-              auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last,
+              auth_request.create(ial1_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 
@@ -229,7 +229,7 @@ describe AttributeAsserter do
         end
 
         it 'includes only UUID' do
-          expect(loa1_user.asserted_attributes.keys).to eq([:uuid])
+          expect(ial1_user.asserted_attributes.keys).to eq([:uuid])
         end
       end
 
@@ -242,17 +242,17 @@ describe AttributeAsserter do
         end
 
         it 'only includes UUID and email' do
-          expect(loa1_user.asserted_attributes.keys).to eq(%i[uuid email])
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email])
         end
       end
     end
 
-    context 'unverified user and LOA3 request' do
+    context 'unverified user and IAL2 request' do
       let(:subject) do
         described_class.new(
-          user: loa1_user,
+          user: ial1_user,
           service_provider: service_provider,
-          authn_request: loa3_authn_request,
+          authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
         )
       end
@@ -263,9 +263,9 @@ describe AttributeAsserter do
     context 'unverified user and LOA1 request' do
       let(:subject) do
         described_class.new(
-          user: loa1_user,
+          user: ial1_user,
           service_provider: service_provider,
-          authn_request: loa1_authn_request,
+          authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
         )
       end
