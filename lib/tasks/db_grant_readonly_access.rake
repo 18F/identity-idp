@@ -16,7 +16,7 @@ namespace :db do
         password,
       ),
       format(
-        "GRANT SELECT ON ALL TABLES IN SCHEMA public TO %s",
+        'GRANT SELECT ON ALL TABLES IN SCHEMA public TO %s',
         username,
       ),
     ]
