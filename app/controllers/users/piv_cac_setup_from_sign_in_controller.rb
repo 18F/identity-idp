@@ -55,6 +55,19 @@ module Users
       )
     end
 
+    def process_invalid_submission
+      redirect_to case user_piv_cac_form.error_type
+                  when 'certificate.timeout'
+                    flash[:error] = t('titles.piv_cac_setup.certificate.timeout')
+                    login_piv_cac_temporary_error_url
+                  when 'certificate.ocsp_error'
+                    flash[:error] = t('titles.piv_cac_setup.certificate.ocsp_error')
+                    login_piv_cac_temporary_error_url
+                  else
+                    login_piv_cac_did_not_work_url
+                  end
+    end
+
     def process_valid_submission
       session.delete(:x509_dn)
       save_piv_cac_information(
