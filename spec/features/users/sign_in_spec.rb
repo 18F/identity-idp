@@ -32,7 +32,7 @@ feature 'Sign in' do
     expect(current_path).to eq login_piv_cac_account_not_found_path
   end
 
-  scenario 'user adds piv/cac card' do
+  scenario 'user opts to not add piv/cac card' do
     user = create(:user, :signed_up, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
     click_on t('account.login.piv_cac')
@@ -52,6 +52,8 @@ feature 'Sign in' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(current_path).to eq login_add_piv_cac_prompt_path
+    click_on t('forms.piv_cac_setup.no_thanks')
+    expect(current_path).to eq sign_up_completed_path
   end
 
   scenario 'user cannot sign in with certificate timeout error' do
