@@ -21,6 +21,7 @@ es:
     phone_setup: Envíe su código de seguridad a través de un mensaje de texto o de
       una llamada telefónica
     piv_cac_login:
+      add: Agregue su PIV o CAC
       new: Use su PIV / CAC para iniciar sesión en su cuenta
     piv_cac_setup:
       certificate:

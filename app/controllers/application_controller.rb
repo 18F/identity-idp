@@ -131,9 +131,13 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
   end
 
+  def add_piv_cac_setup_url
+    session[:x509_dn] ? login_add_piv_cac_prompt_url : nil
+  end
+
   def after_sign_in_path_for(_user)
-    user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
-      signed_in_url
+    add_piv_cac_setup_url || user_session.delete(:stored_location) ||
+      sp_session_request_url_without_prompt_login || signed_in_url
   end
 
   def signed_in_url

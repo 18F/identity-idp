@@ -86,6 +86,7 @@ module Users
 
     def process_invalid_submission
       if piv_cac_login_form.valid_token?
+        session[:x509_dn] = piv_cac_login_form.data['dn']
         redirect_to login_piv_cac_account_not_found_url
       else
         process_token_with_error

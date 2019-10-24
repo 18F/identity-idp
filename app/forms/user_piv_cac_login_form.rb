@@ -2,7 +2,7 @@ class UserPivCacLoginForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :error_type, :nonce, :user
+  attr_accessor :x509_dn_uuid, :x509_dn, :token, :error_type, :nonce, :user, :data
 
   validates :token, presence: true
   validates :nonce, presence: true

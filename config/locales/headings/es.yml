@@ -38,8 +38,11 @@ es:
     personal_key: Siempre tenga acceso a su cuenta con su clave personal
     piv_cac_login:
       account_not_found: Su PIV / CAC no está conectado a una cuenta
+      add: Configure su PIV o CAC como un método de autenticación de dos factores
+        para que pueda usarlo para iniciar sesión.
       did_not_work: Su PIV / CAC no funcionó
       new: Use su PIV / CAC para iniciar sesión en su cuenta
+      success: Configuró correctamente PIV/CAC como método de autenticación.
       temporary_error: Estamos teniendo dificultades técnicas para usar su PIV/CAC
     piv_cac_setup:
       certificate:

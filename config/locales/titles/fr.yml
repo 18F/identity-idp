@@ -20,6 +20,7 @@ fr:
     personal_key: Juste au cas
     phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
     piv_cac_login:
+      add: Ajoutez votre PIV ou CAC
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
     piv_cac_setup:
       certificate:

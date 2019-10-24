@@ -30,6 +30,10 @@ es:
           paragraph_1_html: "<strong>%{sign_in}</strong> con su dirección de correo
             electrónico y contraseña. Luego agregue su PIV/CAC a su cuenta."
           paragraph_2_html: "<strong>¿No tiene una cuenta login.gov?</strong> %{create_account}"
+        add_from_sign_in: '<strong> Instrucciones: </strong> inserte su PIV o CAC
+          en <strong> "AGREGAR PIV / CAC" </strong>. Tendrá que <strong> elegir un
+          certificado </strong> (el correcto probablemente tenga su nombre) e <strong>
+          ingrese su PIN </strong> (su PIN se creó cuando configuró su PIV / CAC )'
         back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
         did_not_work: Puede haber un problema con su PIV / CAC o PIN. Si cree que
