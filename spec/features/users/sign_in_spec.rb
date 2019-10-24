@@ -52,6 +52,19 @@ feature 'Sign in' do
     expect(current_path).to eq sign_up_completed_path
   end
 
+  scenario 'user opts to add piv/cac card but gets an error' do
+    steps_to_get_to_add_piv_cac_during_sign_up
+    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+    visit_piv_cac_service(current_url,
+                          nonce: nonce,
+                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                          uuid: SecureRandom.uuid,
+                          error: 'certificate.bad',
+                          subject: 'SomeIgnoredSubject')
+
+    expect(current_path).to eq login_piv_cac_did_not_work_path
+  end
+
   scenario 'user cannot sign in with certificate timeout error' do
     signin_with_piv_error('certificate.timeout')
 
