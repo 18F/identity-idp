@@ -173,6 +173,25 @@ RSpec.describe OpenidConnectTokenForm do
           end
         end
 
+        context 'with a list of audiences including the token url' do
+          before { jwt_payload[:aud] = [api_openid_connect_token_url] }
+
+          it 'is valid' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'with a list of audiences not including the token url' do
+          before { jwt_payload[:aud] = ['a different audience'] }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
+            )
+          end
+        end
+
         context 'with a bad issuer' do
           before { jwt_payload[:iss] = 'wrong' }
 
