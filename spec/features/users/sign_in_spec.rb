@@ -56,6 +56,37 @@ feature 'Sign in' do
     expect(current_path).to eq sign_up_completed_path
   end
 
+  scenario 'user opts to add piv/cac card' do
+    user = create(:user, :signed_up, :with_phone)
+    visit_idp_from_sp_with_ial1(:oidc)
+    click_on t('account.login.piv_cac')
+    allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
+
+    stub_piv_cac_service
+    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
+    visit_piv_cac_service(current_url,
+                          nonce: nonce,
+                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                          uuid: SecureRandom.uuid,
+                          subject: 'SomeIgnoredSubject')
+
+    expect(current_path).to eq login_piv_cac_account_not_found_path
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(current_path).to eq login_add_piv_cac_prompt_path
+
+    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+    visit_piv_cac_service(current_url,
+                          nonce: nonce,
+                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                          uuid: SecureRandom.uuid,
+                          subject: 'SomeIgnoredSubject')
+
+    expect(current_path).to eq login_add_piv_cac_success_path
+  end
+
   scenario 'user cannot sign in with certificate timeout error' do
     signin_with_piv_error('certificate.timeout')
 
