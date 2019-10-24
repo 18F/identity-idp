@@ -39,7 +39,6 @@ describe Aws::SES::Base do
     end
 
     it 'retries timed out requests' do
-      allow(Figaro.env).to receive(:aws_ses_region_pool).and_return(nil)
       Aws::SES::Base.new.deliver!(mail)
 
       expect(Aws::SES::Client).to have_received(:new) do |options|

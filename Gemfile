@@ -22,7 +22,7 @@ gem 'hiredis'
 gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.12'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.14'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt'
 gem 'local_time'
@@ -59,6 +59,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'stringex', require: false
 gem 'strong_migrations'
+gem 'subprocess', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
@@ -78,6 +79,7 @@ group :development do
   gem 'derailed'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
+  gem 'irb'
   gem 'octokit'
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
@@ -120,6 +122,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.2.3'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.2.4'
   gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end

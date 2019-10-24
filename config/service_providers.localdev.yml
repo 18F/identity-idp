@@ -1,0 +1,231 @@
+test:
+  'http://localhost:3000':
+    acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'http://localhost:3000/test/saml'
+    block_encryption: 'none'
+    cert: 'saml_test_sp'
+    agency: 'Test Government Agency'
+    agency_id: 1
+    uuid_priority: 10
+    friendly_name: 'Your friendly Government Agency'
+    logo: 'generic.svg'
+    return_to_sp_url: 'http://localhost:3000'
+    redirect_uris:
+      - 'x-example-app://idp_return'
+    attribute_bundle:
+      - email
+      - phone
+
+  'https://rp1.serviceprovider.com/auth/saml/metadata':
+    agency_id: 2
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    failure_to_proof_url: 'https://example.com/'
+    friendly_name: 'Test SP'
+    cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    ial: 2
+    attribute_bundle:
+      - first_name
+      - last_name
+      - ssn
+      - zipcode
+
+  'https://rp2.serviceprovider.com/auth/saml/metadata':
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
+
+  'http://test.host':
+    acs_url: 'http://test.host/test/saml/decode_assertion'
+    block_encryption: 'aes256-cbc'
+    metadata_url: 'http://test.host/test/saml/metadata'
+    sp_initiated_login_url: 'http://test.host/test/saml'
+    friendly_name: 'Test SP'
+
+  'urn:gov:gsa:openidconnect:test':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/signout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+    ial: 2
+    push_notification_url: http://localhost/push_notifications
+
+  'urn:gov:gsa:openidconnect:test:loa1':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/logout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+
+  'urn:gov:gsa:openidconnect:sp:server':
+    agency_id: 2
+    redirect_uris:
+      - 'http://localhost:7654/auth/result'
+      - 'https://example.com'
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
+    assertion_consumer_logout_service_url: ''
+    ial: 2
+
+  'test_sp_with_default_help_text':
+    agency_id: 2
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP with default help text'
+    ial: 2
+    default_help_text: true
+
+  'test_sp_with_custom_help_text':
+    agency_id: 2
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP with custom help text'
+    ial: 2
+    help_text:
+      en:
+        forgot_password: ""
+        sign_up: ""
+        sign_in: "custom sign in help text for %{sp_name}"
+
+development:
+  'https://rp1.serviceprovider.com/auth/saml/metadata':
+    agency_id: 2
+    metadata_url: 'http://localhost:3000/test/saml/metadata'
+    acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    sp_initiated_login_url: 'http://localhost:3000/test/saml'
+    cert: 'saml_test_sp'
+    fingerprint: '08:79:F5:B1:B8:CC:EC:8F:5C:2A:58:03:30:14:C9:E6:F1:67:78:F1:97:E8:3A:88:EB:8E:70:92:25:D2:2F:32'
+    logo: 'generic.svg'
+    agency: 'GSA'
+    friendly_name: 'Awesome test SP'
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+    friendly_name: 'Test SAML SP'
+    acs_url: 'http://localhost:4567/consume'
+    sp_initiated_login_url: 'http://localhost:4567/test/saml'
+    assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_sinatra_demo'
+    ial: 2
+    attribute_bundle:
+      - email
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
+    acs_url: 'http://localhost:3000/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
+    sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    logo: '18f.svg'
+    friendly_name: 'Micro-purchase Dev'
+    return_to_sp_url: 'http://localhost:3000'
+    attribute_bundle:
+      - email
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
+    acs_url: 'http://localhost:3003/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
+    sp_initiated_login_url: 'http://localhost:3003/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_rails_demo'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 10
+    friendly_name: '18F Test Service Provider'
+    logo: 'generic.svg'
+    return_to_sp_url: 'http://localhost:3003'
+    attribute_bundle:
+      - email
+    ial: 2
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    agency_id: 2
+    uuid_priority: 30
+    logo: '18f.svg'
+    cert: 'identity_dashboard_cert'
+    return_to_sp_url: 'http://localhost:3001'
+    redirect_uris:
+      - 'http://localhost:3001/auth/logindotgov/callback'
+
+  'urn:gov:gsa:openidconnect:development':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.development://result'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+
+  'urn:gov:gsa:openidconnect:sp:sinatra':
+    agency_id: 1
+    ial: 2
+    push_notification_url: http://localhost:9292/api/push_notifications
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
+    cert: 'sp_sinatra_demo'
+    friendly_name: 'Example Sinatra App'
+
+  'urn:gov:gsa:openidconnect:sp:expressjs':
+    agency: 'GSA'
+    cert: 'sp_expressjs_demo'
+    friendly_name: 'Example OIDC Client (Express.js)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9393/'
+      - 'http://localhost:9393/auth/login-gov/callback'
+
+  'urn:gov:gsa:openidconnect:sp:gin':
+    agency: 'GSA'
+    cert: 'sp_gin_demo'
+    friendly_name: 'Example OIDC Client (Gin)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:8080/'
+      - 'http://localhost:8080/auth/login-gov/callback'
+
+  'urn:gov:gsa:openidconnect:sp:phoenix':
+    agency: 'GSA'
+    cert: 'sp_phoenix_demo'
+    friendly_name: 'Example OIDC Client (Phoenix)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:4000/'
+
+# These are fake production service providers needed for the
+# ServiceProviderSeeder tests. They are not actually used in production.
+#
+# Production service providers come from identity-idp-config and shouldn't be
+# added here.
+#
+production:
+
+  'urn:gov:login:test-providers:fake-prod-sp':
+    friendly_name: 'Fake/Test stub SP for prod'
+    restrict_to_deploy_env: 'prod'
+
+  'urn:gov:login:test-providers:fake-staging-sp':
+    friendly_name: 'Fake/Test stub SP for staging'
+    restrict_to_deploy_env: 'staging'
+
+  'urn:gov:login:test-providers:fake-unrestricted-sp':
+    friendly_name: 'Fake/Test stub SP, env unrestricted'

@@ -84,8 +84,10 @@ en:
           your administrator to ensure your certificate is up to date.
         none_html: Please contact your administrator to ensure your certificate is
           up to date.
+        ocsp_error_html: We’re having technical difficulties.  Please try again later.
         revoked_html: Please choose a different certificate from your PIV/CAC or contact
           your administrator to ensure your certificate is up to date.
+        timeout_html: We’re having technical difficulties.  Please try again later.
         unverified_html: Please choose a different certificate from your PIV/CAC or
           contact your administrator to ensure your certificate is up to date.
       choose_different_certificate: Choose a different certificate
@@ -140,4 +142,3 @@ en:
         keys as you want, and we recommend at least two for easier account recovery.
       login_text: Press the button on your security key to sign in with login.gov
       nickname: Security key nickname
-      success_title: You have added a security key as your authentication method

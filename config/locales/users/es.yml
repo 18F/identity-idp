@@ -21,6 +21,3 @@ es:
       generated_on_html: Generado el %{date}
       header: Su clave personal
       print: Imprima esta página
-    totp_setup:
-      new:
-        qr_img_alt: Código de QR para la app de autenticación

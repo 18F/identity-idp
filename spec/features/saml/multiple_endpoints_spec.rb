@@ -14,7 +14,7 @@ shared_examples 'a saml endpoint' do
   end
 
   let(:endpoint_cert) do
-    file = File.read(Rails.root.join('certs', "saml#{endpoint_suffix}.crt.example"))
+    file = File.read(Rails.root.join('certs.example', "saml#{endpoint_suffix}.crt"))
     OpenSSL::X509::Certificate.new(file)
   end
 
