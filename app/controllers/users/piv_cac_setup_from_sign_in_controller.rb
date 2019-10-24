@@ -49,19 +49,19 @@ module Users
 
     def user_piv_cac_form
       @user_piv_cac_form ||= UserPivCacSetupForm.new(
-          user: current_user,
-          token: params[:token],
-          nonce: piv_cac_nonce,
-          )
+        user: current_user,
+        token: params[:token],
+        nonce: piv_cac_nonce,
+      )
     end
 
     def process_valid_submission
       session.delete(:x509_dn)
       flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
-          subject: user_piv_cac_form.x509_dn,
-          presented: true,
-          )
+        subject: user_piv_cac_form.x509_dn,
+        presented: true,
+      )
       create_user_event(:piv_cac_enabled)
       redirect_to login_add_piv_cac_success_url
     end
