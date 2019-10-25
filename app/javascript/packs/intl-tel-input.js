@@ -6,7 +6,7 @@ intlTelInput(telInput);
 
 // initialise plugin
 intlTelInput(telInput, {
-  ipreferredCountries: ['us', 'ca'],
+  preferredCountries: ['us', 'ca'],
   excludeCountries: ['io', 'ki', 'nf', 'nr', 'nu', 'sh', 'sx', 'tk', 'wf'],
 });
 
