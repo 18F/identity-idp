@@ -53,7 +53,7 @@ fr:
       phone:
         fail_html: Pour protéger votre identité, vous devez <strong>attendre 24 heures</strong>
           pour réessayer un numéro de téléphone.
-        heading: Nous ne pouvons pas vous correspondre ni votre adresse à ce numéro
+        heading: Nous n'avons pas pu faire correspondre votre nom et votre adresse à ce numéro
           de téléphone.
         jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer demain.
