@@ -47,10 +47,10 @@ es:
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
-        fail_html: Para su seguridad, la verificación de identidad de su cuenta está
-          <strong>bloqueada durante 24 horas</strong>.
-        heading: No hemos podido encontrar registros que coincidan con la información
-          de su teléfono.
+        fail_html: Para proteger su identidad, debe <strong>esperar 24 horas</strong>
+          para volver a intentar un número de teléfono.
+        heading: No podríamos coincidir con usted y su dirección con este número de
+          teléfono.
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo mañana.
         timeout: Nuestra solicitud para verificar tu información ha caducado.
@@ -76,7 +76,7 @@ es:
         warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
           número de identificación del estado, etc.
     form:
-      activate_by_mail: Obtenga un código por correo ›
+      activate_by_mail: Verifique su dirección por correo en su lugar.
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
@@ -84,7 +84,8 @@ es:
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: "¿No tienes un teléfono elegible? <strong>%{link}</strong>"
+      no_alternate_phone_html: "<strong>%{link}</strong> Le enviaremos una carta con
+        un código."
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social

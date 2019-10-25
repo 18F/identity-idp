@@ -45,9 +45,9 @@ en:
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
-        fail_html: For your security, identity verification for your account is <strong>locked
-          for 24 hours</strong>.
-        heading: We could not find records matching your phone information.
+        fail_html: To protect your identity, you must <strong>wait 24 hours</strong>
+          to try a phone number again.
+        heading: We couldn't match you and your address to this phone number.
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again tomorrow.
         timeout: Our request to verify your information timed out.
@@ -73,7 +73,7 @@ en:
         warning_2: You'll have to re-enter your personal information, like your name,
           state ID number, etc.
     form:
-      activate_by_mail: Get a code by mail ›
+      activate_by_mail: Verify your address by mail instead.
       address1: Address
       address2: Address (optional)
       city: City
@@ -81,7 +81,8 @@ en:
       dob_hint: 'example: 01/17/1964'
       first_name: First name
       last_name: Last name
-      no_alternate_phone_html: No eligible phone? <strong>%{link}</strong>
+      no_alternate_phone_html: "<strong>%{link}</strong>  We'll mail you a letter
+        with a code in it."
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
