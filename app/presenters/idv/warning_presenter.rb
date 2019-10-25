@@ -1,5 +1,7 @@
 module Idv
   class WarningPresenter < FailurePresenter
+    include ActionView::Helpers::UrlHelper
+
     attr_reader :reason, :remaining_attempts, :step_name, :view_context
 
     delegate :idv_phone_path,
@@ -38,6 +40,13 @@ module Idv
 
     def button_path
       step_name == :sessions ? idv_session_path : idv_phone_path
+    end
+
+    def next_steps
+      return [] unless @step_name == :phone
+      [I18n.t('idv.form.no_alternate_phone_html',
+              link: view_context.link_to(t('idv.form.activate_by_mail'),
+                                         Rails.application.routes.url_helpers.idv_usps_path))]
     end
 
     private

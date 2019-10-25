@@ -23,7 +23,7 @@
 <hr>
 
 <% presenter.next_steps.each do |step| %>
-  <p><%= step %></p>
+  <p><%== step %></p>
 <% end; if presenter.js %>
   <%= nonced_javascript_tag presenter.js %>
 <% end %>
