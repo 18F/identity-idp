@@ -115,6 +115,7 @@ shared_examples 'verification step max attempts' do |step, sp|
   def expect_user_to_fail_at_phone_step
     expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
     expect(current_url).to eq(idv_phone_failure_url(:fail, locale: locale))
+    expect(page).to have_link(t('idv.form.activate_by_mail'))
   end
 
   def advance_to_phone_step
