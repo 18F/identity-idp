@@ -1,23 +1,17 @@
-// Setting hidden input for intl code
-import $ from 'jquery';
 import 'intl-tel-input/build/js/utils.js';
-import 'intl-tel-input';
+import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
-// Setting variables that jQuery is using with a $ at the start of the const name
-const $telInput = $('#new_phone_form_phone');
-const telInput = document.querySelector('#new_phone_form_phone');
-const $intlCode = $('#new_phone_form_international_code');
+const telInput = document.querySelector("#new_phone_form_phone");
+intlTelInput(telInput);
 
 // initialise plugin
-$telInput.intlTelInput({
-  preferredCountries: ['us', 'ca'],
+intlTelInput(telInput, {
+  ipreferredCountries: ['us', 'ca'],
   excludeCountries: ['io', 'ki', 'nf', 'nr', 'nu', 'sh', 'sx', 'tk', 'wf'],
 });
 
-$telInput.on('countrychange', function(e, countryData) {
-// Changing hidden dropdown country code on JS dropdown change
-  $intlCode.val(countryData.iso2.toUpperCase());
-
+// OnChange event
+telInput.addEventListener("countrychange", function() {
   // Using plain JS to dispatch the country change event to phone-internationalization.js
   telInput.dispatchEvent(new Event('countryChange'));
 });
