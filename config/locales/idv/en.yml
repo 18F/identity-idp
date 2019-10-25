@@ -47,7 +47,7 @@ en:
       phone:
         fail_html: To protect your identity, you must <strong>wait 24 hours</strong>
           to try a phone number again.
-        heading: We couldn't match you and your address to this phone number.
+        heading: We couldn't match your name and address to this phone number.
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again tomorrow.
         timeout: Our request to verify your information timed out.
