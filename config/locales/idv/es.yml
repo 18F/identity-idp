@@ -49,7 +49,7 @@ es:
       phone:
         fail_html: Para proteger su identidad, debe <strong>esperar 24 horas</strong>
           para volver a intentar un número de teléfono.
-        heading: No podríamos coincidir con usted y su dirección con este número de
+        heading: No pudimos coincidir su nombre y dirección con este número de
           teléfono.
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo mañana.
