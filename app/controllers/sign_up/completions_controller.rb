@@ -1,4 +1,5 @@
 # :reek:TooManyMethods
+# rubocop:disable Metrics/ClassLength
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
@@ -9,7 +10,7 @@ module SignUp
 
     def show
       @view_model = view_model
-      @pii = pii_to_displayable_attributes
+      @pii = displayable_attributes
       if needs_completions_screen?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
@@ -106,6 +107,14 @@ module SignUp
       EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
+    def displayable_attributes
+      return pii_to_displayable_attributes if user_session['idv']
+      {
+        email: email,
+        x509_subject: current_user.x509_dn_uuid,
+      }
+    end
+
     def pii_to_displayable_attributes
       {
         full_name: full_name,
@@ -119,3 +128,4 @@ module SignUp
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
