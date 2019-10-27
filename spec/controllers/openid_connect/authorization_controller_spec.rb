@@ -95,7 +95,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'redirects verify shared attributes page' do
             action
 
-            expect(response).to redirect_to(sign_up_completed_url)
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
           end
 
           it 'links identity to the user' do
@@ -203,7 +203,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
       end
 
-      it 'sets sp information in the session' do
+      it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
         action
         sp_request_id = ServiceProviderRequest.last.uuid
 
@@ -212,7 +212,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,
-          requested_attributes: %w[given_name family_name birthdate],
+          requested_attributes: %w[],
         )
       end
     end
