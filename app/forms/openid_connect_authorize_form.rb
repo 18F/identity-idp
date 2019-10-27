@@ -39,7 +39,7 @@ class OpenidConnectAuthorizeForm
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
-    @scope = parse_to_values(params[:scope], OpenidConnectAttributeScoper::VALID_SCOPES)
+    @scope = parse_to_values(params[:scope], scopes)
     SIMPLE_ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
@@ -131,6 +131,11 @@ class OpenidConnectAuthorizeForm
       error_description: errors.full_messages.join(' '),
       state: state,
     )
+  end
+
+  def scopes
+    return OpenidConnectAttributeScoper::VALID_SCOPES if ial2_requested?
+    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
