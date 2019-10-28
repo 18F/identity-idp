@@ -108,11 +108,16 @@ module SignUp
     end
 
     def displayable_attributes
-      return pii_to_displayable_attributes if user_session['decrypted_pii']
+      return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
       {
         email: email,
         x509_subject: current_user.x509_dn_uuid,
       }
+    end
+
+    def dob
+      pii_dob = pii[:dob]
+      pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
     end
 
     def pii_to_displayable_attributes
@@ -120,7 +125,7 @@ module SignUp
         full_name: full_name,
         social_security_number: pii[:ssn],
         address: address,
-        birthdate: pii[:dob].to_date.to_formatted_s(:long),
+        birthdate: dob,
         phone: pii[:phone].to_s,
         email: email,
         x509_subject: current_user.x509_dn_uuid,
