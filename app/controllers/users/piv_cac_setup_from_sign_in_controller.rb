@@ -1,8 +1,10 @@
 module Users
   class PivCacSetupFromSignInController < ApplicationController
     include PivCacConcern
+    include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
+    before_action :apply_secure_headers_override, only: %i[prompt success]
 
     def prompt
       if params.key?(:token)
