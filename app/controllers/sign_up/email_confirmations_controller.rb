@@ -16,7 +16,7 @@ module SignUp
     private
 
     def clear_setup_piv_cac_from_sign_in
-      session.delete(:x509_dn)
+      session.delete(:needs_to_setup_piv_cac_after_sign_in)
     end
 
     def process_successful_confirmation

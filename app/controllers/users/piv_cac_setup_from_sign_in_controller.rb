@@ -21,7 +21,7 @@ module Users
     end
 
     def decline
-      session.delete(:x509_dn)
+      session.delete(:needs_to_setup_piv_cac_after_sign_in)
       redirect_to after_sign_in_path_for(current_user)
     end
 
@@ -69,7 +69,7 @@ module Users
     end
 
     def process_valid_submission
-      session.delete(:x509_dn)
+      session.delete(:needs_to_setup_piv_cac_after_sign_in)
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
         presented: true,
