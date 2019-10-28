@@ -7,6 +7,8 @@ describe 'devise/sessions/new.html.slim' do
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
     allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
+      and_return('/')
     assign(:ial, 1)
   end
 
@@ -48,15 +50,17 @@ describe 'devise/sessions/new.html.slim' do
   end
 
   context 'when SP is present' do
-    before do
-      @sp = build_stubbed(
+    let(:sp) do
+      build_stubbed(
         :service_provider,
         friendly_name: 'Awesome Application!',
         return_to_sp_url: 'www.awesomeness.com',
       )
+    end
+    before do
       view_context = ActionController::Base.new.view_context
       @decorated_session = DecoratedSession.new(
-        sp: @sp,
+        sp: sp,
         view_context: view_context,
         sp_session: {},
         service_provider_request: ServiceProviderRequest.new,
@@ -86,18 +90,25 @@ describe 'devise/sessions/new.html.slim' do
     end
 
     it 'has sp alert for certain service providers' do
-      sps_with_default_ht = SP_CONFIG.select { |_issuer, attrs| attrs['default_help_text'] }
-      @sp.issuer = sps_with_default_ht.keys.first
-
       render
 
       expect(rendered).to have_selector('.alert')
     end
 
-    it 'does not have an sp alert for service providers without alert messages' do
-      render
+    context 'service provider does not have custom help text' do
+      let(:sp) do
+        build_stubbed(
+          :service_provider_without_help_text,
+          friendly_name: 'Awesome Application!',
+          return_to_sp_url: 'www.awesomeness.com',
+        )
+      end
 
-      expect(rendered).to_not have_selector('.alert')
+      it 'does not have an sp alert for service providers without alert messages' do
+        render
+
+        expect(rendered).to_not have_selector('.alert')
+      end
     end
   end
 
