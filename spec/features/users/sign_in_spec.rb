@@ -65,6 +65,37 @@ feature 'Sign in' do
     expect(current_path).to eq login_piv_cac_did_not_work_path
   end
 
+  scenario 'user attempts sign in with piv/cac with no account then creates account' do
+    visit_idp_from_sp_with_ial1(:oidc)
+    click_on t('account.login.piv_cac')
+    allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
+
+    stub_piv_cac_service
+    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
+    visit_piv_cac_service(current_url,
+                          nonce: nonce,
+                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                          uuid: SecureRandom.uuid,
+                          subject: 'SomeIgnoredSubject')
+
+    expect(current_path).to eq login_piv_cac_account_not_found_path
+    visit sign_up_email_path
+    email = 'foo@bar.com'
+    submit_form_with_valid_email(email)
+    click_confirmation_link_in_email(email)
+    submit_form_with_valid_password
+    expect(page).to have_current_path(two_factor_options_path)
+
+    %w[2025551313 2025551314].each do |phone_number|
+      select_2fa_option('phone')
+      fill_in :new_phone_form_phone, with: phone_number
+      click_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_continue
+    end
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
+  end
   scenario 'user cannot sign in with certificate timeout error' do
     signin_with_piv_error('certificate.timeout')
 
