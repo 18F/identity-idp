@@ -120,7 +120,6 @@ class OpenidConnectAuthorizeForm
     {
       client_id: client_id,
       redirect_uri: result_uri,
-      unauthorized_scope: @unauthorized_scope,
     }
   end
 
