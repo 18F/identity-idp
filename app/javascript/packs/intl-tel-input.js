@@ -11,12 +11,12 @@ intlTelInput(telInput, {
 });
 
 // OnChange event
-telInput.addEventListener('countrychange', function(e) {
+telInput.addEventListener('countrychange', function() {
   const selected = document.querySelector(".iti__country[aria-selected='true']");
   const country = selected.getAttribute('data-country-code').toUpperCase();
   // update international_code dropdown
-  for(var i = 0;i < intlCode.options.length;i++){
-    if(intlCode.options[i].value == country ){
+  for (let i = 0; i < intlCode.options.length; i += 1) {
+    if (intlCode.options[i].value === country) {
       intlCode.options[i].selected = true;
     }
   }
