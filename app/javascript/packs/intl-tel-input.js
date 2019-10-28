@@ -2,6 +2,7 @@ import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
 const telInput = document.querySelector('#new_phone_form_phone');
+const intlCode = document.querySelector('#new_phone_form_international_code');
 
 // initialise plugin
 intlTelInput(telInput, {
@@ -10,7 +11,15 @@ intlTelInput(telInput, {
 });
 
 // OnChange event
-telInput.addEventListener('countrychange', function() {
+telInput.addEventListener('countrychange', function(e) {
+  const selected = document.querySelector(".iti__country[aria-selected='true']");
+  const country = selected.getAttribute('data-country-code').toUpperCase();
+  // update international_code dropdown
+  for(var i = 0;i < intlCode.options.length;i++){
+    if(intlCode.options[i].value == country ){
+      intlCode.options[i].selected = true;
+    }
+  }
   // Using plain JS to dispatch the country change event to phone-internationalization.js
   telInput.dispatchEvent(new Event('countryChange'));
 });
@@ -26,14 +35,14 @@ function intlTelInputNormalize() {
     dupCanOption.parentNode.removeChild(dupCanOption);
   }
   // set accessibility label
-  const flagContainer = document.querySelectorAll('.flag-container');
+  const flagContainer = document.querySelectorAll('.iti__flag-container');
   if (flagContainer) {
     [].slice.call(flagContainer).forEach((element) => {
       element.setAttribute('aria-label', 'Country code');
     });
   }
   // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
-  const selectedFlag = document.querySelectorAll('.flag-container .selected-flag');
+  const selectedFlag = document.querySelectorAll('.iti__flag-container .iti__selected-flag');
   if (selectedFlag) {
     [].slice.call(selectedFlag).forEach((element) => {
       element.setAttribute('aria-haspopup', 'true');
