@@ -33,6 +33,11 @@ fr:
             mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte."
           paragraph_2_html: "<strong>Vous n'avez pas de compte login.gov?</strong>
             %{create_account}"
+        add_from_sign_in: '<strong> Instructions: </ strong> insérez votre PIV ou
+          votre CAC dans <strong> "AJOUTER PIV / CAC" </ strong>. Vous devez <strong>
+          choisir un certificat </ strong> (le bon en a probablement votre nom) et
+          <strong> saisir votre code confidentiel </ strong> (votre code confidentiel
+          a été créé lors de la configuration de votre PIV / CAC). ).'
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.

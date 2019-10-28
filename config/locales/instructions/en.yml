@@ -29,6 +29,10 @@ en:
           paragraph_1_html: "<strong>%{sign_in}</strong> with your email address and
             password. Then add your PIV/CAC to your account."
           paragraph_2_html: "<strong>Don't have a login.gov account?</strong> %{create_account}"
+        add_from_sign_in: <strong>Instructions:</strong> Insert your PIV or CAC on
+          <strong>"ADD PIV/CAC"</strong>. You'll need to <strong>choose a certificate</strong>
+          (the right one likely has your name of it) and <strong>enter your PIN</strong>
+          (your PIN was created when you set up your PIV/CAC).
         back_to_sign_in: Go back to sign in
         confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think

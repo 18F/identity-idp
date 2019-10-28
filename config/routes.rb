@@ -109,6 +109,11 @@ Rails.application.routes.draw do
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
            as: :login_otp
 
+      get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
+      post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
+      get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
+      post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
+
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
       get '/timeout' => 'users/sessions#timeout'
