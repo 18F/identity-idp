@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def add_piv_cac_setup_url
-    session[:x509_dn] ? login_add_piv_cac_prompt_url : nil
+    session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
   end
 
   def after_sign_in_path_for(_user)
