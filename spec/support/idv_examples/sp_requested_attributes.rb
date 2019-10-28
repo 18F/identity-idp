@@ -22,11 +22,15 @@ shared_examples 'sp requesting attributes' do |sp|
 
       within('.requested-attributes') do
         expect(page).to have_content t('help_text.requested_attributes.email')
+        expect(page).to have_content user.email
         expect(page).to_not have_content t('help_text.requested_attributes.address')
         expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
         expect(page).to have_content t('help_text.requested_attributes.full_name')
+        expect(page).to have_content 'José One'
         expect(page).to have_content t('help_text.requested_attributes.phone')
+        expect(page).to have_content '2025551212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
+        expect(page).to have_content '666-66-1234'
       end
     end
   end
