@@ -90,7 +90,7 @@ module SignUp
     end
 
     def pii
-      @pii ||= user_session['idv']['applicant'].symbolize_keys
+      @pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
     end
 
     def address
@@ -108,7 +108,7 @@ module SignUp
     end
 
     def displayable_attributes
-      return pii_to_displayable_attributes if user_session['idv']
+      return pii_to_displayable_attributes if user_session['decrypted_pii']
       {
         email: email,
         x509_subject: current_user.x509_dn_uuid,
