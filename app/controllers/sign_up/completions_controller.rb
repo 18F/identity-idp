@@ -1,3 +1,5 @@
+# :reek:TooManyMethods
+# rubocop:disable Metrics/ClassLength
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
@@ -9,6 +11,7 @@ module SignUp
     def show
       @view_model = view_model
       if needs_completions_screen?
+        @pii = displayable_attributes
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
           analytics_attributes(''),
@@ -58,9 +61,7 @@ module SignUp
     end
 
     def decider
-      CompletionsDecider.new(
-        user_agent: request.user_agent, request_url: sp_session[:request_url],
-      )
+      CompletionsDecider.new(user_agent: request.user_agent, request_url: sp_session[:request_url])
     end
 
     def sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -79,10 +80,7 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_COMPLETE,
-        analytics_attributes(last_page),
-      )
+      analytics.track_event(Analytics::USER_REGISTRATION_COMPLETE, analytics_attributes(last_page))
       GoogleAnalyticsMeasurement.new(
         category: 'registration',
         event_action: 'completion',
@@ -90,5 +88,49 @@ module SignUp
         client_id: ga_cookie_client_id,
       ).send_event
     end
+
+    def pii
+      @pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
+    end
+
+    def address
+      addr = pii[:address2]
+      addr = addr ? "#{addr} " : ''
+      "#{pii[:address1]} #{addr}#{pii[:city]}, #{pii[:state]} #{pii[:zipcode]}"
+    end
+
+    def full_name
+      "#{pii[:first_name]} #{pii[:last_name]}"
+    end
+
+    def email
+      EmailContext.new(current_user).last_sign_in_email_address.email
+    end
+
+    def displayable_attributes
+      return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
+      {
+        email: email,
+        x509_subject: current_user.x509_dn_uuid,
+      }
+    end
+
+    def dob
+      pii_dob = pii[:dob]
+      pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
+    end
+
+    def pii_to_displayable_attributes
+      {
+        full_name: full_name,
+        social_security_number: pii[:ssn],
+        address: address,
+        birthdate: dob,
+        phone: pii[:phone].to_s,
+        email: email,
+        x509_subject: current_user.x509_dn_uuid,
+      }
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength
