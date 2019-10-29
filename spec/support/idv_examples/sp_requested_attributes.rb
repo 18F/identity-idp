@@ -31,7 +31,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.full_name')
         expect(page).to have_content 'José One'
         expect(page).to have_content t('help_text.requested_attributes.phone')
-        expect(page).to have_content '2025551212'
+        expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
         expect(page).to have_content '666-66-1234'
       end
