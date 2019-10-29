@@ -44,6 +44,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         extra_attributes = {
           client_id: client_id,
           redirect_uri: nil,
+          unauthorized_scope: true,
         }
 
         expect(FormResponse).to have_received(:new).
@@ -62,6 +63,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             client_id: client_id,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
+            unauthorized_scope: true,
           }
 
           errors = { response_type: ['is not included in the list'] }
