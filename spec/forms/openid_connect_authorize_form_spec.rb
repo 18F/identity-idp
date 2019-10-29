@@ -173,7 +173,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('true')
         expect(valid?).to eq(false)
         expect(form.errors[:scope]).
-            to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+          to include(t('openid_connect.authorization.errors.unauthorized_scope'))
       end
     end
 
