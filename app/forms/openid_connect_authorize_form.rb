@@ -15,7 +15,7 @@ class OpenidConnectAuthorizeForm
     state
   ].freeze
 
-  ATTRS = [:acr_values, :scope, *SIMPLE_ATTRS].freeze
+  ATTRS = [:unauthorized_scope, :acr_values, :scope, *SIMPLE_ATTRS].freeze
 
   attr_reader(*ATTRS)
 
@@ -35,15 +35,15 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
+  validate :validate_unauthorized_scope
   validate :validate_privileges
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
-    @scope = parse_to_values(params[:scope], OpenidConnectAttributeScoper::VALID_SCOPES)
-    SIMPLE_ATTRS.each do |key|
-      instance_variable_set(:"@#{key}", params[key])
-    end
+    SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
+    @scope = parse_to_values(params[:scope], scopes)
+    @unauthorized_scope = check_for_unauthorized_scope(params)
   end
 
   def submit
@@ -82,6 +82,12 @@ class OpenidConnectAuthorizeForm
 
   attr_reader :identity, :success, :already_linked
 
+  def check_for_unauthorized_scope(params)
+    param_value = params[:scope]
+    return false if ial2_requested? || param_value.blank?
+    @scope != param_value.split(' ').compact
+  end
+
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
@@ -102,6 +108,11 @@ class OpenidConnectAuthorizeForm
     errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
   end
 
+  def validate_unauthorized_scope
+    return unless @unauthorized_scope && Figaro.env.unauthorized_scope_enabled == 'true'
+    errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
+  end
+
   def ial
     case acr_values.sort.max
     when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -115,6 +126,7 @@ class OpenidConnectAuthorizeForm
     {
       client_id: client_id,
       redirect_uri: result_uri,
+      unauthorized_scope: @unauthorized_scope,
     }
   end
 
@@ -131,6 +143,11 @@ class OpenidConnectAuthorizeForm
       error_description: errors.full_messages.join(' '),
       state: state,
     )
+  end
+
+  def scopes
+    return OpenidConnectAttributeScoper::VALID_SCOPES if ial2_requested?
+    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges

@@ -13,6 +13,14 @@ class OpenidConnectAttributeScoper
     x509:presented
   ].freeze
 
+  VALID_IAL1_SCOPES = %w[
+    email
+    openid
+    x509
+    x509:subject
+    x509:presented
+  ].freeze
+
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
     email_verified: %w[email],

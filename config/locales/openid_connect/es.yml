@@ -9,6 +9,7 @@ es:
         no_valid_scope: No se han encontrado valores de magnitud válidos
         redirect_uri_invalid: Redirect_uri no es válido
         redirect_uri_no_match: Redirect_uri no coincide con redirect_uri registrado
+        unauthorized_scope: Alcance no autorizado
     logout:
       errors:
         id_token_hint: Id_token_hint no fue reconocido

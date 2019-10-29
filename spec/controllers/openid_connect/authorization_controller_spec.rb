@@ -45,6 +45,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  success: true,
                  client_id: client_id,
                  errors: {},
+                 unauthorized_scope: true,
                  user_fully_authenticated: true)
           expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
@@ -95,7 +96,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'redirects verify shared attributes page' do
             action
 
-            expect(response).to redirect_to(sign_up_completed_url)
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
           end
 
           it 'links identity to the user' do
@@ -145,6 +146,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: client_id,
+                 unauthorized_scope: true,
                  errors: hash_including(:prompt),
                  user_fully_authenticated: true)
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
@@ -167,6 +169,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: nil,
+                 unauthorized_scope: true,
                  errors: hash_including(:client_id),
                  user_fully_authenticated: true)
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
@@ -203,7 +206,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
       end
 
-      it 'sets sp information in the session' do
+      it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
         action
         sp_request_id = ServiceProviderRequest.last.uuid
 
@@ -212,7 +215,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,
-          requested_attributes: %w[given_name family_name birthdate],
+          requested_attributes: %w[],
         )
       end
     end

@@ -44,6 +44,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         extra_attributes = {
           client_id: client_id,
           redirect_uri: nil,
+          unauthorized_scope: true,
         }
 
         expect(FormResponse).to have_received(:new).
@@ -62,6 +63,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             client_id: client_id,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
+            unauthorized_scope: true,
           }
 
           errors = { response_type: ['is not included in the list'] }
@@ -162,6 +164,32 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(valid?).to eq(false)
         expect(form.errors[:scope]).
           to include(t('openid_connect.authorization.errors.no_valid_scope'))
+      end
+    end
+
+    context 'when scope is unauthorized and we block unauthorized scopes' do
+      let(:scope) { 'email profile' }
+      it 'has errors' do
+        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('true')
+        expect(valid?).to eq(false)
+        expect(form.errors[:scope]).
+          to include(t('openid_connect.authorization.errors.unauthorized_scope'))
+      end
+    end
+
+    context 'when scope is good and we block unauthorized scopes' do
+      let(:scope) { 'email' }
+      it 'does not have errors' do
+        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('false')
+        expect(valid?).to eq(true)
+      end
+    end
+
+    context 'when scope is unauthorized and we do not block unauthorized scopes' do
+      let(:scope) { 'email profile' }
+      it 'does not have errors' do
+        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('false')
+        expect(valid?).to eq(true)
       end
     end
 
