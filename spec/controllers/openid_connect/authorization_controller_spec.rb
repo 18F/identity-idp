@@ -45,6 +45,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  success: true,
                  client_id: client_id,
                  errors: {},
+                 unauthorized_scope: true,
                  user_fully_authenticated: true)
           expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
@@ -145,6 +146,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: client_id,
+                 unauthorized_scope: true,
                  errors: hash_including(:prompt),
                  user_fully_authenticated: true)
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
@@ -167,6 +169,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: nil,
+                 unauthorized_scope: true,
                  errors: hash_including(:client_id),
                  user_fully_authenticated: true)
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
