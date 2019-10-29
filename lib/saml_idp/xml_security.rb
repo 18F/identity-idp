@@ -44,6 +44,7 @@ module SamlIdp
       end
 
       def validate(idp_cert_fingerprint, soft = true, options = {})
+        Rails.logger.info 'Validate the fingerprint'
         base64_cert = find_base64_cert(options)
         cert_text   = Base64.decode64(base64_cert)
         cert        = OpenSSL::X509::Certificate.new(cert_text)
@@ -216,10 +217,17 @@ module SamlIdp
         end
         algorithm = algorithm && algorithm =~ /(rsa-)?sha(.*?)$/i && $2.to_i
         case algorithm
-        when 256 then OpenSSL::Digest::SHA256
-        when 384 then OpenSSL::Digest::SHA384
-        when 512 then OpenSSL::Digest::SHA512
+        when 256
+          log 'Request signed with SHA256'
+          OpenSSL::Digest::SHA256
+        when 384
+          log 'Request signed with SHA384'
+          OpenSSL::Digest::SHA384
+        when 512
+          log 'Request signed with SHA512'
+          OpenSSL::Digest::SHA512
         else
+          log 'Request using default SHA1'
           OpenSSL::Digest::SHA1
         end
       end
@@ -230,6 +238,14 @@ module SamlIdp
           prefix_list.split(" ")
         else
           []
+        end
+      end
+
+      def log(msg)
+        if Rails && Rails.logger
+          Rails.logger.info msg
+        else
+          puts msg
         end
       end
     end
