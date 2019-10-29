@@ -9,6 +9,7 @@ en:
         no_valid_scope: No valid scope values found
         redirect_uri_invalid: redirect_uri is invalid
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
+        unauthorized_scope: Unauthorized scope
     logout:
       errors:
         id_token_hint: id_token_hint was not recognized

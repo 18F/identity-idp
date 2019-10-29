@@ -35,6 +35,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
+  validate :validate_unauthorized_scope
   validate :validate_privileges
 
   def initialize(params)
@@ -105,6 +106,11 @@ class OpenidConnectAuthorizeForm
   def validate_scope
     return if scope.present?
     errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
+  end
+
+  def validate_unauthorized_scope
+    return unless @unauthorized_scope && Figaro.env.unauthorized_scope_enabled == 'true'
+    errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
   end
 
   def ial

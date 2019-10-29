@@ -9,6 +9,7 @@ fr:
         no_valid_scope: Aucune étendue de données valide trouvée
         redirect_uri_invalid: redirect_uri est non valide
         redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré
+        unauthorized_scope: Portée non autorisée
     logout:
       errors:
         id_token_hint: id_token_hint n'a pas été reconnu
