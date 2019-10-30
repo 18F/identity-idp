@@ -22,7 +22,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -42,7 +42,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -63,7 +63,7 @@ describe '2FA options when signing in' do
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -84,7 +84,7 @@ describe '2FA options when signing in' do
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -144,7 +144,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -164,7 +164,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -204,7 +204,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -226,7 +226,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.personal_key')
+        to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -257,8 +257,8 @@ describe '2FA options when signing in' do
         to have_selector("#two_factor_options_form_selection_voice_#{first_id}", count: 1)
       expect(page).
         to have_selector("#two_factor_options_form_selection_voice_#{second_id}", count: 1)
-      expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 1)
-      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
+      expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 0)
+      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 1)
       expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 0)
