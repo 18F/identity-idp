@@ -1,12 +1,14 @@
-.mt2.px3.py2.col-12.center.border-box.border.border-light-blue.rounded-xl
-  p.fs-20p = t('idv.messages.return_to_sp_html', sp: decorated_session.sp_name)
-  p
-    = button_to t('forms.buttons.continue'), sign_up_completed_path, \
-              class: 'btn btn-primary btn-wide'
-p.sm-mr1.sm-ml1.mt3.mb2
+p.sm-mr1.sm-ml1.mt3.mb3
   = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
     sp: content_tag(:strong, decorated_session.sp_agency))
 
 <div class='sm-ml1 sm-mr1' >
   = render @view_model.requested_attributes_partial, view_model: @view_model
 </div>
+p.sm-mr1.sm-ml1.mt3.mb3
+  = t('help_text.requested_attributes.outro_html', app_name: APP_NAME,
+          sp: content_tag(:strong, decorated_session.sp_agency))
+p
+  .center
+    = button_to t('forms.buttons.continue'), sign_up_completed_path, \
+      class: 'btn btn-primary btn-wide'

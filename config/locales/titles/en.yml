@@ -45,10 +45,10 @@ en:
     registrations:
       new: Sign up for a account
     sign_up:
-      completion_html: You have %{accent} with %{app}
-      loa1: created your account
+      completion_html: You've %{accent} with %{app}
+      loa1: created an account
       new_sp: You are now logging in for the first time
-      verified: You have verified your identity with %{app}
+      verified: You've verified your identity with %{app}
     totp_setup:
       new: Set up two-factor authentication
     two_factor_recovery_setup: Add a backup authentication method

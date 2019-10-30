@@ -126,7 +126,7 @@ module SignUp
         social_security_number: pii[:ssn],
         address: address,
         birthdate: dob,
-        phone: pii[:phone].to_s,
+        phone: PhoneFormatter.format(pii[:phone].to_s),
         email: email,
         x509_subject: current_user.x509_dn_uuid,
       }

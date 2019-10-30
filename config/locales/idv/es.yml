@@ -147,7 +147,6 @@ es:
         - no es un número de teléfono prepago
         - un número de EE. UU.
       return_to_profile: "‹ Volver a tu perfil de login.gov"
-      return_to_sp_html: Ahora puede iniciar sesión en <strong>%{sp}</strong>.
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada

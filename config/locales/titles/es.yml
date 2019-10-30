@@ -47,7 +47,7 @@ es:
       new: Regístrese para una cuenta
     sign_up:
       completion_html: Tiene %{accent} con %{app}
-      loa1: creó su cuenta
+      loa1: creó una cuenta
       new_sp: Acabas de iniciar sesión por primera vez
       verified: Tiene verificó su identidad con %{app}
     totp_setup:

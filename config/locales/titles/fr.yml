@@ -46,7 +46,7 @@ fr:
       new: S'inscrire et créer un compte
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
-      loa1: créé votre compte
+      loa1: créé un compte
       new_sp: Vous vous connectez pour la première fois
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:

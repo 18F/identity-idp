@@ -159,7 +159,6 @@ fr:
         - pas un numéro de téléphone prépayé
         - un numéro américain
       return_to_profile: "‹ Revenir à votre profil login.gov"
-      return_to_sp_html: Vous pouvez maintenant vous connecter à <strong>%{sp}</strong>.
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}

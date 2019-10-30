@@ -143,7 +143,6 @@ en:
         - not be a virtual phone (such as Google Voice or Skype)
         - be a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"
-      return_to_sp_html: You can now sign in to <strong>%{sp}</strong>.
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
