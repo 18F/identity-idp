@@ -2,7 +2,8 @@ require 'rails_helper'
 
 feature 'Signing in via one-time use personal key' do
   it 'destroys old key, displays new one, notifies, and redirects to profile after acknowledging' do
-    user = create(:user, :signed_up, :with_phone, :with_personal_key, with: { phone: '+1 (202) 345-6789' })
+    user = create(:user, :signed_up, :with_phone, :with_personal_key,
+                  with: { phone: '+1 (202) 345-6789' })
     raw_key = PersonalKeyGenerator.new(user).create
     old_key = user.reload.encrypted_recovery_code_digest
 
