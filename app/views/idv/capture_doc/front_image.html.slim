@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
+= render 'idv/doc_auth/error_messages', flow_session: flow_session
+
 = render 'idv/doc_auth/front_of_state_id_image'
 
 h1.h3.my0 = t('doc_auth.headings.upload_front')
@@ -11,7 +13,7 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
     .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true
 
-  = render 'idv/doc_auth/error_messages', flow_session: flow_session
+  = render 'idv/doc_auth/notices', flow_session: flow_session
 
   .mb4 id= 'target'
   .mt2
