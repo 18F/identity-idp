@@ -53,8 +53,4 @@ class FailurePresenter
   end
 
   def js; end
-
-  def display_back_to_account?
-    false
-  end
 end

@@ -1,7 +1,6 @@
 module Idv
   class AddressController < ApplicationController
     include IdvSession
-    include IdvFailureConcern
 
     before_action :confirm_two_factor_authenticated
 

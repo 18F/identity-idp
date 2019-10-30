@@ -1,17 +1,12 @@
-<% title t("idv.failure.phone.heading") %>
+<% title t("idv.failure.sessions.heading") %>
 
 <%= image_tag('alert/warning-lg.svg', width: 54) %>
 
-<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.phone.heading") %></h1>
+<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.heading") %></h1>
 
-<p><%= t("idv.failure.phone.warning") %></p>
+<p><%= t("idv.failure.sessions.timeout") %></p>
 
 <hr>
-
-<p>
-  <%= t('idv.form.no_alternate_phone_html',
-    link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
-</p>
 
 <!-- TODO: Remove #raw call here -->
 <p><%= raw t('idv.failure.attempts', count: @remaining_step_attempts) %></p>
@@ -30,7 +25,7 @@
 <% end %>
 
 <div class='mt3'>
-  <%= link_to t("idv.failure.button.warning"), idv_phone_path %>
+  <%= link_to t("idv.failure.button.timeout"), idv_session_path %>
 </div>
 
 <%= render 'idv/doc_auth/in_person_proofing_option' %>

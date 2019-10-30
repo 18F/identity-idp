@@ -1,20 +1,26 @@
-<% title t("idv.failure.phone.heading") %>
+<% title t("idv.failure.sessions.heading") %>
 
-<%= image_tag('alert/warning-lg.svg', width: 54) %>
+<%= image_tag('alert/fail-x.svg', width: 54) %>
 
-<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.phone.heading") %></h1>
+<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.heading") %></h1>
 
-<p><%= t("idv.failure.phone.warning") %></p>
+<p><%= t("idv.failure.sessions.fail_html") %></p>
+
+<div class="col-2">
+  <hr class="mt3 mb2 bw4 rounded border-red" />
+</div>
+
+<h2 class="h4 mb2 mt3 my0">
+  <%= t('headings.lock_failure') %>
+</h2>
 
 <hr>
 
-<p>
-  <%= t('idv.form.no_alternate_phone_html',
-    link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
-</p>
-
 <!-- TODO: Remove #raw call here -->
-<p><%= raw t('idv.failure.attempts', count: @remaining_step_attempts) %></p>
+<p>
+  <%= raw t('idv.failure.errors.text',
+    link: link_to(t('idv.failure.errors.link'), MarketingSite.contact_url)) %>
+</p>
 
 <% if decorated_session.sp_name %>
   <hr>
@@ -28,9 +34,5 @@
     </div>
   <hr/>
 <% end %>
-
-<div class='mt3'>
-  <%= link_to t("idv.failure.button.warning"), idv_phone_path %>
-</div>
 
 <%= render 'idv/doc_auth/in_person_proofing_option' %>

@@ -35,7 +35,6 @@ en:
         one: You have <strong>1 attempt remaining.</strong>
         other: You have <strong>%{count} attempts remaining.</strong>
       button:
-        fail: Okay
         jobfail: Try again tomorrow
         timeout: Try again
         warning: Try again

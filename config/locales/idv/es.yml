@@ -37,7 +37,6 @@ es:
         one: Tiene usted <strong> 1 intento restante.</ strong>
         other: Tiene usted <strong>%{count} intentos restantes.</strong>
       button:
-        fail: Bueno
         jobfail: Inténtelo de nuevo mañana
         timeout: Inténtelo de nuevo
         warning: Inténtelo de nuevo

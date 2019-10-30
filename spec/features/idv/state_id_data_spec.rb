@@ -16,7 +16,7 @@ feature 'idv state id data entry' do
     click_idv_continue
 
     expect(page).to have_content t('idv.failure.sessions.warning')
-    expect(current_path).to eq(idv_session_failure_path(:warning, locale: locale))
+    expect(current_path).to eq(idv_session_errors_warning_path(locale: locale))
   end
 
   it 'renders an error for blank state id number and does not attempt to proof', :email do

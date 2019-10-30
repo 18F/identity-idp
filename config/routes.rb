@@ -261,7 +261,10 @@ Rails.application.routes.draw do
         put '/session' => 'sessions#create'
       end
       get '/session/success' => 'sessions#success'
-      get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
+      get '/session/errors/warning' => 'session_errors#warning'
+      get '/session/errors/timeout' => 'session_errors#timeout'
+      get '/session/errors/jobfail' => 'session_errors#jobfail'
+      get '/session/errors/failure' => 'session_errors#failure'
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'
       post '/jurisdiction' => 'jurisdiction#create'
