@@ -24,8 +24,9 @@ en:
         to validate a document.  Please try again later.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
-      general_error: Your state issued ID could not be verified. Please try using
-        different images starting with the front of your state issued ID.
+      general_error: We could not read or verify your ID. Try to take and upload new
+        images of both the front and back of your ID. Make sure everything can be
+        easily read, including the barcode.
       general_info: |-
         <div class="bold">If you are using a camera please ensure</div>
         <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
