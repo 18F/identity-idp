@@ -76,7 +76,7 @@ module SamlIdp
           algorithm(options[:get_params][:SigAlg])
         else
           ref_elem = REXML::XPath.first(self, "//ds:Reference", {"ds"=>DSIG})
-          algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod"))
+          algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod", {"ds"=>DSIG}))
         end
       end
 
@@ -215,6 +215,7 @@ module SamlIdp
         if algorithm.is_a?(REXML::Element)
           algorithm = element.attribute("Algorithm").value
         end
+        log "~~~~~~ Algorithm: #{algorithm}"
         algorithm = algorithm && algorithm =~ /(rsa-)?sha(.*?)$/i && $2.to_i
         case algorithm
         when 256
