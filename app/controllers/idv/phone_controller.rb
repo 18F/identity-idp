@@ -1,7 +1,6 @@
 module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
-    include IdvFailureConcern
 
     attr_reader :idv_form
 
@@ -18,10 +17,6 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
       return render(:new) unless result.success?
       submit_proofing_attempt
-    end
-
-    def failure
-      render_idv_step_failure(:phone, params[:reason].to_sym)
     end
 
     private
@@ -74,7 +69,16 @@ module Idv
     end
 
     def failure_url(reason)
-      idv_phone_failure_url(reason)
+      case reason
+      when :warning
+        idv_phone_errors_warning_url
+      when :timeout
+        idv_phone_errors_timeout_url
+      when :jobfail
+        idv_phone_errors_jobfail_url
+      when :fail
+        idv_phone_errors_failure_url
+      end
     end
   end
 end

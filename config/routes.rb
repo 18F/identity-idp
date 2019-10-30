@@ -245,7 +245,10 @@ Rails.application.routes.draw do
       put '/otp_delivery_method' => 'otp_delivery_method#create'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
+      get '/phone/errors/warning' => 'phone_errors#warning'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/failure' => 'phone_errors#failure'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil

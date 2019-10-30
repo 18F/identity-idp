@@ -1,0 +1,41 @@
+<% title t("idv.failure.phone.heading") %>
+
+<%= image_tag('alert/fail-x.svg', width: 54) %>
+
+<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.phone.heading") %></h1>
+
+<p><%= t("idv.failure.phone.fail_html") %></p>
+
+<div class="col-2">
+  <hr class="mt3 mb2 bw4 rounded border-red" />
+</div>
+
+<h2 class="h4 mb2 mt3 my0">
+  <%= t('headings.lock_failure') %>
+</h2>
+
+<hr>
+
+<p>
+  <%= t('idv.form.no_alternate_phone_html',
+    link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
+</p>
+
+<!-- TODO: Remove #raw call here -->
+<p>
+  <%= raw t('idv.failure.errors.text',
+    link: link_to(t('idv.failure.errors.link'), MarketingSite.contact_url)) %>
+</p>
+
+<% if decorated_session.sp_name %>
+  <hr>
+    <div class="mb2 mt2">
+      <div class="right">
+        <%= link_to image_tag(asset_url('carat-right.svg'), size: '10'),
+            decorated_session.failure_to_proof_url, class: 'bold block btn-link text-decoration-none' %>
+      </div>
+      <%= link_to t('idv.failure.help.get_help_html', sp_name: decorated_session.sp_name),
+          decorated_session.failure_to_proof_url, class: 'block btn-link text-decoration-none' %>
+    </div>
+  <hr/>
+<% end %>
