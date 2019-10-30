@@ -26,10 +26,10 @@ class IdvController < ApplicationController
 
   def fail
     redirect_to idv_url and return unless idv_attempter_throttled?
-    presenter = Idv::IdvFailurePresenter.new(
-      view_context: view_context,
-    )
-    render_full_width('shared/_failure', locals: { presenter: presenter })
+    # presenter = Idv::IdvFailurePresenter.new(
+    #   view_context: view_context,
+    # )
+    # render_full_width('shared/_failure', locals: { presenter: presenter })
   end
 
   private
