@@ -15,3 +15,11 @@
     display: none;
  }
 }
+.iti__flag {
+  background-image: image-url('intl-tel-input/build/img/flags.png') !important;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag {
+    background-image: image-url('intl-tel-input/build/img/flags@2x.png') !important;
+  }
+}
