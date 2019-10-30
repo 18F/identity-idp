@@ -59,7 +59,7 @@ describe Idv::PhoneController do
 
       get :new
 
-      expect(response).to redirect_to idv_phone_failure_url(:fail)
+      expect(response).to redirect_to idv_phone_errors_failure_url
     end
   end
 
@@ -195,7 +195,7 @@ describe Idv::PhoneController do
 
         put :create, params: { idv_phone_form: { phone: '7035555555' } }
 
-        expect(response).to redirect_to idv_phone_failure_path(reason: :warning)
+        expect(response).to redirect_to idv_phone_errors_warning_url
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy

@@ -8,20 +8,18 @@ module Idv
     before_action :confirmat_phone_confirmation_needed
 
     def warning
-
+      @remaining_step_attempts = remaining_step_attempts
     end
 
     def timeout
-
+      @remaining_step_attempts = remaining_step_attempts
     end
 
     def jobfail
-
+      @remaining_step_attempts = remaining_step_attempts
     end
 
-    def failure
-
-    end
+    def failure; end
 
     private
 
@@ -39,6 +37,12 @@ module Idv
 
     def phone_confirmation_required?
       idv_session.user_phone_confirmation != true
+    end
+
+    def remaining_step_attempts
+      max_attempts = Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
+      attempt_count = idv_session.step_attempts[:phone]
+      max_attempts - attempt_count
     end
   end
 end

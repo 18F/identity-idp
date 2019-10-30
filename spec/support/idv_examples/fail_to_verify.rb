@@ -39,6 +39,6 @@ shared_examples 'fail to verify idv info' do |step|
   end
 
   def phone_failure_path
-    idv_phone_failure_path(:warning, locale: locale)
+    idv_phone_errors_warning_url(locale: locale)
   end
 end

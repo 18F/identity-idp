@@ -5,8 +5,8 @@ module Idv
     attr_reader :idv_form
 
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed, except: [:failure]
-    before_action :set_idv_form, except: [:failure]
+    before_action :confirm_step_allowed
+    before_action :set_idv_form
 
     def new
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
