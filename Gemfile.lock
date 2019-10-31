@@ -56,14 +56,13 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 7d216f9831a39b9b89c704dbd711a82dd3fd395d
-  tag: v0.0.14
+  revision: dc555fc6d69497cebd82633d279bbfa832ac8784
+  tag: v0.0.16
   specs:
-    identity-telephony (0.0.14)
+    identity-telephony (0.0.16)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
-      phonelib
       twilio-ruby
       typhoeus
 
