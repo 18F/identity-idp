@@ -101,7 +101,7 @@ session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
 sp_handoff_bounce_max_seconds: '2'
 show_user_attribute_deprecation_warnings: 'false'
-twilio_auth_token:
+twilio_auth_token: token1
 twilio_http_basic_auth_password:
 twilio_http_basic_auth_username:
 twilio_messaging_service_sid:
