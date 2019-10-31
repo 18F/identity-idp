@@ -1,0 +1,67 @@
+<% title 'asdfasdf' %>
+
+<h1 class='h3 my0'>
+  <%= t('two_factor_authentication.webauthn_header_text') %>
+</h1>
+
+<div class='no-spinner'>
+  <div class='mt-tiny mb3'>
+    <%= t('instructions.mfa.webauthn.confirm_webauthn_html') %>
+  </div>
+</div>
+
+<%= form_tag(login_two_factor_webauthn_path, method: :patch, role: 'form', class: 'mb1 read-after-submit', id: 'webauthn_form') do %>
+  <%= hidden_field_tag :user_challenge,
+    '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge' %>
+  <%= hidden_field_tag :credential_ids, @presenter.credential_ids, id: 'credential_ids' %>
+  <%= hidden_field_tag :credential_id, '', id: 'credential_id' %>
+  <%= hidden_field_tag :authenticator_data, '', id: 'authenticator_data' %>
+  <%= hidden_field_tag :signature, '', id: 'signature' %>
+  <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+
+  <div id='webauthn-auth-in-progress'>
+    <div class="spinner" id="spinner">
+      <div class="col-12 center mb2">
+        <%= image_tag(asset_url('spinner.gif'),
+                srcset: asset_url('spinner@2x.gif'),
+                height: 144,
+                width: 144,
+                alt: '') %>
+      </div>
+    </div>
+    <h2 class="h4 half-center">
+      <%= t('forms.webauthn_setup.instructions_title') %>
+    </h2>
+    <p class="half-center">
+      <%= t('forms.webauthn_setup.login_text') %>
+    </p>
+    <%= render 'shared/fallback_links', presenter: @presenter %>
+  </div>
+
+  <div id='webauthn-auth-successful' class="hidden">
+    <div class="col-12 center mb2">
+      <%= image_tag(asset_url('webauthn-verified.svg'),
+        height: 144,
+        width: 144,
+        alt: '') %>
+    </div>
+    <h2 class="h4 half-center mt3">
+      <%= t('two_factor_authentication.webauthn_verified.header') %>
+    </h2>
+    <p class="half-center">
+      <%= t('two_factor_authentication.webauthn_verified.info') %>
+    </p>
+    <div class="border border-light-blue rounded-lg px2 py1 mt3">
+      <%= check_box_tag 'remember_device', true, false, class: 'mr1' %>
+      <%= label_tag 'remember_device',
+        t('forms.messages.remember_device'),
+        class: 'blue mt-1p' %>
+    </div>
+    <%= submit_tag t('forms.buttons.continue'),
+        class: 'btn btn-primary sm-col-6 col-12 btn-wide my3' %>
+  </div>
+<% end %>
+<%= render 'shared/cancel', link: @presenter.cancel_link %>
+
+<%== javascript_pack_tag 'clipboard' %>
+<%== javascript_pack_tag 'webauthn-authenticate' %>
