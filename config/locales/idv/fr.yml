@@ -37,7 +37,7 @@ fr:
         compte.
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
-      attempts:
+      attempts_html:
         one: Il ne vous reste qu' strongune tentative./strong
         other: Il ne vous reste que strong%{count} tentatives./strong
       button:
@@ -46,7 +46,7 @@ fr:
         warning: Essayez à nouveau
       errors:
         link: contactez-nous
-        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
+        text_html: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
       help:
         get_help_html: Obtenir de l'aide à <strong>%{sp_name}</strong>
       phone:

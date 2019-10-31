@@ -8,8 +8,7 @@
 
 <hr>
 
-<!-- TODO: Remove #raw call here -->
-<p><%= raw t('idv.failure.attempts', count: @remaining_step_attempts) %></p>
+<p><%= raw t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
 
 <% if decorated_session.sp_name %>
   <hr>
