@@ -44,7 +44,7 @@ class TwoFactorOptionsPresenter
   def label
     [
       t("forms.two_factor_#{recovery}choice.legend") + ':',
-      t("forms.two_factor_choice_retire_personal_key.legend"),
+      t('forms.two_factor_choice_retire_personal_key.legend'),
     ][@msg_index]
   end
 
