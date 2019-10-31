@@ -8,6 +8,7 @@ class TwoFactorOptionsPresenter
   def initialize(current_user, sp)
     @current_user = current_user
     @service_provider = sp
+    @msg_index = MfaPolicy.new(current_user).retire_personal_key? ? 1 : 0
   end
 
   def step
@@ -23,19 +24,28 @@ class TwoFactorOptionsPresenter
   # i18n-tasks-use t('two_factor_authentication.two_factor_choice')
   # i18n-tasks-use t('two_factor_authentication.two_factor_recovery_choice')
   def heading
-    t("two_factor_authentication.two_factor_#{recovery}choice")
+    [
+      t("two_factor_authentication.two_factor_#{recovery}choice"),
+      t('two_factor_authentication.two_factor_choice_retire_personal_key'),
+    ][@msg_index]
   end
 
   # i18n-tasks-use t('two_factor_authentication.two_factor_choice_intro_paragraphs')
   # i18n-tasks-use t('two_factor_authentication.two_factor_recovery_choice_intro_paragraphs')
   def intro_parapraphs
-    t("two_factor_authentication.two_factor_#{recovery}choice_intro_paragraphs")
+    [
+      t("two_factor_authentication.two_factor_#{recovery}choice_intro_paragraphs"),
+      t('two_factor_authentication.two_factor_choice_intro_paragraphs_retire_personal_key'),
+    ][@msg_index]
   end
 
   # i18n-tasks-use t('forms.two_factor_choice.legend')
   # i18n-tasks-use t('forms.two_factor_recovery_choice.legend')
   def label
-    t("forms.two_factor_#{recovery}choice.legend") + ':'
+    [
+      t("forms.two_factor_#{recovery}choice.legend") + ':',
+      t("forms.two_factor_choice_retire_personal_key.legend"),
+    ][@msg_index]
   end
 
   def options

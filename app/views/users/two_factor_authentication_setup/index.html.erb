@@ -7,7 +7,7 @@
 <h1 class="h4 my0"><%= @presenter.heading %></h1>
 
 <% @presenter.intro_parapraphs.each do |paragraph| %>
-  <p class="mt-tiny"><%= paragraph %></p>
+  <p class="mt-tiny"><%== paragraph %></p>
 <% end %>
 
 <%= simple_form_for @two_factor_options_form,
