@@ -42,7 +42,8 @@ es:
         warning: Inténtelo de nuevo
       errors:
         link: contáctanos
-        text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
+        text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo
+          mañana.
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
