@@ -582,9 +582,9 @@ feature 'Sign in' do
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
   it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :oidc
 
-  context 'user signs in with personal key, visits account page before viewing new key' do
+  context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly
-    it 'redirects to the personal key page' do
+    it 'does not redirect to the personal key page' do
       user = create(:user, :signed_up)
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
@@ -592,13 +592,13 @@ feature 'Sign in' do
       enter_personal_key(personal_key: old_personal_key)
       click_submit_default
       visit account_path
-      expect(page).to have_current_path(two_factor_options_path)
+      expect(page).to have_current_path(account_path)
     end
   end
 
   context 'user attempts sign in with bad personal key' do
     it 'remains on the login with personal key page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :signed_up, :with_personal_key)
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
       enter_personal_key(personal_key: 'foo')

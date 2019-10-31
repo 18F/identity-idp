@@ -93,9 +93,9 @@ describe 'webauthn management' do
 
       sign_in_and_2fa_user(user)
       PhoneConfiguration.first.update(mfa_enabled: false)
-      user.backup_code_configurations.destroy_all
 
       visit account_path
+      expect(current_path).to eq account_path
 
       expect(page).to have_content webauthn_config.name
       expect(page).to_not have_link t('account.index.webauthn_delete')

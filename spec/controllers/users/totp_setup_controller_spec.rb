@@ -118,7 +118,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         before do
-          user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
+          user = create(:user, :signed_up)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
