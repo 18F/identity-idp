@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Signing in via one-time use personal key' do
-  it 'destroys old key, displays new one, notifies, and redirects to profile after acknowledging' do
+  it 'destroys old key, does not offer new one' do
     user = create(:user, :signed_up, :with_phone, :with_personal_key,
                   with: { phone: '+1 (202) 345-6789' })
     raw_key = PersonalKeyGenerator.new(user).create
@@ -18,7 +18,7 @@ feature 'Signing in via one-time use personal key' do
     enter_personal_key(personal_key: raw_key)
     click_submit_default
     expect(user.reload.encrypted_recovery_code_digest).to_not eq old_key
-    expect(current_path).to eq two_factor_options_path
+    expect(current_path).to eq account_path
   end
 
   context 'user enters incorrect personal key' do
