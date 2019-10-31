@@ -1,6 +1,6 @@
 Telephony.config do |c|
   c.adapter = Figaro.env.telephony_adapter.to_sym || :test
-  c.twilio.numbers = JSON.parse(Figaro.env.twilio_numbers)
+  c.twilio.numbers = JSON.parse(Figaro.env.twilio_numbers || '[]')
   c.twilio.sid = Figaro.env.twilio_sid
   c.twilio.auth_token = Figaro.env.twilio_auth_token
   c.twilio.messaging_service_sid = Figaro.env.twilio_messaging_service_sid
