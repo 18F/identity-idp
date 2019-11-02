@@ -10,6 +10,7 @@ es:
     back_to_sp: Volver a %{sp}
     cancel: Cancelar
     cancel_account_creation: "‹ Cancelar la creación de cuenta"
+    cancel_sign_in: "‹ Cancelar el inicio de sesión"
     contact: Contactar
     copy: Copiar
     create_account: Crear cuenta
