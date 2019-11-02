@@ -81,11 +81,12 @@ fr:
         v: Excellente!
     personal_key:
       accent: Notez-la ou imprimez-la.
-      email_body: Utilisez-la uniquement lorsque vous ne disposez d'aucun autre moyen
-        de connexion.
-      email_title: Nous ne vous demanderons pas votre clé personelle par courriel
-      info_html: C'est le seul moyen de retrouver l'accès à votre compte si vous perdez
-        votre téléphone ou vos options de sécurité. %{accent}
+      email_body: Ne perdez pas votre clé personnelle et ne la partagez pas avec d’autres.
+        Nous vous le demanderons si vous réinitialisez votre mot de passe.
+      email_title: Sauvegarde le. Garde-le en sécurité.
+      info_html: Vous aurez besoin de cette clé personnelle si vous oubliez votre
+        mot de passe. Si vous réinitialisez votre mot de passe et que vous ne possédez
+        pas cette clé, vous devrez vérifier votre identité à nouveau.
       once_html: "<strong>Les clés personnelles sont à usage unique.</strong> Si vous
         devez utiliser votre clé personnelle pour quelque raison que ce soit, vous
         recevrez une nouvelle clé."

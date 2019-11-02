@@ -239,6 +239,7 @@ Rails.application.routes.draw do
       get '/come_back_later' => 'come_back_later#show'
       get '/confirmations' => 'confirmations#show'
       post '/confirmations' => 'confirmations#update'
+      get '/download_personal_key' => 'confirmations#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'

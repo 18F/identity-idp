@@ -73,11 +73,11 @@ es:
         v: "¡Muy buena!"
     personal_key:
       accent: Anótelo o imprímalo.
-      email_body: Sólo se debe usar cuando no se puede utilizar métodos normales de
-        inicio de sesión.
-      email_title: Nunca pedimos su clave personal en el correo electrónico
-      info_html: Esta es la única manera de recuperar el acceso a su cuenta si pierde
-        su teléfono o las opciones de seguridad. %{accent}
+      email_body: No pierda su clave personal ni la comparta con otros. Lo pediremos
+        si restablece su contraseña.
+      email_title: Guárdalo Manténlo seguro.
+      info_html: Necesitará esta clave personal si olvida su contraseña. Si restablece
+        su contraseña y no tiene esta clave, deberá verificar su identidad nuevamente.
       once_html: "<strong>Las claves personales son de un solo uso.</strong> Si necesita
         utilizar su clave personal por algún motivo, se le emitirá una nueva clave."
       safety_html: "<strong>Manténgalo privado y seguro.</strong> No comparta su clave

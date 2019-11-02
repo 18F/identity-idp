@@ -73,10 +73,12 @@ en:
         v: Great!
     personal_key:
       accent: Write it down or print it out.
-      email_body: Only use it when you cannot use normal sign-in methods.
-      email_title: We never ask for your personal key in email
-      info_html: This is the only way to regain access to your account if you lose
-        your phone or authentication methods. %{accent}
+      email_body: Don't lose your personal key or share it with others.  We'll ask
+        for it if you reset your password.
+      email_title: Save it.  Keep it safe.
+      info_html: You'll need this personal key if you forget your password.  If you
+        reset your password and don't have this key, you'll have to verify your identity
+        again.
       once_html: "<strong>Personal keys are one-time use.</strong> If you need to
         use your personal key for any reason, you'll be issued a new key."
       safety_html: "<strong>Keep it private and safe.</strong> Don't share your personal
