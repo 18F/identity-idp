@@ -10,11 +10,13 @@ p.mt-tiny.mb4
 br
   .sm-col.sm-col-4.center
     = link_to t('forms.backup_code.download'), idv_download_personal_key_path,
-            class: 'usa-button usa-button--outline'
+              class: 'usa-button usa-button--outline'
   .sm-col.sm-col-4.center
-    = link_to t('users.personal_key.print'), '#', data: {print: true}, class: 'usa-button usa-button--outline'
+    = link_to t('users.personal_key.print'), '#', data: {print: true},
+              class: 'usa-button usa-button--outline'
   .sm-col.sm-col-4.center
-    = link_to t('links.copy'), '#', data: {"clipboard-text": code}, class: 'usa-button usa-button--outline clipboard'
+    = link_to t('links.copy'), '#', data: {"clipboard-text": code},
+              class: 'usa-button usa-button--outline clipboard'
 br
 br
   .sm-col.sm-col-2.pr2
