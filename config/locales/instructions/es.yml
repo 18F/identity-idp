@@ -78,11 +78,6 @@ es:
       email_title: Guárdalo Manténlo seguro.
       info_html: Necesitará esta clave personal si olvida su contraseña. Si restablece
         su contraseña y no tiene esta clave, deberá verificar su identidad nuevamente.
-      once_html: "<strong>Las claves personales son de un solo uso.</strong> Si necesita
-        utilizar su clave personal por algún motivo, se le emitirá una nueva clave."
-      safety_html: "<strong>Manténgalo privado y seguro.</strong> No comparta su clave
-        personal, y solo úsela cuando no tenga acceso a sus métodos normales de inicio
-        de sesión."
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió
       de regreso a login.gov. Póngase en contacto con %{sp_link} para obtener ayuda.
     sp_handoff_bounced_with_no_sp: su proveedor de servicios
