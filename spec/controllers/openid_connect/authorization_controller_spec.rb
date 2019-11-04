@@ -96,13 +96,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'redirects verify shared attributes page' do
             action
 
-            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            expect(response).to redirect_to(sign_up_completed_url)
           end
 
-          it 'links identity to the user' do
+          it 'does not link identity to the user' do
             action
-            sp = user.identities.last.service_provider
-            expect(sp).to eq(params[:client_id])
+            expect(user.identities.count).to eq(0)
           end
         end
 
