@@ -72,12 +72,12 @@ es:
         iv: Buena
         v: "¡Muy buena!"
     personal_key:
-      accent: Anótelo o imprímalo.
-      email_body: No pierda su clave personal ni la comparta con otros. Lo pediremos
-        si restablece su contraseña.
-      email_title: Guárdalo Manténlo seguro.
-      info_html: Necesitará esta clave personal si olvida su contraseña. Si restablece
-        su contraseña y no tiene esta clave, deberá verificar su identidad nuevamente.
+      accent: Anótala o imprímela.
+      email_body: No pierdas tu clave personal ni la compartas con otros. La pediremos
+        si restableces tu contraseña.
+      email_title: Guárdala. Manténla segura.
+      info_html: Necesitarás esta clave personal si olvidas tu contraseña. Si restableces
+        tu contraseña y no tienes esta clave, deberás verificar tu identidad nuevamente.
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió
       de regreso a login.gov. Póngase en contacto con %{sp_link} para obtener ayuda.
     sp_handoff_bounced_with_no_sp: su proveedor de servicios
