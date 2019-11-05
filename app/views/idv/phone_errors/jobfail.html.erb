@@ -13,7 +13,7 @@
     link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
 </p>
 
-<p><%= raw t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
+<p><%= t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
 
 <%= render 'idv/shared/back_to_sp_link' %>
 
