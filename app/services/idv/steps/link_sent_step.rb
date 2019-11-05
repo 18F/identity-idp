@@ -16,7 +16,7 @@ module Idv
       private
 
       def check_if_take_photo_with_phone_successful
-        dac = DocCapture.find_by(user_id: current_user.id)
+        dac = DocCapture.find_by(user_id: user_id)
         token = dac.acuant_token
         if token
           flow_session[:instance_id] = token

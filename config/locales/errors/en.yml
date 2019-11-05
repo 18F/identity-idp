@@ -41,6 +41,8 @@ en:
         </ul>
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
+      send_link_throttle: To prevent abuse we limit the number of times you can send
+        a link.  Please try again later.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You've entered too many incorrect passwords. You
