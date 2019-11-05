@@ -104,9 +104,11 @@ class OpenidConnectAuthorizeForm
 
   def ial
     case acr_values.sort.max
-    when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF, Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+      when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
       1
-    when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF, Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
       2
     end
   end
