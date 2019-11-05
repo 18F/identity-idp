@@ -36,11 +36,5 @@ module Idv
       return unless user_fully_authenticated?
       redirect_to idv_review_url if idv_session.user_phone_confirmation == true
     end
-
-    def user_id
-      ial2_recovery_user_id = session[:ial2_recovery_user_id]
-      return ial2_recovery_user_id if ial2_recovery_user_id.present?
-      current_user.id
-    end
   end
 end
