@@ -72,17 +72,12 @@ es:
         iv: Buena
         v: "¡Muy buena!"
     personal_key:
-      accent: Anótelo o imprímalo.
-      email_body: Sólo se debe usar cuando no se puede utilizar métodos normales de
-        inicio de sesión.
-      email_title: Nunca pedimos su clave personal en el correo electrónico
-      info_html: Esta es la única manera de recuperar el acceso a su cuenta si pierde
-        su teléfono o las opciones de seguridad. %{accent}
-      once_html: "<strong>Las claves personales son de un solo uso.</strong> Si necesita
-        utilizar su clave personal por algún motivo, se le emitirá una nueva clave."
-      safety_html: "<strong>Manténgalo privado y seguro.</strong> No comparta su clave
-        personal, y solo úsela cuando no tenga acceso a sus métodos normales de inicio
-        de sesión."
+      accent: Anótala o imprímela.
+      email_body: No pierdas tu clave personal ni la compartas con otros. La pediremos
+        si restableces tu contraseña.
+      email_title: Guárdala. Manténla segura.
+      info_html: Necesitarás esta clave personal si olvidas tu contraseña. Si restableces
+        tu contraseña y no tienes esta clave, deberás verificar tu identidad nuevamente.
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió
       de regreso a login.gov. Póngase en contacto con %{sp_link} para obtener ayuda.
     sp_handoff_bounced_with_no_sp: su proveedor de servicios
