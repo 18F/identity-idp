@@ -31,17 +31,16 @@ en:
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
-      attempts:
+      attempts_html:
         one: You have <strong>1 attempt remaining.</strong>
         other: You have <strong>%{count} attempts remaining.</strong>
       button:
-        fail: Okay
         jobfail: Try again tomorrow
         timeout: Try again
         warning: Try again
       errors:
         link: please contact us
-        text: If you keep getting these errors, %{link}, or try again tomorrow.
+        text_html: If you keep getting these errors, %{link}, or try again tomorrow.
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:

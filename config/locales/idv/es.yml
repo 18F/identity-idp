@@ -33,17 +33,17 @@ es:
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
       unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
-      attempts:
+      attempts_html:
         one: Tiene usted <strong> 1 intento restante.</ strong>
         other: Tiene usted <strong>%{count} intentos restantes.</strong>
       button:
-        fail: Bueno
         jobfail: Inténtelo de nuevo mañana
         timeout: Inténtelo de nuevo
         warning: Inténtelo de nuevo
       errors:
         link: contáctanos
-        text: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
+        text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo
+          mañana.
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:

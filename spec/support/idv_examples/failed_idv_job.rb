@@ -18,8 +18,8 @@ shared_examples 'failed idv job' do |step|
     end
 
     it 'renders a jobfail failure screen' do
-      expect(page).to have_current_path(session_failure_path(:jobfail)) if step == :profile
-      expect(page).to have_current_path(phone_failure_path(:jobfail)) if step == :phone
+      expect(page).to have_current_path(session_jobfail_path) if step == :profile
+      expect(page).to have_current_path(phone_jobfail_path) if step == :phone
       expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
       expect(page).to have_content t("idv.failure.#{step_locale_key}.jobfail")
     end
@@ -33,8 +33,8 @@ shared_examples 'failed idv job' do |step|
     end
 
     it 'renders a timeout failure screen' do
-      expect(page).to have_current_path(session_failure_path(:timeout)) if step == :profile
-      expect(page).to have_current_path(phone_failure_path(:timeout)) if step == :phone
+      expect(page).to have_current_path(session_timeout_path) if step == :profile
+      expect(page).to have_current_path(phone_timeout_path) if step == :phone
       expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
       expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
     end
@@ -58,11 +58,19 @@ shared_examples 'failed idv job' do |step|
     fill_in :idv_phone_form_phone, with: '7035555888'
   end
 
-  def session_failure_path(reason)
-    idv_session_failure_path(reason, locale: locale)
+  def session_timeout_path
+    idv_session_errors_timeout_path(locale: locale)
   end
 
-  def phone_failure_path(reason)
-    idv_phone_failure_path(reason, locale: locale)
+  def session_jobfail_path
+    idv_session_errors_jobfail_path(locale: locale)
+  end
+
+  def phone_timeout_path
+    idv_phone_errors_timeout_path(locale: locale)
+  end
+
+  def phone_jobfail_path
+    idv_phone_errors_jobfail_path(locale: locale)
   end
 end

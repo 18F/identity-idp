@@ -246,7 +246,10 @@ Rails.application.routes.draw do
       put '/otp_delivery_method' => 'otp_delivery_method#create'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/failure/:reason' => 'phone#failure', as: :phone_failure
+      get '/phone/errors/warning' => 'phone_errors#warning'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/failure' => 'phone_errors#failure'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
@@ -259,7 +262,10 @@ Rails.application.routes.draw do
         put '/session' => 'sessions#create'
       end
       get '/session/success' => 'sessions#success'
-      get '/session/failure/:reason' => 'sessions#failure', as: :session_failure
+      get '/session/errors/warning' => 'session_errors#warning'
+      get '/session/errors/timeout' => 'session_errors#timeout'
+      get '/session/errors/jobfail' => 'session_errors#jobfail'
+      get '/session/errors/failure' => 'session_errors#failure'
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'
       post '/jurisdiction' => 'jurisdiction#create'
