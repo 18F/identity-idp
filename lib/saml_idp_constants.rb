@@ -5,10 +5,8 @@ module Saml
     module Constants
       LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'.freeze
       LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'.freeze
-
-      # For now the acr values returned are still LOA
-      IAL1_AUTHN_CONTEXT_CLASSREF = LOA1_AUTHN_CONTEXT_CLASSREF
-      IAL2_AUTHN_CONTEXT_CLASSREF = LOA3_AUTHN_CONTEXT_CLASSREF
+      IAL1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/1'.freeze
+      IAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2'.freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 
