@@ -41,6 +41,8 @@ es:
         </ul>
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
+      send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
+        También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

@@ -52,6 +52,8 @@ ial2_recovery_request_valid_for_minutes: '15'
 identity_pki_disabled: 'true'
 idv_attempt_window_in_hours: '24'
 idv_max_attempts: '3'
+idv_send_link_attempt_window_in_minutes: '10'
+idv_send_link_max_attempts: '5'
 in_person_proofing_enabled:
 job_run_healthchecks_enabled: 'true'
 lexisnexis_account_id: test_account

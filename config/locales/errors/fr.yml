@@ -41,6 +41,9 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
+      send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
+        10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
+        votre ordinateur.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
