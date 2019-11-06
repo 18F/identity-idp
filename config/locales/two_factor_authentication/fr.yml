@@ -7,9 +7,12 @@ fr:
       pending_html: Vous avez actuellement une demande en attente pour supprimer votre
         compte.  Il faut compter 24 heures à partir du moment où vous avez fait la
         demande pour terminer le processus.  Veuillez vérifier plus tard. %{cancel_link}
-      recover_html: Si vous ne pouvez utiliser aucune des options de sécurité ci-dessus,
-        vous pouvez %{link}.
-      recover_link: réinitialiser votre compte
+      recover_html: Si vous ne pouvez utiliser aucune des méthodes d'authentification
+        ci-dessus, vous pouvez %{reverify_link}. Votre nom, votre adresse et votre
+        numéro de sécurité sociale doivent correspondre à votre profil de compte.
+        Si ce n’est pas le cas, vous pouvez %{reset_link}.
+      reset_link: réinitialiser votre compte
+      reverify_link: re-vérifier votre identité
       successful_cancel: Je vous remercie. Votre demande de suppression de votre compte
         login.gov a été annulée.
       text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité ci-dessus,
