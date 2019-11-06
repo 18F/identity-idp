@@ -127,6 +127,7 @@ module SamlIdp
           relay_state: params[:RelayState],
           sig_alg: params[:SigAlg]
         )
+log '***** validate_doc_params_signature: verify_signature:'
         verify_signature(base64_cert, params[:SigAlg], Base64.decode64(params[:Signature]), canon_string, soft)
       end
 
@@ -145,37 +146,39 @@ module SamlIdp
                            element.remove
                          end
 
+        sig_namespace_hash = REXML::XPath.first(@sig_element, "//ds:SignedInfo", {"ds"=>DSIG}) ? {"ds"=>DSIG} : nil
 
         # verify signature
-        signed_info_element     = REXML::XPath.first(@sig_element, "//ds:SignedInfo", {"ds"=>DSIG})
+        signed_info_element     = REXML::XPath.first(@sig_element, "//ds:SignedInfo", sig_namespace_hash)
         noko_sig_element = document.at_xpath('//ds:Signature', 'ds' => DSIG)
         noko_signed_info_element = noko_sig_element.at_xpath('./ds:SignedInfo', 'ds' => DSIG)
-        canon_algorithm = canon_algorithm REXML::XPath.first(@sig_element, '//ds:CanonicalizationMethod', 'ds' => DSIG)
+        canon_algorithm = canon_algorithm REXML::XPath.first(@sig_element, '//ds:CanonicalizationMethod', sig_namespace_hash)
         canon_string = noko_signed_info_element.canonicalize(canon_algorithm)
         noko_sig_element.remove
 
         # check digests
-        REXML::XPath.each(@sig_element, "//ds:Reference", {"ds"=>DSIG}) do |ref|
+        REXML::XPath.each(@sig_element, "//ds:Reference", sig_namespace_hash) do |ref|
           uri                           = ref.attributes.get_attribute("URI").value
 
           hashed_element                = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
-          canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
+          canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', sig_namespace_hash)
           canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
 
           digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod"))
 
           hash                          = digest_algorithm.digest(canon_hashed_element)
-          digest_value                  = Base64.decode64(REXML::XPath.first(ref, "//ds:DigestValue", {"ds"=>DSIG}).text)
+          digest_value                  = Base64.decode64(REXML::XPath.first(ref, "//ds:DigestValue", sig_namespace_hash).text)
 
           unless digests_match?(hash, digest_value)
             return soft ? false : (raise ValidationError.new("Digest mismatch"))
           end
         end
 
-        base64_signature        = REXML::XPath.first(@sig_element, "//ds:SignatureValue", {"ds"=>DSIG}).text
+        base64_signature        = REXML::XPath.first(@sig_element, "//ds:SignatureValue", sig_namespace_hash).text
         signature               = Base64.decode64(base64_signature)
-        sig_alg                 = REXML::XPath.first(signed_info_element, "//ds:SignatureMethod", {"ds"=>DSIG})
+        sig_alg                 = REXML::XPath.first(signed_info_element, "//ds:SignatureMethod", sig_namespace_hash)
 
+log '***** validate_doc_embedded_signature: verify_signature:'
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
