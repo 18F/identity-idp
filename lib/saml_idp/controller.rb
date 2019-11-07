@@ -65,12 +65,17 @@ module SamlIdp
     end
 
     def encode_logout_response(principal, opts = {})
+      signature_opts = opts[:signature] || {}
+
       SamlIdp::LogoutResponseBuilder.new(
         get_saml_response_id,
         (opts[:issuer_uri] || issuer_uri),
         saml_logout_url,
         saml_request_id,
-        (opts[:algorithm] || algorithm || default_algorithm)
+        (opts[:algorithm] || algorithm || default_algorithm),
+        signature_opts[:x509_certificate],
+        signature_opts[:secret_key],
+        signature_opts[:cloudhsm_key_label]
       ).signed
     end
 
