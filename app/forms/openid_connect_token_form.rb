@@ -113,8 +113,10 @@ class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
   end
 
   def validate_aud_claim(payload)
-    normalized_aud = payload['aud'].to_s.chomp('/')
-    return if api_openid_connect_token_url == normalized_aud
+    aud_claim = payload['aud']
+    aud_as_array = Array.wrap(aud_claim)
+    aud_as_array.map! { |aud| aud.to_s.chomp('/') }
+    return true if aud_as_array.include?(api_openid_connect_token_url)
 
     errors.add(:client_assertion,
                t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))

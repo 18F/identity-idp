@@ -86,6 +86,7 @@ module Users
 
     def process_invalid_submission
       if piv_cac_login_form.valid_token?
+        session[:needs_to_setup_piv_cac_after_sign_in] = true
         redirect_to login_piv_cac_account_not_found_url
       else
         process_token_with_error

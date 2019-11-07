@@ -47,8 +47,11 @@ module Idv
 
       def idv_failure(result)
         attempter_increment
-        type = attempter_throttled? ? :fail : :warning
-        redirect_to idv_session_failure_url(reason: type)
+        if attempter_throttled?
+          redirect_to idv_session_errors_failure_url
+        else
+          redirect_to idv_session_errors_warning_url
+        end
         result
       end
 

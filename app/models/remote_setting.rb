@@ -1,6 +1,6 @@
 class RemoteSetting < ApplicationRecord
   validates :url, format: {
     with:
-      %r{\A(https://raw.githubusercontent.com/18F/identity-idp/|https://login.gov).+\z},
+      /\A(#{Figaro.env.remote_settings_whitelist}).+\z/,
   }
 end

@@ -1,0 +1,15 @@
+- title t('titles.piv_cac_login.add')
+
+h1.h3.my0 = t('titles.piv_cac_login.add')
+p.mt2.mb2 == t('headings.piv_cac_login.add')
+
+p.mt2.mb2 == t('instructions.mfa.piv_cac.add_from_sign_in')
+
+.mt3
+  .inline-block
+    = link_to t('forms.piv_cac_setup.submit'), redirect_to_piv_cac_service_url, class: 'usa-button'
+  .inline-block
+    = button_to t('forms.piv_cac_setup.no_thanks'), login_add_piv_cac_prompt_url,
+      class: 'usa-button usa-button--outline'
+
+= render 'shared/cancel', link: new_user_session_url

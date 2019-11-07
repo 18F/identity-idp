@@ -17,6 +17,11 @@ module Idv
       redirect_to next_step
     end
 
+    def download
+      data = user_session[:personal_key] + "\r\n"
+      send_data data, filename: 'personal_key.txt'
+    end
+
     private
 
     def next_step
@@ -49,6 +54,7 @@ module Idv
 
     def finish_idv_session
       @code = personal_key
+      user_session[:personal_key] = @code
       idv_session.personal_key = nil
       flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true

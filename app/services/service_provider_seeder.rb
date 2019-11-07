@@ -16,7 +16,8 @@ class ServiceProviderSeeder
                   friendly_name: config['friendly_name'])
       end.update!(config.except('restrict_to_deploy_env',
                                 'uuid_priority',
-                                'default_help_text'))
+                                'protocol',
+                                'native'))
     end
   end
   # rubocop:enable Metrics/MethodLength
@@ -25,11 +26,20 @@ class ServiceProviderSeeder
 
   attr_reader :rails_env, :deploy_env
 
+  # rubocop:disable Metrics/AbcSize
+  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
-    YAML.safe_load(content).fetch(rails_env, {})
+    YAML.safe_load(content, aliases: true).fetch(rails_env)
+  rescue Psych::SyntaxError => syntax_error
+    Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
+    raise syntax_error
+  rescue KeyError => key_error
+    Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
+    raise key_error
   end
+  # rubocop:enable Metrics/AbcSize
 
   def remote_setting
     RemoteSetting.find_by(name: 'service_providers.yml')&.contents

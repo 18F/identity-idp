@@ -43,7 +43,7 @@ feature 'doc auth verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+    expect(page).to have_current_path(idv_session_errors_warning_path)
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do
@@ -53,7 +53,7 @@ feature 'doc auth verify step' do
     click_idv_continue
 
     enable_in_person_proofing
-    expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+    expect(page).to have_current_path(idv_session_errors_warning_path)
     expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
                                   href: idv_in_person_welcome_step)
   end
@@ -75,11 +75,11 @@ feature 'doc auth verify step' do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+      expect(page).to have_current_path(idv_session_errors_warning_path)
       visit idv_doc_auth_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
+    expect(page).to have_current_path(idv_session_errors_failure_path)
 
     Timecop.travel(Figaro.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
       complete_doc_auth_steps_before_verify_step(user)
@@ -95,10 +95,10 @@ feature 'doc auth verify step' do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+      expect(page).to have_current_path(idv_session_errors_warning_path)
       visit idv_doc_auth_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
+    expect(page).to have_current_path(idv_session_errors_failure_path)
   end
 end

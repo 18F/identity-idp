@@ -136,5 +136,51 @@ RSpec.describe ServiceProviderSeeder do
         expect(ServiceProvider.find_by(issuer: 'issuer1').friendly_name).to eq('name1')
       end
     end
+
+    # rubocop:disable Lint/HandleExceptions
+    context 'when there is a syntax error in the service_provider.yml config file' do
+      let(:seeder) do
+        ServiceProviderSeeder.new
+      end
+      before do
+        allow(YAML).to receive(:safe_load).and_raise(
+          Psych::SyntaxError.new('file', 0, 0, 0, 'problem', 'context'),
+        )
+      end
+
+      it 'logs the error' do
+        expect(Rails.logger).to receive(:error)
+        begin
+          seeder.send(:service_providers)
+        rescue Psych::SyntaxError
+          # ignore
+        end
+      end
+
+      it 're-raises the error' do
+        expect { seeder.send(:service_providers) }.to raise_error(Psych::SyntaxError)
+      end
+    end
+
+    context 'when the rails environment is not in the service_provider.yml config file' do
+      let(:seeder) do
+        ServiceProviderSeeder.new(rails_env: 'non-existant environment',
+                                  deploy_env: 'non-existant environment')
+      end
+
+      it 'logs the error' do
+        expect(Rails.logger).to receive(:error)
+        begin
+          seeder.send(:service_providers)
+        rescue KeyError
+          # ignore
+        end
+      end
+
+      it 're-raises the error' do
+        expect { seeder.send(:service_providers) }.to raise_error(KeyError)
+      end
+    end
+    # rubocop:enable Lint/HandleExceptions
   end
 end

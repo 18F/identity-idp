@@ -128,7 +128,7 @@ describe IdvController do
 
         get :fail
 
-        expect(response).to render_template('shared/_failure')
+        expect(response).to render_template('idv/fail')
       end
     end
   end

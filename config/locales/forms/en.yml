@@ -91,6 +91,7 @@ en:
         unverified_html: Please choose a different certificate from your PIV/CAC or
           contact your administrator to ensure your certificate is up to date.
       choose_different_certificate: Choose a different certificate
+      no_thanks: No thanks
       piv_cac:
         already_associated_html: Please choose a certificate from a different PIV/CAC
           or contact your administrator to ensure your PIV/CAC is up to date.

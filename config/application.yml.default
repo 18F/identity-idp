@@ -41,7 +41,7 @@ cloudhsm_pin: user:password
 cloudhsm_saml_key_label: key1
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
-doc_auth_exclusive: 'false'
+doc_auth_enabled: 'true'
 doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
 enable_load_testing_mode: 'false'
@@ -52,6 +52,8 @@ ial2_recovery_request_valid_for_minutes: '15'
 identity_pki_disabled: 'true'
 idv_attempt_window_in_hours: '24'
 idv_max_attempts: '3'
+idv_send_link_attempt_window_in_minutes: '10'
+idv_send_link_max_attempts: '5'
 in_person_proofing_enabled:
 job_run_healthchecks_enabled: 'true'
 lexisnexis_account_id: test_account
@@ -73,15 +75,11 @@ otp_valid_for: '10'
 password_max_attempts: '3'
 personal_key_retired:
 pinpoint_sms_application_id:
-pinpoint_sms_credential_external_id:
 pinpoint_sms_credential_role_arn:
-pinpoint_sms_credential_role_session_name:
 pinpoint_sms_longcode_pool:
 pinpoint_sms_region:
 pinpoint_sms_shortcode:
-pinpoint_voice_credential_external_id:
 pinpoint_voice_credential_role_arn:
-pinpoint_voice_credential_role_session_name:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
 pkcs11_lib: "/opt/cloudhsm/lib/libcloudhsm_pkcs11.so"
@@ -105,12 +103,19 @@ session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
 sp_handoff_bounce_max_seconds: '2'
 show_user_attribute_deprecation_warnings: 'false'
+twilio_auth_token: token1
+twilio_http_basic_auth_password:
+twilio_http_basic_auth_username:
+twilio_messaging_service_sid:
+twilio_numbers:
+twilio_record_voice: 'false'
+twilio_sid:
 twilio_timeout: '5'
-twilio_verify_override_for_intl_sms: 'false'
+unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2"]'
 
 development:
   aamva_private_key: 123abc
@@ -144,7 +149,7 @@ development:
   database_username: ''
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
-  doc_auth_enabled: 'false'
+  doc_auth_exclusive: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
@@ -178,6 +183,10 @@ development:
   reg_confirmed_email_max_attempts: '20'
   reg_unconfirmed_email_max_attempts: '20'
   reg_unconfirmed_email_window_in_minutes: '60'
+  remote_settings_certs_dir: 'http://localhost:8090/certs/'
+  remote_settings_config_dir: 'http://localhost:8090/config/'
+  remote_settings_logos_dir: 'http://localhost:8090/assets/images/logos/'
+  remote_settings_whitelist: 'http://localhost:8090'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
@@ -190,14 +199,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
   telephony_disabled: 'true'
-  twilio_auth_token: token1
-  twilio_http_basic_auth_password: 123abc
-  twilio_http_basic_auth_username: 123abc
-  twilio_messaging_service_sid: 123abc
-  twilio_numbers: '["9999999999","2222222222"]'
-  twilio_record_voice: 'true'
-  twilio_sid: sid1
-  twilio_verify_api_key:
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
@@ -246,7 +247,7 @@ production:
   database_username:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
-  doc_auth_enabled: 'false'
+  doc_auth_exclusive: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
@@ -280,6 +281,10 @@ production:
   reg_confirmed_email_max_attempts: '20'
   reg_unconfirmed_email_max_attempts: '20'
   reg_unconfirmed_email_window_in_minutes: '60'
+  remote_settings_certs_dir: 'https://assets.login.gov/certs/'
+  remote_settings_config_dir: 'https://assets.login.gov/config/'
+  remote_settings_logos_dir: 'https://assets.login.gov/assets/images/logos/'
+  remote_settings_whitelist: 'https://login.gov|https://.*\.login.gov|https://raw.githubusercontent.com/18F/identity-idp/'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
@@ -290,16 +295,8 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   session_encryption_key:
-  telephony_adapter: twilio
+  telephony_adapter: pinpoint
   telephony_disabled:
-  twilio_auth_token:
-  twilio_http_basic_auth_password:
-  twilio_http_basic_auth_username:
-  twilio_messaging_service_sid:
-  twilio_numbers:
-  twilio_record_voice: 'false'
-  twilio_sid:
-  twilio_verify_api_key: change-me
   twilio_voice_callback_encryption_key:
   use_dashboard_service_providers: 'false'
   use_kms: 'true'
@@ -347,7 +344,7 @@ test:
   database_username: ''
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
-  doc_auth_enabled: 'true'
+  doc_auth_exclusive: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
@@ -381,6 +378,10 @@ test:
   reg_confirmed_email_max_attempts: '3'
   reg_unconfirmed_email_max_attempts: '4'
   reg_unconfirmed_email_window_in_minutes: '70'
+  remote_settings_certs_dir: 'https://assets.login.gov/certs/'
+  remote_settings_config_dir: 'https://assets.login.gov/config/'
+  remote_settings_logos_dir: 'https://assets.login.gov/assets/images/logos/'
+  remote_settings_whitelist: 'https://login.gov|https://.*\.login.gov|https://raw.githubusercontent.com/18F/identity-idp/'
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
@@ -393,14 +394,6 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
   telephony_disabled:
-  twilio_auth_token: token1
-  twilio_http_basic_auth_password: 123abc
-  twilio_http_basic_auth_username: 123abc
-  twilio_messaging_service_sid: 123abc
-  twilio_numbers: '["9999999999","2222222222"]'
-  twilio_record_voice: 'true'
-  twilio_sid: sid1
-  twilio_verify_api_key: secret
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'false'
   use_kms: 'false'

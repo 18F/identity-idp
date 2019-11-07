@@ -43,7 +43,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: aa22a148b4b4f824c60c33bd0fb3ee67cf067298
+  revision: 5e451e7f932c33f0f8b5a6339d80657a0cdfe6a6
+  ref: 5e451e7
   specs:
     saml_idp (0.8.0.pre.18f)
       activesupport
@@ -55,14 +56,13 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 7d216f9831a39b9b89c704dbd711a82dd3fd395d
-  tag: v0.0.14
+  revision: dc555fc6d69497cebd82633d279bbfa832ac8784
+  tag: v0.0.16
   specs:
-    identity-telephony (0.0.14)
+    identity-telephony (0.0.16)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
-      phonelib
       twilio-ruby
       typhoeus
 

@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
+= render 'idv/doc_auth/error_messages', flow_session: flow_session
+
 = render 'idv/doc_auth/front_of_state_id_image'
 
 h1.h3.my0 = t('doc_auth.headings.upload_front')
@@ -14,7 +16,7 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
     = render 'idv/doc_auth/tips_and_sample'
     .center
       = image_tag(asset_url('state-id-sample-front.jpg'), height: 338, width: 450)
-  = render 'idv/doc_auth/error_messages', flow_session: flow_session
+  = render 'idv/doc_auth/notices', flow_session: flow_session
   .mb4 id= 'target'
   .mt2
     = render 'idv/doc_auth/submit_with_spinner'

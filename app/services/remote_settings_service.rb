@@ -28,6 +28,8 @@ class RemoteSettingsService
   end
 
   def self.remote?(location)
-    location.to_s.starts_with?('https://')
+    loc = location.to_s
+    regex = Rails.env.development? ? %r{\Ahttps?:\/\/} : %r{\Ahttps:\/\/}
+    regex.match?(loc)
   end
 end

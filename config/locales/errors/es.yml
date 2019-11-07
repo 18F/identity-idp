@@ -24,9 +24,9 @@ es:
         intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
-      general_error: Su identificación emitida por el estado no pudo ser verificada.
-        Por favor, intente cargar diferentes imágenes comenzando con el frente de
-        su identificación emitida por el estado.
+      general_error: No pudimos leer ni verificar su identificación. Intenta tomar
+        y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
+        de que todo se pueda leer fácilmente, incluido el código de barras.
       general_info: |-
         <div class="bold">Si está utilizando una cámara, asegúrese de</div>
         <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
@@ -41,6 +41,8 @@ es:
         </ul>
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
+      send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
+        También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

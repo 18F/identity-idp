@@ -10,4 +10,4 @@ require('../app/phone-validation');
 require('../app/print-personal-key');
 require('../app/i18n-dropdown');
 require('../app/platform-authenticator');
-require('../app/intl-tel-input');
+require('../app/accessible-forms');

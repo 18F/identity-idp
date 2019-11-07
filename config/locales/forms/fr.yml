@@ -101,6 +101,7 @@ fr:
           ou contactez votre administrateur pour vous assurer que votre certificat
           est à jour.
       choose_different_certificate: Choisissez un certificat différent
+      no_thanks: Non merci
       piv_cac:
         already_associated_html: Veuillez choisir un certificat associé à une autre
           carte PIV/CAC ou contactez votre administrateur afin de vérifier que votre

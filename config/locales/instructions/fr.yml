@@ -33,6 +33,11 @@ fr:
             mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte."
           paragraph_2_html: "<strong>Vous n'avez pas de compte login.gov?</strong>
             %{create_account}"
+        add_from_sign_in: '<strong> Instructions: </ strong> insérez votre PIV ou
+          votre CAC dans <strong> "AJOUTER PIV / CAC" </ strong>. Vous devez <strong>
+          choisir un certificat </ strong> (le bon en a probablement votre nom) et
+          <strong> saisir votre code confidentiel </ strong> (votre code confidentiel
+          a été créé lors de la configuration de votre PIV / CAC). ).'
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
@@ -76,17 +81,12 @@ fr:
         v: Excellente!
     personal_key:
       accent: Notez-la ou imprimez-la.
-      email_body: Utilisez-la uniquement lorsque vous ne disposez d'aucun autre moyen
-        de connexion.
-      email_title: Nous ne vous demanderons pas votre clé personelle par courriel
-      info_html: C'est le seul moyen de retrouver l'accès à votre compte si vous perdez
-        votre téléphone ou vos options de sécurité. %{accent}
-      once_html: "<strong>Les clés personnelles sont à usage unique.</strong> Si vous
-        devez utiliser votre clé personnelle pour quelque raison que ce soit, vous
-        recevrez une nouvelle clé."
-      safety_html: "<strong>Protégez-vous en privé.</strong> Ne partagez pas votre
-        clé personnelle et ne l'utilisez que lorsque vous n'avez pas accès à vos méthodes
-        de connexion habituelles."
+      email_body: Ne perdez pas votre clé personnelle et ne la partagez pas avec d’autres.
+        Nous vous le demanderons si vous réinitialisez votre mot de passe.
+      email_title: Sauvegarde le. Garde-le en sécurité.
+      info_html: Vous aurez besoin de cette clé personnelle si vous oubliez votre
+        mot de passe. Si vous réinitialisez votre mot de passe et que vous ne possédez
+        pas cette clé, vous devrez vérifier votre identité à nouveau.
     sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
       login.gov. Veuillez contacter %{sp_link} pour obtenir de l'aide.
     sp_handoff_bounced_with_no_sp: votre fournisseur de service

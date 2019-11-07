@@ -7,12 +7,17 @@ module SignUp
     before_action :stop_if_invalid_token
 
     def create
+      clear_setup_piv_cac_from_sign_in
       process_confirmation
     rescue ActiveRecord::RecordNotUnique
       process_already_confirmed_user
     end
 
     private
+
+    def clear_setup_piv_cac_from_sign_in
+      session.delete(:needs_to_setup_piv_cac_after_sign_in)
+    end
 
     def process_successful_confirmation
       process_valid_confirmation_token

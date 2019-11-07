@@ -97,6 +97,17 @@ describe Idv::ConfirmationsController do
       expect(assigns(:code)).to eq(code)
     end
 
+    it 'allows download of code' do
+      subject.idv_session.create_profile_from_applicant_with_password(password)
+      code = subject.idv_session.personal_key
+
+      get :show
+      get :download
+
+      expect(response.body).to eq(code + "\r\n")
+      expect(response.header['Content-Type']).to eq('text/plain')
+    end
+
     it 'sets flash[:allow_confirmations_continue] to true' do
       get :show
 
