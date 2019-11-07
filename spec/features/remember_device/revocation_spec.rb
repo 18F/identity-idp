@@ -16,7 +16,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_user(user)
       click_link(
         t('forms.buttons.manage'),
-        href: manage_phone_url(id: user.phone_configurations.first.id),
+        href: manage_phone_path(id: user.phone_configurations.first.id),
       )
       click_on t('forms.phone.buttons.delete')
       first(:link, t('links.sign_out')).click

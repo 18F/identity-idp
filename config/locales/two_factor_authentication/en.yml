@@ -99,7 +99,6 @@ en:
       be provided a new key.
     phone:
       delete:
-        failure: Unable to remove your phone.
         success: Your phone has been removed.
     phone_fallback:
       question: Don't have access to your phone right now?
