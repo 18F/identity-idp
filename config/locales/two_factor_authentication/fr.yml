@@ -137,6 +137,13 @@ fr:
     - Vous utiliserez une seule méthode d'authentification pour vous connecter, mais
       nous vous demandons d'en configurer deux. Cela garantit que vous pouvez toujours
       vous connecter si vous perdez l'accès à l'un d'entre eux.
+    two_factor_choice_intro_paragraphs_retire_personal_key:
+    - L'ajout d'une autre méthode d'authentification vous permet de vous connecter
+      à votre compte même si vous perdez ou modifiez votre téléphone. <ul> <li> Vous
+      ne devrez l'utiliser que lorsque vous n'avez pas votre téléphone, pas à chaque
+      fois que vous vous connectez </li> <li> Vous ne pourrez plus vous connecter
+      avec une clé personnelle. Les clés personnelles sont facilement perdues ou volées.
+      Nous les supprimons pour protéger votre compte.</li></ul>
     two_factor_choice_options:
       auth_app: Application d'authentification
       auth_app_info_html: Configurez une application d'authentification pour obtenir
@@ -161,6 +168,8 @@ fr:
       voice_info_html: Obtenez votre code de sécurité par appel téléphonique
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez une clé de sécurité pour sécuriser votre compte
+    two_factor_choice_retire_personal_key: Ajouter une autre méthode d'authentification
+      (Obligatoire)
     two_factor_recovery_choice: Configuration de la seconde méthode d'authentification
       (2 sur 2)
     two_factor_recovery_choice_intro_paragraphs:
