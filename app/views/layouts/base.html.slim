@@ -13,11 +13,7 @@ html lang="#{I18n.locale}" class='no-js'
     - if session_with_trust? || FeatureManagement.disallow_all_web_crawlers?
       meta name='robots' content='noindex,nofollow'
 
-    title
-      = APP_NAME
-      - if content_for?(:title)
-        = ' - '
-        = yield(:title)
+  
 
     == stylesheet_link_tag 'application', media: 'all'
     <!--[if IE 8]>
