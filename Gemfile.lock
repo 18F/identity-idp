@@ -43,8 +43,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 17ccb98b0f12727c793d597f92dc0c5481ee2e17
-  ref: 17ccb98
+  revision: 4fe7b36dd656669826e529f31f5acb6917c240b2
+  branch: master
   specs:
     saml_idp (0.8.0.pre.18f)
       activesupport
