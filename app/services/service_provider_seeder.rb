@@ -31,7 +31,7 @@ class ServiceProviderSeeder
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
-    YAML.safe_load(content, aliases: true).fetch(rails_env)
+    YAML.safe_load(content).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
     Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
     raise syntax_error
