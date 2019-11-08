@@ -9,6 +9,11 @@ feature 'doc auth send link step' do
     complete_doc_auth_steps_before_send_link_step
   end
 
+  let(:idv_send_link_max_attempts) { Figaro.env.idv_send_link_max_attempts.to_i }
+  let(:idv_send_link_attempt_window_in_minutes) do
+    Figaro.env.idv_send_link_attempt_window_in_minutes.to_i
+  end
+
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
     expect(page).to have_content(t('doc_auth.headings.take_picture'))
@@ -39,5 +44,31 @@ feature 'doc auth send link step' do
 
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
     expect(page).to have_content telephony_error.friendly_message
+  end
+
+  it 'throttles sending the link' do
+    user = user_with_2fa
+    idv_send_link_max_attempts.times do
+      complete_doc_auth_steps_before_send_link_step(user)
+      expect(page).to_not have_content I18n.t('errors.doc_auth.send_link_throttle')
+
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      click_on t('doc_auth.buttons.start_over')
+    end
+
+    complete_doc_auth_steps_before_send_link_step(user)
+    fill_in :doc_auth_phone, with: '415-555-0199'
+    click_idv_continue
+    expect(page).to have_current_path(idv_doc_auth_send_link_step)
+    expect(page).to have_content I18n.t('errors.doc_auth.send_link_throttle')
+
+    Timecop.travel(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
   end
 end

@@ -1,4 +1,6 @@
 ul.mb3.list-reset.border-bottom.success-bullets.requested-attributes
   - view_model.requested_attributes_sorted.each do |attribute|
-    li.border-top.bold
-      = t("help_text.requested_attributes.#{attribute}")
+    li.border-top
+      span.bold
+        = t("help_text.requested_attributes.#{attribute}")
+      span.pl2 == @pii[attribute].to_s

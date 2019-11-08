@@ -17,11 +17,6 @@ class FailurePresenter
       alt_text: 'warning',
       color: 'yellow',
     },
-    are_you_sure: {
-      icon: 'alert/forgot.svg',
-      alt_text: 'warning',
-      color: 'teal',
-    },
   }.freeze
 
   def initialize(state)
@@ -30,10 +25,6 @@ class FailurePresenter
 
   def state_icon
     STATE_CONFIG.dig(state, :icon)
-  end
-
-  def state_alt_text
-    STATE_CONFIG.dig(state, :alt_text)
   end
 
   def state_color
@@ -53,8 +44,4 @@ class FailurePresenter
   end
 
   def js; end
-
-  def display_back_to_account?
-    false
-  end
 end

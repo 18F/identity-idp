@@ -73,7 +73,7 @@ describe Idv::SessionsController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-        expect(response).to redirect_to idv_session_failure_url(:fail)
+        expect(response).to redirect_to idv_session_errors_failure_url
       end
     end
   end
@@ -104,7 +104,7 @@ describe Idv::SessionsController do
 
       post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
-      expect(response).to redirect_to(idv_session_failure_url(:warning))
+      expect(response).to redirect_to(idv_session_errors_warning_url)
       expect(idv_session.profile_confirmation).to be_falsy
       expect(idv_session.resolution_successful).to be_falsy
     end
@@ -150,7 +150,7 @@ describe Idv::SessionsController do
 
       post :create, params: { profile: user_attrs }
 
-      expect(response).to redirect_to(idv_session_failure_url(:warning))
+      expect(response).to redirect_to(idv_session_errors_warning_url)
       expect(idv_session.profile_confirmation).to be_falsy
       expect(idv_session.resolution_successful).to be_falsy
     end
@@ -188,29 +188,9 @@ describe Idv::SessionsController do
 
       expect(@analytics).to have_received(:track_event).
         with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-      expect(response).to redirect_to idv_session_failure_url(:fail)
+      expect(response).to redirect_to idv_session_errors_failure_url
       expect(idv_session.profile_confirmation).to be_falsy
       expect(idv_session.resolution_successful).to be_falsy
-    end
-  end
-
-  describe '#failure' do
-    it 'renders the error for the the given error case if the failure reason' do
-      expect(controller).to receive(:render_idv_step_failure).with(:sessions, :fail)
-
-      get :failure, params: { reason: :fail }
-    end
-  end
-
-  context 'user has created account' do
-    describe '#failure' do
-      let(:reason) { :fail }
-
-      it 'calls `render_step_failure` with step_name of :sessions and the reason' do
-        expect(controller).to receive(:render_idv_step_failure).with(:sessions, reason)
-
-        get :failure, params: { reason: reason }
-      end
     end
   end
 

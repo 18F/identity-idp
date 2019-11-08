@@ -1,14 +1,13 @@
 module Idv
   class SessionsController < ApplicationController
     include IdvSession
-    include IdvFailureConcern
     include PersonalKeyConcern
 
     attr_reader :idv_form
 
-    before_action :confirm_two_factor_authenticated, except: %i[success failure]
-    before_action :confirm_idv_attempts_allowed, except: %i[success failure destroy]
-    before_action :confirm_idv_needed, except: %i[destroy failure]
+    before_action :confirm_two_factor_authenticated, except: %i[success]
+    before_action :confirm_idv_attempts_allowed, except: %i[success destroy]
+    before_action :confirm_idv_needed, except: %i[destroy]
     before_action :confirm_step_needed, except: %i[success destroy]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
@@ -25,11 +24,6 @@ module Idv
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, form_result.to_h)
       return process_form_failure unless form_result.success?
       submit_proofing_attempt
-    end
-
-    def failure
-      reason = params[:reason].to_sym
-      render_idv_step_failure(:sessions, reason)
     end
 
     def destroy
@@ -68,7 +62,7 @@ module Idv
 
     def handle_proofing_failure
       idv_session.previous_profile_step_params = profile_params.to_h
-      redirect_to idv_session_failure_url(step.failure_reason)
+      redirect_to failure_url(step.failure_reason)
     end
 
     def step_name
@@ -90,8 +84,18 @@ module Idv
       params.require(:profile).permit(Idv::ProfileForm::PROFILE_ATTRIBUTES)
     end
 
+    # :reek:ControlParameter
     def failure_url(reason)
-      idv_session_failure_url(reason)
+      case reason
+      when :warning
+        idv_session_errors_warning_url
+      when :timeout
+        idv_session_errors_timeout_url
+      when :jobfail
+        idv_session_errors_jobfail_url
+      when :fail
+        idv_session_errors_failure_url
+      end
     end
   end
 end

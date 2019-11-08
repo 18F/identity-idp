@@ -27,7 +27,7 @@ describe FailurePresenter do
   end
 
   context 'methods configured by state' do
-    %i[icon alt_text color].each do |method|
+    %i[icon color].each do |method|
       %i[warning failure locked].each do |state|
         describe "##{method} for #{state}" do
           let(:state) { state }

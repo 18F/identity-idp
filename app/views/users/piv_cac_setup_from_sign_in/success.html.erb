@@ -1,0 +1,11 @@
+<% title t('headings.piv_cac_login.success') %>
+
+<%= image_tag asset_url('alert/success.svg'), width: 90 %>
+
+<h1 class="h3 mb2 mt3 my0"><%= t('headings.piv_cac_login.success') %></h1>
+<br>
+
+<%= button_to t('forms.buttons.continue'), login_add_piv_cac_success_path,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12', method: :post %>
+
+<%= render 'shared/cancel', link: destroy_user_session_path %>

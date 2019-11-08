@@ -8,6 +8,7 @@ class Throttle < ApplicationRecord
     reg_confirmed_email: 3,
     reset_password_email: 4,
     idv_resolution: 5,
+    idv_send_link: 6,
   }
 
   THROTTLE_CONFIG = {
@@ -30,6 +31,10 @@ class Throttle < ApplicationRecord
     idv_resolution: {
       max_attempts: (Figaro.env.idv_max_attempts || 3).to_i,
       attempt_window: (Figaro.env.idv_attempt_window_in_hours || 24).to_i * 60,
+    },
+    idv_send_link: {
+      max_attempts: (Figaro.env.idv_send_link_max_attempts || 5).to_i,
+      attempt_window: (Figaro.env.idv_send_link_attempt_window_in_minutes || 10).to_i,
     },
   }.freeze
 

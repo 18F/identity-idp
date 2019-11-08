@@ -19,4 +19,4 @@ en:
       confirmation_error: You've entered an incorrect personal key.
       generated_on_html: Generated on %{date}
       header: Your personal key
-      print: Print this page
+      print: Print

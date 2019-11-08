@@ -87,7 +87,7 @@ feature 'idv profile step' do
         click_continue
 
         expect(page).to have_content(t('idv.failure.sessions.warning'))
-        expect(page).to have_current_path(idv_session_failure_path(reason: :warning))
+        expect(page).to have_current_path(idv_session_errors_warning_path)
 
         click_on t('idv.failure.button.warning')
       end
@@ -97,7 +97,7 @@ feature 'idv profile step' do
       click_continue
 
       expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail_html')))
-      expect(page).to have_current_path(idv_session_failure_path(reason: :fail))
+      expect(page).to have_current_path(idv_session_errors_failure_path)
     end
   end
 

@@ -21,7 +21,7 @@
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.3",
-    "intl-tel-input": "^12.1.15",
+    "intl-tel-input": "^16.0.7",
     "jquery": "^3.3.1",
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",

@@ -1,6 +1,8 @@
 namespace :remote_settings do
   task :update, %i[name url] => [:environment] do |_task, args|
-    RemoteSettingsService.update_setting(args[:name], args[:url])
+    url = args[:url] || Figaro.env.remote_settings_config_dir + args[:name]
+    Kernel.puts "\nLoading remote settings for #{args[:name]} from #{url}"
+    RemoteSettingsService.update_setting(args[:name], url)
     Kernel.puts 'Update successful'
   end
 

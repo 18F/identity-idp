@@ -16,21 +16,13 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
     args = args.merge(sp_create_link: sp_create_link)
-    if custom_alert?(section)
-      generate_custom_alert(section, args)
-    else
-      t("service_providers.help_text.default.#{section}", args)
-    end
+    generate_custom_alert(section, args)
   end
 
   def generate_custom_alert(section, args)
     language = I18n.locale.to_s
-
-    if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text.dig(section, language) % args
-    else
-      SP_CONFIG.dig(sp.issuer, 'help_text', language, section) % args
-    end
+    help_text = sp.help_text.dig(section, language)
+    help_text % args if help_text
   end
 
   def sp_logo
@@ -126,7 +118,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     path_to_section_map = { sign_in_path => 'sign_in',
                             sign_up_path => 'sign_up',
                             forgot_password_path => 'forgot_password' }
-    custom_alert?(path_to_section_map[path]) || default_alert?
+    custom_alert?(path_to_section_map[path])
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -153,15 +145,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   def custom_alert?(section)
     language = I18n.locale.to_s
-    if FeatureManagement.use_dashboard_service_providers?
-      sp.help_text[section].dig(language).present?
-    else
-      SP_CONFIG.dig(sp.issuer, 'help_text', language, section).present?
-    end
-  end
-
-  def default_alert?
-    SP_CONFIG.dig(sp.issuer, 'default_help_text')
+    sp.help_text[section]&.dig(language).present?
   end
 
   def request_url

@@ -14,6 +14,12 @@ describe RemoteSetting do
       expect(valid_setting).to be_valid
     end
 
+    it 'validates that the assets.login.gov static site is white listed' do
+      location = 'https://assets.login.gov/agencies.yml'
+      valid_setting = RemoteSetting.create(name: 'agencies.yml', url: location, contents: '')
+      expect(valid_setting).to be_valid
+    end
+
     it 'does not accept http' do
       location = 'http://login.gov/agencies.yml'
       valid_setting = RemoteSetting.create(name: 'agencies.yml', url: location, contents: '')

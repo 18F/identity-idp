@@ -1,13 +1,12 @@
 module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
-    include IdvFailureConcern
 
     attr_reader :idv_form
 
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed, except: [:failure]
-    before_action :set_idv_form, except: [:failure]
+    before_action :confirm_step_allowed
+    before_action :set_idv_form
 
     def new
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
@@ -18,10 +17,6 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
       return render(:new) unless result.success?
       submit_proofing_attempt
-    end
-
-    def failure
-      render_idv_step_failure(:phone, params[:reason].to_sym)
     end
 
     private
@@ -73,8 +68,18 @@ module Idv
       )
     end
 
+    # :reek:ControlParameter
     def failure_url(reason)
-      idv_phone_failure_url(reason)
+      case reason
+      when :warning
+        idv_phone_errors_warning_url
+      when :timeout
+        idv_phone_errors_timeout_url
+      when :jobfail
+        idv_phone_errors_jobfail_url
+      when :fail
+        idv_phone_errors_failure_url
+      end
     end
   end
 end

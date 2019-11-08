@@ -10,13 +10,18 @@ class SignUpCompletionsShow
 
   attr_reader :ial2_requested, :decorated_session
 
-  SORTED_ATTRIBUTE_MAPPING = [
+  SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [%i[given_name family_name], :full_name],
     [[:address], :address],
     [[:phone], :phone],
     [[:email], :email],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
+    [[:x509_subject], :x509_subject],
+  ].freeze
+
+  SORTED_IAL1_ATTRIBUTE_MAPPING = [
+    [[:email], :email],
     [[:x509_subject], :x509_subject],
   ].freeze
 
@@ -58,9 +63,13 @@ class SignUpCompletionsShow
   end
 
   def requested_attributes_sorted
-    SORTED_ATTRIBUTE_MAPPING.map do |raw_attribute, display_attribute|
+    sorted_attribute_mapping.map do |raw_attribute, display_attribute|
       display_attribute if (requested_attributes & raw_attribute).present?
     end.compact
+  end
+
+  def sorted_attribute_mapping
+    ial2_requested ? SORTED_IAL2_ATTRIBUTE_MAPPING : SORTED_IAL1_ATTRIBUTE_MAPPING
   end
 
   def identities_partial

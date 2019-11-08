@@ -7,7 +7,6 @@ module Idv
 
     def new
       analytics.track_event(Analytics::IDV_FORGOT_PASSWORD)
-      @presenter = ForgotPasswordPresenter.new(view_context: view_context)
     end
 
     def update

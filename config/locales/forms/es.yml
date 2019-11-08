@@ -99,6 +99,7 @@ es:
           contacto con su administrador para asegurarse de que su certificado esté
           actualizado.
       choose_different_certificate: Elija un certificado diferente
+      no_thanks: No, gracias
       piv_cac:
         already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte
           en contacto con el administrador para confirmar que tu PIV/CAC está al día.

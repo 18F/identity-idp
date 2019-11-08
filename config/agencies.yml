@@ -4,7 +4,7 @@ test:
   2:
     name: 'OPM'
   3:
-    name: 'USDS'
+    name: 'EOP'
   4:
     name: 'RRB'
   5:
@@ -20,7 +20,7 @@ test:
   10:
     name: 'DOE'
   11:
-    name: 'USFS'
+    name: 'USDA'
   12:
     name: 'HUD'
   13:
@@ -44,7 +44,7 @@ development:
   2:
     name: 'OPM'
   3:
-    name: 'USDS'
+    name: 'EOP'
   4:
     name: 'RRB'
   5:
@@ -60,7 +60,7 @@ development:
   10:
     name: 'DOE'
   11:
-    name: 'USFS'
+    name: 'USDA'
   12:
     name: 'HUD'
   13:
@@ -84,7 +84,7 @@ production:
   2:
     name: 'OPM'
   3:
-    name: 'USDS'
+    name: 'EOP'
   4:
     name: 'RRB'
   5:
@@ -100,7 +100,7 @@ production:
   10:
     name: 'DOE'
   11:
-    name: 'USFS'
+    name: 'USDA'
   12:
     name: 'HUD'
   13:

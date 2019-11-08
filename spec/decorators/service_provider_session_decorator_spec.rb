@@ -56,34 +56,19 @@ RSpec.describe ServiceProviderSessionDecorator do
   end
 
   describe '#sp_msg' do
-    context 'sp is flagged to see the default alert' do
-      it 'uses the default template' do
-        sp_with_default_ht = SP_CONFIG.find { |_issuer, attr| attr['default_help_text'] }.last
-        sp_name = sp_with_default_ht['friendly_name']
-        allow(sp).to receive(:issuer).and_return('test_sp_with_default_help_text')
-        allow(subject).to receive(:sp_name).and_return(sp_name)
-
-        expect(subject.sp_msg('sign_in', sp_name: sp_name)).
-          to eq I18n.t('service_providers.help_text.default.sign_in',
-                       sp_name: sp_name,
-                       sp_create_link: sp_create_link)
-      end
-
-      it 'interpolates the sp_name' do
-        sp_msg = subject.sp_msg('sign_in', sp_name: sp_name)
-        expect(sp_msg).to include(sp_name)
+    context 'sp has custom alert' do
+      it 'uses the custom template' do
+        expect(subject.sp_msg('sign_in')).
+          to eq "<b>custom sign in help text for #{sp.friendly_name}</b>"
       end
     end
 
-    context 'sp has custom alert' do
-      it 'uses the custom template' do
-        sp_with_custom_ht = SP_CONFIG.find { |_issuer, attr| attr['help_text'].present? }.last
-        sp_name = sp_with_custom_ht['friendly_name']
-        allow(sp).to receive(:issuer).and_return('test_sp_with_custom_help_text')
-        allow(subject).to receive(:sp_name).and_return(sp_name)
+    context 'sp does not have a custom alert' do
+      let(:sp) { build_stubbed(:service_provider_without_help_text) }
 
+      it 'uses the custom template' do
         expect(subject.sp_msg('sign_in')).
-          to eq "custom sign in help text for #{sp_name}"
+          to be_nil
       end
     end
   end

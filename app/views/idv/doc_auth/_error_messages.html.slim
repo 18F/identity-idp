@@ -2,5 +2,3 @@
   .alert.alert-error
     = flow_session[:error_message]
     = render 'idv/doc_auth/in_person_proofing_option'
-  - if flow_session[:notice].present?
-    .alert.alert-notice == flow_session[:notice]

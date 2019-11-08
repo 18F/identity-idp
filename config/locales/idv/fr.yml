@@ -37,24 +37,24 @@ fr:
         compte.
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
-      attempts:
+      attempts_html:
         one: Il ne vous reste qu' strongune tentative./strong
         other: Il ne vous reste que strong%{count} tentatives./strong
       button:
-        fail: OK
         jobfail: Essayez à nouveau demain
         timeout: Essayez à nouveau
         warning: Essayez à nouveau
       errors:
         link: contactez-nous
-        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
+        text_html: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez
+          demain.
       help:
         get_help_html: Obtenir de l'aide à <strong>%{sp_name}</strong>
       phone:
-        fail_html: Pour votre sécurité, la vérification d'identité de votre compte
-          est <strong>verrouillée pendant 24 heures</strong>.
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
+        fail_html: Pour protéger votre identité, vous devez <strong>attendre 24 heures</strong>
+          pour réessayer un numéro de téléphone.
+        heading: Nous n'avons pas pu faire correspondre votre nom et votre adresse
+          à ce numéro de téléphone.
         jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer demain.
         timeout: Notre demande de vérification de vos renseignements a expiré.
@@ -83,7 +83,7 @@ fr:
         warning_2: Vous devrez ressaisir vos informations personnelles, comme votre
           nom, votre numéro d’identification, etc.
     form:
-      activate_by_mail: Recevez un code par mail ›
+      activate_by_mail: Vérifiez votre adresse par courrier à la place.
       address1: Adresse
       address2: Adresse (optional)
       city: Ville
@@ -91,7 +91,8 @@ fr:
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: Pas de téléphone éligible? <strong>%{link}</strong>
+      no_alternate_phone_html: "<strong>%{link}</strong> Nous vous ferons parvenir
+        une lettre contenant un code."
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale
@@ -158,7 +159,6 @@ fr:
         - pas un numéro de téléphone prépayé
         - un numéro américain
       return_to_profile: "‹ Revenir à votre profil login.gov"
-      return_to_sp_html: Vous pouvez maintenant vous connecter à <strong>%{sp}</strong>.
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}

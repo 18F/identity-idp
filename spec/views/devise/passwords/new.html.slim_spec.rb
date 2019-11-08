@@ -1,21 +1,25 @@
 require 'rails_helper'
 
 describe 'devise/passwords/new.html.slim' do
-  before do
-    @password_reset_email_form = PasswordResetEmailForm.new('')
-    @sp = build_stubbed(
+  let(:sp) do
+    build_stubbed(
       :service_provider,
       friendly_name: 'Awesome Application!',
       return_to_sp_url: 'www.awesomeness.com',
     )
+  end
+  before do
+    @password_reset_email_form = PasswordResetEmailForm.new('')
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url).
       and_return('https://www.example.com/')
     allow(view_context).to receive(:sign_up_email_path).
       and_return('/sign_up/enter_email')
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
+      and_return('/users/password/new')
 
     @decorated_session = DecoratedSession.new(
-      sp: @sp,
+      sp: sp,
       view_context: view_context,
       sp_session: {},
       service_provider_request: ServiceProviderRequest.new,
@@ -48,17 +52,25 @@ describe 'devise/passwords/new.html.slim' do
   end
 
   it 'has sp alert for certain service providers' do
-    @sp.issuer = SP_CONFIG.select { |_issuer, attrs| attrs['default_help_text'] }.keys.first
-
     render
 
     expect(rendered).to have_selector('.alert')
   end
 
-  it 'does not have an sp alert for service providers without alert messages' do
-    render
+  context 'service provider does not have custom help text' do
+    let(:sp) do
+      build_stubbed(
+        :service_provider_without_help_text,
+        friendly_name: 'Awesome Application!',
+        return_to_sp_url: 'www.awesomeness.com',
+      )
+    end
 
-    expect(rendered).to_not have_selector('.alert')
+    it 'does not have an sp alert for service providers without alert messages' do
+      render
+
+      expect(rendered).to_not have_selector('.alert')
+    end
   end
 
   it 'does not render a recaptcha with recaptcha disabled' do
