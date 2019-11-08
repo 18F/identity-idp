@@ -10,12 +10,13 @@ module Users
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
+      @retire_personal_key = MfaPolicy.new(current_user).retire_personal_key?
     end
 
     # :reek:TooManyStatements
     def create
-      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
-      result = @two_factor_options_form.submit(two_factor_options_form_params)
+      user_session[:context] = 'confirmation'
+      result = submit_form
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
@@ -32,6 +33,11 @@ module Users
     end
 
     private
+
+    def submit_form
+      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
+      @two_factor_options_form.submit(two_factor_options_form_params)
+    end
 
     def backup_code_only_processing
       if user_session[:signing_up] &&

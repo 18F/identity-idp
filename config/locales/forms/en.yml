@@ -122,6 +122,8 @@ en:
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
+    two_factor_choice_retire_personal_key:
+      legend: 'Select a two-factor authentication method:'
     two_factor_recovery_choice:
       legend: Select an additional method to secure your account
     verify_profile:

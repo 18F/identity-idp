@@ -4,11 +4,12 @@ feature 'View personal key' do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  let(:user) { create(:user, :signed_up, :with_personal_key) }
 
   context 'after sign up' do
     context 'regenerating personal key' do
       scenario 'displays new code and notifies the user' do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 
         # The user should receive an SMS and an email
@@ -30,7 +31,7 @@ feature 'View personal key' do
       scenario 'displays new code' do
         allow(Figaro.env).to receive(:reauthn_window).and_return('0')
 
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
 
         old_digest = user.encrypted_recovery_code_digest
 
@@ -44,7 +45,7 @@ feature 'View personal key' do
 
     context 'personal key actions and information' do
       before do
-        @user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         click_button t('account.links.regenerate_personal_key')
       end
 
@@ -53,7 +54,7 @@ feature 'View personal key' do
 
     context 'visitting the personal key path' do
       scenario 'does not regenerate the personal and redirects to account' do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 
         visit sign_up_personal_key_path
@@ -71,7 +72,7 @@ feature 'View personal key' do
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       Capybara.current_session.current_window.resize_to(2560, 1600)
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       click_button t('account.links.regenerate_personal_key')
 
       click_acknowledge_personal_key
@@ -99,7 +100,7 @@ feature 'View personal key' do
 
     it 'confirms personal key on mobile' do
       Capybara.current_session.current_window.resize_to(414, 736)
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       click_button t('account.links.regenerate_personal_key')
 
       click_acknowledge_personal_key

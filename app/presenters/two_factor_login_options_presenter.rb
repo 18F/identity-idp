@@ -53,8 +53,12 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def reverify_link
     t('two_factor_authentication.account_reset.recover_html',
-      link: @view.link_to(
-        t('two_factor_authentication.account_reset.recover_link'),
+      reset_link: @view.link_to(
+        t('two_factor_authentication.account_reset.reset_link'),
+        account_reset_request_path(locale: LinkLocaleResolver.locale),
+      ),
+      reverify_link: @view.link_to(
+        t('two_factor_authentication.account_reset.reverify_link'),
         account_reset_recover_path,
       ))
   end

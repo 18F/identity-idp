@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_present: true,
           configuration_id: configuration.id,
           configuration_owner: user.uuid,
-          mfa_method_counts: { piv_cac: 1 },
+          mfa_method_counts: { backup_codes: 10, piv_cac: 1 },
         )
       end
 
