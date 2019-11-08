@@ -122,7 +122,6 @@ GEM
     american_date (1.1.1)
     arel (8.0.0)
     ast (2.4.0)
-    awrence (1.1.0)
     aws-eventstream (1.0.3)
     aws-partitions (1.235.0)
     aws-sdk-core (3.75.0)
@@ -203,7 +202,7 @@ GEM
     colorize (0.8.1)
     concurrent-ruby (1.1.5)
     connection_pool (2.2.2)
-    cose (0.8.0)
+    cose (0.7.0)
       cbor (~> 0.5.9)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -637,11 +636,10 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.8)
       rack (>= 2.0.6)
-    webauthn (2.0.0)
-      awrence (~> 1.1)
+    webauthn (1.18.0)
       bindata (~> 2.4)
       cbor (~> 0.5.9)
-      cose (~> 0.8.0)
+      cose (~> 0.7.0)
       jwt (>= 1.5, < 3.0)
       openssl (~> 2.0)
       securecompare (~> 1.0)
@@ -782,7 +780,7 @@ DEPENDENCIES
   uglifier (~> 3.2)
   user_agent_parser
   valid_email
-  webauthn
+  webauthn (~> 1.18.0)
   webdrivers (~> 3.0)
   webmock
   webpacker (~> 3.4)
