@@ -423,7 +423,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
-          authn_context: 'http://idmanagement.gov/ns/assurance/ial/1',
+          authn_context: 'http://idmanagement.gov/ns/assurance/loa/1',
           service_provider: 'http://localhost:3000',
         }
 
