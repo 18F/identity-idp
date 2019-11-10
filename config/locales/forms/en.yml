@@ -13,6 +13,9 @@ en:
         one every time you sign in."
       are_you_sure_other_option: Choose a different method
       are_you_sure_title: Are you sure?  We'll give you backup codes to save and use.
+      caution_delete: If you delete your backup codes you will no longer be able to
+        use them to sign in.
+      confirm_delete: Are you sure you want to delete your backup codes?
       depleted_desc: You used all of your backup codes. We will generate new backup
         codes after you click continue. Save them in a safe place to make sure you
         can sign in again in the future.

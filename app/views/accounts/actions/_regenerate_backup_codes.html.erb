@@ -4,3 +4,8 @@
   </span>
   <%= t('forms.backup_code.regenerate') %>
 <% end %>
+<% if MfaPolicy.new(current_user).more_than_two_factors_enabled? %>
+  &nbsp;|&nbsp;<%= link_to backup_code_delete_path do %>
+    <%= t('forms.buttons.delete') %>
+  <% end %>
+<% end %>

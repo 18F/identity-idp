@@ -15,6 +15,9 @@ es:
       are_you_sure_other_option: Elige un método diferente
       are_you_sure_title: "¿Estás seguro? Le daremos códigos de respaldo para guardar
         y usar."
+      caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
+        iniciar sesión.
+      confirm_delete: "¿Estás seguro de que deseas eliminar tus códigos de respaldo?"
       depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
         de respaldo después de que hagas clic en continuar. Guárdalas en un lugar
         seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
