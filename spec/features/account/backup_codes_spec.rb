@@ -21,6 +21,18 @@ feature 'Backup codes' do
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(page).to have_current_path(account_path)
     end
+
+    it 'allows you to delete the backup codes' do
+      expect(page).to have_content(t('account.index.backup_codes_exist'))
+      click_link t('forms.buttons.delete'), href: backup_code_delete_path
+
+      expect(page).to have_current_path(backup_code_delete_path)
+
+      click_button t('account.index.backup_code_confirm_delete')
+
+      expect(page).to have_content(t('notices.backup_codes_deleted'))
+      expect(page).to have_current_path(account_path)
+    end
   end
 
   context 'without backup codes just phone' do
