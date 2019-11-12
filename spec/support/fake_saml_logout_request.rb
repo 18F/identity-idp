@@ -1,4 +1,4 @@
-class FakeSamlRequest
+class FakeSamlLogoutRequest
   def service_provider
     self
   end
@@ -28,11 +28,11 @@ class FakeSamlRequest
   end
 
   def authn_request?
-    true
+    false
   end
 
   def logout_request?
-    false
+    true
   end
 
   def logout_url
