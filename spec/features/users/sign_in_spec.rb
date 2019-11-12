@@ -17,6 +17,18 @@ feature 'Sign in' do
   include SpAuthHelper
   include IdvHelper
 
+  scenario 'user signs in as ial1 and does not see ial2 help text' do
+    visit_idp_from_sp_with_ial1(:oidc)
+
+    expect(page).to_not have_content t('devise.registrations.start.accordion')
+  end
+
+  scenario 'user signs in as ial2 and does see ial2 help text' do
+    visit_idp_from_sp_with_ial2(:oidc)
+
+    expect(page).to have_content t('devise.registrations.start.accordion')
+  end
+
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
     link_url = new_user_password_url
