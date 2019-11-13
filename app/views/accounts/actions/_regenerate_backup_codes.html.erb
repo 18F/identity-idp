@@ -1,6 +1,8 @@
-<%= link_to backup_code_regenerate_path do %>
-  <span class='hide'>
-    <%= t('forms.backup_code.title') %>
-  </span>
+<%= link_to backup_code_regenerate_path, class: 'btn btn-account-action rounded-lg bg-light-blue' do %>
   <%= t('forms.backup_code.regenerate') %>
 <% end %>
+<div class='mt1'>
+  <% if MfaPolicy.new(current_user).more_than_two_factors_enabled? %>
+    &nbsp;<%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
+  <% end %>
+</div>
