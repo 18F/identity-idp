@@ -21,15 +21,16 @@ module SamlIdpLogoutConcern
     sign_out if user_signed_in?
   end
 
+  # :reek:DuplicateMethodCall
   def logout_response
-    idp_config = SamlIdp.config
-    SamlIdp::LogoutResponseBuilder.new(
-      UUID.generate,
-      idp_config.base_saml_location,
-      saml_request.response_url,
-      saml_request.request_id,
-      idp_config.algorithm,
-    ).signed
+    response = encode_response(
+      current_user,
+      signature: saml_response_signature_options,
+    )
+    # rubocop:disable Metrics/LineLength
+    Rails.logger.info "#{'~' * 10} Response #{'~' * 10}\n#{response}\n#{'~' * 10} Done with response #{'~' * 10}"
+    # rubocop:enable Metrics/LineLength
+    response
   end
 
   def track_logout_event
@@ -40,5 +41,15 @@ module SamlIdpLogoutConcern
       oidc: false,
       saml_request_valid: sp_initiated ? valid_saml_request? : true,
     )
+  end
+
+  # :reek:FeatureEnvy
+  def saml_response_signature_options
+    endpoint = SamlEndpoint.new(request)
+    {
+      x509_certificate: endpoint.x509_certificate,
+      secret_key: endpoint.secret_key,
+      cloudhsm_key_label: endpoint.cloudhsm_key_label,
+    }
   end
 end

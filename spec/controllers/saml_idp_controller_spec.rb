@@ -16,7 +16,7 @@ describe SamlIdpController do
     end
 
     it 'tracks the event when sp initiated' do
-      allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
+      allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
