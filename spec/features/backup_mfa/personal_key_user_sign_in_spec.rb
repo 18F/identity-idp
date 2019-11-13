@@ -6,6 +6,6 @@ describe 'personal key enabled user sign in' do
 
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_current_path(two_factor_options_success_path)
+    expect(page).to have_current_path(two_factor_options_path)
   end
 end
