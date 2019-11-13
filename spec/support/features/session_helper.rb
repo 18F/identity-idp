@@ -10,7 +10,7 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
-    def expectEmailInvalid(page)
+    def expect_email_invalid(page)
       expect(page).to have_content t('sign_up.email.invalid_email_alert_head')
       expect(page).to have_content t('sign_up.email.invalid_email_alert_info')
       expect(page).to have_content t('sign_up.email.invalid_email_alert_inline')

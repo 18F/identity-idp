@@ -3,7 +3,28 @@ function emailValidation() {
   const alert = document.querySelector('.email-invalid-alert');
   const alertInline = document.querySelector('.email-invalid-alert-inline');
   const email = document.querySelector('input[type="email"]');
-  var blurTimer;
+  let blurTimer;
+
+  // remove focus from the email input after error is displayed
+  function blurEmailInput(input) {
+    blurTimer = setTimeout(function () {
+      input.blur();
+    }, 0);
+  }
+
+  function resetEmailInvalid(input) {
+    input.classList.remove('usa-input--error');
+    alert.classList.add('hide');
+    alertInline.classList.add('hide');
+    clearTimeout(blurTimer);
+  }
+
+  function displayEmailInvalid(input) {
+    input.classList.add('usa-input--error');
+    alert.classList.remove('hide');
+    alertInline.classList.remove('hide');
+    blurEmailInput(input);
+  }
 
   if (email) {
     email.classList.remove('field');
@@ -17,27 +38,6 @@ function emailValidation() {
     email.addEventListener('input', (e) => {
       resetEmailInvalid(e.target);
     });
-  }
-
-  function resetEmailInvalid(input){
-    input.classList.remove('usa-input--error');
-    alert.classList.add('hide');
-    alertInline.classList.add('hide');
-    clearTimeout(blurTimer);
-  }
-
-  function displayEmailInvalid(input){
-    input.classList.add('usa-input--error');
-    alert.classList.remove('hide');
-    alertInline.classList.remove('hide');
-    blurEmailInput(input);
-  }
-
-  // remove focus from the email input after error is displayed
-  function blurEmailInput(input){
-    blurTimer = setTimeout(function () {
-      input.blur();
-    }, 0);
   }
 }
 

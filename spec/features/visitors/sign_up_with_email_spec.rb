@@ -14,8 +14,7 @@ feature 'Visitor signs up with email address' do
 
   scenario 'visitor cannot sign up with invalid email address' do
     sign_up_with('bogus')
-    
-    expectEmailInvalid(page)
+    expect_email_invalid(page)
   end
 
   scenario 'visitor cannot sign up with email with invalid domain name' do
@@ -27,14 +26,14 @@ feature 'Visitor signs up with email address' do
 
     invalid_addresses.each do |email|
       sign_up_with(email)
-      expectEmailInvalid(page)
+      expect_email_invalid(page)
     end
   end
 
   scenario 'visitor cannot sign up with empty email address' do
     sign_up_with('')
 
-    expectEmailInvalid(page)
+    expect_email_invalid(page)
   end
 
   context 'user signs up and sets password, tries to sign up again' do
