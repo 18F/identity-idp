@@ -21,9 +21,9 @@ en:
         can sign in again in the future.
       depleted_title: Create new backup codes
       download: Download
-      generate: Generate
+      generate: "+ Get codes"
       print: Print
-      regenerate: Regenerate
+      regenerate: "+ Get new codes"
       subinfo: "<b>Don't lose these codes</b>. Download, print, or copy them. Each
         code can only be used once. After you’ve used all 10 codes, we’ll give you
         10 new codes.  Keep your codes as safe as your password."
