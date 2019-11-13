@@ -10,6 +10,12 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def expectEmailInvalid(page)
+      expect(page).to have_content t('sign_up.email.invalid_email_alert_head')
+      expect(page).to have_content t('sign_up.email.invalid_email_alert_info')
+      expect(page).to have_content t('sign_up.email.invalid_email_alert_inline')
+    end
+
     def choose_another_security_option(option)
       click_link t('two_factor_authentication.login_options_link_text')
 

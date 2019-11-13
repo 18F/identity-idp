@@ -7,3 +7,6 @@ fr:
     current_step: Étape %{step} sur 4
     email:
       invalid_request: Le formulaire email est invalide
+      invalid_email_alert_head: Votre information contient 1 erreur
+      invalid_email_alert_info: S'il vous plaît, mettez une adresse email valide
+      invalid_email_alert_inline: S'il vous plaît, mettez une adresse email valide
