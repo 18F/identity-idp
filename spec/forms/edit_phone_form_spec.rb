@@ -43,7 +43,11 @@ describe EditPhoneForm do
       it 'includes delivery_preference in the form response extra' do
         result = subject.submit(params)
 
-        expect(result.extra).to eq(delivery_preference: params[:delivery_preference])
+        expect(result.extra).to eq(
+          delivery_preference: params[:delivery_preference],
+          make_default_number: true,
+          phone_configuration_id: phone_configuration.id,
+        )
       end
     end
 
