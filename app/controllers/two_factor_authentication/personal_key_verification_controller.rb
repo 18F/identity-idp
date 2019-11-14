@@ -50,8 +50,8 @@ module TwoFactorAuthentication
     end
 
     def remove_personal_key
-      current_user.personal_key = nil
-      current_user.encrypted_recovery_code_digest = nil
+      # for now we will regenerate a key and not show it to them so retire personal key page shows
+      current_user.personal_key = PersonalKeyGenerator.new(current_user).create
       current_user.save!
       user_session.delete(:personal_key)
     end
