@@ -47,7 +47,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      click_on t('forms.buttons.disable')
+      find("button[type='submit']").click # Delete
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
@@ -61,7 +61,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      click_on t('forms.buttons.disable')
+      find("button[type='submit']").click # Delete
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
