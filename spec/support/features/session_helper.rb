@@ -12,7 +12,6 @@ module Features
 
     def expect_email_invalid(page)
       expect(page).to have_content t('sign_up.email.invalid_email_alert_head')
-      expect(page).to have_content t('sign_up.email.invalid_email_alert_info')
       expect(page).to have_content t('sign_up.email.invalid_email_alert_inline')
     end
 
