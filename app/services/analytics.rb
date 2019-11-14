@@ -148,8 +148,9 @@ class Analytics
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
-  PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
-  PHONE_DELETION_REQUESTED = 'Phone Number Deletion: requested'.freeze
+  PHONE_CHANGE_SUBMITTED = 'Phone Number Change: Form submitted'.freeze
+  PHONE_CHANGE_VIEWED = 'Phone Number Change: Visited'.freeze
+  PHONE_DELETION = 'Phone Number Deletion: Submitted'.freeze
   PIV_CAC_LOGIN = 'PIV/CAC Login'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze

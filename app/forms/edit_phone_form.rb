@@ -44,6 +44,8 @@ class EditPhoneForm
   def extra_analytics_attributes
     {
       delivery_preference: delivery_preference,
+      make_default_number: make_default_number,
+      phone_configuration_id: phone_configuration.id,
     }
   end
 

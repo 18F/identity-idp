@@ -6,14 +6,14 @@ module Users
     before_action :confirm_user_can_edit_phone
 
     def edit
-      # TODO: Analytics event
+      analytics.track_event(Analytics::PHONE_CHANGE_VIEWED)
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
     end
 
     def update
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
-      # TODO: Analytics event
       result = @edit_phone_form.submit(edit_phone_params)
+      analytics.track_event(Analytics::PHONE_CHANGE_SUBMITTED, result.to_h)
       if result.success?
         redirect_to account_url
       else
@@ -22,10 +22,9 @@ module Users
     end
 
     def delete
-      # TODO: Analytics event
+      track_deletion_analytics_event
       phone_configuration.destroy!
       revoke_remember_device(current_user)
-      create_user_event(:phone_removed)
       flash[:success] = t('two_factor_authentication.phone.delete.success')
       redirect_to account_url
     end
@@ -35,6 +34,15 @@ module Users
     def confirm_user_can_edit_phone
       render_not_found if phone_configuration.nil?
       false
+    end
+
+    def track_deletion_analytics_event
+      analytics.track_event(
+        Analytics::PHONE_DELETION,
+        success: true,
+        phone_configuration_id: phone_configuration.id,
+      )
+      create_user_event(:phone_removed)
     end
 
     def phone_configuration
