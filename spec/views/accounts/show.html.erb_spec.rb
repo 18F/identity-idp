@@ -23,7 +23,7 @@ describe 'accounts/show.html.erb' do
     it 'contains link to enable TOTP' do
       render
 
-      expect(rendered).to have_link('Enable', href: authenticator_setup_url)
+      expect(rendered).to have_link(t('forms.buttons.enable'), href: authenticator_setup_url)
       expect(rendered).not_to have_xpath("//input[@value='Disable']")
     end
 
