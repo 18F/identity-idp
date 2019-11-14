@@ -44,9 +44,9 @@ es:
       cancel: Sí, cancelar
       continue: Continuar
       delete: Borrar
-      disable: Suspender
+      disable: Borrar
       edit: Editar
-      enable: Permitir
+      enable: "+ Permitir"
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código
