@@ -12,8 +12,9 @@ describe Users::EditPhoneController do
     context 'when the user submits a valid otp delivery preference' do
       it 'updates the phone configuration and redirects' do
         put :update, params: {
-          id: phone_configuration.id, edit_phone_form: { delivery_preference: 'voice' }
-         }
+          id: phone_configuration.id,
+          edit_phone_form: { delivery_preference: 'voice' },
+        }
 
         expect(response).to redirect_to(account_url)
         expect(phone_configuration.reload.delivery_preference).to eq('voice')
@@ -23,8 +24,9 @@ describe Users::EditPhoneController do
     context 'when the user submits an invalid delivery preference' do
       it 'renders the edit screen' do
         put :update, params: {
-          id: phone_configuration.id, edit_phone_form: { delivery_preference: 'noise' }
-         }
+          id: phone_configuration.id,
+          edit_phone_form: { delivery_preference: 'noise' },
+        }
 
         expect(response).to render_template(:edit)
         expect(phone_configuration.reload.delivery_preference).to eq('sms')
