@@ -15,8 +15,8 @@ describe Users::EditPhoneController do
           id: phone_configuration.id, edit_phone_form: { delivery_preference: 'voice' }
          }
 
-         expect(response).to redirect_to(account_url)
-         expect(phone_configuration.reload.delivery_preference).to eq('voice')
+        expect(response).to redirect_to(account_url)
+        expect(phone_configuration.reload.delivery_preference).to eq('voice')
       end
     end
 
@@ -26,8 +26,8 @@ describe Users::EditPhoneController do
           id: phone_configuration.id, edit_phone_form: { delivery_preference: 'noise' }
          }
 
-         expect(response).to render_template(:edit)
-         expect(phone_configuration.reload.delivery_preference).to eq('sms')
+        expect(response).to render_template(:edit)
+        expect(phone_configuration.reload.delivery_preference).to eq('sms')
       end
     end
   end
