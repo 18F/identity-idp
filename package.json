@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "~8.x.x",
-    "npm": "~5.x.x"
+    "node": ">=8 <=12",
+    "npm": ">=5 <= 6"
   },
   "scripts": {
     "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js spec/javascripts/**/**_spec.js",
