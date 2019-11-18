@@ -20,7 +20,7 @@
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
-    "identity-style-guide": "^2.1.3",
+    "identity-style-guide": "2.1.5",
     "intl-tel-input": "^16.0.7",
     "jquery": "^3.3.1",
     "libphonenumber-js": "^1.7.26",
