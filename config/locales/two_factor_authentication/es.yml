@@ -106,6 +106,7 @@ es:
       se le dará una nueva clave.
     phone:
       delete:
+        failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
     phone_fallback:
       question: "¿No tiene acceso a su teléfono ahora mismo?"

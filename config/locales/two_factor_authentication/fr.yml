@@ -105,6 +105,7 @@ fr:
       Une fois que vous l'entrez, vous recevrez une nouvelle clé.
     phone:
       delete:
+        failure: Impossible de supprimer votre numéro de téléphone.
         success: Votre numéro de téléphone a été supprimé.
     phone_fallback:
       question: Vous n'avez pas accès à votre téléphone maintenant?

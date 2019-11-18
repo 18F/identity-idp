@@ -4,6 +4,7 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
+    before_action :confirm_user_can_remove_phone, only: %i[destroy]
 
     def edit
       analytics.track_event(Analytics::PHONE_CHANGE_VIEWED)
@@ -21,7 +22,7 @@ module Users
       end
     end
 
-    def delete
+    def destroy
       track_deletion_analytics_event
       phone_configuration.destroy!
       revoke_remember_device(current_user)
@@ -33,6 +34,13 @@ module Users
 
     def confirm_user_can_edit_phone
       render_not_found if phone_configuration.nil?
+      false
+    end
+
+    def confirm_user_can_remove_phone
+      return if MfaPolicy.new(current_user).more_than_two_factors_enabled?
+      flash[:error] = t('two_factor_authentication.phone.delete.failure')
+      redirect_to account_url
       false
     end
 
