@@ -29,6 +29,10 @@ module SamlIdp
       self.cloudhsm_key_label = cloudhsm_key_label
     end
 
+    def reference_id
+      response_id
+    end
+
     def build
       builder = Builder::XmlMarkup.new
       builder.LogoutResponse ID: response_id_string,

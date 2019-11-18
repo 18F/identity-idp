@@ -37,5 +37,12 @@ module SamlIdp
         expect(logout_response.validate).to eq true
       end
     end
+
+    it "includes the response_id in the signature" do
+      signed = subject.signed
+      doc = REXML::Document.new signed
+      signature = REXML::XPath.first(doc, "//ds:Signature", {"ds"=>SamlIdp::XMLSecurity::SignedDocument::DSIG})
+      expect(signature.to_s).to include(response_id)
+    end
   end
 end
