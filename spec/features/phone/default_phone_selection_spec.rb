@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'phone configuration' do
+describe 'default phone selection' do
   let(:user) { create(:user, :with_phone) }
   let(:phone_config2) do
     create(:phone_configuration, user: user,
@@ -60,7 +60,7 @@ describe 'phone configuration' do
         end
         sign_in_visit_manage_phone_path(user, new_phone_config)
 
-        check 'edit_phone_form_otp_make_default_number'
+        check 'edit_phone_form_make_default_number'
         click_button t('forms.buttons.submit.confirm_change')
         user.reload
 

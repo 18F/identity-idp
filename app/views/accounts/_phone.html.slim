@@ -14,5 +14,5 @@
           = PhoneConfigurationDecorator.new(phone_configuration).default_number_message
       .col.col-4.right-align
         = render @view_model.manage_action_partial,
-          path: manage_phone_url(id: phone_configuration.id),
+          path: manage_phone_path(id: phone_configuration.id),
           name: t('account.index.phone')

@@ -185,7 +185,7 @@ describe 'accounts/show.html.erb' do
         render
 
         expect(rendered).to have_link(
-          t('account.index.phone'), href: manage_phone_url(id: user.phone_configurations.first.id)
+          t('account.index.phone'), href: manage_phone_path(id: user.phone_configurations.first.id)
         )
       end
     end

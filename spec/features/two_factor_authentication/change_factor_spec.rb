@@ -29,10 +29,11 @@ feature 'Changing authentication factor' do
         allow(Telephony).to receive(:send_authentication_otp)
 
         user = sign_in_and_2fa_user
-        old_phone = MfaContext.new(user).phone_configurations.first.phone
+        phone_configuration = MfaContext.new(user).phone_configurations.first
+        old_phone = phone_configuration.phone
 
         Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-          visit manage_phone_path
+          visit manage_phone_path(id: phone_configuration)
           complete_2fa_confirmation_without_entering_otp
           click_link t('links.two_factor_authentication.get_another_code')
 
