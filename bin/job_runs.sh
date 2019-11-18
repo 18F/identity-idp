@@ -26,10 +26,6 @@ if [ $# -ge 2 ]; then
   PIDFILE="$2"
 fi
 
-if [[ -f '/etc/login.gov/info/env' && -f '/etc/login.gov/info/domain' ]]; then
-  export NEW_RELIC_APP_NAME="bg.`cat /etc/login.gov/info/env`.`cat /etc/login.gov/info/domain`"
-fi
-
 case $1 in
   start)
     # If PIDFILE is given, fork into background
