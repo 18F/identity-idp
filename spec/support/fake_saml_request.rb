@@ -27,6 +27,18 @@ class FakeSamlRequest
     '123'
   end
 
+  def authn_request?
+    true
+  end
+
+  def logout_request?
+    false
+  end
+
+  def logout_url
+    'http://localhost:3000/saml/logout'
+  end
+
   def options
     {
       get_params: {

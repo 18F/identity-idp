@@ -73,7 +73,7 @@ min_password_score: '3'
 mx_timeout: '3'
 otp_valid_for: '10'
 password_max_attempts: '3'
-personal_key_retired:
+personal_key_retired: 'true'
 pinpoint_sms_application_id:
 pinpoint_sms_credential_role_arn:
 pinpoint_sms_longcode_pool:
@@ -115,7 +115,7 @@ unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 development:
   aamva_private_key: 123abc
