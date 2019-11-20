@@ -6,8 +6,9 @@ class ProductionDatabaseConfiguration
   '.freeze.gsub(/^\s+/, '')
 
   def self.host
-    return Figaro.env.database_read_replica_host! if readonly_mode?
-    return Figaro.env.database_host!
+    env = Figaro.env
+    return env.database_read_replica_host! if readonly_mode?
+    env.database_host!
   end
 
   def self.username
