@@ -143,6 +143,7 @@ development:
   database_name: ''
   database_password: ''
   database_pool_idp: '5'
+  database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
   database_timeout: '5000'
@@ -241,6 +242,7 @@ production:
   database_name:
   database_password:
   database_pool_idp:
+  database_read_replica_host: ''
   database_readonly_password:
   database_readonly_username:
   database_timeout:
@@ -338,6 +340,7 @@ test:
   database_name: ''
   database_password: ''
   database_pool_idp:
+  database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
   database_timeout: '5000'

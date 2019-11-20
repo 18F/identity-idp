@@ -1,9 +1,16 @@
+# :reek:RepeatedConditional
 class ProductionDatabaseConfiguration
   READONLY_WARNING_MESSAGE = '
     WARNING: Loading database a configuration with the readonly database user.
     If you wish to make changes to records in the database set
     ALLOW_CONSOLE_DB_WRITE_ACCESS to "true" in the environment
   '.freeze.gsub(/^\s+/, '')
+
+  def self.host
+    env = Figaro.env
+    return env.database_read_replica_host! if readonly_mode?
+    env.database_host!
+  end
 
   def self.username
     env = Figaro.env
