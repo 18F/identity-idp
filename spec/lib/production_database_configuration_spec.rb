@@ -5,6 +5,8 @@ describe ProductionDatabaseConfiguration do
   let(:database_password) { 'db_pass' }
   let(:database_readonly_username) { 'db_readonly_user' }
   let(:database_readonly_password) { 'db_readonly_pass' }
+  let(:database_read_replica_host) { 'read_only_host' }
+  let(:database_host) { 'read_write_host' }
 
   before do
     allow(Figaro.env).to receive(:database_username).and_return(database_username)
@@ -12,6 +14,8 @@ describe ProductionDatabaseConfiguration do
     allow(Figaro.env).to receive(:database_readonly_username).and_return(database_readonly_username)
     allow(Figaro.env).to receive(:database_readonly_password).and_return(database_readonly_password)
     allow(ProductionDatabaseConfiguration).to receive(:warn)
+    allow(Figaro.env).to receive(:database_read_replica_host).and_return(database_read_replica_host)
+    allow(Figaro.env).to receive(:database_host).and_return(database_host)
   end
 
   describe '.username' do
@@ -51,6 +55,47 @@ describe ProductionDatabaseConfiguration do
     context 'when the app is not running in a console' do
       it 'returns the read/write username' do
         expect(ProductionDatabaseConfiguration.username).to eq(database_username)
+      end
+    end
+  end
+
+  describe '.host' do
+    context 'when app is running in a console' do
+      before { stub_rails_console }
+
+      it 'returns the readonly host' do
+        expect(ProductionDatabaseConfiguration.host).to eq(database_read_replica_host)
+      end
+    end
+
+    context 'when the app is running in a console without readonly user credentials' do
+      it 'returns the read/write host' do
+        allow(Figaro.env).to receive(:database_readonly_username).and_return(nil)
+        allow(Figaro.env).to receive(:database_readonly_password).and_return(nil)
+
+        expect(ProductionDatabaseConfiguration.host).to eq(database_host)
+
+        allow(Figaro.env).to receive(:database_readonly_username).and_return('')
+        allow(Figaro.env).to receive(:database_readonly_password).and_return('')
+
+        expect(ProductionDatabaseConfiguration.host).to eq(database_host)
+      end
+    end
+
+    context 'when the app is running in a console with the write access flag' do
+      before do
+        stub_rails_console
+        stub_environment_write_access_flag
+      end
+
+      it 'returns the read/write host' do
+        expect(ProductionDatabaseConfiguration.host).to eq(database_host)
+      end
+    end
+
+    context 'when the app is not running in a console' do
+      it 'returns the read/write host' do
+        expect(ProductionDatabaseConfiguration.host).to eq(database_host)
       end
     end
   end
