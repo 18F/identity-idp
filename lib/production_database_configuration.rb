@@ -5,6 +5,11 @@ class ProductionDatabaseConfiguration
     ALLOW_CONSOLE_DB_WRITE_ACCESS to "true" in the environment
   '.freeze.gsub(/^\s+/, '')
 
+  def self.host
+    return Figaro.env.database_read_replica_host! if readonly_mode?
+    return Figaro.env.database_host!
+  end
+
   def self.username
     env = Figaro.env
     return env.database_username! unless readonly_mode?
