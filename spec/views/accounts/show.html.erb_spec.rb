@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.erb' do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :signed_up, :with_personal_key) }
   let(:decorated_user) { user.decorate }
 
   before do
@@ -23,7 +23,7 @@ describe 'accounts/show.html.erb' do
     it 'contains link to enable TOTP' do
       render
 
-      expect(rendered).to have_link('Enable', href: authenticator_setup_url)
+      expect(rendered).to have_link(t('forms.buttons.enable'), href: authenticator_setup_url)
       expect(rendered).not_to have_xpath("//input[@value='Disable']")
     end
 
@@ -185,7 +185,7 @@ describe 'accounts/show.html.erb' do
         render
 
         expect(rendered).to have_link(
-          t('account.index.phone'), href: manage_phone_url(id: user.phone_configurations.first.id)
+          t('account.index.phone'), href: manage_phone_path(id: user.phone_configurations.first.id)
         )
       end
     end

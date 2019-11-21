@@ -148,7 +148,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       ).user
     end
 
-    it 'does not allow the user to delete their account from 2FA screen' do
+    it 'does allow the user to delete their account from 2FA screen' do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
 
@@ -158,7 +158,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       # Visiting account reset directly should redirect to 2FA
       visit account_reset_request_path
 
-      expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(page.current_path).to eq(account_reset_request_path)
     end
   end
 end

@@ -33,4 +33,19 @@ describe 'Add a new phone number' do
     fill_in_code_with_last_phone_otp
     click_submit_default
   end
+
+  scenario 'adding a phone that is already on the user account does not add another phone config' do
+    user = create(:user, :signed_up)
+    phone = user.phone_configurations.first.phone
+
+    sign_in_and_2fa_user(user)
+    click_on t('account.index.phone_add')
+    fill_in :new_phone_form_phone, with: phone
+    click_continue
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    expect(page).to have_current_path(account_path)
+    expect(user.reload.phone_configurations.count).to eq(1)
+  end
 end

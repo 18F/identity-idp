@@ -3,6 +3,7 @@ fr:
   notices:
     account_reactivation: Excellent! Vous avez votre clé personnelle.
     backup_codes_configured: Codes de sauvegarde configurés avec succès.
+    backup_codes_deleted: Les codes de sauvegarde ont été supprimés avec succès.
     dap_participation: Nous participons au programme d'analytique du gouvernement
       des États-Unis. Consultez les données à analytics.usa.gov.
     forgot_password:

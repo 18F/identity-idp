@@ -15,14 +15,17 @@ fr:
       are_you_sure_other_option: Choisissez une autre méthode
       are_you_sure_title: Êtes-vous sûr? Nous vous donnerons des codes de sauvegarde
         à sauvegarder et à utiliser.
+      caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
+        les utiliser pour vous connecter.
+      confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
       depleted_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons générer
         de nouveaux codes de sauvegarde après avoir cliqué sur Continuer. Rangez-les
         dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
       depleted_title: Créer de nouveaux codes de sauvegarde
       download: Télécharger
-      generate: Générer
+      generate: Obtenir des codes
       print: Impression
-      regenerate: Régénérer
+      regenerate: Obtenir de nouveaux codes
       subinfo: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
         Chaque code ne peut être utilisé qu'une seule fois. Une fois que vous avez
         utilisé les 10 codes, nous vous en donnons 10 nouveaux. Gardez vos codes aussi
@@ -40,9 +43,9 @@ fr:
       cancel: Oui, annuler
       continue: Continuer
       delete: Effacer
-      disable: Désactiver
+      disable: Effacer
       edit: Modifier
-      enable: Activer
+      enable: "+ Activer"
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
@@ -135,6 +138,8 @@ fr:
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte
+    two_factor_choice_retire_personal_key:
+      legend: 'Sélectionnez une méthode d''authentification à deux facteurs:'
     two_factor_recovery_choice:
       legend: Sélectionnez une méthode supplémentaire pour sécuriser votre compte
     verify_profile:

@@ -47,9 +47,6 @@ fast_test:
 run:
 	foreman start -p $(PORT)
 
-run-dev:
-	foreman start -p $(PORT) -f Procfile_dev
-
 load_test: $(CONFIG)
 	bin/load_test $(type)
 

@@ -3,6 +3,7 @@ en:
   notices:
     account_reactivation: Great! You have your personal key.
     backup_codes_configured: Backup codes configured successfully.
+    backup_codes_deleted: Backup codes deleted successfully.
     dap_participation: We participate in the US government’s analytics program. See
       the data at analytics.usa.gov.
     forgot_password:

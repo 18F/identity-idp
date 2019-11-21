@@ -7,9 +7,12 @@ es:
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
         Se necesitan 24 horas desde el momento en que realizó la solicitud para completar
         el proceso.  Por favor, vuelva más tarde. %{cancel_link}
-      recover_html: Si no puede usar ninguna de las opciones de seguridad anteriores,
-        puede %{link}.
-      recover_link: restablecer su cuenta
+      recover_html: Si no puede utilizar ninguno de los métodos de autenticación anteriores,
+        puede %{reverify_link}. Su nombre, dirección y número de seguro social deben
+        coincidir con el perfil de su cuenta. Si no lo hacen, puede %{reset_link}
+        en su lugar.
+      reset_link: restablecer su cuenta
+      reverify_link: vuelva a verificar su identidad
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
@@ -134,6 +137,14 @@ es:
     - Solo usarás un método de autenticación para iniciar sesión, pero te pedimos
       que configures dos. Esto asegura que aún puede iniciar sesión si pierde el acceso
       a uno.
+    two_factor_choice_intro_paragraphs_retire_personal_key:
+    - Reemplazar su clave personal con un método de autenticación diferente ayuda
+      a mantener su cuenta segura. También se asegura de que pueda iniciar sesión
+      en su cuenta incluso si pierde o cambia su teléfono. <ul><li>Solo tendrá que
+      usarlo cuando no tenga su teléfono, no cada vez que inicie sesión </li> <li>
+      Ya no podrá iniciar sesión con una clave personal. Las claves personales se
+      pierden o son robadas fácilmente, por lo que las eliminamos para mantener su
+      cuenta segura. </li></ul>
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Configure una aplicación de autenticación para obtener su
@@ -159,6 +170,8 @@ es:
       voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info_html: Use una clave de seguridad para proteger su cuenta
+    two_factor_choice_retire_personal_key: Reemplace su clave personal con un método
+      de autenticación (obligatorio)
     two_factor_recovery_choice: Configuración del segundo método de autenticación
       (2 de 2)
     two_factor_recovery_choice_intro_paragraphs:

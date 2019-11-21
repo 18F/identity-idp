@@ -3,7 +3,6 @@ module AccountReset
     include TwoFactorAuthenticatable
 
     before_action :confirm_two_factor_enabled
-    before_action :confirm_user_not_verified
 
     def show
       analytics.track_event(Analytics::ACCOUNT_RESET_VISIT)
@@ -22,11 +21,6 @@ module AccountReset
       return if MfaPolicy.new(current_user).two_factor_enabled?
 
       redirect_to two_factor_options_url
-    end
-
-    def confirm_user_not_verified
-      # IAL2 users should not be able to reset account to comply with AAL2 reqs
-      redirect_to account_url if decorated_user.identity_verified?
     end
 
     def analytics_attributes

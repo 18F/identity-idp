@@ -37,6 +37,14 @@ module Users
       send_data data, filename: 'backup_codes.txt'
     end
 
+    def confirm_delete; end
+
+    def delete
+      current_user.backup_code_configurations.destroy_all
+      flash[:success] = t('notices.backup_codes_deleted')
+      redirect_to account_url
+    end
+
     private
 
     def ensure_backup_codes_in_session
