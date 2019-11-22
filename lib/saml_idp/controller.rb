@@ -76,7 +76,7 @@ module SamlIdp
         signature_opts[:x509_certificate],
         signature_opts[:secret_key],
         signature_opts[:cloudhsm_key_label]
-      ).signed
+      ).raw
     end
 
     def encode_response(principal, opts = {})
