@@ -30,7 +30,7 @@ module Funnel
       def self.call(user_id, token, step_type, success)
         return unless user_id && TOKEN_WHITELIST.index(token.to_sym)
         doc_auth_log = DocAuthLog.find_or_create_by(user_id: user_id)
-        return unless doc_auth_log.welcome_view_at || token == :welcome
+        return unless doc_auth_log.welcome_view_at || token == 'welcome'
         klass = STEP_TYPE_TO_CLASS[step_type]
         klass.call(doc_auth_log, token, success)
       end
