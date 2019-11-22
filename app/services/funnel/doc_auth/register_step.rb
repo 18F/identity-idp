@@ -35,6 +35,7 @@ module Funnel
         klass.call(doc_auth_log, token, success)
       end
 
+      # :reek:ControlParameter
       def self.find_or_create_doc_auth_log(user_id, token)
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)
         return doc_auth_log if doc_auth_log

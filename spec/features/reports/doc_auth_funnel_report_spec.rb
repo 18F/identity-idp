@@ -107,4 +107,3 @@ feature 'Doc Auth Funnel report' do
     expect(DocAuthLog.count).to eq(1)
   end
 end
-
