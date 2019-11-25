@@ -37,7 +37,11 @@ class MfaContext
   end
 
   def piv_cac_configuration
-    PivCacConfiguration.new(user)
+    if user.present?
+      user.piv_cac_configurations
+    else
+      PivCacConfiguration.none
+    end
   end
 
   def auth_app_configuration
