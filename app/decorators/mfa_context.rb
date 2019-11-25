@@ -41,7 +41,7 @@ class MfaContext
     cfg = user.piv_cac_configurations.first
     return cfg if cfg
     return if user&.x509_dn_uuid.blank?
-    PivCacConfiguration.new(user_id: user.id, x509_dn_uuid: user&.x509_dn_uuid, name: 'xxx')
+    PivCacConfiguration.new(user_id: user.id, x509_dn_uuid: user&.x509_dn_uuid, name: '')
   end
 
   def piv_cac_configurations
