@@ -41,6 +41,7 @@ module Users
       revoke_remember_device(current_user)
       attributes = { x509_dn_uuid: nil }
       UpdateUser.new(user: current_user, attributes: attributes).call
+      Db::PivCacConfiguration::Delete.call(current_user.id)
     end
 
     def render_prompt

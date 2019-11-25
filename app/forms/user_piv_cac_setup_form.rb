@@ -24,8 +24,7 @@ class UserPivCacSetupForm
 
   def process_valid_submission
     revoke_remember_device(user)
-    attributes = { x509_dn_uuid: x509_dn_uuid }
-    UpdateUser.new(user: user, attributes: attributes).call
+    Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
@@ -41,7 +40,7 @@ class UserPivCacSetupForm
   def piv_cac_not_already_associated
     self.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
-    if User.find_by(x509_dn_uuid: x509_dn_uuid)
+    if Db::PivCacConfiguration::FindUserByX509.call(x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false
     else
