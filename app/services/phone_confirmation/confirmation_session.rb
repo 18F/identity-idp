@@ -18,7 +18,7 @@ module PhoneConfirmation
       )
     end
 
-    def regenerate_otp!
+    def regenerate_otp
       self.class.new(
         code: CodeGenerator.call,
         phone: phone,

@@ -31,14 +31,14 @@ describe PhoneConfirmation::ConfirmationSession do
     end
   end
 
-  describe '#regenerate_otp!' do
+  describe '#regenerate_otp' do
     it 'returns a copy with a new OTP and expiration' do
       original_session = described_class.start(
         delivery_method: 'sms',
         phone: '+1 (202) 123-4567',
       )
 
-      new_session = original_session.regenerate_otp!
+      new_session = original_session.regenerate_otp
 
       expect(original_session.code).to_not eq(new_session.code)
       expect(original_session.sent_at).to_not eq(new_session.sent_at)

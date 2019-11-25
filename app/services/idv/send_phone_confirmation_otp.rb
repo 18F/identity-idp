@@ -52,7 +52,7 @@ module Idv
     end
 
     def send_otp
-      idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp!
+      idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
       Telephony.send_confirmation_otp(
         otp: code,
         to: phone,

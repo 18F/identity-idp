@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 module Idv
   class PhoneStep
     def initialize(idv_session:)
@@ -40,7 +41,6 @@ module Idv
       update_idv_session
       start_phone_confirmation_session
     end
-
 
     def add_proofing_cost
       Db::ProofingCost::AddUserProofingCost.call(idv_session.current_user.id, :lexis_nexis_address)
