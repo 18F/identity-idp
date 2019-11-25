@@ -171,8 +171,8 @@ es:
       voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
       webauthn: Llave de seguridad
       webauthn_info_html: Use una llave de seguridad que tenga. Es un dispositivo
-        físico que se conecta o que está integrado en su computadora o teléfono (a menudo
-        parece una unidad flash USB).
+        físico que se conecta o que está integrado en su computadora o teléfono (a
+        menudo parece una unidad flash USB).
     two_factor_choice_retire_personal_key: Reemplace su clave personal con un método
       de autenticación (obligatorio)
     two_factor_recovery_choice: Configuración del segundo método de autenticación
