@@ -19,6 +19,7 @@ module Idv
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SUBMITTED, result.to_h)
       if result.success?
+        idv_session.user_phone_confirmation = true
         redirect_to idv_review_url
       else
         handle_otp_confirmation_failure
@@ -33,15 +34,14 @@ module Idv
     end
 
     def confirm_otp_sent
-      return if idv_session.phone_confirmation_otp.present? &&
-                idv_session.phone_confirmation_otp_sent_at.present?
+      return if idv_session.phone_confirmation_otp.present?
 
       redirect_to idv_otp_delivery_method_url
     end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?
-      @code = idv_session.phone_confirmation_otp
+      @code = idv_session.phone_confirmation_otp.code
     end
 
     def set_otp_verification_presenter
@@ -60,7 +60,7 @@ module Idv
     def phone_confirmation_otp_verification_form
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
-        idv_session: idv_session,
+        phone_confirmation_otp: idv_session.phone_confirmation_otp,
       )
     end
   end

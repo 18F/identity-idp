@@ -4,7 +4,7 @@ describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '2255555000' }
   let(:parsed_phone) { '+1 225-555-5000' }
   let(:otp_delivery_preference) { 'sms' }
-  let(:phone_confirmation_otp) { '777777' }
+  let(:phone_confirmation_otp_code) { '777777' }
   let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: '') }
 
   let(:user) { create(:user, :signed_up) }
@@ -17,9 +17,9 @@ describe Idv::SendPhoneConfirmationOtp do
     idv_session.applicant = { phone: phone }
     idv_session.phone_confirmation_otp_delivery_method = otp_delivery_preference
 
-    # Mock Idv::GeneratePhoneConfirmationOtp
-    allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).
-      and_return(phone_confirmation_otp)
+    # Mock PhoneOtp::CodeGenerator
+    allow(PhoneOtp::CodeGenerator).to receive(:call).
+      and_return(phone_confirmation_otp_code)
 
     # Mock OtpRateLimiter
     allow(OtpRateLimiter).to receive(:new).with(user: user, phone: parsed_phone).
@@ -39,12 +39,14 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(result.success?).to eq(true)
 
-        sent_at = Time.zone.parse(idv_session.phone_confirmation_otp_sent_at)
+        phone_confirmation_otp = idv_session.phone_confirmation_otp
 
-        expect(idv_session.phone_confirmation_otp).to eq(phone_confirmation_otp)
-        expect(sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_otp.code).to eq(phone_confirmation_otp_code)
+        expect(phone_confirmation_otp.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_otp.delivery_method).to eq(:sms)
+
         expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: phone_confirmation_otp,
+          otp: phone_confirmation_otp_code,
           to: parsed_phone,
           expiration: 10,
           channel: :sms,
@@ -62,12 +64,14 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(result.success?).to eq(true)
 
-        sent_at = Time.zone.parse(idv_session.phone_confirmation_otp_sent_at)
+        phone_confirmation_otp = idv_session.phone_confirmation_otp
 
-        expect(idv_session.phone_confirmation_otp).to eq(phone_confirmation_otp)
-        expect(sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_otp.code).to eq(phone_confirmation_otp_code)
+        expect(phone_confirmation_otp.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_otp.delivery_method).to eq(:voice)
+
         expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: phone_confirmation_otp,
+          otp: phone_confirmation_otp_code,
           to: parsed_phone,
           expiration: 10,
           channel: :voice,
@@ -86,7 +90,6 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(result.success?).to eq(false)
         expect(idv_session.phone_confirmation_otp).to be_nil
-        expect(idv_session.phone_confirmation_otp_sent_at).to be_nil
       end
     end
   end

@@ -50,8 +50,9 @@ module Idv
     end
 
     def send_otp
-      idv_session.phone_confirmation_otp = GeneratePhoneConfirmationOtp.call
-      idv_session.phone_confirmation_otp_sent_at = Time.zone.now.to_s
+      idv_session.phone_confirmation_otp = PhoneOtp::OtpObject.generate_for_delivery_method(
+        otp_delivery_preference,
+      )
       if otp_delivery_preference == :sms
         send_sms_otp
       elsif otp_delivery_preference == :voice
@@ -62,7 +63,7 @@ module Idv
 
     def send_sms_otp
       Telephony.send_confirmation_otp(
-        otp: idv_session.phone_confirmation_otp,
+        otp: idv_session.phone_confirmation_otp.code,
         to: phone,
         expiration: Devise.direct_otp_valid_for.to_i / 60,
         channel: :sms,
@@ -71,7 +72,7 @@ module Idv
 
     def send_voice_otp
       Telephony.send_confirmation_otp(
-        otp: idv_session.phone_confirmation_otp,
+        otp: idv_session.phone_confirmation_otp.code,
         to: phone,
         expiration: Devise.direct_otp_valid_for.to_i / 60,
         channel: :voice,

@@ -3,12 +3,6 @@ require 'rails_helper'
 feature 'phone otp verification step spec' do
   include IdvStepHelper
 
-  let(:otp_code) { '777777' }
-
-  before do
-    allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).and_return(otp_code)
-  end
-
   it 'requires the user to enter the correct otp before continuing' do
     user = user_with_2fa
 
@@ -27,7 +21,7 @@ feature 'phone otp verification step spec' do
     expect(current_path).to eq(idv_otp_verification_path)
 
     # Enter the correct code
-    fill_in 'code', with: '777777'
+    fill_in_code_with_last_phone_otp
     click_submit_default
 
     expect(page).to have_content(t('idv.titles.session.review'))
@@ -41,7 +35,7 @@ feature 'phone otp verification step spec' do
     complete_idv_steps_before_phone_otp_verification_step
 
     Timecop.travel(expiration_minutes.minutes.from_now) do
-      fill_in(:code, with: otp_code)
+      fill_in_code_with_last_phone_otp
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
@@ -53,13 +47,14 @@ feature 'phone otp verification step spec' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
-    expect(Telephony).to receive(:send_confirmation_otp)
+    sent_message_count = Telephony::Test::Message.messages.count
 
     click_on t('links.two_factor_authentication.get_another_code')
 
+    expect(Telephony::Test::Message.messages.count).to eq(sent_message_count + 1)
     expect(current_path).to eq(idv_otp_verification_path)
 
-    fill_in 'code', with: '777777'
+    fill_in_code_with_last_phone_otp
     click_submit_default
 
     expect(page).to have_content(t('idv.titles.session.review'))

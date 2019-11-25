@@ -6,8 +6,15 @@ describe Idv::OtpVerificationController do
   let(:phone) { '2255555000' }
   let(:user_phone_confirmation) { false }
   let(:phone_confirmation_otp_delivery_method) { 'sms' }
-  let(:phone_confirmation_otp) { '777777' }
-  let(:phone_confirmation_otp_sent_at) { Time.zone.now.to_s }
+  let(:phone_confirmation_otp_code) { '777777' }
+  let(:phone_confirmation_otp_sent_at) { Time.zone.now }
+  let(:phone_confirmation_otp) do
+    PhoneOtp::OtpObject.new(
+      code: phone_confirmation_otp_code,
+      sent_at: phone_confirmation_otp_sent_at,
+      delivery_method: phone_confirmation_otp_delivery_method.to_sym,
+    )
+  end
 
   before do
     stub_analytics
@@ -21,13 +28,11 @@ describe Idv::OtpVerificationController do
     subject.idv_session.phone_confirmation_otp_delivery_method =
       phone_confirmation_otp_delivery_method
     subject.idv_session.phone_confirmation_otp = phone_confirmation_otp
-    subject.idv_session.phone_confirmation_otp_sent_at = phone_confirmation_otp_sent_at
   end
 
   describe '#show' do
     context 'the user has not been sent an otp' do
       let(:phone_confirmation_otp) { nil }
-      let(:phone_confirmation_otp_sent_at) { nil }
 
       it 'redirects to the delivery method path' do
         get :show
@@ -59,7 +64,7 @@ describe Idv::OtpVerificationController do
       let(:phone_confirmation_otp_sent_at) { nil }
 
       it 'redirects to otp delivery method selection' do
-        put :update, params: { code: phone_confirmation_otp }
+        put :update, params: { code: phone_confirmation_otp_code }
         expect(response).to redirect_to(idv_otp_delivery_method_path)
       end
     end
@@ -68,13 +73,13 @@ describe Idv::OtpVerificationController do
       let(:user_phone_confirmation) { true }
 
       it 'redirects to the review step' do
-        put :update, params: { code: phone_confirmation_otp }
+        put :update, params: { code: phone_confirmation_otp_code }
         expect(response).to redirect_to(idv_review_path)
       end
     end
 
     it 'tracks an analytics event' do
-      put :update, params: { code: phone_confirmation_otp }
+      put :update, params: { code: phone_confirmation_otp_code }
 
       expected_result = {
         success: true,

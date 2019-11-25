@@ -4,11 +4,6 @@ feature 'phone otp rate limiting', :idv_job do
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
-  let(:otp_code) { '777777' }
-
-  before do
-    allow(Idv::GeneratePhoneConfirmationOtp).to receive(:call).and_return(otp_code)
-  end
 
   describe 'otp sends' do
     let(:max_attempts) { Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1 }
@@ -110,7 +105,7 @@ feature 'phone otp rate limiting', :idv_job do
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_verification_step(user)
 
-      fill_in(:code, with: otp_code)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect(page).to have_content(t('idv.titles.session.review'))
