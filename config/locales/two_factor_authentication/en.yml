@@ -135,27 +135,28 @@ en:
       we're removing it to keep your account safe.</li></ul>
     two_factor_choice_options:
       auth_app: Authentication application
-      auth_app_info_html: Set up an authentication application to get your security
-        code without providing a phone number
+      auth_app_info_html: Get codes from an app on your phone, computer, or tablet
       backup_code: I don't have any of the above
-      backup_code_info_html: You can use backup codes. We'll give you 10 codes that
-        you'll have to keep in a safe place.
+      backup_code_info_html: We’ll give you 10 codes to use and keep in a safe place
       backup_code_only: I don't have any of the above
-      backup_code_only_info_html: You can use backup codes as your only authentication
-        method. We'll give you 10 codes that you'll have to keep in a safe place.
+      backup_code_only_info_html: We’ll give you 10 codes to use and keep in a safe
+        place. You can use backup codes as your only authentication method.
       phone: Phone
-      phone_info_html: Get your security code via text message (SMS) or phone call
-      piv_cac: Government employees
-      piv_cac_info_html: Use your PIV/CAC card to secure your account
+      phone_info_html: Get security codes by text message (SMS) or phone call
+      piv_cac: Government employee ID
+      piv_cac_info_html: Insert your government or military PIV or CAC card and enter
+        your PIN
       second_phone: Second phone
-      second_phone_info_html: Get a security code by text message (SMS) or phone call
+      second_phone_info_html: Get security codes by text message (SMS) or phone call
         to a secondary phone number (one that is not %{phone})
       sms: Text message / SMS
       sms_info_html: Get your security code via text message / SMS
       voice: Phone call
       voice_info_html: Get your security code via phone call
       webauthn: Security key
-      webauthn_info_html: Use a security key to secure your account
+      webauthn_info_html: Use a security key that you have. It’s a physical device
+        that you plug in or that is built in to your computer or phone (it often looks
+        like a USB flash drive).
     two_factor_choice_retire_personal_key: Replace your Personal Key with an authentication
       method (Required)
     two_factor_recovery_choice: Second authentication method setup (2 of 2)
