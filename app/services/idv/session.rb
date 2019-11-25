@@ -105,8 +105,9 @@ module Idv
     end
 
     def phone_confirmation_otp
-      return if session[:phone_confirmation_otp].blank?
-      PhoneOtp::OtpObject.from_h(session[:phone_confirmation_otp])
+      session_value = session[:phone_confirmation_otp]
+      return if session_value.blank?
+      PhoneOtp::OtpObject.from_h(session_value)
     end
 
     def phone_confirmation_otp=(new_phone_confirmation_otp)
