@@ -1,14 +1,8 @@
 class PivCacConfiguration < ApplicationRecord
-  belongs_to :user, inverse_of: :piv_cac_configurations
+  belongs_to :user
 
   validates :user_id, presence: true
   validates :name, presence: true
-
-  attr_reader :user
-
-  def initialize(user)
-    @user = user
-  end
 
   def mfa_enabled?
     user&.x509_dn_uuid.present?
