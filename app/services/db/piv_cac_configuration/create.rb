@@ -1,7 +1,7 @@
 module Db
   module PivCacConfiguration
     class Create
-      def self.call(user_id, x509_dn_uuid, name = '')
+      def self.call(user_id, x509_dn_uuid, name = x509_dn_uuid)
         user = User.find_by(id: user_id)
         return unless user
         user.x509_dn_uuid = x509_dn_uuid
