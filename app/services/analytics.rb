@@ -74,6 +74,12 @@ class Analytics
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
+  ADD_PHONE_OTP_CONFIRMATION_SUBMITTED = 'Add Phone: otp confirmation submitted'.freeze
+  ADD_PHONE_OTP_CONFIRMATION_VISITED = 'Add Phone: otp confirmation visited'.freeze
+  ADD_PHONE_OTP_SEND = 'Add Phone: OTP send'.freeze
+  ADD_PHONE_RESEND_SUBMITTED = 'Add Phone: resend otp submitted'.freeze
+  ADD_PHONE_SUBMITTED = 'Add Phone: enter phone number submitted'.freeze
+  ADD_PHONE_VISITED = 'Add Phone: enter phone number visited'.freeze
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
@@ -130,6 +136,7 @@ class Analytics
   MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT = 'Multi-Factor Authentication: enter TOTP visited'.freeze
   MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT = 'Multi-Factor Authentication: enter personal key visited'.freeze
   MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT = 'Multi-Factor Authentication: enter backup code visited'.freeze
+  MULTI_FACTOR_AUTH_LOCKED_OUT_USER = 'Multi-Factor Authentication: Phone OTP sends rate limited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   MULTI_FACTOR_AUTH_OPTION_LIST = 'Multi-Factor Authentication: option list'.freeze
   MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'.freeze

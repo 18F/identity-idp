@@ -31,13 +31,18 @@ shared_examples 'phone rate limitting' do |delivery_method|
   end
 
   it 'limits the number of times the user can enter an OTP' do
+    otp_entry_paths = [
+      login_two_factor_path(otp_delivery_preference: delivery_method),
+      add_phone_verification_path,
+    ]
+
     visit_otp_confirmation(delivery_method)
     2.times do
       fill_in :code, with: '123456'
       click_submit_default
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: delivery_method)
+      expect(otp_entry_paths).to include(current_path)
     end
     fill_in :code, with: '123456'
     click_submit_default

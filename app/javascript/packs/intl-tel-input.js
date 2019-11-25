@@ -1,8 +1,8 @@
 import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
-const telInput = document.querySelector('#new_phone_form_phone');
-const intlCode = document.querySelector('#new_phone_form_international_code');
+const telInput = document.querySelector('.phone');
+const intlCode = document.querySelector('.international-code');
 
 // initialise plugin
 intlTelInput(telInput, {

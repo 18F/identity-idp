@@ -1,20 +1,22 @@
 module PhoneConfirmation
   class ConfirmationSession
-    attr_reader :code, :phone, :sent_at, :delivery_method
+    attr_reader :code, :phone, :sent_at, :delivery_method, :default_phone
 
-    def initialize(code:, phone:, sent_at:, delivery_method:)
+    def initialize(code:, phone:, sent_at:, delivery_method:, default_phone: nil)
       @code = code
       @phone = phone
       @sent_at = sent_at
       @delivery_method = delivery_method.to_sym
+      @default_phone = default_phone
     end
 
-    def self.start(phone:, delivery_method:)
+    def self.start(phone:, delivery_method:, default_phone: nil)
       new(
         code: CodeGenerator.call,
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
+        default_phone: default_phone,
       )
     end
 
@@ -24,6 +26,7 @@ module PhoneConfirmation
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
+        default_phone: default_phone,
       )
     end
 
@@ -50,6 +53,7 @@ module PhoneConfirmation
         phone: phone,
         sent_at: sent_at.to_i,
         delivery_method: delivery_method,
+        default_phone: default_phone,
       }
     end
 
@@ -59,6 +63,7 @@ module PhoneConfirmation
         phone: hash[:phone],
         sent_at: Time.zone.at(hash[:sent_at]),
         delivery_method: hash[:delivery_method].to_sym,
+        default_phone: hash[:default_phone],
       )
     end
   end

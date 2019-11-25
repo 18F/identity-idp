@@ -41,13 +41,13 @@ feature 'disavowing an action' do
     sign_in_and_2fa_user(user)
     visit add_phone_path
 
-    fill_in 'new_phone_form[phone]', with: '202-555-3434'
+    fill_in :add_phone_form_phone, with: '202-555-3434'
 
-    choose 'new_phone_form_otp_delivery_preference_sms'
-    check 'new_phone_form_otp_make_default_number'
+    choose :add_phone_form_otp_delivery_preference_sms
+    check :add_phone_form_otp_make_default_number
     click_button t('forms.buttons.continue')
 
-    submit_prefilled_otp_code(user, 'sms')
+    submit_prefilled_otp_code(:sms)
 
     disavow_last_action_and_reset_password
   end
@@ -125,10 +125,13 @@ feature 'disavowing an action' do
     expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
   end
 
-  def submit_prefilled_otp_code(user, delivery_preference)
-    expect(current_path).
-      to eq login_two_factor_path(otp_delivery_preference: delivery_preference)
-    fill_in('code', with: user.reload.direct_otp)
+  def submit_prefilled_otp_code(delivery_preference)
+    otp = if delivery_preference.to_sym == :sms
+            Telephony::Test::Message.messages.last.otp
+          elsif delivery_preference.to_sym == :voice
+            Telephony::Test::Call.calls.last.otp
+          end
+    fill_in :code, with: otp
     click_button t('forms.buttons.submit.default')
   end
 

@@ -22,15 +22,15 @@ describe 'default phone selection' do
       it 'displays the new default number for 2FA' do
         sign_in_visit_add_phone_path(user, phone_config2)
 
-        enter_phone_number('202-555-3434')
-        check 'new_phone_form_otp_make_default_number'
+        fill_in :add_phone_form_phone, with: '202-555-3434'
+        check :add_phone_form_otp_make_default_number
         click_button t('forms.buttons.continue')
 
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '+1 202-555-3434',
                                        expiration: Figaro.env.otp_valid_for)
 
-        submit_prefilled_otp_code(user, 'sms')
+        submit_prefilled_otp_code(:sms)
 
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
@@ -46,7 +46,7 @@ describe 'default phone selection' do
       it 'displays the new default number for 2FA with sms message' do
         new_phone = '202-555-3111'
         sign_in_visit_add_phone_path(user, phone_config2)
-        fill_in :new_phone_form_phone, with: new_phone
+        fill_in :add_phone_form_phone, with: new_phone
         click_continue
         fill_in_code_with_last_phone_otp
         click_submit_default
@@ -84,16 +84,16 @@ describe 'default phone selection' do
       it 'displays the new default number for 2FA' do
         sign_in_visit_add_phone_path(user, phone_config2)
 
-        enter_phone_number('202-555-3434')
-        choose 'new_phone_form_otp_delivery_preference_voice'
-        check 'new_phone_form_otp_make_default_number'
+        fill_in :add_phone_form_phone, with: '202-555-3434'
+        choose :add_phone_form_otp_delivery_preference_voice
+        check :add_phone_form_otp_make_default_number
         click_button t('forms.buttons.continue')
 
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '+1 202-555-3434',
                                        expiration: Figaro.env.otp_valid_for)
 
-        submit_prefilled_otp_code(user, 'voice')
+        submit_prefilled_otp_code(:voice)
 
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
@@ -111,15 +111,14 @@ describe 'default phone selection' do
     sign_in_before_2fa(user)
   end
 
-  def submit_prefilled_otp_code(user, delivery_preference)
-    expect(current_path).
-      to eq login_two_factor_path(otp_delivery_preference: delivery_preference)
-    fill_in('code', with: user.reload.direct_otp)
+  def submit_prefilled_otp_code(delivery_preference)
+    otp = if delivery_preference.to_sym == :sms
+            Telephony::Test::Message.messages.last.otp
+          elsif delivery_preference.to_sym == :voice
+            Telephony::Test::Call.calls.last.otp
+          end
+    fill_in :code, with: otp
     click_button t('forms.buttons.submit.default')
-  end
-
-  def enter_phone_number(phone)
-    fill_in 'new_phone_form[phone]', with: phone
   end
 
   def sign_in_visit_manage_phone_path(user, phone_config2)

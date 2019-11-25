@@ -183,11 +183,14 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    get '/add/phone' => 'users/phones#add'
-    post '/add/phone' => 'users/phones#create'
-    get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
-    match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
-    delete '/manage/phone/:id' => 'users/edit_phone#destroy'
+    get '/add/phone' => 'phones/add_phone#new'
+    post '/add/phone' => 'phones/add_phone#create'
+    get '/add/phone/resend' => 'phones/add_phone#edit'
+    get '/add/phone/verification' => 'phones/add_phone_otp_verification#new'
+    post '/add/phone/verification' => 'phones/add_phone_otp_verification#create'
+    get '/manage/phone/:id' => 'phones/edit_phone#edit', as: :manage_phone
+    match '/manage/phone/:id' => 'phones/edit_phone#update', via: %i[patch put]
+    delete '/manage/phone/:id' => 'phones/remove_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'

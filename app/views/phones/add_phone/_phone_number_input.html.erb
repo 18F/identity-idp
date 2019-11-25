@@ -1,0 +1,19 @@
+<div class="sm-col-8 js-intl-tel-code-select">
+  <%= add_phone_form.input :international_code,
+              collection: international_phone_codes,
+              include_blank: false,
+              input_html: { class: 'international-code' }%>
+</div>
+<div class="sm-col-8 mb3">
+  <%= add_phone_form.label :phone do %>
+    <strong class="left">
+      <%= t('two_factor_authentication.phone_label') %>
+    </strong>
+  <% end %>
+  <div class="mb1 text-hint">
+    <span><%= t('forms.example') %></span>
+    <span id="ex-phone"></span>
+  </div>
+  <%= add_phone_form.input :phone, as: :tel, label: false, required: true,
+              input_html: { class: 'phone col-8 mb4' } %>
+</div>

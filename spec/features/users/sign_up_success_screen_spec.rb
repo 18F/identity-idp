@@ -47,7 +47,7 @@ feature 'success message after first MFA setup' do
       sign_in_live_with_2fa(user)
 
       click_on t('account.index.phone_add')
-      fill_in :new_phone_form_phone, with: phone
+      fill_in :add_phone_form_phone, with: phone
       click_continue
       fill_in_code_with_last_phone_otp
       click_submit_default

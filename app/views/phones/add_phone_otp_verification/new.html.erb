@@ -1,0 +1,46 @@
+<% title t('titles.enter_2fa_code') %>
+
+<div class='alert alert-notice'>
+  <%= t('devise.registrations.phone_update_needs_confirmation') %>
+</div>
+
+<h1 class="h3 my0">
+  <%= t('two_factor_authentication.header_text') %>
+</h1>
+
+<p>
+  <%= t("instructions.mfa.#{@add_phone_otp_verification_form.delivery_method}.number_message_html",
+        number: content_tag(:strong, @add_phone_otp_verification_form.phone),
+        expiration: Figaro.env.otp_valid_for) %>
+</p>
+
+<%= form_tag(add_phone_verification_url, method: :post, role: 'form', class: 'mt3') do %>
+  <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'), class: 'block bold' %>
+  <div class="col-12">
+    <%= text_field_tag(:code, '', value: @code, required: true, autofocus: true,
+                       pattern: '[0-9]*', class: 'col-12 field monospace mfa',
+                       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
+                       autocomplete: 'off', type: 'tel') %>
+  </div>
+  <label class="btn-border my2" for="remember_device">
+    <div class="checkbox">
+      <%= check_box_tag 'remember_device', true, false %>
+      <span class="indicator"></span>
+      <%= t('forms.messages.remember_device') %>
+    </div>
+  </label>
+  <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top col-12' %>
+<% end %>
+
+<%= link_to(t('links.two_factor_authentication.get_another_code'),
+            add_phone_resend_path,
+            class: 'btn btn-link btn-border ico ico-refresh text-decoration-none my2') %>
+
+<p class='my1'>
+  <%= t('instructions.mfa.wrong_number_html',
+    link: link_to(t('forms.two_factor.try_again'), add_phone_path)) %>
+</p>
+
+<div class='mt2 pt1 border-top'>
+  <%= link_to t('links.cancel'), account_path %>
+</div>

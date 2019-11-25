@@ -31,7 +31,7 @@ module Features
     end
 
     def select_phone_delivery_option(delivery_option)
-      choose "new_phone_form_otp_delivery_preference_#{delivery_option}"
+      find(".otp_delivery_preference_#{delivery_option}").click
     end
 
     def sign_up_and_2fa_ial1_user

@@ -3,7 +3,6 @@ module Idv
     before_action :personal_key_confirmed
 
     include IdvStepConcern
-    include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
