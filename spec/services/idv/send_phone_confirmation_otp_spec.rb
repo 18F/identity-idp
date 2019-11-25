@@ -1,10 +1,17 @@
 require 'rails_helper'
 
 describe Idv::SendPhoneConfirmationOtp do
-  let(:phone) { '2255555000' }
-  let(:parsed_phone) { '+1 225-555-5000' }
-  let(:otp_delivery_preference) { 'sms' }
-  let(:phone_confirmation_otp_code) { '777777' }
+  let(:phone) { '+1 225-555-5000' }
+  let(:delivery_preference) { :sms }
+  let(:otp_code) { '777777' }
+  let(:user_phone_confirmation_session) do
+    PhoneConfirmation::ConfirmationSession.new(
+      code: '123456',
+      phone: phone,
+      sent_at: Time.zone.now,
+      delivery_method: delivery_preference,
+    )
+  end
   let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: '') }
 
   let(:user) { create(:user, :signed_up) }
@@ -14,15 +21,14 @@ describe Idv::SendPhoneConfirmationOtp do
 
   before do
     # Setup Idv::Session
-    idv_session.applicant = { phone: phone }
-    idv_session.phone_confirmation_otp_delivery_method = otp_delivery_preference
+    idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
-    # Mock PhoneOtp::CodeGenerator
-    allow(PhoneOtp::CodeGenerator).to receive(:call).
-      and_return(phone_confirmation_otp_code)
+    # Mock PhoneConfirmation::CodeGenerator
+    allow(PhoneConfirmation::CodeGenerator).to receive(:call).
+      and_return(otp_code)
 
     # Mock OtpRateLimiter
-    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: parsed_phone).
+    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone).
       and_return(otp_rate_limiter)
     allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
       and_return(exceeded_otp_send_limit)
@@ -39,15 +45,15 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(result.success?).to eq(true)
 
-        phone_confirmation_otp = idv_session.phone_confirmation_otp
+        phone_confirmation_session = idv_session.user_phone_confirmation_session
 
-        expect(phone_confirmation_otp.code).to eq(phone_confirmation_otp_code)
-        expect(phone_confirmation_otp.sent_at).to be_within(1.second).of(Time.zone.now)
-        expect(phone_confirmation_otp.delivery_method).to eq(:sms)
+        expect(phone_confirmation_session.code).to eq(otp_code)
+        expect(phone_confirmation_session.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_session.delivery_method).to eq(:sms)
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: phone_confirmation_otp_code,
-          to: parsed_phone,
+          otp: otp_code,
+          to: phone,
           expiration: 10,
           channel: :sms,
         )
@@ -55,7 +61,7 @@ describe Idv::SendPhoneConfirmationOtp do
     end
 
     context 'with voice' do
-      let(:otp_delivery_preference) { 'voice' }
+      let(:delivery_preference) { :voice }
 
       it 'makes a phone call' do
         allow(Telephony).to receive(:send_confirmation_otp)
@@ -64,15 +70,15 @@ describe Idv::SendPhoneConfirmationOtp do
 
         expect(result.success?).to eq(true)
 
-        phone_confirmation_otp = idv_session.phone_confirmation_otp
+        phone_confirmation_session = idv_session.user_phone_confirmation_session
 
-        expect(phone_confirmation_otp.code).to eq(phone_confirmation_otp_code)
-        expect(phone_confirmation_otp.sent_at).to be_within(1.second).of(Time.zone.now)
-        expect(phone_confirmation_otp.delivery_method).to eq(:voice)
+        expect(phone_confirmation_session.code).to eq(otp_code)
+        expect(phone_confirmation_session.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_session.delivery_method).to eq(:voice)
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: phone_confirmation_otp_code,
-          to: parsed_phone,
+          otp: otp_code,
+          to: phone,
           expiration: 10,
           channel: :voice,
         )
@@ -89,7 +95,6 @@ describe Idv::SendPhoneConfirmationOtp do
         result = subject.call
 
         expect(result.success?).to eq(false)
-        expect(idv_session.phone_confirmation_otp).to be_nil
       end
     end
   end

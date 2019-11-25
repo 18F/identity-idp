@@ -8,9 +8,10 @@ describe Idv::OtpVerificationController do
   let(:phone_confirmation_otp_delivery_method) { 'sms' }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
-  let(:phone_confirmation_otp) do
-    PhoneOtp::OtpObject.new(
+  let(:user_phone_confirmation_session) do
+    PhoneConfirmation::ConfirmationSession.new(
       code: phone_confirmation_otp_code,
+      phone: phone,
       sent_at: phone_confirmation_otp_sent_at,
       delivery_method: phone_confirmation_otp_delivery_method.to_sym,
     )
@@ -25,14 +26,12 @@ describe Idv::OtpVerificationController do
     subject.idv_session.applicant[:phone] = phone
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
-    subject.idv_session.phone_confirmation_otp_delivery_method =
-      phone_confirmation_otp_delivery_method
-    subject.idv_session.phone_confirmation_otp = phone_confirmation_otp
+    subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
   describe '#show' do
     context 'the user has not been sent an otp' do
-      let(:phone_confirmation_otp) { nil }
+      let(:user_phone_confirmation_session) { nil }
 
       it 'redirects to the delivery method path' do
         get :show
@@ -60,8 +59,7 @@ describe Idv::OtpVerificationController do
 
   describe '#update' do
     context 'the user has not been sent an otp' do
-      let(:phone_confirmation_otp) { nil }
-      let(:phone_confirmation_otp_sent_at) { nil }
+      let(:user_phone_confirmation_session) { nil }
 
       it 'redirects to otp delivery method selection' do
         put :update, params: { code: phone_confirmation_otp_code }

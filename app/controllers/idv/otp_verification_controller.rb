@@ -34,14 +34,14 @@ module Idv
     end
 
     def confirm_otp_sent
-      return if idv_session.phone_confirmation_otp.present?
+      return if idv_session.user_phone_confirmation_session.present?
 
       redirect_to idv_otp_delivery_method_url
     end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?
-      @code = idv_session.phone_confirmation_otp.code
+      @code = idv_session.user_phone_confirmation_session.code
     end
 
     def set_otp_verification_presenter
@@ -60,7 +60,7 @@ module Idv
     def phone_confirmation_otp_verification_form
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
-        phone_confirmation_otp: idv_session.phone_confirmation_otp,
+        user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
       )
     end
   end

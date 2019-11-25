@@ -1,21 +1,29 @@
 require 'rails_helper'
 
-describe PhoneOtp::OtpObject do
-  describe '.generate_for_delivery_method' do
-    it 'generates an OTP object for voice' do
-      result = described_class.generate_for_delivery_method('voice')
+describe PhoneConfirmation::ConfirmationSession do
+  describe '.start' do
+    it 'starts a session for voice' do
+      result = described_class.start(
+        delivery_method: 'voice',
+        phone: '+1 (202) 123-4567',
+      )
 
       expect(result.code).to match(/\d{6}/)
+      expect(result.phone).to eq('+1 (202) 123-4567')
       expect(result.sent_at).to be_within(1.second).of(Time.zone.now)
       expect(result.delivery_method).to eq(:voice)
       expect(result.sms?).to eq(false)
       expect(result.voice?).to eq(true)
     end
 
-    it 'generates an OTP object for sms' do
-      result = described_class.generate_for_delivery_method('sms')
+    it 'starts a session for sms' do
+      result = described_class.start(
+        delivery_method: 'sms',
+        phone: '+1 (202) 123-4567',
+      )
 
       expect(result.code).to match(/\d{6}/)
+      expect(result.phone).to eq('+1 (202) 123-4567')
       expect(result.sent_at).to be_within(1.second).of(Time.zone.now)
       expect(result.delivery_method).to eq(:sms)
       expect(result.sms?).to eq(true)
@@ -23,10 +31,27 @@ describe PhoneOtp::OtpObject do
     end
   end
 
+  describe '#regenerate_otp!' do
+    it 'returns a copy with a new OTP and expiration' do
+      original_session = described_class.start(
+        delivery_method: 'sms',
+        phone: '+1 (202) 123-4567',
+      )
+
+      new_session = original_session.regenerate_otp!
+
+      expect(original_session.code).to_not eq(new_session.code)
+      expect(original_session.sent_at).to_not eq(new_session.sent_at)
+      expect(original_session.phone).to eq(new_session.phone)
+      expect(original_session.delivery_method).to eq(new_session.delivery_method)
+    end
+  end
+
   describe '#matches_code?' do
     subject do
       described_class.new(
         code: '123456',
+        phone: '+1 (202) 123-4567',
         sent_at: Time.zone.now,
         delivery_method: :sms,
       )
@@ -49,7 +74,7 @@ describe PhoneOtp::OtpObject do
 
   describe '#expired?' do
     it 'returns false if the OTP is not expired' do
-      otp_object = described_class.generate_for_delivery_method(:sms)
+      otp_object = described_class.start(phone: '+1 (225) 123-4567', delivery_method: :sms)
 
       expect(otp_object.expired?).to eq(false)
 
@@ -59,7 +84,7 @@ describe PhoneOtp::OtpObject do
     end
 
     it 'returns true if the OTP is expired' do
-      otp_object = described_class.generate_for_delivery_method(:sms)
+      otp_object = described_class.start(phone: '+1 (225) 123-4567', delivery_method: :sms)
 
       Timecop.travel 11.minutes.from_now do
         expect(otp_object.expired?).to eq(true)

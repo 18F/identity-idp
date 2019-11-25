@@ -2,11 +2,13 @@ require 'rails_helper'
 
 describe Idv::PhoneConfirmationOtpVerificationForm do
   let(:user) { create(:user, :signed_up) }
+  let(:phone) { '+1 (225) 555-5000' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
   let(:phone_confirmation_otp_code) { '123456' }
-  let(:phone_confirmation_otp) do
-    PhoneOtp::OtpObject.new(
+  let(:user_phone_confirmation_session) do
+    PhoneConfirmation::ConfirmationSession.new(
       code: phone_confirmation_otp_code,
+      phone: phone,
       sent_at: phone_confirmation_otp_sent_at,
       delivery_method: :sms,
     )
@@ -15,7 +17,7 @@ describe Idv::PhoneConfirmationOtpVerificationForm do
   describe '#submit' do
     def try_submit(code)
       described_class.new(
-        user: user, phone_confirmation_otp: phone_confirmation_otp,
+        user: user, user_phone_confirmation_session: user_phone_confirmation_session,
       ).submit(code: code)
     end
 

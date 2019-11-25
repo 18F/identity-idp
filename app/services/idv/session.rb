@@ -7,7 +7,6 @@ module Idv
       applicant
       vendor_phone_confirmation
       user_phone_confirmation
-      phone_confirmation_otp_delivery_method
       pii
       previous_phone_step_params
       previous_profile_step_params
@@ -104,14 +103,14 @@ module Idv
       vendor_phone_confirmation == true || address_verification_mechanism == 'usps'
     end
 
-    def phone_confirmation_otp
-      session_value = session[:phone_confirmation_otp]
+    def user_phone_confirmation_session
+      session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?
-      PhoneOtp::OtpObject.from_h(session_value)
+      PhoneConfirmation::ConfirmationSession.from_h(session_value)
     end
 
-    def phone_confirmation_otp=(new_phone_confirmation_otp)
-      session[:phone_confirmation_otp] = new_phone_confirmation_otp.to_h
+    def user_phone_confirmation_session=(new_user_phone_confirmation_session)
+      session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
     private

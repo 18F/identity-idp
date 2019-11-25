@@ -1,10 +1,10 @@
 module Idv
   class PhoneConfirmationOtpVerificationForm
-    attr_reader :user, :phone_confirmation_otp, :code
+    attr_reader :user, :user_phone_confirmation_session, :code
 
-    def initialize(user:, phone_confirmation_otp:)
+    def initialize(user:, user_phone_confirmation_session:)
       @user = user
-      @phone_confirmation_otp = phone_confirmation_otp
+      @user_phone_confirmation_session = user_phone_confirmation_session
     end
 
     def submit(code:)
@@ -21,8 +21,8 @@ module Idv
     private
 
     def code_valid?
-      return false if phone_confirmation_otp.expired?
-      phone_confirmation_otp.matches_code?(code)
+      return false if user_phone_confirmation_session.expired?
+      user_phone_confirmation_session.matches_code?(code)
     end
 
     def clear_second_factor_attempts
@@ -39,8 +39,8 @@ module Idv
 
     def extra_analytics_attributes
       {
-        code_expired: phone_confirmation_otp.expired?,
-        code_matches: phone_confirmation_otp.matches_code?(code),
+        code_expired: user_phone_confirmation_session.expired?,
+        code_matches: user_phone_confirmation_session.matches_code?(code),
         second_factor_attempts_count: user.second_factor_attempts_count,
         second_factor_locked_at: user.second_factor_locked_at,
       }

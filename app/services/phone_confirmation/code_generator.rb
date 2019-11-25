@@ -1,4 +1,4 @@
-module PhoneOtp
+module PhoneConfirmation
   class CodeGenerator
     def self.call
       digits = Devise.direct_otp_length
