@@ -24,6 +24,7 @@ class UserPivCacSetupForm
 
   def process_valid_submission
     revoke_remember_device(user)
+    UpdateUser.new(user: user, attributes: { x509_dn_uuid: x509_dn_uuid }).call
     Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid)
     true
   rescue PG::UniqueViolation
