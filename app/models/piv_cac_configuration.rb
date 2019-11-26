@@ -5,7 +5,7 @@ class PivCacConfiguration < ApplicationRecord
   validates :name, presence: true
 
   def mfa_enabled?
-    user&.x509_dn_uuid.present?
+    x509_dn_uuid.present?
   end
 
   def mfa_confirmed?(proposed_uuid)
