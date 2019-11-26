@@ -6,7 +6,7 @@ module Db
         return unless user
         user.x509_dn_uuid = nil
         user.save
-        PivCacConfiguration.where(user_id: user_id).delete_all
+        ::PivCacConfiguration.where(user_id: user_id).delete_all
       end
     end
   end
