@@ -17,7 +17,7 @@ class AnonymousUser
   end
 
   def piv_cac_configurations
-    WebauthnConfiguration.none
+    PivCacConfiguration.none
   end
 
   def webauthn_configurations
