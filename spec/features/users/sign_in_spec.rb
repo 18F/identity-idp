@@ -677,6 +677,29 @@ feature 'Sign in' do
     end
   end
 
+  context 'multiple piv cacs' do
+    it 'allows you to sign in with either' do
+      user = create(:user, :signed_up, :with_piv_or_cac)
+      user_id = user.id
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user, 'foo')
+
+      expect(current_url).to eq account_url
+
+      Capybara.reset_session!
+
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user, 'bar')
+
+      expect(current_url).to eq account_url
+    end
+  end
+
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
     user = create(:user, :signed_up, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
