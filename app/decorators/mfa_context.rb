@@ -1,4 +1,5 @@
 # :reek:RepeatedConditional
+# :reek:TooManyMethods
 
 class MfaContext
   attr_reader :user
@@ -37,7 +38,19 @@ class MfaContext
   end
 
   def piv_cac_configuration
-    PivCacConfiguration.new(user)
+    cfg = user.piv_cac_configurations.first if user
+    return cfg if cfg
+    PivCacConfiguration.new(user_id: user&.id, x509_dn_uuid: user&.x509_dn_uuid, name: '')
+  end
+
+  def piv_cac_configurations
+    if user.present?
+      user_id = user.class == AnonymousUser ? nil : user.id
+      [user.piv_cac_configurations.first ||
+        PivCacConfiguration.new(user_id: user_id, x509_dn_uuid: user&.x509_dn_uuid, name: '')]
+    else
+      PivCacConfiguration.none
+    end
   end
 
   def auth_app_configuration
@@ -50,7 +63,7 @@ class MfaContext
 
   def two_factor_configurations
     phone_configurations + webauthn_configurations + backup_code_configurations +
-      [piv_cac_configuration, auth_app_configuration]
+      piv_cac_configurations + [auth_app_configuration]
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -58,7 +71,7 @@ class MfaContext
     phone_configurations.to_a.select(&:mfa_enabled?).count +
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
-      (piv_cac_configuration.mfa_enabled? ? 1 : 0) +
+      piv_cac_configurations.to_a.select(&:mfa_enabled?).count +
       (auth_app_configuration.mfa_enabled? ? 1 : 0) +
       personal_key_method_count
   end
@@ -79,7 +92,7 @@ class MfaContext
 
   def unphishable_configuration_count
     webauthn_configurations.to_a.select(&:mfa_enabled?).count +
-      (piv_cac_configuration.mfa_enabled? ? 1 : 0)
+      piv_cac_configurations.to_a.select(&:mfa_enabled?).count
   end
 
   private

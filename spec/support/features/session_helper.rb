@@ -83,14 +83,14 @@ module Features
       fill_in_bad_piv_cac_credentials_and_submit
     end
 
-    def fill_in_piv_cac_credentials_and_submit(user)
+    def fill_in_piv_cac_credentials_and_submit(user, uuid = user.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
       visit_piv_cac_service(current_url,
                             nonce: nonce,
-                            uuid: user.x509_dn_uuid,
+                            uuid: uuid,
                             subject: 'SomeIgnoredSubject')
     end
 
