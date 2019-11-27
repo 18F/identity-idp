@@ -66,6 +66,52 @@ shared_examples 'back image step' do |simulate|
       end
     end
 
+    context 'when a known error occures with a friendly translation' do
+      known_errors = {'the_document_type_could_not_be_determined':
+                        'The document type could not be determined',
+                      'the_2d_barcode_could_not_be_read': 'The 2D barcode could not be read',
+                      'a_visible_pattern_was_not_found': 'A visible pattern was not found',
+                      'evidence_suggests_the_image_has_been_tampered_with_or_digitally_manipulated':
+                        'Evidence suggests the image has been tampered with or digitally manipulated.',
+                      'the_photo_printing_technique_was_not_detected':
+                        'The photo printing technique was not detected',
+                      'the_document_has_expired': 'The document has expired',
+                      'the_birth_date_is_not_valid': 'The birth date is not valid',
+                      'the_expiration_date_is_not_valid': 'The expiration date is not valid',
+                      'the_substrate_printing_technique_was_not_detected':
+                        'The substrate printing technique was not detected',
+                      'the_color_response_is_incorrect': 'The color response is incorrect',
+                      'the_issue_date_is_not_valid': 'The issue date is not valid',
+                      'the_full_names_do_not_match': 'The full names do not match',
+                      'the_document_number_check_digit_is_incorrect':
+                        'The document number check digit is incorrect',
+                      'the_photo_lacks_the_expected_appearance': 'The photo lacks the expected appearance',
+                      'the_birth_dates_do_not_match': 'The birth dates do not match',
+                      'the_control_numbers_do_not_match': 'The control numbers do not match',
+                      'the_composite_check_digit_is_incorrect': 'The composite check digit is incorrect',
+                      'the_sexes_do_not_match': 'The sexes do not match',
+                      'the_2d_barcode_is_formatted_incorrectly': 'The 2D barcode is formatted incorrectly',
+                      'document_image_load_failure': 'Document image load failure',
+                      'document_not_found': 'Document Not Found',
+                      'color_pixel_depth_must_be_24-bit': 'Color pixel depth must be 24-bit',
+                      'duplicate_document_side': 'Duplicate Document Side',
+                      'document_complete_or_in_error_state': 'Document complete or in error state',
+                      'internal_server_error': 'Internal Server Error'}
+      known_errors.each do |key, error|
+        it "returns errors.doc_auth.#{key} I18n value when error is '#{error}'" do
+          allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+            and_return([true, assure_id_results_with_result_2(error)])
+          attach_image
+          click_idv_continue
+
+          unless simulate
+            expect(page).to have_current_path(idv_doc_auth_front_image_step)
+            expect(page).to have_content(I18n.t("errors.doc_auth.#{key}"))
+          end
+        end
+      end
+    end
+
     it 'throttles calls to acuant and allows attempts after the attempt window' do
       (max_attempts / 2).times do
         attach_image

@@ -58,12 +58,12 @@ module Idv
       def verify_back_image(reset_step:)
         back_image_verified, data, analytics_hash = assure_id_results
         data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
-        return failure(data, analytics_hash) unless back_image_verified
+        return friendly_failure(data, analytics_hash) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
 
         mark_step_incomplete(reset_step)
-        failure(I18n.t('errors.doc_auth.general_error'), data)
+        friendly_failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
       def process_good_result(data)
@@ -150,6 +150,23 @@ module Idv
           I18n.t('errors.doc_auth.acuant_network_error'),
           { acuant_network_error: exception.message },
         ]
+      end
+
+      def friendly_failure(message, data)
+        message = acuant_alert(data) unless acuant_alert(data).blank?
+        new_message = I18n.t('errors.doc_auth.' + error_key(message), :default => message)
+        failure(new_message, data)
+      end
+
+      def acuant_alert(data)
+        acuant_alert = data&.dig('Alerts')&.first&.dig('Disposition')
+        return acuant_alert if I18n.exists?('errors.doc_auth.' + error_key(acuant_alert), :en)
+        nil
+      end
+
+      def error_key(message)
+        return 'general_error' if message.blank?
+        message.downcase.gsub(' ', '_').gsub('.', '')
       end
 
       delegate :idv_session, to: :@flow
