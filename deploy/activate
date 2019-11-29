@@ -16,6 +16,7 @@ id
 which bundle
 
 bundle exec bin/activate
+bundle exec rake db:check_for_pending_migrations
 
 set +x
 
