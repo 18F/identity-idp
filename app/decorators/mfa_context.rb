@@ -44,13 +44,14 @@ class MfaContext
   end
 
   def piv_cac_configurations
-    if user.present?
-      return piv_cac_configuration_none unless user&.x509_dn_uuid || user.piv_cac_configurations.first
-      user_id = user.class == AnonymousUser ? nil : user.id
-      user.piv_cac_configurations.first ? user.piv_cac_configurations : [
-        PivCacConfiguration.new(user_id: user_id, x509_dn_uuid: user&.x509_dn_uuid, name: '')]
+    piv_cac_cfgs = user&.piv_cac_configurations
+    return piv_cac_configuration_none if user.blank? || !(user.x509_dn_uuid || piv_cac_cfgs.first)
+    return piv_cac_configuration_none unless user&.x509_dn_uuid || piv_cac_cfgs.first
+    user_id = user.class == AnonymousUser ? nil : user.id
+    if piv_cac_cfgs.first
+      piv_cac_cfgs
     else
-      piv_cac_configuration_none
+      [PivCacConfiguration.new(user_id: user_id, x509_dn_uuid: user&.x509_dn_uuid, name: '')]
     end
   end
 
