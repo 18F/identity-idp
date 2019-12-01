@@ -23,7 +23,7 @@ es:
       password: Contraseña
       phone: Teléfono
       phone_add: "+ Añadir teléfono"
-      piv_cac_card: Tarjeta PIV/CAC
+      piv_cac_card: Tarjetas PIV/CAC
       piv_cac_disabled: desactivada
       piv_cac_enabled: activada
       reactivation:

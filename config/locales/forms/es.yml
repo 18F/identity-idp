@@ -78,6 +78,9 @@ es:
     phone:
       buttons:
         delete: Eliminar el teléfono
+    piv_cac_delete:
+      caution: Si retira su tarjeta PIV/CAC, no podrá usarla para acceder a su cuenta login.gov.
+      confirm: ¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?
     piv_cac_login:
       submit: Inserte su PIV/CAC
     piv_cac_mfa:
