@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      user&.x509_dn_uuid.present?
+      user&.x509_dn_uuid.present? || user&.piv_cac_configurations.first
     end
 
     def enabled?
