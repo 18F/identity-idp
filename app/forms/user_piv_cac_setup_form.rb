@@ -33,8 +33,7 @@ class UserPivCacSetupForm
   end
 
   def valid_submission?
-      valid_token? &&
-      piv_cac_not_already_associated
+    valid_token? && piv_cac_not_already_associated
   end
 
   def piv_cac_not_already_associated

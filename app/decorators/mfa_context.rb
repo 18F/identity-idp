@@ -45,12 +45,12 @@ class MfaContext
 
   def piv_cac_configurations
     if user.present?
-      return PivCacConfiguration.none unless user&.x509_dn_uuid || user.piv_cac_configurations.first
+      return piv_cac_configuration_none unless user&.x509_dn_uuid || user.piv_cac_configurations.first
       user_id = user.class == AnonymousUser ? nil : user.id
       user.piv_cac_configurations.first ? user.piv_cac_configurations : [
         PivCacConfiguration.new(user_id: user_id, x509_dn_uuid: user&.x509_dn_uuid, name: '')]
     else
-      PivCacConfiguration.none
+      piv_cac_configuration_none
     end
   end
 
@@ -97,6 +97,10 @@ class MfaContext
   end
 
   private
+
+  def piv_cac_configuration_none
+    PivCacConfiguration.none
+  end
 
   def personal_key_method_count
     return 0 if Figaro.env.personal_key_retired == 'true'
