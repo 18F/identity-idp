@@ -45,14 +45,8 @@ class MfaContext
 
   def piv_cac_configurations
     piv_cac_cfgs = user&.piv_cac_configurations
-    return piv_cac_configuration_none if user.blank? || !(user.x509_dn_uuid || piv_cac_cfgs.first)
-    return piv_cac_configuration_none unless user&.x509_dn_uuid || piv_cac_cfgs.first
-    user_id = user.class == AnonymousUser ? nil : user.id
-    if piv_cac_cfgs.first
-      piv_cac_cfgs
-    else
-      [PivCacConfiguration.new(user_id: user_id, x509_dn_uuid: user&.x509_dn_uuid, name: '')]
-    end
+    have_one_cfg = piv_cac_cfgs&.first
+    user_piv_cac_configurations(piv_cac_cfgs, have_one_cfg)
   end
 
   def auth_app_configuration
@@ -98,6 +92,13 @@ class MfaContext
   end
 
   private
+
+  def user_piv_cac_configurations(piv_cac_cfgs, have_one_cfg)
+    return piv_cac_configuration_none if user.blank? || !(user.x509_dn_uuid || have_one_cfg)
+    return piv_cac_cfgs if have_one_cfg
+    [PivCacConfiguration.new(user_id: user.class == AnonymousUser ? nil : user.id,
+                             x509_dn_uuid: user&.x509_dn_uuid, name: '')]
+  end
 
   def piv_cac_configuration_none
     PivCacConfiguration.none
