@@ -423,6 +423,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rack-timeout (0.5.2)
     rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
@@ -744,6 +745,7 @@ DEPENDENCIES
   rack-mini-profiler
   rack-test
   rack_session_access
+  rack-timeout
   rails (~> 5.1.3)
   rails-controller-testing
   rails-erd

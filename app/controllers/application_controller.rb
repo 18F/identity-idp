@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   [
     ActiveRecord::ConnectionTimeoutError,
     PG::ConnectionBad, # raised when a Postgres connection times out
-    # Rack::Timeout::RequestTimeoutException,
+    Rack::Timeout::RequestTimeoutException,
     Redis::BaseConnectionError,
   ].each do |error|
     rescue_from error, with: :render_timeout
