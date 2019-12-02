@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'Sign Up' do
   include SamlAuthHelper
+  include DocAuthHelper
 
   context 'confirmation token error message does not persist on success' do
     scenario 'with no or invalid token' do
@@ -163,6 +164,15 @@ feature 'Sign Up' do
     set_up_2fa_with_backup_code
 
     expect(page).to have_current_path account_path
+  end
+
+  it 'does not allow PIV/CAC during setup on mobile' do
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+
+    sign_in_user
+
+    expect(page).to have_selector('#two_factor_options_form_selection_phone', count: 1)
+    expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
