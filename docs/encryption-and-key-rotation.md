@@ -1,9 +1,14 @@
 # login.gov PII Encryption
 
+Disclaimer: some parts of this document are not fully up to date as we've updated
+our encryption strategy due to limitations in our hosting environments. We will be
+bringing this document up to date soon.
+
 ## Overview
 
 `login.gov` is a service that provides single-sign-on capability to
-users of US government websites. It is developed jointly by 18F and USDS.
+users of US government websites. It is being developed within the Technology Transformation
+Service at the GSA with support from 18F and USDS.
 Its goals include:
 
 * simplifying online interactions with the US government, by
@@ -92,7 +97,7 @@ we follow these steps to create the encryption key:
 * store `EncryptedPII` with the user record
 * do *not* store plaintext PII, `AssignedSecret` or `CEK`
 
-You can review [the tests for this model in our public repository](https://github.com/18F/identity-idp/blob/master/spec/services/pii/nist_encryption_spec.rb). We have also documented some [example code](https://github.com/18F/identity-idp/blob/master/docs/encryption-examples.md) that can be used to re-create the process we use to encrypt and decrypt PII.
+You can review [the tests for this model in our public repository](https://github.com/18F/identity-idp/blob/master/spec/services/pii/nist_encryption_spec.rb).
 
 Since the user's password is an integral part of this multi-factor
 model, if the user forgets their password, the PII may not be recovered.
