@@ -153,20 +153,20 @@ module Idv
       end
 
       def friendly_failure(message, data)
-        message = acuant_alert(data) unless acuant_alert(data).blank?
-        new_message = I18n.t('errors.doc_auth.' + error_key(message), :default => message)
+        acuant_alert = friendly_acuant_alert(data)
+        message = acuant_alert if acuant_alert.present?
+        new_message = friendly_message(message)
         failure(new_message, data)
       end
 
-      def acuant_alert(data)
+      def friendly_acuant_alert(data)
         acuant_alert = data&.dig('Alerts')&.first&.dig('Disposition')
-        return acuant_alert if I18n.exists?('errors.doc_auth.' + error_key(acuant_alert), :en)
+        return acuant_alert if friendly_message(acuant_alert) != acuant_alert
         nil
       end
 
-      def error_key(message)
-        return 'general_error' if message.blank?
-        message.downcase.gsub(' ', '_').gsub('.', '')
+      def friendly_message(message)
+        FriendlyError::Message.call(message, 'doc_auth')
       end
 
       delegate :idv_session, to: :@flow

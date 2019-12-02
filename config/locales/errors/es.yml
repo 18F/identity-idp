@@ -18,20 +18,12 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
-      a_visible_pattern_was_not_found: 'coming soon (Error code: 300)'
       acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
         Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: Para evitar abusos, limitamos el número de veces que puede
         intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
-      color_pixel_depth_must_be_24-bit: 'coming soon (Error code: 2300)'
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
-      document_complete_or_in_error_state: 'coming soon (Error code: 2500)'
-      document_image_load_failure: 'coming soon (Error code: 2100)'
-      document_not_found: 'coming soon (Error code: 2200)'
-      duplicate_document_side: 'coming soon (Error code: 2400)'
-      evidence_suggests_the_image_has_been_tampered_with_or_digitally_manipulated: 'coming
-        soon (Error code: 400)'
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.
@@ -47,29 +39,10 @@ es:
         <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
         <li class="mxn3">El fondo es visible detrás del documento</li>
         </ul>
-      internal_server_error: 'coming soon (Error code: 2600)'
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
-      the_2d_barcode_could_not_be_read: 'coming soon (Error code: 200)'
-      the_2d_barcode_is_formatted_incorrectly: 'coming soon (Error code: 2000)'
-      the_birth_date_is_not_valid: 'coming soon (Error code: 700)'
-      the_birth_dates_do_not_match: 'coming soon (Error code: 1600)'
-      the_color_response_is_incorrect: 'coming soon (Error code: 1100)'
-      the_composite_check_digit_is_incorrect: 'coming soon (Error code: 1800)'
-      the_control_numbers_do_not_match: 'coming soon (Error code: 1700)'
-      the_document_has_expired: 'coming soon (Error code: 600)'
-      the_document_number_check_digit_is_incorrect: 'coming soon (Error code: 1400)'
-      the_document_type_could_not_be_determined: 'coming soon (Error code: 100)'
-      the_expiration_date_is_not_valid: 'coming soon (Error code: 800)'
-      the_full_names_do_not_match: 'coming soon (Error code: 1300)'
-      the_issue_date_is_not_valid: 'coming soon (Error code: 1200)'
-      the_photo_lacks_the_expected_appearance: 'coming soon (Error code: 1500)'
-      the_photo_printing_technique_was_not_detected: 'coming soon (Error code: 500)'
-      the_sexes_do_not_match: 'coming soon (Error code: 1900)'
-      the_substrate_printing_technique_was_not_detected: 'coming soon (Error code:
-        900)'
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

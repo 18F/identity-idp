@@ -18,20 +18,12 @@ fr:
       token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     doc_auth:
-      a_visible_pattern_was_not_found: 'coming soon (Error code: 300)'
       acuant_network_error: Désolé, nous rencontrons des difficultés techniques. Veuillez
         réessayer plus tard.
       acuant_throttle: Pour éviter les abus, nous limitons le nombre de fois où vous
         pouvez essayer de valider un document. Veuillez réessayer plus tard.
-      color_pixel_depth_must_be_24-bit: 'coming soon (Error code: 2300)'
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
-      document_complete_or_in_error_state: 'coming soon (Error code: 2500)'
-      document_image_load_failure: 'coming soon (Error code: 2100)'
-      document_not_found: 'coming soon (Error code: 2200)'
-      duplicate_document_side: 'coming soon (Error code: 2400)'
-      evidence_suggests_the_image_has_been_tampered_with_or_digitally_manipulated: 'coming
-        soon (Error code: 400)'
       general_error: Nous n'avons pas pu lire ni vérifier votre identité. Essayez
         de prendre et de télécharger de nouvelles images des deux côtés de votre ID.
         Assurez-vous que tout peut être facilement lu, y compris le code à barres.
@@ -46,31 +38,12 @@ fr:
         <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
         <li class="mxn3">Le fond est visible derrière le document</li>
         </ul>
-      internal_server_error: 'coming soon (Error code: 2600)'
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
-      the_2d_barcode_could_not_be_read: 'coming soon (Error code: 200)'
-      the_2d_barcode_is_formatted_incorrectly: 'coming soon (Error code: 2000)'
-      the_birth_date_is_not_valid: 'coming soon (Error code: 700)'
-      the_birth_dates_do_not_match: 'coming soon (Error code: 1600)'
-      the_color_response_is_incorrect: 'coming soon (Error code: 1100)'
-      the_composite_check_digit_is_incorrect: 'coming soon (Error code: 1800)'
-      the_control_numbers_do_not_match: 'coming soon (Error code: 1700)'
-      the_document_has_expired: 'coming soon (Error code: 600)'
-      the_document_number_check_digit_is_incorrect: 'coming soon (Error code: 1400)'
-      the_document_type_could_not_be_determined: 'coming soon (Error code: 100)'
-      the_expiration_date_is_not_valid: 'coming soon (Error code: 800)'
-      the_full_names_do_not_match: 'coming soon (Error code: 1300)'
-      the_issue_date_is_not_valid: 'coming soon (Error code: 1200)'
-      the_photo_lacks_the_expected_appearance: 'coming soon (Error code: 1500)'
-      the_photo_printing_technique_was_not_detected: 'coming soon (Error code: 500)'
-      the_sexes_do_not_match: 'coming soon (Error code: 1900)'
-      the_substrate_printing_technique_was_not_detected: 'coming soon (Error code:
-        900)'
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
