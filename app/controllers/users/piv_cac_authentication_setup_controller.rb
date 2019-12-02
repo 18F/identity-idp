@@ -6,8 +6,7 @@ module Users
     include RememberDeviceConcern
 
     before_action :authenticate_user!
-    before_action :confirm_user_authenticated_for_2fa_setup,
-                  except: :redirect_to_piv_cac_service
+    before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
 
     def new
