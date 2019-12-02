@@ -16,6 +16,7 @@ feature 'Sign in' do
   include SamlAuthHelper
   include SpAuthHelper
   include IdvHelper
+  include DocAuthHelper
 
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
@@ -63,6 +64,13 @@ feature 'Sign in' do
                           subject: 'SomeIgnoredSubject')
 
     expect(current_path).to eq login_piv_cac_did_not_work_path
+  end
+
+  scenario 'user attempts sign in with a PIV/CAC on mobile' do
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    visit root_path
+
+    expect(page).to_not have_link t('account.login.piv_cac')
   end
 
   scenario 'user attempts sign in with piv/cac with no account then creates account' do
