@@ -4,8 +4,12 @@ describe TwoFactorOptionsPresenter do
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
+  let(:user_agent) do
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 \
+(KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
+  end
   let(:presenter) do
-    described_class.new(user, nil)
+    described_class.new(user, nil, user_agent)
   end
 
   it 'supplies a title' do
