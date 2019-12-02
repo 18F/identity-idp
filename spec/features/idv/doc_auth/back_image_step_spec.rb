@@ -66,7 +66,7 @@ shared_examples 'back image step' do |simulate|
       end
     end
 
-    context 'when an error occures with a friendly message' do
+    context 'when an error occurs with a friendly message' do
       FRIENDLY_ERROR_CONFIG['doc_auth'].each do |key, error|
         it "returns friendly_errors.doc_auth.#{key} I18n value" do
           allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
