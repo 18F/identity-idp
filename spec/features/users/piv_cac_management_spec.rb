@@ -110,32 +110,6 @@ feature 'PIV/CAC Management' do
         end
       end
     end
-
-    context 'with an account not allowed to use piv/cac' do
-      before(:each) do
-        allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy,
-        ).to receive(:available?).and_return(false)
-      end
-
-      scenario "doesn't advertise association of a piv/cac with an account" do
-        stub_piv_cac_service
-
-        sign_in_and_2fa_user(user)
-        visit account_path
-        expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
-      end
-
-      scenario "doesn't allow unassociation of a piv/cac" do
-        stub_piv_cac_service
-
-        user = create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' })
-        sign_in_and_2fa_user(user)
-        visit account_path
-        form = find_form(page, action: disable_piv_cac_url)
-        expect(form).to be_nil
-      end
-    end
   end
 
   context 'with a piv/cac associated' do
@@ -143,12 +117,12 @@ feature 'PIV/CAC Management' do
       create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
     end
 
-    scenario "doesn't allow association of another piv/cac with the account" do
+    scenario "does allow association of another piv/cac with the account" do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
       visit account_path
-      expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+      expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
     end
 
     scenario 'allows disassociation of the piv/cac' do
