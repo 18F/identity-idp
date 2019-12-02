@@ -117,7 +117,7 @@ feature 'PIV/CAC Management' do
       create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
     end
 
-    scenario "does allow association of another piv/cac with the account" do
+    scenario 'does allow association of another piv/cac with the account' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
