@@ -128,15 +128,14 @@ feature 'PIV/CAC Management' do
       sign_in_and_2fa_user(user)
       visit account_path
 
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to_not be_nil
+      expect(page.find('.remove-piv')).to_not be_nil
+      page.find('.remove-piv').click
 
-      form.click_button(t('forms.buttons.disable'))
+      expect(current_path).to eq piv_cac_delete_path
+      click_on t('account.index.backup_code_confirm_delete')
 
       expect(current_path).to eq account_path
 
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to be_nil
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       user.reload
