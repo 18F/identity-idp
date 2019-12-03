@@ -48,7 +48,7 @@ feature 'taking an action that revokes remember device' do
 
       sign_in_user(user)
       page.find('.remove-piv').click
-      click_on t('account.index.backup_code_confirm_delete')
+      click_on t('account.index.piv_cac_confirm_delete')
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)

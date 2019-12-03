@@ -10,7 +10,7 @@ h1.h3.mb1.mt3.my0 = t('forms.piv_cac_delete.confirm')
 p.mb4 == t('forms.piv_cac_delete.caution')
 
 = form_tag(disable_piv_cac_url(id: params[:id]), method: :delete, role: 'form') do
-  = button_tag t('account.index.backup_code_confirm_delete'), type: 'submit',
+  = button_tag t('account.index.piv_cac_confirm_delete'), type: 'submit',
                  class: 'btn btn-primary col-6 mb2 p2 rounded-lg center'
 = link_to t('links.cancel'), account_path,
           class: 'btn p2 rounded-lg border border-blue blue center'

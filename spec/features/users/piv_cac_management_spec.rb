@@ -132,7 +132,7 @@ feature 'PIV/CAC Management' do
       page.find('.remove-piv').click
 
       expect(current_path).to eq piv_cac_delete_path
-      click_on t('account.index.backup_code_confirm_delete')
+      click_on t('account.index.piv_cac_confirm_delete')
 
       expect(current_path).to eq account_path
 
