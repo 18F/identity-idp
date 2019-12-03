@@ -10,7 +10,7 @@ describe PhoneConfirmation::OtpSender do
       code: otp,
       phone: phone,
       sent_at: Time.zone.now,
-      delivery_method: delivery_method
+      delivery_method: delivery_method,
     )
   end
   let(:context) { :confirmation }

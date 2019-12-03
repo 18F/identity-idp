@@ -58,7 +58,7 @@ module PhoneConfirmation
       otp_rate_limiter.lock_out_user
       FormResponse.new(
         success: false,
-        errors: { base: ['To many OTP requests'] }
+        errors: { base: ['To many OTP requests'] },
       )
     end
 
@@ -78,7 +78,7 @@ module PhoneConfirmation
         extra: {
           telephony_error_class: telephony_error.class.to_s,
           telephony_error_message: telephony_error.message,
-        }
+        },
       )
     end
   end
