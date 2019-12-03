@@ -6,7 +6,6 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:data) do
     {
-      confirmation_for_phone_change: false,
       phone_number: '5555559876',
       code_value: '999999',
       otp_delivery_preference: 'sms',
@@ -37,11 +36,6 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
 
     it 'returns the account path during reauthn' do
       data[:reauthn] = true
-      expect(presenter.cancel_link).to eq account_path
-    end
-
-    it 'returns the account path during phone change confirmation' do
-      data[:confirmation_for_phone_change] = true
       expect(presenter.cancel_link).to eq account_path
     end
   end

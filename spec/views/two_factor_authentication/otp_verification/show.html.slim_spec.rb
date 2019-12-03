@@ -106,25 +106,6 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       end
     end
 
-    context 'user is changing phone number' do
-      it 'provides a cancel link to return to profile' do
-        user = create(:user, :signed_up, personal_key: '1')
-        allow(view).to receive(:current_user).and_return(user)
-        data = presenter_data.merge(confirmation_for_phone_change: true)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: data,
-          view: view,
-        )
-
-        render
-
-        expect(rendered).to have_link(
-          t('links.cancel'),
-          href: account_path,
-        )
-      end
-    end
-
     context 'user is unconfirmed' do
       it 'does not provide an option to use a personal key' do
         unconfirmed_data = presenter_data.merge(personal_key_unavailable: true)

@@ -31,7 +31,7 @@ module TwoFactorAuthCode
 
     def cancel_link
       locale = LinkLocaleResolver.locale
-      if confirmation_for_phone_change || reauthn
+      if reauthn
         account_path(locale: locale)
       else
         sign_out_path(locale: locale)
@@ -45,7 +45,6 @@ module TwoFactorAuthCode
       :phone_number,
       :unconfirmed_phone,
       :account_reset_token,
-      :confirmation_for_phone_change,
       :voice_otp_delivery_unsupported,
     )
   end

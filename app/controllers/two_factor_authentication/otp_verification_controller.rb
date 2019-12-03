@@ -78,7 +78,6 @@ module TwoFactorAuthentication
       {
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
-        confirmation_for_phone_change: confirmation_for_phone_change?,
       }
     end
   end
