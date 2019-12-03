@@ -35,10 +35,7 @@ feature 'PIV/CAC Management' do
                               subject: 'SomeIgnoredSubject')
 
         expect(current_path).to eq account_path
-
-        form = find_form(page, action: disable_piv_cac_url)
-        expect(form).to_not be_nil
-        expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+        expect(page.find('.remove-piv')).to_not be_nil
 
         user.reload
         expect(user.x509_dn_uuid).to eq uuid
