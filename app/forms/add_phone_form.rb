@@ -1,3 +1,4 @@
+# :reek:TooManyInstanceVariables
 class AddPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator

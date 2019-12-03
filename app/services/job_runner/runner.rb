@@ -36,9 +36,9 @@ module JobRunner
       unless job_config.is_a?(JobRunner::JobConfiguration)
         raise ArgumentError, 'job_config must be a JobRunner::JobConfiguration'
       end
-
-      if disabled_jobs.include?(job_config.name)
-        Rails.logger.warn("JobRunner: skipping disabled job: #{job_config.name.inspect}")
+      job_name = job_config.name
+      if disabled_jobs.include?(job_name)
+        Rails.logger.warn("JobRunner: skipping disabled job: #{job_name.inspect}")
         return false
       end
 

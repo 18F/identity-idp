@@ -215,4 +215,5 @@ directories:
 exclude_paths:
   - db/migrate
   - spec
+  - lib/deploy/
   - lib/tasks/

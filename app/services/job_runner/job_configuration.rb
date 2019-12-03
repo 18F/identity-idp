@@ -1,3 +1,4 @@
+# :reek:TooManyInstanceVariables
 module JobRunner
   class JobConfiguration
     attr_reader :name
@@ -17,6 +18,8 @@ module JobRunner
     #   runs before the health check should alarm.
     #
     # :reek:ControlParameter
+    # :reek:BooleanParameter
+    # :reek:LongParameterList
     def initialize(name:, interval:, timeout: nil, callback:, health_critical: false,
                    failures_before_alarm: 1)
       @name = name

@@ -43,11 +43,12 @@ class AddPhoneOtpVerificationForm
 
   def create_phone_configuration
     return if duplicate_phone?
+    current_time = Time.zone.now
     user.phone_configurations.create!(
       phone: phone,
       delivery_preference: delivery_method,
-      made_default_at: default_phone ? Time.zone.now : nil,
-      confirmed_at: Time.zone.now,
+      made_default_at: default_phone ? current_time : nil,
+      confirmed_at: current_time,
     )
   end
 

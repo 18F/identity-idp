@@ -3,6 +3,7 @@
 module Upaya
   class UpayaLogFormatter < ::Logger::Formatter
     # This method is invoked when a log event occurs
+    # :reek:FeatureEnvy
     def call(severity, timestamp, progname, msg)
       # If message looks like JSON, print it directly. This is a hack to avoid
       # needing to change the analytics ETL Lambdas that parse the pageview
@@ -20,6 +21,7 @@ module Upaya
 
   class DevelopmentUpayaLogFormatter < UpayaLogFormatter
     # This method is invoked when a log event occurs
+    # :reek:FeatureEnvy
     def call(severity, timestamp, progname, msg)
       # If message contains terminal escapes, print it directly. This is useful
       # in development because rails dev logs contain SQL queries with ANSI

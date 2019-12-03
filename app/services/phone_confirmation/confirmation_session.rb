@@ -1,4 +1,5 @@
 module PhoneConfirmation
+  # :reek:TooManyInstanceVariables
   class ConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method, :default_phone
 

@@ -1,6 +1,7 @@
 # rubocop:disable all
 module JWT
   class Decode
+    # :reek:DuplicateMethodCall
     def verify_signature
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]

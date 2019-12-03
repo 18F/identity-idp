@@ -1,4 +1,6 @@
 module PhoneConfirmation
+  # :reek:InstanceVariableAssumption
+  # :reek:TooManyInstanceVariables
   class OtpSender
     attr_reader :user, :phone_confirmation_session, :context, :telephony_error
 
@@ -13,8 +15,7 @@ module PhoneConfirmation
       otp_rate_limiter.increment
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
 
-      Telephony.send(otp_method_name, otp_method_params)
-      FormResponse.new(success: true, errors: {})
+      send_otp_and_return_form_response
     rescue Telephony::TelephonyError => telephony_error
       handle_telephony_error(telephony_error)
     end
@@ -28,6 +29,11 @@ module PhoneConfirmation
     end
 
     private
+
+    def send_otp_and_return_form_response
+      Telephony.send(otp_method_name, otp_method_params)
+      FormResponse.new(success: true, errors: {})
+    end
 
     def otp_method_name
       if context == :authentication
