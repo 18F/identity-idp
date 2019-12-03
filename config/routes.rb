@@ -210,6 +210,8 @@ Rails.application.routes.draw do
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
 
+    get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
+
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
     get '/profile/verify', to: redirect('/account/verify')
