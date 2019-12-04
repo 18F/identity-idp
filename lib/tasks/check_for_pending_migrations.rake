@@ -4,7 +4,11 @@ namespace :db do
     instance_role_filename = '/etc/login.gov/info/role'
     instance_role = File.exist?(instance_role_filename) &&
                     File.read(instance_role_filename).strip
-    break if instance_role == 'migration'
-    ActiveRecord::Migration.check_pending!(ActiveRecord::Base.connection)
+
+    if instance_role == 'migration'
+      warn('Skipping pending migration check on migration instance')
+    else
+      ActiveRecord::Migration.check_pending!(ActiveRecord::Base.connection)
+    end
   end
 end
