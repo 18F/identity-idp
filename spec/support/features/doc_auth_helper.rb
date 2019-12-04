@@ -239,10 +239,11 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     attach_file 'doc_auth_image', 'app/assets/images/logo.png'
   end
 
-  def assure_id_results_with_result_2
+  def assure_id_results_with_result_2(disposition = '')
     result = DocAuthHelper::ACUANT_RESULTS.dup
     result['Result'] = 2
-    result['Alerts'] = [{ 'Actions': 'Check the document' }]
+    result['Alerts'] = [{ 'Actions' => 'Check the document',
+                          'Disposition' => disposition }]
     result
   end
 

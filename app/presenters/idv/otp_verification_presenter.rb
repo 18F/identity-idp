@@ -25,11 +25,11 @@ module Idv
     private
 
     def phone_number
-      PhoneFormatter.format(idv_session.applicant[:phone])
+      idv_session.user_phone_confirmation_session.phone
     end
 
     def otp_delivery_preference
-      idv_session.phone_confirmation_otp_delivery_method
+      idv_session.user_phone_confirmation_session.delivery_method
     end
   end
 end

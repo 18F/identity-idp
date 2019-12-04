@@ -138,9 +138,9 @@ describe Users::PivCacAuthenticationSetupController do
       let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
 
       describe 'GET index' do
-        it 'redirects to account page' do
+        it 'does not redirect to account page because we allow multiple PIV/CACs' do
           get :new
-          expect(response).to redirect_to(account_url)
+          expect(response).to render_template(:new)
         end
       end
 

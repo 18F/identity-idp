@@ -1,17 +1,16 @@
 module Idv
   class PhoneConfirmationOtpVerificationForm
-    attr_reader :user, :idv_session, :code
+    attr_reader :user, :user_phone_confirmation_session, :code
 
-    def initialize(user:, idv_session:)
+    def initialize(user:, user_phone_confirmation_session:)
       @user = user
-      @idv_session = idv_session
+      @user_phone_confirmation_session = user_phone_confirmation_session
     end
 
     def submit(code:)
       @code = code
       success = code_valid?
       if success
-        idv_session.user_phone_confirmation = true
         clear_second_factor_attempts
       else
         increment_second_factor_attempts
@@ -22,19 +21,8 @@ module Idv
     private
 
     def code_valid?
-      return false if code_expired?
-      code_matches?
-    end
-
-    # Ignore duplicate method call on Time.zone :reek:DuplicateMethodCall
-    def code_expired?
-      sent_at_time = Time.zone.parse(idv_session.phone_confirmation_otp_sent_at)
-      expiration_time = sent_at_time + Figaro.env.otp_valid_for.to_i.minutes
-      Time.zone.now > expiration_time
-    end
-
-    def code_matches?
-      Devise.secure_compare(code, idv_session.phone_confirmation_otp)
+      return false if user_phone_confirmation_session.expired?
+      user_phone_confirmation_session.matches_code?(code)
     end
 
     def clear_second_factor_attempts
@@ -51,8 +39,8 @@ module Idv
 
     def extra_analytics_attributes
       {
-        code_expired: code_expired?,
-        code_matches: code_matches?,
+        code_expired: user_phone_confirmation_session.expired?,
+        code_matches: user_phone_confirmation_session.matches_code?(code),
         second_factor_attempts_count: user.second_factor_attempts_count,
         second_factor_locked_at: user.second_factor_locked_at,
       }

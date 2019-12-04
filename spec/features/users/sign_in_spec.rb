@@ -16,6 +16,7 @@ feature 'Sign in' do
   include SamlAuthHelper
   include SpAuthHelper
   include IdvHelper
+  include DocAuthHelper
 
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
@@ -63,6 +64,13 @@ feature 'Sign in' do
                           subject: 'SomeIgnoredSubject')
 
     expect(current_path).to eq login_piv_cac_did_not_work_path
+  end
+
+  scenario 'user attempts sign in with a PIV/CAC on mobile' do
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    visit root_path
+
+    expect(page).to_not have_link t('account.login.piv_cac')
   end
 
   scenario 'user attempts sign in with piv/cac with no account then creates account' do
@@ -674,6 +682,29 @@ feature 'Sign in' do
 
       visit_idp_from_oidc_sp_with_loa1_prompt_login
       expect(current_path).to eq(bounced_path)
+    end
+  end
+
+  context 'multiple piv cacs' do
+    it 'allows you to sign in with either' do
+      user = create(:user, :signed_up, :with_piv_or_cac)
+      user_id = user.id
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user, 'foo')
+
+      expect(current_url).to eq account_url
+
+      Capybara.reset_session!
+
+      visit new_user_session_path
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user, 'bar')
+
+      expect(current_url).to eq account_url
     end
   end
 

@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 module Idv
   class PhoneStep
     def initialize(idv_session:)
@@ -9,7 +10,7 @@ module Idv
       proof_address
       increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
-      update_idv_session if success
+      handle_successful_proofing_attempt if success
       FormResponse.new(
         success: success, errors: idv_result[:errors],
         extra: extra_analytics_attributes
@@ -34,6 +35,11 @@ module Idv
     def proof_address
       self.idv_result = Idv::Agent.new(applicant).proof(:address)
       add_proofing_cost
+    end
+
+    def handle_successful_proofing_attempt
+      update_idv_session
+      start_phone_confirmation_session
     end
 
     def add_proofing_cost
@@ -77,6 +83,13 @@ module Idv
       idv_session.user_phone_confirmation = phone_matches_user_phone?
       Db::ProofingComponent::Add.call(idv_session.current_user.id, :address_check,
                                       'lexis_nexis_address')
+    end
+
+    def start_phone_confirmation_session
+      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
+        phone: PhoneFormatter.format(applicant[:phone]),
+        delivery_method: :sms,
+      )
     end
 
     def phone_matches_user_phone?
