@@ -9,7 +9,6 @@ describe ServiceProviderRequest do
           issuer: 'foo',
           url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         )
-        warn sp_request
         expect(ServiceProviderRequest.from_uuid('123')).to eq sp_request
       end
 

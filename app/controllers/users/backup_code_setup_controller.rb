@@ -42,6 +42,7 @@ module Users
     def delete
       current_user.backup_code_configurations.destroy_all
       flash[:success] = t('notices.backup_codes_deleted')
+      revoke_remember_device(current_user)
       redirect_to account_url
     end
 
@@ -52,8 +53,16 @@ module Users
     end
 
     def generate_codes
+      revoke_remember_device(current_user) if should_revoke_remember_device_after_adding_codes?
       @codes = generator.generate
       user_session[:backup_codes] = @codes
+    end
+
+    def should_revoke_remember_device_after_adding_codes?
+      # We don't want to revoke remember device if the user is setting up backup codes as their
+      # second MFA
+      return false unless MfaPolicy.new(current_user).sufficient_factors_enabled?
+      true
     end
 
     def set_backup_code_setup_presenter
@@ -69,7 +78,6 @@ module Users
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
       create_user_event(:backup_codes_added)
-      revoke_remember_device(current_user) unless user_session['signing_up']
     end
 
     def generator

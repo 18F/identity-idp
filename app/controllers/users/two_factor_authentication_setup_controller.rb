@@ -15,7 +15,7 @@ module Users
 
     # :reek:TooManyStatements
     def create
-      user_session[:context] = 'confirmation'
+      #user_session[:context] = 'confirmation'
       result = submit_form
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
