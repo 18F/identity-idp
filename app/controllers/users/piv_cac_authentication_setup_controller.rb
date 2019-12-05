@@ -6,9 +6,7 @@ module Users
     include RememberDeviceConcern
 
     before_action :authenticate_user!
-    before_action :confirm_user_authenticated_for_2fa_setup,
-                  except: :redirect_to_piv_cac_service
-    before_action :authorize_piv_cac_setup, only: :new
+    before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
 
     def new
@@ -39,8 +37,14 @@ module Users
 
     def remove_piv_cac
       revoke_remember_device(current_user)
-      attributes = { x509_dn_uuid: nil }
-      UpdateUser.new(user: current_user, attributes: attributes).call
+      UpdateUser.new(user: current_user, attributes: { x509_dn_uuid: nil }).call
+      current_user_id = current_user.id
+      id = params[:id]
+      if id
+        Db::PivCacConfiguration::Delete.call(current_user_id, id.to_i)
+      else
+        Db::PivCacConfiguration::DeleteAll.call(current_user_id)
+      end
     end
 
     def render_prompt
@@ -111,10 +115,6 @@ module Users
       return redirect_to account_url unless piv_cac_enabled? &&
                                             MfaPolicy.new(current_user).
                                             more_than_two_factors_enabled?
-    end
-
-    def authorize_piv_cac_setup
-      redirect_to account_url if piv_cac_enabled?
     end
   end
 end

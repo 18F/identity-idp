@@ -5,10 +5,11 @@ class TwoFactorOptionsPresenter
   attr_reader :current_user, :service_provider
 
   # :reek:BooleanParameter
-  def initialize(current_user, sp)
+  def initialize(current_user, sp, user_agent)
     @current_user = current_user
     @service_provider = sp
     @msg_index = MfaPolicy.new(current_user).retire_personal_key? ? 1 : 0
+    @is_desktop = DeviceDetector.new(user_agent)&.device_type == 'desktop'
   end
 
   def step
@@ -99,6 +100,7 @@ class TwoFactorOptionsPresenter
   end
 
   def piv_cac_option
+    return [] unless @is_desktop
     policy = TwoFactorAuthentication::PivCacPolicy.new(current_user)
     return [] if policy.enabled?
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]

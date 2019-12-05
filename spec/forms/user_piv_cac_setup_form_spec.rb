@@ -38,16 +38,14 @@ describe UserPivCacSetupForm do
       context 'and a user already has a piv/cac associated' do
         let(:user) { create(:user, :with_piv_or_cac) }
 
-        it 'returns FormResponse with success: false' do
+        it 'returns FormResponse with success: true' do
           result = instance_double(FormResponse)
           extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: { type: 'user.piv_cac_associated' },
-                 extra: extra).and_return(result)
+            with(success: true, errors: {}, extra: extra).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
-          expect(form.error_type).to eq 'user.piv_cac_associated'
         end
       end
 

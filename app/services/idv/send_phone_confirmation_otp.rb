@@ -21,13 +21,12 @@ module Idv
       @user_locked_out
     end
 
-    def phone
-      @phone ||= PhoneFormatter.format(idv_session.applicant[:phone])
-    end
-
     private
 
     attr_reader :user, :idv_session
+
+    delegate :user_phone_confirmation_session, to: :idv_session
+    delegate :phone, :code, :delivery_method, to: :user_phone_confirmation_session
 
     def too_many_otp_sends_response
       FormResponse.new(
@@ -46,46 +45,27 @@ module Idv
     end
 
     def otp_rate_limiter
-      @otp_rate_limiter ||= OtpRateLimiter.new(user: user, phone: phone)
+      @otp_rate_limiter ||= OtpRateLimiter.new(
+        user: user,
+        phone: phone,
+      )
     end
 
     def send_otp
-      idv_session.phone_confirmation_otp = GeneratePhoneConfirmationOtp.call
-      idv_session.phone_confirmation_otp_sent_at = Time.zone.now.to_s
-      if otp_delivery_preference == :sms
-        send_sms_otp
-      elsif otp_delivery_preference == :voice
-        send_voice_otp
-      end
+      idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
+      Telephony.send_confirmation_otp(
+        otp: code,
+        to: phone,
+        expiration: Devise.direct_otp_valid_for.to_i / 60,
+        channel: delivery_method,
+      )
       Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
-    end
-
-    def send_sms_otp
-      Telephony.send_confirmation_otp(
-        otp: idv_session.phone_confirmation_otp,
-        to: phone,
-        expiration: Devise.direct_otp_valid_for.to_i / 60,
-        channel: :sms,
-      )
-    end
-
-    def send_voice_otp
-      Telephony.send_confirmation_otp(
-        otp: idv_session.phone_confirmation_otp,
-        to: phone,
-        expiration: Devise.direct_otp_valid_for.to_i / 60,
-        channel: :voice,
-      )
-    end
-
-    def otp_delivery_preference
-      idv_session.phone_confirmation_otp_delivery_method.to_sym
     end
 
     def extra_analytics_attributes
       parsed_phone = Phonelib.parse(phone)
       {
-        otp_delivery_preference: otp_delivery_preference,
+        otp_delivery_preference: delivery_method,
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         rate_limit_exceeded: rate_limit_exceeded?,

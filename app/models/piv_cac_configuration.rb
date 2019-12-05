@@ -1,14 +1,11 @@
-class PivCacConfiguration
-  # This is a wrapping class that lets us interface with the piv/cac configuration in a manner
-  # consistent with phone and webauthn configurations.
-  attr_reader :user
+class PivCacConfiguration < ApplicationRecord
+  belongs_to :user
 
-  def initialize(user)
-    @user = user
-  end
+  validates :user_id, presence: true
+  validates :name, presence: true
 
   def mfa_enabled?
-    user&.x509_dn_uuid.present?
+    x509_dn_uuid.present?
   end
 
   def mfa_confirmed?(proposed_uuid)

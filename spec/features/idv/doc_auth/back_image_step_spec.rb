@@ -66,6 +66,22 @@ shared_examples 'back image step' do |simulate|
       end
     end
 
+    context 'when an error occurs with a friendly message' do
+      FRIENDLY_ERROR_CONFIG['doc_auth'].each do |key, error|
+        it "returns friendly_errors.doc_auth.#{key} I18n value" do
+          allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+            and_return([true, assure_id_results_with_result_2(error)])
+          attach_image
+          click_idv_continue
+
+          unless simulate
+            expect(page).to have_current_path(idv_doc_auth_front_image_step)
+            expect(page).to have_content(I18n.t("friendly_errors.doc_auth.#{key}"))
+          end
+        end
+      end
+    end
+
     it 'throttles calls to acuant and allows attempts after the attempt window' do
       (max_attempts / 2).times do
         attach_image

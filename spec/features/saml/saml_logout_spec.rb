@@ -33,15 +33,8 @@ feature 'SAML logout' do
         expect(xmldoc.issuer_nodeset.length).to eq(1)
         expect(xmldoc.issuer_nodeset[0].content).to eq "https://#{Figaro.env.domain_name}/api/saml"
 
-        # It should contain a SHA256 signature nodeset
-        expect(xmldoc.signature_nodeset.length).to eq(1)
-        expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
-
-        # It should contain a SHA256 digest method nodeset
-        expect(xmldoc.digest_method_nodeset.length).to eq(1)
-        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+        # It should not contain a SHA256 signature nodeset
+        expect(xmldoc.signature_nodeset.length).to eq(0)
 
         # The user should be signed out
         visit account_path

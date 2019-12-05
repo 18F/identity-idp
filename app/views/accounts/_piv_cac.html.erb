@@ -1,0 +1,28 @@
+<div class="clearfix border-top border-blue-light">
+  <div class="p2 col col-12">
+    <div class="col col-6 bold">
+      PIV CAC Cards
+    </div>
+    <div class="right-align col col-6">
+      <div class="btn btn-account-action rounded-lg bg-light-blue">
+        <%= link_to t('forms.buttons.enable'), setup_piv_cac_url %>
+      </div>
+    </div>
+  </div>
+
+  <% MfaContext.new(current_user).piv_cac_configurations.each do |piv_cac_configuration| %>
+    <div class="p2 col col-12 border-top border-blue-light">
+      <div class="col col-8">
+        <div class="col col-12 sm-col-6 account-list-item">
+          <%= piv_cac_configuration.name %>
+        </div>
+        <div class="col col-12 sm-col-6 truncate">
+          <%= PhoneConfigurationDecorator.new(piv_cac_configuration).default_number_message %>
+        </div>
+      </div>
+      <div class="col col-4 right-align">
+        <%= render @view_model.piv_cac_partial, id: piv_cac_configuration.id %>
+      </div>
+    </div>
+  <% end %>
+</div>

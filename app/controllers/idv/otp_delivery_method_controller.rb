@@ -34,7 +34,7 @@ module Idv
     end
 
     def set_idv_phone
-      @idv_phone = PhoneFormatter.format(idv_session.applicant[:phone])
+      @idv_phone = idv_session.user_phone_confirmation_session.phone
     end
 
     def otp_delivery_selection_params
@@ -47,7 +47,7 @@ module Idv
     end
 
     def send_phone_confirmation_otp_and_handle_result
-      save_delivery_preference_in_session
+      save_delivery_preference
       result = send_phone_confirmation_otp
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
       if send_phone_confirmation_otp_rate_limited?
@@ -57,9 +57,14 @@ module Idv
       end
     end
 
-    def save_delivery_preference_in_session
-      idv_session.phone_confirmation_otp_delivery_method =
-        @otp_delivery_selection_form.otp_delivery_preference
+    def save_delivery_preference
+      original_session = idv_session.user_phone_confirmation_session
+      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.new(
+        code: original_session.code,
+        phone: original_session.phone,
+        sent_at: original_session.sent_at,
+        delivery_method: @otp_delivery_selection_form.otp_delivery_preference.to_sym,
+      )
     end
 
     def otp_delivery_selection_form

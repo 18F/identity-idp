@@ -24,7 +24,7 @@
       = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
         class: 'ml1'
 
-- if FeatureManagement.allow_piv_cac_login? && @ial
+- if FeatureManagement.allow_piv_cac_login? && @ial && desktop_device?
   .mxn1.my1
     = link_to t('account.login.piv_cac'), login_piv_cac_url, \
       class: 'px1'

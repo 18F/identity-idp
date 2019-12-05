@@ -28,7 +28,7 @@ es:
       backup_code: Códigos de seguridad personal
       phone: Teléfono
       piv_cac: PIV/CAC
-      webauthn: Clave de seguridad
+      webauthn: Llave de seguridad
     first_factor_enabled: "%{device} se configuró correctamente como un método de
       autenticación."
     header_text: Ingrese su código de seguridad
@@ -67,8 +67,8 @@ es:
         a <strong>%{phone}</strong>. (Solo números de teléfono de América del Norte).
       voice_setup_info_html: Obtenga su código de seguridad a través de una llamada
         telefónica. (Solo números de teléfono de América del Norte).
-      webauthn: Clave de seguridad
-      webauthn_info_html: Use su clave de seguridad para acceder a su cuenta.
+      webauthn: Llave de seguridad
+      webauthn_info_html: Use su llave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
@@ -147,29 +147,32 @@ es:
       cuenta segura. </li></ul>
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
-      auth_app_info_html: Configure una aplicación de autenticación para obtener su
-        código de seguridad sin proporcionar un número de teléfono
+      auth_app_info_html: Obtenga códigos de una aplicación en su teléfono, computadora
+        o tableta
       backup_code: No tengo ninguno de los anteriores
-      backup_code_info_html: Puede utilizar códigos de copia de seguridad. Le daremos
-        10 códigos que deberá guardar en un lugar seguro.
+      backup_code_info_html: Le daremos 10 códigos para usar y guardar en un lugar
+        seguro
       backup_code_only: No tengo ninguno de los anteriores
-      backup_code_only_info_html: Puede usar códigos de respaldo como su único método
-        de autenticación. Le daremos 10 códigos que deberá guardar en un lugar seguro.
+      backup_code_only_info_html: Le daremos 10 códigos para usar y guardar en un
+        lugar seguro. Puede usar códigos de respaldo como su único método de autenticación.
       phone: Teléfono
-      phone_info_html: Obtenga su código de seguridad a través de mensajes de texto
-        / SMS o de una llamada telefónica
-      piv_cac: Empleados del Gobierno
-      piv_cac_info_html: Use su tarjeta PIV / CAC para asegurar su cuenta
+      phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
+        telefónica
+      piv_cac: Identificación de empleado del gobierno
+      piv_cac_info_html: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese
+        su PIN
       second_phone: Segundo telefono
-      second_phone_info_html: Obtenga un código de seguridad por mensaje de texto
-        (SMS) o por llamada a un número de teléfono secundario (uno que no es %{phone})
+      second_phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS)
+        o llamada telefónica a un número de teléfono secundario (uno que no sea %{phone})
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS
       voice: Llamada telefónica
       voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
-      webauthn: Clave de seguridad
-      webauthn_info_html: Use una clave de seguridad para proteger su cuenta
+      webauthn: Llave de seguridad
+      webauthn_info_html: Use una llave de seguridad que tenga. Es un dispositivo
+        físico que se conecta o que está integrado en su computadora o teléfono (a
+        menudo parece una unidad flash USB).
     two_factor_choice_retire_personal_key: Reemplace su clave personal con un método
       de autenticación (obligatorio)
     two_factor_recovery_choice: Configuración del segundo método de autenticación
@@ -178,9 +181,9 @@ es:
     - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
       à votre compte même si vous perdez ou n’avez pas l’autre.
     webauthn_fallback:
-      question: "¿No tienes tu clave de seguridad disponible?"
-    webauthn_header_text: Presenta tu clave de seguridad
+      question: "¿No tienes tu llave de seguridad disponible?"
+    webauthn_header_text: Presenta tu llave de seguridad
     webauthn_verified:
-      header: Clave de seguridad verificada
-      info: Hemos verificado su clave de seguridad. Haga clic en continuar para iniciar
+      header: Llave de seguridad verificada
+      info: Hemos verificado su llave de seguridad. Haga clic en continuar para iniciar
         sesión.

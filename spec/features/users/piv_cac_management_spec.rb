@@ -35,10 +35,7 @@ feature 'PIV/CAC Management' do
                               subject: 'SomeIgnoredSubject')
 
         expect(current_path).to eq account_path
-
-        form = find_form(page, action: disable_piv_cac_url)
-        expect(form).to_not be_nil
-        expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+        expect(page.find('.remove-piv')).to_not be_nil
 
         user.reload
         expect(user.x509_dn_uuid).to eq uuid
@@ -110,32 +107,6 @@ feature 'PIV/CAC Management' do
         end
       end
     end
-
-    context 'with an account not allowed to use piv/cac' do
-      before(:each) do
-        allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy,
-        ).to receive(:available?).and_return(false)
-      end
-
-      scenario "doesn't advertise association of a piv/cac with an account" do
-        stub_piv_cac_service
-
-        sign_in_and_2fa_user(user)
-        visit account_path
-        expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
-      end
-
-      scenario "doesn't allow unassociation of a piv/cac" do
-        stub_piv_cac_service
-
-        user = create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' })
-        sign_in_and_2fa_user(user)
-        visit account_path
-        form = find_form(page, action: disable_piv_cac_url)
-        expect(form).to be_nil
-      end
-    end
   end
 
   context 'with a piv/cac associated' do
@@ -143,12 +114,12 @@ feature 'PIV/CAC Management' do
       create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
     end
 
-    scenario "doesn't allow association of another piv/cac with the account" do
+    scenario 'does allow association of another piv/cac with the account' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
       visit account_path
-      expect(page).not_to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+      expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
     end
 
     scenario 'allows disassociation of the piv/cac' do
@@ -157,15 +128,14 @@ feature 'PIV/CAC Management' do
       sign_in_and_2fa_user(user)
       visit account_path
 
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to_not be_nil
+      expect(page.find('.remove-piv')).to_not be_nil
+      page.find('.remove-piv').click
 
-      form.click_button(t('forms.buttons.disable'))
+      expect(current_path).to eq piv_cac_delete_path
+      click_on t('account.index.piv_cac_confirm_delete')
 
       expect(current_path).to eq account_path
 
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to be_nil
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       user.reload
