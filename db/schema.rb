@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191022134041) do
+ActiveRecord::Schema.define(version: 20191110211632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -270,6 +270,17 @@ ActiveRecord::Schema.define(version: 20191022134041) do
     t.datetime "made_default_at"
     t.index ["user_id", "made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at"
     t.index ["user_id"], name: "index_phone_configurations_on_user_id"
+  end
+
+  create_table "piv_cac_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "x509_dn_uuid", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "created_at"], name: "index_piv_cac_configurations_on_user_id_and_created_at", unique: true
+    t.index ["user_id", "name"], name: "index_piv_cac_configurations_on_user_id_and_name", unique: true
+    t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true
   end
 
   create_table "profiles", force: :cascade do |t|

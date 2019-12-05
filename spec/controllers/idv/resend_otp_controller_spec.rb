@@ -3,9 +3,15 @@ require 'rails_helper'
 describe Idv::ResendOtpController do
   let(:user) { build(:user) }
 
-  let(:phone) { '2255555000' }
+  let(:phone) { '+1 (225) 555-5000' }
   let(:user_phone_confirmation) { false }
-  let(:phone_confirmation_otp_delivery_method) { 'sms' }
+  let(:delivery_method) { 'sms' }
+  let(:user_phone_confirmation_session) do
+    PhoneConfirmation::ConfirmationSession.start(
+      phone: phone,
+      delivery_method: delivery_method,
+    )
+  end
 
   before do
     stub_analytics
@@ -13,20 +19,18 @@ describe Idv::ResendOtpController do
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
-    subject.idv_session.applicant[:phone] = phone
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
-    subject.idv_session.phone_confirmation_otp_delivery_method =
-      phone_confirmation_otp_delivery_method
+    subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
   describe '#create' do
     context 'the user has not selected a delivery method' do
-      let(:phone_confirmation_otp_delivery_method) { nil }
+      let(:user_phone_confirmation_session) { nil }
 
       it 'redirects to otp delivery method selection' do
         post :create
-        expect(response).to redirect_to(idv_otp_delivery_method_path)
+        expect(response).to redirect_to(idv_phone_url)
       end
     end
 

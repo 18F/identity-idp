@@ -295,11 +295,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
-    if MfaPolicy.new(current_user).multiple_factors_enabled?
-      manage_phone_path(locale: locale)
-    else
-      phone_setup_path(locale: locale)
-    end
+    phone_setup_path(locale: locale)
   end
 
   def confirmation_for_phone_change?

@@ -185,9 +185,9 @@ Rails.application.routes.draw do
 
     get '/add/phone' => 'users/phones#add'
     post '/add/phone' => 'users/phones#create'
-    get '/manage/phone' => 'users/phones#edit'
-    match '/manage/phone' => 'users/phones#update', via: %i[patch put]
-    delete '/manage/phone' => 'users/phones#delete'
+    get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
+    match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
+    delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
@@ -209,6 +209,8 @@ Rails.application.routes.draw do
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
+
+    get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')

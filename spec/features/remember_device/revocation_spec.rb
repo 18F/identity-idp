@@ -16,7 +16,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_user(user)
       click_link(
         t('forms.buttons.manage'),
-        href: manage_phone_url(id: user.phone_configurations.first.id),
+        href: manage_phone_path(id: user.phone_configurations.first.id),
       )
       click_on t('forms.phone.buttons.delete')
       first(:link, t('links.sign_out')).click
@@ -47,7 +47,8 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      find("button[type='submit']").click # Delete
+      page.find('.remove-piv').click
+      click_on t('account.index.piv_cac_confirm_delete')
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)

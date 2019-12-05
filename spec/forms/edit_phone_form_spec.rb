@@ -3,19 +3,21 @@ require 'rails_helper'
 describe EditPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
-  let(:user) { build(:user, :signed_up) }
+  let(:user) { create(:user, :signed_up) }
+  let(:phone_configuration) { user.phone_configurations.first }
   let(:params) do
     {
-      otp_delivery_preference: 'sms',
+      delivery_preference: 'voice',
     }
   end
-  subject { EditPhoneForm.new(user, MfaContext.new(user).phone_configurations.first) }
+
+  subject { described_class.new(user, phone_configuration) }
 
   describe '#submit' do
-    context 'when otp_delivery_preference is not voice or sms' do
+    context 'when delivery_preference is not voice or sms' do
       let(:params) do
         {
-          otp_delivery_preference: 'foo',
+          delivery_preference: 'foo',
         }
       end
 
@@ -23,23 +25,36 @@ describe EditPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:otp_delivery_preference].first).
+        expect(result.errors[:delivery_preference].first).
           to eq 'is not included in the list'
       end
     end
 
-    context 'when phone is valid' do
-      it 'includes otp preference in the form response extra' do
+    context 'when delivery_preference is valid' do
+      it 'updates the phone number' do
+        expect(phone_configuration.delivery_preference).to eq('sms')
+
+        result = subject.submit(params)
+        expect(result.success?).to eq(true)
+
+        expect(phone_configuration.reload.delivery_preference).to eq('voice')
+      end
+
+      it 'includes delivery_preference in the form response extra' do
         result = subject.submit(params)
 
-        expect(result.extra).to eq(otp_delivery_preference: params[:otp_delivery_preference])
+        expect(result.extra).to eq(
+          delivery_preference: params[:delivery_preference],
+          make_default_number: true,
+          phone_configuration_id: phone_configuration.id,
+        )
       end
     end
 
-    context 'when otp_delivery_preference is empty' do
+    context 'when delivery_preference is empty' do
       let(:params) do
         {
-          otp_delivery_preference: '',
+          delivery_preference: '',
         }
       end
 
@@ -47,15 +62,49 @@ describe EditPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
-        expect(result.errors[:otp_delivery_preference].first).
+        expect(result.errors[:delivery_preference].first).
           to eq 'is not included in the list'
       end
     end
 
-    it 'revokes the users rememder device sessions' do
-      subject.submit(params)
+    describe 'default phone selection' do
+      before do
+        create(:phone_configuration, user: user, made_default_at: Time.zone.now)
+      end
 
-      expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
+      context 'when the make_default_number param is true' do
+        let(:params) { super().merge(make_default_number: true) }
+
+        it 'makes the phone configuration the default configuration' do
+          expect(user.default_phone_configuration).to_not eq(phone_configuration)
+
+          subject.submit(params)
+
+          expect(user.default_phone_configuration).to eq(phone_configuration)
+        end
+      end
+
+      context 'when the make_default_number param is false' do
+        let(:params) { super().merge(make_default_number: false) }
+
+        it 'does not make the phone configuration the default configuration' do
+          expect(user.default_phone_configuration).to_not eq(phone_configuration)
+
+          subject.submit(params)
+
+          expect(user.default_phone_configuration).to_not eq(phone_configuration)
+        end
+      end
+
+      context 'when the make_default_number param is not present' do
+        it 'does not make the phone configuration the default configuration' do
+          expect(user.default_phone_configuration).to_not eq(phone_configuration)
+
+          subject.submit(params)
+
+          expect(user.default_phone_configuration).to_not eq(phone_configuration)
+        end
+      end
     end
   end
 end

@@ -47,7 +47,7 @@ module Users
     end
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp)
+      TwoFactorOptionsPresenter.new(current_user, current_sp, request.user_agent)
     end
 
     # rubocop:disable Metrics/MethodLength
