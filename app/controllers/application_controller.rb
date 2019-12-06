@@ -157,11 +157,16 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def after_multiple_2fa_sign_up
     if needs_completions_screen?
       sign_up_completed_url
-    elsif current_user.decorate.password_reset_profile.present?
+    elsif user_needs_to_reactivate_account?
       reactivate_account_url
     else
       after_sign_in_path_for(current_user)
     end
+  end
+
+  def user_needs_to_reactivate_account?
+    return false if current_user.decorate.password_reset_profile.blank?
+    sp_session[:ial2] == true
   end
 
   def ga_cookie_client_id

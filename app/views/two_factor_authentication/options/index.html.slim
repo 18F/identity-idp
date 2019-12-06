@@ -26,7 +26,7 @@ p.mt-tiny.mb3 = @presenter.info
 
 br
 - if @presenter.should_display_account_reset_or_cancel_link?
-  - if current_user.decorate.identity_verified?
+  - if current_user.decorate.identity_verified? && !FeatureManagement.disallow_ial2_recovery?
     p = @presenter.reverify_link
   - else
     p = @presenter.account_reset_or_cancel_link

@@ -34,7 +34,7 @@ module Users
     private
 
     def next_step
-      if current_user.decorate.password_reset_profile.present?
+      if user_needs_to_reactivate_account?
         reactivate_account_url
       elsif session[:sp] && user_has_not_visited_any_sp_yet?
         sign_up_completed_url

@@ -70,7 +70,22 @@ describe Users::PersonalKeysController do
     end
 
     context 'user needs to reactive account' do
-      it 'redirects to the reactiveate_profile_path' do
+      it 'redirects to the sign up completed url for ial 1' do
+        controller.session[:sp] = { ial2: false }
+
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+        user.active_profile.deactivate(:password_reset)
+        sign_in user
+
+        patch :update
+
+        expect(response).to redirect_to sign_up_completed_url
+      end
+
+      it 'redirects to the reactivate account url for ial 2' do
+        controller.session[:sp] = { ial2: true }
+
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
         user.active_profile.deactivate(:password_reset)

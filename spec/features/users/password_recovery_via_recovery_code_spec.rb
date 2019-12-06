@@ -47,6 +47,11 @@ feature 'Password recovery via personal key' do
     click_idv_continue
     complete_idv_profile_ok(user, new_password)
     acknowledge_and_confirm_personal_key
+    click_continue
+
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
+
+    visit account_path
 
     expect(page).to have_content(t('headings.account.verified_account'))
     expect(current_path).to eq(account_path)
