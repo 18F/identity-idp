@@ -3,11 +3,14 @@ class UserPivCacSetupForm
   include PivCacFormHelpers
   include RememberDeviceConcern
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type
+  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type, :name
+  attr_reader :name_taken
 
   validates :token, presence: true
   validates :nonce, presence: true
   validates :user, presence: true
+  validates :name, presence: true
+  validate :name_is_unique
 
   def submit
     success = valid? && valid_submission?
@@ -25,7 +28,7 @@ class UserPivCacSetupForm
   def process_valid_submission
     revoke_remember_device(user)
     UpdateUser.new(user: user, attributes: { x509_dn_uuid: x509_dn_uuid }).call
-    Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid)
+    Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid, @name)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
@@ -60,5 +63,11 @@ class UserPivCacSetupForm
     {
       multi_factor_auth_method: 'piv_cac',
     }
+  end
+
+  def name_is_unique
+    return unless PivCacConfiguration.exists?(user_id: @user.id, name: @name)
+    errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+    @name_taken = true
   end
 end

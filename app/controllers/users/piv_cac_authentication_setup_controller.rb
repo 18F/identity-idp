@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 module Users
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
@@ -29,8 +30,14 @@ module Users
     end
 
     def redirect_to_piv_cac_service
-      create_piv_cac_nonce
-      redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+      if good_nickname
+        user_session[:piv_cac_nickname] = params[:name]
+        create_piv_cac_nonce
+        redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+      else
+        flash[:error] = I18n.t('errors.webauthn_setup.unique_name')
+        render_prompt
+      end
     end
 
     private
@@ -75,6 +82,7 @@ module Users
         user: current_user,
         token: params[:token],
         nonce: piv_cac_nonce,
+        name: user_session[:piv_cac_nickname],
       )
     end
 
@@ -106,9 +114,14 @@ module Users
     end
 
     def process_invalid_submission
-      clear_piv_cac_information
-      flash[:error_type] = user_piv_cac_form.error_type
-      redirect_to setup_piv_cac_url
+      if user_piv_cac_form.name_taken
+        flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        render_prompt
+      else
+        clear_piv_cac_information
+        flash[:error_type] = user_piv_cac_form.error_type
+        redirect_to setup_piv_cac_url
+      end
     end
 
     def authorize_piv_cac_disable
@@ -116,5 +129,11 @@ module Users
                                             MfaPolicy.new(current_user).
                                             more_than_two_factors_enabled?
     end
+
+    def good_nickname
+      name = params[:name]
+      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength
