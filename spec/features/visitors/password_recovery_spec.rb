@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'Password Recovery' do
+  include IdvHelper
   include PersonalKeyHelper
 
   context 'user enters valid email in forgot password form', email: true do
@@ -115,7 +116,9 @@ feature 'Password Recovery' do
     end
 
     it 'redirects user to profile after signing back in' do
-      reset_password_and_sign_back_in(@user)
+      fill_in t('forms.passwords.edit.labels.password'), with: 'a real secure password'
+      click_button t('forms.passwords.edit.buttons.submit')
+      fill_in_credentials_and_submit(@user.email, 'a real secure password')
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: @user.reload.direct_otp
       click_button t('forms.buttons.submit.default')

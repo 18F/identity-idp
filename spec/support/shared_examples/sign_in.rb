@@ -107,7 +107,9 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.email)
-    reset_password_and_sign_back_in(user, new_password)
+    fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    click_button t('forms.passwords.edit.buttons.submit')
+    fill_in_credentials_and_submit(user.email, new_password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
@@ -127,7 +129,9 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     visit_idp_from_sp_with_ial2(sp)
     trigger_reset_password_and_click_email_link(user.email)
-    reset_password_and_sign_back_in(user, new_password)
+    fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    click_button t('forms.passwords.edit.buttons.submit')
+    fill_in_credentials_and_submit(user.email, new_password)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: personal_key_for_ial2_user(user, pii))
     click_submit_default
