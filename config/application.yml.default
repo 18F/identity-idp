@@ -150,6 +150,7 @@ development:
   database_username: ''
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
+  disallow_ial2_recovery: 'false'
   doc_auth_exclusive: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
@@ -249,6 +250,7 @@ production:
   database_username:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
+  disallow_ial2_recovery: 'true'
   doc_auth_exclusive: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
@@ -347,6 +349,7 @@ test:
   database_username: ''
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
+  disallow_ial2_recovery: 'false'
   doc_auth_exclusive: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
