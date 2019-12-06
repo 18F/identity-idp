@@ -31,7 +31,7 @@ module SignUp
     def next_step
       if needs_completions_screen?
         sign_up_completed_url
-      elsif current_user.decorate.password_reset_profile.present?
+      elsif user_needs_to_reactivate_account?
         reactivate_account_url
       else
         after_sign_in_path_for(current_user)
