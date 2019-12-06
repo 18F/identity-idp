@@ -97,7 +97,9 @@ describe 'signing in with an MFA method and upgrading personal key to another me
   end
 
   def expect_personal_key_upgrade_screen
-    expect(page).to have_content(t('two_factor_authentication.two_factor_choice_retire_personal_key'))
+    expect(page).to have_content(
+      t('two_factor_authentication.two_factor_choice_retire_personal_key'),
+    )
     expect(page).to have_current_path(two_factor_options_path)
   end
 
