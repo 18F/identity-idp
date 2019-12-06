@@ -85,7 +85,6 @@ es:
         el estado con <a href="https://status.twilio.com/" target='_blank'>nuestro
         proveedor de servicios de mensajes</a>.
       unauthorized_authn_context: Contexto de autenticación no autorizado
-      unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
       usps_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
         otra carta para recibir un nuevo código.

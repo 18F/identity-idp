@@ -47,30 +47,6 @@ describe SamlRequestValidator do
       end
     end
 
-    context 'valid authentication context and unauthorized nameid format' do
-      it 'returns FormResponse with success: false' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-        authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-        allow(FormResponse).to receive(:new)
-        extra = {
-          authn_context: authn_context,
-          service_provider: sp.issuer,
-        }
-        errors = {
-          nameid_format: [t('errors.messages.unauthorized_nameid_format')],
-        }
-
-        SamlRequestValidator.new.call(
-          service_provider: sp,
-          authn_context: authn_context,
-          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-        )
-
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
-      end
-    end
-
     context 'valid authentication context and authorized nameid format for SP' do
       it 'returns FormResponse with success: true' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')

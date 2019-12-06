@@ -84,7 +84,6 @@ en:
         <a href="https://status.twilio.com/" target='_blank'>our messaging service
         provider</a>.
       unauthorized_authn_context: Unauthorized authentication context
-      unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
       usps_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.

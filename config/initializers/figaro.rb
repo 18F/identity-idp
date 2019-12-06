@@ -10,7 +10,6 @@ Figaro.require_keys(
   'enable_usps_verification',
   'exception_recipients',
   'hmac_fingerprinter_key',
-  'issuers_with_email_nameid_format',
   'logins_per_ip_limit',
   'logins_per_ip_period',
   'logins_per_ip_track_only_mode',
