@@ -119,18 +119,22 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def sp_from_sp_session
     sp = ServiceProvider.from_issuer(sp_session[:issuer])
-    sp if sp.is_a? ServiceProvider
+    sp if valid_sp?(sp)
   end
 
   def sp_from_request_id
     sp = ServiceProvider.from_issuer(service_provider_request.issuer)
-    sp if sp.is_a? ServiceProvider
+    sp if valid_sp?(sp)
   end
 
   def sp_from_request_issuer_logout
     return if action_name != 'logout'
     sp = ServiceProvider.from_issuer(saml_request.service_provider.identifier)
-    sp if sp.is_a? ServiceProvider
+    sp if valid_sp?(sp)
+  end
+
+  def valid_sp?(sp)
+    sp.is_a? ServiceProvider
   end
 
   def service_provider_request
