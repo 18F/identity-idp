@@ -71,7 +71,7 @@ describe Users::PersonalKeysController do
 
     context 'user needs to reactive account' do
       it 'redirects to the sign up completed url for ial 1' do
-        controller.session[:sp] = { ial2: true }
+        controller.session[:sp] = { ial2: false }
 
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
