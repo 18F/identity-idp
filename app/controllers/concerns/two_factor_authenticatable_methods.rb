@@ -192,7 +192,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_action_required?
-    decorated_user.password_reset_profile.present? ||
+    user_needs_to_reactivate_account? ||
       @updating_existing_number ||
       !MfaPolicy.new(current_user).sufficient_factors_enabled?
   end
@@ -200,7 +200,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def after_otp_action_url
     if @updating_existing_number
       account_url
-    elsif decorated_user.password_reset_profile.present?
+    elsif user_needs_to_reactivate_account?
       reactivate_account_url
     else
       two_2fa_setup

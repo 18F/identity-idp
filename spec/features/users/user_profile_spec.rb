@@ -160,11 +160,11 @@ feature 'User profile' do
         complete_idv_profile_ok(user)
         click_acknowledge_personal_key
 
-        expect(current_path).to eq(account_path)
+        expect(current_path).to eq(sign_up_completed_path)
 
-        visit account_path
+        click_continue
 
-        expect(page).not_to have_content(t('account.index.reactivation.instructions'))
+        expect(current_url).to start_with('http://localhost:7654/auth/result')
       end
     end
   end
