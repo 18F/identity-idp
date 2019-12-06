@@ -2,7 +2,6 @@ class NewPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
-  include RememberDeviceConcern
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
@@ -20,8 +19,6 @@ class NewPhoneForm
 
     success = valid?
     self.phone = submitted_phone unless success
-
-    revoke_remember_device(user) if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
