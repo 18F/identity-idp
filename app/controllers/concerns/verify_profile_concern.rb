@@ -17,7 +17,7 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.decorate.pending_profile_requires_verification? && sp_session[:ial2]
+    current_user.decorate.pending_profile_requires_verification?
   end
 
   def usps_mail_bounced?
