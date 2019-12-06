@@ -84,6 +84,30 @@ feature 'taking an action that revokes remember device' do
 
       expect_mfa_to_be_required_for_user(user)
     end
+
+    it 'revokes remember device when removed' do
+      user.backup_code_configurations.destroy_all
+      sign_in_with_remember_device_and_sign_out
+
+      sign_in_user(user)
+      click_on t('forms.backup_code.generate')
+      click_continue
+      click_continue
+
+      expect(user.reload.backup_code_configurations).to_not be_empty
+
+      click_link(
+        t('forms.buttons.delete'),
+        href: backup_code_delete_path,
+      )
+      click_on t('account.index.backup_code_confirm_delete')
+
+      expect(user.reload.backup_code_configurations).to be_empty
+
+      first(:link, t('links.sign_out')).click
+
+      expect_mfa_to_be_required_for_user(user)
+    end
   end
 
   def sign_in_with_remember_device_and_sign_out

@@ -150,11 +150,5 @@ describe NewPhoneForm do
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
     end
-
-    it 'revokes the users rememder device sessions' do
-      subject.submit(params)
-
-      expect(user.reload.remember_device_revoked_at).to be_within(1.second).of(Time.zone.now)
-    end
   end
 end

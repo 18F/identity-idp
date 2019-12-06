@@ -1,7 +1,6 @@
 class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
-  include RememberDeviceConcern
 
   attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type
 
@@ -23,7 +22,6 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    revoke_remember_device(user)
     UpdateUser.new(user: user, attributes: { x509_dn_uuid: x509_dn_uuid }).call
     Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid)
     true

@@ -106,12 +106,6 @@ describe Users::PivCacAuthenticationSetupController do
 
             expect(subject.user_session[:decrypted_x509]).to eq json
           end
-
-          it 'resets the rememember device revocation date/time' do
-            get :new, params: { token: good_token }
-            expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
-              be_within(1).of(Time.zone.now.to_i)
-          end
         end
 
         context 'when redirected with an error token' do
