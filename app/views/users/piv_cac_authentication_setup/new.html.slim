@@ -4,10 +4,11 @@
 h1.h3.my0 = @presenter.heading
 .no-spinner
   p.mt-tiny.mb3 = @presenter.description
-  = form_tag(@presenter.piv_cac_service_link) do
+  = form_tag(@presenter.piv_cac_service_link, id:'submit-piv-cac') do
     = label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold'
     = text_field_tag :name, '', required: true, id: 'nickname',
-            class: 'block col-12 field monospace', size: 16, maxlength: 20, 'aria-labelledby': 'totp-label'
+            class: 'block col-12 field monospace', size: 16, maxlength: 20,
+            'aria-labelledby': 'totp-label'
     br
     br
     = submit_tag @presenter.piv_cac_capture_text,
