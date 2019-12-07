@@ -57,11 +57,13 @@ describe Users::PivCacAuthenticationSetupController do
       let(:user) do
         create(:user, :signed_up, with: { phone: '+1 (703) 555-0000' })
       end
+      let(:nickname) { 'Card 1' }
 
       before(:each) do
         allow(PivCacService).to receive(:decode_token).with(good_token) { good_token_response }
         allow(PivCacService).to receive(:decode_token).with(bad_token) { bad_token_response }
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
+        subject.user_session[:piv_cac_nickname] = nickname
       end
 
       let(:nonce) { 'nonce' }
