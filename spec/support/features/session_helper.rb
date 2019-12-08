@@ -582,7 +582,7 @@ module Features
       nonce
     end
 
-    def get_piv_cac_nonce_from_form_action(link)
+    def get_piv_cac_nonce_from_form_action
       go_back = current_path
       click_button t('forms.piv_cac_setup.submit')
       nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
