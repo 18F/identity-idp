@@ -529,13 +529,19 @@ module Features
       click_continue
     end
 
+    def find_piv_cac_form_action
+      element = find('#submit-piv-cac')
+      node = element.native
+      node.attributes['action']
+    end
+
     def set_up_2fa_with_piv_cac
       stub_piv_cac_service
       select_2fa_option('piv_cac')
 
       expect(page).to have_current_path setup_piv_cac_path
 
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+      nonce = get_piv_cac_nonce_from_link(find_piv_cac_form_action)
       visit_piv_cac_service(setup_piv_cac_url,
                             nonce: nonce,
                             uuid: SecureRandom.uuid,
@@ -576,6 +582,14 @@ module Features
     def get_piv_cac_nonce_from_link(link)
       go_back = current_path
       visit link['href']
+      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      visit go_back
+      nonce
+    end
+
+    def get_piv_cac_nonce_from_form_action(link)
+      go_back = current_path
+      click_button t('forms.piv_cac_setup.submit')
       nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
       visit go_back
       nonce

@@ -55,7 +55,7 @@ feature 'Sign in' do
 
   scenario 'user opts to add piv/cac card but gets an error' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+    nonce = get_piv_cac_nonce_from_form_action(find_piv_cac_form_action)
     visit_piv_cac_service(current_url,
                           nonce: nonce,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
@@ -728,5 +728,6 @@ feature 'Sign in' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(current_path).to eq login_add_piv_cac_prompt_path
+    fill_in 'name', with: 'Card 1'
   end
 end
