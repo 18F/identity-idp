@@ -25,9 +25,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
 
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
@@ -49,9 +47,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
                               error: 'certificate.bad')
@@ -66,9 +62,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
                               error: 'certificate.expired')
@@ -97,7 +91,7 @@ feature 'PIV/CAC Management' do
 
           expect(page).to have_current_path(setup_piv_cac_path)
 
-          nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+          nonce = piv_cac_nonce_from_form_action
           visit_piv_cac_service(setup_piv_cac_url,
                                 nonce: nonce,
                                 uuid: SecureRandom.uuid,
