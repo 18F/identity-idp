@@ -30,6 +30,11 @@ module Users
     end
 
     def redirect_to_piv_cac_service
+      create_piv_cac_nonce
+      redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+    end
+
+    def submit_new_piv_cac
       if good_nickname
         user_session[:piv_cac_nickname] = params[:name]
         create_piv_cac_nonce
