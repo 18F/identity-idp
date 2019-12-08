@@ -541,7 +541,8 @@ module Features
 
       expect(page).to have_current_path setup_piv_cac_path
 
-      nonce = get_piv_cac_nonce_from_link(find_piv_cac_form_action)
+      fill_in 'name', with: 'Card 1'
+      nonce = get_piv_cac_nonce_from_form_action(find_piv_cac_form_action)
       visit_piv_cac_service(setup_piv_cac_url,
                             nonce: nonce,
                             uuid: SecureRandom.uuid,
