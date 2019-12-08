@@ -529,12 +529,6 @@ module Features
       click_continue
     end
 
-    def find_piv_cac_form_action
-      element = find('#submit-piv-cac')
-      node = element.native
-      node.attributes['action']
-    end
-
     def set_up_2fa_with_piv_cac
       stub_piv_cac_service
       select_2fa_option('piv_cac')
@@ -542,7 +536,7 @@ module Features
       expect(page).to have_current_path setup_piv_cac_path
 
       fill_in 'name', with: 'Card 1'
-      nonce = get_piv_cac_nonce_from_form_action(find_piv_cac_form_action)
+      nonce = get_piv_cac_nonce_from_form_action
       visit_piv_cac_service(setup_piv_cac_url,
                             nonce: nonce,
                             uuid: SecureRandom.uuid,

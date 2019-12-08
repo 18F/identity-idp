@@ -7,7 +7,7 @@ p.mt2.mb2 == t('instructions.mfa.piv_cac.add_from_sign_in')
 
 .mt3
   .inline-block
-    = form_tag(redirect_to_piv_cac_service_url, id: 'submit-piv-cac') do
+    = form_tag(redirect_to_piv_cac_service_url) do
       = label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold'
       = text_field_tag :name, '', required: true, id: 'nickname',
               class: 'block col-12 field monospace', size: 16, maxlength: 20,
