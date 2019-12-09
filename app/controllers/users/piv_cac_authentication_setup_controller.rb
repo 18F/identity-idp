@@ -1,13 +1,16 @@
 module Users
+  # rubocop:disable Metrics/ClassLength
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
     include MfaSetupConcern
     include RememberDeviceConcern
+    include SecureHeadersConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
+    before_action :apply_secure_headers_override, only: :new
 
     def new
       if params.key?(:token)
@@ -117,4 +120,5 @@ module Users
                                             more_than_two_factors_enabled?
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
