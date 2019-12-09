@@ -9,7 +9,7 @@ feature 'SAML logout' do
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do
-      it 'contains all redirect_uris in content security policy when user is logged out of the IDP' do
+      it 'contains all redirect_uris in CSP when user is logged out of the IDP' do
         sign_in_and_2fa_user(user)
         visit auth_request.create(sp_saml_settings)
         click_continue
@@ -27,7 +27,7 @@ feature 'SAML logout' do
         request = OneLogin::RubySaml::Logoutrequest.new
         visit request.create(settings)
 
-        csp_uris = page.all('input[name="csp_uris"]', :visible => false).first.value
+        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
 
         # contains all redirect_uris in content security policy
         expect(csp_uris).to have_content('http://example.com/')
@@ -35,7 +35,7 @@ feature 'SAML logout' do
         expect(csp_uris).to have_content('http://example.com/logout')
       end
 
-      it 'contains all redirect_uris in content security policy when user is logged in to the IDP' do
+      it 'contains all redirect_uris in CSP when user is logged in to the IDP' do
         sign_in_and_2fa_user(user)
         visit auth_request.create(sp_saml_settings)
         click_continue
@@ -48,7 +48,7 @@ feature 'SAML logout' do
         request = OneLogin::RubySaml::Logoutrequest.new
         visit request.create(settings)
 
-        csp_uris = page.all('input[name="csp_uris"]', :visible => false).first.value
+        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
 
         # contains all redirect_uris in content security policy
         expect(csp_uris).to have_content('http://example.com/')
@@ -56,7 +56,6 @@ feature 'SAML logout' do
         expect(csp_uris).to have_content('http://example.com/logout')
       end
     end
-
 
     context 'the SP implements SLO' do
       it 'logs the user out and redirects to the SP' do
