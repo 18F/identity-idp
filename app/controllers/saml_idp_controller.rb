@@ -93,7 +93,7 @@ class SamlIdpController < ApplicationController
 
     render(
       template: 'saml_idp/shared/saml_post_binding',
-      locals: { action_url: action_url, message: message, type: type },
+      locals: { action_url: action_url, message: message, type: type, csp_uris: csp_uris },
       layout: false,
     )
   end
