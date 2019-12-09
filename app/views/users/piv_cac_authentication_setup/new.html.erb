@@ -1,0 +1,63 @@
+<h1 class='h3 my0'><%= t('titles.piv_cac_login.add') %></h1>
+<p class='mt-tiny mb3'><%= t('headings.piv_cac_login.add') %></p>
+
+<%= form_tag(@presenter.piv_cac_service_link) do %>
+<ul class='list-reset'>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      1
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('instructions.mfa.piv_cac.step_1') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('instructions.mfa.piv_cac.step_1_info') %>
+      </div>
+      <div>
+          <input type="text" name="name" id="nickname" value="" required="required" class="block col-12 field monospace" size="16" maxlength="20" aria-labelledby="totp-label" />
+      </div>
+
+    </div>
+    <br>
+    <br>
+    <hr>
+  </li>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      2
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('instructions.mfa.piv_cac.step_2') %>
+      </div>
+      <br/>
+    </div>
+    <br>
+    <br>
+    <hr>
+  </li>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      3
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('instructions.mfa.piv_cac.step_3') %>
+      </div>
+      <br/>
+      <div>
+        <%== t('instructions.mfa.piv_cac.step_3_info') %>
+      </div>
+      <br/>
+      <input type="submit" name="commit" value="Add PIV/CAC card" class="btn btn-primary activate-spinner" data-disable-with="Add PIV/CAC card" />
+
+    </div>
+  </li>
+</ul>
+<% end %>
+
+<br/>
+
+<%= render 'shared/cancel_or_back_to_options' %>
