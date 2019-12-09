@@ -11,16 +11,15 @@
       <div class='h1 inline-block bold'>
         <%= t('instructions.mfa.piv_cac.step_1') %>
       </div>
-      <br/>
-      <div>
-        <%= t('instructions.mfa.piv_cac.step_1_info') %>
-      </div>
-      <div>
-          <input type="text" name="name" id="nickname" value="" required="required" class="block col-12 field monospace" size="16" maxlength="20" aria-labelledby="totp-label" />
-      </div>
-
+    </div>
+    <br/>
+    <div class='ml4'>
+      <%= t('instructions.mfa.piv_cac.step_1_info') %>
     </div>
     <br>
+    <div class='ml4'>
+      <input type="text" name="name" id="nickname" value="" required="required" class="block col-12 field monospace" size="16" maxlength="20" aria-labelledby="totp-label" />
+    </div>
     <br>
     <hr>
   </li>
@@ -46,13 +45,13 @@
       <div class='h1 inline-block bold'>
         <%= t('instructions.mfa.piv_cac.step_3') %>
       </div>
-      <br/>
+    </div>
+    <div class='ml4'>
       <div>
         <%== t('instructions.mfa.piv_cac.step_3_info') %>
       </div>
       <br/>
       <input type="submit" name="commit" value="Add PIV/CAC card" class="btn btn-primary activate-spinner" data-disable-with="Add PIV/CAC card" />
-
     </div>
   </li>
 </ul>
