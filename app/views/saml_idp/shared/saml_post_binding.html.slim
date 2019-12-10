@@ -13,6 +13,7 @@ html
         p = t('.no_js')
 
         form action=action_url method='POST' id='saml-post-binding'
+          = hidden_field_tag('csp_uris', csp_uris) if Rails.env.test?
           = hidden_field_tag(type, message)
           - if params.key?(:RelayState)
             = hidden_field_tag('RelayState', params[:RelayState])
