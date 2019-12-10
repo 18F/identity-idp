@@ -22,7 +22,7 @@ class ServiceProviderRequestHandler
   attr_reader :url, :session, :protocol_request, :protocol
 
   def ial
-    protocol.ial == ::Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF ? 2 : 1
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(protocol.ial) ? 2 : 1
   end
 
   def current_sp
