@@ -60,7 +60,7 @@ feature 'PIV/CAC Management' do
         fill_in 'name', with: 'Card 1'
         click_button t('forms.piv_cac_setup.submit')
 
-        expect(page).to have_content(I18n.t('errors.webauthn_setup.unique_name'))
+        expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
       end
 
       scenario 'displays error for a bad piv/cac' do

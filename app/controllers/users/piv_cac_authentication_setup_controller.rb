@@ -40,7 +40,7 @@ module Users
         create_piv_cac_nonce
         redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
       else
-        flash[:error] = I18n.t('errors.webauthn_setup.unique_name')
+        flash[:error] = I18n.t('errors.piv_cac_setup.unique_name')
         render_prompt
       end
     end
@@ -120,7 +120,7 @@ module Users
 
     def process_invalid_submission
       if user_piv_cac_form.name_taken
-        flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        flash.now[:error] = t('errors.piv_cac_setup.unique_name')
         render_prompt
       else
         clear_piv_cac_information
