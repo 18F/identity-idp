@@ -96,6 +96,8 @@ fr:
       usps_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
         autre lettre afin d'obtenir un nouveau code.
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
+    piv_cac_setup:
+      unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.

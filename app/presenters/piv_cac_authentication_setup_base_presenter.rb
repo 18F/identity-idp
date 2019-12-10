@@ -15,6 +15,6 @@ class PivCacAuthenticationSetupBasePresenter < SetupPresenter
   end
 
   def piv_cac_service_link
-    redirect_to_piv_cac_service_url
+    submit_new_piv_cac_url
   end
 end

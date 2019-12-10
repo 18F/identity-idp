@@ -25,9 +25,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
 
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
@@ -42,6 +40,29 @@ feature 'PIV/CAC Management' do
         expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
       end
 
+      scenario 'disallows association of a piv/cac with the same name' do
+        stub_piv_cac_service
+
+        sign_in_and_2fa_user(user)
+        visit account_path
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+        nonce = piv_cac_nonce_from_form_action
+
+        visit_piv_cac_service(setup_piv_cac_url,
+                              nonce: nonce,
+                              uuid: uuid,
+                              subject: 'SomeIgnoredSubject')
+
+        expect(current_path).to eq account_path
+
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+        fill_in 'name', with: 'Card 1'
+        click_button t('forms.piv_cac_setup.submit')
+
+        expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
+      end
+
       scenario 'displays error for a bad piv/cac' do
         stub_piv_cac_service
 
@@ -49,9 +70,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
                               error: 'certificate.bad')
@@ -66,9 +85,7 @@ feature 'PIV/CAC Management' do
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        expect(page).to have_link(t('forms.piv_cac_setup.submit'))
-
-        nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+        nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
                               error: 'certificate.expired')
@@ -97,7 +114,7 @@ feature 'PIV/CAC Management' do
 
           expect(page).to have_current_path(setup_piv_cac_path)
 
-          nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+          nonce = piv_cac_nonce_from_form_action
           visit_piv_cac_service(setup_piv_cac_url,
                                 nonce: nonce,
                                 uuid: SecureRandom.uuid,

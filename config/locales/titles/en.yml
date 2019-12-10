@@ -34,7 +34,7 @@ en:
         unverified: PIV/CAC certificate error
       new: Use your PIV/CAC card to secure your account
       piv_cac:
-        already_associated: PIV/CAC in use by another account
+        already_associated: This card has already been added to an account
       token:
         bad: Internal error
         invalid: PIV/CAC certificate error
