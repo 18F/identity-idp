@@ -23,14 +23,14 @@ feature 'cac proofing welcome step' do
   end
 
   it 'does visit directly when user has .mil email' do
-    EmailAddress.create(user_id: user.id, email: 'foo@bar.mil' )
+    EmailAddress.create(user_id: user.id, email: 'foo@bar.mil')
     visit idv_url
 
     expect(page).to have_current_path(idv_cac_proofing_welcome_step)
   end
 
   it 'does visit directly when user has .gov email' do
-    EmailAddress.create(user_id: user.id, email: 'foo@bar.gov' )
+    EmailAddress.create(user_id: user.id, email: 'foo@bar.gov')
     visit idv_url
 
     expect(page).to have_current_path(idv_cac_proofing_welcome_step)
