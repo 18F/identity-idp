@@ -11,11 +11,8 @@ class IdvController < ApplicationController
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url
-    elsif doc_auth_enabled_and_exclusive?
-      redirect_to idv_doc_auth_url
     else
-      analytics.track_event(Analytics::IDV_INTRO_VISIT)
-      redirect_to idv_jurisdiction_url
+      verify_identity
     end
   end
 
@@ -30,6 +27,17 @@ class IdvController < ApplicationController
 
   private
 
+  def verify_identity
+    if proof_with_cac?
+      redirect_to idv_cac_url
+    elsif doc_auth_enabled_and_exclusive?
+      redirect_to idv_doc_auth_url
+    else
+      analytics.track_event(Analytics::IDV_INTRO_VISIT)
+      redirect_to idv_jurisdiction_url
+    end
+  end
+
   def profile_needs_reactivation?
     return unless reactivate_account_session.started?
     confirm_password_reset_profile
@@ -38,6 +46,10 @@ class IdvController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
+  end
+
+  def proof_with_cac?
+    Figaro.env.cac_proofing_enabled == 'true' && Db::EmailAddress::HasGovOrMil.call(current_user)
   end
 
   def doc_auth_enabled_and_exclusive?

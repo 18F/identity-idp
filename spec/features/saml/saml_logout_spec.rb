@@ -8,6 +8,55 @@ feature 'SAML logout' do
   let(:service_provider) { ServiceProvider.from_issuer(sp_saml_settings.issuer) }
 
   context 'with a SAML request' do
+    context 'when logging out from the SP' do
+      it 'contains all redirect_uris in CSP when user is logged out of the IDP' do
+        sign_in_and_2fa_user(user)
+        visit auth_request.create(sp_saml_settings)
+        click_continue
+
+        service_provider = ServiceProvider.from_issuer(sp_saml_settings.issuer)
+        settings = sp_saml_settings.dup
+        settings.name_identifier_value = user.decorate.active_identity_for(service_provider).uuid
+
+        # Sign out of the IDP
+        visit account_path
+        first(:link, t('links.sign_out')).click
+        expect(current_path).to eq root_path
+
+        # SAML logout request
+        request = OneLogin::RubySaml::Logoutrequest.new
+        visit request.create(settings)
+
+        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
+
+        # contains all redirect_uris in content security policy
+        expect(csp_uris).to have_content('http://example.com/')
+        expect(csp_uris).to have_content('http://example.com/auth/result')
+        expect(csp_uris).to have_content('http://example.com/logout')
+      end
+
+      it 'contains all redirect_uris in CSP when user is logged in to the IDP' do
+        sign_in_and_2fa_user(user)
+        visit auth_request.create(sp_saml_settings)
+        click_continue
+
+        service_provider = ServiceProvider.from_issuer(sp_saml_settings.issuer)
+        settings = sp_saml_settings.dup
+        settings.name_identifier_value = user.decorate.active_identity_for(service_provider).uuid
+
+        # SAML logout request
+        request = OneLogin::RubySaml::Logoutrequest.new
+        visit request.create(settings)
+
+        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
+
+        # contains all redirect_uris in content security policy
+        expect(csp_uris).to have_content('http://example.com/')
+        expect(csp_uris).to have_content('http://example.com/auth/result')
+        expect(csp_uris).to have_content('http://example.com/logout')
+      end
+    end
+
     context 'the SP implements SLO' do
       it 'logs the user out and redirects to the SP' do
         sign_in_and_2fa_user(user)
