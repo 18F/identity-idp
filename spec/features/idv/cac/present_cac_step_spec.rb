@@ -25,7 +25,7 @@ feature 'cac proofing present cac step' do
     expect(page.current_path).to eq(idv_cac_proofing_enter_info_step)
   end
 
-  it 'does not proceed to the next page with a bad CAC' do
+  it 'does not proceed to the next page with a bad CAC and allows doc auth' do
     click_link t('forms.buttons.cac')
 
     expect(page.current_url.include?("/\?nonce=")).to eq(true)
@@ -33,5 +33,6 @@ feature 'cac proofing present cac step' do
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
 
     expect(page.current_path).to eq(idv_cac_proofing_present_cac_step)
+    expect(page).to have_link(t('cac_proofing.errors.state_id'), href: idv_doc_auth_path)
   end
 end

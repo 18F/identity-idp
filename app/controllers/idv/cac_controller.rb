@@ -39,7 +39,8 @@ module Idv
     end
 
     def process_cac_fail
-      flash.now[:error] = I18n.t('cac_proofing.errors.does_not_work')
+      link = view_context.link_to(t('cac_proofing.errors.state_id'), idv_doc_auth_path)
+      flash.now[:error] = I18n.t('cac_proofing.errors.does_not_work', link: link)
     end
 
     def flow_session
