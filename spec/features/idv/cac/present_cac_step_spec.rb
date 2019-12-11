@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'cac proofing present cac step' do
   include CacProofingHelper
 
-  let(:decoded_token) { {'dn' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234' } }
+  let(:decoded_token) { { 'dn' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234' } }
   before do
     enable_cac_proofing
     sign_in_and_2fa_user
