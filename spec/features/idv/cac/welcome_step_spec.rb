@@ -35,4 +35,11 @@ feature 'cac proofing welcome step' do
 
     expect(page).to have_current_path(idv_cac_proofing_welcome_step)
   end
+
+  it 'visits directly when a user has a cac' do
+    ::PivCacConfiguration.create!(user_id: user.id, x509_dn_uuid: 'foo', name: 'key1')
+    visit idv_url
+
+    expect(page).to have_current_path(idv_cac_proofing_welcome_step)
+  end
 end
