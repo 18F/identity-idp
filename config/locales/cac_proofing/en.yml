@@ -4,8 +4,8 @@ en:
     buttons:
       get_started: Get started
     errors:
-      does_not_work: Your CAC card could not be processed.  Please try a different
-        card or you can verify using your %{link}.
+      does_not_work: Your CAC could not be processed.  Please try a different CAC
+        or you can verify using your %{link}.
       state_id: state issued ID
     headings:
       enter_info: Enter in your information
