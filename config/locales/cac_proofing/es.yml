@@ -3,6 +3,9 @@ es:
   cac_proofing:
     buttons:
       get_started: Get started
+    errors:
+      does_not_work: Esa tarjeta CAC no se pudo procesar. Por favor, intente con una
+        tarjeta diferente.
     headings:
       enter_info: Enter in your information
       present_cac: Present your CAC card to verify your account
