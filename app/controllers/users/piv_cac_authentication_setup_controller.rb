@@ -1,6 +1,5 @@
 # rubocop:disable Metrics/ClassLength
 module Users
-  # rubocop:disable Metrics/ClassLength
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
@@ -12,6 +11,7 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
     before_action :apply_secure_headers_override, only: :new
+    before_action :cap_piv_cac_count, only: :new
 
     def new
       if params.key?(:token)
@@ -142,7 +142,14 @@ module Users
       name = params[:name]
       name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
     end
+
+    def cap_piv_cac_count
+      redirect_to account_url if Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+    end
+
+    def current_cac_count
+      current_user.piv_cac_configurations.count
+    end
   end
-  # rubocop:enable Metrics/ClassLength
 end
 # rubocop:enable Metrics/ClassLength

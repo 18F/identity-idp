@@ -53,6 +53,9 @@ feature 'PIV/CAC Management' do
         ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
         visit account_path
         expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+
+        visit setup_piv_cac_path
+        expect(current_path).to eq account_path
       end
 
       scenario 'disallows association of a piv/cac with the same name' do
