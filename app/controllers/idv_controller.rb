@@ -49,7 +49,9 @@ class IdvController < ApplicationController
   end
 
   def proof_with_cac?
-    Figaro.env.cac_proofing_enabled == 'true' && Db::EmailAddress::HasGovOrMil.call(current_user)
+    Figaro.env.cac_proofing_enabled == 'true' &&
+      (Db::EmailAddress::HasGovOrMil.call(current_user) ||
+      current_user.piv_cac_configurations.any?)
   end
 
   def doc_auth_enabled_and_exclusive?
