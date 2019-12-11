@@ -4,8 +4,8 @@ es:
     buttons:
       get_started: Get started
     errors:
-      does_not_work: Su tarjeta CAC no pudo ser procesada. Por favor, intente con
-        una tarjeta diferente o puede verificar usando su %{link}.
+      does_not_work: Su CAC no pudo ser procesado. Por favor, intente con un CAC diferente
+        o puede verificar usando su %{link}.
       state_id: identificación emitida por el estado
     headings:
       enter_info: Enter in your information

@@ -4,8 +4,8 @@ fr:
     buttons:
       get_started: Get started
     errors:
-      does_not_work: Votre carte CAC n'a pas pu être traitée. Veuillez essayer une
-        autre carte ou vous pouvez vérifier en utilisant votre %{link}.
+      does_not_work: Votre CAC n'a pas pu être traité. Veuillez essayer un autre CAC
+        ou vous pouvez vérifier en utilisant votre %{link}.
       state_id: identifiant émis par l'état
     headings:
       enter_info: Enter in your information
