@@ -3,6 +3,10 @@ es:
   cac_proofing:
     buttons:
       get_started: Get started
+    errors:
+      does_not_work: Su tarjeta CAC no pudo ser procesada. Por favor, intente con
+        una tarjeta diferente o puede verificar usando su %{link}.
+      state_id: identificación emitida por el estado
     headings:
       enter_info: Enter in your information
       present_cac: Present your CAC card to verify your account
