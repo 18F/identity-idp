@@ -40,6 +40,24 @@ feature 'PIV/CAC Management' do
         expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
       end
 
+      scenario 'disallows add if 2 piv cacs' do
+        stub_piv_cac_service
+        user_id = user.id
+        ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
+
+        sign_in_and_2fa_user(user)
+
+        expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+        visit account_path
+
+        ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+        visit account_path
+        expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+
+        visit setup_piv_cac_path
+        expect(current_path).to eq account_path
+      end
+
       scenario 'disallows association of a piv/cac with the same name' do
         stub_piv_cac_service
 

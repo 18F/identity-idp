@@ -69,6 +69,7 @@ logins_per_ip_period: '60'
 mailer_domain_name: http://localhost:3000
 max_emails_per_account: '12'
 max_mail_events_window_in_days: '30'
+max_piv_cac_per_account: '2'
 min_password_score: '3'
 mx_timeout: '3'
 otp_valid_for: '10'
