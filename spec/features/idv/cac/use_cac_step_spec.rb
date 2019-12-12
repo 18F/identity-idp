@@ -16,7 +16,7 @@ feature 'use cac step' do
     expect(page).to have_content use_cac_content
 
     click_link t('doc_auth.info.use_cac_link')
-    expect(page).to have_current_path(idv_cac_proofing_welcome_step)
+    expect(page).to have_current_path(idv_cac_proofing_choose_method_step)
   end
 
   it 'does not show cac proofing option if cac proofing is disabled' do
