@@ -47,12 +47,19 @@ class ResetPasswordForm
   end
 
   def mark_profile_inactive
-    user.active_profile&.deactivate(:password_reset)
-    Funnel::DocAuth::ResetSteps.call(@user.id)
+    profile = user.active_profile
+    return if profile.blank?
+
+    @profile_deactivated = true
+    profile&.deactivate(:password_reset)
+    Funnel::DocAuth::ResetSteps.call(user.id)
     Db::ProofingComponent::DeleteAll.call(user.id)
   end
 
   def extra_analytics_attributes
-    { user_id: user.uuid }
+    {
+      user_id: user.uuid,
+      profile_deactivated: (@profile_deactivated == true),
+    }
   end
 end

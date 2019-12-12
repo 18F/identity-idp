@@ -7,6 +7,7 @@ module Users
     before_action :init_account_reactivation, only: [:new]
 
     def new
+      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_VISITED)
       @personal_key_form = VerifyPersonalKeyForm.new(
         user: current_user,
         personal_key: '',
@@ -15,7 +16,7 @@ module Users
 
     def create
       result = personal_key_form.submit
-
+      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
       if result.success?
         handle_success(result)
       else
@@ -33,6 +34,7 @@ module Users
     end
 
     def handle_success(result)
+      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION)
       reactivate_account_session.store_decrypted_pii(result.extra[:decrypted_pii])
       redirect_to verify_password_url
     end
