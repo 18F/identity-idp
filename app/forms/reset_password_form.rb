@@ -1,3 +1,4 @@
+# :reek:InstanceVariableAssumption
 class ResetPasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
@@ -46,6 +47,7 @@ class ResetPasswordForm
     UpdateUser.new(user: user, attributes: attributes).call
   end
 
+  # :reek:DuplicateMethodCall
   def mark_profile_inactive
     profile = user.active_profile
     return if profile.blank?
