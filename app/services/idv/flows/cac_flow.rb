@@ -2,6 +2,7 @@ module Idv
   module Flows
     class CacFlow < Flow::BaseFlow
       STEPS = {
+        choose_method: Idv::Steps::Cac::ChooseMethodStep,
         welcome: Idv::Steps::Cac::WelcomeStep,
         present_cac: Idv::Steps::Cac::PresentCacStep,
         enter_info: Idv::Steps::Cac::EnterInfoStep,

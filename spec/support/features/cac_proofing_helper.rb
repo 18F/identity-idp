@@ -1,4 +1,8 @@
 module CacProofingHelper
+  def idv_cac_proofing_choose_method_step
+    idv_cac_step_path(step: :choose_method)
+  end
+
   def idv_cac_proofing_welcome_step
     idv_cac_step_path(step: :welcome)
   end
@@ -23,8 +27,13 @@ module CacProofingHelper
     allow(Figaro.env).to receive(:cac_proofing_enabled).and_return('true')
   end
 
+  def complete_cac_proofing_steps_before_choose_method_step
+    visit idv_cac_proofing_choose_method_step
+  end
+
   def complete_cac_proofing_steps_before_welcome_step
-    visit idv_cac_proofing_welcome_step
+    complete_cac_proofing_steps_before_choose_method_step
+    click_on t('cac_proofing.buttons.use_cac')
   end
 
   def complete_cac_proofing_steps_before_present_cac_step
