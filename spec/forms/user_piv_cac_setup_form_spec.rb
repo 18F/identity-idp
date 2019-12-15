@@ -51,7 +51,7 @@ describe UserPivCacSetupForm do
 
       context 'and a piv/cac is already associated with another user' do
         let(:other_user) { create(:user, :with_piv_or_cac) }
-        let(:x509_dn_uuid) { other_user.x509_dn_uuid }
+        let(:x509_dn_uuid) { other_user.piv_cac_configurations.first.x509_dn_uuid }
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
@@ -66,7 +66,7 @@ describe UserPivCacSetupForm do
         end
 
         context 'when we encounter a race condition between checking and storing' do
-          let(:x509_dn_uuid) { other_user.x509_dn_uuid + 'X' }
+          let(:x509_dn_uuid) { other_user.piv_cac_configurations.first.x509_dn_uuid + 'X' }
 
           it 'returns FormResponse with success: false' do
             allow(user).to receive(:save!).and_raise(PG::UniqueViolation)

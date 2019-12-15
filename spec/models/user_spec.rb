@@ -130,9 +130,10 @@ describe User do
         expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
       end
 
-      it 'is true when the correct valud is provided' do
+      it 'is true when the correct value is provided' do
         expect(
-          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid),
+          MfaContext.new(user).piv_cac_configuration.
+            mfa_confirmed?(user.piv_cac_configurations.first.x509_dn_uuid),
         ).to be_truthy
       end
     end
@@ -317,14 +318,6 @@ describe User do
 
     it 'does not blow up with malformed input' do
       expect(User.find_with_email(foo: 'bar')).to eq(nil)
-    end
-  end
-
-  describe 'x509_dn_uuid' do
-    it 'validates uniqueness' do
-      user = create(:user, :with_piv_or_cac, email: 'test1@test.com')
-
-      expect(user).to validate_uniqueness_of(:x509_dn_uuid).allow_nil
     end
   end
 

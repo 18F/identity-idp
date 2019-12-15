@@ -16,12 +16,12 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     session_info = { piv_cac_nonce: nonce }
     allow(subject).to receive(:user_session).and_return(session_info)
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
-      'uuid' => user.x509_dn_uuid,
+      'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
-      'uuid' => user.x509_dn_uuid + 'X',
+      'uuid' => user.piv_cac_configurations.first.x509_dn_uuid + 'X',
       'subject' => x509_subject + 'X',
       'nonce' => nonce,
     )
@@ -31,7 +31,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
-      'uuid' => user.x509_dn_uuid,
+      'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
       'nonce' => 'bad-' + nonce,
     )
