@@ -94,7 +94,7 @@ class MfaContext
   private
 
   def user_piv_cac_configurations(piv_cac_cfgs, have_one_cfg)
-    return piv_cac_configuration_none if user.blank? || !(user.x509_dn_uuid || have_one_cfg)
+    return piv_cac_configuration_none if user.blank? || !have_one_cfg
     return piv_cac_cfgs if have_one_cfg
     [PivCacConfiguration.new(user_id: user.class == AnonymousUser ? nil : user.id,
                              x509_dn_uuid: user&.x509_dn_uuid, name: '')]

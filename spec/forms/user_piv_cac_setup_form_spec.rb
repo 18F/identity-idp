@@ -32,7 +32,7 @@ describe UserPivCacSetupForm do
         expect(form.submit).to eq result
         user.reload
         expect(TwoFactorAuthentication::PivCacPolicy.new(user).enabled?).to eq true
-        expect(user.x509_dn_uuid).to eq x509_dn_uuid
+        expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq x509_dn_uuid
       end
 
       context 'and a user already has a piv/cac associated' do

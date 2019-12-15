@@ -36,7 +36,7 @@ feature 'PIV/CAC Management' do
         expect(page.find('.remove-piv')).to_not be_nil
 
         user.reload
-        expect(user.x509_dn_uuid).to eq uuid
+        expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq uuid
         expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
       end
 
@@ -156,7 +156,7 @@ feature 'PIV/CAC Management' do
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       user.reload
-      expect(user.x509_dn_uuid).to be_nil
+      expect(user.piv_cac_configurations.first&.x509_dn_uuid).to be_nil
       expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_disabled')
     end
   end
