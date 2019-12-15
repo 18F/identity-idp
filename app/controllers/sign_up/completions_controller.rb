@@ -128,7 +128,7 @@ module SignUp
         birthdate: dob,
         phone: PhoneFormatter.format(pii[:phone].to_s),
         email: email,
-        x509_subject: current_user.x509_dn_uuid,
+        x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
       }
     end
   end
