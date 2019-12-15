@@ -304,7 +304,7 @@ end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_idp_from_sp_with_ial2(sp)
 

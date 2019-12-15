@@ -172,7 +172,7 @@ feature 'PIV/CAC Management' do
       expect(form).to be_nil
 
       user.reload
-      expect(user.x509_dn_uuid).to_not be_nil
+      expect(user.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil
     end
   end
 end
