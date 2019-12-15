@@ -152,7 +152,8 @@ describe User do
       it 'is false when the user x509_dn_uuid value is provided' do
         expect(
           MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(
-            user.piv_cac_configurations.first&.x509_dn_uuid)
+            user.piv_cac_configurations.first&.x509_dn_uuid,
+          ),
         ).to be_falsey
       end
     end
