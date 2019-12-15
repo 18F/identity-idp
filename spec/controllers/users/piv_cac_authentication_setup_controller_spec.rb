@@ -170,7 +170,7 @@ describe Users::PivCacAuthenticationSetupController do
           delete :delete
 
           expect(response).to redirect_to(account_url)
-          expect(user.reload.x509_dn_uuid).to_not be_nil
+          expect(user.reload.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil
         end
       end
     end

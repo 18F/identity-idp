@@ -201,7 +201,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
     visit_piv_cac_service(login_two_factor_piv_cac_path,
-                          uuid: user.x509_dn_uuid,
+                          uuid: user.piv_cac_configurations.first.x509_dn_uuid,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
 
@@ -221,7 +221,7 @@ shared_examples 'signing with while PIV/CAC enabled but no other second factor' 
     fill_in_credentials_and_submit(user.email, user.password)
     nonce = visit_login_two_factor_piv_cac_and_get_nonce
     visit_piv_cac_service(login_two_factor_piv_cac_path,
-                          uuid: user.x509_dn_uuid,
+                          uuid: user.piv_cac_configurations.first.x509_dn_uuid,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                           nonce: nonce)
 
@@ -261,7 +261,7 @@ end
 
 def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
-  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
   visit_idp_from_sp_with_ial1(sp)
 
   click_on t('account.login.piv_cac')
@@ -276,7 +276,7 @@ end
 
 def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-  user.update!(x509_dn_uuid: 'some-uuid-to-identify-account')
+  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_idp_from_sp_with_ial2(sp)
 
