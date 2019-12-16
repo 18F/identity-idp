@@ -60,10 +60,6 @@ class User < ApplicationRecord
     MfaPolicy.new(self).two_factor_enabled?
   end
 
-  def x509_dn_uuid
-    raise NotImplementedError
-  end
-
   def send_two_factor_authentication_code(_code)
     # The two_factor_authentication gem assumes that if a user needs to receive
     # a code, the code should be automatically sent right after Warden signs
