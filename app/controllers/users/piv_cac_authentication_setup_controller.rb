@@ -1,4 +1,5 @@
 module Users
+  # rubocop:disable Metrics/ClassLength
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
@@ -136,4 +137,5 @@ module Users
       name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
