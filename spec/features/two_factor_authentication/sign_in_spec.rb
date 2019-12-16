@@ -235,7 +235,7 @@ feature 'Two Factor Authentication' do
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
       visit_piv_cac_service(login_two_factor_piv_cac_path,
-                            uuid: user.x509_dn_uuid,
+                            uuid: user.piv_cac_configurations.first.x509_dn_uuid,
                             dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
                             nonce: nonce)
       expect(current_path).to eq account_path
@@ -250,7 +250,7 @@ feature 'Two Factor Authentication' do
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
       visit_piv_cac_service(login_two_factor_piv_cac_path,
-                            uuid: user.x509_dn_uuid + 'X',
+                            uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
                             dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path

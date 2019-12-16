@@ -422,7 +422,7 @@ feature 'Sign in' do
     end
 
     context 'when logging in with piv/cac' do
-      it 'throws an exception and does not overwrite User email' do
+      it 'does not overwrite User email' do
         email = 'test@example.com'
         password = 'salty pickles'
 
@@ -433,8 +433,7 @@ feature 'Sign in' do
 
         rotate_attribute_encryption_key_with_invalid_queue
 
-        expect { sign_in_user_with_piv(user) }.
-          to raise_error ActionView::Template::Error, 'unable to decrypt attribute with any key'
+        sign_in_user_with_piv(user)
 
         user = user.reload
         expect(user.encrypted_email).to eq encrypted_email

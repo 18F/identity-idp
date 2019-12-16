@@ -25,7 +25,6 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    UpdateUser.new(user: user, attributes: { x509_dn_uuid: x509_dn_uuid }).call
     Db::PivCacConfiguration::Create.call(user.id, x509_dn_uuid, @name)
     true
   rescue PG::UniqueViolation

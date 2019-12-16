@@ -8,10 +8,6 @@ class PivCacConfiguration < ApplicationRecord
     x509_dn_uuid.present?
   end
 
-  def mfa_confirmed?(proposed_uuid)
-    user && proposed_uuid && user.x509_dn_uuid == proposed_uuid
-  end
-
   def selection_presenters
     if mfa_enabled?
       [TwoFactorAuthentication::PivCacSelectionPresenter.new(self)]

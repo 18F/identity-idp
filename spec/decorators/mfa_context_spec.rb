@@ -12,12 +12,6 @@ describe MfaContext do
       end
     end
 
-    describe '#piv_cac_configuration' do
-      it 'returns a PivCacConfiguration object' do
-        expect(mfa.piv_cac_configuration).to be_a PivCacConfiguration
-      end
-    end
-
     describe '#phone_configurations' do
       it 'is empty' do
         expect(mfa.phone_configurations).to be_empty
@@ -46,9 +40,9 @@ describe MfaContext do
       end
     end
 
-    describe '#piv_cac_configuration' do
-      it 'returns a PivCacConfiguration object' do
-        expect(mfa.piv_cac_configuration).to be_a PivCacConfiguration
+    describe '#piv_cac_configurations' do
+      it 'mirrors the user relationship' do
+        expect(mfa.piv_cac_configurations).to be_empty
       end
     end
 
