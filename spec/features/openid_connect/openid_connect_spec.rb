@@ -56,7 +56,7 @@ describe 'OpenID Connect' do
       expect(current_url).to include('?error=invalid_request')
     end
 
-    it 'auto-allows with a second authorization and sets the correct CSP headers' do
+    it 'auto-allows with a second authorization and includes redirect_uris in CSP headers' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       user = user_with_2fa
 
@@ -77,7 +77,7 @@ describe 'OpenID Connect' do
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
+        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -86,7 +86,7 @@ describe 'OpenID Connect' do
       expect(page.get_rack_session.keys).to include('sp')
     end
 
-    it 'auto-allows and sets the correct CSP headers after an incorrect OTP' do
+    it 'auto-allows and includes redirect_uris in CSP headers after an incorrect OTP' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       user = user_with_2fa
 
@@ -107,14 +107,14 @@ describe 'OpenID Connect' do
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
+        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
 
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
+        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -122,6 +122,33 @@ describe 'OpenID Connect' do
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       expect(page.get_rack_session.keys).to include('sp')
     end
+  end
+
+  it 'logout includes redirect_uris in CSP headers and destroys the session' do
+    id_token = sign_in_get_id_token
+
+    state = SecureRandom.hex
+
+    visit openid_connect_logout_path(
+      post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+      state: state,
+      id_token_hint: id_token,
+      prevent_logout_redirect: true,
+    )
+
+    current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+    expect(current_url_no_port).to include(
+      "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
+    )
+
+    expect(page.response_headers['Content-Security-Policy']).to include(
+      'form-action \'self\' gov.gsa.openidconnect.test://result '\
+      'gov.gsa.openidconnect.test://result/signout',
+    )
+
+    visit account_path
+    expect(page).to_not have_content(t('headings.account.login_info'))
+    expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
   context 'with PCKE', driver: :mobile_rack_test do
