@@ -4,17 +4,30 @@ module SecureHeadersConcern
   def apply_secure_headers_override
     return if stored_url_for_user.blank?
 
-    authorize_params = URIService.params(stored_url_for_user)
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
 
     return unless authorize_form.valid?
 
-    redirect_uri = authorize_params[:redirect_uri]
+    override_csp_with_uris
+  end
 
+  def override_csp_with_uris
     override_content_security_policy_directives(
-      form_action: ["'self'", redirect_uri].compact,
+      form_action: csp_uris,
       preserve_schemes: true,
     )
+  end
+
+  def csp_uris
+    # Returns fully formed CSP array w/"'self'" and redirect_uris
+    SecureHeadersWhitelister.csp_with_sp_redirect_uris(
+      authorize_params[:redirect_uri],
+      decorated_session.sp_redirect_uris,
+    )
+  end
+
+  def authorize_params
+    URIService.params(stored_url_for_user)
   end
 
   private
