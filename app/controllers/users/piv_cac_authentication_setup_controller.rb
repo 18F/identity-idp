@@ -51,7 +51,6 @@ module Users
 
     def remove_piv_cac
       revoke_remember_device(current_user)
-      UpdateUser.new(user: current_user, attributes: { x509_dn_uuid: nil }).call
       current_user_id = current_user.id
       Db::PivCacConfiguration::Delete.call(current_user_id, params[:id].to_i)
     end
