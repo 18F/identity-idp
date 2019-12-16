@@ -89,17 +89,6 @@ class MfaContext
 
   private
 
-  def user_piv_cac_configurations(piv_cac_cfgs, have_one_cfg)
-    return piv_cac_configuration_none if user.blank? || !have_one_cfg
-    return piv_cac_cfgs if have_one_cfg
-    [PivCacConfiguration.new(user_id: user.class == AnonymousUser ? nil : user.id,
-                             x509_dn_uuid: user&.x509_dn_uuid, name: '')]
-  end
-
-  def piv_cac_configuration_none
-    PivCacConfiguration.none
-  end
-
   def personal_key_method_count
     return 0 if Figaro.env.personal_key_retired == 'true'
     (personal_key_configuration.mfa_enabled? ? 1 : 0)
