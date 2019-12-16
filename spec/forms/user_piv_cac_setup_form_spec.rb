@@ -64,23 +64,6 @@ describe UserPivCacSetupForm do
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
         end
-
-        context 'when we encounter a race condition between checking and storing' do
-          let(:x509_dn_uuid) { other_user.piv_cac_configurations.first.x509_dn_uuid + 'X' }
-
-          it 'returns FormResponse with success: false' do
-            allow(user).to receive(:save!).and_raise(PG::UniqueViolation)
-
-            result = instance_double(FormResponse)
-            extra = { multi_factor_auth_method: 'piv_cac' }
-
-            expect(FormResponse).to receive(:new).
-              with(success: false, errors: {}, extra: extra).and_return(result)
-            expect(form.submit).to eq result
-            expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
-            expect(form.error_type).to eq 'piv_cac.already_associated'
-          end
-        end
       end
     end
 
