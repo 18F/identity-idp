@@ -148,7 +148,7 @@ describe Users::PivCacAuthenticationSetupController do
 
         it 'removes the piv/cac association' do
           delete :delete
-          expect(user.reload.x509_dn_uuid).to be_nil
+          expect(user.reload.piv_cac_configurations).to be_empty
         end
 
         it 'resets the remember device revocation date/time' do
