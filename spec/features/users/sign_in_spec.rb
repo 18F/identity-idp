@@ -409,6 +409,8 @@ feature 'Sign in' do
 
         rotate_attribute_encryption_key_with_invalid_queue
 
+        sign_in_user_with_piv(user)
+
         user = user.reload
         expect(user.encrypted_email).to eq encrypted_email
       end
