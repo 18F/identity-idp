@@ -31,11 +31,15 @@ class UserMailer < ActionMailer::Base
   end
 
   def password_changed(email_address, disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
+
     @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
   def phone_added(email_address, disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
+
     @disavowal_token = disavowal_token
     mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
   end
@@ -46,11 +50,15 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_sign_in(email, disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     @disavowal_token = disavowal_token
     mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
   end
 
   def new_device_sign_in(email_address, date, location, disavowal_token)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
+
     @login_date = date
     @login_location = location
     @disavowal_token = disavowal_token
@@ -58,6 +66,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_regenerated(email)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     mail(to: email, subject: t('user_mailer.personal_key_regenerated.subject'))
   end
 
@@ -87,6 +97,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def undeliverable_address(email_address)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
+
     mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
   end
 
@@ -97,10 +109,14 @@ class UserMailer < ActionMailer::Base
   end
 
   def letter_reminder(email)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
   end
 
   def letter_expired(email)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     mail(to: email, subject: t('user_mailer.letter_expired.subject'))
   end
 
@@ -119,16 +135,29 @@ class UserMailer < ActionMailer::Base
   end
 
   def email_added(email)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     mail(to: email, subject: t('user_mailer.email_added.subject'))
   end
 
   def email_deleted(email)
+    return unless email_should_receive_nonessential_notifications?(email)
+
     mail(to: email, subject: t('user_mailer.email_deleted.subject'))
   end
 
   def add_email_associated_with_another_account(email)
     @root_url = root_url(locale: locale_url_param)
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  end
+
+  private
+
+  def email_should_receive_nonessential_notifications?(email)
+    banlist = JSON.parse(Figaro.env.nonessential_email_banlist || '[]')
+    return true if banlist.empty?
+    modified_email = email.gsub(/\+[^@]+@/, '@')
+    !banlist.include?(modified_email)
   end
 end
 # rubocop:enable Metrics/ClassLength
