@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191110211632) do
+ActiveRecord::Schema.define(version: 20191217010300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -461,7 +461,6 @@ ActiveRecord::Schema.define(version: 20191110211632) do
     t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
     t.integer "totp_timestamp"
-    t.string "x509_dn_uuid"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
@@ -471,7 +470,6 @@ ActiveRecord::Schema.define(version: 20191110211632) do
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"
     t.index ["unlock_token"], name: "index_users_on_unlock_token"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
-    t.index ["x509_dn_uuid"], name: "index_users_on_x509_dn_uuid", unique: true
   end
 
   create_table "usps_confirmation_codes", force: :cascade do |t|
