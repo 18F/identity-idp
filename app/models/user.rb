@@ -2,7 +2,7 @@ class User < ApplicationRecord
   include NonNullUuid
 
   devise(
-    :confirmable,
+    #:confirmable,
     :database_authenticatable,
     :recoverable,
     :registerable,
@@ -47,8 +47,6 @@ class User < ApplicationRecord
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
-
-  skip_callback :create, :before, :generate_confirmation_token
 
   attr_accessor :asserted_attributes
 
