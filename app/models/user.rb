@@ -48,8 +48,6 @@ class User < ApplicationRecord
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
 
-  validates :x509_dn_uuid, uniqueness: true, allow_nil: true
-
   skip_callback :create, :before, :generate_confirmation_token
 
   attr_accessor :asserted_attributes

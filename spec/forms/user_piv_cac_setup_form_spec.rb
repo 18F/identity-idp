@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserPivCacSetupForm do
-  let(:form) { described_class.new(user: user, token: token, nonce: nonce) }
+  let(:form) { described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1') }
 
   let(:nonce) { 'nonce' }
   let(:user) { create(:user) }
@@ -32,7 +32,7 @@ describe UserPivCacSetupForm do
         expect(form.submit).to eq result
         user.reload
         expect(TwoFactorAuthentication::PivCacPolicy.new(user).enabled?).to eq true
-        expect(user.x509_dn_uuid).to eq x509_dn_uuid
+        expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq x509_dn_uuid
       end
 
       context 'and a user already has a piv/cac associated' do
@@ -51,7 +51,7 @@ describe UserPivCacSetupForm do
 
       context 'and a piv/cac is already associated with another user' do
         let(:other_user) { create(:user, :with_piv_or_cac) }
-        let(:x509_dn_uuid) { other_user.x509_dn_uuid }
+        let(:x509_dn_uuid) { other_user.piv_cac_configurations.first.x509_dn_uuid }
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
@@ -63,23 +63,6 @@ describe UserPivCacSetupForm do
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
-        end
-
-        context 'when we encounter a race condition between checking and storing' do
-          let(:x509_dn_uuid) { other_user.x509_dn_uuid + 'X' }
-
-          it 'returns FormResponse with success: false' do
-            allow(user).to receive(:save!).and_raise(PG::UniqueViolation)
-
-            result = instance_double(FormResponse)
-            extra = { multi_factor_auth_method: 'piv_cac' }
-
-            expect(FormResponse).to receive(:new).
-              with(success: false, errors: {}, extra: extra).and_return(result)
-            expect(form.submit).to eq result
-            expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
-            expect(form.error_type).to eq 'piv_cac.already_associated'
-          end
         end
       end
     end

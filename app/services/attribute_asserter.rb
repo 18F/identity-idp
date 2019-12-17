@@ -91,7 +91,7 @@ class AttributeAsserter
   end
 
   def ial2_authn_context?
-    authn_context == Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? authn_context
   end
 
   def authn_context

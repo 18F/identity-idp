@@ -10,16 +10,7 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    if form_class == 'PasswordForm'
-      extra = {
-        user_id: '123',
-        request_id_present: false,
-      }
-    elsif form_class == 'ResetPasswordForm'
-      extra = {
-        user_id: '123',
-      }
-    end
+    extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
 
     if %w[PasswordForm ResetPasswordForm].include?(form_class)
@@ -42,16 +33,7 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    if form_class == 'PasswordForm'
-      extra = {
-        user_id: '123',
-        request_id_present: false,
-      }
-    elsif form_class == 'ResetPasswordForm'
-      extra = {
-        user_id: '123',
-      }
-    end
+    extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
 
     if %w[PasswordForm ResetPasswordForm].include?(form_class)
@@ -76,16 +58,8 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    if form_class == 'PasswordForm'
-      extra = {
-        user_id: '123',
-        request_id_present: false,
-      }
-    elsif form_class == 'ResetPasswordForm'
-      extra = {
-        user_id: '123',
-      }
-    end
+
+    extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
 
     if %w[PasswordForm ResetPasswordForm].include?(form_class)
@@ -108,16 +82,7 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    if form_class == 'PasswordForm'
-      extra = {
-        user_id: '123',
-        request_id_present: false,
-      }
-    elsif form_class == 'ResetPasswordForm'
-      extra = {
-        user_id: '123',
-      }
-    end
+    extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
 
     if %w[PasswordForm ResetPasswordForm].include?(form_class)

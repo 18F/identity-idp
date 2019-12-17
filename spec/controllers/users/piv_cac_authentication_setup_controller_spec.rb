@@ -57,11 +57,13 @@ describe Users::PivCacAuthenticationSetupController do
       let(:user) do
         create(:user, :signed_up, with: { phone: '+1 (703) 555-0000' })
       end
+      let(:nickname) { 'Card 1' }
 
       before(:each) do
         allow(PivCacService).to receive(:decode_token).with(good_token) { good_token_response }
         allow(PivCacService).to receive(:decode_token).with(bad_token) { bad_token_response }
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
+        subject.user_session[:piv_cac_nickname] = nickname
       end
 
       let(:nonce) { 'nonce' }
@@ -139,25 +141,27 @@ describe Users::PivCacAuthenticationSetupController do
       end
 
       describe 'DELETE delete' do
+        let(:piv_cac_configuration_id) { user.piv_cac_configurations.first.id }
+
         it 'redirects to account page' do
-          delete :delete
+          delete :delete, params: { id: piv_cac_configuration_id }
           expect(response).to redirect_to(account_url)
         end
 
         it 'removes the piv/cac association' do
-          delete :delete
-          expect(user.reload.x509_dn_uuid).to be_nil
+          delete :delete, params: { id: piv_cac_configuration_id }
+          expect(user.reload.piv_cac_configurations).to be_empty
         end
 
         it 'resets the remember device revocation date/time' do
-          delete :delete
+          delete :delete, params: { id: piv_cac_configuration_id }
           expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
             be_within(1).of(Time.zone.now.to_i)
         end
 
         it 'removes the piv/cac information from the user session' do
           subject.user_session[:decrypted_x509] = {}
-          delete :delete
+          delete :delete, params: { id: piv_cac_configuration_id }
           expect(subject.user_session[:decrypted_x509]).to be_nil
         end
 
@@ -165,10 +169,10 @@ describe Users::PivCacAuthenticationSetupController do
           user.phone_configurations.destroy_all
           user.backup_code_configurations.destroy_all
 
-          delete :delete
+          delete :delete, params: { id: piv_cac_configuration_id }
 
           expect(response).to redirect_to(account_url)
-          expect(user.reload.x509_dn_uuid).to_not be_nil
+          expect(user.reload.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil
         end
       end
     end

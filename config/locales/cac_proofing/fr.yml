@@ -3,13 +3,22 @@ fr:
   cac_proofing:
     buttons:
       get_started: Get started
+      use_cac: Utilisez votre CAC
+      use_doc_auth: Utilisez votre pièce d'identité délivrée par l'État
+    errors:
+      does_not_work: Votre CAC n'a pas pu être traité. Veuillez essayer un autre CAC
+        ou vous pouvez vérifier en utilisant votre %{link}.
+      state_id: identifiant émis par l'état
     headings:
+      choose_method: Comment aimeriez-vous vérifier votre identité?
       enter_info: Enter in your information
       present_cac: Present your CAC card to verify your account
       success: We've verified your information and CAC card.
       verify: Verify your information
       welcome: We need to verify your identity
     info:
+      choose_method: Nous collecterons des informations sur vous en lisant votre identifiant
+        ou CAC émis par l'État.
       present_cac: After clicking "Present CAC" your browser will prompt you for your
         CAC PIN and have you select a certificate.
       welcome: We verify your identity to make sure you are you—not someone pretending

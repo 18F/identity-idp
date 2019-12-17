@@ -17,7 +17,7 @@ describe ResetPasswordForm, type: :model do
 
         errors = { reset_password_token: ['token_expired'] }
 
-        extra = { user_id: '123' }
+        extra = { user_id: '123', profile_deactivated: false }
 
         result = instance_double(FormResponse)
 
@@ -40,7 +40,7 @@ describe ResetPasswordForm, type: :model do
           password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
         }
 
-        extra = { user_id: '123' }
+        extra = { user_id: '123', profile_deactivated: false }
 
         result = instance_double(FormResponse)
 
@@ -57,7 +57,7 @@ describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
         password = 'valid password'
-        extra = { user_id: '123' }
+        extra = { user_id: '123', profile_deactivated: false }
         result = instance_double(FormResponse)
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
@@ -73,7 +73,7 @@ describe ResetPasswordForm, type: :model do
     context 'when both the password and token are invalid' do
       it 'returns a hash with errors' do
         user = build_stubbed(:user, uuid: '123')
-        allow(user).to receive(:reset_password_period_valid).and_return(false)
+        allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
         form = ResetPasswordForm.new(user)
 
@@ -84,7 +84,7 @@ describe ResetPasswordForm, type: :model do
           reset_password_token: ['token_expired'],
         }
 
-        extra = { user_id: '123' }
+        extra = { user_id: '123', profile_deactivated: false }
 
         result = instance_double(FormResponse)
 
@@ -103,13 +103,43 @@ describe ResetPasswordForm, type: :model do
           reset_password_token: ['invalid_token'],
         }
 
-        extra = { user_id: nil }
+        extra = { user_id: nil, profile_deactivated: false }
 
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
         expect(form.submit(password: 'a good and powerful password')).to eq result
+      end
+    end
+
+    context 'when the user has an active profile' do
+      it 'deactivates the profile' do
+        profile = create(:profile, :active, :verified)
+        user = profile.user
+        user.update(reset_password_sent_at: Time.zone.now)
+
+        form = ResetPasswordForm.new(user)
+
+        result = form.submit(password: 'a good and powerful password')
+
+        expect(result.success?).to eq(true)
+        expect(result.extra[:profile_deactivated]).to eq(true)
+        expect(profile.reload.active?).to eq(false)
+      end
+    end
+
+    context 'when the user does not have an active profile' do
+      it 'includes that the profile was not deactivated in the form response' do
+        user = create(:user)
+        user.update(reset_password_sent_at: Time.zone.now)
+
+        form = ResetPasswordForm.new(user)
+
+        result = form.submit(password: 'a good and powerful password')
+
+        expect(result.success?).to eq(true)
+        expect(result.extra[:profile_deactivated]).to eq(false)
       end
     end
 

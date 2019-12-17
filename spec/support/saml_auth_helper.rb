@@ -120,8 +120,24 @@ module SamlAuthHelper
     settings
   end
 
+  def loa3_saml_settings
+    settings = sp1_saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
   def ial2_with_bundle_saml_settings
     settings = ial2_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+    ]
+    settings
+  end
+
+  def loa3_with_bundle_saml_settings
+    settings = loa3_saml_settings
     settings.authn_context = [
       settings.authn_context,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
@@ -207,6 +223,7 @@ module SamlAuthHelper
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
 
+  # :reek:UncommunicativeMethodName, :reek:ControlParameter
   def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       @saml_authn_request = auth_request.create(saml_settings)
@@ -219,6 +236,7 @@ module SamlAuthHelper
     end
   end
 
+  # :reek:UncommunicativeMethodName
   def visit_idp_from_oidc_sp_with_ial1(state: SecureRandom.hex, client_id:, nonce:)
     visit openid_connect_authorize_path(
       client_id: client_id,

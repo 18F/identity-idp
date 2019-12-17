@@ -52,7 +52,7 @@ describe UserPivCacVerificationForm do
 
       context 'and the correct piv/cac is presented' do
         let(:user) { create(:user, :with_piv_or_cac) }
-        let(:x509_dn_uuid) { user.x509_dn_uuid }
+        let(:x509_dn_uuid) { user.piv_cac_configurations.first.x509_dn_uuid }
 
         it 'returns FormResponse with success: true' do
           result = instance_double(FormResponse)

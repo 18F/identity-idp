@@ -54,6 +54,7 @@ module Users
         user: current_user,
         token: params[:token],
         nonce: piv_cac_nonce,
+        name: user_session[:piv_cac_nickname],
       )
     end
 

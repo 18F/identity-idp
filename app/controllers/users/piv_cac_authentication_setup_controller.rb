@@ -4,10 +4,13 @@ module Users
     include PivCacConcern
     include MfaSetupConcern
     include RememberDeviceConcern
+    include SecureHeadersConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
+    before_action :apply_secure_headers_override, only: :new
+    before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
 
     def new
       if params.key?(:token)
@@ -33,18 +36,23 @@ module Users
       redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
     end
 
+    def submit_new_piv_cac
+      if good_nickname
+        user_session[:piv_cac_nickname] = params[:name]
+        create_piv_cac_nonce
+        redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+      else
+        flash[:error] = I18n.t('errors.piv_cac_setup.unique_name')
+        render_prompt
+      end
+    end
+
     private
 
     def remove_piv_cac
       revoke_remember_device(current_user)
-      UpdateUser.new(user: current_user, attributes: { x509_dn_uuid: nil }).call
       current_user_id = current_user.id
-      id = params[:id]
-      if id
-        Db::PivCacConfiguration::Delete.call(current_user_id, id.to_i)
-      else
-        Db::PivCacConfiguration::DeleteAll.call(current_user_id)
-      end
+      Db::PivCacConfiguration::Delete.call(current_user_id, params[:id].to_i)
     end
 
     def render_prompt
@@ -75,6 +83,7 @@ module Users
         user: current_user,
         token: params[:token],
         nonce: piv_cac_nonce,
+        name: user_session[:piv_cac_nickname],
       )
     end
 
@@ -106,15 +115,33 @@ module Users
     end
 
     def process_invalid_submission
-      clear_piv_cac_information
-      flash[:error_type] = user_piv_cac_form.error_type
-      redirect_to setup_piv_cac_url
+      if user_piv_cac_form.name_taken
+        flash.now[:error] = t('errors.piv_cac_setup.unique_name')
+        render_prompt
+      else
+        clear_piv_cac_information
+        flash[:error_type] = user_piv_cac_form.error_type
+        redirect_to setup_piv_cac_url
+      end
     end
 
     def authorize_piv_cac_disable
       return redirect_to account_url unless piv_cac_enabled? &&
                                             MfaPolicy.new(current_user).
                                             more_than_two_factors_enabled?
+    end
+
+    def good_nickname
+      name = params[:name]
+      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
+    end
+
+    def cap_piv_cac_count
+      redirect_to account_url if Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+    end
+
+    def current_cac_count
+      current_user.piv_cac_configurations.count
     end
   end
 end
