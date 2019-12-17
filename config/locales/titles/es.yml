@@ -35,7 +35,7 @@ es:
         unverified: Error de certificado PIV/CAC
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
       piv_cac:
-        already_associated: La PIV/CAC se está usando en otra cuenta
+        already_associated: Esta tarjeta ya ha sido agregada a una cuenta
       token:
         bad: Error interno
         invalid: Error en el certificado PIV/CAC

@@ -1,5 +1,9 @@
 module OpenidConnect
   class LogoutController < ApplicationController
+    include SecureHeadersConcern
+
+    before_action :apply_secure_headers_override, only: [:index]
+
     def index
       @logout_form = OpenidConnectLogoutForm.new(params)
 
@@ -9,7 +13,7 @@ module OpenidConnect
 
       if (redirect_uri = result.extra[:redirect_uri])
         sign_out
-        redirect_to redirect_uri
+        redirect_to redirect_uri unless params['prevent_logout_redirect'] == 'true'
       else
         render :error
       end

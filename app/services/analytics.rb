@@ -147,6 +147,10 @@ class Analytics
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
+  PERSONAL_KEY_REACTIVATION = 'Personal key reactivation: Account reactivated with personal key'.freeze
+  PERSONAL_KEY_REACTIVATION_SIGN_IN = 'Personal key reactivation: Account reactivated with personal key as MFA'.freeze
+  PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'.freeze
+  PERSONAL_KEY_REACTIVATION_VISITED = 'Personal key reactivation: Personal key form visitted'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_SUBMITTED = 'Phone Number Change: Form submitted'.freeze
   PHONE_CHANGE_VIEWED = 'Phone Number Change: Visited'.freeze

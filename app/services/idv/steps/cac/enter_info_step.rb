@@ -2,8 +2,6 @@ module Idv
   module Steps
     module Cac
       class EnterInfoStep < DocAuthBaseStep
-        CAC_FIRST_NAME = 'John'.freeze
-        CAC_LAST_NAME = 'Doe'.freeze
         PII_FIELDS = %i[first_name last_name address1 address2 city state zipcode dob ssn].freeze
 
         def call
@@ -22,8 +20,8 @@ module Idv
 
         def form_submit
           doc_auth_params = params[:doc_auth]
-          doc_auth_params[:first_name] = CAC_FIRST_NAME
-          doc_auth_params[:last_name] = CAC_LAST_NAME
+          doc_auth_params[:first_name] = flow_session['first_name']
+          doc_auth_params[:last_name] = flow_session['last_name']
           Idv::CacForm.new(user: current_user, previous_params: {}).submit(doc_auth_params)
         end
       end

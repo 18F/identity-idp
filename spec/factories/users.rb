@@ -107,7 +107,10 @@ FactoryBot.define do
     end
 
     trait :with_piv_or_cac do
-      x509_dn_uuid { SecureRandom.uuid }
+      after :build do |user|
+        user.save
+        user.piv_cac_configurations.create(x509_dn_uuid: 'helloworld', name: 'My PIV Card')
+      end
     end
 
     trait :with_personal_key do

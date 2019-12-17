@@ -1,15 +1,15 @@
 module OpenidConnect
-  # rubocop:disable Metrics/ClassLength
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include RememberDeviceConcern
     include VerifyProfileConcern
+    include SecureHeadersConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
-    before_action :apply_secure_headers_override, only: [:index]
+    before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
@@ -68,13 +68,6 @@ module OpenidConnect
       )
     end
 
-    def apply_secure_headers_override
-      override_content_security_policy_directives(
-        form_action: ["'self'", authorization_params[:redirect_uri]].compact,
-        preserve_schemes: true,
-      )
-    end
-
     def identity_needs_verification?
       @authorize_form.ial2_requested? && current_user.decorate.identity_not_verified?
     end
@@ -127,5 +120,4 @@ module OpenidConnect
         user_session[:decrypted_pii].blank?
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
