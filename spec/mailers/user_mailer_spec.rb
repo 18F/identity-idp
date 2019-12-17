@@ -3,6 +3,7 @@ require 'rails_helper'
 describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
+  let(:banned_email) { 'banned_email+123abc@gmail.com' }
 
   describe 'email_deleted' do
     let(:mail) { UserMailer.email_deleted('old@email.com') }
@@ -22,6 +23,11 @@ describe UserMailer, type: :mailer do
         t('user_mailer.email_deleted.header', app: APP_NAME),
       )
       expect_email_body_to_have_help_and_contact_links
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      mail = UserMailer.email_deleted(banned_email)
+      expect(mail.to).to eq(nil)
     end
   end
 
@@ -47,6 +53,12 @@ describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      email_address = EmailAddress.new(email: banned_email)
+      mail = UserMailer.password_changed(email_address, disavowal_token: '123abc')
+      expect(mail.to).to eq(nil)
+    end
   end
 
   describe 'personal_key_sign_in' do
@@ -69,6 +81,11 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=asdf1234',
       )
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      mail = UserMailer.personal_key_sign_in(banned_email, disavowal_token: 'asdf1234')
+      expect(mail.to).to eq(nil)
     end
   end
 
@@ -115,6 +132,12 @@ describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      email_address = EmailAddress.new(email: banned_email)
+      mail = UserMailer.new_device_sign_in(email_address, date, location, disavowal_token)
+      expect(mail.to).to eq(nil)
+    end
   end
 
   describe 'personal_key_regenerated' do
@@ -134,6 +157,11 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.personal_key_regenerated.intro'),
       )
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      mail = UserMailer.personal_key_regenerated(banned_email)
+      expect(mail.to).to eq(nil)
     end
   end
 
@@ -187,6 +215,12 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.phone_added.intro', app: APP_NAME),
       )
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      email_address = EmailAddress.new(email: banned_email)
+      mail = UserMailer.phone_added(email_address, disavowal_token: disavowal_token)
+      expect(mail.to).to eq(nil)
     end
   end
 
@@ -343,6 +377,12 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.undeliverable_address.intro')))
     end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      email_address = EmailAddress.new(email: banned_email)
+      mail = UserMailer.undeliverable_address(email_address)
+      expect(mail.to).to eq(nil)
+    end
   end
 
   describe 'doc_auth_desktop_link_to_sp' do
@@ -385,6 +425,11 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.letter_expired.info', link: APP_NAME)))
     end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      mail = UserMailer.letter_expired(banned_email)
+      expect(mail.to).to eq(nil)
+    end
   end
 
   describe 'reminder letter' do
@@ -403,6 +448,11 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      mail = UserMailer.letter_reminder(banned_email)
+      expect(mail.to).to eq(nil)
     end
   end
 
