@@ -2,7 +2,6 @@ class User < ApplicationRecord
   include NonNullUuid
 
   devise(
-    #:confirmable,
     :database_authenticatable,
     :recoverable,
     :registerable,
