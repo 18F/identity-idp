@@ -118,44 +118,6 @@ describe User do
     end
   end
 
-  describe '#confirm_piv_cac?' do
-    context 'when the user has a piv/cac associated' do
-      let(:user) { create(:user, :with_piv_or_cac) }
-
-      it 'is false when a blank is provided' do
-        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?('')).to be_falsey
-      end
-
-      it 'is false when a nil is provided' do
-        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
-      end
-
-      it 'is true when the correct valud is provided' do
-        expect(
-          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid),
-        ).to be_truthy
-      end
-    end
-
-    context 'when the user has no piv/cac associated' do
-      let(:user) { create(:user) }
-
-      it 'is false when a blank is provided' do
-        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?('')).to be_falsey
-      end
-
-      it 'is false when a nil is provided' do
-        expect(MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(nil)).to be_falsey
-      end
-
-      it 'is false when the user x509_dn_uuid value is provided' do
-        expect(
-          MfaContext.new(user).piv_cac_configuration.mfa_confirmed?(user.x509_dn_uuid),
-        ).to be_falsey
-      end
-    end
-  end
-
   context '#two_factor_enabled?' do
     it 'is true when user has a confirmed phone' do
       user = create(:user, :with_phone)
@@ -317,14 +279,6 @@ describe User do
 
     it 'does not blow up with malformed input' do
       expect(User.find_with_email(foo: 'bar')).to eq(nil)
-    end
-  end
-
-  describe 'x509_dn_uuid' do
-    it 'validates uniqueness' do
-      user = create(:user, :with_piv_or_cac, email: 'test1@test.com')
-
-      expect(user).to validate_uniqueness_of(:x509_dn_uuid).allow_nil
     end
   end
 

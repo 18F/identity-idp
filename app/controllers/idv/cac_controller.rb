@@ -13,14 +13,38 @@ module Idv
       analytics_id: Analytics::CAC_PROOFING,
     }.freeze
 
+    private
+
     def render_404_if_disabled
       render_not_found unless Figaro.env.cac_proofing_enabled == 'true'
     end
 
     def cac_callback
-      return unless request.path == idv_cac_step_path(:present_cac) && params[:token]
-      user_session['idv/cac']['Idv::Steps::Cac::PresentCacStep'] = true
+      token = params[:token]
+      return unless request.path == idv_cac_step_path(:present_cac) && token
+      data = PivCacService.decode_token(token)
+      cn_array = PivCac::CnFieldsFromSubject.call(data['dn'])
+      if cn_array.size > 2
+        process_cac_success(cn_array)
+      else
+        process_cac_fail
+      end
+    end
+
+    def process_cac_success(cn_array)
+      flow_session['Idv::Steps::Cac::PresentCacStep'] = true
+      flow_session['first_name'] = cn_array[1]
+      flow_session['last_name'] = cn_array[0]
       redirect_to idv_cac_step_path(:enter_info)
+    end
+
+    def process_cac_fail
+      link = view_context.link_to(t('cac_proofing.errors.state_id'), idv_doc_auth_path)
+      flash.now[:error] = I18n.t('cac_proofing.errors.does_not_work', link: link)
+    end
+
+    def flow_session
+      user_session['idv/cac']
     end
   end
 end

@@ -153,7 +153,9 @@ Rails.application.routes.draw do
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
+    post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
+    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service',
+        as: :redirect_to_piv_cac_service
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'

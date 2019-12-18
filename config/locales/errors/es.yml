@@ -90,6 +90,8 @@ es:
       usps_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
         otra carta para recibir un nuevo código.
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
+    piv_cac_setup:
+      unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
     webauthn_setup:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.

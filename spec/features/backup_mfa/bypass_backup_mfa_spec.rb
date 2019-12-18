@@ -114,7 +114,7 @@ describe 'attempting to bypass backup mfa setup' do
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
       visit_piv_cac_service(login_two_factor_piv_cac_path,
                             nonce: nonce,
-                            uuid: user.x509_dn_uuid,
+                            uuid: user.piv_cac_configurations.first.x509_dn_uuid,
                             subject: 'SomeIgnoredSubject')
     end
 

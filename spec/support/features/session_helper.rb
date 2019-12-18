@@ -71,7 +71,7 @@ module Features
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
       visit_piv_cac_service(current_url,
                             nonce: nonce,
-                            uuid: user.x509_dn_uuid,
+                            uuid: user.piv_cac_configurations.first.x509_dn_uuid,
                             subject: 'SomeIgnoredSubject',
                             error: error)
     end
@@ -83,7 +83,9 @@ module Features
       fill_in_bad_piv_cac_credentials_and_submit
     end
 
-    def fill_in_piv_cac_credentials_and_submit(user, uuid = user.x509_dn_uuid)
+    def fill_in_piv_cac_credentials_and_submit(user,
+                                               uuid = user.
+                                                 piv_cac_configurations&.first&.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
       stub_piv_cac_service
@@ -238,7 +240,7 @@ module Features
       stub_piv_cac_service
       visit_piv_cac_service(
         dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        uuid: user.x509_dn_uuid,
+        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
       )
     end
 
@@ -535,7 +537,7 @@ module Features
 
       expect(page).to have_current_path setup_piv_cac_path
 
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+      nonce = piv_cac_nonce_from_form_action
       visit_piv_cac_service(setup_piv_cac_url,
                             nonce: nonce,
                             uuid: SecureRandom.uuid,
@@ -576,6 +578,15 @@ module Features
     def get_piv_cac_nonce_from_link(link)
       go_back = current_path
       visit link['href']
+      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      visit go_back
+      nonce
+    end
+
+    def piv_cac_nonce_from_form_action
+      go_back = current_path
+      fill_in 'name', with: 'Card 1'
+      click_button t('forms.piv_cac_setup.submit')
       nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
       visit go_back
       nonce

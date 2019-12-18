@@ -18,6 +18,30 @@ feature 'Sign in' do
   include IdvHelper
   include DocAuthHelper
 
+  scenario 'user signs in as ial1 and does not see ial2 help text' do
+    visit_idp_from_sp_with_ial1(:oidc)
+
+    expect(page).to_not have_content t('devise.registrations.start.accordion')
+  end
+
+  scenario 'user signs in as ial2 and does see ial2 help text' do
+    visit_idp_from_sp_with_ial2(:oidc)
+
+    expect(page).to have_content t('devise.registrations.start.accordion')
+  end
+
+  scenario 'user signs in with loa3 request from oidc sp and does see ial2 help text' do
+    visit_idp_from_oidc_sp_with_loa3
+
+    expect(page).to have_content t('devise.registrations.start.accordion')
+  end
+
+  scenario 'user signs in with loa3 request from saml sp and does see ial2 help text' do
+    visit_idp_from_saml_sp_with_loa3
+
+    expect(page).to have_content t('devise.registrations.start.accordion')
+  end
+
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
     link_url = new_user_password_url
@@ -41,7 +65,7 @@ feature 'Sign in' do
 
   scenario 'user opts to add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+    nonce = piv_cac_nonce_from_form_action
     visit_piv_cac_service(current_url,
                           nonce: nonce,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
@@ -55,7 +79,7 @@ feature 'Sign in' do
 
   scenario 'user opts to add piv/cac card but gets an error' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+    nonce = piv_cac_nonce_from_form_action
     visit_piv_cac_service(current_url,
                           nonce: nonce,
                           dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
@@ -398,7 +422,7 @@ feature 'Sign in' do
     end
 
     context 'when logging in with piv/cac' do
-      it 'throws an exception and does not overwrite User email' do
+      it 'does not overwrite User email' do
         email = 'test@example.com'
         password = 'salty pickles'
 
@@ -409,8 +433,7 @@ feature 'Sign in' do
 
         rotate_attribute_encryption_key_with_invalid_queue
 
-        expect { sign_in_user_with_piv(user) }.
-          to raise_error ActionView::Template::Error, 'unable to decrypt attribute with any key'
+        sign_in_user_with_piv(user)
 
         user = user.reload
         expect(user.encrypted_email).to eq encrypted_email
@@ -728,5 +751,6 @@ feature 'Sign in' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(current_path).to eq login_add_piv_cac_prompt_path
+    fill_in 'name', with: 'Card 1'
   end
 end

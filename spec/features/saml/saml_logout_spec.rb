@@ -27,12 +27,11 @@ feature 'SAML logout' do
         request = OneLogin::RubySaml::Logoutrequest.new
         visit request.create(settings)
 
-        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
-
         # contains all redirect_uris in content security policy
-        expect(csp_uris).to have_content('http://example.com/')
-        expect(csp_uris).to have_content('http://example.com/auth/result')
-        expect(csp_uris).to have_content('http://example.com/logout')
+        expect(page.response_headers['Content-Security-Policy']).to include(
+          'form-action \'self\' example.com example.com/ example.com/auth/result '\
+          'example.com/logout',
+        )
       end
 
       it 'contains all redirect_uris in CSP when user is logged in to the IDP' do
@@ -48,12 +47,11 @@ feature 'SAML logout' do
         request = OneLogin::RubySaml::Logoutrequest.new
         visit request.create(settings)
 
-        csp_uris = page.all('input[name="csp_uris"]', visible: false).first.value
-
         # contains all redirect_uris in content security policy
-        expect(csp_uris).to have_content('http://example.com/')
-        expect(csp_uris).to have_content('http://example.com/auth/result')
-        expect(csp_uris).to have_content('http://example.com/logout')
+        expect(page.response_headers['Content-Security-Policy']).to include(
+          'form-action \'self\' example.com example.com/ example.com/auth/result '\
+          'example.com/logout',
+        )
       end
     end
 

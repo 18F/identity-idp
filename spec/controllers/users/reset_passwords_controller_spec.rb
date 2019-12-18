@@ -101,6 +101,7 @@ describe Users::ResetPasswordsController, devise: true do
             reset_password_token: ['token_expired'],
           },
           user_id: user.uuid,
+          profile_deactivated: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -130,6 +131,7 @@ describe Users::ResetPasswordsController, devise: true do
             password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
           },
           user_id: user.uuid,
+          profile_deactivated: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -191,6 +193,7 @@ describe Users::ResetPasswordsController, devise: true do
             success: true,
             errors: {},
             user_id: user.uuid,
+            profile_deactivated: false,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -231,6 +234,7 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
+          profile_deactivated: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -269,6 +273,7 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: {},
           user_id: user.uuid,
+          profile_deactivated: false,
         }
 
         expect(@analytics).to have_received(:track_event).
