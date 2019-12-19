@@ -19,7 +19,7 @@
 # Note that the key name must be capitalized because the gem looks for
 # ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
 # available to ENV as uppercase keys.
-RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
+RACK_TIMEOUT_SERVICE_TIMEOUT: '60'
 
 aamva_cert_enabled: 'true'
 account_reset_token_valid_for_days: '1'
