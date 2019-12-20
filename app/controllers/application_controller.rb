@@ -273,6 +273,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def render_timeout(exception)
     analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
+    NewRelic::Agent.notice_error(exception) if exception.class == Rack::Timeout::RequestTimeoutException
     render template: 'pages/page_took_too_long',
            layout: false, status: :service_unavailable, formats: :html
   end
