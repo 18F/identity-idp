@@ -142,6 +142,16 @@ shared_examples 'back image step' do |simulate|
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
+
+    it 'notifies newrelic when acuant goes over the rack timeout' do
+      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
+        and_raise(Rack::Timeout::RequestTimeoutException.new(nil))
+
+      attach_image
+
+      expect(NewRelic::Agent).to receive(:notice_error) unless simulate
+      click_idv_continue
+    end
   end
 end
 
