@@ -43,6 +43,17 @@ shared_examples 'test credentials' do |simulate|
 
       expect(page).to have_current_path(idv_doc_auth_back_image_step)
     end
+
+    it 'triggers an acuant error' do
+      complete_doc_auth_steps_before_back_image_step
+      enable_test_credentials
+
+      attach_file 'doc_auth_image', 'spec/fixtures/ial2_test_credential_forces_error.yml'
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_back_image_step)
+      expect(page).to have_content(I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'))
+    end
   end
 
   def upload_test_credentials_and_continue
