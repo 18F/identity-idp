@@ -143,7 +143,7 @@ module Idv
       end
 
       def rescue_network_errors
-        Timeout::timeout(Figaro.env.acuant_timeout.to_i) { yield }
+        Timeout::timeout(acuant_timeout) { yield }
       rescue Timeout::Error, Faraday::TimeoutError, Faraday::ConnectionFailed => exception
         NewRelic::Agent.notice_error(exception)
         [
@@ -154,7 +154,7 @@ module Idv
       end
 
       def acuant_timeout
-        Figaro.env
+        Figaro.env.acuant_timeout.to_i
       end
 
       def friendly_failure(message, data)
