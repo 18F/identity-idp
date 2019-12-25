@@ -5,6 +5,8 @@ module Rack
       '/verify/doc_auth/back_image',
       '/verify/doc_auth/mobile_back_image',
       '/verify/capture_doc/capture_mobile_back_image',
+      '/verify/recovery/back_image',
+      '/verify/recovery/mobile_back_image',
     ]
 
     class << self
