@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/ClassLength
+# rubocop:disable Style/ColonMethodCall
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 module Idv
@@ -142,14 +143,18 @@ module Idv
       end
 
       def rescue_network_errors
-        yield
-      rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
+        Timeout::timeout(Figaro.env.acuant_timeout.to_i) { yield }
+      rescue Timeout::Error, Faraday::TimeoutError, Faraday::ConnectionFailed => exception
         NewRelic::Agent.notice_error(exception)
         [
           false,
           I18n.t('errors.doc_auth.acuant_network_error'),
           { acuant_network_error: exception.message },
         ]
+      end
+
+      def acuant_timeout
+        Figaro.env
       end
 
       def friendly_failure(message, data)
@@ -173,4 +178,5 @@ module Idv
     end
   end
 end
+# rubocop:enable Style/ColonMethodCall
 # rubocop:enable Metrics/ClassLength
