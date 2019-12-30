@@ -45,8 +45,8 @@ class MfaContext
     end
   end
 
-  def auth_app_configuration
-    AuthAppConfiguration.new(user)
+  def auth_app_configurations
+    user.auth_app_configurations
   end
 
   def personal_key_configuration
@@ -55,7 +55,7 @@ class MfaContext
 
   def two_factor_configurations
     phone_configurations + webauthn_configurations + backup_code_configurations +
-      piv_cac_configurations + [auth_app_configuration]
+      piv_cac_configurations + auth_app_configurations
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -64,7 +64,7 @@ class MfaContext
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
       piv_cac_configurations.to_a.select(&:mfa_enabled?).count +
-      (auth_app_configuration.mfa_enabled? ? 1 : 0) +
+      auth_app_configurations.to_a.select(&:mfa_enabled?).count +
       personal_key_method_count
   end
   # rubocop:enable Metrics/AbcSize
@@ -79,7 +79,7 @@ class MfaContext
   def phishable_configuration_count
     phone_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
-      (auth_app_configuration.mfa_enabled? ? 1 : 0)
+      auth_app_configurations.to_a.select(&:mfa_enabled?).count
   end
 
   def unphishable_configuration_count
