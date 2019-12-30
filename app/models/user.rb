@@ -39,6 +39,7 @@ class User < ApplicationRecord
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_many :piv_cac_configurations, dependent: :destroy, inverse_of: :user
+  has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
   has_many :devices, dependent: :destroy
