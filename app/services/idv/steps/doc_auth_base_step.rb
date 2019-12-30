@@ -10,7 +10,7 @@ module Idv
 
       def initialize(flow)
         @assure_id = nil
-        @pii_from_test_doc = {}
+        @pii_from_test_doc = nil
         super(flow, :doc_auth)
       end
 
@@ -85,7 +85,7 @@ module Idv
       end
 
       def pii_from_test_doc
-        @pii_from_test_doc ||= YAML.safe_load(image.read)&.[]('document')&.symbolize_keys
+        @pii_from_test_doc ||= YAML.safe_load(image.read)&.[]('document')&.symbolize_keys || {}
       end
 
       def parse_pii(data)
