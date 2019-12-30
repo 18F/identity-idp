@@ -1,14 +1,15 @@
-class AuthAppConfiguration
-  # This is a wrapping class that lets us interface with the auth app configuration in a manner
-  # consistent with phone and webauthn configurations.
-  attr_reader :user
+class AuthAppConfiguration < ApplicationRecord
+  include EncryptableAttribute
 
-  def initialize(user)
-    @user = user
-  end
+  encrypted_attribute(name: :otp_secret_key)
+
+  belongs_to :user
+
+  validates :user_id, presence: true
+  validates :name, presence: true
 
   def mfa_enabled?
-    user&.otp_secret_key.present?
+    otp_secret_key.present?
   end
 
   def selection_presenters

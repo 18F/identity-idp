@@ -87,10 +87,7 @@ module Users
     end
 
     def revoke_otp_secret_key
-      UpdateUser.new(
-        user: current_user,
-        attributes: { otp_secret_key: nil },
-      ).call
+      Db::AuthAppConfiguration::Delete.call(current_user)
     end
 
     def mark_user_as_fully_authenticated
