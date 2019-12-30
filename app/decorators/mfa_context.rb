@@ -46,7 +46,11 @@ class MfaContext
   end
 
   def auth_app_configurations
-    user.auth_app_configurations
+    if user.present?
+      user.auth_app_configurations
+    else
+      AuthAppConfiguration.none
+    end
   end
 
   def personal_key_configuration
