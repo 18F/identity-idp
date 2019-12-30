@@ -130,7 +130,7 @@ FactoryBot.define do
       after :build do |user|
         user.otp_secret_key = otp_secret_key
         user.save
-        user.piv_cac_configurations.create(otp_secret_key: otp_secret_key, name: 'My Auth App')
+        user.auth_app_configurations.create(otp_secret_key: otp_secret_key, name: 'My Auth App')
       end
     end
 
