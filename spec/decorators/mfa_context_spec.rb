@@ -6,9 +6,9 @@ describe MfaContext do
   context 'with no user' do
     let(:user) {}
 
-    describe '#auth_app_configuration' do
-      it 'returns a AuthAppConfiguration object' do
-        expect(mfa.auth_app_configuration).to be_a AuthAppConfiguration
+    describe '#auth_app_configurations' do
+      it 'is empty' do
+        expect(mfa.auth_app_configurations).to be_empty
       end
     end
 
@@ -34,9 +34,9 @@ describe MfaContext do
   context 'with a user' do
     let(:user) { create(:user) }
 
-    describe '#auth_app_configuration' do
-      it 'returns a AuthAppConfiguration object' do
-        expect(mfa.auth_app_configuration).to be_a AuthAppConfiguration
+    describe '#auth_app_configurations' do
+      it 'mirrors the user relationship' do
+        expect(mfa.auth_app_configurations).to be_empty
       end
     end
 
