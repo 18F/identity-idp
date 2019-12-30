@@ -84,7 +84,7 @@ module Idv
       end
 
       def pii_from_test_doc
-        YAML.safe_load(image.read)['document'].symbolize_keys
+        YAML.safe_load(image.read)&.[]('document')&.symbolize_keys || {}
       end
 
       def parse_pii(data)
@@ -96,8 +96,17 @@ module Idv
       end
 
       def assure_id_results
-        return [true, { 'Result' => GOOD_RESULT }] if test_credentials?
+        return assure_id_test_results if test_credentials?
         rescue_network_errors { assure_id.results }
+      end
+
+      def assure_id_test_results
+        friendly_error = pii_from_test_doc&.[](:friendly_error)
+        if friendly_error
+          msg = I18n.t("friendly_errors.doc_auth.#{friendly_error}")
+          return [false, msg] if msg
+        end
+        [true, { 'Result' => GOOD_RESULT }]
       end
 
       def post_back_image
