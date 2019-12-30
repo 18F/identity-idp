@@ -140,7 +140,7 @@ module Idv
       def test_credentials?
         return false unless flow_params
         FeatureManagement.allow_doc_auth_test_credentials? &&
-          ['text/x-yaml', 'text/plain'].include?(image.content_type)
+          ['application/x-yaml', 'text/x-yaml', 'text/plain'].include?(image.content_type)
       end
 
       def throttled_else_increment
