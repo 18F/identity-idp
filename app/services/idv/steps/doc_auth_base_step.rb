@@ -101,7 +101,7 @@ module Idv
       end
 
       def assure_id_test_results
-        friendly_error = pii_from_test_doc&.[](:friendly_error)
+        friendly_error = flow_session[:pii_from_doc]&.[](:friendly_error)
         if friendly_error
           msg = I18n.t("friendly_errors.doc_auth.#{friendly_error}")
           return [false, msg] if msg
