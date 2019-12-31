@@ -27,13 +27,17 @@ shared_examples 'test credentials' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_front_image_step)
     end
 
-    it 'proceeds to the next page after back_image with valid test credentials' do
+    it 'proceeds to ssn then verify pii page after back_image with valid test credentials' do
       complete_doc_auth_steps_before_back_image_step
       enable_test_credentials
 
       upload_test_credentials_and_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
+
+      fill_out_ssn_form_ok
+      click_idv_continue
+      expect(page).to have_content('Jane')
     end
 
     it 'does not proceed to next page from back_image if test credentials are disabled' do

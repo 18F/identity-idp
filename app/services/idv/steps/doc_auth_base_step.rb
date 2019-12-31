@@ -10,6 +10,7 @@ module Idv
 
       def initialize(flow)
         @assure_id = nil
+        @pii_from_test_doc = nil
         super(flow, :doc_auth)
       end
 
@@ -84,7 +85,7 @@ module Idv
       end
 
       def pii_from_test_doc
-        YAML.safe_load(image.read)&.[]('document')&.symbolize_keys || {}
+        @pii_from_test_doc ||= YAML.safe_load(image.read)&.[]('document')&.symbolize_keys || {}
       end
 
       def parse_pii(data)
@@ -140,7 +141,7 @@ module Idv
       def test_credentials?
         return false unless flow_params
         FeatureManagement.allow_doc_auth_test_credentials? &&
-          ['text/x-yaml', 'text/plain'].include?(image.content_type)
+          ['application/x-yaml', 'text/x-yaml', 'text/plain'].include?(image.content_type)
       end
 
       def throttled_else_increment
