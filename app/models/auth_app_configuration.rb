@@ -25,6 +25,10 @@ class AuthAppConfiguration < ApplicationRecord
   end
 
   def self.selection_presenters(set)
-    set.flat_map(&:selection_presenters)
+    if set.any?
+      set.first.selection_presenters
+    else
+      []
+    end
   end
 end

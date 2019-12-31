@@ -1,8 +1,8 @@
 module Db
   module AuthAppConfiguration
     class Create
-      def self.call(user_id, otp_secret_key, name = Time.zone.now.to_s)
-        ::AuthAppConfiguration.create!(user_id: user_id, otp_secret_key: otp_secret_key, name: name)
+      def self.call(user, otp_secret_key, name = Time.zone.now.to_s)
+        user.auth_app_configurations.create(otp_secret_key: otp_secret_key, name: name)
       end
     end
   end
