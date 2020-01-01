@@ -37,7 +37,7 @@ describe 'accounts/show.html.erb' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { create(:user, :signed_up, otp_secret_key: '123') }
+    let(:user) { create(:user, :signed_up, :with_authentication_app) }
 
     before do
       assign(
