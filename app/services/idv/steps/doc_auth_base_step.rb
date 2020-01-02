@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/ClassLength
+# rubocop:disable Style/ColonMethodCall
 # :reek:TooManyMethods
 # :reek:RepeatedConditional
 module Idv
@@ -9,6 +10,7 @@ module Idv
 
       def initialize(flow)
         @assure_id = nil
+        @pii_from_test_doc = nil
         super(flow, :doc_auth)
       end
 
@@ -83,7 +85,7 @@ module Idv
       end
 
       def pii_from_test_doc
-        YAML.safe_load(image.read)['document'].symbolize_keys
+        @pii_from_test_doc ||= YAML.safe_load(image.read)&.[]('document')&.symbolize_keys || {}
       end
 
       def parse_pii(data)
@@ -95,8 +97,17 @@ module Idv
       end
 
       def assure_id_results
-        return [true, { 'Result' => GOOD_RESULT }] if test_credentials?
+        return assure_id_test_results if test_credentials?
         rescue_network_errors { assure_id.results }
+      end
+
+      def assure_id_test_results
+        friendly_error = pii_from_test_doc&.[](:friendly_error)
+        if friendly_error
+          msg = I18n.t("friendly_errors.doc_auth.#{friendly_error}")
+          return [false, msg] if msg
+        end
+        [true, { 'Result' => GOOD_RESULT }]
       end
 
       def post_back_image
@@ -130,7 +141,7 @@ module Idv
       def test_credentials?
         return false unless flow_params
         FeatureManagement.allow_doc_auth_test_credentials? &&
-          ['text/x-yaml', 'text/plain'].include?(image.content_type)
+          ['application/x-yaml', 'text/x-yaml', 'text/plain'].include?(image.content_type)
       end
 
       def throttled_else_increment
@@ -142,14 +153,18 @@ module Idv
       end
 
       def rescue_network_errors
-        yield
-      rescue Faraday::TimeoutError, Faraday::ConnectionFailed => exception
+        Timeout::timeout(acuant_timeout) { yield }
+      rescue Timeout::Error, Faraday::TimeoutError, Faraday::ConnectionFailed => exception
         NewRelic::Agent.notice_error(exception)
         [
           false,
           I18n.t('errors.doc_auth.acuant_network_error'),
           { acuant_network_error: exception.message },
         ]
+      end
+
+      def acuant_timeout
+        Figaro.env.acuant_timeout.to_i
       end
 
       def friendly_failure(message, data)
@@ -173,4 +188,5 @@ module Idv
     end
   end
 end
+# rubocop:enable Style/ColonMethodCall
 # rubocop:enable Metrics/ClassLength
