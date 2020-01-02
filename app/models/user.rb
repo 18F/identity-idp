@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  self.ignored_columns = %w[x509_dn_uuid]
   include NonNullUuid
 
   devise(
