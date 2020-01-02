@@ -108,7 +108,9 @@ describe TwoFactorAuthentication::TotpVerificationController do
         )
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
+        user = subject.current_user
+        user.otp_secret_key = @secret
+        Db::AuthAppConfiguration::Create.call(user, @secret, 'foo')
       end
 
       describe 'when user submits an invalid TOTP' do
