@@ -724,6 +724,31 @@ feature 'Sign in' do
     end
   end
 
+  context 'multiple auth apps' do
+    it 'allows you to sign in with either' do
+      user = create(:user, :signed_up)
+      user_id = user.id
+      Db::AuthAppConfiguration::Create.call(user, 'foo', 'foo')
+      Db::AuthAppConfiguration::Create.call(user, 'bar', 'bar')
+
+      visit new_user_session_path
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in :code, with: generate_totp_code('foo')
+      click_submit_default
+
+      expect(current_url).to eq account_url
+
+      Capybara.reset_session!
+
+      visit new_user_session_path
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in :code, with: generate_totp_code('bar')
+      click_submit_default
+
+      expect(current_url).to eq account_url
+    end
+  end
+
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
     user = create(:user, :signed_up, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
