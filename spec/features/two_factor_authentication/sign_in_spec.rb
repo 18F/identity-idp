@@ -319,10 +319,10 @@ feature 'Two Factor Authentication' do
 
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
-      user = create(:user, :signed_up, :with_authentication_app)
+      user = create(:user, :signed_up)
       user.otp_secret_key = secret
-      user.auth_app_configurations.first.otp_secret_key = secret
       user.save
+      Db::AuthAppConfiguration::Create.call(user, secret, 'foo')
       otp = generate_totp_code(secret)
 
       Timecop.freeze do
