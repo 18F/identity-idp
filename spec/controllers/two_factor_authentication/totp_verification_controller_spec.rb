@@ -9,12 +9,14 @@ describe TwoFactorAuthentication::TotpVerificationController do
       before do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
-        subject.current_user.update(otp_secret_key: @secret)
+        user = subject.current_user
+        user.update(otp_secret_key: @secret)
+        Db::AuthAppConfiguration::Create.call(user, @secret, 'foo')
         cookies['_ga'] = ga_cookie
       end
 
       it 'redirects to the profile' do
-        expect(subject.current_user).to receive(:authenticate_totp).and_return(true)
+        expect(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         post :create, params: { code: generate_totp_code(@secret) }
@@ -106,7 +108,9 @@ describe TwoFactorAuthentication::TotpVerificationController do
         )
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
+        user = subject.current_user
+        user.otp_secret_key = @secret
+        Db::AuthAppConfiguration::Create.call(user, @secret, 'foo')
       end
 
       describe 'when user submits an invalid TOTP' do

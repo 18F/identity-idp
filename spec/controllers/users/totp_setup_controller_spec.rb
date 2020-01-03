@@ -232,8 +232,11 @@ describe Users::TotpSetupController, devise: true do
   describe '#disable' do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
-        user = create(:user, :signed_up, otp_secret_key: 'foo')
-        sign_in user
+        user = create(:user, :signed_up, :with_authentication_app)
+        user.otp_secret_key = 'foo'
+        user.auth_app_configurations.first.otp_secret_key = 'foo'
+        user.save
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
