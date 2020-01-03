@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20191229204109) do
     t.integer "totp_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["encrypted_otp_secret_key"], name: "index_auth_app_configurations_on_encrypted_otp_secret_key", unique: true
     t.index ["user_id", "created_at"], name: "index_auth_app_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
   end

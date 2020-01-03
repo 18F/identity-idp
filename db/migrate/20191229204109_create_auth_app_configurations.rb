@@ -7,7 +7,6 @@ class CreateAuthAppConfigurations < ActiveRecord::Migration[5.1]
       t.integer :totp_timestamp
       t.timestamps
       t.index [:user_id, :created_at], unique: true
-      t.index [:encrypted_otp_secret_key], unique: true
       t.index [:user_id, :name], unique: true
     end
   end
