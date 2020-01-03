@@ -56,14 +56,36 @@ module PivCacService
 
     def token_decoded(token)
       return decode_test_token(token) if token.start_with?('TEST:')
-
       return { 'error' => 'service.disabled' } if FeatureManagement.identity_pki_disabled?
+      res = token_response(token)
+      decode_token_response(res)
+    end
 
-      uri = URI(piv_cac_verify_token_link)
-      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+    def token_response(token)
+      return localhost_verify_token(token) if Rails.env.development?
+      verify_token(token)
+    end
+
+    def verify_token(token)
+      Net::HTTP.start(verify_token_uri.hostname,
+                      verify_token_uri.port, use_ssl:
+                      verify_token_uri.scheme == 'https') do |http|
         http.request(decode_request(uri, token))
       end
-      decode_token_response(res)
+    end
+
+    def localhost_verify_token(token)
+      http = Net::HTTP.new(verify_token_uri.host, verify_token_uri.port)
+      http.use_ssl = true
+      http.ssl_version = :TLSv1_2
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.start do |post|
+        post.request(decode_request(verify_token_uri, token))
+      end
+    end
+
+    def verify_token_uri
+      URI(piv_cac_verify_token_link)
     end
 
     def decode_request(uri, token)
