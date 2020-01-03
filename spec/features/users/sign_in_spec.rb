@@ -50,13 +50,6 @@ feature 'Sign in' do
       to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
-  scenario 'user cannot sign in with an unregistered piv/cac card' do
-    user = build(:user, x509_dn_uuid: 'unknown-pivcac-uuid')
-    signin_with_piv(user)
-
-    expect(current_path).to eq login_piv_cac_account_not_found_path
-  end
-
   scenario 'user opts to not add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     click_on t('forms.piv_cac_setup.no_thanks')
