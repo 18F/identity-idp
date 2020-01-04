@@ -5,11 +5,12 @@ class TotpSetupForm
 
   attr_reader :name_taken
 
-  def initialize(user, secret, code, name = Time.zone.now.to_s)
+  def initialize(user, secret, code, name = nil)
     @user = user
     @secret = secret
     @code = code.strip
     @name = name.strip
+    @name = Time.zone.now.to_s if @name.blank?
   end
 
   def submit
