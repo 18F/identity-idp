@@ -11,8 +11,6 @@ module Users
     before_action :apply_secure_headers_override
 
     def new
-      return redirect_to account_url if current_user.totp_enabled?
-
       store_totp_secret_in_session
       track_event
 
