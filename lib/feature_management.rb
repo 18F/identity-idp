@@ -117,4 +117,8 @@ class FeatureManagement
   def self.usps_upload_enabled?
     Figaro.env.usps_upload_enabled == 'true'
   end
+
+  def self.identity_pki_local_dev?
+    Figaro.env.identity_pki_local_dev == 'true'
+  end
 end

@@ -94,6 +94,38 @@ describe PivCacService do
         end
       end
 
+      describe 'when configured to contact piv_cac service for local development' do
+        before(:each) do
+          allow(Figaro.env).to receive(:identity_pki_local_dev) { 'true' }
+          allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(Figaro.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
+        end
+
+        let!(:request) do
+          stub_request(:post, 'localhost:8443').
+            with(
+              body: 'token=foo',
+              headers: { 'Authentication' => /^hmac\s+:.+:.+$/ },
+            ).
+            to_return(
+              status: [200, 'Ok'],
+              body: '{"subject":"dn","uuid":"uuid"}',
+            )
+        end
+
+        it 'sends the token to the target service' do
+          PivCacService.decode_token('foo')
+          expect(request).to have_been_requested.once
+        end
+
+        it 'returns the decoded JSON from the target service' do
+          expect(PivCacService.decode_token('foo')).to eq(
+            'subject' => 'dn',
+            'uuid' => 'uuid',
+          )
+        end
+      end
+
       describe 'when configured to contact remote service' do
         before(:each) do
           allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }

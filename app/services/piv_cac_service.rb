@@ -62,7 +62,7 @@ module PivCacService
     end
 
     def token_response(token)
-      return localhost_verify_token(token) if Rails.env.development?
+      return localhost_verify_token(token) if FeatureManagement.identity_pki_local_dev?
       verify_token(token)
     end
 
@@ -76,7 +76,7 @@ module PivCacService
 
     def localhost_verify_token(token)
       http = Net::HTTP.new(verify_token_uri.host, verify_token_uri.port)
-      http.use_ssl = true
+      http.use_ssl = true if Rails.env.development?
       http.ssl_version = :TLSv1_2
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http.start do |post|
