@@ -70,7 +70,7 @@ module PivCacService
       Net::HTTP.start(verify_token_uri.hostname,
                       verify_token_uri.port, use_ssl:
                       verify_token_uri.scheme == 'https') do |http|
-        http.request(decode_request(uri, token))
+        http.request(decode_request(verify_token_uri, token))
       end
     end
 
