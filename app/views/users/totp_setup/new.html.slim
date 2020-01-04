@@ -9,12 +9,12 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
 ul.list-reset
   li.py2.border-top
     .mr1.inline-block.circle.circle-number.bg-blue.white
-      | 1
+      | 2
     .inline-block.bold = t('forms.totp_setup.totp_step_1')
   li.py2.border-top
     .mb2
       .mr1.inline-block.circle.circle-number.bg-blue.white
-        | 2
+        | 3
       .inline-block.bold = t('forms.totp_setup.totp_step_2')
     .sm-col-9.sm-ml-28p
       .px2.py1.border.border-dashed.border-navy
@@ -31,12 +31,13 @@ ul.list-reset
   li.py2.border-top
     .mb2
       .mr1.inline-block.circle.circle-number.bg-blue.white
-        | 3
+        | 4
       #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_3')
     .sm-col-9.sm-ml-28p
       = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
         .clearfix.mxn1
           .col.col-6.sm-col-7.px1
+            <input type="text" name="name" id="nickname" value="" required="required" class="block col-12 field monospace" size="16" maxlength="20" aria-labelledby="totp-label" />
             = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
               class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
                 'aria-labelledby': 'totp-label'

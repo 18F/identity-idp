@@ -11,15 +11,11 @@ module Users
     before_action :apply_secure_headers_override
 
     def new
-      store_totp_secret_in_session
-      track_event
-
-      @code = new_totp_secret
-      @qrcode = current_user.decorate.qrcode(new_totp_secret)
+      render_new
     end
 
     def confirm
-      result = TotpSetupForm.new(current_user, new_totp_secret, params[:code].strip).submit
+      result = totp_setup_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
 
@@ -38,6 +34,13 @@ module Users
     end
 
     private
+
+    def totp_setup_form
+      @totp_setup_form ||= TotpSetupForm.new(current_user,
+                                             new_totp_secret,
+                                             params[:code],
+                                             params[:name])
+    end
 
     def set_totp_setup_presenter
       @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
@@ -98,12 +101,24 @@ module Users
     end
 
     def process_invalid_code
-      flash[:error] = t('errors.invalid_totp')
+      flash[:error] = if totp_setup_form.name_taken
+                        t('errors.piv_cac_setup.unique_name')
+                      else
+                        t('errors.invalid_totp')
+                      end
       redirect_to authenticator_setup_url
     end
 
     def new_totp_secret
       user_session[:new_totp_secret]
+    end
+
+    def render_new
+      store_totp_secret_in_session
+      track_event
+
+      @code = new_totp_secret
+      @qrcode = current_user.decorate.qrcode(new_totp_secret)
     end
   end
 end
