@@ -16,8 +16,8 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
       .sm-col-9.sm-ml-28p
         .clearfix.mxn1
           .col.col-6.sm-col-7.px1
-            = text_field_tag :name, '', required: true, class: 'block col-12 field monospace', maxlength: 20,
-              'aria-labelledby': 'totp-label'
+            = text_field_tag :name, '', required: true, class: 'block col-12 field monospace',
+              maxlength: 20, 'aria-labelledby': 'totp-label'
     li.py2.border-top
       .mr1.inline-block.circle.circle-number.bg-blue.white
         | 2
