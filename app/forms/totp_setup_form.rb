@@ -8,8 +8,8 @@ class TotpSetupForm
   def initialize(user, secret, code, name = nil)
     @user = user
     @secret = secret
-    @code = code.strip
-    @name = name.strip
+    @code = code
+    @name = name
     @name = Time.zone.now.to_s if @name.blank?
   end
 

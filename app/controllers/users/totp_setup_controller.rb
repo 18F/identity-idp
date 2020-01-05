@@ -38,8 +38,8 @@ module Users
     def totp_setup_form
       @totp_setup_form ||= TotpSetupForm.new(current_user,
                                              new_totp_secret,
-                                             params[:code],
-                                             params[:name])
+                                             params[:code].strip,
+                                             params[:name].to_s.strip)
     end
 
     def set_totp_setup_presenter
