@@ -9,9 +9,14 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_totp_setup_presenter
     before_action :apply_secure_headers_override
+    before_action :cap_auth_app_count, only: %i[new confirm]
 
     def new
-      render_new
+      store_totp_secret_in_session
+      track_event
+
+      @code = new_totp_secret
+      @qrcode = current_user.decorate.qrcode(new_totp_secret)
     end
 
     def confirm
@@ -113,12 +118,12 @@ module Users
       user_session[:new_totp_secret]
     end
 
-    def render_new
-      store_totp_secret_in_session
-      track_event
+    def cap_auth_app_count
+      redirect_to account_url if Figaro.env.max_auth_apps_per_account.to_i <= current_auth_app_count
+    end
 
-      @code = new_totp_secret
-      @qrcode = current_user.decorate.qrcode(new_totp_secret)
+    def current_auth_app_count
+      current_user.auth_app_configurations.count
     end
   end
 end
