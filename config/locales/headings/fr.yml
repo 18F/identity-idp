@@ -70,7 +70,7 @@ fr:
     sign_in_without_sp: Connexion
     sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
     totp_setup:
-      new: Activer une application d'authentification
+      new: Ajouter une application d'authentification
     verify_email: Consultez vos courriels
     webauthn_setup:
       new: Ajoutez votre clé de sécurité

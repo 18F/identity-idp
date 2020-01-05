@@ -12,7 +12,8 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
       .mb2
         .mr1.inline-block.circle.circle-number.bg-blue.white
           | 1
-        .inline-block.bold = 'Give it a nickname'
+        .inline-block.bold = t('forms.totp_setup.totp_step_1')
+        .inline-block.ml3 = t('forms.totp_setup.totp_step_1a')
       .sm-col-9.sm-ml-28p
         .clearfix.mxn1
           .col.col-6.sm-col-7.px1
@@ -21,12 +22,12 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
     li.py2.border-top
       .mr1.inline-block.circle.circle-number.bg-blue.white
         | 2
-      .inline-block.bold = t('forms.totp_setup.totp_step_1')
+      .inline-block.bold = t('forms.totp_setup.totp_step_2')
     li.py2.border-top
       .mb2
         .mr1.inline-block.circle.circle-number.bg-blue.white
           | 3
-        .inline-block.bold = t('forms.totp_setup.totp_step_2')
+        .inline-block.bold = t('forms.totp_setup.totp_step_3')
       .sm-col-9.sm-ml-28p
         .px2.py1.border.border-dashed.border-navy
           #qr-code.inline.fs-20p.caps.monospace
@@ -43,7 +44,7 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
       .mb2
         .mr1.inline-block.circle.circle-number.bg-blue.white
           | 4
-        #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_3')
+        #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_4')
       .sm-col-9.sm-ml-28p
           .clearfix.mxn1
             .col.col-6.sm-col-7.px1
