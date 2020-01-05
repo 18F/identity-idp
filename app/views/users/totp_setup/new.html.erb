@@ -1,0 +1,74 @@
+<% help_link = link_to t('links.what_is_totp'), MarketingSite.help_authentication_app_url, target: :_blank %>
+<%= render 'partials/step_indicator', presenter: @presenter %>
+<h1 class="h3 my0"><%= t('headings.totp_setup.new') %></h1>
+<p class="mt-tiny mb3"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
+<%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do %>
+  <ul class="list-reset">
+    <li class="py2 border-top">
+      <div class="mb2">
+        <div class="mr1 inline-block circle circle-number bg-blue white">1</div>
+        <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_1') %></div>
+        <div class="inline-block ml3"><%= t('forms.totp_setup.totp_step_1a') %></div>
+      </div>
+      <div class="sm-col-9 sm-ml-28p">
+        <div class="clearfix mxn1">
+          <div class="col col-6 sm-col-7 px1">
+            <%= text_field_tag :name, '', required: true, class: 'block col-12 field monospace',
+                                maxlength: 20, 'aria-labelledby': 'totp-label' %>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li class="py2 border-top">
+      <div class="mr1 inline-block circle circle-number bg-blue white">2</div>
+      <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_2') %></div>
+    </li>
+    <li class="py2 border-top">
+      <div class="mb2">
+        <div class="mr1 inline-block circle circle-number bg-blue white">3</div>
+        <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
+      </div>
+      <div class="sm-col-9 sm-ml-28p">
+        <div class="px2 py1 border border-dashed border-navy">
+          <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
+          <div class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+               data-clipboard-text="<%= @code.upcase %>">
+            <%= t('links.copy') %>
+          </div>
+        </div>
+        <div class="py2 center bold">or</div>
+        <%= accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),
+                      wrapper_css: 'mb2 col-12 fs-16p') do %>
+          <div class="center">
+            <%= image_tag @qrcode, skip_pipeline: true %>
+          </div>
+        <% end %>
+      </div>
+    </li>
+    <li class="py2 border-top">
+      <div class="mb2">
+        <div class="mr1 inline-block circle circle-number bg-blue white">4</div>
+        <div class="inline-block bold" id="totp-label"><%= t('forms.totp_setup.totp_step_4') %></div>
+      </div>
+      <div class="sm-col-9 sm-ml-28p">
+        <div class="clearfix mxn1">
+          <div class="col col-6 sm-col-7 px1">
+            <%= text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
+                class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
+                'aria-labelledby': 'totp-label' %>
+          </div>
+          <div class="col col-6 sm-col-5 px1">
+            <%= submit_tag t('forms.buttons.submit.default'), class: 'col-12 btn btn-primary align-top' %>
+          </div>
+        </div>
+        <div class="border border-light-blue rounded-lg px2 py1 mt3">
+          <%= check_box_tag 'remember_device', true, false, class: 'mr1' %>
+          <%= label_tag 'remember_device', t('forms.messages.remember_device'), class: 'blue mt-1p' %>
+        </div>
+      </div>
+    </li>
+  </ul>
+<% end %>
+
+<%= render 'shared/cancel_or_back_to_options' %>
+<%= javascript_pack_tag 'clipboard' %>
