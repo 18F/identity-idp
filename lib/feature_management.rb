@@ -119,6 +119,8 @@ class FeatureManagement
   end
 
   def self.identity_pki_local_dev?
-    Figaro.env.identity_pki_local_dev == 'true'
+    # This option should only be used in the development environment
+    # it controls if we hop over to identity-pki on a developers local machins
+    Rails.env.development? && Figaro.env.identity_pki_local_dev == 'true'
   end
 end

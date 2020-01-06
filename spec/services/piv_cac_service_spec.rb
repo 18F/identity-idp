@@ -124,6 +124,15 @@ describe PivCacService do
             'uuid' => 'uuid',
           )
         end
+
+        describe 'with test data' do
+          it 'returns an error' do
+            token = 'TEST:{"uuid":"hijackedUUID","subject":"hijackedDN"}'
+            expect(PivCacService.decode_token(token)).to eq(
+              'error' => 'token.bad',
+            )
+          end
+        end
       end
 
       describe 'when configured to contact remote service' do
