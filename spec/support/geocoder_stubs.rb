@@ -29,24 +29,3 @@ Geocoder::Lookup::Test.add_stub(
     },
   ]
 )
-
-Geocoder::Lookup::Test.add_stub(
-  '127.0.0.1', [
-    {
-      'city' => '',
-      'country' => 'United States',
-      'state_code' => '',
-    },
-  ]
-)
-
-# For some reason the test result class does not impelement the `language=`
-# method. This patches an empty method onto it to prevent NoMethodErrors in
-# the tests
-module Geocoder
-  module Result
-    class Test
-      def language=(_locale); end
-    end
-  end
-end
