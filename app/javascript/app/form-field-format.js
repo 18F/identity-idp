@@ -2,7 +2,6 @@ import { SocialSecurityNumberFormatter, TextField } from 'field-kit';
 import DateFormatter from './modules/date-formatter';
 import NumericFormatter from './modules/numeric-formatter';
 import PersonalKeyFormatter from './modules/personal-key-formatter';
-import USPhoneFormatter from './modules/us-phone-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
 
 
@@ -10,7 +9,6 @@ function formatForm() {
   const formats = [
     ['.dob', new DateFormatter()],
     ['.mfa', new NumericFormatter()],
-    ['.us-phone', new USPhoneFormatter()],
     ['.personal-key', new PersonalKeyFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
