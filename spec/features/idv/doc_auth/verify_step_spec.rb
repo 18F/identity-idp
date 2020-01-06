@@ -25,10 +25,13 @@ feature 'doc auth verify step' do
     expect(user.proofing_component.source_check).to eq('aamva')
   end
 
-  it 'proceeds to the address page if the user clicks change address' do
+  it 'proceeds to address page prepopulated with defaults if the user clicks change address' do
     click_link t('doc_auth.buttons.change_address')
 
     expect(page).to have_current_path(idv_address_path)
+    expect(page).to have_selector("input[value='1 Street']")
+    expect(page).to have_selector("input[value='New York']")
+    expect(page).to have_selector("input[value='11364']")
   end
 
   it 'proceeds to the ssn page if the user clicks change ssn' do
