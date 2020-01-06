@@ -78,16 +78,19 @@ describe 'totp management' do
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 
-      click_link t('forms.buttons.enable'), href: authenticator_setup_url
+      # simulate user delay. totp has a 30 second time step
+      Timecop.travel 30.seconds.from_now do
+        click_link t('forms.buttons.enable'), href: authenticator_setup_url
 
-      secret = find('#qr-code').text
-      fill_in 'name', with: 'bar'
-      fill_in 'code', with: generate_totp_code(secret)
-      click_button 'Submit'
+        secret = find('#qr-code').text
+        fill_in 'name', with: 'bar'
+        fill_in 'code', with: generate_totp_code(secret)
+        click_button 'Submit'
 
-      expect(page).to have_current_path(account_path)
-      expect(user.auth_app_configurations.count).to eq(2)
-      expect(page).to_not have_link(t('forms.buttons.enable'))
+        expect(page).to have_current_path(account_path)
+        expect(user.auth_app_configurations.count).to eq(2)
+        expect(page).to_not have_link(t('forms.buttons.enable'), href: authenticator_setup_url)
+      end
     end
   end
 
