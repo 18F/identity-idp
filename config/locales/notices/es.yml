@@ -48,8 +48,8 @@ es:
         message_html: Para su seguridad, terminaremos su sesión en %{time_left_in_session}
           a menos que nos indique lo contrario.
         sign_out: Desconécteme
-    totp_configured: Ha permitido una app de autenticación.
-    totp_disabled: Ha suspendido su app de autenticación.
+    totp_configured: Agregaste una aplicación de autenticación.
+    totp_disabled: Eliminaste tu aplicación de autenticación.
     use_diff_email:
       link: use un email diferente
       text_html: O %{link}

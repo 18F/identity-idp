@@ -5,8 +5,8 @@ en:
     account_verified: Account verified
     authenticated_at: Signed in at %{service_provider}
     authenticated_at_html: Signed in at %{service_provider_link}
-    authenticator_disabled: Authenticator app disabled
-    authenticator_enabled: Authenticator app enabled
+    authenticator_disabled: Authenticator app removed
+    authenticator_enabled: Authenticator app added
     backup_codes_added: Backup codes added
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed

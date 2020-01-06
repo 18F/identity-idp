@@ -115,12 +115,18 @@ en:
       labels:
         email: Email address
     select: "- Select -"
+    totp_delete:
+      caution: If you remove your authentication app you won't be able to use it to
+        access your login.gov account.
+      confirm: Are you sure you want to remove your authentication app?
     totp_setup:
-      totp_intro_html: When you sign in, you can get your security code from an authentication
-        app. %{link}
-      totp_step_1: Open your authentication app
-      totp_step_2: Enter this key in the app
-      totp_step_3: Enter the code from the app
+      totp_intro_html: Set up an authentication app to sign in using temporary security
+        codes. %{link}
+      totp_step_1: Give it a nickname
+      totp_step_1a: If you add more than one app, you'll know which ones which.
+      totp_step_2: Open your authentication app
+      totp_step_3: With your app, enter this key manually or scan the barcode
+      totp_step_4: Enter the temporary code from your app
     two_factor:
       backup_code: Security code
       code: One-time security code

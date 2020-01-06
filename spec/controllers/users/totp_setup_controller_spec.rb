@@ -43,18 +43,6 @@ describe Users::TotpSetupController, devise: true do
       end
     end
 
-    context 'user has already enabled authenticator app' do
-      it 'redirects to profile page' do
-        stub_sign_in
-
-        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
-
-        get :new
-
-        expect(response).to redirect_to account_path
-      end
-    end
-
     context 'user is setting up authenticator app during account creation' do
       before do
         stub_analytics
