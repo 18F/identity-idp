@@ -36,12 +36,6 @@ Dir.chdir APP_ROOT do
   run "test -L certs || ln -sv certs.example certs"
   run "test -L keys || ln -sv keys.example keys"
 
-  puts "== Copying GeoLite2 City database =="
-  run "test -L geo_data/GeoLite2-City.mmdb || mkdir -p geo_data && cd geo_data && " \
-      "curl http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz | tar xvz"
-  geo_data_file = Dir['geo_data/GeoLite2-City_*/GeoLite2-City.mmdb'].sort.last
-  run "mv #{geo_data_file} geo_data/GeoLite2-City.mmdb"
-
   puts "== Copying sample pwned passwords list =="
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
