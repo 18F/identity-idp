@@ -54,7 +54,7 @@ shared_examples 'a phone form' do
       params[:phone] = '(703) 555-1212'
       subject.submit(params)
 
-      expect(subject.phone).to eq '(703) 555-1212'
+      expect(subject.phone).to eq '+1 703-555-1212'
     end
   end
 end
