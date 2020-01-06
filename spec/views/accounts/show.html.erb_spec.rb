@@ -49,7 +49,7 @@ describe 'accounts/show.html.erb' do
     it 'contains link to disable TOTP' do
       render
 
-      expect(rendered).to have_button t('forms.buttons.disable')
+      expect(rendered).to have_link(t('forms.buttons.disable', href: auth_app_delete_path))
       expect(rendered).not_to have_link(t('forms.buttons.enable'), href: authenticator_start_path)
     end
   end
