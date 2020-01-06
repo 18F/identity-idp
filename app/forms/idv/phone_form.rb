@@ -16,7 +16,7 @@ module Idv
     def submit(params)
       self.phone = PhoneFormatter.format(params[:phone])
       success = valid?
-      self.phone = params[:phone]
+      self.phone = params[:phone] unless success
 
       FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
     end

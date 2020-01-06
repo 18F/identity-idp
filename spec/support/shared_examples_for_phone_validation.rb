@@ -48,4 +48,13 @@ shared_examples 'a phone form' do
       end
     end
   end
+
+  describe '#submit' do
+    it 'formats the phone before assigning it' do
+      params[:phone] = '(703) 555-1212'
+      subject.submit(params)
+
+      expect(subject.phone).to eq '(703) 555-1212'
+    end
+  end
 end
