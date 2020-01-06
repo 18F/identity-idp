@@ -78,6 +78,8 @@ describe 'totp management' do
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 
+      click_link t('forms.buttons.enable'), href: authenticator_setup_url
+
       secret = find('#qr-code').text
       fill_in 'name', with: 'bar'
       fill_in 'code', with: generate_totp_code(secret)
