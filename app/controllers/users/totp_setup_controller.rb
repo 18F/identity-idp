@@ -32,9 +32,7 @@ module Users
     end
 
     def disable
-      if MfaPolicy.new(current_user).more_than_two_factors_enabled?
-        process_successful_disable
-      end
+      process_successful_disable if MfaPolicy.new(current_user).more_than_two_factors_enabled?
 
       redirect_to account_url
     end

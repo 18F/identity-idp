@@ -8,12 +8,13 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
 
       expect(page).to have_content(t('account.index.authentication_app'))
-      form = find_form(page, action: disable_totp_url)
-      expect(form).to_not be_nil
+      expect(page.find('.remove-auth-app')).to_not be_nil
+      page.find('.remove-auth-app').click
 
-      form.click_button(t('forms.buttons.disable'))
+      expect(current_path).to eq auth_app_delete_path
+      click_on t('account.index.totp_confirm_delete')
 
-      expect(page).to have_current_path(account_path)
+      expect(current_path).to eq account_path
       expect(user.reload.otp_secret_key).to be_nil
     end
   end
