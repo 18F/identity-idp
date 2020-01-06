@@ -16,7 +16,7 @@ h1.h3.my0 = t('doc_auth.headings.address')
       .sm-col.sm-col-8.px1
         = f.input :state, collection: us_states_territories,
                 label: t('idv.form.state'), required: true,
-                prompt: '- Select -'
+                selected: @pii['state']
 
       .sm-col.sm-col-4.px1
         / using :tel for mobile numeric keypad
