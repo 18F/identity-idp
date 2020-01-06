@@ -10,7 +10,8 @@ h1.h3.my0 = t('doc_auth.headings.address')
             required: true, maxlength: 255, input_html: {value: @pii['address1']}
     = f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
             input_html: {value: @pii['address2']}
-    = f.input :city, label: t('idv.form.city'), required: true, maxlength: 255, input_html: {value: @pii['city']}
+    = f.input :city, label: t('idv.form.city'), required: true, maxlength: 255,
+            input_html: {value: @pii['city']}
 
     .clearfix.mxn1
       .sm-col.sm-col-8.px1
