@@ -46,6 +46,47 @@ describe 'totp management' do
       expect(user.reload.otp_secret_key).to_not be_nil
       expect(user.events.order(created_at: :desc).last.event_type).to eq('authenticator_enabled')
     end
+
+    it 'prevents association of an auth app with the same name' do
+      sign_in_and_2fa_user(user)
+
+      click_link t('forms.buttons.enable'), href: authenticator_setup_url
+
+      secret = find('#qr-code').text
+      fill_in 'name', with: 'foo'
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      click_link t('forms.buttons.enable'), href: authenticator_setup_url
+
+      secret = find('#qr-code').text
+      fill_in 'name', with: 'foo'
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      expect(page).to have_current_path(authenticator_setup_path)
+      expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
+    end
+
+    it 'allows 2 auth apps and removes the add link' do
+      sign_in_and_2fa_user(user)
+
+      click_link t('forms.buttons.enable'), href: authenticator_setup_url
+
+      secret = find('#qr-code').text
+      fill_in 'name', with: 'foo'
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      secret = find('#qr-code').text
+      fill_in 'name', with: 'bar'
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
+
+      expect(page).to have_current_path(account_path)
+      expect(user.auth_app_configurations.count).to eq(2)
+      expect(page).to_not have_link(t('forms.buttons.enable'))
+    end
   end
 
   # :reek:NestedIterators
