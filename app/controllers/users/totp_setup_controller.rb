@@ -32,9 +32,10 @@ module Users
     end
 
     def disable
-      if current_user.totp_enabled? && MfaPolicy.new(current_user).more_than_two_factors_enabled?
+      if MfaPolicy.new(current_user).more_than_two_factors_enabled?
         process_successful_disable
       end
+
       redirect_to account_url
     end
 
@@ -93,7 +94,7 @@ module Users
     end
 
     def revoke_otp_secret_key
-      Db::AuthAppConfiguration::Delete.call(current_user)
+      Db::AuthAppConfiguration::Delete.call(current_user, params[:id].to_i)
     end
 
     def mark_user_as_fully_authenticated

@@ -34,6 +34,7 @@ fr:
         link: Réactivez votre profil maintenant.
       sign_in_location_and_ip: "%{ip} (adresse IP probablement située dans %{location})"
       ssn: Numéro d'assurance sociale
+      totp_confirm_delete: Oui, supprimez l'application d'authentification
       unknown_location: lieu inconnu
       verification:
         bounced: Le service postal n'a pas pu envoyer la lettre à votre adresse.

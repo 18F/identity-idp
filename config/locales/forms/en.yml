@@ -115,6 +115,10 @@ en:
       labels:
         email: Email address
     select: "- Select -"
+    totp_delete:
+      caution: If you remove your authentication app you won't be able to use it to
+        access your login.gov account.
+      confirm: Are you sure you want to remove your authentication app?
     totp_setup:
       totp_intro_html: Set up an authentication app to sign in using temporary security
         codes. %{link}

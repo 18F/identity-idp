@@ -123,6 +123,10 @@ es:
       labels:
         email: Email
     select: "- Seleccionar -"
+    totp_delete:
+      caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
+        a su cuenta login.gov.
+      confirm: "¿Seguro que quieres eliminar tu aplicación de autenticación?"
     totp_setup:
       totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
         con códigos de seguridad temporales. %{link}
