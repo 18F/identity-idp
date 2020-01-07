@@ -29,3 +29,13 @@ Geocoder::Lookup::Test.add_stub(
     },
   ]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  '127.0.0.1', [
+    {
+      'city' => '',
+      'country' => 'United States',
+      'state_code' => '',
+    },
+  ]
+)
