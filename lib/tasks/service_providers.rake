@@ -6,9 +6,9 @@ namespace :service_providers do
     end
   end
 
-  task backfill_allow_prompt: [:environment] do |_task|
+  task backfill_allow_prompt_login: [:environment] do |_task|
     ServiceProvider.find_each do |sp|
-      sp.update_attribute(:allow_prompt, true)
+      sp.update_attribute(:allow_prompt_login, true)
     end
   end
   # rubocop:enable Rails/SkipsModelValidations
