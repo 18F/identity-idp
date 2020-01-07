@@ -381,42 +381,4 @@ describe 'FeatureManagement', type: :feature do
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
     end
   end
-
-  describe '#identity_pki_local_dev?' do
-    context 'when in development mode' do
-      before(:each) do
-        allow(Rails.env).to receive(:development?).and_return(true)
-      end
-
-      it 'returns true when Figaro setting is true' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'true' }
-
-        expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
-      end
-
-      it 'returns false when Figaro setting is false' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'false' }
-
-        expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
-      end
-    end
-
-    context 'when in non-development mode' do
-      before(:each) do
-        allow(Rails.env).to receive(:development?).and_return(false)
-      end
-
-      it 'returns false when Figaro setting is true' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'true' }
-
-        expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
-      end
-
-      it 'returns false when Figaro setting is false' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'false' }
-
-        expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
-      end
-    end
-  end
 end
