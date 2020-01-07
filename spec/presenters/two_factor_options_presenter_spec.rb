@@ -50,9 +50,10 @@ describe TwoFactorOptionsPresenter do
     context 'with a user with totp configured' do
       let(:user) { build(:user, :with_authentication_app) }
 
-      it 'supplies all the options but the auth app' do
+      it 'supplies all the options' do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::PhoneSelectionPresenter,
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,

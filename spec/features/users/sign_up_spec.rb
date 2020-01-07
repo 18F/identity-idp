@@ -166,6 +166,26 @@ feature 'Sign Up' do
     expect(page).to have_current_path account_path
   end
 
+  it 'allows a user to choose 2 TOTPs as 2FA method during sign up' do
+    user = sign_in_user
+    set_up_2fa_with_authenticator_app
+    click_continue
+    Timecop.travel 30.seconds.from_now do # wait the totp time step
+      set_up_2fa_with_authenticator_app
+      expect(page).to have_current_path account_path
+    end
+    expect(user.auth_app_configurations.count).to eq(2)
+  end
+
+  it 'allows a user to choose 2 PIV/CACs as 2FA method during sign up' do
+    user = sign_in_user
+    set_up_2fa_with_piv_cac
+    click_continue
+    set_up_2fa_with_piv_cac
+    expect(page).to have_current_path account_path
+    expect(user.piv_cac_configurations.count).to eq(2)
+  end
+
   it 'does not allow PIV/CAC during setup on mobile' do
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
 
