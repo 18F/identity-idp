@@ -585,7 +585,7 @@ module Features
 
     def piv_cac_nonce_from_form_action
       go_back = current_path
-      fill_in 'name', with: 'Card 1'
+      fill_in 'name', with: 'Card ' + Time.zone.now.to_f.to_s
       click_button t('forms.piv_cac_setup.submit')
       nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
       visit go_back
