@@ -56,14 +56,22 @@ module PivCacService
 
     def token_decoded(token)
       return decode_test_token(token) if token.start_with?('TEST:')
-
       return { 'error' => 'service.disabled' } if FeatureManagement.identity_pki_disabled?
-
-      uri = URI(piv_cac_verify_token_link)
-      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-        http.request(decode_request(uri, token))
-      end
+      res = token_response(token)
       decode_token_response(res)
+    end
+
+    def token_response(token)
+      http = Net::HTTP.new(verify_token_uri.host, verify_token_uri.port)
+      http.use_ssl = verify_token_uri.scheme == 'https'
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE if FeatureManagement.identity_pki_local_dev?
+      http.start do |post|
+        post.request(decode_request(verify_token_uri, token))
+      end
+    end
+
+    def verify_token_uri
+      URI(piv_cac_verify_token_link)
     end
 
     def decode_request(uri, token)
