@@ -6,7 +6,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
 
-  # On the development environment only we allow 'https://*' to hop over to identity-pki 
+  # On the development environment only we allow 'https://*' to hop over to identity-pki
   form_action = Rails.env.development? ? ["'self'", 'https://*'] : ["'self'"]
   default_csp_config = {
     default_src: ["'self'"],
