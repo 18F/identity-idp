@@ -16,6 +16,7 @@ test:
     attribute_bundle:
       - email
       - phone
+    allow_prompt_login: true
 
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     agency_id: 2
@@ -37,6 +38,7 @@ test:
       - last_name
       - ssn
       - zipcode
+    allow_prompt_login: true
 
   'https://rp2.serviceprovider.com/auth/saml/metadata':
     acs_url: 'http://example.com/test/saml/decode_assertion'
@@ -44,6 +46,7 @@ test:
     block_encryption: 'aes256-cbc'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
+    allow_prompt_login: true
 
   'http://test.host':
     acs_url: 'http://test.host/test/saml/decode_assertion'
@@ -51,6 +54,7 @@ test:
     metadata_url: 'http://test.host/test/saml/metadata'
     sp_initiated_login_url: 'http://test.host/test/saml'
     friendly_name: 'Test SP'
+    allow_prompt_login: true
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:
@@ -71,12 +75,13 @@ test:
       - 'gov.gsa.openidconnect.test://result'
       - 'gov.gsa.openidconnect.test://result/signout'
     cert: 'saml_test_sp'
-    friendly_name: 'Example app without prompt=login'
+    friendly_name: 'Example app that disallows prompt=login'
     agency: '18F'
     agency_id: 1
     uuid_priority: 20
     logo: 'generic.svg'
     ial: 1
+    allow_prompt_login: false
 
   'urn:gov:gsa:openidconnect:test:loa1':
     redirect_uris:
@@ -88,6 +93,7 @@ test:
     agency_id: 1
     uuid_priority: 20
     logo: 'generic.svg'
+    allow_prompt_login: true
 
   'urn:gov:gsa:openidconnect:sp:server':
     agency_id: 2
@@ -98,6 +104,7 @@ test:
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
     ial: 2
+    allow_prompt_login: true
 
   'test_sp_with_default_help_text':
     agency_id: 2
@@ -141,6 +148,7 @@ test:
           l'adresse e-mail principale ou secondaire que vous avez utilisée pour %{sp_name}
           pour <a href=%{sp_create_link}> créer votre nouveau compte login.gov</a>
           <p><a href="https://login.gov/help/">En savoir plus.</a>
+    allow_prompt_login: true
 
   'test_sp_with_custom_help_text':
     agency_id: 2
@@ -160,6 +168,7 @@ test:
         en: ""
         es: ""
         fr: ""
+    allow_prompt_login: true
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':

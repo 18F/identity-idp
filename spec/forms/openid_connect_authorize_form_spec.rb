@@ -148,11 +148,25 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(valid?).to eq(true) }
     end
 
-    context 'when prompt is login' do
+    context 'when prompt is login and allowed by sp' do
       let(:prompt) { 'login' }
+      before do
+        allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return true
+      end
+
       it { expect(valid?).to eq(true) }
     end
 
+    context 'when prompt is login but not allowed by sp' do
+      let(:prompt) { 'login' }
+      before do
+        allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return false
+      end
+
+      it { expect(valid?).to eq(false) }
+    end
+
+    
     context 'when prompt is blank' do
       let(:prompt) { '' }
       it { expect(valid?).to eq(false) }

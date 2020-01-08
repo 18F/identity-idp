@@ -59,7 +59,7 @@ describe 'OpenID Connect' do
       )
 
       expect(current_path).to eq(openid_connect_authorize_path)
-      # TODO Expect an error message
+      expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
     end
 
     it 'returns invalid request with bad prompt parameter' do
