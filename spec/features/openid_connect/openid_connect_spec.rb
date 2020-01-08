@@ -167,7 +167,7 @@ describe 'OpenID Connect' do
     expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
-  context 'with PCKE', driver: :mobile_rack_test do
+  context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       state = SecureRandom.hex
