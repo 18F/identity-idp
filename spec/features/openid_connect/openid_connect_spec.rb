@@ -46,6 +46,22 @@ describe 'OpenID Connect' do
       oidc_end_client_secret_jwt(prompt: 'login')
     end
 
+    it 'fails with prompt login if not allowed for SP' do
+      visit openid_connect_authorize_path(
+        client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: SecureRandom.hex,
+        prompt: 'login',
+        nonce: SecureRandom.hex,
+      )
+
+      expect(current_path).to eq(openid_connect_authorize_path)
+      # TODO Expect an error message
+    end
+
     it 'returns invalid request with bad prompt parameter' do
       oidc_end_client_secret_jwt(prompt: 'aaa', redirs_to: '/auth/result')
       expect(current_url).to include('?error=invalid_request')

@@ -64,6 +64,19 @@ test:
     logo: 'generic.svg'
     ial: 2
     push_notification_url: http://localhost/push_notifications
+    allow_prompt_login: true
+
+  'urn:gov:gsa:openidconnect:test_prompt_login_banned':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/signout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example app without prompt=login'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+    ial: 1
 
   'urn:gov:gsa:openidconnect:test:loa1':
     redirect_uris:
