@@ -166,7 +166,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(valid?).to eq(false) }
     end
 
-    
     context 'when prompt is blank' do
       let(:prompt) { '' }
       it { expect(valid?).to eq(false) }

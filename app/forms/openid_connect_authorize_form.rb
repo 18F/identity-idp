@@ -116,9 +116,8 @@ class OpenidConnectAuthorizeForm
 
   def validate_prompt
     return if prompt == 'select_account'
-    if prompt == 'login'
-      service_provider.allow_prompt_login ? return : errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
-    end
+    return if prompt == 'login' && service_provider.allow_prompt_login
+    errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
   end
 
   def ial
