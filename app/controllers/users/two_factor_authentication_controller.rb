@@ -13,7 +13,7 @@ module Users
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      add_tracking(result)
       if result.success?
         handle_valid_otp_params(user_select_delivery_preference, user_selected_default_number)
         update_otp_delivery_preference_if_needed
@@ -25,6 +25,11 @@ module Users
     end
 
     private
+
+    def add_tracking(result)
+      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      add_sp_cost('sms')
+    end
 
     def phone_enabled?
       phone_configuration&.mfa_enabled?

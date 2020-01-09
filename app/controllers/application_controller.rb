@@ -295,4 +295,11 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       exception_class: exception.class.name,
     }
   end
+
+  def add_sp_cost(token)
+    issuer = sp_session[:issuer].to_s
+    sp = ServiceProvider.find_by(issuer: issuer)
+    agency_id = sp ? sp.agency_id : 0
+    Db::SpCost::AddSpCost.call(issuer, agency_id, token)
+  end
 end

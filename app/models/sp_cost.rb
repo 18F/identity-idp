@@ -1,0 +1,2 @@
+class SpCost < ApplicationRecord
+end
