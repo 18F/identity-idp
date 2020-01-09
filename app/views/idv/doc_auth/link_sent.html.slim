@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
+- if @meta_refresh
+  - content_for(:meta_refresh) { "#{@meta_refresh}" }
 h1.h3.my0 = t('doc_auth.headings.text_message')
 br
 .clearfix.mxn1
