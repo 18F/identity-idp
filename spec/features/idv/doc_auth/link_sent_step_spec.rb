@@ -29,10 +29,10 @@ shared_examples 'link sent step' do |simulate|
 
     it 'refreshes the page 4x with meta refresh extending the regular timeout by 40 minutes' do
       4.times do
-        expect(page).to have_css 'meta[http-equiv="refresh"]', :visible => false
+        expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
         visit idv_doc_auth_link_sent_step
       end
-      expect(page).to_not have_css 'meta[http-equiv="refresh"]', :visible => false
+      expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
     end
 
     it 'proceeds to the next page with valid info and test credentials turned on' do
