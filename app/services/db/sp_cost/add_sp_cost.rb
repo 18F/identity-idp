@@ -13,7 +13,7 @@ module Db
       ].freeze
 
       def self.call(issuer, agency_id, token)
-        return if issuer.blank? || agency_id.blank? || token.blank?
+        return if issuer.nil? || agency_id.nil? || token.blank?
         return unless TOKEN_WHITELIST.index(token.to_sym)
         ::SpCost.create(issuer: issuer, agency_id: agency_id, cost_type: token)
       end
