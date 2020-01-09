@@ -27,12 +27,16 @@ shared_examples 'link sent step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
 
-    it 'refreshes the page 4x with meta refresh extending the regular timeout by 40 minutes' do
+    it 'refreshes page 4x with meta refresh extending timeout by 40 min and can start over' do
       4.times do
         expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
         visit idv_doc_auth_link_sent_step
       end
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
+
+      click_on t('doc_auth.buttons.start_over')
+      complete_doc_auth_steps_before_link_sent_step(user)
+      expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
     end
 
     it 'proceeds to the next page with valid info and test credentials turned on' do
