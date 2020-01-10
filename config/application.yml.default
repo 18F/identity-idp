@@ -52,6 +52,7 @@ google_analytics_key:
 google_analytics_timeout: '5'
 ial2_recovery_request_valid_for_minutes: '15'
 identity_pki_disabled: 'true'
+identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '24'
 idv_max_attempts: '3'
 idv_send_link_attempt_window_in_minutes: '10'
@@ -181,6 +182,8 @@ development:
   otp_delivery_blocklist_maxretry: '10'
   participate_in_dap:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  identity_pki_disabled: 'false'
+  identity_pki_local_dev: 'true'
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   piv_cac_verify_token_url: https://localhost:8443/
