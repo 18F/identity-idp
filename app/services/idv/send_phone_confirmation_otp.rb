@@ -60,6 +60,7 @@ module Idv
         channel: delivery_method,
       )
       Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
+      Db::SpCost::AddSpCost.call(idv_session.issuer, :phone_otp)
     end
 
     def extra_analytics_attributes
