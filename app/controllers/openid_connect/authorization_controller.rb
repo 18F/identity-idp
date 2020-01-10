@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
@@ -126,3 +127,4 @@ module OpenidConnect
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
