@@ -58,16 +58,11 @@ module Idv
       end
 
       def add_proofing_costs(results)
-        user_id = current_user.id
         vendors = results[:context][:stages]
         vendors.each do |hash|
-          add_proofing_cost(user_id, :aamva) if hash[:state_id]
-          add_proofing_cost(user_id, :lexis_nexis_resolution) if hash[:resolution]
+          add_cost(:aamva) if hash[:state_id]
+          add_cost(:lexis_nexis_resolution) if hash[:resolution]
         end
-      end
-
-      def add_proofing_cost(user_id, token)
-        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def idv_success(idv_result)

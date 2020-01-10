@@ -12,9 +12,11 @@ module Db
         sms
       ].freeze
 
-      def self.call(issuer, agency_id, token)
-        return if issuer.nil? || agency_id.nil? || token.blank?
+      def self.call(issuer, token)
+        return if issuer.nil? || token.blank?
         return unless TOKEN_WHITELIST.index(token.to_sym)
+        sp = ServiceProvider.find_by(issuer: issuer)
+        agency_id = sp ? sp.agency_id : 0
         ::SpCost.create(issuer: issuer, agency_id: agency_id, cost_type: token)
       end
     end
