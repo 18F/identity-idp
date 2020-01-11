@@ -8,8 +8,8 @@ class IdentityLinker
   end
 
   def link_identity(**extra_attrs)
-    attributes = merged_attributes(extra_attrs)
     @ial =  extra_attrs[:ial]
+    attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
     identity
