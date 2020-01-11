@@ -7,12 +7,13 @@ module Db
         aamva
         authentication
         digest
+        ial1_user_added
+        ial2_user_added
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
         phone_otp
         sms
-        user_added
       ].freeze
 
       def self.call(issuer, token)
