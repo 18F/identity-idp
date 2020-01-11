@@ -6,6 +6,7 @@ module Db
         acuant_back_image
         aamva
         authentication
+        digest
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
