@@ -110,11 +110,11 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :email_sent)
   end
 
-  def complete_doc_auth_steps_before_welcome_step(user = user_with_2fa)
+  def complete_doc_auth_steps_before_welcome_step(_user = user_with_2fa)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
   end
 
-  def complete_doc_auth_steps_before_upload_step(user = user_with_2fa)
+  def complete_doc_auth_steps_before_upload_step(_user = user_with_2fa)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     find('input[name="ial2_consent_given"]').set(true)
     click_on t('doc_auth.buttons.continue')
