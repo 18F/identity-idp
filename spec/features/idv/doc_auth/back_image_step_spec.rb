@@ -10,7 +10,7 @@ shared_examples 'back image step' do |simulate|
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
-      complete_doc_auth_steps_before_back_image_step(user)
+      complete_doc_auth_steps_before_back_image_step
       mock_assure_id_ok
     end
 
@@ -89,7 +89,7 @@ shared_examples 'back image step' do |simulate|
 
         expect(page).to have_current_path(idv_doc_auth_ssn_step)
         click_on t('doc_auth.buttons.start_over')
-        complete_doc_auth_steps_before_back_image_step(user)
+        complete_doc_auth_steps_before_back_image_step
       end
 
       attach_image
@@ -98,7 +98,7 @@ shared_examples 'back image step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_front_image_step)
 
       Timecop.travel((Figaro.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
-        complete_doc_auth_steps_before_back_image_step(user)
+        complete_doc_auth_steps_before_back_image_step
         attach_image
         click_idv_continue
         expect(page).to have_current_path(idv_doc_auth_ssn_step)

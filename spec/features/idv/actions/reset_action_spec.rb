@@ -6,7 +6,8 @@ feature 'doc auth reset action' do
 
   before do
     enable_doc_auth
-    complete_doc_auth_steps_before_upload_step(sign_in_and_2fa_user)
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_upload_step
   end
 
   it 'resets doc auth to the first step' do

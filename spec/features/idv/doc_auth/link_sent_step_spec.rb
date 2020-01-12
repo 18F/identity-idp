@@ -6,7 +6,7 @@ shared_examples 'link sent step' do |simulate|
     include DocAuthHelper
     include DocCaptureHelper
 
-    let(:user) { user_with_2fa }
+    let(:user) { sign_in_and_2fa_user }
 
     before do
       setup_acuant_simulator(enabled: simulate)

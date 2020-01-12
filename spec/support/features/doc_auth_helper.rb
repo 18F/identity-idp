@@ -110,23 +110,23 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :email_sent)
   end
 
-  def complete_doc_auth_steps_before_welcome_step(_user = user_with_2fa)
+  def complete_doc_auth_steps_before_welcome_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
   end
 
-  def complete_doc_auth_steps_before_upload_step(_user = user_with_2fa)
+  def complete_doc_auth_steps_before_upload_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     find('input[name="ial2_consent_given"]').set(true)
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_doc_auth_steps_before_front_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_upload_step(user)
+  def complete_doc_auth_steps_before_front_image_step
+    complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.buttons.use_computer')
   end
 
-  def complete_doc_auth_steps_before_mobile_front_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_upload_step(user)
+  def complete_doc_auth_steps_before_mobile_front_image_step
+    complete_doc_auth_steps_before_upload_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     click_on t('doc_auth.buttons.use_phone')
   end
@@ -136,66 +136,66 @@ module DocAuthHelper
 AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1')
   end
 
-  def complete_doc_auth_steps_before_ssn_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_back_image_step(user)
+  def complete_doc_auth_steps_before_ssn_step
+    complete_doc_auth_steps_before_back_image_step
     attach_image
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_back_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_front_image_step(user)
+  def complete_doc_auth_steps_before_back_image_step
+    complete_doc_auth_steps_before_front_image_step
     mock_assure_id_ok
     attach_image
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_mobile_back_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_mobile_front_image_step(user)
+  def complete_doc_auth_steps_before_mobile_back_image_step
+    complete_doc_auth_steps_before_mobile_front_image_step
     mock_assure_id_ok
     attach_image
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_doc_success_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_verify_step(user)
+  def complete_doc_auth_steps_before_doc_success_step
+    complete_doc_auth_steps_before_verify_step
     click_idv_continue
   end
 
-  def complete_all_doc_auth_steps(user = user_with_2fa)
-    complete_doc_auth_steps_before_doc_success_step(user)
+  def complete_all_doc_auth_steps
+    complete_doc_auth_steps_before_doc_success_step
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_address_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_verify_step(user)
+  def complete_doc_auth_steps_before_address_step
+    complete_doc_auth_steps_before_verify_step
     click_link t('doc_auth.buttons.change_address')
   end
 
-  def complete_doc_auth_steps_before_verify_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_ssn_step(user)
+  def complete_doc_auth_steps_before_verify_step
+    complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_ok
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_self_image_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_doc_success_step(user)
+  def complete_doc_auth_steps_before_self_image_step
+    complete_doc_auth_steps_before_doc_success_step
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_send_link_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_upload_step(user)
+  def complete_doc_auth_steps_before_send_link_step
+    complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.buttons.use_phone')
   end
 
-  def complete_doc_auth_steps_before_link_sent_step(user = user_with_2fa)
-    complete_doc_auth_steps_before_send_link_step(user)
+  def complete_doc_auth_steps_before_link_sent_step
+    complete_doc_auth_steps_before_send_link_step
     fill_out_doc_auth_phone_form_ok
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_email_sent_step(user = user_with_2fa)
+  def complete_doc_auth_steps_before_email_sent_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
-    complete_doc_auth_steps_before_upload_step(user)
+    complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.buttons.use_computer')
   end
 

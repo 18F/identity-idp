@@ -8,7 +8,7 @@ feature 'doc auth email sent step' do
 
   before do
     enable_doc_auth
-    complete_doc_auth_steps_before_email_sent_step(user)
+    complete_doc_auth_steps_before_email_sent_step
   end
 
   it 'is on the correct page' do
