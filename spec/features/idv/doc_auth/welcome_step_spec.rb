@@ -10,8 +10,8 @@ feature 'doc auth welcome step' do
   context 'button is disabled when JS is enabled', :js do
     before do
       enable_doc_auth
-      user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_welcome_step(user)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
     end
 
     it_behaves_like 'ial2 consent with js'
@@ -20,8 +20,8 @@ feature 'doc auth welcome step' do
   context 'button is clickable when JS is disabled' do
     before do
       enable_doc_auth
-      user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_welcome_step(user)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
     end
 
     def expect_doc_auth_first_step
