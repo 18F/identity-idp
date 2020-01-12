@@ -7,6 +7,7 @@ shared_examples 'test credentials' do |simulate|
 
     before do
       setup_acuant_simulator(enabled: simulate)
+      sign_in_and_2fa_user
       enable_doc_auth
     end
 
