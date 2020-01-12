@@ -34,13 +34,16 @@ feature 'Proofing Costs report' do
   end
 
   it 'works for one flow' do
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_doc_success_step
 
     expect(JSON.parse(subject.new.call)).to eq(doc_success_funnel.merge(summary1))
   end
 
   it 'works for two flows' do
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_doc_success_step
+    sign_in_and_2fa_user(user2)
     complete_doc_auth_steps_before_doc_success_step
 
     expect(JSON.parse(subject.new.call)).to eq(doc_success_funnel.merge(summary2))
