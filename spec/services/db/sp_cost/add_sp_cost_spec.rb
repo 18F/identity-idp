@@ -58,7 +58,7 @@ feature 'SP Costing' do
 
   def create_ial2_user_from_sp(email)
     visit_idp_from_sp_with_ial2(:oidc)
-    user = register_user(email)
+    register_user(email)
     complete_all_doc_auth_steps
     click_continue
     fill_in 'Password', with: password

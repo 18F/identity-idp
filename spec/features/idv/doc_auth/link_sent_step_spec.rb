@@ -6,12 +6,11 @@ shared_examples 'link sent step' do |simulate|
     include DocAuthHelper
     include DocCaptureHelper
 
-    let(:user) { sign_in_and_2fa_user }
-
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
-      complete_doc_auth_steps_before_link_sent_step(user)
+      user = sign_in_and_2fa_user
+      complete_doc_auth_steps_before_link_sent_step
       mock_assure_id_ok
       mock_doc_captured(user.id)
     end
@@ -36,7 +35,8 @@ shared_examples 'link sent step' do |simulate|
 
     it 'proceeds to the next page if the user does not have a phone' do
       user = create(:user, :with_authentication_app, :with_piv_or_cac)
-      complete_doc_auth_steps_before_link_sent_step(user)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_link_sent_step
       mock_doc_captured(user.id)
       click_idv_continue
 
