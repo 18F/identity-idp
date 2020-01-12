@@ -42,6 +42,7 @@ feature 'doc auth verify step' do
   end
 
   it 'does not proceed to the next page if resolution fails' do
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
@@ -51,6 +52,7 @@ feature 'doc auth verify step' do
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
     click_idv_continue
@@ -64,6 +66,7 @@ feature 'doc auth verify step' do
 
   it 'has a link to proof in person' do
     enable_in_person_proofing
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
     click_idv_continue
@@ -74,6 +77,7 @@ feature 'doc auth verify step' do
   end
 
   it 'throttles resolution and continues when it expires' do
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
@@ -86,6 +90,7 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_session_errors_failure_path)
 
     Timecop.travel(Figaro.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
 
@@ -94,6 +99,7 @@ feature 'doc auth verify step' do
   end
 
   it 'throttles dup ssn' do
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
     click_idv_continue
