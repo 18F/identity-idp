@@ -39,7 +39,7 @@ feature 'SP Costing' do
   it 'logs the correct costs for an ial2 authentication' do
     create_ial2_user_from_sp(email3)
     SpCost.delete_all
-    Capybara.reset_session!
+    visit sign_out_url
 
     visit_idp_from_sp_with_ial2(:oidc)
     fill_in_credentials_and_submit(email3, password)
@@ -47,6 +47,7 @@ feature 'SP Costing' do
     click_submit_default
 
     expect_cost_type(0, 'digest')
+    expect_cost_type(1, 'authentication')
   end
 
   def create_ial1_user_from_sp(email)
@@ -57,8 +58,8 @@ feature 'SP Costing' do
 
   def create_ial2_user_from_sp(email)
     visit_idp_from_sp_with_ial2(:oidc)
-    register_user(email)
-    complete_all_doc_auth_steps
+    user = register_user(email)
+    complete_all_doc_auth_steps(user)
     click_continue
     fill_in 'Password', with: password
     click_continue
