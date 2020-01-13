@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
-  let(:user) { create(:user, :with_phone, password: password, otp_secret_key: 'abc123') }
+  let(:user) { create(:user, :with_phone, password: password') }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
   let(:user_session) { {} }

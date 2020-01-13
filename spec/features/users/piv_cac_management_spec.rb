@@ -125,7 +125,6 @@ feature 'PIV/CAC Management' do
         it 'does prompt to set one up after configuring PIV/CAC' do
           stub_piv_cac_service
 
-          user.update(otp_secret_key: 'secret')
           MfaContext.new(user).phone_configurations.clear
           sign_in_and_2fa_user(user)
           visit account_path

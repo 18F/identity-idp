@@ -15,7 +15,6 @@ describe 'totp management' do
       click_on t('account.index.totp_confirm_delete')
 
       expect(current_path).to eq account_path
-      expect(user.reload.otp_secret_key).to be_nil
     end
   end
 

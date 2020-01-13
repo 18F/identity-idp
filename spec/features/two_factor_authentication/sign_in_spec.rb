@@ -310,7 +310,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user can cancel TOTP process' do
-      user = create(:user, :signed_up, otp_secret_key: 'foo')
+      user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 

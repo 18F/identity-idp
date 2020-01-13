@@ -117,7 +117,6 @@ namespace :dev do
   def setup_totp_user(user, args)
     user.encrypted_email = args[:ee].encrypted
     user.reset_password(args[:pw], args[:pw])
-    user.otp_secret_key = ROTP::Base32.random_base32
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
