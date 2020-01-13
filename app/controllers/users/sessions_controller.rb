@@ -14,6 +14,7 @@ module Users
     before_action :apply_secure_headers_override, only: [:new]
 
     def new
+      byebug
       analytics.track_event(
         Analytics::SIGN_IN_PAGE_VISIT,
         flash: flash[:alert],

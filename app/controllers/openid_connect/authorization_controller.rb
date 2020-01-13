@@ -5,6 +5,7 @@ module OpenidConnect
     include RememberDeviceConcern
     include VerifyProfileConcern
     include SecureHeadersConcern
+    include AuthorizationCountConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -13,13 +14,23 @@ module OpenidConnect
     before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
+    before_action :bump_auth_count, only: [:index]
 
     def index
+      # puts "#{'~' * 30} OpenidConnect::AuthorizationController#index"
+
+      # puts "#{'~' * 30}     sufficient_factors_enabled?"
       return redirect_to two_factor_options_url unless
         MfaPolicy.new(current_user).sufficient_factors_enabled?
+      # puts "#{'~' * 30}     profile_or_identity_needs_verification?"
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
+      # puts "#{'~' * 30}     needs_sp_attribute_verification?"
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
+      # puts "#{'~' * 30}     link_identity_to_service_provider"
       link_identity_to_service_provider
+      # puts "#{'~' * 30}     auth_count (#{auth_count}) == 1?"
+      return redirect_to(interstitial_url) if auth_count == 1
+      # puts "#{'~' * 30}     handle_successful_handoff"
       handle_successful_handoff
     end
 
@@ -33,6 +44,9 @@ module OpenidConnect
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#confirm_user_is_authenticated_with_fresh_mfa"
+
+      bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
     end
@@ -72,6 +86,7 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#build_authorize_form_from_params"
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
     end
 
@@ -80,6 +95,7 @@ module OpenidConnect
     end
 
     def validate_authorize_form
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#validate_authorize_form"
       result = @authorize_form.submit
       track_authorize_analytics(result)
 
@@ -93,17 +109,23 @@ module OpenidConnect
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#sign_out_if_prompt_param_is_login_and_user_is_signed_in"
+
       return unless user_signed_in? && @authorize_form.prompt == 'login'
       return if check_sp_handoff_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#prompt_for_password_if_ial2_request_and_pii_locked"
+
       return unless pii_requested_but_locked?
       redirect_to capture_password_url
     end
 
     def store_request
+      # puts "#{'~' * 20} OpenidConnect::AuthorizationController#store_request"
+
       ServiceProviderRequestHandler.new(
         url: request.original_url,
         session: session,
