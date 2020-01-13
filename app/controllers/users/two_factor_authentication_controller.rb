@@ -28,7 +28,7 @@ module Users
 
     def add_tracking(result)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
-      add_sp_cost(:sms)
+      add_sp_cost( delivery_preference )
     end
 
     def phone_enabled?

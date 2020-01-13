@@ -14,6 +14,7 @@ module Db
         gpo_letter
         phone_otp
         sms
+        voice
       ].freeze
 
       def self.call(issuer, token)
