@@ -79,7 +79,8 @@ feature 'Doc Auth Funnel report' do
   end
 
   it 'works for one flow' do
-    complete_doc_auth_steps_before_doc_success_step(user)
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_doc_success_step
 
     expect(subject.new.call).to eq(doc_success_funnel.merge(summary1))
 
@@ -88,8 +89,10 @@ feature 'Doc Auth Funnel report' do
   end
 
   it 'works for two flows' do
-    complete_doc_auth_steps_before_doc_success_step(user)
-    complete_doc_auth_steps_before_doc_success_step(user2)
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_doc_success_step
+    sign_in_and_2fa_user(user2)
+    complete_doc_auth_steps_before_doc_success_step
 
     expect(subject.new.call).to eq(doc_success_funnel.merge(summary2))
   end

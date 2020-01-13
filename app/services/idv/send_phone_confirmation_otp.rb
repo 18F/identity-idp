@@ -59,7 +59,12 @@ module Idv
         expiration: Devise.direct_otp_valid_for.to_i / 60,
         channel: delivery_method,
       )
+      add_cost
+    end
+
+    def add_cost
       Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
+      Db::SpCost::AddSpCost.call(idv_session.issuer, :phone_otp)
     end
 
     def extra_analytics_attributes

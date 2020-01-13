@@ -8,6 +8,7 @@ shared_examples 'doc auth mobile back image step' do |simulate|
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_mobile_back_image_step
       mock_assure_id_ok
     end
@@ -25,9 +26,9 @@ shared_examples 'doc auth mobile back image step' do |simulate|
     end
 
     it 'proceeds to the next page if the user does not have a phone' do
-      complete_doc_auth_steps_before_mobile_back_image_step(
-        create(:user, :with_authentication_app, :with_piv_or_cac),
-      )
+      user = create(:user, :with_authentication_app, :with_piv_or_cac)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_mobile_back_image_step
       attach_image
       click_idv_continue
 
