@@ -52,8 +52,7 @@ module Pii
     end
 
     def stale_attributes?
-      user.phone_configurations.any?(&:stale_encrypted_phone?) || user.stale_encrypted_email? ||
-        user.stale_encrypted_otp_secret_key?
+      user.phone_configurations.any?(&:stale_encrypted_phone?) || user.stale_encrypted_email?
     end
 
     def stale_ssn_signature?(profile)
