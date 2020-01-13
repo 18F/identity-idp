@@ -15,6 +15,7 @@ feature 'SP Costing' do
   let(:email1) { 'test@test.com' }
   let(:email2) { 'test2@test.com' }
   let(:email3) { 'test3@test.com' }
+  let(:email4) { 'test4@test.com' }
   let(:password) { Features::SessionHelper::VALID_PASSWORD }
 
   it 'logs the correct costs for an ial1 user creation from sp with oidc' do
@@ -34,6 +35,20 @@ feature 'SP Costing' do
     expect_cost_type(3, 'lexis_nexis_resolution')
     expect_cost_type(4, 'ial2_user_added')
     expect_cost_type(5, 'authentication')
+  end
+
+  it 'logs the correct costs for an ial1 authentication' do
+    create_ial1_user_from_sp(email4)
+    SpCost.delete_all
+    visit sign_out_url
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    fill_in_credentials_and_submit(email4, password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    expect_cost_type(0, 'digest')
+    expect_cost_type(1, 'authentication')
   end
 
   it 'logs the correct costs for an ial2 authentication' do
