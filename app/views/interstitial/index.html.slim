@@ -1,0 +1,34 @@
+- if decorated_session.sp_name
+  .center
+    = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
+
+    = render decorated_session.registration_heading
+- else
+  h1.h3.my0 = decorated_session.new_session_heading
+
+.alert.sm-left-align
+  .mt2.center
+    => t('interstitial.currently_logged_in')
+    strong
+      = current_user.email + '.'
+
+  .mt3.center
+    = t('interstitial.click_continue_html')
+
+  .mt3.center
+    = button_to(t('interstitial.continue'), sign_up_completed_path,
+          class: 'btn btn-primary btn-wide')
+
+  br
+
+.mt4
+  = t('interstitial.not_you')
+  =< link_to(t('interstitial.sign_in'), new_user_session_path)
+  =< t('interstitial.different_email')
+
+br
+
+.border-top
+
+.mt3
+  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'

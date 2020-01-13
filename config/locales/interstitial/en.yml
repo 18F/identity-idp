@@ -1,0 +1,9 @@
+---
+en:
+  interstitial:
+    currently_logged_in: You are currently logged in as
+    not_you: Not you?
+    continue: Continue
+    sign_in: Sign in
+    different_email: using a different email.
+    click_continue_html: "Click <b>continue</b> to proceed to your application: "
