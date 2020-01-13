@@ -6,10 +6,12 @@ shared_examples 'back image step' do |simulate|
     include DocAuthHelper
 
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+    let(:user) { user_with_2fa }
+
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_back_image_step
       mock_assure_id_ok
     end
@@ -99,6 +101,7 @@ shared_examples 'back image step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_front_image_step)
 
       Timecop.travel((Figaro.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_back_image_step
         attach_image
         click_idv_continue
