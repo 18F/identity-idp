@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[x509_dn_uuid]
+  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
   include NonNullUuid
 
   devise(
