@@ -29,7 +29,7 @@ module OpenidConnect
       # puts "#{'~' * 30}     link_identity_to_service_provider"
       link_identity_to_service_provider
       # puts "#{'~' * 30}     auth_count (#{auth_count}) == 1?"
-      return redirect_to(interstitial_url) if auth_count == 1
+      return redirect_to(user_authorization_confirmation_url) if auth_count == 1
       # puts "#{'~' * 30}     handle_successful_handoff"
       handle_successful_handoff
     end

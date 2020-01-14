@@ -1,6 +1,6 @@
 ---
 es:
-  interstitial:
+  user_authorization_confirmation:
     currently_logged_in: You are currently logged in as
     not_you: Not you?
     continue: Continue

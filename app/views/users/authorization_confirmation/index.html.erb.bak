@@ -1,0 +1,23 @@
+<p>You are currently logged in as <strong><%= current_user.email %></strong></p>
+
+<%# image_tag(decorated_session.sp_logo_url, height: 40,
+  alt: decorated_session.sp_name, class: 'inline-block align-middle') %>
+
+<p>To return to <strong><%= decorated_session.sp_name %></strong> push this button:</p>
+
+<p>
+  <div 'class=center'>
+    <%= button_to t('forms.buttons.continue'), sign_up_completed_path, \
+      class: 'btn btn-primary btn-wide' %>
+  </div>
+</p>
+
+<p>If you wish to log in with a different email address, click this button:</p>
+
+<p>
+  <div 'class=center'>
+    <%= button_to t('links.next'), reset_interstitial_path, \
+      method: :put,
+      class: 'btn btn-primary btn-wide' %>
+  </div>
+</p>

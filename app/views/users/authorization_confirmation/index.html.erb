@@ -12,18 +12,18 @@
 
 <div class='alert sm-left-align'>
   <div class='mt2 center'>
-    <%= t('interstitial.currently_logged_in') %>
+    <%= t('user_authorization_confirmation.currently_logged_in') %>
     <strong>
       <%= ' ' + current_user.email + '.' %>
     </strong>
   </div>
 
   <div class='mt3 center'>
-    <%= t('interstitial.click_continue_html') %>
+    <%= t('user_authorization_confirmation.click_continue_html') %>
   </div>
 
   <div class='mt3 center'>
-    <%= button_to(t('interstitial.continue'),
+    <%= button_to(t('user_authorization_confirmation.continue'),
                   sign_up_completed_path,
                   class: 'btn btn-primary btn-wide') %>
   </div>
@@ -33,13 +33,13 @@
 
 <div class='mt4 center'>
   <div class='mt2 center'>
-    <%= t('interstitial.not_you') %>
-    <%= t('interstitial.sign_in') %>
-    <%= t('interstitial.different_email') %>
+    <%= t('user_authorization_confirmation.not_you') %>
+    <%= t('user_authorization_confirmation.sign_in') %>
+    <%= t('user_authorization_confirmation.different_email') %>
   </div>
   <div class='mt3 center'>
-    <%= button_to(t('interstitial.sign_in'),
-          reset_interstitial_path,
+    <%= button_to(t('user_authorization_confirmation.sign_in'),
+          reset_user_authorization_path,
           class: 'btn btn-primary btn-wide',
           method: :put) %>
   </div>
