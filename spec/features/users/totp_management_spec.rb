@@ -42,7 +42,7 @@ describe 'totp management' do
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 
-      expect(user.reload.otp_secret_key).to_not be_nil
+      expect(user.auth_app_configurations).to be_empty
       expect(user.events.order(created_at: :desc).last.event_type).to eq('authenticator_enabled')
     end
 
