@@ -323,7 +323,7 @@ feature 'Two Factor Authentication' do
       app = user.auth_app_configurations.first
       app.otp_secret_key = secret
       app.save
-      Db::AuthAppConfiguration::Create.call(user, secret, 'foo')
+      Db::AuthAppConfiguration::Create.call(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
       Timecop.freeze do

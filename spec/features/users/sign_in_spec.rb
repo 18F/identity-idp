@@ -727,8 +727,8 @@ feature 'Sign in' do
   context 'multiple auth apps' do
     it 'allows you to sign in with either' do
       user = create(:user, :signed_up)
-      Db::AuthAppConfiguration::Create.call(user, 'foo', 'foo')
-      Db::AuthAppConfiguration::Create.call(user, 'bar', 'bar')
+      Db::AuthAppConfiguration::Create.call(user, 'foo', nil, 'foo')
+      Db::AuthAppConfiguration::Create.call(user, 'bar', nil, 'bar')
 
       visit new_user_session_path
       fill_in_credentials_and_submit(user.email, user.password)
