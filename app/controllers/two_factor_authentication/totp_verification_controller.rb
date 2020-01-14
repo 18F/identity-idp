@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     def show
       @presenter = presenter_for_two_factor_authentication_method
       return unless FeatureManagement.prefill_otp_codes?
-      @code = ROTP::TOTP.new(current_user.otp_secret_key).now
+      @code = ROTP::TOTP.new(current_user.auth_app_configurations.first.otp_secret_key).now
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT)
     end
 
@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     private
 
     def confirm_totp_enabled
-      return if current_user.totp_enabled?
+      return if current_user.totp_enabled? || current_user.auth_app_configurations.any?
 
       redirect_to user_two_factor_authentication_url
     end

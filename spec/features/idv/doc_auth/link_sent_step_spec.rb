@@ -34,7 +34,7 @@ shared_examples 'link sent step' do |simulate|
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
 
       click_on t('doc_auth.buttons.start_over')
-      complete_doc_auth_steps_before_link_sent_step(user)
+      complete_doc_auth_steps_before_link_sent_step
       expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
     end
 
