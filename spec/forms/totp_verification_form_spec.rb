@@ -9,7 +9,7 @@ describe TotpVerificationForm do
         form = TotpVerificationForm.new(user, code)
         result = instance_double(FormResponse)
 
-        allow(user).to receive(:authenticate_totp).and_return(true)
+        allow(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(true)
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp' }).

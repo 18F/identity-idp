@@ -51,8 +51,8 @@ fr:
         message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session},
           sauf en cas d'avis contraire de votre part.
         sign_out: Déconnectez-moi
-    totp_configured: Vous avez activé l'application d'authentification.
-    totp_disabled: Vous avez désactivé l'application d'authentification.
+    totp_configured: Vous avez ajouté une application d'authentification.
+    totp_disabled: Vous avez supprimé votre application d'authentification.
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Or, %{link}

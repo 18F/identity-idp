@@ -6,12 +6,11 @@ shared_examples 'link sent step' do |simulate|
     include DocAuthHelper
     include DocCaptureHelper
 
-    let(:user) { user_with_2fa }
-
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
-      complete_doc_auth_steps_before_link_sent_step(user)
+      user = sign_in_and_2fa_user
+      complete_doc_auth_steps_before_link_sent_step
       mock_assure_id_ok
       mock_doc_captured(user.id)
     end
@@ -27,6 +26,18 @@ shared_examples 'link sent step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
 
+    it 'refreshes page 4x with meta refresh extending timeout by 40 min and can start over' do
+      4.times do
+        expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
+        visit idv_doc_auth_link_sent_step
+      end
+      expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
+
+      click_on t('doc_auth.buttons.start_over')
+      complete_doc_auth_steps_before_link_sent_step
+      expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
+    end
+
     it 'proceeds to the next page with valid info and test credentials turned on' do
       enable_test_credentials
       click_idv_continue
@@ -36,7 +47,8 @@ shared_examples 'link sent step' do |simulate|
 
     it 'proceeds to the next page if the user does not have a phone' do
       user = create(:user, :with_authentication_app, :with_piv_or_cac)
-      complete_doc_auth_steps_before_link_sent_step(user)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_link_sent_step
       mock_doc_captured(user.id)
       click_idv_continue
 

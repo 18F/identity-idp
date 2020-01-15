@@ -206,7 +206,7 @@ feature 'Two Factor Authentication' do
     end
 
     it 'allows totp fallback when configured' do
-      user = create(:user, :signed_up, :with_piv_or_cac, otp_secret_key: 'foo')
+      user = create(:user, :signed_up, :with_piv_or_cac, :with_authentication_app)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq login_two_factor_piv_cac_path
@@ -319,7 +319,10 @@ feature 'Two Factor Authentication' do
 
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
-      user = create(:user, :signed_up, otp_secret_key: secret)
+      user = create(:user, :signed_up)
+      user.otp_secret_key = secret
+      user.save
+      Db::AuthAppConfiguration::Create.call(user, secret, 'foo')
       otp = generate_totp_code(secret)
 
       Timecop.freeze do

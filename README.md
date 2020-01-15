@@ -270,6 +270,16 @@ If you are on a mac, if you receive the following prompt the first time you run 
 JavaScript unit tests run using the mocha test runner. Check out the
 [mocha documentation](https://mochajs.org/) for more details.
 
+### Setting up Geolocation
+
+The app uses MaxMind Geolite2 for geolocation.
+To test geolocation locally you will need to add a copy of the Geolite2-City database to the IdP.
+
+The Geolite2-City database can be downloaded from MaxMind's site at [https://dev.maxmind.com/geoip/geoip2/geolite2/](https://dev.maxmind.com/geoip/geoip2/geolite2/).
+
+Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
+The app will start using that Geolite2 file for geolocation after restart.
+
 ### User flows
 
 We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.

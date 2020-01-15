@@ -33,6 +33,7 @@ es:
       sign_in_location_and_ip: Desde %{ip} (la dirección IP probablemente se encuentra
         en %{location})
       ssn: Número de Seguro Social
+      totp_confirm_delete: Sí, eliminar la aplicación de autenticación
       unknown_location: ubicación desconocida
       verification:
         bounced: El servicio postal no pudo entregar la carta a su dirección.

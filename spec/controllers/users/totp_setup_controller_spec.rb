@@ -43,18 +43,6 @@ describe Users::TotpSetupController, devise: true do
       end
     end
 
-    context 'user has already enabled authenticator app' do
-      it 'redirects to profile page' do
-        stub_sign_in
-
-        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
-
-        get :new
-
-        expect(response).to redirect_to account_path
-      end
-    end
-
     context 'user is setting up authenticator app during account creation' do
       before do
         stub_analytics
@@ -232,8 +220,11 @@ describe Users::TotpSetupController, devise: true do
   describe '#disable' do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
-        user = create(:user, :signed_up, otp_secret_key: 'foo')
-        sign_in user
+        user = create(:user, :signed_up, :with_authentication_app)
+        user.otp_secret_key = 'foo'
+        user.auth_app_configurations.first.otp_secret_key = 'foo'
+        user.save
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)

@@ -124,7 +124,7 @@ module Idv
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
           result = assure_id.post_front_image(image.read)
-          Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_front_image)
+          add_cost(:acuant_front_image)
           result
         end
       end
@@ -133,7 +133,7 @@ module Idv
         return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
         rescue_network_errors do
           result = assure_id.post_back_image(image.read)
-          Db::ProofingCost::AddUserProofingCost.call(user_id, :acuant_back_image)
+          add_cost(:acuant_back_image)
           result
         end
       end
@@ -180,11 +180,21 @@ module Idv
         nil
       end
 
+      def add_cost(token)
+        issuer = sp_session[:issuer].to_s
+        Db::SpCost::AddSpCost.call(issuer, token)
+        Db::ProofingCost::AddUserProofingCost.call(user_id, token)
+      end
+
       def friendly_message(message)
         FriendlyError::Message.call(message, 'doc_auth')
       end
 
-      delegate :idv_session, to: :@flow
+      def sp_session
+        session.fetch(:sp, {})
+      end
+
+      delegate :idv_session, :session, to: :@flow
     end
   end
 end

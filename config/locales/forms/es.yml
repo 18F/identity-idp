@@ -123,12 +123,19 @@ es:
       labels:
         email: Email
     select: "- Seleccionar -"
+    totp_delete:
+      caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
+        a su cuenta login.gov.
+      confirm: "¿Seguro que quieres eliminar tu aplicación de autenticación?"
     totp_setup:
-      totp_intro_html: Al iniciar una sesión, puede obtener el código de seguridad
-        de una app de autenticación. %{link}
-      totp_step_1: Abra su app de autenticación.
-      totp_step_2: Ingrese esta clave en la app.
-      totp_step_3: Ingrese el código de la app.
+      totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
+        con códigos de seguridad temporales. %{link}
+      totp_step_1: Darle un apodo
+      totp_step_1a: Si agrega más de una aplicación, sabrá cuáles.
+      totp_step_2: Abra su app de autenticación.
+      totp_step_3: Con su aplicación, ingrese esta clave manualmente o escanee el
+        código de barras
+      totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
       code: Código de seguridad de sólo un uso

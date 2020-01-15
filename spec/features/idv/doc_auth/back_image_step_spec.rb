@@ -5,12 +5,14 @@ shared_examples 'back image step' do |simulate|
     include IdvStepHelper
     include DocAuthHelper
 
-    let(:user) { user_with_2fa }
     let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+    let(:user) { user_with_2fa }
+
     before do
       setup_acuant_simulator(enabled: simulate)
       enable_doc_auth
-      complete_doc_auth_steps_before_back_image_step(user)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_back_image_step
       mock_assure_id_ok
     end
 
@@ -30,14 +32,15 @@ shared_examples 'back image step' do |simulate|
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
+      user = User.first
       expect(user.proofing_component.document_check).to eq('acuant')
       expect(user.proofing_component.document_type).to eq('state_id')
     end
 
     it 'proceeds to the next page if the user does not have a phone' do
-      complete_doc_auth_steps_before_back_image_step(
-        create(:user, :with_authentication_app, :with_piv_or_cac),
-      )
+      user = create(:user, :with_authentication_app, :with_piv_or_cac)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_back_image_step
       attach_image
       click_idv_continue
 
@@ -89,7 +92,7 @@ shared_examples 'back image step' do |simulate|
 
         expect(page).to have_current_path(idv_doc_auth_ssn_step)
         click_on t('doc_auth.buttons.start_over')
-        complete_doc_auth_steps_before_back_image_step(user)
+        complete_doc_auth_steps_before_back_image_step
       end
 
       attach_image
@@ -98,7 +101,8 @@ shared_examples 'back image step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_front_image_step)
 
       Timecop.travel((Figaro.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
-        complete_doc_auth_steps_before_back_image_step(user)
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_back_image_step
         attach_image
         click_idv_continue
         expect(page).to have_current_path(idv_doc_auth_ssn_step)

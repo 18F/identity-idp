@@ -4,9 +4,11 @@ class IdentityLinker
   def initialize(user, provider)
     @user = user
     @provider = provider
+    @ial = nil
   end
 
   def link_identity(**extra_attrs)
+    @ial =  extra_attrs[:ial]
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
@@ -20,7 +22,14 @@ class IdentityLinker
   private
 
   def identity
-    @identity ||= identity_relation.first_or_create
+    @identity ||= find_or_create_identity_with_costing
+  end
+
+  def find_or_create_identity_with_costing
+    identity_record = identity_relation.first
+    return identity_record if identity_record
+    Db::SpCost::AddSpCost.call(provider, @ial == 2 ? :ial2_user_added : :ial1_user_added)
+    user.identities.create(service_provider: provider)
   end
 
   def identity_relation

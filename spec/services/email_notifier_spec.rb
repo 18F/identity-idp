@@ -17,7 +17,6 @@ describe EmailNotifier do
         user = create(:user, :signed_up)
         old_email = user.email
         UpdateUser.new(user: user, attributes: { email: 'new@example.com' }).call
-        user.confirm
 
         expect(UserMailer).to receive(:email_changed).with(old_email).and_return(mailer)
         expect(mailer).to receive(:deliver_later)

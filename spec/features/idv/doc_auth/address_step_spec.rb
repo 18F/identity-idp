@@ -6,6 +6,7 @@ feature 'doc auth verify step' do
 
   before do
     enable_doc_auth
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_address_step
   end
 

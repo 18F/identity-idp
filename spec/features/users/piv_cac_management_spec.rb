@@ -75,7 +75,8 @@ feature 'PIV/CAC Management' do
         expect(current_path).to eq account_path
 
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
-        fill_in 'name', with: 'Card 1'
+        user.reload
+        fill_in 'name', with: user.piv_cac_configurations.first.name
         click_button t('forms.piv_cac_setup.submit')
 
         expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))

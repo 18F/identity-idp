@@ -3609,9 +3609,9 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
     postcss "^7.0.14"
 
 identity-style-guide@^2.1.5:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-2.1.6.tgz#16b9d5f3596e3595db9d3edf3c52a8a6c0a2e1ec"
-  integrity sha512-y+VMPC+ct2yjiVVaeqQ0W11zHZRHcbuvvnTYe+C4DOtnS2Z9dzcReMM8kOXPPodE/j+zac1nC3AUDZS/VwbKSQ==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-2.2.0.tgz#ec6cf44a3a623063a7a04335e179e2a50442b476"
+  integrity sha512-AKK+03R2lB0MXe0aBlyFWaiIyW6ORNBtOsRnve54VNW9SPauytX2bLBnb3qCg2/T6BZKr3Cj0v4dwZpo/J8R0A==
   dependencies:
     zxcvbn "^4.4.2"
 
