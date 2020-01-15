@@ -9,9 +9,11 @@ class SamlIdpController < ApplicationController
   include FullyAuthenticatable
   include RememberDeviceConcern
   include VerifyProfileConcern
+  include AuthorizationCountConcern
 
   skip_before_action :verify_authenticity_token
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
+  before_action :bump_auth_count, only: [:auth]
 
   def auth
     link_identity_from_session_data
@@ -20,6 +22,8 @@ class SamlIdpController < ApplicationController
       MfaPolicy.new(current_user).sufficient_factors_enabled?
     return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
+    puts "#{'~' * 30}     auth_count (#{auth_count}) == 1?"
+    return redirect_to(user_authorization_confirmation_url) if auth_count == 1
     handle_successful_handoff
   end
 
@@ -42,6 +46,7 @@ class SamlIdpController < ApplicationController
   private
 
   def confirm_user_is_authenticated_with_fresh_mfa
+    bump_auth_count unless user_fully_authenticated?
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
