@@ -12,4 +12,3 @@ module Db
     end
   end
 end
-

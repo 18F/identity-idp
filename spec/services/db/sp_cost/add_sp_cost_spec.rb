@@ -113,7 +113,6 @@ feature 'SP Costing' do
 
   def expect_direct_cost_type(sp_cost_index, token)
     sp_cost = sp_costs(sp_cost_index)
-    expect(sp_cost.ial).to be_nil
     expect(sp_cost.issuer).to eq('')
     expect(sp_cost.agency_id).to eq(0)
     expect(sp_cost.cost_type).to eq(token)
