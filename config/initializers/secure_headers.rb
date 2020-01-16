@@ -11,9 +11,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
                   ["'self'", 'https://*']
                 else
                   ["'self'",
-                    'https://*.pivcac.int.identitysandbox.gov',
-                    'https://*.pivcac.staging.login.gov',
-                    'https://*.pivcac.prod.login.gov']
+                   'https://*.pivcac.int.identitysandbox.gov',
+                   'https://*.pivcac.staging.login.gov',
+                   'https://*.pivcac.prod.login.gov']
                 end
   default_csp_config = {
     default_src: ["'self'"],
