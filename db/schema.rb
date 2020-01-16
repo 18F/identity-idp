@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200113223442) do
+ActiveRecord::Schema.define(version: 20200103170411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -461,6 +461,7 @@ ActiveRecord::Schema.define(version: 20200113223442) do
     t.integer "failed_attempts", default: 0
     t.string "unlock_token", limit: 255
     t.datetime "phone_confirmed_at"
+    t.text "encrypted_otp_secret_key"
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
@@ -471,10 +472,12 @@ ActiveRecord::Schema.define(version: 20200113223442) do
     t.string "attribute_cost"
     t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
+    t.integer "totp_timestamp"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"
     t.index ["unlock_token"], name: "index_users_on_unlock_token"
