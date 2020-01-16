@@ -3,7 +3,6 @@ class User < ApplicationRecord
   include NonNullUuid
 
   devise(
-    :confirmable,
     :database_authenticatable,
     :recoverable,
     :registerable,
@@ -40,6 +39,7 @@ class User < ApplicationRecord
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_many :piv_cac_configurations, dependent: :destroy, inverse_of: :user
+  has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
   has_many :devices, dependent: :destroy
@@ -48,8 +48,6 @@ class User < ApplicationRecord
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
-
-  skip_callback :create, :before, :generate_confirmation_token
 
   attr_accessor :asserted_attributes
 

@@ -10,6 +10,7 @@ feature 'doc auth welcome step' do
   context 'button is disabled when JS is enabled', :js do
     before do
       enable_doc_auth
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_welcome_step
     end
 
@@ -19,6 +20,7 @@ feature 'doc auth welcome step' do
   context 'button is clickable when JS is disabled' do
     before do
       enable_doc_auth
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_welcome_step
     end
 

@@ -1,0 +1,30 @@
+<div class="clearfix border-top border-blue-light">
+  <div class="p2 col col-12">
+    <div class="col col-6 bold">
+      Authentication apps
+    </div>
+    <% if current_user.auth_app_configurations.count < Figaro.env.max_auth_apps_per_account.to_i %>
+      <div class="right-align col col-6">
+        <div class="btn btn-account-action rounded-lg bg-light-blue">
+          <%= link_to t('forms.buttons.enable'), authenticator_setup_url %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
+    <div class="p2 col col-12 border-top border-blue-light">
+      <div class="col col-8">
+        <div class="col col-12 sm-col-6 account-list-item">
+          <%= auth_app_configuration.name %>
+        </div>
+        <div class="col col-12 sm-col-6 truncate">
+          <%= PhoneConfigurationDecorator.new(auth_app_configuration).default_number_message %>
+        </div>
+      </div>
+      <div class="col col-4 right-align">
+        <%= render @view_model.totp_partial, id: auth_app_configuration.id %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -48,8 +48,8 @@ en:
         message_html: For your security, we will sign you out in %{time_left_in_session}
           unless you tell us otherwise.
         sign_out: Sign me out
-    totp_configured: You enabled an authentication app.
-    totp_disabled: You disabled your authentication app.
+    totp_configured: You added an authentication app.
+    totp_disabled: You removed your authentication app.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}

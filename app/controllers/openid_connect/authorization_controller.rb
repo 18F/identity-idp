@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
@@ -41,9 +42,7 @@ module OpenidConnect
     end
 
     def handle_successful_handoff
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
-      Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
-      increment_monthly_auth_count
+      track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
       redirect_to @authorize_form.success_redirect_uri
       delete_branded_experience
@@ -119,5 +118,13 @@ module OpenidConnect
         UserDecorator.new(current_user).identity_verified? &&
         user_session[:decrypted_pii].blank?
     end
+
+    def track_events
+      analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
+      Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
+      increment_monthly_auth_count
+      add_sp_cost(:authentication)
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength

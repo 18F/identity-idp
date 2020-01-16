@@ -19,7 +19,7 @@ module Idv
       step_attempts
     ].freeze
 
-    attr_reader :current_user, :usps_otp
+    attr_reader :current_user, :usps_otp, :issuer
 
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
@@ -115,7 +115,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session, :issuer
+    attr_accessor :user_session
 
     def set_idv_session
       return if session.present?

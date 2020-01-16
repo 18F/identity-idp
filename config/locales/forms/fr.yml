@@ -128,12 +128,19 @@ fr:
       labels:
         email: Adresse courriel
     select: "- Sélectionner -"
+    totp_delete:
+      caution: Si vous supprimez votre application d'authentification, vous ne pourrez
+        plus l'utiliser pour accéder à votre compte login.gov.
+      confirm: Voulez-vous vraiment supprimer votre application d'authentification?
     totp_setup:
-      totp_intro_html: Lorsque vous vous connectez, vous pouvez obtenir votre code
-        de sécurité d'une application d'authentification. %{link}
-      totp_step_1: Démarrez votre application d'authentification
-      totp_step_2: Entrez cette clé dans l'application
-      totp_step_3: Entrez le code à partir de l'application
+      totp_intro_html: Configurez une application d'authentification pour vous connecter
+        à l'aide de codes de sécurité temporaires. %{link}
+      totp_step_1: Donnez-lui un surnom
+      totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
+      totp_step_2: Démarrez votre application d'authentification
+      totp_step_3: Avec votre application, entrez cette clé manuellement ou scannez
+        le code-barres
+      totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
       code: Code de sécurité
