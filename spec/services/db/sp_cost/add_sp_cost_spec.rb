@@ -22,20 +22,21 @@ feature 'SP Costing' do
   it 'logs the correct costs for an ial1 user creation from sp with oidc' do
     create_ial1_user_from_sp(email1)
 
-    expect_sp_cost_type(0, 'sms')
-    expect_sp_cost_type(1, 'ial1_user_added')
-    expect_sp_cost_type(2, 'authentication')
+    expect_sp_cost_type(0, 1, 'sms')
+    expect_sp_cost_type(1, 1, 'user_added')
+    expect_sp_cost_type(2, 1, 'authentication')
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc' do
     create_ial2_user_from_sp(email2)
 
-    expect_sp_cost_type(0, 'sms')
-    expect_sp_cost_type(1, 'acuant_front_image')
-    expect_sp_cost_type(2, 'acuant_back_image')
-    expect_sp_cost_type(3, 'lexis_nexis_resolution')
-    expect_sp_cost_type(4, 'ial2_user_added')
-    expect_sp_cost_type(5, 'authentication')
+    expect_sp_cost_type(0, 2, 'sms')
+    expect_sp_cost_type(1, 2, 'acuant_front_image')
+    expect_sp_cost_type(2, 2, 'acuant_back_image')
+    expect_sp_cost_type(3, 2, 'lexis_nexis_resolution')
+    expect_sp_cost_type(4, 2, 'lexis_nexis_address')
+    expect_sp_cost_type(5, 2, 'user_added')
+    expect_sp_cost_type(6, 2, 'authentication')
   end
 
   it 'logs the correct costs for an ial1 authentication' do
@@ -48,8 +49,8 @@ feature 'SP Costing' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect_sp_cost_type(0, 'digest')
-    expect_sp_cost_type(1, 'authentication')
+    expect_sp_cost_type(0, 1, 'digest')
+    expect_sp_cost_type(1, 1, 'authentication')
   end
 
   it 'logs the correct costs for an ial2 authentication' do
@@ -62,8 +63,8 @@ feature 'SP Costing' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect_sp_cost_type(0, 'digest')
-    expect_sp_cost_type(1, 'authentication')
+    expect_sp_cost_type(0, 2, 'digest')
+    expect_sp_cost_type(1, 2, 'authentication')
   end
 
   it 'logs the correct costs for a direct authentication' do
@@ -102,8 +103,9 @@ feature 'SP Costing' do
     click_continue
   end
 
-  def expect_sp_cost_type(sp_cost_index, token)
+  def expect_sp_cost_type(sp_cost_index, ial, token)
     sp_cost = sp_costs(sp_cost_index)
+    expect(sp_cost.ial).to eq(ial)
     expect(sp_cost.issuer).to eq(issuer)
     expect(sp_cost.agency_id).to eq(agency_id)
     expect(sp_cost.cost_type).to eq(token)
@@ -111,6 +113,7 @@ feature 'SP Costing' do
 
   def expect_direct_cost_type(sp_cost_index, token)
     sp_cost = sp_costs(sp_cost_index)
+    expect(sp_cost.ial).to be_nil
     expect(sp_cost.issuer).to eq('')
     expect(sp_cost.agency_id).to eq(0)
     expect(sp_cost.cost_type).to eq(token)
