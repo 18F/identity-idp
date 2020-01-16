@@ -10,10 +10,10 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   form_action = if Rails.env.development?
                   ["'self'", 'https://*']
                 else
-                  ["'self',
-                    https://*.pivcac.int.identitysandbox.gov,
-                    https://*.pivcac.staging.login.gov,
-                    https://*.pivcac.prod.login.gov"]
+                  ["'self'",
+                    'https://*.pivcac.int.identitysandbox.gov',
+                    'https://*.pivcac.staging.login.gov',
+                    'https://*.pivcac.prod.login.gov']
                 end
   default_csp_config = {
     default_src: ["'self'"],
