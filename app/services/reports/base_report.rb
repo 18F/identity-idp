@@ -22,6 +22,8 @@ module Reports
         ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{report_timeout}")
         yield
       end
+    ensure
+      ActiveRecord::Base.establish_connection(Rails.env)
     end
 
     def save_report(report_name, body)
