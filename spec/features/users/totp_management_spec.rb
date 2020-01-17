@@ -15,7 +15,6 @@ describe 'totp management' do
       click_on t('account.index.totp_confirm_delete')
 
       expect(current_path).to eq account_path
-      expect(user.reload.otp_secret_key).to be_nil
     end
   end
 
@@ -43,7 +42,7 @@ describe 'totp management' do
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 
-      expect(user.reload.otp_secret_key).to_not be_nil
+      expect(user.auth_app_configurations).to be_empty
       expect(user.events.order(created_at: :desc).last.event_type).to eq('authenticator_enabled')
     end
 

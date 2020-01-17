@@ -10,7 +10,7 @@ describe 'Remembering a TOTP device' do
   context 'sign in' do
     def remember_device_and_sign_out_user
       sign_in_user(user)
-      fill_in :code, with: generate_totp_code(user.otp_secret_key)
+      fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
       check :remember_device
       click_submit_default
       first(:link, t('links.sign_out')).click

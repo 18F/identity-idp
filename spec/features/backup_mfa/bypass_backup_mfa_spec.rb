@@ -74,7 +74,7 @@ describe 'attempting to bypass backup mfa setup' do
     let(:user) { create(:user, :with_authentication_app) }
 
     def complete_mfa
-      fill_in 'code', with: generate_totp_code(user.otp_secret_key)
+      fill_in 'code', with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
       click_submit_default
     end
 
