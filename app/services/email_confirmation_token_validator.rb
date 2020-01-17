@@ -29,8 +29,9 @@ class EmailConfirmationTokenValidator
 
   def confirmation_period_expired?
     return false unless email_address_found_with_token?
-    return true unless @email_address.confirmation_sent_at.present?
-    expiration_time = @email_address.confirmation_sent_at + email_valid_for_duration
+    confirmation_sent_at = @email_address.confirmation_sent_at
+    return true if confirmation_sent_at.blank?
+    expiration_time = confirmation_sent_at + email_valid_for_duration
     Time.zone.now > expiration_time
   end
 
