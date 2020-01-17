@@ -8,9 +8,9 @@ module Db
         ActiveRecord::Base.establish_connection(
           adapter: 'postgresql',
           database: "upaya_#{rails_env}",
-          host: env.database_host,
-          username: env.database_username,
-          password: env.database_password,
+          host: env.database_read_replica_host,
+          username: env.database_readonly_username,
+          password: env.database_readonly_password,
         )
       end
     end

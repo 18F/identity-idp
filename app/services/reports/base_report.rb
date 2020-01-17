@@ -23,7 +23,7 @@ module Reports
         yield
       end
     ensure
-      ActiveRecord::Base.establish_connection(Rails.env)
+      Db::EstablishConnection::Master.call
     end
 
     def save_report(report_name, body)
