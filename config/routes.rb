@@ -231,7 +231,7 @@ Rails.application.routes.draw do
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'
-    get '/user_authorization_confirmation' => 'users/authorization_confirmation#index'
+    get '/user_authorization_confirmation' => 'users/authorization_confirmation#show'
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'

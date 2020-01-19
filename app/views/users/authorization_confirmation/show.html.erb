@@ -1,0 +1,51 @@
+<% if decorated_session.sp_name %>
+  <div class='center'>
+    <%= image_tag(asset_url('user-access.svg'), width: '280', alt: '') %>
+
+    <%= render decorated_session.registration_heading %>
+  </div>
+<% else %>
+  <h1 class='h3 my0'>
+    <%= decorated_session.new_session_heading %>
+  </h1>
+<% end %>
+
+<div class='sm-left-align'>
+  <div class='mt3'>
+    <div class='ml1 mb1 bold'>
+      <%= t('user_authorization_confirmation.currently_logged_in') %>
+    </div>
+    <div class='sm-ml1 sm-mr1' >
+      <ul class='mb3 list-reset border-bottom success-bullets requested-attributes'>
+        <li class='border-top'>
+          <span class='bold'>
+            <%= t("help_text.requested_attributes.email") %>
+          </span>
+          <span class='pl2'>
+            <%= current_user.email %>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class='mt3 center'>
+    <%= button_to(t('user_authorization_confirmation.continue',
+                    sp_name: decorated_session.sp_name),
+                  sign_up_completed_path,
+                  class: 'btn btn-primary btn-wide') %>
+  </div>
+  <div class='mt3 center'>
+    <%= t('user_authorization_confirmation.or') %>
+  </div>
+  <div class='mt3 center'>
+    <%= button_to(t('user_authorization_confirmation.sign_in'),
+          reset_user_authorization_path,
+          class: 'btn btn-primary btn-wide',
+          method: :put) %>
+  </div>
+</div>
+
+<div class='mt3'>
+  <%# link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank' %>
+</div>
