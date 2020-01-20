@@ -33,6 +33,6 @@ module Rack
 end
 
 if Rails.env.development?
-  puts 'Disabling Rack::Timeout Logging'
+  Rails.logger.info 'Disabling Rack::Timeout Logging'
   Rack::Timeout::Logger.disable
 end
