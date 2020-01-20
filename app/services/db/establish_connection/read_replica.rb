@@ -7,7 +7,7 @@ module Db
         env = Figaro.env
         ActiveRecord::Base.establish_connection(
           adapter: 'postgresql',
-          database: "upaya_#{rails_env}",
+          database: env.production? ? env.database_name : "upaya_#{rails_env}",
           host: env.database_read_replica_host,
           username: env.database_readonly_username,
           password: env.database_readonly_password,
