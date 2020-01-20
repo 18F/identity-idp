@@ -35,6 +35,11 @@ class EmailConfirmationTokenValidator
     Time.zone.now > expiration_time
   end
 
+  def self.email_address_from_token(token)
+    return if token.blank?
+    EmailAddress.find_by(confirmation_token: token)
+  end
+
   private
 
   attr_accessor :user

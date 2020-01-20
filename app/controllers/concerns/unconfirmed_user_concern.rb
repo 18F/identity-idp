@@ -3,7 +3,7 @@ module UnconfirmedUserConcern
 
   def find_user_with_confirmation_token
     @confirmation_token = params[:confirmation_token]
-    @email_address = EmailAddress.find_by(confirmation_token: @confirmation_token)
+    @email_address = EmailConfirmationTokenValidator.email_address_from_token(@confirmation_token)
     @user = @email_address&.user
   end
 
