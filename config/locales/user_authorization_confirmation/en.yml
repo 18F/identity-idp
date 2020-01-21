@@ -2,6 +2,6 @@
 en:
   user_authorization_confirmation:
     currently_logged_in: "You are using this email:"
-    continue: Sign in to %{sp_name}
+    continue: Sign in
     sign_in: Switch emails
     or: Or
