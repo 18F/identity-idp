@@ -43,7 +43,9 @@ feature 'SP Costing' do
   it 'logs the correct costs for an ial1 authentication' do
     create_ial1_user_from_sp(email4)
     SpCost.delete_all
-    visit sign_out_url
+
+    # track costs without dealing with 'remember device'
+    Capybara.reset_session!
 
     visit_idp_from_sp_with_ial1(:oidc)
     fill_in_credentials_and_submit(email4, password)
@@ -57,7 +59,9 @@ feature 'SP Costing' do
   it 'logs the correct costs for an ial2 authentication' do
     create_ial2_user_from_sp(email3)
     SpCost.delete_all
-    visit sign_out_url
+
+    # track costs without dealing with 'remember device'
+    Capybara.reset_session!
 
     visit_idp_from_sp_with_ial2(:oidc)
     fill_in_credentials_and_submit(email3, password)
@@ -72,7 +76,9 @@ feature 'SP Costing' do
     visit root_path
     create_ial1_user_directly(email5)
     SpCost.delete_all
-    visit sign_out_url
+
+    # track costs without dealing with 'remember device'
+    Capybara.reset_session!
 
     visit root_path
     fill_in_credentials_and_submit(email5, password)

@@ -120,7 +120,8 @@ feature 'IAL1 Single Sign On' do
     it 'it immediately returns to the SP after signing in again' do
       click_continue
 
-      visit sign_out_url
+      # Don't want to 'remember device'
+      Capybara.reset_session!
 
       sign_in_user(user)
       fill_in_code_with_last_phone_otp

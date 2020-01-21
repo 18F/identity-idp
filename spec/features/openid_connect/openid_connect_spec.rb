@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include CloudhsmMocks
+  include RememberDeviceConcern
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -354,12 +355,14 @@ describe 'OpenID Connect' do
 
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       visit destroy_user_session_url
 
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
+      uncheck(t('forms.messages.remember_device'))
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')

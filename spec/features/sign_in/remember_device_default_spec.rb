@@ -7,7 +7,7 @@ describe 'Remember device checkbox' do
       sign_in_user(user)
 
       expect(page).
-          to have_checked_field t('forms.messages.remember_device')
+        to have_checked_field t('forms.messages.remember_device')
     end
   end
 end

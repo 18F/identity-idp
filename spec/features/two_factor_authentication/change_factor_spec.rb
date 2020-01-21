@@ -18,7 +18,6 @@ feature 'Changing authentication factor' do
       visit manage_password_path
 
       expect(page).to have_content t('help_text.change_factor', factor: 'password')
-
       complete_2fa_confirmation
 
       expect(current_path).to eq manage_password_path

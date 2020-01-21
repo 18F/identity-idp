@@ -8,13 +8,13 @@ describe 'default phone selection' do
                                  created_at: Time.zone.now + 1.hour)
   end
 
-  describe 'sms delivery prefrence' do
+  describe 'sms delivery preference' do
     context 'when the user has not set a default phone number' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
-        t('instructions.mfa.sms.number_message_html',
-          number: '***-***-1212',
-          expiration: Figaro.env.otp_valid_for)
+        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
+                                       number: '***-***-1212',
+                                       expiration: Figaro.env.otp_valid_for)
       end
     end
 
@@ -35,7 +35,10 @@ describe 'default phone selection' do
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
 
-        sign_out_sign_in(user)
+        # Don't want to 'remember device'
+        Capybara.reset_session!
+
+        sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-3434',
                                        expiration: Figaro.env.otp_valid_for)
@@ -71,7 +74,10 @@ describe 'default phone selection' do
         parent = node.first(:xpath, './/..')
         expect(parent).to have_content t('account.index.default')
 
-        sign_out_sign_in(user)
+        # Don't want to 'remember device'
+        Capybara.reset_session!
+
+        sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-3111',
                                        expiration: Figaro.env.otp_valid_for)
@@ -98,17 +104,15 @@ describe 'default phone selection' do
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
 
-        sign_out_sign_in(user)
+        # Don't want to 'remember device'
+        Capybara.reset_session!
+
+        sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '***-***-3434',
                                        expiration: Figaro.env.otp_valid_for)
       end
     end
-  end
-
-  def sign_out_sign_in(user)
-    first(:link, t('links.sign_out')).click
-    sign_in_before_2fa(user)
   end
 
   def submit_prefilled_otp_code(user, delivery_preference)

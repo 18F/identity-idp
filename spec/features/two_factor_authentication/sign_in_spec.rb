@@ -330,7 +330,8 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq(account_path)
 
-        first(:link, t('links.sign_out')).click
+        # Don't want to 'remember device'
+        Capybara.reset_session!
 
         sign_in_user(user)
         fill_in 'code', with: otp

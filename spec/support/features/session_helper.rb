@@ -39,6 +39,7 @@ module Features
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
       click_send_security_code
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
@@ -228,6 +229,7 @@ module Features
 
     def sign_in_live_with_2fa(user = user_with_2fa)
       sign_in_user(user)
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       user
