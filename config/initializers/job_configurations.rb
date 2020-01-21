@@ -97,3 +97,19 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::DocAuthDropOffRatesPerSprintReport.new.call },
 )
+
+# SP Costs Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'SP cost report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::SpCostReport.new.call },
+)
+
+# Total SP Costs Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Total SP cost report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::TotalSpCostReport.new.call },
+)
