@@ -5,6 +5,7 @@ feature 'SP Costing' do
   include SamlAuthHelper
   include IdvHelper
   include DocAuthHelper
+  include IdvFromSpHelper
 
   before do
     enable_doc_auth
@@ -79,28 +80,6 @@ feature 'SP Costing' do
     click_submit_default
 
     expect_direct_cost_type(0, 'digest')
-  end
-
-  def create_ial1_user_from_sp(email)
-    visit_idp_from_sp_with_ial1(:oidc)
-    register_user(email)
-    click_on t('forms.buttons.continue')
-  end
-
-  def create_ial1_user_directly(email)
-    visit root_path
-    register_user(email)
-  end
-
-  def create_ial2_user_from_sp(email)
-    visit_idp_from_sp_with_ial2(:oidc)
-    register_user(email)
-    complete_all_doc_auth_steps
-    click_continue
-    fill_in 'Password', with: password
-    click_continue
-    click_acknowledge_personal_key
-    click_continue
   end
 
   def expect_sp_cost_type(sp_cost_index, ial, token)
