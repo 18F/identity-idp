@@ -114,7 +114,6 @@ module Encryption
 
     # chunk plaintext into ~4096 byte chunks, but not less than 1024 bytes in a chunk if chunking.
     # we do this by counting how many chunks we have and adding one.
-    # :reek:FeatureEnvy
     def chunk_plaintext(plaintext)
       plain_size = plaintext.bytesize
       number_chunks = plain_size / 4096

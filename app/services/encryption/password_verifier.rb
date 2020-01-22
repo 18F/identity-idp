@@ -73,7 +73,6 @@ module Encryption
       )
     end
 
-    # :reek:FeatureEnvy
     def verify_password_against_digest(password:, password_digest:, user_uuid:)
       scrypted_password = scrypt_password_digest(
         password: password,
