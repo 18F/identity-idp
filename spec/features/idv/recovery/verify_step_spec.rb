@@ -5,10 +5,13 @@ feature 'recovery verify step' do
   include DocAuthHelper
   include RecoveryHelper
 
-  let(:user) { create(:user) }
-  let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
+  let(:user) { create(:user, :signed_up, :with_phone) }
+  let(:good_ssn) { '666-66-1234' }
+  let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
+  let(:saved_pii) { DocAuthHelper::ACUANT_RESULTS_TO_PII.merge(ssn: good_ssn) }
   let(:max_attempts) { idv_max_attempts }
   before do
+    profile
     sign_in_before_2fa(user)
     enable_doc_auth
     mock_assure_id_ok
@@ -21,10 +24,12 @@ feature 'recovery verify step' do
   end
 
   it 'proceeds to the next page upon confirmation' do
+    allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
+      and_return(saved_pii.to_json)
     complete_recovery_steps_before_verify_step
     click_idv_continue
 
-    expect(page).to have_current_path(idv_recovery_success_step)
+    expect(page).to have_current_path(account_path)
   end
 
   it 'does not proceed to the next page if resolution fails' do
