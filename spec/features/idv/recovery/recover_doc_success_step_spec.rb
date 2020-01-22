@@ -19,26 +19,16 @@ feature 'recovery doc success step' do
     complete_recovery_steps_before_doc_success_step(user)
   end
 
-  it 'is on the correct page' do
-    expect(page).to have_current_path(idv_recovery_success_step)
-    expect(page).to have_content(t('doc_auth.forms.doc_success'))
-  end
-
-  context 'document pii matches saved pii' do
-    it 'proceeds to the account page' do
-      click_idv_continue
-
-      expect(page).to have_current_path(account_path)
-    end
+  it 'document pii matches saved pii' do
+    expect(page).to have_current_path(account_path)
+    expect(page).to have_content(t('recover.reverify.success'))
   end
 
   context 'document pii does not match the saved pii' do
     let(:profile) { create(:profile, :active, :verified, user: user, pii: bad_pii) }
 
     it 'fails to re-verify' do
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_recovery_fail_step)
+      expect(page).to have_current_path(idv_session_errors_warning_path)
     end
   end
 end
