@@ -97,7 +97,6 @@ module SamlIdpAuthConcern
     )
   end
 
-  # :reek:FeatureEnvy
   def saml_response_signature_options
     endpoint = SamlEndpoint.new(request)
     {
@@ -115,7 +114,6 @@ module SamlIdpAuthConcern
     @_issuer ||= saml_request.service_provider.identifier
   end
 
-  # :reek:FeatureEnvy
   def request_url
     url = URI.parse request.original_url
     query_params = Rack::Utils.parse_nested_query url.query
