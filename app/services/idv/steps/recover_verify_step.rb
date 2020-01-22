@@ -1,6 +1,6 @@
 module Idv
   module Steps
-    class VerifyStep < VerifyBaseStep
+    class RecoverVerifyStep < VerifyBaseStep
       def call
         perform_resolution_and_check_ssn
       end
