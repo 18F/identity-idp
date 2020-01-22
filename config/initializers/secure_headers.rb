@@ -7,7 +7,13 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_permitted_cross_domain_policies = 'none'
 
   # On the development environment only we allow 'https://*' to hop over to identity-pki
-  form_action = Rails.env.development? ? ["'self'", 'https://*'] : ["'self'"]
+  form_action = if Rails.env.development?
+                  ["'self'", 'https://*']
+                else
+                  ["'self'",
+                   'https://*.pivcac.*.identitysandbox.gov',
+                   'https://*.pivcac.*.login.gov']
+                end
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
