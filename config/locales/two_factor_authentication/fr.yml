@@ -157,11 +157,13 @@ fr:
       backup_code_only_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
         dans un endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme seule
         méthode d'authentification.
+      less_secure_label: Menos protección
       phone: Téléphone
       phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
       piv_cac: Numéro d'employé du gouvernement
       piv_cac_info_html: Insérez votre carte PIV ou CAC du gouvernement ou militaire
         et entrez votre code PIN
+      secure_label: Plus de protection
       second_phone: Deuxième téléphone
       second_phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
         vers un numéro de téléphone secondaire (autre que %{phone})
