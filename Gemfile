@@ -53,7 +53,7 @@ gem 'safe_target_blank'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
-gem 'secure_headers', '~> 6.0'
+gem 'secure_headers', '~> 6.3'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
