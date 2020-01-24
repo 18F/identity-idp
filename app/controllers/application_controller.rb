@@ -297,7 +297,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, token)
+    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session[:ial2] ? 2 : 1, token)
   end
 
   def mobile?

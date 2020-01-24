@@ -43,6 +43,7 @@ module Idv
     end
 
     def add_proofing_cost
+      Db::SpCost::AddSpCost.call(idv_session.issuer, 2, :lexis_nexis_address)
       Db::ProofingCost::AddUserProofingCost.call(idv_session.current_user.id, :lexis_nexis_address)
     end
 

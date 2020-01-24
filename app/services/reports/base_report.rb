@@ -4,6 +4,14 @@ module Reports
   class BaseReport
     private
 
+    def first_of_this_month
+      Time.zone.today.strftime('%m-01-%Y')
+    end
+
+    def end_of_today
+      Time.zone.today.strftime('%m-%d-%Y 23:59:59')
+    end
+
     def ec2_data
       @ec2_data ||= LoginGov::Hostdata::EC2.load
     end

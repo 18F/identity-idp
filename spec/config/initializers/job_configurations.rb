@@ -11,7 +11,8 @@ describe JobRunner::Runner do
       expect(UspsConfirmationUploader).to receive(:new).and_return(stub)
       expect(stub).to receive(:run).and_return('the GPO test worked')
 
-      expect(job.callback.call).to eq 'the GPO test worked'
+      result = HolidayService.observed_holiday?(Time.zone.today) ? nil : 'the GPO test worked'
+      expect(job.callback.call).to eq result
     end
 
     it 'runs the account reset job' do
@@ -124,13 +125,41 @@ describe JobRunner::Runner do
 
     it 'runs the doc auth drop offs per sprint report job' do
       job = JobRunner::Runner.configurations.find do |c|
-        c.name == 'Doc auth drop offs per sprint report'
+        c.name == 'Doc auth drop off rates per sprint report'
       end
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
       expect(job.interval).to eq 24 * 60 * 60
 
       service = instance_double(Reports::DocAuthDropOffRatesPerSprintReport)
       expect(Reports::DocAuthDropOffRatesPerSprintReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
+
+      expect(job.callback.call).to eq 'the report test worked'
+    end
+
+    it 'runs the SP cost report job' do
+      job = JobRunner::Runner.configurations.find do |c|
+        c.name == 'SP cost report'
+      end
+      expect(job).to be_instance_of(JobRunner::JobConfiguration)
+      expect(job.interval).to eq 24 * 60 * 60
+
+      service = instance_double(Reports::SpCostReport)
+      expect(Reports::SpCostReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
+
+      expect(job.callback.call).to eq 'the report test worked'
+    end
+
+    it 'runs the total SP cost report job' do
+      job = JobRunner::Runner.configurations.find do |c|
+        c.name == 'Total SP cost report'
+      end
+      expect(job).to be_instance_of(JobRunner::JobConfiguration)
+      expect(job.interval).to eq 24 * 60 * 60
+
+      service = instance_double(Reports::TotalSpCostReport)
+      expect(Reports::TotalSpCostReport).to receive(:new).and_return(service)
       expect(service).to receive(:call).and_return('the report test worked')
 
       expect(job.callback.call).to eq 'the report test worked'
