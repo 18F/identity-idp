@@ -89,8 +89,10 @@ feature 'Sign in' do
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
+    # rubocop:disable Metrics/LineLength
     expected_form_action =
       "form-action https://*.pivcac.test.example.com 'self' http://localhost:7654/auth/result https://example.com;"
+    # rubocop:enable Metrics/LineLength
 
     expect(page.response_headers['Content-Security-Policy']).
       to(include(expected_form_action))
