@@ -9,7 +9,7 @@ module Users
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_disable, only: :delete
-    before_action :apply_secure_headers_override, only: :new
+    before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
 
     def new

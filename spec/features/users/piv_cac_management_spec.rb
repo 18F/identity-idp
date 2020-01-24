@@ -19,11 +19,17 @@ feature 'PIV/CAC Management' do
       end
 
       scenario 'allows association of a piv/cac with an account' do
+        allow(LoginGov::Hostdata).to receive(:env).and_return('test')
+        allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+
         stub_piv_cac_service
 
         sign_in_and_2fa_user(user)
         visit account_path
         click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+        expect(page.response_headers['Content-Security-Policy']).
+          to(include("form-action https://*.pivcac.test.example.com 'self';"))
 
         nonce = piv_cac_nonce_from_form_action
 

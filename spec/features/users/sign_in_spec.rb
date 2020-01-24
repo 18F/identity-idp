@@ -83,6 +83,21 @@ feature 'Sign in' do
     expect(current_path).to eq login_piv_cac_did_not_work_path
   end
 
+  scenario 'user opts to add piv/cac card and has piv cac redirect in CSP' do
+    allow(LoginGov::Hostdata).to receive(:env).and_return('test')
+    allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+
+    perform_steps_to_get_to_add_piv_cac_during_sign_up
+
+    # rubocop:disable Metrics/LineLength
+    expected_form_action =
+      "form-action https://*.pivcac.test.example.com 'self' http://localhost:7654/auth/result https://example.com;"
+    # rubocop:enable Metrics/LineLength
+
+    expect(page.response_headers['Content-Security-Policy']).
+      to(include(expected_form_action))
+  end
+
   scenario 'user attempts sign in with a PIV/CAC on mobile' do
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     visit root_path
