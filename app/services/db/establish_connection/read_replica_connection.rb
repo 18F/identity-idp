@@ -3,10 +3,12 @@ module Db
     class ReadReplicaConnection
       def call
         return yield if Rails.env.test?
-        ActiveRecord::Base.establish_connection(read_replica_connection_params)
-        yield
-      ensure
-        ActiveRecord::Base.establish_connection(primary_connection_params)
+        begin
+          ActiveRecord::Base.establish_connection(read_replica_connection_params)
+          yield
+        ensure
+          ActiveRecord::Base.establish_connection(primary_connection_params)
+        end
       end
 
       private
