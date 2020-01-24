@@ -1,11 +1,13 @@
 module AuthorizationCountConcern
   extend ActiveSupport::Concern
 
+  # :reek:DuplicateMethodCall
   def auth_count
     session[:sp_auth_count] ||= {}
     session[:sp_auth_count][sp_session[:request_id]]
   end
 
+  # :reek:DuplicateMethodCall
   def auth_count=(value)
     session[:sp_auth_count] ||= {}
     session[:sp_auth_count][sp_session[:request_id]] = value
