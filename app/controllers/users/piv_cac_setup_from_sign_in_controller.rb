@@ -4,7 +4,8 @@ module Users
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :apply_secure_headers_override, only: %i[prompt success]
+    before_action :apply_secure_headers_override, only: :success
+    before_action :set_piv_cac_setup_csp_form_action_uris, only: :prompt
 
     def prompt
       if params.key?(:token)
