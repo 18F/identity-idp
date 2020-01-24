@@ -5,6 +5,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
     user = create(:user, :signed_up)
     visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
+    continue_as(user.email)
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -50,6 +51,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
     visit login_two_factor_options_path
 
     click_continue
+    continue_as
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc

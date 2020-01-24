@@ -52,6 +52,8 @@ module Features
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
+      currently_logged_in = t('user_authorization_confirmation.currently_logged_in')
+      continue_as(email, password) if page.has_content?(currently_logged_in)
     end
 
     def signin_with_piv(user = user_with_piv_cac)
@@ -108,6 +110,16 @@ module Features
       fill_in 'user_email', with: email
       fill_in 'user_password', with: password
       click_button t('links.next')
+    end
+
+    def continue_as(email = nil, password = VALID_PASSWORD)
+      return unless %r/#{user_authorization_confirmation_path}/.match?(current_url)
+
+      if email.nil? || page.has_content?(email)
+        click_button t('user_authorization_confirmation.continue')
+      else
+        signin(email, password)
+      end
     end
 
     def fill_in_password_and_submit(password)

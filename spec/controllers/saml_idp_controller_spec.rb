@@ -3,6 +3,13 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
+  before do
+    # All the tests here were written prior to the interstitial
+    # authorization confirmation page so let's force the system
+    # to skip past that page
+    allow(controller).to receive(:auth_count).and_return(2)
+  end
+
   render_views
 
   describe '/api/saml/logout' do
@@ -384,7 +391,9 @@ describe SamlIdpController do
       # Testing the <saml:Subject> element when the SP is configured to use a
       # NameID format of emailAddress rather than the default persistent UUID.
       context 'Subject' do
-        let(:subject) { xmldoc.subject_nodeset[0] }
+        let(:subject) do
+          xmldoc.subject_nodeset[0]
+        end
 
         it 'has a saml:Subject element' do
           expect(subject).to_not be_nil

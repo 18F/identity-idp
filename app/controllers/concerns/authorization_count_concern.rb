@@ -1,8 +1,6 @@
 module AuthorizationCountConcern
   extend ActiveSupport::Concern
 
-  protected
-
   def auth_count
     session[:sp_auth_count] ||= {}
     session[:sp_auth_count][sp_session[:request_id]]

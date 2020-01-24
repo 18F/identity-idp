@@ -163,6 +163,8 @@ shared_examples 'creating two accounts during the same session' do |sp|
       confirm_email_in_a_different_browser(first_email)
       click_button t('forms.buttons.continue')
 
+      continue_as(first_email)
+
       expect(current_url).to eq @saml_authn_request if sp == :saml
       if sp == :oidc
         redirect_uri = URI(current_url)
@@ -180,6 +182,8 @@ shared_examples 'creating two accounts during the same session' do |sp|
     perform_in_browser(:two) do
       confirm_email_in_a_different_browser(second_email)
       click_button t('forms.buttons.continue')
+
+      continue_as(second_email)
 
       expect(current_url).to eq @saml_authn_request if sp == :saml
       if sp == :oidc
