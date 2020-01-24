@@ -21,30 +21,7 @@ detectors:
       - Upaya::RandomTools#self.random_weighted_sample
       - SmsController#authenticate
   FeatureEnvy:
-    exclude:
-      - ActiveJob::Logging::LogSubscriber#json_for
-      - Ahoy::Store#track_event
-      - Aws::SES::Base#deliver
-      - CustomDeviseFailureApp#build_options
-      - CustomDeviseFailureApp#keys
-      - track_registration
-      - append_info_to_payload
-      - generate_slo_request
-      - reauthn?
-      - mark_profile_inactive
-      - Pii::Attributes#[]=
-      - OpenidConnectLogoutForm#load_identity
-      - Idv::ProfileMaker#pii_from_applicant
-      - Idv::Step#vendor_validator_result
-      - IdvSession#vendor_result_timed_out?
-      - ServiceProviderSeeder#run
-      - OtpDeliverySelectionForm#unsupported_phone?
-      - fallback_to_english
-      - UserEncryptedAttributeOverrides#find_with_email
-      - Utf8Sanitizer#event_attributes
-      - Utf8Sanitizer#remote_ip
-      - TwoFactorAuthenticationController#capture_analytics_for_exception
-      - UspsConfirmationExporter#make_entry_row
+    enabled: false
   InstanceVariableAssumption:
     exclude:
       - User
@@ -180,8 +157,6 @@ directories:
         - visit_idp_from_sp_with_loa1
         - visit_idp_from_sp_with_loa3
     DuplicateMethodCall:
-      enabled: false
-    FeatureEnvy:
       enabled: false
     NestedIterators:
       exclude:

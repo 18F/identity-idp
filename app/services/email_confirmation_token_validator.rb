@@ -29,8 +29,15 @@ class EmailConfirmationTokenValidator
 
   def confirmation_period_expired?
     return false unless email_address_found_with_token?
-    expiration_time = @email_address.confirmation_sent_at + email_valid_for_duration
+    confirmation_sent_at = @email_address.confirmation_sent_at
+    return true if confirmation_sent_at.blank?
+    expiration_time = confirmation_sent_at + email_valid_for_duration
     Time.zone.now > expiration_time
+  end
+
+  def self.email_address_from_token(token)
+    return if token.blank?
+    EmailAddress.find_by(confirmation_token: token)
   end
 
   private

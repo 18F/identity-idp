@@ -35,7 +35,6 @@ class NewPhoneForm
     user.phone_configurations.map(&:phone).include?(phone)
   end
 
-  # :reek:FeatureEnvy
   def masked_number
     phone_number = nil
     phone_number = phone_configuration.phone unless phone_configuration.nil?

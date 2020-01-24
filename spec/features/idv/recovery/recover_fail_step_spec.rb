@@ -14,19 +14,12 @@ feature 'recovery doc fail step' do
     sign_in_before_2fa(user)
     enable_doc_auth
     mock_assure_id_ok
+    allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
+      and_return(bad_pii.to_json)
     complete_recovery_steps_before_doc_success_step
   end
 
   it 'fails to re-verify if the pii does not match and then it proceeds to start re-verify over' do
-    allow_any_instance_of(Idv::Steps::RecoverDocSuccessStep).to receive(:saved_pii).
-      and_return(bad_pii.to_json)
-
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_recovery_fail_step)
-
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_recovery_overview_step)
+    expect(page).to have_current_path(idv_session_errors_warning_path)
   end
 end

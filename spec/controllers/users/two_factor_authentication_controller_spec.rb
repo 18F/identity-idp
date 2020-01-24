@@ -69,6 +69,7 @@ describe Users::TwoFactorAuthenticationController do
   describe '#show' do
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
+        allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(

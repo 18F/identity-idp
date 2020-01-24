@@ -14,7 +14,6 @@ module Test
       @referrer = request.headers['Referer']
     end
 
-    # :reek:FeatureEnvy
     def create
       uri = referrer_uri
       uri.query = ''

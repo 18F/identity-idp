@@ -553,7 +553,7 @@ GEM
       faraday (> 0.8, < 2.0)
     scrypt (3.0.6)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (6.1.1)
+    secure_headers (6.3.0)
     securecompare (1.0.0)
     selenium-webdriver (3.142.6)
       childprocess (>= 0.5, < 4.0)
@@ -765,7 +765,7 @@ DEPENDENCIES
   saml_idp!
   sassc-rails (~> 2.1.2)
   scrypt
-  secure_headers (~> 6.0)
+  secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0.1)
   simple_form
   sinatra

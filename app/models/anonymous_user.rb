@@ -34,8 +34,6 @@ class AnonymousUser
 
   def x509_dn_uuid; end
 
-  def otp_secret_key; end
-
   def email; end
 
   def email_addresses

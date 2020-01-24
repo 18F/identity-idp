@@ -91,6 +91,21 @@ feature 'adding email address' do
     expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
   end
 
+  it 'routes to root with a blank confirmation token' do
+    visit add_email_confirmation_url(confirmation_token: '')
+
+    expect(page).to have_current_path(root_path)
+    expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
+  end
+
+  it 'routes to root with a nil confirmation token and an email address with a nil token' do
+    EmailAddress.create(user_id: 1, email: 'foo@bar.gov')
+    visit add_email_confirmation_url
+
+    expect(page).to have_current_path(root_path)
+    expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
+  end
+
   it 'does not show add email button when max emails is reached' do
     allow(Figaro.env).to receive(:max_emails_per_account).and_return('1')
     user = create(:user, :signed_up)

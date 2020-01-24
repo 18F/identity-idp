@@ -35,7 +35,6 @@ module Idv
 
     attr_writer :phone
 
-    # :reek:FeatureEnvy
     def initial_phone_value(input_phone)
       return input_phone if input_phone.present?
 

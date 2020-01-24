@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[x509_dn_uuid]
+  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
   include NonNullUuid
 
   devise(
@@ -14,7 +14,6 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute(name: :otp_secret_key)
   encrypted_attribute_without_setter(name: :email)
 
   # IMPORTANT this comes *after* devise() call.

@@ -107,6 +107,29 @@ describe SignUp::EmailConfirmationsController do
         to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
       expect(response).to redirect_to sign_up_email_resend_path
     end
+
+    it 'tracks blank confirmation_sent_at as expired token' do
+      user = create(:user, :unconfirmed)
+      UpdateUser.new(
+        user: user,
+        attributes: { confirmation_token: 'foo', confirmation_sent_at: nil },
+      ).call
+
+      analytics_hash = {
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.expired')] },
+        user_id: user.uuid,
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+
+      get :create, params: { confirmation_token: 'foo' }
+
+      expect(flash[:error]).
+        to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
+      expect(response).to redirect_to sign_up_email_resend_path
+    end
   end
 
   describe 'Valid email confirmation tokens' do

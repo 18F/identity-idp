@@ -28,9 +28,9 @@ class TotpSetupForm
   def valid_totp_code?
     # The two_factor_authentication gem raises an error if the secret is nil.
     return false if secret.nil?
-    is_added = user.confirm_totp_secret(secret, code)
-    Db::AuthAppConfiguration::Create.call(user, secret, name) if is_added
-    is_added
+    new_timestamp = Db::AuthAppConfiguration::Confirm.call(secret, code)
+    Db::AuthAppConfiguration::Create.call(user, secret, new_timestamp, name) if new_timestamp
+    new_timestamp.present?
   end
 
   def process_valid_submission
