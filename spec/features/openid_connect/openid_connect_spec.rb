@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include CloudhsmMocks
-  include RememberDeviceConcern
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
