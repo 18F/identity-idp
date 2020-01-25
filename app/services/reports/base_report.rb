@@ -25,9 +25,11 @@ module Reports
     end
 
     def transaction_with_timeout
-      ActiveRecord::Base.transaction do
-        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{report_timeout}")
-        yield
+      Db::EstablishConnection::ReadReplicaConnection.new.call do
+        ActiveRecord::Base.transaction do
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{report_timeout}")
+          yield
+        end
       end
     end
 
