@@ -330,8 +330,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq(account_path)
 
-        first(:link, t('links.sign_out')).click
-
+        set_new_browser_session
         sign_in_user(user)
         fill_in 'code', with: otp
         click_submit_default

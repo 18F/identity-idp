@@ -120,7 +120,7 @@ feature 'IAL1 Single Sign On' do
     it 'it immediately returns to the SP after signing in again' do
       click_continue
 
-      visit sign_out_url
+      set_new_browser_session
 
       sign_in_user(user)
       fill_in_code_with_last_phone_otp

@@ -97,6 +97,8 @@ shared_examples 'sp handoff after identity verification' do |sp|
     before do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
+      uncheck(t('forms.messages.remember_device'))
+
       fill_in_code_with_last_phone_otp
       click_submit_default
       fill_out_idv_jurisdiction_ok
@@ -111,6 +113,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     it 'does not require idv or requested attribute verification and hands off successfully' do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
+      uncheck(t('forms.messages.remember_device'))
 
       expect_csp_headers_to_be_present if sp == :oidc
 

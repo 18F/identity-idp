@@ -68,6 +68,8 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
+    Capybara.reset_sessions!
+
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     choose_another_security_option('personal_key')
@@ -104,6 +106,9 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
 
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
+
+    set_new_browser_session
+
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.email)
@@ -242,6 +247,9 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   Timecop.freeze Time.zone.now do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
+
+    Capybara.reset_sessions!
+
     visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
     choose_another_security_option('personal_key')
