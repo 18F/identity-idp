@@ -330,9 +330,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq(account_path)
 
-        # Don't want to 'remember device'
-        Capybara.reset_session!
-
+        set_new_browser_session
         sign_in_user(user)
         fill_in 'code', with: otp
         click_submit_default

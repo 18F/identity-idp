@@ -35,9 +35,7 @@ describe 'default phone selection' do
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
 
-        # Don't want to 'remember device'
-        Capybara.reset_session!
-
+        set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-3434',
@@ -74,9 +72,7 @@ describe 'default phone selection' do
         parent = node.first(:xpath, './/..')
         expect(parent).to have_content t('account.index.default')
 
-        # Don't want to 'remember device'
-        Capybara.reset_session!
-
+        set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.sms.number_message_html',
                                        number: '***-***-3111',
@@ -104,9 +100,7 @@ describe 'default phone selection' do
         expect(page).to have_current_path(account_path)
         expect(page).to have_content t('account.index.default')
 
-        # Don't want to 'remember device'
-        Capybara.reset_session!
-
+        set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
                                        number: '***-***-3434',

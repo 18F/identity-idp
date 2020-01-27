@@ -143,8 +143,7 @@ feature 'disavowing an action' do
   end
 
   def disavow_last_action_and_reset_password
-    # Don't want to 'remember device'
-    Capybara.reset_session!
+    set_new_browser_session
 
     open_last_email
     click_email_link_matching(%r{events\/disavow})

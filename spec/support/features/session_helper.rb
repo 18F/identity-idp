@@ -600,5 +600,10 @@ module Features
         ial: ial,
       )
     end
+
+    def set_new_browser_session
+      # For when we want to login from a new browser to avoid the default 'remember device' behavior
+      Capybara.reset_session!
+    end
   end
 end

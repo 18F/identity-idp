@@ -107,8 +107,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
 
-    # Don't want to 'remember device'
-    Capybara.reset_session!
+    set_new_browser_session
 
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
