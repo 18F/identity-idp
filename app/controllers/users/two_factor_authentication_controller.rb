@@ -52,12 +52,17 @@ module Users
     end
 
     def update_otp_delivery_preference_if_needed
-      return unless user_signed_in? && @telephony_result&.success?
+      return if otp_failed_to_send?
+
       OtpPreferenceUpdater.new(
         user: current_user,
         preference: delivery_params[:otp_delivery_preference],
         phone_id: user_session[:phone_id],
       ).call
+    end
+
+    def otp_failed_to_send?
+      !telephony_result&.success?
     end
 
     def handle_invalid_otp_delivery_preference(result)

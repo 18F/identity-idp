@@ -15,7 +15,6 @@ module Idv
       return too_many_otp_sends_response if rate_limit_exceeded?
 
       send_otp
-      otp_sent_response
     end
 
     def user_locked_out?
@@ -28,12 +27,6 @@ module Idv
 
     delegate :user_phone_confirmation_session, to: :idv_session
     delegate :phone, :code, :delivery_method, to: :user_phone_confirmation_session
-
-    def otp_sent_response
-      FormResponse.new(
-        success: telephony_response.success?, errors: {}, extra: extra_analytics_attributes,
-      )
-    end
 
     def too_many_otp_sends_response
       FormResponse.new(
@@ -67,6 +60,13 @@ module Idv
         channel: delivery_method,
       )
       add_cost
+      otp_sent_response
+    end
+
+    def otp_sent_response
+      FormResponse.new(
+        success: telephony_response.success?, errors: {}, extra: extra_analytics_attributes,
+      )
     end
 
     def add_cost
