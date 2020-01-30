@@ -7,7 +7,9 @@ module Health
         database: DatabaseHealthChecker,
         account_reset: AccountResetHealthChecker,
       }
-      checkers[:job_runner_critical] = JobRunner::HealthCheckerCritical if job_run_healthchecks_enabled?
+      if job_run_healthchecks_enabled?
+        checkers[:job_runner_critical] = JobRunner::HealthCheckerCritical
+      end
       MultiHealthChecker.new(**checkers)
     end
 
