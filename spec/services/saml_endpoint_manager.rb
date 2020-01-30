@@ -18,7 +18,7 @@ describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(['2019', '2018', 'cloudhsm'])
+      expect(result).to eq(%w[2019 2018 cloudhsm])
     end
   end
 
