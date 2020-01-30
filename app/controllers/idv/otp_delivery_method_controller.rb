@@ -18,8 +18,6 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
       return render_new_with_error_message unless result.success?
       send_phone_confirmation_otp_and_handle_result
-    rescue Telephony::TelephonyError => telephony_error
-      invalid_phone_number(telephony_error)
     end
 
     private
@@ -50,10 +48,18 @@ module Idv
       save_delivery_preference
       result = send_phone_confirmation_otp
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
+      if result.success?
+        redirect_to idv_otp_verification_url
+      else
+        handle_send_phone_confirmation_otp_failure(result)
+      end
+    end
+
+    def handle_send_phone_confirmation_otp_failure(result)
       if send_phone_confirmation_otp_rate_limited?
         handle_too_many_otp_sends
       else
-        redirect_to idv_otp_verification_url
+        invalid_phone_number(result.extra[:telephony_response].error)
       end
     end
 

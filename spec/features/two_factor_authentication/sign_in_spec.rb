@@ -261,13 +261,11 @@ feature 'Two Factor Authentication' do
       let(:user) do
         create(:user, :signed_up,
                otp_delivery_preference: 'voice',
-               with: { phone: '+17035551212', delivery_preference: 'voice' })
+               with: { phone: '+12255551000', delivery_preference: 'voice' })
       end
-      let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: '+17035551212') }
+      let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: '+12255551000') }
 
       it 'does not change their OTP delivery preference' do
-        telephony_error = Telephony::TelephonyError.new('error message')
-        allow(Telephony).to receive(:send_authentication_otp).and_raise(telephony_error)
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)
         allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
           and_return(false)
@@ -278,7 +276,7 @@ feature 'Two Factor Authentication' do
 
         choose_another_security_option('sms')
 
-        expect(page).to have_content telephony_error.friendly_message
+        expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
         expect(user.reload.otp_delivery_preference).to eq 'voice'
       end
     end

@@ -11,16 +11,22 @@ module Idv
     def create
       result = send_phone_confirmation_otp
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT, result.to_h)
-      if send_phone_confirmation_otp_rate_limited?
-        handle_too_many_otp_sends
-      else
+      if result.success?
         redirect_to idv_otp_verification_url
+      else
+        handle_send_phone_confirmation_otp_failure(result)
       end
-    rescue Telephony::TelephonyError => telephony_error
-      invalid_phone_number(telephony_error)
     end
 
     private
+
+    def handle_send_phone_confirmation_otp_failure(result)
+      if send_phone_confirmation_otp_rate_limited?
+        handle_too_many_otp_sends
+      else
+        invalid_phone_number(result.extra[:telephony_response].error)
+      end
+    end
 
     def confirm_user_phone_confirmation_needed
       return unless idv_session.user_phone_confirmation

@@ -1,6 +1,8 @@
 module Idv
   # Ignore instance variable assumption on @user_locked_out :reek:InstanceVariableAssumption
   class SendPhoneConfirmationOtp
+    attr_reader :telephony_response
+
     def initialize(user:, idv_session:)
       @user = user
       @idv_session = idv_session
@@ -14,7 +16,7 @@ module Idv
       return too_many_otp_sends_response if rate_limit_exceeded?
 
       send_otp
-      FormResponse.new(success: true, errors: {}, extra: extra_analytics_attributes)
+      otp_sent_response
     end
 
     def user_locked_out?
@@ -27,6 +29,12 @@ module Idv
 
     delegate :user_phone_confirmation_session, to: :idv_session
     delegate :phone, :code, :delivery_method, to: :user_phone_confirmation_session
+
+    def otp_sent_response
+      FormResponse.new(
+        success: telephony_response.success?, errors: {}, extra: extra_analytics_attributes,
+      )
+    end
 
     def too_many_otp_sends_response
       FormResponse.new(
@@ -53,7 +61,7 @@ module Idv
 
     def send_otp
       idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
-      Telephony.send_confirmation_otp(
+      @telephony_response = Telephony.send_confirmation_otp(
         otp: code,
         to: phone,
         expiration: Devise.direct_otp_valid_for.to_i / 60,
@@ -74,6 +82,7 @@ module Idv
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         rate_limit_exceeded: rate_limit_exceeded?,
+        telephony_response: @telephony_response,
       }
     end
   end
