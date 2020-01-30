@@ -223,7 +223,6 @@ module SamlAuthHelper
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
 
-  # :reek:UncommunicativeMethodName, :reek:ControlParameter
   def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       @saml_authn_request = auth_request.create(saml_settings)
@@ -236,7 +235,6 @@ module SamlAuthHelper
     end
   end
 
-  # :reek:UncommunicativeMethodName
   def visit_idp_from_oidc_sp_with_ial1(state: SecureRandom.hex, client_id:, nonce:)
     visit openid_connect_authorize_path(
       client_id: client_id,

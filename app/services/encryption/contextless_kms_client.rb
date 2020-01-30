@@ -54,7 +54,6 @@ module Encryption
       ).ciphertext_blob
     end
 
-    # :reek:DuplicateMethodCall
     def decrypt_kms(ciphertext)
       raw_ciphertext = ciphertext.sub(KEY_TYPE[:KMS], '')
       if raw_ciphertext[0] == '[' && raw_ciphertext[-1] == ']'

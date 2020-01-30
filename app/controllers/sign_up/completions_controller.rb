@@ -1,4 +1,3 @@
-# :reek:TooManyMethods
 # rubocop:disable Metrics/ClassLength
 module SignUp
   class CompletionsController < ApplicationController

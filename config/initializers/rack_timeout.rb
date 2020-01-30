@@ -1,4 +1,3 @@
-# :reek:InstanceVariableAssumption
 module Rack
   class Timeout
     @excludes = [

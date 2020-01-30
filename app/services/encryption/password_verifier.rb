@@ -1,4 +1,3 @@
-# :reek:DataClump
 module Encryption
   class PasswordVerifier
     PasswordDigest = Struct.new(
@@ -57,7 +56,6 @@ module Encryption
       false
     end
 
-    # :reek:UtilityFunction
     def stale_digest?(digest)
       PasswordDigest.parse_from_string(digest).uak_password_digest?
     end

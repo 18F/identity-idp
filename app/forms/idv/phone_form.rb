@@ -12,7 +12,6 @@ module Idv
       self.phone = initial_phone_value(previous_params[:phone]) unless user_has_multiple_phones?
     end
 
-    # :reek:DuplicateMethodCall
     def submit(params)
       self.phone = PhoneFormatter.format(params[:phone])
       success = valid?

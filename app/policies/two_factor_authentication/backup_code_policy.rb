@@ -12,12 +12,10 @@ module TwoFactorAuthentication
       configured?
     end
 
-    # :reek:UtilityFunction
     def visible?
       true
     end
 
-    # :reek:UtilityFunction
     def available?
       true
     end

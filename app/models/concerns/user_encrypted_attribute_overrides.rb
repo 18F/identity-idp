@@ -10,14 +10,12 @@ module UserEncryptedAttributeOverrides
       find_by(tainted_conditions)
     end
 
-    # :reek:UtilityFunction
     def find_with_email(email)
       email_address = EmailAddress.where.not(confirmed_at: nil).find_with_email(email) ||
                       EmailAddress.where(confirmed_at: nil).find_with_email(email)
       email_address&.user
     end
 
-    # :reek:UtilityFunction
     def find_with_confirmed_email(email)
       email_address = EmailAddress.where.not(confirmed_at: nil).find_with_email(email)
       email_address&.user

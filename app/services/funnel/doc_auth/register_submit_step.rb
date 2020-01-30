@@ -1,4 +1,3 @@
-# :reek:ManualDispatch
 module Funnel
   module DocAuth
     class RegisterSubmitStep

@@ -1,6 +1,5 @@
 # rubocop:disable Metrics/ClassLength
 class Analytics
-  # :reek:ControlParameter
   def initialize(user:, request:, sp:, ahoy: nil)
     @user = user
     @request = request

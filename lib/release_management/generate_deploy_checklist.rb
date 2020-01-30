@@ -17,7 +17,6 @@ module ReleaseManagement
     attr_accessor :rc_number, :previous_rc_number, :rc_branch_name, :previous_rc_branch_name,
                   :branch_date, :staging_deploy_date, :production_deploy_date
 
-    # :reek:TooManyStatements
     def prompt_user_for_checklist_values
       prompt_for_rc_number
       prompt_for_previous_rc_number
@@ -93,7 +92,6 @@ module ReleaseManagement
       )
     end
 
-    # :reek:TooManyStatements
     def prompt_user_for(name, prompt:, default: nil)
       prompt = "#{prompt} (leave blank for #{default})" if default
       print "#{prompt}? "
@@ -104,7 +102,6 @@ module ReleaseManagement
       instance_variable_set(instance_variable_name, default)
     end
 
-    # :reek:DuplicateMethodCall
     def next_thursday
       days_until_thursday = (4 - Date.today.wday).abs
       Date.today + days_until_thursday

@@ -1,10 +1,8 @@
-# :reek:TooManyMethods
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :current_user, :service_provider
 
-  # :reek:BooleanParameter
   def initialize(current_user, sp, user_agent)
     @current_user = current_user
     @service_provider = sp

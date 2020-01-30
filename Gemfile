@@ -84,7 +84,6 @@ group :development do
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
-  gem 'reek'
 end
 
 group :development, :test do

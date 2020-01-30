@@ -1,5 +1,4 @@
 module Idv
-  # :reek:InstanceVariableAssumption
   class JurisdictionForm
     include ActiveModel::Model
     include FormJurisdictionValidator

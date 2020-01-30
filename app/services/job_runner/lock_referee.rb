@@ -6,7 +6,6 @@ module JobRunner
       @job_configuration = job_configuration
     end
 
-    # :reek:TooManyStatements
     def acquire_lock_and_run_callback_if_needed
       log_check_if_run_needed_message
       job_run = nil

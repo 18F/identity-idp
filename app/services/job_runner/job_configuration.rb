@@ -16,7 +16,6 @@ module JobRunner
     # @param [Integer] failures_before_alarm The number of acceptable failed
     #   runs before the health check should alarm.
     #
-    # :reek:ControlParameter
     def initialize(name:, interval:, timeout: nil, callback:, health_critical: false,
                    failures_before_alarm: 1)
       @name = name

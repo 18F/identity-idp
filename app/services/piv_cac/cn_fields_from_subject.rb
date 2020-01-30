@@ -1,4 +1,3 @@
-# :reek:ControlParameter
 module PivCac
   class CnFieldsFromSubject
     def self.call(subject)

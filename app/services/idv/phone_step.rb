@@ -1,4 +1,3 @@
-# :reek:TooManyMethods
 module Idv
   class PhoneStep
     def initialize(idv_session:)

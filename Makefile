@@ -22,8 +22,6 @@ lint:
 	bundle exec rubocop
 	@echo "--- slim-lint ---"
 	bundle exec slim-lint app/views
-	@echo "--- reek ---"
-	bundle exec reek
 	@echo "--- fasterer ---"
 	bundle exec fasterer
 	@echo "--- eslint ---"
@@ -32,8 +30,6 @@ lint:
 lintfix:
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -R -a
-	@echo "--- reek fix ---"
-	bundle exec reek -t
 
 brakeman:
 	bundle exec brakeman

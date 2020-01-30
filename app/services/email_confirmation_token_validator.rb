@@ -1,4 +1,3 @@
-# :reek:RepeatedConditional
 class EmailConfirmationTokenValidator
   include ActiveModel::Model
 
