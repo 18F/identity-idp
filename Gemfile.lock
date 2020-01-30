@@ -56,10 +56,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: bc7114e4444c881b09131b6cc4ede9f8c6046a69
-  branch: jmhooper-return-response-from-senders
+  revision: 95b6c3b8da1102fdbe75e395ba25154debd5b789
+  tag: v0.0.17
   specs:
-    identity-telephony (0.0.16)
+    identity-telephony (0.0.17)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
