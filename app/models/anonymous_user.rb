@@ -1,4 +1,3 @@
-# :reek:UtilityFunction
 class AnonymousUser
   def uuid
     'anonymous-uuid'

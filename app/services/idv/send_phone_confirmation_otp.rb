@@ -1,5 +1,4 @@
 module Idv
-  # Ignore instance variable assumption on @user_locked_out :reek:InstanceVariableAssumption
   class SendPhoneConfirmationOtp
     attr_reader :telephony_response
 

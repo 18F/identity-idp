@@ -192,8 +192,6 @@ GEM
     childprocess (3.0.0)
     choice (0.2.0)
     chunky_png (1.3.11)
-    codeclimate-engine-rb (0.4.1)
-      virtus (~> 1.0)
     codeclimate-test-reporter (1.0.9)
       simplecov (<= 0.13)
     coderay (1.1.2)
@@ -329,7 +327,6 @@ GEM
     jwt (2.2.1)
     knapsack (1.18.0)
       rake
-    kwalify (0.7.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (3.2.0)
@@ -478,12 +475,6 @@ GEM
     redis-session-store (0.11.1)
       actionpack (>= 3)
       redis (>= 3, < 5)
-    reek (5.4.0)
-      codeclimate-engine-rb (~> 0.4.0)
-      kwalify (~> 0.7.0)
-      parser (>= 2.5.0.0, < 2.7, != 2.5.1.1)
-      psych (~> 3.1.0)
-      rainbow (>= 2.0, < 4.0)
     referer-parser (0.3.0)
     regexp_parser (1.6.0)
     request_store (1.4.1)
@@ -753,7 +744,6 @@ DEPENDENCIES
   readthis
   recaptcha
   redis-session-store
-  reek
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.7)

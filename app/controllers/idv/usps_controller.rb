@@ -1,4 +1,3 @@
-# :reek:TooManyMethods
 module Idv
   class UspsController < ApplicationController # rubocop:disable Metrics/ClassLength
     include IdvSession

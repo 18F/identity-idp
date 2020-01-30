@@ -27,7 +27,6 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   # rubocop:disable Metrics/AbcSize
-  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result

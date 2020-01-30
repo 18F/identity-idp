@@ -107,7 +107,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   # rubocop:disable Metrics/AbcSize
-  #:reek:DuplicateMethodCall :reek:TooManyStatements
   def sp_alert?(path)
     sign_in_path =
       I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
@@ -122,7 +121,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
   # rubocop:enable Metrics/AbcSize
 
-  # :reek:DuplicateMethodCall
   def mfa_expiration_interval
     aal_1_expiration = Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
     aal_2_expiration = Figaro.env.remember_device_expiration_hours_aal_2.to_i.hours

@@ -21,7 +21,6 @@ module SamlIdpLogoutConcern
     sign_out if user_signed_in?
   end
 
-  # :reek:DuplicateMethodCall
   def logout_response
     response = encode_response(
       current_user,

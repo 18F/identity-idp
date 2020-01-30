@@ -27,7 +27,6 @@ class SendSignUpEmailConfirmation
     @confirmation_period_expired ||= email_address.confirmation_period_expired?
   end
 
-  # :reek:DuplicateMethodCall
   def email_address
     @email_address ||= begin
       handle_multiple_email_address_error if user.email_addresses.count > 1

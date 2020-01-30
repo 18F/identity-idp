@@ -1,5 +1,4 @@
 module Idv
-  # :reek:InstanceVariableAssumption
   class ConsentForm
     include ActiveModel::Model
 

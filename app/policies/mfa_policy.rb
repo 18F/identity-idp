@@ -1,5 +1,4 @@
 class MfaPolicy
-  # :reek:BooleanParameter
   def initialize(user)
     @user = user
     @mfa_user = MfaContext.new(user)
@@ -22,7 +21,8 @@ class MfaPolicy
   end
 
   def sufficient_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 1 || mfa_user.backup_code_configurations.to_a.length.positive?
+    mfa_user.enabled_mfa_methods_count > 1 ||
+      mfa_user.backup_code_configurations.to_a.length.positive?
   end
 
   def retire_personal_key?
