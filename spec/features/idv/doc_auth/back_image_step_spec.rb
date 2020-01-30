@@ -91,6 +91,7 @@ shared_examples 'back image step' do |simulate|
         click_idv_continue
 
         expect(page).to have_current_path(idv_doc_auth_ssn_step)
+
         click_on t('doc_auth.buttons.start_over')
         complete_doc_auth_steps_before_back_image_step
       end
