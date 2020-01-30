@@ -1,4 +1,3 @@
-
 class MfaContext
   attr_reader :user
 
