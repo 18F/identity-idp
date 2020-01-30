@@ -280,6 +280,7 @@ development:
     logo: '18f.svg'
     redirect_uris:
       - 'http://localhost:4000/'
+      - 'http://localhost:4000/auth/result'
 
 # These are fake production service providers needed for the
 # ServiceProviderSeeder tests. They are not actually used in production.
