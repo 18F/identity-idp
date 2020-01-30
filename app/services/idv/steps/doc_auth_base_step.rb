@@ -121,7 +121,7 @@ module Idv
       end
 
       def throttle_post_front_image
-        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
+        return throttled if throttled_else_increment
         rescue_network_errors do
           result = assure_id.post_front_image(image.read)
           add_cost(:acuant_front_image)
@@ -130,12 +130,17 @@ module Idv
       end
 
       def throttle_post_back_image
-        return [false, I18n.t('errors.doc_auth.acuant_throttle')] if throttled_else_increment
+        return throttled if throttled_else_increment
         rescue_network_errors do
           result = assure_id.post_back_image(image.read)
           add_cost(:acuant_back_image)
           result
         end
+      end
+
+      def throttled
+        redirect_to idv_session_errors_throttled_url
+        [false, I18n.t('errors.doc_auth.acuant_throttle')]
       end
 
       def test_credentials?

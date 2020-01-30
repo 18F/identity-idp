@@ -274,6 +274,7 @@ Rails.application.routes.draw do
       get '/session/errors/timeout' => 'session_errors#timeout'
       get '/session/errors/jobfail' => 'session_errors#jobfail'
       get '/session/errors/failure' => 'session_errors#failure'
+      get '/session/errors/throttled' => 'session_errors#throttled'
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'
       post '/jurisdiction' => 'jurisdiction#create'
