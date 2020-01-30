@@ -70,7 +70,7 @@ shared_examples 'front image step' do |simulate|
       attach_image
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_front_image_step)
+      expect(page).to have_current_path(idv_session_errors_throttled_path)
 
       Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         sign_in_and_2fa_user(user)
