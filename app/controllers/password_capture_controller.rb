@@ -31,7 +31,6 @@ class PasswordCaptureController < ApplicationController
     redirect_to after_otp_verification_confirmation_url
   end
 
-  # :reek:DuplicateMethodCall
   def handle_invalid_password
     session[:password_attempts] += 1
 

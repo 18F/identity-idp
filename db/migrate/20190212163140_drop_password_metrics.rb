@@ -3,7 +3,6 @@ class DropPasswordMetrics < ActiveRecord::Migration[5.1]
     drop_table :password_metrics
   end
 
-  # :reek:TooManyStatements :reek:UncommunicativeVariableName
   def down
     create_table :password_metrics do |t|
       t.integer :metric, null: false

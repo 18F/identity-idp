@@ -5,7 +5,6 @@ class BinarySearchSortedHashFile
     @file_name = file_name
   end
 
-  # :reek:TooManyStatements
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/AbcSize
   def call(password)

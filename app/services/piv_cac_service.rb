@@ -37,7 +37,6 @@ module PivCacService
         any_partial_domains_match?(email_domains, partial_domains)
     end
 
-    # :reek:NestedIterators
     def any_partial_domains_match?(givens, matchers)
       givens.any? do |given|
         matchers.any? { |matcher| given.end_with?(matcher) }

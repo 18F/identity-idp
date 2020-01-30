@@ -1,4 +1,3 @@
-# :reek:RepeatedConditional
 class ProductionDatabaseConfiguration
   READONLY_WARNING_MESSAGE = '
     WARNING: Loading database a configuration with the readonly database user.

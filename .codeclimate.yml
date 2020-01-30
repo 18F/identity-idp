@@ -75,12 +75,7 @@ plugins:
   pep8:
     enabled: true
   reek:
-    enabled: true
-    exclude_patterns:
-    - 'spec/**/*'
-    - 'db/migrate/*'
-    - 'lib/user_flow_exporter.rb'
-    - 'lib/rspec/formatters/user_flow_formatter.rb'
+    enabled: false
   rubocop:
     enabled: true
     channel: rubocop-0-72

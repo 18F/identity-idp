@@ -15,7 +15,6 @@ class BackupCodeConfiguration < ApplicationRecord
     user.backup_code_configurations.unused.any? if user
   end
 
-  # This method smells of :reek:UtilityFunction
   def selection_presenters
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user)]
   end

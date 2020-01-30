@@ -39,7 +39,6 @@ class ServiceProviderRequestHandler
     ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
   end
 
-  # :reek:DuplicateMethodCall
   def attributes
     {
       issuer: protocol.issuer,

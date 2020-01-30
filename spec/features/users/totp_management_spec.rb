@@ -93,7 +93,6 @@ describe 'totp management' do
     end
   end
 
-  # :reek:NestedIterators
   def find_form(page, attributes)
     page.all('form').detect do |form|
       attributes.all? { |key, value| form[key] == value }
