@@ -62,7 +62,7 @@ module Users
     end
 
     def otp_failed_to_send?
-      !telephony_result&.success?
+      !@telephony_result&.success?
     end
 
     def handle_invalid_otp_delivery_preference(result)
