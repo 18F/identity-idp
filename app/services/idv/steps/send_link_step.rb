@@ -3,21 +3,18 @@ module Idv
     class SendLinkStep < DocAuthBaseStep
       def call
         return failure(I18n.t('errors.doc_auth.send_link_throttle')) if throttled_else_increment
-        send_link
+        telephony_result = send_link
+        return failure(telephony_result.error.friendly_message) unless telephony_result.success?
       end
 
       private
 
       def send_link
         capture_doc = CaptureDoc::CreateRequest.call(user_id)
-        begin
-          Telephony.send_doc_auth_link(
-            to: formatted_destination_phone,
-            link: link(capture_doc.request_token),
-          )
-        rescue Telephony::TelephonyError => err
-          return failure(err.friendly_message)
-        end
+        Telephony.send_doc_auth_link(
+          to: formatted_destination_phone,
+          link: link(capture_doc.request_token),
+        )
       end
 
       def form_submit

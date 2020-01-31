@@ -26,7 +26,7 @@ feature 'Changing authentication factor' do
 
     context 'resending OTP code to old phone' do
       it 'resends OTP and prompts user to enter their code' do
-        allow(Telephony).to receive(:send_authentication_otp)
+        allow(Telephony).to receive(:send_authentication_otp).and_call_original
 
         user = sign_in_and_2fa_user
         phone_configuration = MfaContext.new(user).phone_configurations.first

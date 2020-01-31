@@ -102,18 +102,15 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when the telephony gem responds with an error' do
-    telephony_error = Telephony::TelephonyError.new('error message')
-
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
 
-    fill_in 'new_phone_form_phone', with: '202-555-1212'
+    fill_in 'new_phone_form_phone', with: '225-555-1000'
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
-    expect(page).to have_content(telephony_error.friendly_message)
+    expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
   context 'with js', js: true do

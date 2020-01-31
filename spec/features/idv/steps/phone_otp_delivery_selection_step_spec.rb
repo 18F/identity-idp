@@ -5,7 +5,9 @@ feature 'IdV phone OTP deleivery method selection' do
 
   context 'the users chooses sms' do
     it 'sends an sms and redirects to otp verification' do
-      expect(Telephony).to receive(:send_confirmation_otp).with(hash_including(channel: :sms))
+      expect(Telephony).to receive(:send_confirmation_otp).
+        with(hash_including(channel: :sms)).
+        and_call_original
 
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_delivery_selection_step
@@ -18,7 +20,9 @@ feature 'IdV phone OTP deleivery method selection' do
 
   context 'the user chooses voice' do
     it 'sends a voice call and redirects to otp verification' do
-      expect(Telephony).to receive(:send_confirmation_otp).with(hash_including(channel: :voice))
+      expect(Telephony).to receive(:send_confirmation_otp).
+        with(hash_including(channel: :voice)).
+        and_call_original
 
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_delivery_selection_step
@@ -76,25 +80,21 @@ feature 'IdV phone OTP deleivery method selection' do
     user = user_with_2fa
 
     start_idv_from_sp
-    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
-
-    telephony_error = Telephony::TelephonyError.new('error message')
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
-
-    choose_idv_otp_delivery_method_sms
-
-    expect(page).to have_content(telephony_error.friendly_message)
-    expect(page).to have_current_path(idv_phone_path)
-
-    fill_out_phone_form_ok
+    complete_idv_steps_before_phone_step(user)
+    fill_out_phone_form_ok('2255551000')
     click_idv_continue
 
-    calling_area_exception = Telephony::InvalidCallingAreaError.new('error message')
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(calling_area_exception)
+    choose_idv_otp_delivery_method_sms
+
+    expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
+    expect(page).to have_current_path(idv_phone_path)
+
+    fill_out_phone_form_ok('2255552000')
+    click_idv_continue
 
     choose_idv_otp_delivery_method_sms
 
-    expect(page).to have_content(calling_area_exception.friendly_message)
+    expect(page).to have_content(I18n.t('telephony.error.friendly_message.invalid_calling_area'))
     expect(page).to have_current_path(idv_phone_path)
   end
 

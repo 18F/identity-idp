@@ -53,6 +53,7 @@ describe Idv::ResendOtpController do
         country_code: 'US',
         area_code: '225',
         rate_limit_exceeded: false,
+        telephony_response: instance_of(Telephony::Response),
       }
 
       expect(@analytics).to have_received(:track_event).with(
@@ -73,13 +74,27 @@ describe Idv::ResendOtpController do
       let(:telephony_error) do
         Telephony::TelephonyError.new('error message')
       end
+      let(:telephony_response) do
+        Telephony::Response.new(
+          success: false,
+          error: telephony_error,
+          extra: { request_id: 'error-request-id' },
+        )
+      end
 
       before do
         stub_analytics
-        allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
+        allow(Telephony).to receive(:send_confirmation_otp).and_return(telephony_response)
       end
 
       it 'tracks an analytics events' do
+        expect(@analytics).to receive(:track_event).ordered.with(
+          Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT,
+          hash_including(
+            success: false,
+            telephony_response: telephony_response,
+          ),
+        )
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::TWILIO_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
         )
