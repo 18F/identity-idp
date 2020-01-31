@@ -1,5 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 module Users
+  # rubocop:disable Metrics/ClassLength
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PivCacConcern
@@ -145,5 +146,6 @@ module Users
       current_user.piv_cac_configurations.count
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
 # rubocop:enable Metrics/ClassLength
