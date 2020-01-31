@@ -62,6 +62,7 @@ module Users
     end
 
     def otp_failed_to_send?
+      return true unless user_signed_in?
       !@telephony_result&.success?
     end
 
