@@ -25,7 +25,6 @@ module Idv
       end
 
       def recovery_success
-        mark_step_complete(:recover_fail)
         flash[:success] = I18n.t('recover.reverify.success')
         redirect_to account_url
         session['need_two_factor_authentication'] = false
