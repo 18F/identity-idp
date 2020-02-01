@@ -36,7 +36,6 @@ fr:
       reverify: Pour réinitialiser votre compte, nous devons revérifier votre identité.
     reverify:
       email_confirmed: Nous avons confirmé votre adresse email
-      fail: Récupérer échouer
       instructions: Nous voulons nous assurer que vous et seulement vous avez accès
         à votre compte
       reverify: Ensuite, revérifions votre identité

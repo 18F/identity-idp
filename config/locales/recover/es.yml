@@ -37,7 +37,6 @@ es:
       reverify: Para restablecer su cuenta, tendremos que volver a verificar su identidad
     reverify:
       email_confirmed: Hemos confirmado su dirección de correo electrónico
-      fail: Falla de recuperación
       instructions: Queremos asegurarnos de que usted, y solo usted, tenga acceso
         a su cuenta
       reverify: A continuación, volvamos a verificar su identidad

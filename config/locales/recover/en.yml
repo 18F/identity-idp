@@ -34,7 +34,6 @@ en:
       reverify: To reset your account, we'll need to re-verify your identity
     reverify:
       email_confirmed: We have confirmed your email address
-      fail: Recover fail
       instructions: We want to make sure you, and only you, have access to your account
       reverify: Next, let's re-verify your identity
       success: You have successfully recovered your account. To prevent having to
