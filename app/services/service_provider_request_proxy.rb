@@ -48,6 +48,10 @@ class ServiceProviderRequestProxy
     hash_to_spr(obj, uuid)
   end
 
+  def self.create!(hash)
+    self.create(hash)
+  end
+
   def self.last
     uuid = cache.read(REDIS_LAST_UUID_KEY)
     return unless uuid
