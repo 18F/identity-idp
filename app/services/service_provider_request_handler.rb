@@ -1,4 +1,4 @@
-class ServiceProviderRequestProxyHandler
+class ServiceProviderRequestHandler
   def initialize(url:, session:, protocol_request:, protocol:)
     @url = url
     @session = session

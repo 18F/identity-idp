@@ -104,7 +104,7 @@ module OpenidConnect
     end
 
     def store_request
-      ServiceProviderRequestProxyHandler.new(
+      ServiceProviderRequestHandler.new(
         url: request.original_url,
         session: session,
         protocol_request: @authorize_form,

@@ -27,7 +27,7 @@ module SamlIdpAuthConcern
   end
 
   def store_saml_request
-    ServiceProviderRequestProxyHandler.new(
+    ServiceProviderRequestHandler.new(
       url: request_url,
       session: session,
       protocol_request: saml_request,
