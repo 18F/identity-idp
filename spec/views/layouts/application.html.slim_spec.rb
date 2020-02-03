@@ -10,7 +10,7 @@ describe 'layouts/application.html.slim' do
         sp: nil,
         view_context: nil,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new,
+        service_provider_request: ServiceProviderRequestProxy.new,
       ).call,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')

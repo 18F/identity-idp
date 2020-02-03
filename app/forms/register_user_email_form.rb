@@ -60,7 +60,7 @@ class RegisterUserEmailForm
 
   def service_provider_request_exists
     return if request_id.blank?
-    return if ServiceProviderRequest.where(uuid: request_id).any?
+    return if ServiceProviderRequestProxy.where(uuid: request_id).any?
     errors.add(:email, t('sign_up.email.invalid_request'))
   end
 

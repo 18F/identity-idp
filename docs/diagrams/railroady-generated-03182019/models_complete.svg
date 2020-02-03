@@ -70,11 +70,11 @@
 <text text-anchor="start" x="8" y="-256.3" font-family="Times,serif" font-size="14.00" fill="#000000">created_at :timestamp without time zone</text>
 <text text-anchor="start" x="8" y="-242.3" font-family="Times,serif" font-size="14.00" fill="#000000">updated_at :timestamp without time zone</text>
 </g>
-<!-- ServiceProviderRequest -->
+<!-- ServiceProviderRequestProxy -->
 <g id="node6" class="node">
-<title>ServiceProviderRequest</title>
+<title>ServiceProviderRequestProxy</title>
 <path fill="none" stroke="#000000" d="M3748,-666.5C3748,-666.5 3971.7246,-666.5 3971.7246,-666.5 3977.7246,-666.5 3983.7246,-672.5 3983.7246,-678.5 3983.7246,-678.5 3983.7246,-796.5 3983.7246,-796.5 3983.7246,-802.5 3977.7246,-808.5 3971.7246,-808.5 3971.7246,-808.5 3748,-808.5 3748,-808.5 3742,-808.5 3736,-802.5 3736,-796.5 3736,-796.5 3736,-678.5 3736,-678.5 3736,-672.5 3742,-666.5 3748,-666.5"/>
-<text text-anchor="middle" x="3859.8623" y="-793.3" font-family="Times,serif" font-size="14.00" fill="#000000">ServiceProviderRequest</text>
+<text text-anchor="middle" x="3859.8623" y="-793.3" font-family="Times,serif" font-size="14.00" fill="#000000">ServiceProviderRequestProxy</text>
 <polyline fill="none" stroke="#000000" points="3736,-786.5 3983.7246,-786.5 "/>
 <text text-anchor="start" x="3744" y="-771.3" font-family="Times,serif" font-size="14.00" fill="#000000">requested_attributes :character varying</text>
 <text text-anchor="start" x="3744" y="-757.3" font-family="Times,serif" font-size="14.00" fill="#000000">issuer :character varying</text>

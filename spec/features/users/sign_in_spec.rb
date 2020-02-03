@@ -705,7 +705,7 @@ feature 'Sign in' do
       redirect_uri = URI(current_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.count).to eq 0
+      expect(ServiceProviderRequestProxy.count).to eq 0
     end
   end
 

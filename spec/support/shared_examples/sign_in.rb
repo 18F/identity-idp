@@ -170,7 +170,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
       Capybara.current_session.driver.header('Accept-Language', 'es')
 
       visit_idp_from_sp_with_ial1(sp)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       fill_in_credentials_and_submit('test@test.com', 'foo')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
@@ -185,7 +185,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
 
       user = create(:user, :signed_up)
       visit_idp_from_sp_with_ial1(sp)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       fill_in_credentials_and_submit(user.email, 'password')
 
       link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)

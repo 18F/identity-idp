@@ -362,7 +362,7 @@ describe 'OpenID Connect' do
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 

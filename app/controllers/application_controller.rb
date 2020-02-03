@@ -134,7 +134,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def service_provider_request
-    @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
+    @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
   def add_piv_cac_setup_url

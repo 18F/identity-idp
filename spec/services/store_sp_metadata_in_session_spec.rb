@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe StoreSpMetadataInSession do
   describe '#call' do
-    context 'when a ServiceProviderRequest is not found' do
+    context 'when a ServiceProviderRequestProxy is not found' do
       it 'does not set the session[:sp] hash' do
         allow(Rails.logger).to receive(:info)
         app_session = {}
@@ -18,13 +18,13 @@ describe StoreSpMetadataInSession do
       end
     end
 
-    context 'when a ServiceProviderRequest is found' do
+    context 'when a ServiceProviderRequestProxy is found' do
       it 'sets the session[:sp] hash' do
         allow(Rails.logger).to receive(:info)
 
         app_session = {}
         request_id = SecureRandom.uuid
-        ServiceProviderRequest.find_or_create_by(uuid: request_id) do |sp_request|
+        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = 'ial1'
           sp_request.url = 'http://issuer.gov'
@@ -35,7 +35,7 @@ describe StoreSpMetadataInSession do
         info_hash = {
           event: 'StoreSpMetadataInSession',
           request_id_present: true,
-          sp_request_class: 'ServiceProviderRequest',
+          sp_request_class: 'ServiceProviderRequestProxy',
         }.to_json
 
         app_session_hash = {

@@ -190,6 +190,6 @@ shared_examples 'creating two accounts during the same session' do |sp|
       expect(page.get_rack_session.keys).to include('sp')
     end
 
-    expect(ServiceProviderRequest.count).to eq 0
+    expect(ServiceProviderRequestProxy.count).to eq 0
   end
 end

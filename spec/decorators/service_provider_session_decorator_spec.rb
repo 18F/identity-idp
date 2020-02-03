@@ -7,7 +7,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       sp: sp,
       view_context: view_context,
       sp_session: {},
-      service_provider_request: ServiceProviderRequest.new,
+      service_provider_request: ServiceProviderRequestProxy.new,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
@@ -85,7 +85,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new,
+        service_provider_request: ServiceProviderRequestProxy.new,
       )
       expect(subject.sp_name).to eq sp.agency
       expect(subject.sp_name).to_not be_nil
@@ -104,7 +104,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new,
+        service_provider_request: ServiceProviderRequestProxy.new,
       )
       expect(subject.sp_agency).to eq sp.friendly_name
       expect(subject.sp_agency).to_not be_nil
@@ -121,7 +121,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new,
+          service_provider_request: ServiceProviderRequestProxy.new,
         )
 
         expect(subject.sp_logo).to eq sp_logo
@@ -136,7 +136,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new,
+          service_provider_request: ServiceProviderRequestProxy.new,
         )
 
         expect(subject.sp_logo).to eq 'generic.svg'
@@ -154,7 +154,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new,
+          service_provider_request: ServiceProviderRequestProxy.new,
         )
 
         expect(subject.sp_logo_url).to match(%r{sp-logos\/18f-[0-9a-f]+\.svg$})
@@ -169,7 +169,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new,
+          service_provider_request: ServiceProviderRequestProxy.new,
         )
 
         expect(subject.sp_logo_url).to match(%r{/sp-logos/generic-.+\.svg})
@@ -185,7 +185,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           sp: sp,
           view_context: view_context,
           sp_session: {},
-          service_provider_request: ServiceProviderRequest.new,
+          service_provider_request: ServiceProviderRequestProxy.new,
         )
 
         expect(subject.sp_logo_url).to eq(logo)
@@ -199,7 +199,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp: sp,
         view_context: view_context,
         sp_session: { request_id: 'foo' },
-        service_provider_request: ServiceProviderRequest.new,
+        service_provider_request: ServiceProviderRequestProxy.new,
       )
     end
 
