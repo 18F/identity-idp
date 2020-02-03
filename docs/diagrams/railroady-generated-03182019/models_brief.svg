@@ -42,11 +42,11 @@
 <ellipse fill="none" stroke="#000000" cx="104.9193" cy="-90" rx="104.8387" ry="18"/>
 <text text-anchor="middle" x="104.9193" y="-85.8" font-family="Times,serif" font-size="14.00" fill="#000000">BackupCodeConfiguration</text>
 </g>
-<!-- ServiceProviderRequestProxy -->
+<!-- ServiceProviderRequest -->
 <g id="node6" class="node">
-<title>ServiceProviderRequestProxy</title>
+<title>ServiceProviderRequest</title>
 <ellipse fill="none" stroke="#000000" cx="2165.9193" cy="-180.5" rx="95.6413" ry="18"/>
-<text text-anchor="middle" x="2165.9193" y="-176.3" font-family="Times,serif" font-size="14.00" fill="#000000">ServiceProviderRequestProxy</text>
+<text text-anchor="middle" x="2165.9193" y="-176.3" font-family="Times,serif" font-size="14.00" fill="#000000">ServiceProviderRequest</text>
 </g>
 <!-- PhoneConfiguration -->
 <g id="node7" class="node">
