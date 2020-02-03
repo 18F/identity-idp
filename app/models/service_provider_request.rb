@@ -19,4 +19,8 @@ class ServiceProviderRequest < ApplicationRecord
   def ial=(val)
     self.loa = val
   end
+
+  def ==(obj)
+    self.to_json == obj.to_json
+  end
 end
