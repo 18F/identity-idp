@@ -28,8 +28,7 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new
-    spr.uuid = uuid
+    spr = ServiceProviderRequest.new(uuid: uuid)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,
@@ -40,12 +39,10 @@ class ServiceProviderRequestProxy
 
   def self.create(hash)
     uuid = hash[:uuid]
-    obj = {
-        issuer: hash[:issuer],
-        url: hash[:url],
-        loa: hash[:loa],
-        requested_attributes: hash[:requested_attributes],
-    }
+    obj = { issuer: hash[:issuer],
+            url: hash[:url],
+            loa: hash[:loa],
+            requested_attributes: hash[:requested_attributes] }
     cache.write(key(uuid), obj)
     cache.write(REDIS_LAST_UUID_KEY, uuid) if Rails.env.test?
     hash_to_spr(obj, uuid)
@@ -66,8 +63,8 @@ class ServiceProviderRequestProxy
     env = Figaro.env
     ttl = env.service_provider_request_ttl_hours || DEFAULT_TTL_HOURS
     Readthis::Cache.new(
-        expires_in: ttl.to_i.hours.to_i,
-        redis: { url: env.redis_throttle_url, driver: :hiredis }
+      expires_in: ttl.to_i.hours.to_i,
+      redis: { url: env.redis_throttle_url, driver: :hiredis },
     )
   end
 
@@ -77,4 +74,3 @@ class ServiceProviderRequestProxy
     spr
   end
 end
-
