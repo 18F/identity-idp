@@ -38,10 +38,7 @@ class ServiceProviderRequestProxy
 
   def self.create(hash)
     uuid = hash[:uuid]
-    obj = { issuer: hash[:issuer],
-            url: hash[:url],
-            loa: hash[:loa],
-            requested_attributes: hash[:requested_attributes] }
+    obj = hash.slice(:issuer, :url, :loa, :requested_attributes)
     cache.write(key(uuid), obj)
     cache.write(REDIS_LAST_UUID_KEY, uuid) if Rails.env.test?
     hash_to_spr(obj, uuid)
