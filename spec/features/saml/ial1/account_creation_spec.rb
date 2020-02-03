@@ -27,7 +27,8 @@ feature 'Canceling Account Creation' do
       expect(current_url).to eq sign_up_cancel_url
 
       click_button t('forms.buttons.cancel')
-      expect(current_url).to eq new_user_session_url(request_id: ServiceProviderRequestProxy.last.uuid)
+      expect(current_url).to eq \
+        new_user_session_url(request_id: ServiceProviderRequestProxy.last.uuid)
     end
 
     it 'redirects to the password page after cancelling the cancellation' do
