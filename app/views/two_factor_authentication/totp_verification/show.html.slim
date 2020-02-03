@@ -11,7 +11,8 @@ h1.h3.my0 = @presenter.header
       pattern: '[0-9]*', class: 'col-12 field monospace mfa', type: 'number',
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length
   .border.border-light-blue.rounded-lg.py1.mt2.mb4.sm-my2.col-12.sm-col-7
-    = check_box_tag 'remember_device', true, true, class: 'mr1 ml2'
+    = hidden_field_tag 'remember_device', false, id: 'remember_device_preference'
+    = check_box_tag 'remember_device', true, !cookies.encrypted[:remember_device_preference].nil? ? ActiveModel::Type::Boolean.new.cast(cookies.encrypted[:remember_device_preference]) : true, class: 'mr1 ml2'
     = label_tag 'remember_device',
       t('forms.messages.remember_device'),
       class: 'blue mr2'
