@@ -1,7 +1,6 @@
 # Drop in replacement for ServiceProviderRequest. Moves us from Postgres to Redis
 # To manage the migration and still respect in flight transactions code will default
 # to checking the db if no redis object is available. Following release can remove db dependence.
-# The .last uuid written is stored only in test mode to support existing specs
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
   REDIS_KEY_PREFIX = 'spr:'.freeze
@@ -49,9 +48,10 @@ class ServiceProviderRequestProxy
   end
 
   def self.create!(hash)
-    self.create(hash)
+    create(hash)
   end
 
+  # The .last uuid written is stored only in test mode to support existing specs
   def self.last
     uuid = cache.read(REDIS_LAST_UUID_KEY)
     return unless uuid
