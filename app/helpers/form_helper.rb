@@ -6,6 +6,7 @@ module FormHelper
   end
 
   # rubocop:disable MethodLength
+  # rubocop:disable Style/WordArray
   # This method is single statement spread across many lines for readability
   def us_states_territories
     [
@@ -72,6 +73,7 @@ module FormHelper
     ]
   end
   # rubocop:enable MethodLength
+  # rubocop:enable Style/WordArray
 
   def international_phone_codes
     PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
