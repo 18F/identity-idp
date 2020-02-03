@@ -35,7 +35,7 @@ describe StoreSpMetadataInSession do
         info_hash = {
           event: 'StoreSpMetadataInSession',
           request_id_present: true,
-          sp_request_class: 'ServiceProviderRequestProxy',
+          sp_request_class: 'ServiceProviderRequest',
         }.to_json
 
         app_session_hash = {
