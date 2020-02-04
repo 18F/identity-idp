@@ -17,6 +17,7 @@ class ServiceProviderRequestProxy
     return unless request_id
     from_uuid(request_id).delete
     cache.delete(key(request_id))
+    cache.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
   end
 
   def self.find_by(uuid:)
