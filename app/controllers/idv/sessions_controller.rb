@@ -84,7 +84,6 @@ module Idv
       params.require(:profile).permit(Idv::ProfileForm::PROFILE_ATTRIBUTES)
     end
 
-    # :reek:ControlParameter
     def failure_url(reason)
       case reason
       when :warning

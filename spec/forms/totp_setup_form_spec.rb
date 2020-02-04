@@ -18,7 +18,7 @@ describe TotpSetupForm do
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.reload.totp_enabled?).to eq true
+        expect(user.reload.auth_app_configurations.any?).to eq true
       end
     end
 

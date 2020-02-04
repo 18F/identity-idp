@@ -13,7 +13,6 @@ module Users
       @retire_personal_key = MfaPolicy.new(current_user).retire_personal_key?
     end
 
-    # :reek:TooManyStatements
     def create
       result = submit_form
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)

@@ -39,6 +39,7 @@ module Features
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
       click_send_security_code
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_continue
@@ -228,6 +229,7 @@ module Features
 
     def sign_in_live_with_2fa(user = user_with_2fa)
       sign_in_user(user)
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       user
@@ -269,9 +271,7 @@ module Features
     end
 
     def sign_in_with_totp_enabled_user
-      user = build(:user, :signed_up, password: VALID_PASSWORD)
-      @secret = user.generate_totp_secret
-      UpdateUser.new(user: user, attributes: { otp_secret_key: @secret }).call
+      user = build(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
       sign_in_user(user)
       fill_in 'code', with: generate_totp_code(@secret)
       click_submit_default
@@ -599,6 +599,11 @@ module Features
       ).link_identity(
         ial: ial,
       )
+    end
+
+    def set_new_browser_session
+      # For when we want to login from a new browser to avoid the default 'remember device' behavior
+      Capybara.reset_session!
     end
   end
 end

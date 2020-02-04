@@ -6,9 +6,6 @@ class UserMailer < ActionMailer::Base
   default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from),
           reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
 
-  # :reek:ControlParameter
-  # :reek:LongParameterList
-  # :reek:TooManyStatements
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     presenter = ConfirmationEmailPresenter.new(user, view_context)
     @first_sentence = instructions || presenter.first_sentence

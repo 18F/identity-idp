@@ -77,7 +77,7 @@ describe 'SMS receiving' do
           receive(:validate).and_return(true),
         )
 
-        expect(Telephony).to receive(:send_help_keyword_response)
+        expect(Telephony).to receive(:send_help_keyword_response).and_call_original
 
         post_message(help_message)
 
@@ -91,7 +91,7 @@ describe 'SMS receiving' do
   def post_message(body)
     post(
       api_sms_receive_path,
-      params: { Body: body },
+      params: { Body: body, From: '+12021234567' },
       headers: { 'HTTP_AUTHORIZATION': credentials },
     )
   end

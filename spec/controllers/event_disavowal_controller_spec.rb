@@ -98,7 +98,6 @@ describe EventDisavowalController do
     end
   end
 
-  # :reek:BooleanParameter
   def build_analytics_hash(success: true, errors: {})
     hash_including(
       :event_created_at,

@@ -70,7 +70,6 @@ module PushNotification
     end
     # rubocop:enable Metrics/MethodLength
 
-    # :reek:FeatureEnvy
     def post_to_push_notification_url(push_to_url, payload)
       adapter = faraday_adapter(push_to_url)
       adapter.post do |request|

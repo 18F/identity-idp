@@ -29,7 +29,7 @@ class OpenidConnectAuthorizeForm
   validates :nonce, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
 
   validates :response_type, inclusion: { in: %w[code] }
-  validates :prompt, presence: true, allow_nil: true, inclusion: { in: %w[login select_account] }
+  validates :prompt, presence: true, inclusion: { in: %w[login select_account] }
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
@@ -37,6 +37,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
+  validate :validate_prompt
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -111,6 +112,12 @@ class OpenidConnectAuthorizeForm
   def validate_unauthorized_scope
     return unless @unauthorized_scope && Figaro.env.unauthorized_scope_enabled == 'true'
     errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
+  end
+
+  def validate_prompt
+    return if prompt == 'select_account'
+    return if prompt == 'login' && service_provider.allow_prompt_login
+    errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
   end
 
   def ial

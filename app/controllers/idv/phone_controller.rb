@@ -68,7 +68,6 @@ module Idv
       )
     end
 
-    # :reek:ControlParameter
     def failure_url(reason)
       case reason
       when :warning

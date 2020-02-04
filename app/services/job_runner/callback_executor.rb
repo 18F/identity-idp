@@ -40,7 +40,6 @@ module JobRunner
       Rails.logger.debug("#{job_configuration}: executing callback")
     end
 
-    # :reek:DuplicateMethodCall
     def log_execution_completed_message
       if job_run.error.present?
         Rails.logger.warn("#{job_configuration}: Job failed: #{job_run.error}")

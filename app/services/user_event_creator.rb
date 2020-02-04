@@ -1,4 +1,3 @@
-# :reek:DataClump
 class UserEventCreator
   attr_reader :request, :current_user
 

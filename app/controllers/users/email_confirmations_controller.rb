@@ -13,7 +13,8 @@ module Users
     private
 
     def email_address
-      @email_address ||= EmailAddress.find_by(confirmation_token: params[:confirmation_token])
+      @email_address ||= EmailConfirmationTokenValidator.
+                         email_address_from_token(params[:confirmation_token])
     end
 
     def email_confirmation_token_validator

@@ -22,7 +22,7 @@ gem 'hiredis'
 gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.16'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.0.17'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt'
 gem 'local_time'
@@ -53,7 +53,7 @@ gem 'safe_target_blank'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
-gem 'secure_headers', '~> 6.0'
+gem 'secure_headers', '~> 6.3'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
@@ -84,7 +84,6 @@ group :development do
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
-  gem 'reek'
 end
 
 group :development, :test do

@@ -46,6 +46,6 @@ class UspsConfirmationMaker
 
   def update_proofing_cost
     Db::ProofingCost::AddUserProofingCost.call(profile.user.id, :gpo_letter)
-    Db::SpCost::AddSpCost.call(issuer, :gpo_letter)
+    Db::SpCost::AddSpCost.call(issuer, 2, :gpo_letter)
   end
 end

@@ -7,6 +7,7 @@ feature 'sign in with any email address' do
     email1, email2 = user.reload.email_addresses.map(&:email)
 
     signin(email1, user.password)
+    uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
     click_submit_default
 

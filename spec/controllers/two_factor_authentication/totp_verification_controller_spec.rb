@@ -10,8 +10,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        user.update(otp_secret_key: @secret)
-        Db::AuthAppConfiguration::Create.call(user, @secret, 'foo')
+        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
         cookies['_ga'] = ga_cookie
       end
 
@@ -55,8 +54,9 @@ describe TwoFactorAuthentication::TotpVerificationController do
     context 'when the user enters an invalid TOTP' do
       before do
         sign_in_before_2fa
-        @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
+        user = subject.current_user
+        @secret = user.generate_totp_secret
+        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
         post :create, params: { code: 'abc' }
       end
 
@@ -77,8 +77,9 @@ describe TwoFactorAuthentication::TotpVerificationController do
       it 'tracks the event' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa
-        @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
+        user = subject.current_user
+        @secret = user.generate_totp_secret
+        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
 
         stub_analytics
 
@@ -109,8 +110,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        user.otp_secret_key = @secret
-        Db::AuthAppConfiguration::Create.call(user, @secret, 'foo')
+        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
       end
 
       describe 'when user submits an invalid TOTP' do

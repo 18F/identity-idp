@@ -39,7 +39,7 @@ describe Idv::SendPhoneConfirmationOtp do
   describe '#call' do
     context 'with sms' do
       it 'sends an sms' do
-        allow(Telephony).to receive(:send_confirmation_otp)
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
         result = subject.call
 
@@ -64,7 +64,7 @@ describe Idv::SendPhoneConfirmationOtp do
       let(:delivery_preference) { :voice }
 
       it 'makes a phone call' do
-        allow(Telephony).to receive(:send_confirmation_otp)
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
         result = subject.call
 

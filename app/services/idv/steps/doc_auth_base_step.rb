@@ -1,7 +1,5 @@
 # rubocop:disable Metrics/ClassLength
 # rubocop:disable Style/ColonMethodCall
-# :reek:TooManyMethods
-# :reek:RepeatedConditional
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -182,7 +180,7 @@ module Idv
 
       def add_cost(token)
         issuer = sp_session[:issuer].to_s
-        Db::SpCost::AddSpCost.call(issuer, token)
+        Db::SpCost::AddSpCost.call(issuer, 2, token)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 

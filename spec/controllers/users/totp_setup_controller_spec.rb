@@ -221,7 +221,6 @@ describe Users::TotpSetupController, devise: true do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
         user = create(:user, :signed_up, :with_authentication_app)
-        user.otp_secret_key = 'foo'
         user.auth_app_configurations.first.otp_secret_key = 'foo'
         user.save
         stub_sign_in(user)
@@ -232,7 +231,6 @@ describe Users::TotpSetupController, devise: true do
 
         delete :disable
 
-        expect(user.reload.otp_secret_key).to be_nil
         expect(user.reload.totp_enabled?).to be(false)
         expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
@@ -247,7 +245,6 @@ describe Users::TotpSetupController, devise: true do
         sign_in user
 
         delete :disable
-        expect(user.reload.otp_secret_key).to_not be_nil
         expect(response).to redirect_to(account_path)
       end
     end

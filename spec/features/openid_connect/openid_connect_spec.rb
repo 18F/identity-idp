@@ -46,6 +46,22 @@ describe 'OpenID Connect' do
       oidc_end_client_secret_jwt(prompt: 'login')
     end
 
+    it 'fails with prompt login if not allowed for SP' do
+      visit openid_connect_authorize_path(
+        client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: SecureRandom.hex,
+        prompt: 'login',
+        nonce: SecureRandom.hex,
+      )
+
+      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
+    end
+
     it 'returns invalid request with bad prompt parameter' do
       oidc_end_client_secret_jwt(prompt: 'aaa', redirs_to: '/auth/result')
       expect(current_url).to include('?error=invalid_request')
@@ -151,7 +167,7 @@ describe 'OpenID Connect' do
     expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
-  context 'with PCKE', driver: :mobile_rack_test do
+  context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       state = SecureRandom.hex
@@ -338,12 +354,14 @@ describe 'OpenID Connect' do
 
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
+      uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       visit destroy_user_session_url
 
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
+      uncheck(t('forms.messages.remember_device'))
       sp_request_id = ServiceProviderRequest.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
