@@ -23,7 +23,7 @@ module TwoFactorAuthentication
 
     def security_level
       secure = I18n.t('two_factor_authentication.two_factor_choice_options.secure_label')
-      less_secure = I18n.t('two_factor_authentication.two_factor_choice_options.secure_label')
+      less_secure = I18n.t('two_factor_authentication.two_factor_choice_options.less_secure_label')
       levels =
         { I18n.t('two_factor_authentication.two_factor_choice_options.auth_app') => secure,
           I18n.t('two_factor_authentication.two_factor_choice_options.webauthn') => secure,
