@@ -19,16 +19,19 @@
   <div class="mb3">
     <fieldset class="m0 p0 border-none">
       <legend class="mb2 serif bold"><%= @presenter.label %></legend>
-      <% @presenter.options.each_with_index do |option, index| %>
+      <% @presenter.options.each do |option| %>
         <label class="btn-border col-12 mb2 <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
           <div class="radio">
-            <%= radio_button_tag('two_factor_options_form[selection]', option.type, index.zero?) %>
+            <%= radio_button_tag('two_factor_options_form[selection]', option.type) %>
             <span class="indicator mt-tiny"></span>
             <span class="blue bold fs-20p"><%= option.label %></span>
             <div class="regular gray-dark fs-10p mt0 mb-tiny"><%= option.info %></div>
           </div>
+          <% if option.security_level %>
+            <span class="usa-tag float-right bg-info-dark"><%= option.security_level %></span>
+          <% end %>
         </label>
-        <% end %>
+    <% end %>
     </fieldset>
   </div>
 

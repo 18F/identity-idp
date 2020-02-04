@@ -128,6 +128,9 @@ es:
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
+    security_level_labels:
+      more_secure: Más Seguro
+      less_secure: Menos Seguro
     totp_fallback:
       question: "¿No tiene su aplicación de autenticación?"
     totp_header_text: Ingrese su código de la app de autenticación
