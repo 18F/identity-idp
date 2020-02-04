@@ -36,7 +36,7 @@ class ServiceProviderRequestHandler
 
   def delete_sp_request_if_session_has_matching_request_id
     return if sp_request_id.blank?
-    ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).delete
+    ServiceProviderRequestProxy.delete(sp_session[:request_id])
   end
 
   def attributes
