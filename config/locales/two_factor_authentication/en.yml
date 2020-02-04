@@ -119,9 +119,6 @@ en:
     read_about_two_factor_authentication:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
-    security_level_labels:
-      more_secure: More Secure
-      less_secure: Less Secure
     totp_fallback:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code
