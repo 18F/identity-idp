@@ -20,7 +20,7 @@ class ServiceProviderRequest < ApplicationRecord
     self.loa = val
   end
 
-  def ==(obj)
-    self.to_json == obj.to_json
+  def ==(other)
+    to_json == other.to_json
   end
 end
