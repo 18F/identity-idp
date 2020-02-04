@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe ServiceProviderRequestProxy do
+  before do
+    ServiceProviderRequestProxy.flush
+  end
+
   describe '.from_uuid' do
     context 'when the record exists' do
       it 'returns the record matching the uuid' do

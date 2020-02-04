@@ -63,6 +63,10 @@ class ServiceProviderRequestProxy
     REDIS_KEY_PREFIX + uuid
   end
 
+  def self.flush
+    cache.clear
+  end
+
   def self.cache
     env = Figaro.env
     ttl = env.service_provider_request_ttl_hours || DEFAULT_TTL_HOURS
