@@ -16,13 +16,15 @@ class ServiceProviderRequestProxy
   def self.delete(request_id)
     return unless request_id
     from_uuid(request_id).delete
-    cache.delete(key(request_id))
-    cache.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
+    REDIS_POOL.with do |client|
+      client.delete(key(request_id))
+      client.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
+    end
   end
 
   def self.find_by(uuid:)
     return unless uuid
-    obj = cache.read(key(uuid))
+    obj = REDIS_POOL.with { |client| client.read(key(uuid)) }
     return hash_to_spr(obj, uuid) if obj
     ServiceProviderRequest.find_by(uuid: uuid)
   end
@@ -42,9 +44,15 @@ class ServiceProviderRequestProxy
   def self.create(hash)
     uuid = hash[:uuid]
     obj = hash.slice(:issuer, :url, :loa, :requested_attributes)
-    cache.write(key(uuid), obj)
-    cache.write(REDIS_LAST_UUID_KEY, uuid) if Rails.env.test?
+    write(obj, uuid)
     hash_to_spr(obj, uuid)
+  end
+
+  def self.write(obj, uuid)
+    REDIS_POOL.with do |client|
+      client.write(key(uuid), obj)
+      client.write(REDIS_LAST_UUID_KEY, uuid) if Rails.env.test?
+    end
   end
 
   def self.create!(hash)
@@ -53,10 +61,12 @@ class ServiceProviderRequestProxy
 
   # The .last uuid written is stored only in test mode to support existing specs
   def self.last
-    uuid = cache.read(REDIS_LAST_UUID_KEY)
-    return unless uuid
-    obj = cache.read(key(uuid))
-    hash_to_spr(obj, uuid)
+    REDIS_POOL.with do |client|
+      uuid = client.read(REDIS_LAST_UUID_KEY)
+      return nil unless uuid
+      obj = client.read(key(uuid))
+      hash_to_spr(obj, uuid)
+    end
   end
 
   def self.key(uuid)
@@ -64,16 +74,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.flush
-    cache.clear
-  end
-
-  def self.cache
-    env = Figaro.env
-    ttl = env.service_provider_request_ttl_hours || DEFAULT_TTL_HOURS
-    Readthis::Cache.new(
-      expires_in: ttl.to_i.hours.to_i,
-      redis: { url: env.redis_throttle_url, driver: :hiredis },
-    )
+    REDIS_POOL.with(&:clear)
   end
 
   def self.hash_to_spr(hash, uuid)
