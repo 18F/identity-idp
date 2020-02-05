@@ -274,6 +274,7 @@ Rails.application.routes.draw do
       get '/session/success' => 'sessions#success'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/timeout' => 'session_errors#timeout'
+      get '/session/errors/jobfail' => 'session_errors#jobfail'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/throttled' => 'session_errors#throttled'
       get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
