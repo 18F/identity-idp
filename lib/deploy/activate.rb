@@ -54,6 +54,12 @@ module Deploy
         File.join(root, 'config/service_providers.yml'),
       )
 
+      # agencies.yml
+      symlink_verbose(
+        File.join(root, idp_config_checkout_name, 'agencies.yml'),
+        File.join(root, 'config/agencies.yml'),
+      )
+
       # Service provider public keys
       symlink_verbose(
         File.join(root, idp_config_checkout_name, 'certs/sp'),

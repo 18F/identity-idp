@@ -29,6 +29,9 @@ Dir.chdir APP_ROOT do
   puts "== Linking service_providers.yml =="
   run "test -L config/service_providers.yml || ln -sv service_providers.localdev.yml config/service_providers.yml"
 
+  puts "== Linking agencies.yml =="
+  run "test -L config/agencies.yml || ln -sv agencies.localdev.yml config/agencies.yml"
+
   puts "== Copying logstash.conf =="
   run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
 
