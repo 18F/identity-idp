@@ -38,7 +38,7 @@ feature 'recovery verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do
@@ -47,7 +47,7 @@ feature 'recovery verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
   end
 
   it 'throttles resolution' do
@@ -56,11 +56,11 @@ feature 'recovery verify step' do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
+      expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
       visit idv_recovery_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
   end
 
   it 'throttles dup ssn' do
@@ -69,10 +69,10 @@ feature 'recovery verify step' do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
+      expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
       visit idv_recovery_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
   end
 end

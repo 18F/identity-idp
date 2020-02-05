@@ -20,6 +20,6 @@ feature 'recovery doc fail step' do
   end
 
   it 'fails to re-verify if the pii does not match and then it proceeds to start re-verify over' do
-    expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
   end
 end
