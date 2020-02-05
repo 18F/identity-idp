@@ -15,7 +15,7 @@ A Identity Management System powering login.gov.
 - Ruby 2.5
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
-- [Node.js v8.x.x](https://nodejs.org)
+- [Node.js v12.x.x](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
 #### Setting up and running the app
@@ -181,29 +181,52 @@ it into the "Index pattern" field, then click the "Next step" button.
 Discover section.
 
 
-#### Using Docker
+#### Using Docker Locally
 
-1. Download, install, and launch [Docker]
+1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop)
 
-1. Set up the Docker image
+1. Build and launch the Docker containers: `docker-compose up`
 
-  ```
-  $ bin/setup --docker
-  ```
+1. Copy necessary config files locally. This dir is mounted as a volume, so new files also appear in the container.
 
-[Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
+```sh
+cp config/application.yml.default config/application.yml
+cp -R certs.example certs
+cp -R keys.example keys
+cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
+cp config/service_providers.localdev.yml config/service_providers.yml
+```
+
+1. Manually edit `application.yml`, in the `development:` section to make Redis look like
+
+```sh
+  redis_throttle_url: redis://redis:6379
+  redis_url: redis://redis:637
+```
+
+1. Bootstrap the databases
+
+```sh
+docker-compose run --rm web rake db:create
+# The following pattern prevents a database reset from happening in prod.
+docker-compose run --rm web rake db:environment:set
+docker-compose run --rm web rake db:reset
+docker-compose run --rm web rake db:environment:set
+# This populates the dev database with sample data
+docker-compose run --rm web rake dev:prime
+```
 
 More useful Docker commands:
 
-* Start the container: `docker-compose up`
-* Stop this running container: `docker-compose stop`
-* Stop and delete the containers: `docker-compose down`
-* Open a shell in the web container: `docker-compose run --rm web bash`
+* Start the containers: `docker-compose up`
+* Force the images to re-build: `docker-compose build --no-cache`
+* Stop the containers: `docker-compose stop`
+* Stop and remove the containers (`-v` removes Volumes too): `docker-compose down`
+* Open a shell in a one-off web container: `docker-compose run --rm web bash`
+* Open a shell in the running web container: `docker-compose exec web bash`
+* Open a psql shell in the running db container: `docker-compse exec db psql -U postgres`
 
-See the Docker Compose [docs](https://docs.docker.com/compose/install/) for
-more information.
 
-[Docker Compose]: (https://docs.docker.com/compose/install/)
 
 ### Viewing the app locally
 
