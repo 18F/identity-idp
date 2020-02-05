@@ -12,6 +12,7 @@ es:
         coincidir con el perfil de su cuenta. Si no lo hacen, puede %{reset_link}
         en su lugar.
       reset_link: restablecer su cuenta
+      reset_your_account: Restablecer su cuenta
       reverify_link: vuelva a verificar su identidad
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
         ha sido cancelada.
