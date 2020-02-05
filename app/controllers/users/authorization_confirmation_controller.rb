@@ -5,6 +5,7 @@ module Users
     before_action :bump_auth_count
 
     def show
+      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
       @sp = ServiceProvider.find_by(issuer: sp_session[:issuer]) if sp_session
     end
 
