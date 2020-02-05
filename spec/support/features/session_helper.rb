@@ -52,6 +52,7 @@ module Features
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
+      continue_as(email, password)
     end
 
     def signin_with_piv(user = user_with_piv_cac)
@@ -108,6 +109,17 @@ module Features
       fill_in 'user_email', with: email
       fill_in 'user_password', with: password
       click_button t('links.next')
+    end
+
+    def continue_as(email = nil, password = VALID_PASSWORD)
+      return unless %r{#{user_authorization_confirmation_path}}.match?(current_url)
+
+      if email.nil? || page.has_content?(email)
+        click_button t('user_authorization_confirmation.continue')
+      else
+        click_button t('user_authorization_confirmation.sign_in')
+        signin(email, password)
+      end
     end
 
     def fill_in_password_and_submit(password)
@@ -195,10 +207,6 @@ module Features
     def sign_in_and_2fa_user(user = user_with_2fa)
       sign_in_with_warden(user)
       user
-    end
-
-    def sign_in_with_2fa
-      create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
     def user_with_2fa
@@ -496,6 +504,7 @@ module Features
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
+      save_and_open_page
       submit_form_with_valid_password
     end
 

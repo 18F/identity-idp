@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     { locale: locale_url_param, host: Figaro.env.domain_name }
   end
 
-  def sign_out
+  def sign_out(*args)
     request.cookie_jar.delete('ahoy_visit')
     super
   end

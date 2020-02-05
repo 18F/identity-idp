@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe OpenidConnect::AuthorizationController do
+  before do
+    # All the tests here were written prior to the interstitial
+    # authorization confirmation page so let's force the system
+    # to skip past that page
+    allow(controller).to receive(:auth_count).and_return(2)
+  end
+
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:params) do
     {
