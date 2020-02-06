@@ -26,8 +26,8 @@ en:
       heading: We need to re-verify your identity
     request:
       confirm_email: First, let's confirm your email address
-      email_sent: Link sent to %{email}. Please check your email and follow instructions
-        to re-verify your identity.
+      email_check: Check your email
+      email_sent: We sent an email to %{email} with a link to confirm your email address. Follow the link in the email to continue re-verifying your identity.
       instructions: We'll send an email to the address we have on file for this account.
         Once you receive the email, click the link inside to continue re-verifying
         your account.
