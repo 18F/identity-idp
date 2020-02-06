@@ -1,5 +1,7 @@
 module Idv
   class CacController < ApplicationController
+    include PivCacConcern
+
     before_action :render_404_if_disabled
     before_action :confirm_two_factor_authenticated
     before_action :cac_callback
@@ -12,6 +14,14 @@ module Idv
       flow: Idv::Flows::CacFlow,
       analytics_id: Analytics::CAC_PROOFING,
     }.freeze
+
+    def redirect_to_piv_cac_service
+      create_piv_cac_nonce
+      redirect_to PivCacService.piv_cac_service_link(
+        nonce: piv_cac_nonce,
+        redirect_uri: idv_cac_step_url(:present_cac),
+      )
+    end
 
     private
 
