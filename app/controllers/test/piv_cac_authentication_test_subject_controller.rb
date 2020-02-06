@@ -25,12 +25,7 @@ module Test
     private
 
     def referrer_uri
-      referrer = params[:referer]
-      if referrer
-        URI(referrer)
-      else
-        URI(setup_piv_cac_url)
-      end
+      URI(params[:redirect_uri])
     end
 
     def must_be_in_development

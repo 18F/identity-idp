@@ -73,7 +73,7 @@ describe Test::PivCacAuthenticationTestSubjectController do
       it 'returns a redirect' do
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
 
-        post :create, params: { referer: setup_piv_cac_url }
+        post :create, params: { redirect_uri: setup_piv_cac_url }
 
         expect(response).to redirect_to(expected_redirect)
       end

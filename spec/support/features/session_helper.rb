@@ -504,7 +504,6 @@ module Features
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
-      save_and_open_page
       submit_form_with_valid_password
     end
 
@@ -587,7 +586,7 @@ module Features
     def get_piv_cac_nonce_from_link(link)
       go_back = current_path
       visit link['href']
-      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
       visit go_back
       nonce
     end
@@ -596,7 +595,7 @@ module Features
       go_back = current_path
       fill_in 'name', with: 'Card ' + SecureRandom.uuid
       click_button t('forms.piv_cac_setup.submit')
-      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
       visit go_back
       nonce
     end

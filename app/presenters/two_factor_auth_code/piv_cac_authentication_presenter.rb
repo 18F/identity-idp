@@ -25,7 +25,7 @@ module TwoFactorAuthCode
     end
 
     def piv_cac_service_link
-      redirect_to_piv_cac_service_url
+      login_two_factor_piv_cac_present_piv_cac_url
     end
 
     def fallback_question
