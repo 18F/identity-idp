@@ -72,6 +72,7 @@ class Analytics
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
+  AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
