@@ -21,17 +21,7 @@ module TwoFactorAuthentication
       t("two_factor_authentication.#{option_mode}.#{method}_info_html")
     end
 
-    def security_level
-      secure = I18n.t('two_factor_authentication.two_factor_choice_options.secure_label')
-      less_secure = I18n.t('two_factor_authentication.two_factor_choice_options.less_secure_label')
-      levels =
-        { I18n.t('two_factor_authentication.two_factor_choice_options.auth_app') => secure,
-          I18n.t('two_factor_authentication.two_factor_choice_options.webauthn') => secure,
-          I18n.t('two_factor_authentication.two_factor_choice_options.backup_code') =>
-              less_secure }.freeze
-
-      levels[label]
-    end
+    def security_level; end
 
     def html_class
       ''
