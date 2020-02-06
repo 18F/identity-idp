@@ -75,10 +75,17 @@ describe PivCacService do
 
           let(:nonce) { 'once' }
           let(:base_url) { 'http://localhost:1234/' }
-          let(:url_with_nonce) { "#{base_url}?nonce=#{nonce}" }
+          let(:redirect_uri) { 'http://example.com/asdf' }
+          let(:url_with_nonce) do
+            "#{base_url}?nonce=#{nonce}&redirect_uri=#{CGI.escape(redirect_uri)}"
+          end
 
           it do
-            expect(PivCacService.piv_cac_service_link(nonce)).to eq url_with_nonce
+            link = PivCacService.piv_cac_service_link(
+              nonce: nonce,
+              redirect_uri: redirect_uri,
+            )
+            expect(link).to eq url_with_nonce
           end
         end
 
@@ -87,9 +94,15 @@ describe PivCacService do
             allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?) { true }
           end
           let(:nonce) { 'once' }
+          let(:redirect_uri) { 'http://example.com/asdf' }
 
           it 'directs the user to a local page' do
-            expect(PivCacService.piv_cac_service_link(nonce)).to eq test_piv_cac_entry_url
+            test_url = test_piv_cac_entry_url(nonce: nonce, redirect_uri: redirect_uri)
+            link = PivCacService.piv_cac_service_link(
+              nonce: nonce,
+              redirect_uri: redirect_uri,
+            )
+            expect(test_url).to eq link
           end
         end
       end

@@ -13,15 +13,15 @@ module PivCacService
         token_decoded(token)
     end
 
-    def piv_cac_service_link(nonce)
-      if FeatureManagement.development_and_identity_pki_disabled?
-        test_piv_cac_entry_url
-      else
-        uri = URI(randomize_uri(Figaro.env.piv_cac_service_url))
-        # add the nonce
-        uri.query = "nonce=#{CGI.escape(nonce)}"
-        uri.to_s
-      end
+    def piv_cac_service_link(nonce:, redirect_uri:)
+      uri = if FeatureManagement.development_and_identity_pki_disabled?
+              URI(test_piv_cac_entry_url)
+            else
+              URI(randomize_uri(Figaro.env.piv_cac_service_url))
+            end
+      # add the nonce and redirect uri
+      uri.query = { nonce: nonce, redirect_uri: redirect_uri }.to_query
+      uri.to_s
     end
 
     def piv_cac_verify_token_link
