@@ -15,7 +15,6 @@ module Idv
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::RecoverVerifyStep,
         doc_success: Idv::Steps::DocSuccessStep,
-        recover_fail: Idv::Steps::RecoverFailStep,
       }.freeze
 
       ACTIONS = {

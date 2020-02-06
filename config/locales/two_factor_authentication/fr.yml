@@ -12,6 +12,7 @@ fr:
         numéro de sécurité sociale doivent correspondre à votre profil de compte.
         Si ce n’est pas le cas, vous pouvez %{reset_link}.
       reset_link: réinitialiser votre compte
+      reset_your_account: Réinitialiser votre compte
       reverify_link: re-vérifier votre identité
       successful_cancel: Je vous remercie. Votre demande de suppression de votre compte
         login.gov a été annulée.

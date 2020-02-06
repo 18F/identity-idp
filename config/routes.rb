@@ -276,6 +276,8 @@ Rails.application.routes.draw do
       get '/session/errors/jobfail' => 'session_errors#jobfail'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/throttled' => 'session_errors#throttled'
+      get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
+      get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'
       post '/jurisdiction' => 'jurisdiction#create'
