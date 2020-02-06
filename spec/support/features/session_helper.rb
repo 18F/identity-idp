@@ -504,7 +504,6 @@ module Features
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
-      save_and_open_page
       submit_form_with_valid_password
     end
 
