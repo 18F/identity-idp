@@ -2,12 +2,13 @@ require 'rails_helper'
 
 describe SetupPresenter do
   let(:user) { create(:user) }
-  let(:presenter) { described_class.new(user, false) }
+  let(:remember_device_pref_cookie) { 'true' }
+  let(:presenter) { described_class.new(user, false, remember_device_pref_cookie) }
 
   describe 'shows correct step indication' do
     context 'with signed in user adding additional method' do
       let(:user) { build(:user, :signed_up) }
-      let(:presenter) { described_class.new(user, true) }
+      let(:presenter) { described_class.new(user, true, remember_device_pref_cookie) }
 
       it 'does not show step count' do
         expect(presenter.steps_visible?).to eq false

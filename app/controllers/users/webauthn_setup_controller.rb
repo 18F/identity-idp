@@ -44,7 +44,12 @@ module Users
     private
 
     def set_webauthn_setup_presenter
-      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
+      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?,
+                                      user_opted_remember_device_cookie)
+    end
+
+    def user_opted_remember_device_cookie
+      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def flash_error(errors)
@@ -84,10 +89,15 @@ module Users
     def process_valid_webauthn
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
-      save_remember_device_preference
+      handle_remember_device
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       flash[:success] = t('notices.webauthn_configured') if should_show_webauthn_configured_message?
       redirect_to two_2fa_setup
+    end
+
+    def handle_remember_device
+      save_user_opted_remember_device_pref
+      save_remember_device_preference
     end
 
     def should_show_webauthn_configured_message?
