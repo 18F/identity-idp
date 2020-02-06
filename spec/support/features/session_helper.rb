@@ -349,7 +349,7 @@ module Features
     end
 
     def sign_up_user_from_sp_without_confirming_email(email)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
 
       expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
 

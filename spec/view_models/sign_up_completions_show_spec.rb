@@ -20,7 +20,7 @@ describe SignUpCompletionsShow do
         sp: build_stubbed(:service_provider),
         view_context: ActionController::Base.new.view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequest.new,
+        service_provider_request: ServiceProviderRequestProxy.new,
       )
     end
 

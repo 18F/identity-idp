@@ -302,7 +302,7 @@ describe SamlIdpController do
       end
 
       it 'stores SP metadata in session' do
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           ial2: false,
@@ -320,7 +320,7 @@ describe SamlIdpController do
       end
 
       it 'stores SP metadata in session' do
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
@@ -471,7 +471,7 @@ describe SamlIdpController do
       end
 
       it 'redirects the user to the SP landing page with the request_id in the params' do
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
       end
     end
