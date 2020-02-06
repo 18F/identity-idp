@@ -74,7 +74,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.flush
-    REDIS_POOL.with(&:clear)
+    REDIS_POOL.with(&:clear) if Rails.env.test?
   end
 
   def self.hash_to_spr(hash, uuid)
