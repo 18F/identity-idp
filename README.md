@@ -185,13 +185,16 @@ Discover section.
 
 1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4GB works for me.
 
-1. Build and launch the Docker containers: `docker-compose up`
+1. Build the Docker containers: `docker-compose build`
 
 1. Run `make docker_setup` to copy configuration files and bootstrap the database.
 
+1. Start the Docker containers `docker-compose up`
+
+Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
+
 More useful Docker commands:
 
-* Start the containers: `docker-compose up`
 * Force the images to re-build: `docker-compose build --no-cache`
 * Stop the containers: `docker-compose stop`
 * Stop and remove the containers (`-v` removes Volumes too): `docker-compose down`

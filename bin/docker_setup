@@ -28,11 +28,23 @@ Dir.chdir APP_ROOT do
 
   # The app dir is mounted as a volume, so new files also appear in the container.
   #  files copied during build can be overwritten by the mounted Volume.
-  puts "== Copying necessary configuration files"
-  run "cp config/application.yml.default config/application.yml"
+  puts "== Copying new application.yml if file does not already exist"
+  run "test -L config/application.yml || cp -v config/application.yml.default config/application.yml"
+
+  # Config files that were historically symlinked will be force-overwritten with fresh copies
+  #  symlinks don't work in Docker containers with mounted Volumes.
+  puts "== Destroy and re-copy certs and keys =="
+  run "rm -rf certs"
   run "cp -R certs.example certs"
+  run "rm -rf keys"
   run "cp -R keys.example keys"
+  
+  puts "== Destroy and re-copy sample pwned passwords list =="
+  run "rm pwned_passwords/pwned_passwords.txt"
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
+
+  puts "== Destroy and re-copy service_providers.yml =="
+  run "rm config/service_providers.yml"
   run "cp config/service_providers.localdev.yml config/service_providers.yml"
 
   # These take a long time because we spin up containers for each command, could be better.
