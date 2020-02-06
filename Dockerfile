@@ -35,14 +35,6 @@ RUN yarn install
 # Copy everything else over
 COPY . /upaya
 
-# ** This doesn't work here b/c the mounted volume will blow them away.
-# Put sample configuration files in place
-# COPY config/application.yml.default /upaya/config/application.yml
-# COPY certs.example certs
-# COPY keys.example keys
-# COPY pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-# COPY config/service_providers.localdev.yml /upaya/config/service_providers.yml
-
 # Up to this point we've been root, change to a lower priv. user
 RUN groupadd -r appuser
 RUN useradd --system --gid appuser appuser

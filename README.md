@@ -183,38 +183,11 @@ Discover section.
 
 #### Using Docker Locally
 
-1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop)
+1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4GB works for me.
 
 1. Build and launch the Docker containers: `docker-compose up`
 
-1. Copy necessary config files locally. This dir is mounted as a volume, so new files also appear in the container.
-
-```sh
-cp config/application.yml.default config/application.yml
-cp -R certs.example certs
-cp -R keys.example keys
-cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-cp config/service_providers.localdev.yml config/service_providers.yml
-```
-
-1. Manually edit `application.yml`, in the `development:` section to make Redis look like
-
-```sh
-  redis_throttle_url: redis://redis:6379
-  redis_url: redis://redis:637
-```
-
-1. Bootstrap the databases
-
-```sh
-docker-compose run --rm web rake db:create
-# The following pattern prevents a database reset from happening in prod.
-docker-compose run --rm web rake db:environment:set
-docker-compose run --rm web rake db:reset
-docker-compose run --rm web rake db:environment:set
-# This populates the dev database with sample data
-docker-compose run --rm web rake dev:prime
-```
+1. Run `make docker_setup` to copy configuration files and bootstrap the database.
 
 More useful Docker commands:
 

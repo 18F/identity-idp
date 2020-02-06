@@ -7,7 +7,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      REDIS_URL: "redis://redis"
+      redis_url: "redis://redis:6379"
+      redis_throttle_url: "redis://redis:6379"
       DATABASE_URL: "postgres://postgres@db"
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
