@@ -100,7 +100,8 @@ Rails.application.routes.draw do
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
-      get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
+      get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service',
+        as: :redirect_to_piv_cac_service
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
@@ -155,8 +156,6 @@ Rails.application.routes.draw do
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
-    get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service',
-        as: :redirect_to_piv_cac_service
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
