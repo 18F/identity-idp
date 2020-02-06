@@ -15,6 +15,14 @@ module TwoFactorAuthentication
       end
     end
 
+    def redirect_to_piv_cac_service
+      create_piv_cac_nonce
+      redirect_to PivCacService.piv_cac_service_link(
+        nonce: piv_cac_nonce,
+        redirect_uri: login_two_factor_piv_cac_url,
+      )
+    end
+
     private
 
     def process_token

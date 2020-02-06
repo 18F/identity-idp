@@ -8,7 +8,7 @@ module Users
     include SecureHeadersConcern
 
     before_action :authenticate_user!
-    before_action :confirm_user_authenticated_for_2fa_setup, except: :redirect_to_piv_cac_service
+    before_action :confirm_user_authenticated_for_2fa_setup
     before_action :authorize_piv_cac_disable, only: :delete
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
@@ -32,16 +32,11 @@ module Users
       redirect_to account_url
     end
 
-    def redirect_to_piv_cac_service
-      create_piv_cac_nonce
-      redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
-    end
-
     def submit_new_piv_cac
       if good_nickname
         user_session[:piv_cac_nickname] = params[:name]
         create_piv_cac_nonce
-        redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+        redirect_to piv_cac_service_url_with_redirect
       else
         flash[:error] = I18n.t('errors.piv_cac_setup.unique_name')
         render_prompt
@@ -62,6 +57,13 @@ module Users
         current_user, user_fully_authenticated?, user_piv_cac_form
       )
       render :new
+    end
+
+    def piv_cac_service_url_with_redirect
+      PivCacService.piv_cac_service_link(
+        nonce: piv_cac_nonce,
+        redirect_uri: setup_piv_cac_url,
+      )
     end
 
     def render_error

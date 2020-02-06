@@ -578,7 +578,7 @@ module Features
     def get_piv_cac_nonce_from_link(link)
       go_back = current_path
       visit link['href']
-      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
       visit go_back
       nonce
     end
@@ -587,7 +587,7 @@ module Features
       go_back = current_path
       fill_in 'name', with: 'Card ' + SecureRandom.uuid
       click_button t('forms.piv_cac_setup.submit')
-      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
       visit go_back
       nonce
     end
