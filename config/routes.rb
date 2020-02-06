@@ -301,6 +301,7 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
       get '/cac' => 'cac#index'
+      get '/cac/pki_redirect'
       get '/cac/:step' => 'cac#show', as: :cac_step
       put '/cac/:step' => 'cac#update'
     end

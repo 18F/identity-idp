@@ -13,6 +13,14 @@ module Idv
       analytics_id: Analytics::CAC_PROOFING,
     }.freeze
 
+    def redirect_to_piv_cac_service
+      create_piv_cac_nonce
+      redirect_to PivCacService.piv_cac_service_link(
+        nonce: piv_cac_nonce,
+        redirect_uri: idv_cac_step_url(:present_cac),
+      )
+    end
+
     private
 
     def render_404_if_disabled
