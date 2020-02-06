@@ -21,6 +21,6 @@ class ServiceProviderRequest < ApplicationRecord
   end
 
   def ==(other)
-    to_h == other.to_h
+    to_json == other.to_json
   end
 end
