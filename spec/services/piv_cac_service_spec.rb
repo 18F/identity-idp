@@ -97,7 +97,7 @@ describe PivCacService do
           let(:redirect_uri) { 'http://example.com/asdf' }
 
           it 'directs the user to a local page' do
-            test_url = test_piv_cac_entry_url(redirect_uri: redirect_uri)
+            test_url = test_piv_cac_entry_url(nonce: nonce, redirect_uri: redirect_uri)
             link = PivCacService.piv_cac_service_link(
               nonce: nonce,
               redirect_uri: redirect_uri,

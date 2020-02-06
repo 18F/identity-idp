@@ -15,7 +15,7 @@ module PivCacService
 
     def piv_cac_service_link(nonce:, redirect_uri:)
       uri = if FeatureManagement.development_and_identity_pki_disabled?
-              test_piv_cac_entry_url
+              URI(test_piv_cac_entry_url)
             else
               URI(randomize_uri(Figaro.env.piv_cac_service_url))
             end
