@@ -1,5 +1,7 @@
 module Idv
   class CacController < ApplicationController
+    include PivCacConcern
+
     before_action :render_404_if_disabled
     before_action :confirm_two_factor_authenticated
     before_action :cac_callback
