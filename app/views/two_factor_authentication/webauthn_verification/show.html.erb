@@ -53,7 +53,7 @@
     </p>
     <div class="border border-light-blue rounded-lg px2 py1 mt3">
       <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-      <%= check_box_tag 'remember_device', true, !cookies.encrypted[:remember_device_preference].nil? ? ActiveModel::Type::Boolean.new.cast(cookies.encrypted[:remember_device_preference]) : true, class: 'my2 ml2 mr1' %>
+      <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?(cookies), class: 'my2 ml2 mr1' %>
       <%= label_tag 'remember_device',
         t('forms.messages.remember_device'),
         class: 'blue mt-1p' %>

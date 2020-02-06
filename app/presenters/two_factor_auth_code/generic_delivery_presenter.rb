@@ -45,6 +45,11 @@ module TwoFactorAuthCode
       ).sign_up_progress_visible?
     end
 
+    def remember_device_box_checked?(cookies)
+      return true if cookies.encrypted[:remember_device_preference].nil?
+      ActiveModel::Type::Boolean.new.cast(cookies.encrypted[:remember_device_preference])
+    end
+
     private
 
     def no_factors_enabled?
