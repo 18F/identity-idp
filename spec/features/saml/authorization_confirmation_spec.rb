@@ -56,5 +56,18 @@ feature 'SAML Authorization Confirmation' do
 
       expect(current_url).to eq(saml_authn_request)
     end
+
+    it 'does not render an error if a user goes back after opting to switch accounts' do
+      sign_in_user(user1)
+      visit saml_authn_request
+
+      expect(current_path).to eq(user_authorization_confirmation_path)
+
+      click_button t('user_authorization_confirmation.sign_in')
+      # Simulate clicking the back button by going right back to the original path
+      visit user_authorization_confirmation_path
+
+      expect(current_path).to eq(new_user_session_path)
+    end
   end
 end

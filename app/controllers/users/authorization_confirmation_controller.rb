@@ -3,6 +3,7 @@ module Users
     include AuthorizationCountConcern
 
     before_action :bump_auth_count
+    before_action :confirm_two_factor_authenticated
 
     def show
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
