@@ -1,4 +1,3 @@
-# :reek:TooManyMethods
 # rubocop:disable Metrics/AbcSize, Metrics/ClassLength, Metrics/MethodLength
 
 require 'active_support/core_ext/hash/deep_merge'
@@ -8,7 +7,6 @@ require 'subprocess'
 require 'yaml'
 
 module Deploy
-  # :reek:TooManyMethods
   class Activate
     attr_reader :logger, :s3_client
 

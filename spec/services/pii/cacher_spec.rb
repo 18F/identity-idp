@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
-  let(:user) { create(:user, :with_phone, password: password, otp_secret_key: 'abc123') }
+  let(:user) { create(:user, :with_phone, password: password) }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
   let(:user_session) { {} }
@@ -38,7 +38,6 @@ describe Pii::Cacher do
       old_email_fingerprint = user.email_fingerprint
       old_encrypted_email = user.encrypted_email
       old_encrypted_phone = user.phone_configurations.first.encrypted_phone
-      old_encrypted_otp_secret_key = user.encrypted_otp_secret_key
 
       rotate_all_keys
 
@@ -55,7 +54,6 @@ describe Pii::Cacher do
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(profile.ssn_signature).to_not eq old_ssn_signature
       expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
-      expect(user.encrypted_otp_secret_key).to_not eq old_encrypted_otp_secret_key
     end
 
     it 'does not attempt to rotate nil attributes' do

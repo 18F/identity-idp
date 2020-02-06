@@ -1,7 +1,6 @@
 # Global constants used by the SAML IdP
 module Saml
   module Idp
-    # :reek:TooManyConstants
     module Constants
       LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'.freeze
       LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'.freeze

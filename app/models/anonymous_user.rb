@@ -1,4 +1,3 @@
-# :reek:UtilityFunction
 class AnonymousUser
   def uuid
     'anonymous-uuid'
@@ -33,8 +32,6 @@ class AnonymousUser
   end
 
   def x509_dn_uuid; end
-
-  def otp_secret_key; end
 
   def email; end
 

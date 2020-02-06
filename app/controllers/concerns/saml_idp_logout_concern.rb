@@ -21,7 +21,6 @@ module SamlIdpLogoutConcern
     sign_out if user_signed_in?
   end
 
-  # :reek:DuplicateMethodCall
   def logout_response
     response = encode_response(
       current_user,
@@ -43,7 +42,6 @@ module SamlIdpLogoutConcern
     )
   end
 
-  # :reek:FeatureEnvy
   def saml_response_signature_options
     endpoint = SamlEndpoint.new(request)
     {

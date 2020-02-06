@@ -56,10 +56,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: dc555fc6d69497cebd82633d279bbfa832ac8784
-  tag: v0.0.16
+  revision: 95b6c3b8da1102fdbe75e395ba25154debd5b789
+  tag: v0.0.17
   specs:
-    identity-telephony (0.0.16)
+    identity-telephony (0.0.17)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -132,7 +132,7 @@ GEM
     aws-sdk-kms (1.25.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-pinpoint (1.30.0)
+    aws-sdk-pinpoint (1.32.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-pinpointsmsvoice (1.13.0)
@@ -192,8 +192,6 @@ GEM
     childprocess (3.0.0)
     choice (0.2.0)
     chunky_png (1.3.11)
-    codeclimate-engine-rb (0.4.1)
-      virtus (~> 1.0)
     codeclimate-test-reporter (1.0.9)
       simplecov (<= 0.13)
     coderay (1.1.2)
@@ -329,7 +327,6 @@ GEM
     jwt (2.2.1)
     knapsack (1.18.0)
       rake
-    kwalify (0.7.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (3.2.0)
@@ -478,12 +475,6 @@ GEM
     redis-session-store (0.11.1)
       actionpack (>= 3)
       redis (>= 3, < 5)
-    reek (5.4.0)
-      codeclimate-engine-rb (~> 0.4.0)
-      kwalify (~> 0.7.0)
-      parser (>= 2.5.0.0, < 2.7, != 2.5.1.1)
-      psych (~> 3.1.0)
-      rainbow (>= 2.0, < 4.0)
     referer-parser (0.3.0)
     regexp_parser (1.6.0)
     request_store (1.4.1)
@@ -553,7 +544,7 @@ GEM
       faraday (> 0.8, < 2.0)
     scrypt (3.0.6)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (6.1.1)
+    secure_headers (6.3.0)
     securecompare (1.0.0)
     selenium-webdriver (3.142.6)
       childprocess (>= 0.5, < 4.0)
@@ -753,7 +744,6 @@ DEPENDENCIES
   readthis
   recaptcha
   redis-session-store
-  reek
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.7)
@@ -765,7 +755,7 @@ DEPENDENCIES
   saml_idp!
   sassc-rails (~> 2.1.2)
   scrypt
-  secure_headers (~> 6.0)
+  secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0.1)
   simple_form
   sinatra

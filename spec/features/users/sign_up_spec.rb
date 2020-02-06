@@ -5,8 +5,27 @@ feature 'Sign Up' do
   include DocAuthHelper
 
   context 'confirmation token error message does not persist on success' do
-    scenario 'with no or invalid token' do
+    scenario 'with blank token' do
       visit sign_up_create_email_confirmation_url(confirmation_token: '')
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
+
+      sign_up
+
+      expect(page).not_to have_content t('errors.messages.confirmation_invalid_token')
+    end
+
+    scenario 'with invalid token' do
+      visit sign_up_create_email_confirmation_url(confirmation_token: 'foo')
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
+
+      sign_up
+
+      expect(page).not_to have_content t('errors.messages.confirmation_invalid_token')
+    end
+
+    scenario 'with no token and an email address that contains a nil token' do
+      EmailAddress.create(user_id: 1, email: 'foo@bar.gov')
+      visit sign_up_create_email_confirmation_url
       expect(page).to have_content t('errors.messages.confirmation_invalid_token')
 
       sign_up
@@ -83,18 +102,15 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when the telephony gem responds with an error' do
-    telephony_error = Telephony::TelephonyError.new('error message')
-
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
 
-    fill_in 'new_phone_form_phone', with: '202-555-1212'
+    fill_in 'new_phone_form_phone', with: '225-555-1000'
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
-    expect(page).to have_content(telephony_error.friendly_message)
+    expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
   context 'with js', js: true do

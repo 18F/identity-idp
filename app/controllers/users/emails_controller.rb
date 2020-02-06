@@ -1,4 +1,3 @@
-# :reek:RepeatedConditional
 module Users
   class EmailsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
@@ -10,7 +9,6 @@ module Users
       @register_user_email_form = AddUserEmailForm.new
     end
 
-    # :reek:DuplicateMethodCall
     def add
       @register_user_email_form = AddUserEmailForm.new
 

@@ -19,7 +19,6 @@ class EditPhoneForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  # :reek:FeatureEnvy
   def masked_number
     phone_number = phone_configuration.phone
     return '' if !phone_number || phone_number.blank?

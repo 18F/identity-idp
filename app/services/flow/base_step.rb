@@ -30,7 +30,6 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
-    # :reek:FeatureEnvy
     def failure(message, extra = nil)
       flow_session[:error_message] = message
       form_response_params = { success: false, errors: { message: message } }

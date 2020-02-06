@@ -7,8 +7,6 @@ module Users
 
     def show
       non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
-    rescue Telephony::TelephonyError => telephony_error
-      invalid_phone_number(telephony_error, action: 'show')
     end
 
     def send_code
@@ -20,8 +18,6 @@ module Users
       else
         handle_invalid_otp_delivery_preference(result)
       end
-    rescue Telephony::TelephonyError => telephony_error
-      invalid_phone_number(telephony_error, action: 'send_code')
     end
 
     private
@@ -56,12 +52,18 @@ module Users
     end
 
     def update_otp_delivery_preference_if_needed
-      return unless user_signed_in?
+      return if otp_failed_to_send?
+
       OtpPreferenceUpdater.new(
         user: current_user,
         preference: delivery_params[:otp_delivery_preference],
         phone_id: user_session[:phone_id],
       ).call
+    end
+
+    def otp_failed_to_send?
+      return true unless user_signed_in?
+      !@telephony_result&.success?
     end
 
     def handle_invalid_otp_delivery_preference(result)
@@ -128,10 +130,20 @@ module Users
       otp_rate_limiter.increment
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
 
-      send_user_otp(method)
-      redirect_to login_two_factor_url(otp_delivery_preference: method,
-                                       otp_make_default_number: default,
-                                       reauthn: reauthn?)
+      @telephony_result = send_user_otp(method)
+      handle_telephony_result(method: method, default: default)
+    end
+
+    def handle_telephony_result(method:, default:)
+      if @telephony_result.success?
+        redirect_to login_two_factor_url(
+          otp_delivery_preference: method,
+          otp_make_default_number: default,
+          reauthn: reauthn?,
+        )
+      else
+        invalid_phone_number(@telephony_result.error, action: action_name)
+      end
     end
 
     def exceeded_otp_send_limit?
@@ -192,7 +204,7 @@ module Users
     end
 
     def redirect_url
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
+      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
         login_two_factor_piv_cac_url
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
         login_two_factor_webauthn_url

@@ -1,6 +1,3 @@
-# :reek:RepeatedConditional
-# :reek:TooManyMethods
-
 class MfaContext
   attr_reader :user
 

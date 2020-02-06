@@ -66,11 +66,16 @@ feature 'phone otp verification step spec' do
     complete_idv_steps_before_phone_otp_verification_step
 
     telephony_error = Telephony::TelephonyError.new('error message')
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
+    response = Telephony::Response.new(
+      success: false,
+      error: telephony_error,
+      extra: {},
+    )
+    allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
     click_on t('links.two_factor_authentication.get_another_code')
 
-    expect(page).to have_content(telephony_error.friendly_message)
+    expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
     expect(page).to have_current_path(idv_phone_path)
 
     allow(Telephony).to receive(:send_confirmation_otp).and_call_original
@@ -80,7 +85,12 @@ feature 'phone otp verification step spec' do
     choose_idv_otp_delivery_method_sms
 
     calling_area_error = Telephony::InvalidCallingAreaError.new('error message')
-    allow(Telephony).to receive(:send_confirmation_otp).and_raise(calling_area_error)
+    response = Telephony::Response.new(
+      success: false,
+      error: calling_area_error,
+      extra: {},
+    )
+    allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
     click_on t('links.two_factor_authentication.get_another_code')
 

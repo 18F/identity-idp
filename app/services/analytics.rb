@@ -1,6 +1,5 @@
 # rubocop:disable Metrics/ClassLength
 class Analytics
-  # :reek:ControlParameter
   def initialize(user:, request:, sp:, ahoy: nil)
     @user = user
     @request = request
@@ -23,7 +22,6 @@ class Analytics
     Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, success)
   end
 
-  # :reek:FeatureEnvy
   def track_mfa_submit_event(attributes, ga_client_id)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')

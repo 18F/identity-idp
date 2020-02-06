@@ -126,10 +126,9 @@ FactoryBot.define do
     end
 
     trait :with_authentication_app do
-      otp_secret_key = ROTP::Base32.random_base32
       after :build do |user|
-        user.otp_secret_key = otp_secret_key
         user.save
+        otp_secret_key = ROTP::Base32.random_base32
         user.auth_app_configurations.create(otp_secret_key: otp_secret_key, name: 'My Auth App')
       end
     end

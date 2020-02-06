@@ -264,9 +264,10 @@ describe User do
     end
 
     it 'decrypts otp_secret_key' do
-      user = create(:user, otp_secret_key: 'abc123')
+      user = create(:user, :with_authentication_app)
+      AuthAppConfiguration.first.update!(otp_secret_key: 'abc123')
 
-      expect(user.otp_secret_key).to eq 'abc123'
+      expect(user.auth_app_configurations.first.otp_secret_key).to eq 'abc123'
     end
   end
 

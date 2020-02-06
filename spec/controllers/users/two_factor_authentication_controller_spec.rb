@@ -69,6 +69,7 @@ describe Users::TwoFactorAuthenticationController do
   describe '#show' do
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
+        allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(
@@ -146,7 +147,7 @@ describe Users::TwoFactorAuthenticationController do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
         @old_otp = subject.current_user.direct_otp
-        allow(Telephony).to receive(:send_authentication_otp)
+        allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
       it 'sends OTP via SMS for sign in' do
@@ -216,7 +217,7 @@ describe Users::TwoFactorAuthenticationController do
         user = create(:user, :signed_up, otp_delivery_preference: 'voice')
         sign_in_before_2fa(user)
         @old_otp = subject.current_user.direct_otp
-        allow(Telephony).to receive(:send_authentication_otp)
+        allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
       it 'sends OTP via voice' do
@@ -271,7 +272,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP inline when confirming phone' do
-        allow(Telephony).to receive(:send_confirmation_otp)
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
 
@@ -284,13 +285,11 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'flashes an sms error when the telephony gem responds with an sms error' do
-        telephony_error = Telephony::TelephonyError.new('error message')
-
-        allow(Telephony).to receive(:send_confirmation_otp).and_raise(telephony_error)
+        subject.user_session[:unconfirmed_phone] = '+1 (225) 555-1000'
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
 
-        expect(flash[:error]).to eq(telephony_error.friendly_message)
+        expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.generic'))
       end
     end
 

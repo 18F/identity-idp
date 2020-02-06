@@ -5,7 +5,6 @@ class WebauthnConfiguration < ApplicationRecord
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
 
-  # :reek:UtilityFunction
   def mfa_enabled?
     true
   end
