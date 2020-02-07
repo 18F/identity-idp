@@ -27,7 +27,8 @@ en:
     request:
       confirm_email: First, let's confirm your email address
       email_check: Check your email
-      email_sent: We sent an email to %{email} with a link to confirm your email address. Follow the link to continue re-verifying your identity.
+      email_sent: We sent an email to %{email} with a link to confirm your email address.
+        Follow the link to continue re-verifying your identity.
       instructions: We'll send an email to the address we have on file for this account.
         Once you receive the email, click the link inside to continue re-verifying
         your account.
