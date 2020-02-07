@@ -1,5 +1,7 @@
 - title t('doc_auth.titles.doc_auth')
 
-= image_tag(asset_url('check-email.svg'), width: 96)
+= image_tag(asset_url('check-email.svg'), width: 48)
 
-h1.h3.mb2.mt3.my0 = t('recover.request.email_sent', email: current_user.email)
+h1.h3.mb2.mt3.my0 = t('recover.request.email_check')
+
+p.mt-tiny.mb0 = t('recover.request.email_sent', email: current_user.email)
