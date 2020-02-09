@@ -70,7 +70,8 @@ class SignUpCompletionsShow
   end
 
   def sorted_attribute_mapping
-    ial2_requested || ialmax_requested ? SORTED_IAL2_ATTRIBUTE_MAPPING : SORTED_IAL1_ATTRIBUTE_MAPPING
+    return SORTED_IAL2_ATTRIBUTE_MAPPING if ial2_requested || ialmax_requested
+    SORTED_IAL1_ATTRIBUTE_MAPPING
   end
 
   def identities_partial

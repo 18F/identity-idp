@@ -58,7 +58,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ialmax_requested?
-    ial == 0
+    ial.zero?
   end
 
   def service_provider
