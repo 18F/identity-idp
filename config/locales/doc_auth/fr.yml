@@ -68,9 +68,9 @@ fr:
       bullet2: Confirmez votre adresse
       bullet3: Sécurise ton compte
       bullet4: Récupération du compte
-      consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
-        conserver et partager vos informations personnelles. Nous ne l'utiliserons
-        que pour vérifier votre identité.
+      consent: En cochant cette case, vous laissez login.gov demander, utiliser et
+        stocker vos informations personnelles. Nous ne l'utiliserons que pour vérifier
+        votre identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus.

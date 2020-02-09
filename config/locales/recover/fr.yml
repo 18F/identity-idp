@@ -13,9 +13,9 @@ fr:
       bullet1: Téléchargez votre identifiant
       bullet2: Entrez votre numéro de sécurité sociale
       bullet3: Assurez-vous d'avoir la bonne information
-      consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
-        conserver et partager vos informations personnelles. Nous ne l'utiliserons
-        que pour vérifier votre identité.
+      consent: En cochant cette case, vous laissez login.gov demander, utiliser et
+        stocker vos informations personnelles. Nous ne l'utiliserons que pour vérifier
+        votre identité.
       heading: 'Ce que vous devez faire:'
       learn_more: Apprendre encore plus.
       text1: prendre une photo ou télécharger un fichier

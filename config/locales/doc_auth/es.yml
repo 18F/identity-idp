@@ -60,9 +60,8 @@ es:
       bullet2: Confirma tu direccion
       bullet3: Asegure su cuenta
       bullet4: Recuperación de cuenta
-      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
-        conserve y comparta su información personal. Solo lo usaremos para verificar
-        su identidad.
+      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use
+        y almacene su información personal. Solo lo usaremos para verificar su identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Aprende más.

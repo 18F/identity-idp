@@ -13,9 +13,8 @@ es:
       bullet1: Sube tu ID
       bullet2: Ingrese su número de seguro social
       bullet3: Asegúrese de tener la información correcta
-      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
-        conserve y comparta su información personal. Solo lo usaremos para verificar
-        su identidad.
+      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use
+        y almacene su información personal. Solo lo usaremos para verificar su identidad.
       heading: 'Lo que deberás hacer:'
       learn_more: Aprende más.
       text1: tomar una foto o subir un archivo
