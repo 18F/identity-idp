@@ -95,7 +95,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ialmax_session?
-    identity.ial.zero?
+    identity.ial&.zero?
   end
 
   def x509_data
