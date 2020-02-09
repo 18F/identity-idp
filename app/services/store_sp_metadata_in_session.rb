@@ -32,6 +32,7 @@ class StoreSpMetadataInSession
     session[:sp] = {
       issuer: sp_request.issuer,
       ial2: ial2_requested?,
+      ialmax: ial2_requested?,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
@@ -39,6 +40,10 @@ class StoreSpMetadataInSession
   end
 
   def ial2_requested?
+    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == sp_request.ial
+  end
+
+  def ialmax_requested?
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? sp_request.ial
   end
 end

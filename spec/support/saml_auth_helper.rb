@@ -263,4 +263,20 @@ module SamlAuthHelper
       nonce: nonce,
     )
   end
+
+  def visit_idp_from_oidc_sp_with_ialmax
+    state = SecureRandom.hex
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    nonce = SecureRandom.hex
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile:name social_security_number',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'login',
+      nonce: nonce,
+    )
+  end
 end

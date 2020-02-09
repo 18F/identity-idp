@@ -1,14 +1,15 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:)
+  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:, ialmax_requested:)
     @ial2_requested = ial2_requested
     @decorated_session = decorated_session
     @current_user = current_user
     @handoff = handoff
+    @ialmax_requested = ialmax_requested
   end
 
-  attr_reader :ial2_requested, :decorated_session
+  attr_reader :ial2_requested, :ialmax_requested, :decorated_session
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [%i[given_name family_name], :full_name],
@@ -69,7 +70,7 @@ class SignUpCompletionsShow
   end
 
   def sorted_attribute_mapping
-    ial2_requested ? SORTED_IAL2_ATTRIBUTE_MAPPING : SORTED_IAL1_ATTRIBUTE_MAPPING
+    ial2_requested || ialmax_requested ? SORTED_IAL2_ATTRIBUTE_MAPPING : SORTED_IAL1_ATTRIBUTE_MAPPING
   end
 
   def identities_partial

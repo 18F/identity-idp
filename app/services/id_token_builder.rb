@@ -51,6 +51,8 @@ class IdTokenBuilder
   def acr
     ial = identity.ial
     case ial
+    when 0
+      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
     when 1
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
     when 2
