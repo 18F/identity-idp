@@ -381,9 +381,13 @@ GEM
       parallel
     parser (2.6.5.0)
       ast (~> 2.4.0)
+    pdf-core (0.7.0)
     pg (1.1.4)
     phonelib (0.6.39)
     pkcs11 (0.2.7)
+    prawn (2.2.2)
+      pdf-core (~> 0.7.0)
+      ttfunk (~> 1.5)
     premailer (1.11.1)
       addressable
       css_parser (>= 1.6.0)
@@ -584,6 +588,9 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    squid (1.4.1)
+      activesupport (>= 4.0)
+      prawn (~> 2.2)
     stringex (2.8.5)
     strong_migrations (0.4.2)
       activerecord (>= 5)
@@ -597,6 +604,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.1)
+    ttfunk (1.6.1)
     twilio-ruby (5.29.0)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
@@ -723,6 +731,7 @@ DEPENDENCIES
   pg
   phonelib
   pkcs11
+  prawn
   premailer-rails
   proofer!
   pry-byebug
@@ -761,6 +770,7 @@ DEPENDENCIES
   sinatra
   slim-rails
   slim_lint
+  squid
   stringex
   strong_migrations
   subprocess

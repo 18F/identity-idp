@@ -33,6 +33,7 @@ gem 'newrelic_rpm'
 gem 'pg'
 gem 'phonelib'
 gem 'pkcs11'
+gem 'prawn'
 gem 'premailer-rails'
 gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
 gem 'pry-doc'
@@ -57,6 +58,7 @@ gem 'secure_headers', '~> 6.3'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
+gem 'squid'
 gem 'stringex', require: false
 gem 'strong_migrations'
 gem 'subprocess', require: false
