@@ -39,6 +39,7 @@ module Reports
       "#{dir}/billing-report.#{agency.downcase}.#{issuer.downcase.gsub(/[^0-9a-z ]/i, '-')}.pdf"
     end
 
+    # rubocop:disable Metrics/MethodLength
     def generate_pdf(fn:, agency:, issuer:, month:, year:, friendly_name:, ial:, total:)
       data = chart_data(issuer, year, month, ial)
       Prawn::Document.generate(fn) do
@@ -52,6 +53,7 @@ module Reports
         chart data
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def chart_data(issuer, target_year, target_month, ial)
       prior_hash = {}

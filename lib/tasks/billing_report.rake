@@ -1,5 +1,6 @@
 namespace :reports do
-  task :generate_billing_reports, %i[dest_dir year month auths_json sp_yml] => [:environment] do |_task, args|
+  task :generate_billing_reports, %i[dest_dir year month auths_json sp_yml] =>
+    [:environment] do |_task, args|
     Reports::BillingReport.new.call(
       dest_dir: args[:dest_dir],
       year: args[:year].to_i,
