@@ -39,11 +39,11 @@ class StoreSpMetadataInSession
     }
   end
 
-  def ial2_requested?
+  def ialmax_requested?
     Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == sp_request.ial
   end
 
-  def ialmax_requested?
+  def ial2_requested?
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? sp_request.ial
   end
 end
