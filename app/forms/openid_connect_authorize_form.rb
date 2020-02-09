@@ -161,7 +161,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    return OpenidConnectAttributeScoper::VALID_SCOPES if ial2_requested? || ialmax_requested?
+    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
