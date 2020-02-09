@@ -291,12 +291,18 @@ development:
 production:
 
   'urn:gov:login:test-providers:fake-prod-sp':
+    agency: 'Test Agency 1'
+    agency_id: 1
     friendly_name: 'Fake/Test stub SP for prod'
     restrict_to_deploy_env: 'prod'
 
   'urn:gov:login:test-providers:fake-staging-sp':
+    agency: 'Test Agency 2'
+    agency_id: 2
     friendly_name: 'Fake/Test stub SP for staging'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:login:test-providers:fake-unrestricted-sp':
+    agency: 'Test Agency 3'
+    agency_id: 3
     friendly_name: 'Fake/Test stub SP, env unrestricted'

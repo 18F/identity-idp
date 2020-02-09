@@ -1,0 +1,4 @@
+[
+  { "issuer":"urn:gov:login:test-providers:fake-prod-sp", "year_month":"202001", "total":2 },
+  { "issuer":"urn:gov:login:test-providers:fake-prod-sp", "year_month":"201912", "total":1 }
+]
