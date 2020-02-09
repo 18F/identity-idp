@@ -4,7 +4,6 @@ require 'erb'
 require 'yaml'
 require 'login_gov/hostdata'
 require 'squid'
-require 'prawn-svg'
 
 module Reports
   class BillingReport
@@ -58,13 +57,15 @@ module Reports
     def chart_data(issuer, target_year, target_month, ial)
       prior_hash = {}
       current_hash = {}
-      chart_data_prior_months(prior_hash, current_hash, issuer, target_year, target_month)
-      chart_data_current_month(prior_hash, current_hash, issuer, target_year, target_month)
+      chart_data_prior_months(prior_hash: prior_hash, current_hash: current_hash, issuer: issuer,
+                              target_year: target_year, target_month: target_month)
+      chart_data_current_month(prior_hash: prior_hash, current_hash: current_hash, issuer: issuer,
+                               target_year: target_year, target_month: target_month)
       { "IAL#{ial} Authentications Previous Months": prior_hash,
         "IAL#{ial} Authentications Current Month": current_hash }
     end
 
-    def chart_data_prior_months(prior_hash, current_hash, issuer, target_year, target_month)
+    def chart_data_prior_months(prior_hash:, current_hash:, issuer:, target_year:, target_month:)
       TOTAL_PRIOR_MONTHS.downto(1) do |offset|
         year, month = previous_month(target_year, target_month, offset)
         month_str = Date::MONTHNAMES[month][0..2]
@@ -73,7 +74,7 @@ module Reports
       end
     end
 
-    def chart_data_current_month(prior_hash, current_hash, issuer, target_year, target_month)
+    def chart_data_current_month(prior_hash:, current_hash:, issuer:, target_year:, target_month:)
       month_str = Date::MONTHNAMES[target_month][0..2]
       current_hash["#{month_str} #{target_year}"] = \
         count(issuer, "#{target_year}#{padded_month(target_month)}")
