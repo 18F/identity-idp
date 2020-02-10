@@ -312,5 +312,4 @@ feature 'Sign Up' do
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
   end
-
 end
