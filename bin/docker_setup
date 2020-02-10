@@ -5,6 +5,7 @@ require 'pathname'
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 
 def run(command)
+  puts("* Running command: #{command}")
   abort "command failed (#{$?}): #{command}" unless system command
 end
 
@@ -24,7 +25,7 @@ Dir.chdir APP_ROOT do
   ]
 
   # This file is intended to run after `docker-compose up`
-  #  it runs commands that won't work at build time and therefore must be executed at runtime.
+  #  it runs commands that won't work at build time and therefore must be runuted at runtime.
 
   # The app dir is mounted as a volume, so new files also appear in the container.
   #  files copied during build can be overwritten by the mounted Volume.
@@ -47,14 +48,15 @@ Dir.chdir APP_ROOT do
   run "rm config/service_providers.yml"
   run "cp config/service_providers.localdev.yml config/service_providers.yml"
 
-  # These take a long time because we spin up containers for each command, could be better.
-  puts "== Creating migrating databases =="
-  run "docker-compose run --rm web rake db:create"
+  puts "== Creating and migrating dev database =="
+  run "docker-compose run web rake db:create"
   # The following pattern prevents a database reset from happening in prod.
-  run "docker-compose run --rm web rake db:environment:set"
-  run "docker-compose run --rm web rake db:reset"
-  run "docker-compose run --rm web rake db:environment:set"
+  run "docker-compose run web rake db:environment:set"
+  run "docker-compose run web rake db:reset"
+  run "docker-compose run web rake db:environment:set"
   # This populates the dev database with sample data
-  run "docker-compose run --rm web rake dev:prime"
+  run "docker-compose run web rake dev:prime"
+  # Create all parallell test databases
+  run "docker-compose run web rake parallel:setup"
 
 end

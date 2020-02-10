@@ -183,13 +183,13 @@ Discover section.
 
 #### Using Docker Locally
 
-1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4GB works for me.
+1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. ~4~ 8 GB works well for me.
 
 1. Build the Docker containers: `docker-compose build`
 
-1. Run `make docker_setup` to copy configuration files and bootstrap the database.
-
 1. Start the Docker containers `docker-compose up`
+
+1. Run `make docker_setup` to copy configuration files and bootstrap the database.
 
 Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
 
@@ -197,11 +197,14 @@ More useful Docker commands:
 
 * Force the images to re-build: `docker-compose build --no-cache`
 * Stop the containers: `docker-compose stop`
-* Stop and remove the containers (`-v` removes Volumes too): `docker-compose down`
+* Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
 * Open a shell in a one-off web container: `docker-compose run --rm web bash`
 * Open a shell in the running web container: `docker-compose exec web bash`
 * Open a psql shell in the running db container: `docker-compse exec db psql -U postgres`
 
+#### Running Tests in Docker
+
+After Docker is setup and running `docker-compose run web make test`
 
 
 ### Viewing the app locally

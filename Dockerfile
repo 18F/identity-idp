@@ -1,11 +1,19 @@
 # Use the official Ruby image because the Rails images have been deprecated
 FROM ruby:2.5
 
-# Install packages of https
+# Enable https
 RUN apt-get update
 RUN apt-get install -y apt-transport-https
+
+# Install Postgres client
 RUN apt-get install -y --no-install-recommends postgresql-client
 RUN rm -rf /var/lib/apt/lists/*
+
+# Install Chrome for capybara
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - 
+RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt-get update
+RUN apt-get install -y google-chrome-stable
 
 # Install Node 12.x
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
@@ -18,26 +26,26 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install yarn
 
-# RUN mkdir /upaya
+# Everything happens here from now on   
 WORKDIR /upaya
 
 # Simple Gem cache.  Success here creates a new layer in the image.
-COPY Gemfile /upaya
-COPY Gemfile.lock /upaya
+COPY Gemfile .
+COPY Gemfile.lock .
 RUN gem install bundler --conservative
-RUN bundle check || bundle install --without deploy production
+RUN bundle install --without deploy production
 
 # Simple npm cache. Success here creates a new layer in the image.
-COPY package.json /upaya
-COPY yarn.lock /upaya
-RUN yarn install
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install --force
 
 # Copy everything else over
-COPY . /upaya
+COPY . .
 
 # Up to this point we've been root, change to a lower priv. user
 RUN groupadd -r appuser
-RUN useradd --system --gid appuser appuser
+RUN useradd --system --create-home --gid appuser appuser
 RUN chown -R appuser.appuser /upaya
 USER appuser
 
