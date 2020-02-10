@@ -7,9 +7,10 @@ describe 'users/phone_setup/index.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
 
     @new_phone_form = NewPhoneForm.new(user)
-    remember_device_pref_cookie = 'true'
 
-    @presenter = SetupPresenter.new(user, false, remember_device_pref_cookie)
+    @presenter = SetupPresenter.new(current_user: user,
+                                    user_fully_authenticated: false,
+                                    user_opted_remember_device_cookie: true)
     render
   end
 

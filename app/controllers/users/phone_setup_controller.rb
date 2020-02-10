@@ -28,8 +28,10 @@ module Users
     private
 
     def set_setup_presenter
-      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?,
-                                      user_opted_remember_device_cookie)
+      @presenter = SetupPresenter.new(current_user: current_user,
+                                      user_fully_authenticated: user_fully_authenticated?,
+                                      user_opted_remember_device_cookie:
+                                          user_opted_remember_device_cookie)
     end
 
     def user_opted_remember_device_cookie

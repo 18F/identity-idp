@@ -2,7 +2,7 @@ module RememberDeviceConcern
   extend ActiveSupport::Concern
 
   def save_user_opted_remember_device_pref
-    cookies.encrypted[:user_opted_remember_device_preference] ||= params[:remember_device]
+    cookies.encrypted[:user_opted_remember_device_preference] = params[:remember_device]
   end
 
   def save_remember_device_preference
