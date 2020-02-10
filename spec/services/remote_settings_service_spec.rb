@@ -5,7 +5,7 @@ describe RemoteSettingsService do
   before { WebMock.allow_net_connect! }
 
   describe '.load_yml_erb' do
-    it 'loads the remote location' do
+    xit 'loads the remote location' do
       location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/agencies.yml'
       expect { service.load_yml_erb(location) }.to_not raise_error
     end
@@ -55,13 +55,13 @@ describe RemoteSettingsService do
   end
 
   describe '.update_setting' do
-    it 'it creates a setting if it does not exist' do
+    xit 'it creates a setting if it does not exist' do
       location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/agencies.yml'
       service.update_setting('agencies.yml', location)
       expect(RemoteSetting.find_by(name: 'agencies.yml').url).to eq(location)
     end
 
-    it 'it updates the setting if it exists' do
+    xit 'it updates the setting if it exists' do
       location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/agencies.yml'
       agencies = 'agencies.yml'
       service.update_setting(agencies, location)
