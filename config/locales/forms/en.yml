@@ -72,7 +72,7 @@ en:
       title: Enter your personal key
     phone:
       buttons:
-        delete: Remove Phone
+        delete: Remove phone
     piv_cac_delete:
       caution: If you remove your PIV/CAC card you won't be able to use it to access
         your login.gov account.
