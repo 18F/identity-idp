@@ -181,30 +181,6 @@ it into the "Index pattern" field, then click the "Next step" button.
 Discover section.
 
 
-#### Using Docker
-
-1. Download, install, and launch [Docker]
-
-1. Set up the Docker image
-
-  ```
-  $ bin/setup --docker
-  ```
-
-[Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
-
-More useful Docker commands:
-
-* Start the container: `docker-compose up`
-* Stop this running container: `docker-compose stop`
-* Stop and delete the containers: `docker-compose down`
-* Open a shell in the web container: `docker-compose run --rm web bash`
-
-See the Docker Compose [docs](https://docs.docker.com/compose/install/) for
-more information.
-
-[Docker Compose]: (https://docs.docker.com/compose/install/)
-
 ### Viewing the app locally
 
 Once it is up and running, the app will be accessible at
