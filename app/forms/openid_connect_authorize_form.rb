@@ -166,9 +166,10 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_privileges
-    return unless ial2_requested? && service_provider.ial != 2
-    return unless ialmax_requested? && service_provider.ial != 2
-    errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
+    if (ial2_requested? && service_provider.ial != 2) ||
+       (ialmax_requested? && service_provider.ial != 2)
+      errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

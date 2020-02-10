@@ -306,6 +306,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           ial2: false,
+          ialmax: false,
           request_url: @stored_request_url,
           request_id: sp_request_id,
           requested_attributes: ['email'],
@@ -325,6 +326,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           ial2: false,
+          ialmax: false,
           request_url: @saml_request.request.original_url,
           request_id: sp_request_id,
           requested_attributes: ['email'],
