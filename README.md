@@ -200,7 +200,7 @@ More useful Docker commands:
 * Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
 * Open a shell in a one-off web container: `docker-compose run --rm web bash`
 * Open a shell in the running web container: `docker-compose exec web bash`
-* Open a psql shell in the running db container: `docker-compse exec db psql -U postgres`
+* Open a psql shell in the running db container: `docker-compose exec db psql -U postgres`
 
 #### Running Tests in Docker
 
