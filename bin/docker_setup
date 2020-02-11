@@ -34,6 +34,10 @@ Dir.chdir APP_ROOT do
 
   # Config files that were historically symlinked will be force-overwritten with fresh copies
   #  symlinks don't work in Docker containers with mounted Volumes.
+  puts "== Destroy and re-copy agencies.yml =="
+  run "rm config/agencies.yml"
+  run "cp config/agencies.localdev.yml config/agencies.yml"
+
   puts "== Destroy and re-copy certs and keys =="
   run "rm -rf certs"
   run "cp -R certs.example certs"
