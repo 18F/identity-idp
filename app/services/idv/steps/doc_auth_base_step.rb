@@ -137,8 +137,13 @@ module Idv
       end
 
       def throttled
-        redirect_to idv_session_errors_throttled_url
+        redirect_to throttled_url
         [false, I18n.t('errors.doc_auth.acuant_throttle')]
+      end
+
+      def throttled_url
+        return idv_session_errors_throttled_url unless @flow.class == Idv::Flows::RecoveryFlow
+        idv_session_errors_recovery_throttled_url
       end
 
       def test_credentials?
