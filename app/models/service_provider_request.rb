@@ -16,4 +16,8 @@ class ServiceProviderRequest
   def ial=(val)
     @loa = val
   end
+
+  def ==(other)
+    to_json == other.to_json
+  end
 end
