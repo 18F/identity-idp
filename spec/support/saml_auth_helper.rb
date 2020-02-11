@@ -49,7 +49,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2020.crt'))
   end
 
   def saml_test_sp_cert
