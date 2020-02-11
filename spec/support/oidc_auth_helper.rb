@@ -9,12 +9,16 @@ module OidcAuthHelper
 
   def visit_idp_from_ial1_oidc_sp(**args)
     params = ial1_params args
-    visit openid_connect_authorize_path params
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
   end
 
   def visit_idp_from_ial2_oidc_sp(**args)
     params = ial2_params args
-    visit openid_connect_authorize_path params
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
   end
 
   def ial1_params(prompt: nil, state: SecureRandom.hex, nonce: SecureRandom.hex, client_id: OIDC_ISSUER)

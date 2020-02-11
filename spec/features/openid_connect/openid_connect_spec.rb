@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include CloudhsmMocks
+  include OidcAuthHelper
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -47,16 +48,8 @@ describe 'OpenID Connect' do
     end
 
     it 'fails with prompt login if not allowed for SP' do
-      visit openid_connect_authorize_path(
-        client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: SecureRandom.hex,
-        prompt: 'login',
-        nonce: SecureRandom.hex,
-      )
+      visit_idp_from_ial1_oidc_sp(prompt: 'login',
+                                  client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned')
 
       expect(current_path).to eq(openid_connect_authorize_path)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
@@ -79,17 +72,7 @@ describe 'OpenID Connect' do
       IdentityLinker.new(user, client_id).link_identity
       user.identities.last.update!(verified_attributes: ['email'])
 
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: SecureRandom.hex,
-        nonce: SecureRandom.hex,
-        prompt: 'select_account',
-      )
-
+      visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
@@ -109,17 +92,7 @@ describe 'OpenID Connect' do
       IdentityLinker.new(user, client_id).link_identity
       user.identities.last.update!(verified_attributes: ['email'])
 
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: SecureRandom.hex,
-        nonce: SecureRandom.hex,
-        prompt: 'select_account',
-      )
-
+      visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
@@ -267,11 +240,11 @@ describe 'OpenID Connect' do
 
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
     it 'displays the branded page' do
-      visit_idp_from_sp_with_ial1
+      visit_idp_from_ial1_oidc_sp
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
-      visit_idp_from_sp_with_ial1
+      visit_idp_from_ial1_oidc_sp
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
@@ -279,22 +252,9 @@ describe 'OpenID Connect' do
 
   context 'logging into an SP for the first time' do
     it 'displays shared attributes page once' do
-      client_id = 'urn:gov:gsa:openidconnect:sp:server'
-
       user = user_with_2fa
 
-      oidc_path =  openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: SecureRandom.hex,
-        nonce: SecureRandom.hex,
-        prompt: 'select_account',
-      )
-      visit oidc_path
-
+      oidc_path = visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq(sign_up_completed_url)
@@ -316,7 +276,7 @@ describe 'OpenID Connect' do
     it 'links back to the SP from the sign in page' do
       state = SecureRandom.hex
 
-      visit_idp_from_sp_with_ial1(state: state)
+      visit_idp_from_ial1_oidc_sp(prompt: 'select_account', state: state)
 
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
@@ -353,14 +313,14 @@ describe 'OpenID Connect' do
     it 'signs the user out and returns to the home page' do
       user = create(:user, :signed_up)
 
-      visit_idp_from_sp_with_ial1
+      visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       fill_in_credentials_and_submit(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
       visit destroy_user_session_url
 
-      visit_idp_from_sp_with_ial1
+      visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       fill_in_credentials_and_submit(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
       sp_request_id = ServiceProviderRequestProxy.last.uuid
@@ -451,22 +411,6 @@ describe 'OpenID Connect' do
     end
   end
 
-  def visit_idp_from_sp_with_ial1(state: SecureRandom.hex)
-    client_id = 'urn:gov:gsa:openidconnect:sp:server'
-    nonce = SecureRandom.hex
-
-    visit openid_connect_authorize_path(
-      client_id: client_id,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      prompt: 'select_account',
-      nonce: nonce,
-    )
-  end
-
   def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:test'
     nonce = SecureRandom.hex
@@ -546,17 +490,7 @@ describe 'OpenID Connect' do
     state = SecureRandom.hex
     nonce = SecureRandom.hex
 
-    params = {
-      client_id: client_id,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
-    }
-    params[:prompt] = prompt if prompt
-    visit openid_connect_authorize_path(params)
+    visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
     continue_as(user.email) if user
     if redirs_to
       expect(current_path).to eq(redirs_to)
