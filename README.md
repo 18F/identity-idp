@@ -204,7 +204,11 @@ More useful Docker commands:
 
 #### Running Tests in Docker
 
-After Docker is setup and running `docker-compose run web make test`
+* After Docker is set up you can run the entire suite with `docker-compose run web make test`. This take a long time.
+* You can run a one-off test with `docker-compose run web bundle exec rspec spec/file.rb`
+* If the cluster is already running you can run the test on those containers `docker-compose exec web bundle exec rspec spec/file.rb`
+
+
 
 
 ### Viewing the app locally
