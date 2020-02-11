@@ -77,7 +77,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    return unless hash
+    hash ||= { issuer: nil, url: nil, loa: nil, requested_attributes: nil }
     OpenStruct.new(hash.merge(uuid: uuid))
   end
 end
