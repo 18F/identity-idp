@@ -35,7 +35,7 @@ Dir.chdir APP_ROOT do
   # Config files that were historically symlinked will be force-overwritten with fresh copies
   #  symlinks don't work in Docker containers with mounted Volumes.
   puts "== Destroy and re-copy agencies.yml =="
-  run "rm config/agencies.yml"
+  run "rm -f config/agencies.yml"
   run "cp config/agencies.localdev.yml config/agencies.yml"
 
   puts "== Destroy and re-copy certs and keys =="
@@ -45,11 +45,11 @@ Dir.chdir APP_ROOT do
   run "cp -R keys.example keys"
   
   puts "== Destroy and re-copy sample pwned passwords list =="
-  run "rm pwned_passwords/pwned_passwords.txt"
+  run "rm -f pwned_passwords/pwned_passwords.txt"
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
   puts "== Destroy and re-copy service_providers.yml =="
-  run "rm config/service_providers.yml"
+  run "rm -f config/service_providers.yml"
   run "cp config/service_providers.localdev.yml config/service_providers.yml"
 
   puts "== Creating and migrating dev database =="
