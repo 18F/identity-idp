@@ -1,4 +1,6 @@
-class ServiceProviderRequest < ApplicationRecord
+class ServiceProviderRequest
+  include ActiveModel::Model
+
   attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes
 
   def self.create(attributes)
