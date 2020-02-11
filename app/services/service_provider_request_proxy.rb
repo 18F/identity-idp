@@ -15,7 +15,6 @@ class ServiceProviderRequestProxy
 
   def self.delete(request_id)
     return unless request_id
-    from_uuid(request_id).delete
     REDIS_POOL.with do |client|
       client.delete(key(request_id))
       client.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
@@ -78,7 +77,6 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    hash ||= { issuer: nil, url: nil, loa: nil, requested_attributes: nil }
     ServiceProviderRequest.new(hash.merge(uuid: uuid))
   end
 end
