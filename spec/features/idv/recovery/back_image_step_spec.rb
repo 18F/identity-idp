@@ -10,6 +10,7 @@ shared_examples 'recovery back image step' do |simulate|
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
     let(:user_no_phone) { create(:user, :with_authentication_app, :with_piv_or_cac) }
     let(:profile) { build(:profile, :active, :verified, user: user_no_phone, pii: { ssn: '1234' }) }
+    let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
 
     before do |example|
       select_user = example.metadata[:no_phone] ? user_no_phone : user
@@ -59,6 +60,16 @@ shared_examples 'recovery back image step' do |simulate|
         expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
         expect(page).to have_content(strip_tags(I18n.t('errors.doc_auth.general_info'))[0..32])
       end
+    end
+
+    it 'throttles calls to acuant and allows account reset on the error page' do
+      allow(Throttler::IsThrottledElseIncrement).to receive(:call).and_return(true)
+
+      attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_session_errors_recovery_throttled_path)
+      expect(page).to have_link(t('two_factor_authentication.account_reset.reset_your_account'))
     end
   end
 end
