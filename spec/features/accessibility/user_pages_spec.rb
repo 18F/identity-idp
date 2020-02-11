@@ -37,6 +37,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     scenario 'phone setup page' do
       sign_up_and_set_password
+      find("label[for='two_factor_options_form_selection_phone']").click
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
