@@ -21,7 +21,10 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def ial1_params(prompt: nil, state: SecureRandom.hex, nonce: SecureRandom.hex, client_id: OIDC_ISSUER)
+  def ial1_params(prompt: nil,
+                  state: SecureRandom.hex,
+                  nonce: SecureRandom.hex,
+                  client_id: OIDC_ISSUER)
     ial1_params = {
       client_id: client_id,
       response_type: 'code',
@@ -35,7 +38,10 @@ module OidcAuthHelper
     ial1_params
   end
 
-  def ial2_params(prompt: nil, state: SecureRandom.hex, nonce: SecureRandom.hex, client_id: OIDC_ISSUER)
+  def ial2_params(prompt: nil,
+                  state: SecureRandom.hex,
+                  nonce: SecureRandom.hex,
+                  client_id: OIDC_ISSUER)
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
