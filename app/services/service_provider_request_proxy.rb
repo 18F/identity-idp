@@ -31,7 +31,8 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil, requested_attributes: nil)
+    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil,
+                                     requested_attributes: nil)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,

@@ -1,5 +1,5 @@
 class ServiceProviderRequest < ApplicationRecord
-  attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes, :ial
+  attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes
 
   def self.create(attributes)
     attributes[:loa] = attributes[:ial]
