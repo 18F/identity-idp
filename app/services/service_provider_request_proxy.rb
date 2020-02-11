@@ -25,20 +25,19 @@ class ServiceProviderRequestProxy
   def self.find_by(uuid:)
     return unless uuid
     obj = REDIS_POOL.with { |client| client.read(key(uuid)) }
-    return hash_to_spr(obj, uuid) if obj
-    ServiceProviderRequest.find_by(uuid: uuid)
+    hash_to_spr(obj, uuid)
   end
 
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid)
+    spr = create(uuid: uuid,
+                 issuer: spr.issuer,
+                 url: spr.url,
+                 loa: spr.loa,
+                 requested_attributes: spr.requested_attributes)
     yield(spr)
-    create(uuid: uuid,
-           issuer: spr.issuer,
-           url: spr.url,
-           loa: spr.loa,
-           requested_attributes: spr.requested_attributes)
+    spr
   end
 
   def self.create(hash)
@@ -78,8 +77,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    spr = ServiceProviderRequest.new(hash)
-    spr.uuid = uuid
-    spr
+    return unless hash
+    OpenStruct.new(hash.merge({uuid: uuid}))
   end
 end
