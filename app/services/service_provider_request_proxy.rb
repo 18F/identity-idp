@@ -31,7 +31,7 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = OpenStruct.new(uuid: uuid, issuer: nil, url: nil, loa: nil, requested_attributes: nil)
+    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil, requested_attributes: nil)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,
@@ -78,6 +78,6 @@ class ServiceProviderRequestProxy
 
   def self.hash_to_spr(hash, uuid)
     hash ||= { issuer: nil, url: nil, loa: nil, requested_attributes: nil }
-    OpenStruct.new(hash.merge(uuid: uuid))
+    ServiceProviderRequest.new(hash.merge(uuid: uuid))
   end
 end
