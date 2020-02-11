@@ -31,13 +31,13 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = create(uuid: uuid,
-                 issuer: spr.issuer,
-                 url: spr.url,
-                 loa: spr.loa,
-                 requested_attributes: spr.requested_attributes)
+    spr = OpenStruct.new(uuid: uuid, issuer: nil, url: nil, loa: nil, requested_attributes: nil)
     yield(spr)
-    spr
+    create(uuid: uuid,
+           issuer: spr.issuer,
+           url: spr.url,
+           loa: spr.loa,
+           requested_attributes: spr.requested_attributes)
   end
 
   def self.create(hash)
