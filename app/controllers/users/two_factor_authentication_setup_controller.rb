@@ -74,7 +74,7 @@ module Users
     end
 
     def two_factor_options_form_params
-      params.permit(:two_factor_options_form, :selection)
+      params.require(:two_factor_options_form).permit(:selection)
     end
   end
 end
