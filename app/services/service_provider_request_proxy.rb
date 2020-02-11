@@ -78,6 +78,6 @@ class ServiceProviderRequestProxy
 
   def self.hash_to_spr(hash, uuid)
     return unless hash
-    OpenStruct.new(hash.merge({uuid: uuid}))
+    OpenStruct.new(hash.merge(uuid: uuid))
   end
 end
