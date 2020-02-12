@@ -7,10 +7,17 @@ services:
     ports:
       - "3000:3000"
     environment:
-      REDIS_URL: "redis://redis"
+      redis_url: "redis://redis:6379"
+      redis_throttle_url: "redis://redis:6379"
       DATABASE_URL: "postgres://postgres@db"
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
+      # Set database timeouts to 30 seconds
+      database_timeout: '30000'
+      database_statement_timeout: '30000'
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
+      # '' == 1 thread for tests; performs better in a container
+      TEST_ENV_NUMBER: ''
       SMTP_HOST: 'mailcatcher'
     depends_on:
       - db
@@ -18,6 +25,8 @@ services:
       - mailcatcher
   db:
     image: postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
   redis:
     image: redis
   mailcatcher:

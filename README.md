@@ -15,7 +15,7 @@ A Identity Management System powering login.gov.
 - Ruby 2.5
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
-- [Node.js v8.x.x](https://nodejs.org)
+- [Node.js v12.x.x](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
 #### Setting up and running the app
@@ -181,29 +181,35 @@ it into the "Index pattern" field, then click the "Next step" button.
 Discover section.
 
 
-#### Using Docker
+#### Using Docker Locally
 
-1. Download, install, and launch [Docker]
+1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4 or 8 GB should work well.
 
-1. Set up the Docker image
+1. Build the Docker containers: `docker-compose build`
 
-  ```
-  $ bin/setup --docker
-  ```
+1. Run `make docker_setup` to copy configuration files and bootstrap the database.
 
-[Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
+1. Start the Docker containers `docker-compose up` and `open http://localhost:3000`
+
+Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
 
 More useful Docker commands:
 
-* Start the container: `docker-compose up`
-* Stop this running container: `docker-compose stop`
-* Stop and delete the containers: `docker-compose down`
-* Open a shell in the web container: `docker-compose run --rm web bash`
+* Force the images to re-build: `docker-compose build --no-cache`
+* Stop the containers: `docker-compose stop`
+* Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
+* Open a shell in a one-off web container: `docker-compose run --rm web bash`
+* Open a shell in the running web container: `docker-compose exec web bash`
+* Open a psql shell in the running db container: `docker-compose exec db psql -U postgres`
 
-See the Docker Compose [docs](https://docs.docker.com/compose/install/) for
-more information.
+#### Running Tests in Docker
 
-[Docker Compose]: (https://docs.docker.com/compose/install/)
+* After Docker is set up you can run the entire suite with `docker-compose run web bundle exec rspec`. This takes a while.
+* You can run a one-off test with `docker-compose run web bundle exec rspec spec/file.rb`
+* If the cluster is already running you can run the test on those containers using `exec` instead of `run`: `docker-compose exec web bundle exec rspec spec/file.rb`
+
+
+
 
 ### Viewing the app locally
 
