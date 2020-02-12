@@ -13,6 +13,7 @@ services:
       DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
       # This is a BIG timeout, 500s. The worst offender is `DatabaseCleaner`
       database_timeout: '500000'
+      database_statement_timeout: '10000'
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
       TEST_ENV_NUMBER: '2'
