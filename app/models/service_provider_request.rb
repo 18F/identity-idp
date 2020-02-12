@@ -1,12 +1,12 @@
 class ServiceProviderRequest
   attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes
 
-  def initialize(attrs = {})
-    @uuid = attrs[:uuid]
-    @issuer = attrs[:issuer]
-    @url = attrs[:url]
-    @loa = attrs[:loa]
-    @requested_attributes = attrs[:requested_attributes]&.map(&:to_s)
+  def initialize(uuid: nil, issuer: nil, url: nil, loa: nil, requested_attributes: [])
+    @uuid = uuid
+    @issuer = issuer
+    @url = url
+    @loa = loa
+    @requested_attributes = requested_attributes.map(&:to_s)
   end
 
   def ial
