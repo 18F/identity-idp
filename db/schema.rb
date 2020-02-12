@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200115142141) do
+ActiveRecord::Schema.define(version: 20200210235313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -370,17 +370,6 @@ ActiveRecord::Schema.define(version: 20200115142141) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
-  end
-
-  create_table "service_provider_requests", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.string "loa", null: false
-    t.string "url", null: false
-    t.string "uuid", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "requested_attributes", default: [], array: true
-    t.index ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true
   end
 
   create_table "service_providers", force: :cascade do |t|
