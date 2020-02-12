@@ -6,7 +6,7 @@ class ServiceProviderRequest
     @issuer = attrs[:issuer]
     @url = attrs[:url]
     @loa = attrs[:loa]
-    @requested_attributes = attrs[:requested_attributes]
+    @requested_attributes = attrs[:requested_attributes].map &:to_s
   end
 
   def ial
