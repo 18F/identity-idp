@@ -11,12 +11,13 @@ services:
       redis_throttle_url: "redis://redis:6379"
       DATABASE_URL: "postgres://postgres@db"
       DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
-      # This is a BIG timeout, 500s. The worst offender is `DatabaseCleaner`
-      database_timeout: '500000'
-      database_statement_timeout: '10000'
+      # Set database timeouts to 30 seconds
+      database_timeout: '30000'
+      database_statement_timeout: '30000'
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
-      TEST_ENV_NUMBER: '2'
+      # '' == 1 thread for tests; performs better in a container
+      TEST_ENV_NUMBER: ''
       SMTP_HOST: 'mailcatcher'
     depends_on:
       - db

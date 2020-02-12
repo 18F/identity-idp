@@ -183,13 +183,13 @@ Discover section.
 
 #### Using Docker Locally
 
-1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. ~4~ 8 GB works well for me.
+1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4 or 8 GB should work well.
 
 1. Build the Docker containers: `docker-compose build`
 
-1. Start the Docker containers `docker-compose up`
-
 1. Run `make docker_setup` to copy configuration files and bootstrap the database.
+
+1. Start the Docker containers `docker-compose up` and `open http://localhost:3000`
 
 Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
 
@@ -204,9 +204,9 @@ More useful Docker commands:
 
 #### Running Tests in Docker
 
-* After Docker is set up you can run the entire suite with `docker-compose run web make test`. This take a long time.
+* After Docker is set up you can run the entire suite with `docker-compose run web bundle exec rspec`. This takes a while.
 * You can run a one-off test with `docker-compose run web bundle exec rspec spec/file.rb`
-* If the cluster is already running you can run the test on those containers `docker-compose exec web bundle exec rspec spec/file.rb`
+* If the cluster is already running you can run the test on those containers using `exec` instead of `run`: `docker-compose exec web bundle exec rspec spec/file.rb`
 
 
 
