@@ -37,6 +37,7 @@ Vagrantfile
 /config/application.yml
 /config/aws.yml
 /config/service_providers.yml
+/config/agencies.yml
 /geo_data/*
 /keys
 /coverage

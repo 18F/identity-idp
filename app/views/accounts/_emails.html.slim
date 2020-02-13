@@ -8,9 +8,12 @@
           = link_to t('account.index.email_add'), add_email_path
   - current_user.email_addresses.each do |email|
     .p2.col.col-12.border-top.border-blue-light.account-list-item
-      .col.col-8.sm-6.truncate
-        = email.email
-        span.ml1 = t('email_addresses.unconfirmed') unless email.confirmed_at
+      .col.col-8.sm-6
+        span.break-word
+          = email.email
+          | &nbsp;
+        span
+          = t('email_addresses.unconfirmed') unless email.confirmed_at
       .col.col-4.sm-6.right-align
         - if EmailPolicy.new(current_user).can_delete_email?(email)
           ' &nbsp; &nbsp;

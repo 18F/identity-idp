@@ -92,6 +92,8 @@ es:
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     piv_cac_setup:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
+    two_factor_auth_setup:
+      must_select_option: Seleccione un método de autenticación.
     webauthn_setup:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.

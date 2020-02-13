@@ -22,7 +22,7 @@ describe 'devise/passwords/new.html.slim' do
       sp: sp,
       view_context: view_context,
       sp_session: {},
-      service_provider_request: ServiceProviderRequest.new,
+      service_provider_request: ServiceProviderRequestProxy.new,
     ).call
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
   end

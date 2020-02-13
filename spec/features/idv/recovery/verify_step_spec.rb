@@ -38,7 +38,7 @@ feature 'recovery verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do
@@ -47,7 +47,7 @@ feature 'recovery verify step' do
     click_idv_continue
     click_idv_continue
 
-    expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
   end
 
   it 'throttles resolution' do
@@ -56,23 +56,26 @@ feature 'recovery verify step' do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
+      expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
       visit idv_recovery_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
   end
 
-  it 'throttles dup ssn' do
+  it 'throttles dup ssn and allows account reset on the error page' do
     complete_recovery_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
+      expect(page).to have_current_path(idv_session_errors_recovery_warning_path)
       visit idv_recovery_verify_step
     end
     click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
+
+    click_on t('two_factor_authentication.account_reset.reset_your_account')
+    expect(page).to have_current_path(account_reset_request_path)
   end
 end

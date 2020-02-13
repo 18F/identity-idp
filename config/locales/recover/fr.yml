@@ -28,6 +28,7 @@ fr:
       heading: Nous devons revérifier votre identité
     request:
       confirm_email: D'abord, confirmons votre adresse email
+      email_check: Veuillez vérifier votre courrier électronique
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre courrier électronique
         et suivez les instructions pour vérifier votre identité.
       instructions: Nous enverrons un courrier électronique à l'adresse indiquée pour
@@ -36,7 +37,6 @@ fr:
       reverify: Pour réinitialiser votre compte, nous devons revérifier votre identité.
     reverify:
       email_confirmed: Nous avons confirmé votre adresse email
-      fail: Récupérer échouer
       instructions: Nous voulons nous assurer que vous et seulement vous avez accès
         à votre compte
       reverify: Ensuite, revérifions votre identité

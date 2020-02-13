@@ -30,6 +30,8 @@ feature 'IAL1 Single Sign On' do
 
         click_on t('forms.buttons.continue')
 
+        continue_as(email)
+
         expect(current_url).to eq authn_request
         expect(page.get_rack_session.keys).to include('sp')
       end
@@ -82,7 +84,7 @@ feature 'IAL1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
 
       visit timeout_path
       expect(current_url).to eq root_url(request_id: sp_request_id)
@@ -117,7 +119,7 @@ feature 'IAL1 Single Sign On' do
       expect(current_url).to eq(saml_authn_request)
     end
 
-    it 'it immediately returns to the SP after signing in again' do
+    it 'it confirms the user wants to continue to the SP after signing in again' do
       click_continue
 
       set_new_browser_session
@@ -127,6 +129,10 @@ feature 'IAL1 Single Sign On' do
       click_submit_default
 
       visit saml_authn_request
+
+      expect(current_url).to match(user_authorization_confirmation_path)
+      continue_as(user.email)
+
       expect(current_url).to eq(saml_authn_request)
     end
   end
@@ -187,7 +193,7 @@ feature 'IAL1 Single Sign On' do
 
       visit authn_request
       fill_in_credentials_and_submit(user.email, user.password)
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.from_issuer('http://localhost:3000')
       click_link t('links.cancel')
 

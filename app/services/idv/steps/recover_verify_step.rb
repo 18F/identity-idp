@@ -7,6 +7,16 @@ module Idv
 
       private
 
+      def idv_failure(result)
+        attempter_increment
+        if attempter_throttled?
+          redirect_to idv_session_errors_recovery_failure_url
+        else
+          redirect_to idv_session_errors_recovery_warning_url
+        end
+        result
+      end
+
       def summarize_result_and_throttle_failures(summary_result)
         if summary_result.success? && doc_auth_pii_matches_decrypted_pii
           add_proofing_components
@@ -25,7 +35,6 @@ module Idv
       end
 
       def recovery_success
-        mark_step_complete(:recover_fail)
         flash[:success] = I18n.t('recover.reverify.success')
         redirect_to account_url
         session['need_two_factor_authentication'] = false

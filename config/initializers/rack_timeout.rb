@@ -31,3 +31,8 @@ module Rack
     alias call call_with_excludes
   end
 end
+
+if Rails.env.development?
+  Rails.logger.info 'Disabling Rack::Timeout Logging'
+  Rack::Timeout::Logger.disable
+end

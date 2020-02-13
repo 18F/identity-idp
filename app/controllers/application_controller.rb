@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     { locale: locale_url_param, host: Figaro.env.domain_name }
   end
 
-  def sign_out
+  def sign_out(*args)
     request.cookie_jar.delete('ahoy_visit')
     super
   end
@@ -134,7 +134,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def service_provider_request
-    @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
+    @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
   def add_piv_cac_setup_url

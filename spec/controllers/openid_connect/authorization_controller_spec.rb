@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe OpenidConnect::AuthorizationController do
+  before do
+    # All the tests here were written prior to the interstitial
+    # authorization confirmation page so let's force the system
+    # to skip past that page
+    allow(controller).to receive(:auth_count).and_return(2)
+  end
+
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:params) do
     {
@@ -200,14 +207,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       it 'redirects to SP landing page with the request_id in the params' do
         action
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
       end
 
       it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
         action
-        sp_request_id = ServiceProviderRequest.last.uuid
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
           ial2: false,
