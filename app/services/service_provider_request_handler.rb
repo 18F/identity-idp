@@ -10,7 +10,7 @@ class ServiceProviderRequestHandler
     return if current_sp == sp_stored_in_session
 
     delete_sp_request_if_session_has_matching_request_id
-    ServiceProviderRequest.create!(attributes)
+    ServiceProviderRequestProxy.create!(attributes)
 
     metadata = StoreSpMetadataInSession.new(session: session, request_id: request_id).call
 
@@ -31,12 +31,12 @@ class ServiceProviderRequestHandler
 
   def sp_stored_in_session
     return if sp_request_id.blank?
-    ServiceProviderRequest.from_uuid(sp_session[:request_id]).issuer
+    ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).issuer
   end
 
   def delete_sp_request_if_session_has_matching_request_id
     return if sp_request_id.blank?
-    ServiceProviderRequest.from_uuid(sp_session[:request_id]).delete
+    ServiceProviderRequestProxy.delete(sp_session[:request_id])
   end
 
   def attributes

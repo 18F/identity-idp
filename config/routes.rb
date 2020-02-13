@@ -230,6 +230,8 @@ Rails.application.routes.draw do
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'
+    get '/user_authorization_confirmation' => 'users/authorization_confirmation#show'
+    put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'
 
@@ -273,6 +275,10 @@ Rails.application.routes.draw do
       get '/session/errors/timeout' => 'session_errors#timeout'
       get '/session/errors/jobfail' => 'session_errors#jobfail'
       get '/session/errors/failure' => 'session_errors#failure'
+      get '/session/errors/throttled' => 'session_errors#throttled'
+      get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
+      get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
+      get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
       get '/jurisdiction' => 'jurisdiction#new'
       post '/jurisdiction' => 'jurisdiction#create'

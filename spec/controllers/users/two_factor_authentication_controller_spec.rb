@@ -180,7 +180,11 @@ describe Users::TwoFactorAuthenticationController do
         }
 
         expect(@analytics).to receive(:track_event).
+          ordered.
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
+        expect(@analytics).to receive(:track_event).
+          ordered.
+          with(Analytics::TELEPHONY_OTP_SENT, hash_including(success: true))
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
@@ -252,7 +256,11 @@ describe Users::TwoFactorAuthenticationController do
         }
 
         expect(@analytics).to receive(:track_event).
+          ordered.
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
+        expect(@analytics).to receive(:track_event).
+          ordered.
+          with(Analytics::TELEPHONY_OTP_SENT, hash_including(success: true))
 
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice',

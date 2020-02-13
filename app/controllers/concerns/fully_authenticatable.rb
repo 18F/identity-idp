@@ -1,6 +1,6 @@
 module FullyAuthenticatable
   def delete_branded_experience
-    ServiceProviderRequest.from_uuid(request_id).delete
+    ServiceProviderRequestProxy.delete(request_id)
   end
 
   def request_id

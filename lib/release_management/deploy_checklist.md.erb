@@ -4,10 +4,6 @@
 
 [Diff from RC <%= previous_rc_number %>](https://github.com/18F/identity-idp/compare/<%= previous_rc_branch_name %>...<%= rc_branch_name %>)
 
-# Release notes
-
-[ADD RELEASE NOTE LINK HERE]
-
 # Deploy Checklist
 
 ## Branching (<%= branch_date %>)
@@ -15,8 +11,6 @@
 - [ ] Add this checklist to the wiki and update the main wiki page to link to it under the previous RC
 - [ ] Create an RC branch named `<%= rc_branch_name %>` and push it to GitHub
 - [ ] Verify that application.yml is up to date on int, staging, and prod
-- [ ] Write release notes for the release and add them under "Release notes" above
-- [ ] Send the notes to the product owner to be communicated with partners
 
 ## Deploy staging (<%= staging_deploy_date %>)
 
@@ -30,7 +24,6 @@
 - [ ] Check that the new code is deployed by looking for the new sha at [https://idp.staging.login.gov/api/deploy.json](https://idp.staging.login.gov/api/deploy.json)
 - [ ] Run the smoke tests against staging
 - [ ] Check New Relic for an elevated error rate
-- [ ] If all appears well, run the `scale-in-old-instances` script against staging
 - [ ] Use the `tag-release` script in the IdP repo to tag the release
 - [ ] Use the new tag to create a release in GitHub
 

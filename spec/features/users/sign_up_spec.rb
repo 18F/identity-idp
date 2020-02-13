@@ -304,4 +304,12 @@ feature 'Sign Up' do
     submit_form_with_valid_email(email)
     expect(token).to eq(User.find_with_email(email).email_addresses.first.confirmation_token)
   end
+
+  it 'redirects back with an error if the user does not select 2FA option' do
+    sign_in_user
+    visit two_factor_options_path
+    click_on 'Continue'
+
+    expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+  end
 end

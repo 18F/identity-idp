@@ -74,6 +74,7 @@ jobs:
           command: |
             cp config/application.yml.default config/application.yml
             cp config/service_providers.localdev.yml config/service_providers.yml
+            cp config/agencies.localdev.yml config/agencies.yml
             cp -a keys.example keys
             cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt

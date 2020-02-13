@@ -5,6 +5,7 @@ module OpenidConnect
     include RememberDeviceConcern
     include VerifyProfileConcern
     include SecureHeadersConcern
+    include AuthorizationCountConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -13,15 +14,19 @@ module OpenidConnect
     before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
+    before_action :bump_auth_count, only: [:index]
 
+    # rubocop:disable Metrics/AbcSize
     def index
       return redirect_to two_factor_options_url unless
         MfaPolicy.new(current_user).sufficient_factors_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
+      return redirect_to(user_authorization_confirmation_url) if auth_count == 1
       handle_successful_handoff
     end
+    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -33,6 +38,7 @@ module OpenidConnect
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
+      bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
     end

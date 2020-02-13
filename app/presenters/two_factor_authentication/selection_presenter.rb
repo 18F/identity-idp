@@ -21,6 +21,8 @@ module TwoFactorAuthentication
       t("two_factor_authentication.#{option_mode}.#{method}_info_html")
     end
 
+    def security_level; end
+
     def html_class
       ''
     end

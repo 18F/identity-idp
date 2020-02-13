@@ -257,6 +257,7 @@ describe 'OpenID Connect' do
         confirm_email_in_a_different_browser(email)
 
         click_button t('forms.buttons.continue')
+        continue_as(email)
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
         expect(page.get_rack_session.keys).to include('sp')
@@ -362,7 +363,7 @@ describe 'OpenID Connect' do
       visit_idp_from_sp_with_ial1
       fill_in_credentials_and_submit(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
-      sp_request_id = ServiceProviderRequest.last.uuid
+      sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
@@ -556,6 +557,7 @@ describe 'OpenID Connect' do
     }
     params[:prompt] = prompt if prompt
     visit openid_connect_authorize_path(params)
+    continue_as(user.email) if user
     if redirs_to
       expect(current_path).to eq(redirs_to)
       return

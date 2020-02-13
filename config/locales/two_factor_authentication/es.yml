@@ -12,6 +12,7 @@ es:
         coincidir con el perfil de su cuenta. Si no lo hacen, puede %{reset_link}
         en su lugar.
       reset_link: restablecer su cuenta
+      reset_your_account: Restablecer su cuenta
       reverify_link: vuelva a verificar su identidad
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de login.gov
         ha sido cancelada.
@@ -155,6 +156,7 @@ es:
       backup_code_only: No tengo ninguno de los anteriores
       backup_code_only_info_html: Le daremos 10 códigos para usar y guardar en un
         lugar seguro. Puede usar códigos de respaldo como su único método de autenticación.
+      less_secure_label: Menos protección
       phone: Teléfono
       phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
         telefónica
@@ -164,6 +166,7 @@ es:
       second_phone: Segundo telefono
       second_phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS)
         o llamada telefónica a un número de teléfono secundario (uno que no sea %{phone})
+      secure_label: Más protección
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS

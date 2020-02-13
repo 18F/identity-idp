@@ -26,15 +26,15 @@ en:
       heading: We need to re-verify your identity
     request:
       confirm_email: First, let's confirm your email address
-      email_sent: Link sent to %{email}. Please check your email and follow instructions
-        to re-verify your identity.
+      email_check: Check your email
+      email_sent: We sent an email to %{email} with a link to confirm your email address.
+        Follow the link to continue re-verifying your identity.
       instructions: We'll send an email to the address we have on file for this account.
         Once you receive the email, click the link inside to continue re-verifying
         your account.
       reverify: To reset your account, we'll need to re-verify your identity
     reverify:
       email_confirmed: We have confirmed your email address
-      fail: Recover fail
       instructions: We want to make sure you, and only you, have access to your account
       reverify: Next, let's re-verify your identity
       success: You have successfully recovered your account. To prevent having to

@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :handle_empty_selection, only: :create
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -64,6 +65,13 @@ module Users
       end
     end
     # rubocop:enable Metrics/MethodLength
+
+    def handle_empty_selection
+      return if params[:two_factor_options_form].present?
+
+      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
+      redirect_back(fallback_location: two_factor_options_path)
+    end
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection)

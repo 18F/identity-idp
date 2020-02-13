@@ -22,7 +22,7 @@ describe 'signing in with remember device and idling on the sign in page' do
     ).link_identity(verified_attributes: %w[email])
 
     visit_idp_from_sp_with_ial1(:oidc)
-    request_id = ServiceProviderRequest.last.uuid
+    request_id = ServiceProviderRequestProxy.last.uuid
 
     Timecop.travel(Devise.timeout_in + 1.minute) do
       # Simulate being idle on the sign in page long enough for the session to
@@ -36,6 +36,8 @@ describe 'signing in with remember device and idling on the sign in page' do
         to(include('form-action \'self\' http://localhost:7654/auth/result'))
 
       fill_in_credentials_and_submit(user.email, user.password)
+
+      continue_as(user.email, user.password)
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
