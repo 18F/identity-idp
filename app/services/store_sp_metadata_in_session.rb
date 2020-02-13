@@ -32,7 +32,7 @@ class StoreSpMetadataInSession
     session[:sp] = {
       issuer: sp_request.issuer,
       ial2: ial2_requested?,
-      ialmax: ial2_requested?,
+      ialmax: ialmax_requested?,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
