@@ -15,7 +15,6 @@ class ServiceProviderRequestProxy
 
   def self.delete(request_id)
     return unless request_id
-    from_uuid(request_id).delete
     REDIS_POOL.with do |client|
       client.delete(key(request_id))
       client.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
@@ -25,14 +24,14 @@ class ServiceProviderRequestProxy
   def self.find_by(uuid:)
     return unless uuid
     obj = REDIS_POOL.with { |client| client.read(key(uuid)) }
-    return hash_to_spr(obj, uuid) if obj
-    ServiceProviderRequest.find_by(uuid: uuid)
+    obj ? hash_to_spr(obj, uuid) : nil
   end
 
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid)
+    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil,
+                                     requested_attributes: nil)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,
@@ -78,8 +77,6 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    spr = ServiceProviderRequest.new(hash)
-    spr.uuid = uuid
-    spr
+    ServiceProviderRequest.new(hash.merge(uuid: uuid))
   end
 end
