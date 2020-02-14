@@ -20,7 +20,7 @@ class SamlRequestPresenter
   end
 
   def requested_attributes
-    return [:email] unless ial2_authn_context?
+    return [:email] unless ial2_authn_context? || ialmax_authn_context?
     bundle.map { |attr| ATTRIBUTE_TO_FRIENDLY_NAME_MAP[attr] }.compact.uniq
   end
 
@@ -30,6 +30,10 @@ class SamlRequestPresenter
 
   def ial2_authn_context?
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? authn_context
+  end
+
+  def ialmax_authn_context?
+    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == authn_context
   end
 
   def authn_context
