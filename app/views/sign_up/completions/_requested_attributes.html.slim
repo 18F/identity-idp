@@ -1,5 +1,6 @@
 ul.mb3.list-reset.border-bottom.success-bullets.requested-attributes
   - view_model.requested_attributes_sorted.each do |attribute|
+    - next if @pii[attribute].blank?
     li.border-top
       span.bold
         = t("help_text.requested_attributes.#{attribute}")
