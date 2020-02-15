@@ -2,7 +2,7 @@ class PivCacAuthenticationSetupErrorPresenter < PivCacAuthenticationSetupBasePre
   attr_accessor :error
 
   def initialize(error:)
-    @error = error
+    @error = error&.split('|').first
   end
 
   def may_select_another_certificate?
