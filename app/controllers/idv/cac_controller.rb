@@ -33,7 +33,7 @@ module Idv
       token = params[:token]
       return unless request.path == idv_cac_step_path(:present_cac) && token
       data = PivCacService.decode_token(token)
-      cn_array = PivCac::CnFieldsFromSubject.call(data['dn'])
+      cn_array = PivCac::CnFieldsFromSubject.call(data['subject'])
       if cn_array.size > 2 && data['card_type'] == 'cac'
         process_cac_success(cn_array)
       else
