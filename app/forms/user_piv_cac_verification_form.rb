@@ -2,7 +2,7 @@ class UserPivCacVerificationForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :error_type, :nonce, :user
+  attr_accessor :x509_dn_uuid, :x509_dn, :token, :error_type, :nonce, :user, :key_id
 
   validates :token, presence: true
   validates :nonce, presence: true
@@ -14,7 +14,7 @@ class UserPivCacVerificationForm
     FormResponse.new(
       success: success,
       errors: {},
-      extra: extra_analytics_attributes,
+      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
     )
   end
 
