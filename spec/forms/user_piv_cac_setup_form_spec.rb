@@ -55,7 +55,7 @@ describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
-          extra = { multi_factor_auth_method: 'piv_cac' }
+          extra = { multi_factor_auth_method: 'piv_cac', key_id: nil }
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: { type: 'piv_cac.already_associated' },
@@ -70,12 +70,12 @@ describe UserPivCacSetupForm do
     context 'when token is invalid' do
       let(:token) { 'bad-token' }
       let(:token_response) do
-        { 'error' => 'token.bad', 'nonce' => nonce }
+        { 'error' => 'token.bad', 'nonce' => nonce, 'key_id' => 'foo' }
       end
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: { type: 'token.bad' }, extra: extra).and_return(result)
@@ -88,13 +88,13 @@ describe UserPivCacSetupForm do
     context 'when nonce is invalid' do
       let(:token) { 'bad-token' }
       let(:token_response) do
-        { 'error' => 'token.bad', 'nonce' => bad_nonce }
+        { 'error' => 'token.bad', 'nonce' => bad_nonce, 'key_id' => 'foo' }
       end
       let(:bad_nonce) { nonce + 'X' }
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: { type: 'token.invalid' }, extra: extra).and_return(result)
