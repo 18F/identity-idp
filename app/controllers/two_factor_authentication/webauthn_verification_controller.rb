@@ -56,8 +56,13 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
         view: view_context,
-        data: { credential_ids: credential_ids },
+        data: { credential_ids: credential_ids,
+                user_opted_remember_device_cookie: user_opted_remember_device_cookie },
       )
+    end
+
+    def user_opted_remember_device_cookie
+      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def save_challenge_in_session

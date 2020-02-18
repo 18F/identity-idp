@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :credential_ids
+    attr_reader :credential_ids, :user_opted_remember_device_cookie
 
     def help_text
       ''
