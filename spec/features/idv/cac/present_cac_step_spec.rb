@@ -5,7 +5,7 @@ feature 'cac proofing present cac step' do
 
   let(:decoded_token) do
     {
-      'dn' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'cac',
     }
   end
@@ -45,7 +45,7 @@ feature 'cac proofing present cac step' do
 
   it 'does not proceed to the next page if card_type is not CAC' do
     decoded_token_piv = {
-      'dn' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'piv',
     }
     allow(PivCacService).to receive(:decode_token).and_return(decoded_token_piv)
