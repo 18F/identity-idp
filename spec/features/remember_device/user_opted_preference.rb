@@ -21,11 +21,8 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('/login/two_factor/authenticator')
-      end
-
-      it 'has an unchecked remember device checkbox upon next sign in' do
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -52,8 +49,9 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('/login/two_factor/webauthn')
+        expect(page).to have_unchecked_field('remember_device')
       end
 
       it 'has an unchecked remember device checkbox upon next sign in' do
@@ -81,12 +79,9 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('login/two_factor/sms')
-      end
-
-      it 'has an unchecked remember device checkbox upon next sign in' do
-        expect(page).to have_unchecked_field('remember_device')
+        expect(page).to have_unchecked_field('remember_device') 
       end
     end
   end
@@ -104,11 +99,8 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('/login/two_factor/authenticator')
-      end
-
-      it 'has an unchecked remember device checkbox upon next sign in' do
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -136,11 +128,8 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('login/two_factor/webauthn')
-      end
-
-      it 'has an unchecked remember device checkbox upon next sign in' do
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -158,11 +147,8 @@ describe 'Unchecking remember device' do
         sign_in_user(user)
       end
 
-      it 'requires the user to 2fa again upon sign in' do
+      it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('login/two_factor/sms')
-      end
-
-      it 'has an unchecked remember device checkbox upon next sign in' do
         expect(page).to have_unchecked_field('remember_device')
       end
     end
