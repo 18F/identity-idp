@@ -9,7 +9,10 @@ describe 'users/totp_setup/new.html.erb' do
       allow(view).to receive(:user_session).and_return(signing_up: false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
-      @presenter = SetupPresenter.new(user, true)
+
+      @presenter = SetupPresenter.new(current_user: user,
+                                      user_fully_authenticated: false,
+                                      user_opted_remember_device_cookie: true)
     end
 
     it 'renders the QR code' do

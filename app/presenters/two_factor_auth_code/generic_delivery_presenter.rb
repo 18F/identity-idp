@@ -45,12 +45,17 @@ module TwoFactorAuthCode
       ).sign_up_progress_visible?
     end
 
+    def remember_device_box_checked?
+      return true if user_opted_remember_device_cookie.nil?
+      ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
+    end
+
     private
 
     def no_factors_enabled?
       MfaPolicy.new(@view.current_user).no_factors_enabled?
     end
 
-    attr_reader :personal_key_unavailable, :view, :reauthn
+    attr_reader :personal_key_unavailable, :view, :reauthn, :user_opted_remember_device_cookie
   end
 end

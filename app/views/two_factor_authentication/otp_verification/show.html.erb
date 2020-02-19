@@ -29,7 +29,8 @@
               form_class: 'inline-block') %>
 
   <inline-block class="span" style="white-space:nowrap">
-    <%= check_box_tag 'remember_device', true, true, class: 'my2 ml2 mr1' %>
+    <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
+    <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'my2 ml2 mr1' %>
     <%= label_tag 'remember_device',
                 t('forms.messages.remember_device'),
                 class: 'blue' %>
