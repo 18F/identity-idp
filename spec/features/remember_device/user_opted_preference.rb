@@ -1,4 +1,5 @@
 require 'rails_helper'
+# rubocop:disable Metrics/LineLength
 
 describe 'Unchecking remember device' do
   describe '2fa setup' do
@@ -81,7 +82,7 @@ describe 'Unchecking remember device' do
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
         expect(current_url).to include('login/two_factor/sms')
-        expect(page).to have_unchecked_field('remember_device') 
+        expect(page).to have_unchecked_field('remember_device')
       end
     end
   end
@@ -154,3 +155,4 @@ describe 'Unchecking remember device' do
     end
   end
 end
+# rubocop:enable Metrics/LineLength
