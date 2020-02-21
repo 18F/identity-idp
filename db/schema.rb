@@ -227,6 +227,7 @@ ActiveRecord::Schema.define(version: 20200221215702) do
     t.string "code_challenge"
     t.string "rails_session_id"
     t.json "verified_attributes"
+    t.datetime "verified_at"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -405,6 +406,7 @@ ActiveRecord::Schema.define(version: 20200221215702) do
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
     t.boolean "signed_response_message_requested", default: false
+    t.integer "ial2_quota"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

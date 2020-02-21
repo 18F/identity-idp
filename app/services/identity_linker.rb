@@ -8,7 +8,7 @@ class IdentityLinker
   end
 
   def link_identity(**extra_attrs)
-    process_ial
+    process_ial(extra_attrs)
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
@@ -21,7 +21,7 @@ class IdentityLinker
 
   private
 
-  def process_ial
+  def process_ial(extra_attrs)
     @ial =  extra_attrs[:ial]
     return unless @ial == 2 && identity.verified_at.nil?
     identity.verified_at = Time.zone.now
