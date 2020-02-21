@@ -1,5 +1,5 @@
-class AddIal2QuotaToServiceProviders < ActiveRecord::Migration[5.1]
+class AddVerifiedAtToIdentities < ActiveRecord::Migration[5.1]
   def change
-    add_column :service_providers, :ial2_quota, :integer
+    add_column :identities, :verified_at, :datetime
   end
 end
