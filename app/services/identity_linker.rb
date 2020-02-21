@@ -22,7 +22,7 @@ class IdentityLinker
   private
 
   def process_ial(extra_attrs)
-    @ial =  extra_attrs[:ial]
+    @ial = extra_attrs[:ial]
     return unless @ial == 2 && identity.verified_at.nil?
     identity.verified_at = Time.zone.now
   end
