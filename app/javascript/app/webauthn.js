@@ -69,8 +69,15 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
       ],
       timeout: 800000,
       attestation: 'none',
-      excludeList: [],
-      excludeCredentials: extractCredentials(excludeCredentials),
+      //excludeList: [],  <-- I don't see this option in the docs
+      authenticatorSelection: {
+        // Prevents user from needing to use PIN with Security Key
+        userVerification: "discouraged",
+        // Defaults to "Security Key" and prevents things like "Windows Hello"
+        authenticatorAttachment: "cross-platform"
+      },
+      // Something is up with this that I don't understand
+      //excludeCredentials: extractCredentials(excludeCredentials),
     },
   };
 
