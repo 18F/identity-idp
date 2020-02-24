@@ -1,5 +1,6 @@
 import Cleave from 'cleave.js';
 
+/* eslint-disable no-new */
 function formatForm() {
   if (document.querySelector('.dob')) {
     new Cleave('.dob', {
