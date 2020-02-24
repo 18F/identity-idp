@@ -16,8 +16,8 @@ function formatForm() {
     });
   }
 
-  if (document.querySelector('.backup_code')) {
-    new Cleave('.backup_code', {
+  if (document.querySelector('.backup-code')) {
+    new Cleave('.backup-code', {
       blocks: [4, 4, 4],
       delimiter: '-',
     });
