@@ -36,6 +36,7 @@ function formatForm() {
       numericOnly: true,
       blocks: [5, 4],
       delimiter: '-',
+      delimiterLazyShow: true,
     });
   }
 
