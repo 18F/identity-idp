@@ -1,6 +1,7 @@
 module Db
   module Identity
     class SpUserCounts
+      # rubocop:disable Metrics/MethodLength
       def self.call
         sql = <<~SQL
           SELECT
@@ -15,7 +16,7 @@ module Db
               END)
               AS INTEGER
             ) AS percent_ial2_quota
-          FROM service_providers, 
+          FROM service_providers,
           (SELECT
             service_provider AS issuer,
             count(user_id) AS total,
@@ -28,6 +29,7 @@ module Db
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end
