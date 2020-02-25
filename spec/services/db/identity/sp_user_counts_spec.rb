@@ -20,7 +20,7 @@ describe Db::Identity::SpUserCounts do
     result = { issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1,
                percent_ial2_quota: 0 }.to_json
     result2 = { issuer: issuer2, total: 1, ial1_total: 0, ial2_total: 1,
-               percent_ial2_quota: 100 }.to_json
+                percent_ial2_quota: 100 }.to_json
 
     tuples = subject.call
     expect(tuples.ntuples).to eq(2)
