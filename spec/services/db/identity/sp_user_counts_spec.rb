@@ -10,7 +10,7 @@ describe Db::Identity::SpUserCounts do
     expect(subject.call.ntuples).to eq(0)
   end
 
-  it 'returns the total user counts per sp' do
+  it 'returns the total user counts per sp broken down by ial1 and ial2 with percent ial2 quota' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer)
     ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial2_quota: 1)
     Identity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')

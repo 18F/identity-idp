@@ -9,7 +9,7 @@ describe Reports::SpUserCountsReport do
     expect(subject.call).to eq('[]')
   end
 
-  it 'returns the total user counts per sp' do
+  it 'returns the total user counts per sp broken down by ial1 and ial2 with percent ial2 quota' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer)
     Identity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
     Identity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
