@@ -29,6 +29,7 @@ function formatForm() {
       blocks: [3, 2, 4],
       delimiter: '-',
     });
+    document.activeElement.focus();
   }
 
   if (document.querySelector('.zipcode')) {
