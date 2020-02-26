@@ -193,9 +193,11 @@ Discover section.
 
 Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
 
+If `Gemfile` or `package.json` change, you'll need to `docker-compose build` again to install those new dependencies. 
+
 More useful Docker commands:
 
-* Force the images to re-build: `docker-compose build --no-cache`
+* Force the images to re-build: `docker-compose build --no-cache`. You might have to do this if a "regular build" doesn't seem to correctly install new dependencies.
 * Stop the containers: `docker-compose stop`
 * Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
 * Open a shell in a one-off web container: `docker-compose run --rm web bash`
