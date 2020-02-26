@@ -30,6 +30,7 @@ class OpenidConnectAttributeScoper
     given_name: %w[profile profile:name],
     family_name: %w[profile profile:name],
     birthdate: %w[profile profile:birthdate],
+    verified_at: %w[profile profile:verified_at],
     social_security_number: %w[social_security_number],
     x509_subject: %w[x509 x509:subject],
     x509_presented: %w[x509 x509:presented],
