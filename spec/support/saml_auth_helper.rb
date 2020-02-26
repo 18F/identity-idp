@@ -101,6 +101,18 @@ module SamlAuthHelper
     settings
   end
 
+  def sp_not_requesting_signed_saml_response_settings
+    settings = saml_settings.dup
+    settings.issuer = 'test_saml_sp_not_requesting_signed_response_message'
+    settings
+  end
+
+  def sp_requesting_signed_saml_response_settings
+    settings = saml_settings.dup
+    settings.issuer = 'test_saml_sp_requesting_signed_response_message'
+    settings
+  end
+
   def email_nameid_saml_settings_for_allowed_issuer
     settings = saml_settings.dup
     settings.name_identifier_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
