@@ -158,7 +158,12 @@ describe RegisterUserEmailForm do
 
     context 'when request_id is valid' do
       it 'returns success with no errors' do
-        sp_request = create(:service_provider_request)
+        sp_request = ServiceProviderRequestProxy.create(
+          issuer: 'urn:gov:gsa:openidconnect:sp:sinatra',
+          loa: 'http://idmanagement.gov/ns/assurance/loa/1',
+          url: 'http://localhost:3000/openid_connect/authorize',
+          uuid: SecureRandom.uuid,
+        )
         request_id = sp_request.uuid
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)

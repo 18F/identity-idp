@@ -65,11 +65,16 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def handle_valid_otp(next_url = nil)
     handle_valid_otp_for_context
-    save_remember_device_preference
+    handle_remember_device
     user_session.delete(:mfa_device_remembered)
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
     redirect_to next_url
+  end
+
+  def handle_remember_device
+    save_user_opted_remember_device_pref
+    save_remember_device_preference
   end
 
   def handle_valid_otp_for_context
@@ -234,6 +239,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     current_user.encrypted_recovery_code_digest.blank?
   end
 
+  def user_opted_remember_device_cookie
+    cookies.encrypted[:user_opted_remember_device_preference]
+  end
+
   def unconfirmed_phone?
     user_session[:unconfirmed_phone] && confirmation_context?
   end
@@ -269,6 +278,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     {
       personal_key_unavailable: personal_key_unavailable?,
       reauthn: reauthn?,
+      user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
   end
 

@@ -1,37 +1,51 @@
-import { SocialSecurityNumberFormatter, TextField } from 'field-kit';
-import DateFormatter from './modules/date-formatter';
-import NumericFormatter from './modules/numeric-formatter';
-import PersonalKeyFormatter from './modules/personal-key-formatter';
-import ZipCodeFormatter from './modules/zip-code-formatter';
+import Cleave from 'cleave.js';
 
-
+/* eslint-disable no-new */
 function formatForm() {
-  const formats = [
-    ['.dob', new DateFormatter()],
-    ['.mfa', new NumericFormatter()],
-    ['.personal-key', new PersonalKeyFormatter()],
-    ['.ssn', new SocialSecurityNumberFormatter()],
-    ['.zipcode', new ZipCodeFormatter()],
-  ];
+  if (document.querySelector('.dob')) {
+    new Cleave('.dob', {
+      date: true,
+      datePattern: ['m', 'd', 'Y'],
+    });
+  }
 
-  formats.forEach(function(f) {
-    const [el, formatter] = f;
-    const input = document.querySelector(el);
-    if (input) {
-      /* eslint-disable no-new, no-shadow */
-      const field = new TextField(input, formatter);
+  if (document.querySelector('.personal-key')) {
+    new Cleave('.personal-key', {
+      blocks: [4, 4, 4, 4],
+      delimiter: '-',
+    });
+  }
 
-      // add date format placeholders only to .dob fields
-      if (el === '.dob') {
-        field.setFocusedPlaceholder('');
-        field.setUnfocusedPlaceholder('mm/dd/yyyy');
-      }
+  if (document.querySelector('.backup-code')) {
+    new Cleave('.backup-code', {
+      blocks: [4, 4, 4],
+      delimiter: '-',
+    });
+  }
 
-      // removes focus set by field-kit bug https://github.com/square/field-kit/issues/62
-      if (el !== '.mfa') document.activeElement.blur();
-    }
-  });
+  if (document.querySelector('.ssn')) {
+    new Cleave('.ssn', {
+      numericOnly: true,
+      blocks: [3, 2, 4],
+      delimiter: '-',
+    });
+  }
+
+  if (document.querySelector('.zipcode')) {
+    new Cleave('.zipcode', {
+      numericOnly: true,
+      blocks: [5, 4],
+      delimiter: '-',
+      delimiterLazyShow: true,
+    });
+  }
+
+  if (document.querySelector('.mfa')) {
+    new Cleave('.mfa', {
+      numericOnly: true,
+      blocks: [6],
+    });
+  }
 }
-
 
 document.addEventListener('DOMContentLoaded', formatForm);

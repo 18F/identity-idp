@@ -24,6 +24,12 @@ feature 'Sign in' do
     expect(page).to_not have_content t('devise.registrations.start.accordion')
   end
 
+  scenario 'user signs in as ialmax and does not see ial2 help text' do
+    visit_idp_from_oidc_sp_with_ialmax
+
+    expect(page).to_not have_content t('devise.registrations.start.accordion')
+  end
+
   scenario 'user signs in as ial2 and does see ial2 help text' do
     visit_idp_from_sp_with_ial2(:oidc)
 
@@ -766,6 +772,72 @@ feature 'Sign in' do
       click_submit_default
 
       expect(current_url).to eq account_url
+    end
+  end
+
+  context 'oidc sp requests ialmax' do
+    it 'returns ial1 info for a non-verified user' do
+      user = create(:user, :signed_up)
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
+
+      click_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+    end
+
+    it 'returns ial2 info for a verified user' do
+      user = create(:profile, :active, :verified,
+                    pii: { first_name: 'John', ssn: '111223333' }).user
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content('111223333')
+
+      click_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+    end
+  end
+
+  context 'saml sp requests ialmax' do
+    it 'returns ial1 info for a non-verified user' do
+      user = create(:user, :signed_up)
+      visit_idp_from_saml_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
+
+      click_continue
+
+      expect(current_url).to eq @saml_authn_request
+    end
+
+    it 'returns ial2 info for a verified user' do
+      user = create(:profile, :active, :verified,
+                    pii: { first_name: 'John', ssn: '111223333' }).user
+      visit_idp_from_saml_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content('111223333')
+
+      click_continue
+
+      expect(current_url).to eq @saml_authn_request
     end
   end
 

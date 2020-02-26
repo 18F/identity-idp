@@ -11,6 +11,7 @@ describe SignUpCompletionsShow do
       ial2_requested: false,
       decorated_session: decorated_session,
       handoff: false,
+      ialmax_requested: false,
     )
   end
 

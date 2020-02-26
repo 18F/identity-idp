@@ -1,43 +1,53 @@
 # Use the official Ruby image because the Rails images have been deprecated
 FROM ruby:2.5
 
-# Install packages of https
-RUN apt-get update && apt-get install apt-transport-https
+# Enable https
+RUN apt-get update
+RUN apt-get install -y apt-transport-https
 
-# npm and yarn is needed by webpacker to install packages
-# TOOD(sbc): Create a separate production container without this.
-RUN mkdir /usr/local/node \
-    && curl -L https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz | tar Jx -C /usr/local/node --strip-components=1
+# Install Postgres client
+RUN apt-get install -y --no-install-recommends postgresql-client
+RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+# Install Chrome for capybara
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - 
+RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt-get update
+RUN apt-get install -y google-chrome-stable
 
+# Install Node 12.x
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
 RUN ln -s ../node/bin/node /usr/local/bin/
 RUN ln -s ../node/bin/npm /usr/local/bin/
 
-ADD https://dl.yarnpkg.com/debian/pubkey.gpg /tmp/yarn-pubkey.gpg
-RUN apt-key add /tmp/yarn-pubkey.gpg && rm /tmp/yarn-pubkey.gpg
-RUN echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y --no-install-recommends yarn
+# Install Yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install yarn
 
-RUN \
-  groupadd --gid 999 appuser && \
-  useradd --system --create-home --uid 999 --gid appuser appuser
-USER appuser
-
+# Everything happens here from now on   
 WORKDIR /upaya
 
-COPY package.json /upaya
-COPY yarn.lock /upaya
-
-COPY Gemfile /upaya
-COPY Gemfile.lock /upaya
-
+# Simple Gem cache.  Success here creates a new layer in the image.
+COPY Gemfile .
+COPY Gemfile.lock .
 RUN gem install bundler --conservative
-RUN bundle check || bundle install --without deploy production
+RUN bundle install --without deploy production
 
-COPY . /upaya
+# Simple npm cache. Success here creates a new layer in the image.
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install --force
+
+# Copy everything else over
+COPY . .
+
+# Up to this point we've been root, change to a lower priv. user
+RUN groupadd -r appuser
+RUN useradd --system --create-home --gid appuser appuser
+RUN chown -R appuser.appuser /upaya
+USER appuser
 
 EXPOSE 3000
 CMD ["rackup", "config.ru", "--host", "0.0.0.0", "--port", "3000"]

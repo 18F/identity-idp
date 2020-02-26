@@ -5,3 +5,4 @@ node_modules
 db/*.sqlite3
 *.md
 .git*
+postgres-data

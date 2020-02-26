@@ -88,7 +88,7 @@ feature 'PIV/CAC Management' do
         expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
       end
 
-      scenario 'displays error for a bad piv/cac' do
+      scenario 'displays error for a bad piv/cac and accepts more error info' do
         stub_piv_cac_service
 
         sign_in_and_2fa_user(user)
@@ -98,12 +98,13 @@ feature 'PIV/CAC Management' do
         nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
-                              error: 'certificate.bad')
+                              error: 'certificate.bad',
+                              key_id: 'AB:CD:EF')
         expect(current_path).to eq setup_piv_cac_path
         expect(page).to have_content(t('headings.piv_cac_setup.certificate.bad'))
       end
 
-      scenario 'displays error for an expired piv/cac' do
+      scenario 'displays error for an expired piv/cac and accepts more error info' do
         stub_piv_cac_service
 
         sign_in_and_2fa_user(user)
@@ -113,7 +114,8 @@ feature 'PIV/CAC Management' do
         nonce = piv_cac_nonce_from_form_action
         visit_piv_cac_service(setup_piv_cac_url,
                               nonce: nonce,
-                              error: 'certificate.expired')
+                              error: 'certificate.expired',
+                              key_id: 'AB:CD:EF')
         expect(current_path).to eq setup_piv_cac_path
         expect(page).to have_content(t('headings.piv_cac_setup.certificate.expired'))
       end

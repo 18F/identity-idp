@@ -45,7 +45,7 @@ module CacProofingHelper
     complete_cac_proofing_steps_before_present_cac_step
     click_link t('forms.buttons.cac')
     decoded_token = {
-      'dn' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'cac',
     }
     allow(PivCacService).to receive(:decode_token).and_return(decoded_token)
