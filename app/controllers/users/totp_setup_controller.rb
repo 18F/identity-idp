@@ -1,4 +1,5 @@
 module Users
+  # rubocop:disable Metrics/ClassLength
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
@@ -47,7 +48,14 @@ module Users
     end
 
     def set_totp_setup_presenter
-      @presenter = SetupPresenter.new(current_user, user_fully_authenticated?)
+      @presenter = SetupPresenter.new(current_user: current_user,
+                                      user_fully_authenticated: user_fully_authenticated?,
+                                      user_opted_remember_device_cookie:
+                                          user_opted_remember_device_cookie)
+    end
+
+    def user_opted_remember_device_cookie
+      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def track_event
@@ -65,10 +73,15 @@ module Users
     def process_valid_code
       create_events
       mark_user_as_fully_authenticated
-      save_remember_device_preference
+      handle_remember_device
       flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
       redirect_to two_2fa_setup
       user_session.delete(:new_totp_secret)
+    end
+
+    def handle_remember_device
+      save_user_opted_remember_device_pref
+      save_remember_device_preference
     end
 
     def create_events
@@ -125,4 +138,5 @@ module Users
       current_user.auth_app_configurations.count
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

@@ -8,6 +8,7 @@ describe 'sign_up/completions/show.html.slim' do
       ial2_requested: false,
       decorated_session: SessionDecorator.new,
       handoff: false,
+      ialmax_requested: false,
     )
   end
 
@@ -36,6 +37,7 @@ describe 'sign_up/completions/show.html.slim' do
         ial2_requested: false,
         decorated_session: SessionDecorator.new,
         handoff: true,
+        ialmax_requested: false,
       )
       create_identities(@user)
     end

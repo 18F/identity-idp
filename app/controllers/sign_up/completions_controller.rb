@@ -43,6 +43,7 @@ module SignUp
         decorated_session: decorated_session,
         current_user: current_user,
         handoff: new_service_provider_attributes,
+        ialmax_requested: ialmax?,
       )
     end
 
@@ -52,6 +53,10 @@ module SignUp
 
     def ial2?
       sp_session[:ial2] == true
+    end
+
+    def ialmax?
+      sp_session[:ialmax] == true
     end
 
     def return_to_account

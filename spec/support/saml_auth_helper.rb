@@ -126,6 +126,22 @@ module SamlAuthHelper
     settings
   end
 
+  def ialmax_saml_settings
+    settings = sp1_saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
+  def ialmax_with_bundle_saml_settings
+    settings = ialmax_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+    ]
+    settings
+  end
+
   def ial2_with_bundle_saml_settings
     settings = ial2_saml_settings
     settings.authn_context = [
@@ -262,5 +278,26 @@ module SamlAuthHelper
       prompt: 'login',
       nonce: nonce,
     )
+  end
+
+  def visit_idp_from_oidc_sp_with_ialmax
+    state = SecureRandom.hex
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    nonce = SecureRandom.hex
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile:name social_security_number',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'login',
+      nonce: nonce,
+    )
+  end
+
+  def visit_idp_from_saml_sp_with_ialmax
+    @saml_authn_request = auth_request.create(ialmax_with_bundle_saml_settings)
+    visit @saml_authn_request
   end
 end

@@ -174,6 +174,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
+          key_id: nil,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes, ga_client_id)

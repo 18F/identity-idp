@@ -1,23 +1,20 @@
-class ServiceProviderRequest < ApplicationRecord
-  def self.create(attributes)
-    attributes[:loa] = attributes[:ial]
-    super
-  end
+class ServiceProviderRequest
+  attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes
 
-  def self.from_uuid(uuid)
-    record = find_by(uuid: uuid) || NullServiceProviderRequest.new
-    record.ial = record.loa if record && !record.instance_of?(NullServiceProviderRequest)
-    record
-  rescue ArgumentError # a null byte in the uuid will raise this
-    NullServiceProviderRequest.new
+  def initialize(uuid: nil, issuer: nil, url: nil, loa: nil, requested_attributes: [])
+    @uuid = uuid
+    @issuer = issuer
+    @url = url
+    @loa = loa
+    @requested_attributes = requested_attributes&.map(&:to_s)
   end
 
   def ial
-    loa
+    @loa
   end
 
   def ial=(val)
-    self.loa = val
+    @loa = val
   end
 
   def ==(other)

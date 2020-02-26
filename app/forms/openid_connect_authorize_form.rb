@@ -57,6 +57,10 @@ class OpenidConnectAuthorizeForm
     ial == 2
   end
 
+  def ialmax_requested?
+    ial&.zero?
+  end
+
   def service_provider
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
@@ -122,6 +126,8 @@ class OpenidConnectAuthorizeForm
 
   def ial
     case acr_values.sort.max
+    when Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+      0
     when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
       1
@@ -155,13 +161,15 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    return OpenidConnectAttributeScoper::VALID_SCOPES if ial2_requested?
+    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
-    return unless ial2_requested? && service_provider.ial != 2
-    errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
+    if (ial2_requested? && service_provider.ial != 2) ||
+       (ialmax_requested? && service_provider.ial != 2)
+      errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength
