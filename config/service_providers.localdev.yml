@@ -210,7 +210,6 @@ test:
         fr: ""
     allow_prompt_login: true
 
-
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     agency_id: 2

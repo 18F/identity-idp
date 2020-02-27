@@ -13,32 +13,49 @@ describe SamlIdpController do
   render_views
 
   describe 'GET /api/saml/auth' do
-    # let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-
     context "SP's can have signed_response_message_requested set" do
+      let(:user) { create(:user, :signed_up) }
+      let(:saml_response_encoded) do
+        Nokogiri::HTML(response.body).css('#SAMLResponse').first.attributes['value'].to_s
+      end
+      let(:saml_response_text) { Base64.decode64(saml_response_encoded) }
+      let(:saml_response) { REXML::Document.new(saml_response_text) }
+
       context 'with signed_response_message_requested true' do
-        it 'finds a Signature in the message' do
-          user = create(:user, :signed_up)
+        before do
           generate_saml_response(user, sp_requesting_signed_saml_response_settings)
-          saml_response_encoded = response.body.match(/.*id=\"SAMLResponse\" value=\"(.*)\" \/><input type=\"submit\"/)[1]
-          saml_response_text = Base64.decode64(saml_response_encoded)
-          saml_response = ::REXML::Document.new(saml_response_text)
+        end
+
+        it 'finds Signatures in the message and assertion' do
           signature_count = REXML::XPath.match(saml_response, '//ds:Signature').length
 
           expect(signature_count).to eq 2
         end
+
+        it 'finds a Signature referencing the Response' do
+          response_id = REXML::XPath.match(saml_response, '//samlp:Response').first.attributes['ID']
+          signature_ref = REXML::XPath.match(saml_response, '//ds:Reference').first.attributes['URI'][1..-1]
+
+          expect(signature_ref).to eq response_id
+        end
       end
 
       context 'with signed_response_message_requested false' do
-        it 'does not find Signature in the message' do
-          user = create(:user, :signed_up)
+        before do
           generate_saml_response(user, sp_not_requesting_signed_saml_response_settings)
-          saml_response_encoded = response.body.match(/.*id=\"SAMLResponse\" value=\"(.*)\" \/><input type=\"submit\"/)[1]
-          saml_response_text = Base64.decode64(saml_response_encoded)
-          saml_response = ::REXML::Document.new(saml_response_text)
+        end
+
+        it 'only finds one Signature' do
           signature_count = REXML::XPath.match(saml_response, '//ds:Signature').length
 
           expect(signature_count).to eq 1
+        end
+
+        it 'only finds a Signature referencing the Assertion' do
+          assertion_id = REXML::XPath.match(saml_response, '//Assertion').first.attributes['ID']
+          signature_ref = REXML::XPath.match(saml_response, '//ds:Reference').first.attributes['URI'][1..-1]
+
+          expect(signature_ref).to eq assertion_id
         end
       end
     end
