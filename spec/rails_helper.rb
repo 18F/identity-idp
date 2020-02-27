@@ -51,8 +51,10 @@ RSpec.configure do |config|
 
     begin
       REDIS_POOL.with { |cache| cache.pool.with { |redis| redis.info } }
-    rescue => connection_error
-      fail "#{connection_error}: It appears Redis is not running, but it is required for (some) specs to run"
+    rescue RuntimeError => error
+      puts "#{error}"
+      puts "It appears Redis is not running, but it is required for (some) specs to run"
+      exit 1
     end
   end
 
