@@ -4,7 +4,7 @@ class Identity < ApplicationRecord
   belongs_to :user
   validates :service_provider, presence: true
 
-  delegate :metadata, to: :sp
+  delegate :metadata, to: :sp, prefix: true
 
   def deactivate
     update!(session_uuid: nil)
