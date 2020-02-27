@@ -50,7 +50,7 @@ RSpec.configure do |config|
     Rails.application.load_seed
 
     begin
-      REDIS_POOL.with { |client| client.clear }
+      REDIS_POOL.with { |cache| cache.pool.with { |redis| redis.info } }
     rescue => connection_error
       fail "#{connection_error}: It appears Redis is not running, but it is required for (some) specs to run"
     end
