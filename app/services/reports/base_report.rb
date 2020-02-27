@@ -7,9 +7,9 @@ module Reports
     def fiscal_start_date
       now = Time.zone.now
       if now.strftime('%m').to_i >= 9
-        now.strftime('09-01-%Y')
+        now.strftime('10-01-%Y')
       else
-        "09-01-#{now.strftime('%Y').to_i - 1}"
+        "10-01-#{now.strftime('%Y').to_i - 1}"
       end
     end
 
