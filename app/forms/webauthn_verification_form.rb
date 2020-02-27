@@ -55,8 +55,8 @@ class WebauthnVerificationForm
       signature: Base64.decode64(@signature),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
-    assertion_response.valid?(@challenge.pack('c*'), original_origin, 
-      public_key: Base64.decode64(public_key), sign_count: 0)
+    assertion_response.valid?(@challenge.pack('c*'), original_origin,
+                              public_key: Base64.decode64(public_key), sign_count: 0)
   end
 
   def public_key
