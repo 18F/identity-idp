@@ -1,12 +1,12 @@
 module WebAuthnHelper
   def mock_webauthn_setup_challenge
-    allow(WebAuthn).to receive(:credential_creation_options).and_return(
+    allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
       challenge: webauthn_challenge.pack('c*'),
     )
   end
 
   def mock_webauthn_verification_challenge
-    allow(WebAuthn).to receive(:credential_request_options).and_return(
+    allow(WebAuthn::Credential).to receive(:options_for_get).and_return(
       challenge: webauthn_challenge.pack('c*'),
     )
   end
