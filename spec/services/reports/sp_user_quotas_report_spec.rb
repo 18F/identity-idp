@@ -14,8 +14,6 @@ describe Reports::SpUserQuotasReport do
     Identity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
     Identity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
     Identity.create(user_id: 3, service_provider: issuer, uuid: 'foo3', verified_at: Time.zone.now)
-    puts ServiceProvider.count
-    puts Identity.count
     result = [{ issuer: issuer, ial2_total: 1, percent_ial2_quota: 0 }].to_json
 
     expect(subject.call).to eq(result)
