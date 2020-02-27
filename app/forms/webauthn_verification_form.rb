@@ -53,20 +53,10 @@ class WebauthnVerificationForm
       authenticator_data: Base64.decode64(@authenticator_data),
       client_data_json: Base64.decode64(@client_data_json),
       signature: Base64.decode64(@signature),
-      # Evidently unneeded now: credential_id: Base64.decode64(@credential_id),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
-    #assertion_response.valid?(@challenge.pack('c*'), original_origin,
-    #                          allowed_credentials: [allowed_credential])
     assertion_response.valid?(@challenge.pack('c*'), original_origin, public_key: Base64.decode64(public_key), sign_count: 0)
   end
-
-  # def allowed_credential
-  #   {
-  #     id: Base64.decode64(@credential_id),
-  #     public_key: Base64.decode64(public_key),
-  #   }
-  # end
 
   def public_key
     WebauthnConfiguration.
