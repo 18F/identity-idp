@@ -10,6 +10,7 @@ module VerifyProfileConcern
   end
 
   def account_or_verify_profile_route
+    return 'idv' if session[:ial2_request_with_no_sp] && !current_user.active_profile.present?
     return 'account' unless profile_needs_verification?
     return 'idv_usps' if usps_mail_bounced?
     'verify_account'
