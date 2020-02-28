@@ -112,6 +112,7 @@ const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
 };
 
 export {
+  extractCredentials,
   isWebAuthnEnabled,
   enrollWebauthnDevice,
   verifyWebauthnDevice,

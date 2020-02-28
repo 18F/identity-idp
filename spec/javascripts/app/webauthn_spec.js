@@ -33,7 +33,7 @@ describe('WebAuthn', () => {
 
   describe('extractCredentials', () => {
     it('returns [] if credentials are empty string', () => {
-      expect(WebAuthn.extractCredentials('')).to.equal([]);
+      expect(WebAuthn.extractCredentials('')).to.eql([]);
     });
   });
 
@@ -65,6 +65,10 @@ describe('WebAuthn', () => {
           timeout: 800000,
           attestation: 'none',
           excludeList: [],
+          authenticatorSelection: {
+            authenticatorAttachment: 'cross-platform',
+            userVerification: 'discouraged',
+          },
           excludeCredentials: [
             {
               // encodes to 'credential123'
