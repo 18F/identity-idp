@@ -38,7 +38,7 @@ RUN bundle install --without deploy production
 # Simple npm cache. Success here creates a new layer in the image.
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --force
+RUN NODE_ENV=development yarn install --force
 
 # Copy everything else over
 COPY . .
