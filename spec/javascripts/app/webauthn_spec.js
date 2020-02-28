@@ -31,6 +31,12 @@ describe('WebAuthn', () => {
     });
   });
 
+  describe('extractCredentials', () => {
+    it('returns [] if credentials are empty string', () => {
+      expect(WebAuthn.extractCredentials('')).to.equal([]);
+    });
+  });
+
   describe('enrollWebauthnDevice', () => {
     const userId = '123';
     const userEmail = 'test@test.com';
