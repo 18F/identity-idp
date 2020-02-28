@@ -140,6 +140,28 @@ describe 'OpenID Connect' do
     expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
+  it 'returns verified_at in an ial1 session if requested' do
+    profile = create(:profile, :active, :verified,
+                     pii: { first_name: 'John', ssn: '111223333' })
+    user = profile.user
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      scope: 'openid email profile:verified_at'
+    )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:verified_at]).to eq(profile.verified_at.to_i)
+  end
+
   context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
@@ -427,13 +449,17 @@ describe 'OpenID Connect' do
     )
   end
 
-  def sign_in_get_id_token
+  def sign_in_get_id_token(**args)
+    token_response = sign_in_get_token_response(**args)
+    token_response[:id_token]
+  end
+
+  def sign_in_get_token_response(user: user_with_2fa, scope: 'openid email')
     client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.base64digest(code_verifier)
-    user = user_with_2fa
 
     link_identity(user, client_id)
     user.identities.last.update!(verified_attributes: ['email'])
@@ -442,7 +468,7 @@ describe 'OpenID Connect' do
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email',
+      scope: scope,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
@@ -464,8 +490,7 @@ describe 'OpenID Connect' do
                      code_verifier: code_verifier
     expect(page.status_code).to eq(200)
 
-    token_response = JSON.parse(page.body).with_indifferent_access
-    token_response[:id_token]
+    JSON.parse(page.body).with_indifferent_access
   end
 
   def sp_public_key
