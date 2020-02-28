@@ -53,7 +53,7 @@ section of the README.
   s.add_development_dependency "pry-byebug"
   s.add_development_dependency "rspec"
   s.add_development_dependency "rubocop"
-  s.add_development_dependency "ruby-saml", "~> 1.4.1"
+  s.add_development_dependency "ruby-saml", "~> 1.11.0"
   s.add_development_dependency("rails", "~> 4.2")
   s.add_development_dependency("capybara", "~> 3.15.1")
   s.add_development_dependency("timecop")

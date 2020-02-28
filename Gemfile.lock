@@ -90,7 +90,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.0)
     multi_xml (0.6.0)
-    nokogiri (1.10.5)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     parallel (1.19.1)
     parser (2.7.0.3)
@@ -154,7 +154,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
-    ruby-saml (1.4.3)
+    ruby-saml (1.11.0)
       nokogiri (>= 1.5.10)
     simplecov (0.17.1)
       docile (~> 1.1)
@@ -197,7 +197,7 @@ DEPENDENCIES
   rake
   rspec
   rubocop
-  ruby-saml (~> 1.4.1)
+  ruby-saml (~> 1.11.0)
   saml_idp!
   simplecov
   timecop
