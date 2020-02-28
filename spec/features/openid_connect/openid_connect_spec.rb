@@ -148,7 +148,8 @@ describe 'OpenID Connect' do
 
     token_response = sign_in_get_token_response(
       user: user,
-      scope: 'openid email profile:verified_at'
+      scope: 'openid email profile:verified_at',
+      verified_attributes: ['email', 'verified_at']
     )
 
     access_token = token_response[:access_token]
@@ -455,7 +456,7 @@ describe 'OpenID Connect' do
     token_response[:id_token]
   end
 
-  def sign_in_get_token_response(user: user_with_2fa, scope: 'openid email')
+  def sign_in_get_token_response(user: user_with_2fa, scope: 'openid email', verified_attributes: ['email'])
     client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
@@ -463,7 +464,7 @@ describe 'OpenID Connect' do
     code_challenge = Digest::SHA256.base64digest(code_verifier)
 
     link_identity(user, client_id)
-    user.identities.last.update!(verified_attributes: ['email'])
+    user.identities.last.update!(verified_attributes: verified_attributes)
 
     visit openid_connect_authorize_path(
       client_id: client_id,
