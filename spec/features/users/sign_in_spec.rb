@@ -875,6 +875,16 @@ feature 'Sign in' do
 
       expect(current_path).to eq(account_path)
     end
+
+    it 'goes to the account page if the user is already verified' do
+      user = create(:user, :signed_up)
+      create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' }, user: user)
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq(account_path)
+    end
   end
 
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
