@@ -161,8 +161,15 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
-    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+    values = if ialmax_requested? || ial2_requested?
+      OpenidConnectAttributeScoper::VALID_SCOPES
+    else
+      OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
+    end
+
+    values += %w[profile:verified_at] if service_provider.ial >= 2
+
+    values
   end
 
   def validate_privileges

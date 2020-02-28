@@ -7,12 +7,14 @@ class OpenidConnectAttributeScoper
     profile
     profile:birthdate
     profile:name
+    profile:verified_at
     social_security_number
     x509
     x509:subject
     x509:presented
   ].freeze
 
+    # profile:verified_at
   VALID_IAL1_SCOPES = %w[
     email
     openid

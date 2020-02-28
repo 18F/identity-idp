@@ -147,6 +147,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         end
 
         context 'verified_at' do
+          let(:scope) { 'openid profile:verified_at' }
+
           context 'when the service provider has ial1 access' do
             let(:service_provider_ial) { 1 }
 

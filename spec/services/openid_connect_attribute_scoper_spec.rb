@@ -27,6 +27,7 @@ RSpec.describe OpenidConnectAttributeScoper do
     subject(:filtered) { scoper.filter(user_info) }
 
     let(:scope) { 'openid' }
+    let(:verified_at) { Time.zone.parse('2020-01-01').to_i }
     let(:user_info) do
       {
         sub: 'abcdef',
@@ -46,7 +47,7 @@ RSpec.describe OpenidConnectAttributeScoper do
           postal_code: '12345',
         },
         social_security_number: '666661234',
-        verified_at: Time.zone.parse('2020-01-01').to_i,
+        verified_at: verified_at,
       }
     end
 
@@ -123,11 +124,11 @@ RSpec.describe OpenidConnectAttributeScoper do
     context 'with profile:verified_at scope' do
       let(:scope) { 'openid profile:verified_at' }
 
-      it 'includes name attributes' do
+      it 'includes the verified_at attribute' do
         expect(filtered[:given_name]).to be_nil
         expect(filtered[:family_name]).to be_nil
         expect(filtered[:birthdate]).to be_nil
-        expect(filtered[:verified_at]).to be_nil
+        expect(filtered[:verified_at]).to eq(verified_at)
       end
     end
 
