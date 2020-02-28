@@ -864,7 +864,7 @@ feature 'Sign in' do
     end
 
     it 'invokes ial2 flow if the user does not have an ial1 account' do
-      user = register_user('foo@test.com')
+      register_user('foo@test.com')
 
       complete_all_doc_auth_steps
       click_continue
