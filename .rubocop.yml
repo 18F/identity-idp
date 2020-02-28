@@ -174,7 +174,7 @@ Style/IfUnlessModifier:
   Enabled: true
 
 # Checks the indentation of the first element in an array literal.
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -203,6 +203,9 @@ Layout/MultilineOperationIndentation:
   # By default, the indentation width from Style/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
+
+Lint/ScriptPermission:
+  Enabled: false
 
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key
@@ -236,7 +239,18 @@ Style/TrailingCommaInArguments:
     - consistent_comma
     - no_comma
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array or
+  # hash, but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty array and hash literals.
+  EnforcedStyleForMultiline: comma
+  SupportedStylesForMultiline:
+    - comma
+    - consistent_comma
+    - no_comma
+
+Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in an array or
   # hash, but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all

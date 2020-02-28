@@ -1,18 +1,35 @@
 require 'builder'
 module SamlIdp
   class ResponseBuilder
+    include Signable
+
     attr_accessor :response_id
     attr_accessor :issuer_uri
     attr_accessor :saml_acs_url
     attr_accessor :saml_request_id
     attr_accessor :assertion_and_signature
+    attr_accessor :algorithm
 
-    def initialize(response_id, issuer_uri, saml_acs_url, saml_request_id, assertion_and_signature)
+    def initialize(
+      response_id,
+      issuer_uri,
+      saml_acs_url,
+      saml_request_id,
+      assertion_and_signature,
+      algorithm,
+      x509_certificate,
+      secret_key,
+      cloudhsm_key_label
+    )
       self.response_id = response_id
       self.issuer_uri = issuer_uri
       self.saml_acs_url = saml_acs_url
       self.saml_request_id = saml_request_id
       self.assertion_and_signature = assertion_and_signature
+      self.algorithm = algorithm
+      self.x509_certificate = x509_certificate
+      self.secret_key = secret_key
+      self.cloudhsm_key_label = cloudhsm_key_label
     end
 
     def encoded
@@ -28,6 +45,10 @@ module SamlIdp
     end
     private :encode
 
+    def signed_and_encoded
+      @signed_and_encoded ||= Base64.strict_encode64(signed)
+    end
+
     def build
       builder = Builder::XmlMarkup.new
       builder.tag! "samlp:Response",
@@ -39,6 +60,7 @@ module SamlIdp
         InResponseTo: saml_request_id,
         "xmlns:samlp" => Saml::XML::Namespaces::PROTOCOL do |response|
           response.Issuer issuer_uri, xmlns: Saml::XML::Namespaces::ASSERTION
+          sign response
           response.tag! "samlp:Status" do |status|
             status.tag! "samlp:StatusCode", Value: Saml::XML::Namespaces::Statuses::SUCCESS
           end
@@ -51,6 +73,10 @@ module SamlIdp
       "_#{response_id}"
     end
     private :response_id_string
+
+    def self.reference_id_method
+      :response_id
+    end
 
     def now_iso
       Time.now.utc.iso8601

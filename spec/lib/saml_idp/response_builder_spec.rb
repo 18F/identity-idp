@@ -11,7 +11,11 @@ module SamlIdp
       issuer_uri,
       saml_acs_url,
       saml_request_id,
-      assertion_and_signature
+      assertion_and_signature,
+      OpenSSL::Digest::SHA256,
+      Default::X509_CERTIFICATE,
+      nil,
+      nil
     ) }
 
     before do

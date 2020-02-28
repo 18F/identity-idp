@@ -45,7 +45,7 @@ module SamlIdp
       encryption_opts = opts[:encryption] || nil
       signature_opts = opts[:signature] || {}
 
-      SamlResponse.new(
+      response = SamlResponse.new(
         reference_id,
         response_id,
         opt_issuer_uri,
@@ -61,7 +61,13 @@ module SamlIdp
         signature_opts[:cloudhsm_key_label],
         expiry,
         encryption_opts
-      ).build
+      )
+
+      if opts[:signed_response_message]
+        response.signed
+      else
+        response.build
+      end
     end
 
     def encode_logout_response(principal, opts = {})

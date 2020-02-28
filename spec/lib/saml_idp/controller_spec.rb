@@ -78,6 +78,16 @@ describe SamlIdp::Controller do
       expect(response.is_valid?).to be_truthy
     end
 
+    it "should sign a SAML Response if requested" do
+      saml_response_encoded = encode_response(principal, signed_response_message: true)
+      saml_response_text = Base64.decode64(saml_response_encoded)
+      saml_response = REXML::Document.new(saml_response_text)
+      response_id = REXML::XPath.match(saml_response, '//samlp:Response').first.attributes['ID']
+      signature_ref = REXML::XPath.match(saml_response, '//ds:Reference').first.attributes['URI'][1..-1]
+
+      expect(signature_ref).to eq response_id
+    end
+
     it "should create a SAML Logout Response" do
       params[:SAMLRequest] = make_saml_logout_request
       validate_saml_request

@@ -11,11 +11,11 @@ module SamlIdp
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
     attr_accessor :algorithm
-    attr_accessor :secret_key
-    attr_accessor :x509_certificate
-    attr_accessor :cloudhsm_key_label
     attr_accessor :authn_context_classref
     attr_accessor :name_id_format
+    attr_accessor :x509_certificate
+    attr_accessor :secret_key
+    attr_accessor :cloudhsm_key_label
     attr_accessor :expiry
     attr_accessor :encryption_opts
 
@@ -59,6 +59,10 @@ module SamlIdp
       @built ||= response_builder.encoded
     end
 
+    def signed
+      @signed ||= response_builder.signed_and_encoded
+    end
+
     def signed_assertion
       if encryption_opts
         assertion_builder.encrypt(sign: true)
@@ -69,7 +73,17 @@ module SamlIdp
     private :signed_assertion
 
     def response_builder
-      ResponseBuilder.new(response_id, issuer_uri, saml_acs_url, saml_request_id, signed_assertion)
+      ResponseBuilder.new(
+        response_id,
+        issuer_uri,
+        saml_acs_url,
+        saml_request_id,
+        signed_assertion,
+        algorithm,
+        x509_certificate,
+        secret_key,
+        cloudhsm_key_label
+      )
     end
     private :response_builder
 

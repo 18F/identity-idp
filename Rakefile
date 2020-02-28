@@ -7,6 +7,5 @@ desc 'Run the specs.'
 task default: :spec
 
 task :notes do
-   system "grep -n -r 'FIXME\\|TODO' lib spec"
+  system "grep -n -r 'FIXME\\|TODO' lib spec"
 end
-
