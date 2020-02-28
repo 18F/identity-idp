@@ -823,6 +823,22 @@ feature 'Sign in' do
 
       expect(current_url).to eq @saml_authn_request
     end
+
+    it 'returns ial2 info for a verified user' do
+      user = create(:profile, :active, :verified,
+                    pii: { first_name: 'John', ssn: '111223333' }).user
+      visit_idp_from_saml_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content('111223333')
+
+      click_continue
+
+      expect(current_url).to eq @saml_authn_request
+    end
   end
 
   context 'ial2 param on sign up screen' do
