@@ -842,15 +842,38 @@ feature 'Sign in' do
   end
 
   context 'ial2 param on sign up screen' do
-    it 'invokes ial2 flow' do
+    before do
       enable_doc_auth
-      user = create(:user, :signed_up)
       visit root_path(ial: 2)
+    end
+
+    it 'invokes ial2 flow if the user already has an ial1 account' do
+      user = create(:user, :signed_up)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq(idv_doc_auth_welcome_step)
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
+      click_acknowledge_personal_key
+      click_continue
+
+      expect(current_path).to eq(account_path)
+    end
+
+    it 'invokes ial2 flow if the user does not have an ial1 account' do
+      user = register_user('foo@test.com')
+
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
+      click_continue
+      click_acknowledge_personal_key
+      click_continue
+
+      expect(current_path).to eq(account_path)
     end
   end
 
