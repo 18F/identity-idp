@@ -13,7 +13,7 @@ describe('focusTrap', () => {
     constructorCalled = true;
 
     return thisTrap;
-  }
+  };
 
   beforeEach(() => {
     constructorCalled = false;
@@ -21,7 +21,7 @@ describe('focusTrap', () => {
     proxy = proxyquire('../../../../app/javascript/app/components/focus-trap-proxy', {
       // jump through this crazy hoop so we can spy on the method and ensure
       // the proxy object is calling the underlying `focusTrap` constructor
-      'focus-trap': fakeFocusTrap
+      'focus-trap': fakeFocusTrap,
     }).default;
   });
 
