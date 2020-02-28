@@ -141,9 +141,10 @@ describe 'OpenID Connect' do
   end
 
   it 'returns verified_at in an ial1 session if requested' do
+    user = user_with_2fa
     profile = create(:profile, :active, :verified,
-                     pii: { first_name: 'John', ssn: '111223333' })
-    user = profile.user
+                     pii: { first_name: 'John', ssn: '111223333' },
+                     user: user)
 
     token_response = sign_in_get_token_response(
       user: user,
