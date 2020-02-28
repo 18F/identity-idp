@@ -53,12 +53,20 @@ class OpenidConnectAuthorizeForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
+  def ial2_service_provider?
+    service_provider.ial == 2
+  end
+
   def ial2_requested?
     ial == 2
   end
 
   def ialmax_requested?
     ial&.zero?
+  end
+
+  def verified_at_requested?
+    scope.include?('profile:verified_at')
   end
 
   def service_provider
@@ -90,6 +98,7 @@ class OpenidConnectAuthorizeForm
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
     return false if ial2_requested? || param_value.blank?
+    return true if verified_at_requested? && !ial2_service_provider?
     @scope != param_value.split(' ').compact
   end
 
@@ -161,20 +170,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    values = if ialmax_requested? || ial2_requested?
-      OpenidConnectAttributeScoper::VALID_SCOPES
-    else
-      OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
-    end
-
-    values += %w[profile:verified_at] if service_provider.ial >= 2
-
-    values
+    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
+    OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
-    if (ial2_requested? && service_provider.ial != 2) ||
-       (ialmax_requested? && service_provider.ial != 2)
+    if (ial2_requested? && !ial2_service_provider?) ||
+       (ialmax_requested? && !ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
   end

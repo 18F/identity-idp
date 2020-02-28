@@ -14,10 +14,10 @@ class OpenidConnectAttributeScoper
     x509:presented
   ].freeze
 
-    # profile:verified_at
   VALID_IAL1_SCOPES = %w[
     email
     openid
+    profile:verified_at
     x509
     x509:subject
     x509:presented
