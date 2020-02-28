@@ -19,11 +19,13 @@ class SignUpCompletionsShow
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
+    [[:verified_at], :verified_at],
   ].freeze
 
   SORTED_IAL1_ATTRIBUTE_MAPPING = [
     [[:email], :email],
     [[:x509_subject], :x509_subject],
+    [[:verified_at], :verified_at],
   ].freeze
 
   MAX_RECENT_IDENTITIES = 5

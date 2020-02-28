@@ -16,4 +16,5 @@ fr:
         à votre compte"
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
+      verified_at: Date à laquelle vous avez mis à jour ces informations
       x509_subject: Identité associée à la carte PIV/CAC

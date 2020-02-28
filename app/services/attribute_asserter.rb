@@ -27,9 +27,7 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_bundle(attrs) if user.active_profile.present? && ial2_authn_context?
-    if bundle.include?(:verified_at) && ial2_service_provider?
-      add_verified_at(attrs)
-    end
+    add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     user.asserted_attributes = attrs
   end
 

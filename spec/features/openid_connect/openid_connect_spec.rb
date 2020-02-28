@@ -140,7 +140,7 @@ describe 'OpenID Connect' do
     expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
-  it 'returns verified_at in an ial1 session if requested' do
+  it 'returns verified_at in an ial1 session if requested', driver: :mobile_rack_test do
     user = user_with_2fa
     profile = create(:profile, :active, :verified,
                      pii: { first_name: 'John', ssn: '111223333' },
@@ -149,7 +149,11 @@ describe 'OpenID Connect' do
     token_response = sign_in_get_token_response(
       user: user,
       scope: 'openid email profile:verified_at',
-      verified_attributes: ['email', 'verified_at']
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
+
+        click_button t('forms.buttons.continue')
+      end
     )
 
     access_token = token_response[:access_token]
@@ -456,7 +460,9 @@ describe 'OpenID Connect' do
     token_response[:id_token]
   end
 
-  def sign_in_get_token_response(user: user_with_2fa, scope: 'openid email', verified_attributes: ['email'])
+  def sign_in_get_token_response(
+    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil
+  )
     client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
@@ -464,7 +470,7 @@ describe 'OpenID Connect' do
     code_challenge = Digest::SHA256.base64digest(code_verifier)
 
     link_identity(user, client_id)
-    user.identities.last.update!(verified_attributes: verified_attributes)
+    user.identities.last.update!(verified_attributes: ['email'])
 
     visit openid_connect_authorize_path(
       client_id: client_id,
@@ -480,6 +486,7 @@ describe 'OpenID Connect' do
     )
 
     _user = sign_in_live_with_2fa(user)
+    handoff_page_steps&.call
 
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
