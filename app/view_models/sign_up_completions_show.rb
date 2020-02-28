@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
@@ -124,3 +125,4 @@ class SignUpCompletionsShow
     user_verified? ? 'ial2' : 'ial1'
   end
 end
+# rubocop:enable Metrics/ClassLength

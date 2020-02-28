@@ -153,7 +153,7 @@ describe 'OpenID Connect' do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_button t('forms.buttons.continue')
-      end
+      end,
     )
 
     access_token = token_response[:access_token]
