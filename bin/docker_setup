@@ -62,5 +62,6 @@ Dir.chdir APP_ROOT do
   run "docker-compose run --rm web rake dev:prime"
   # Create all parallell test databases
   run "docker-compose run --rm web rake parallel:setup"
-
+  # Shut down stack
+  run "docker-compose stop"
 end
