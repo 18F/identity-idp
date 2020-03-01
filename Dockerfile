@@ -55,8 +55,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Simple npm cache. Success here creates a new layer in the image.
-COPY package.json .
-COPY yarn.lock .
+COPY package.json yarn.lock ./
 RUN NODE_ENV=development yarn install --force
 
 # Copy in whole source (minus items matched in .dockerignore)
