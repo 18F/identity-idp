@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
 
@@ -94,6 +95,7 @@ module SamlIdpAuthConcern
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
       signature: saml_response_signature_options,
+      signed_response_message: current_service_provider.signed_response_message_requested,
     )
   end
 
@@ -126,3 +128,4 @@ module SamlIdpAuthConcern
     url.to_s
   end
 end
+# rubocop:enable Metrics/ModuleLength
