@@ -15,5 +15,5 @@ es:
       outro_html: "%{sp} solo usará esta información para conectarse a su cuenta"
       phone: Teléfono
       social_security_number: Número de Seguro Social
-      verified_at: Fecha de actualización de esta información
+      verified_at: Actualizado en
       x509_subject: Identidad PIV/CAC
