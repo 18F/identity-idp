@@ -159,10 +159,10 @@ describe SignUp::CompletionsController do
         subject.session[:sp] = {
           ial2: true,
           request_url: 'http://example.com',
-          requested_attributes: %w[email first_name],
+          requested_attributes: %w[email first_name verified_at],
         }
         expect(@linker).to receive(:link_identity).
-          with(ial: 2, verified_attributes: %w[email first_name])
+          with(ial: 2, verified_attributes: %w[email first_name verified_at])
         patch :update
       end
     end
