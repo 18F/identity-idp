@@ -197,12 +197,14 @@ If `Gemfile` or `package.json` change, you'll need to `docker-compose build` aga
 
 More useful Docker commands:
 
+* Run migrations: `docker-compose run --rm web bundle exec rails db:migrate`
 * Force the images to re-build: `docker-compose build --no-cache`. You might have to do this if a "regular build" doesn't seem to correctly install new dependencies.
 * Stop the containers: `docker-compose stop`
 * Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
 * Open a shell in a one-off web container: `docker-compose run --rm web bash`
 * Open a shell in the running web container: `docker-compose exec web bash`
 * Open a psql shell in the running db container: `docker-compose exec db psql -U postgres`
+* `docker image prune` to remove dangling images and free up disk space
 
 #### Running Tests in Docker
 
