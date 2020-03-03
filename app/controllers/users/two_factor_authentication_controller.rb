@@ -137,6 +137,7 @@ module Users
     def handle_telephony_result(method:, default:)
       analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
       if @telephony_result.success?
+        add_sp_cost(method)
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
           otp_make_default_number: default,
