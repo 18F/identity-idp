@@ -66,6 +66,14 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   callback: -> { Reports::SpUserCountsReport.new.call },
 )
 
+# Send Sp User Quotas Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'SP user quotas report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::SpUserQuotasReport.new.call },
+)
+
 # Send Doc Auth Funnel Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Doc Auth Funnel Report',
