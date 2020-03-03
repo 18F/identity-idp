@@ -1,9 +1,19 @@
+# Docker Compose def for local development
 version: '3'
 services:
   web:
     build: .
     volumes:
-      - .:/upaya
+      # Mount specific sub-directories into image for local development
+      - ./app:/upaya/app
+      - ./certs:/upaya/certs
+      - ./config:/upaya/config
+      - ./db:/upaya/db
+      - ./keys:/upaya/keys
+      - ./lib:/upaya/lib
+      - ./log:/upaya/log
+      - ./pwned_passwords:/upaya/pwned_passwords
+      - ./vendor:/upaya/vendor
     ports:
       - "3000:3000"
     environment:
@@ -25,11 +35,14 @@ services:
       - redis
       - mailcatcher
   db:
-    image: postgres
+    image: postgres:9.6-alpine
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    # Trust Docker network - Not suitable for production
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
   redis:
-    image: redis
+    image: redis:5-alpine
   mailcatcher:
     image: rordi/docker-mailcatcher
     container_name: mailcatcher
