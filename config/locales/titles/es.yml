@@ -49,6 +49,7 @@ es:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó una cuenta
       new_sp: Acabas de iniciar sesión por primera vez
+      refresh_consent: 'TODO: add real value'
       verified: Tiene verificó su identidad con %{app}
     totp_setup:
       new: Configure la autenticación de dos factores

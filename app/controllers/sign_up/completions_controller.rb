@@ -44,6 +44,7 @@ module SignUp
         current_user: current_user,
         handoff: new_service_provider_attributes,
         ialmax_requested: ialmax?,
+        consent_has_expired: consent_has_expired?,
       )
     end
 

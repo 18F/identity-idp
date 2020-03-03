@@ -48,6 +48,7 @@ fr:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé un compte
       new_sp: Vous vous connectez pour la première fois
+      refresh_consent: 'TODO: add real value'
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
       new: Configurer l'authentification à deux facteurs
