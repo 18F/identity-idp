@@ -135,9 +135,8 @@ module Users
     end
 
     def handle_telephony_result(method:, default:)
-      analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
+      track_events(method)
       if @telephony_result.success?
-        add_sp_cost(method)
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
           otp_make_default_number: default,
@@ -146,6 +145,11 @@ module Users
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
       end
+    end
+
+    def track_events(method)
+      analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
+      add_sp_cost(method) if @telephony_result.success?
     end
 
     def exceeded_otp_send_limit?
