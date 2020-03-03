@@ -49,6 +49,7 @@ feature 'SP Costing', :email do
     click_submit_default
 
     expect_sp_cost_type(0, 1, 'digest')
+    expect_sp_cost_type(0, 1, 'sms')
     expect_sp_cost_type(1, 1, 'authentication')
   end
 
