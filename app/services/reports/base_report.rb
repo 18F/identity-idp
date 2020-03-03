@@ -14,7 +14,7 @@ module Reports
     end
 
     def first_of_this_month
-      Time.zone.today.strftime('%m-01-%Y')
+      Time.zone.today.beginning_of_month.strftime('%m-%d-%Y')
     end
 
     def end_of_today
