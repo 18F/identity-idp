@@ -6,16 +6,7 @@ services:
       context: .
       dockerfile: development.Dockerfile
     volumes:
-      # Mount specific sub-directories into image for local development
-      - ./app:/upaya/app
-      - ./certs:/upaya/certs
-      - ./config:/upaya/config
-      - ./db:/upaya/db
-      - ./keys:/upaya/keys
-      - ./lib:/upaya/lib
-      - ./log:/upaya/log
-      - ./pwned_passwords:/upaya/pwned_passwords
-      - ./vendor:/upaya/vendor
+       - .:/upaya
     ports:
       - "3000:3000"
     environment:
