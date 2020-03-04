@@ -2,7 +2,9 @@
 version: '3'
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: development.Dockerfile
     volumes:
       # Mount specific sub-directories into image for local development
       - ./app:/upaya/app
