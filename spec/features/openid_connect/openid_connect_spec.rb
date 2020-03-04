@@ -187,7 +187,7 @@ describe 'OpenID Connect' do
                     'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
     userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:email]).to be_present
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
