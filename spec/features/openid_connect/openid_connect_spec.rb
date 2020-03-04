@@ -168,6 +168,29 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to eq(profile.verified_at.to_i)
   end
 
+  it 'returns a null verified_at if the account has not been proofed', driver: :mobile_rack_test do
+    token_response = sign_in_get_token_response(
+      scope: 'openid email profile:verified_at',
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
+        expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
+
+        click_button t('forms.buttons.continue')
+      end,
+    )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:verified_at]).to be_nil
+  end
+
   context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
