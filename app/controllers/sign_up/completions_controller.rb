@@ -128,7 +128,11 @@ module SignUp
 
     def verified_at
       timestamp = current_user.active_profile&.verified_at
-      I18n.l(timestamp, format: :event_timestamp) if timestamp
+      if timestamp
+        I18n.l(timestamp, format: :event_timestamp)
+      else
+        I18n.t('help_text.requested_attributes.verified_at_blank')
+      end
     end
 
     def pii_to_displayable_attributes
