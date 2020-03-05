@@ -66,7 +66,7 @@ class AttributeAsserter
   end
 
   def verified_at_getter_function
-    ->(principal) { principal.active_profile.verified_at.iso8601 }
+    ->(principal) { principal.active_profile&.verified_at&.iso8601 }
   end
 
   def attribute_getter_function(attr)
