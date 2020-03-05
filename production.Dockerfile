@@ -44,7 +44,7 @@ RUN apt-get update \
        patch \
        ruby-dev \
     && gem install bundler --conservative \
-    && bundle install --without development test \
+    && bundle install --deployment --without development test \
     && apt-get remove -y \
        build-essential \
        git \

@@ -24,8 +24,9 @@ If `Gemfile` or `package.json` change, you'll need to `docker-compose build` aga
 * Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
 * Open a shell in a one-off web container: `docker-compose run --rm web bash`
 * Open a shell in the running web container: `docker-compose exec web bash`
+* Open a shell in the running web container as root: `docker-compose exec --user=root web bash`
 * Open a psql shell in the running db container: `docker-compose exec db psql -U postgres`
-* `docker image prune` to remove dangling images and free up disk space
+* `docker system prune` to remove dangling images and free up disk space
 
 ## Running Tests in Docker
 

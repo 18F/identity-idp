@@ -24,8 +24,12 @@ RUN apt-get install -y google-chrome-stable
 # Everything happens here from now on   
 WORKDIR /upaya
 
-# Install dev and test gems
-RUN bundle install --with development test
+# Remove vendored gems from base image
+RUN rm -rf vendor/bundle
+# Install dev and test gems on the system
+RUN bundle install --system --with development test
 
 # Change back to appuser to run the app
 USER appuser
+
+# CMD and EXPOSE are inherited from the base image
