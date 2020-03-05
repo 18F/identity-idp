@@ -506,9 +506,9 @@ describe 'OpenID Connect' do
   end
 
   def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil
+    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
+    client_id: 'urn:gov:gsa:openidconnect:test'
   )
-    client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
