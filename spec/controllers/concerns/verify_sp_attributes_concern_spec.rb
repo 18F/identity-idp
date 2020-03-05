@@ -14,6 +14,13 @@ RSpec.describe VerifySPAttributesConcern do
 
     subject(:consent_has_expired?) { controller.consent_has_expired? }
 
+    context 'when there is no sp_session_identity' do
+      let(:sp_session_identity) { nil }
+      it 'is false' do
+        expect(consent_has_expired?).to eq(false)
+      end
+    end
+
     context 'when there is no last_consented_at' do
       it 'is true' do
         expect(consent_has_expired?).to eq(true)

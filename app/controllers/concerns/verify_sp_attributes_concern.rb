@@ -41,7 +41,7 @@ module VerifySPAttributesConcern
   end
 
   def consent_has_expired?
-    return true unless sp_session_identity
+    return false unless sp_session_identity
     last_estimated_consent = sp_session_identity.last_consented_at || sp_session_identity.created_at
     !last_estimated_consent || last_estimated_consent < Identity::CONSENT_EXPIRATION.ago
   end
