@@ -6,6 +6,8 @@ class Identity < ApplicationRecord
 
   delegate :metadata, to: :sp, prefix: true
 
+  CONSENT_EXPIRATION = 1.year
+
   def deactivate
     update!(session_uuid: nil)
   end

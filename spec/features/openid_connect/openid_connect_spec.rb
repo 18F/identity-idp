@@ -191,6 +191,28 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
+  it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    user = user_with_2fa
+    link_identity(user, client_id)
+
+    user.identities.last.update(
+      last_consented_at: 2.years.ago,
+      created_at: 2.years.ago,
+    )
+
+    sign_in_get_id_token(
+      user: user,
+      client_id: client_id,
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('titles.sign_up.refresh_consent'))
+        expect(page).to_not have_content(t('titles.sign_up.new_sp'))
+
+        click_button t('forms.buttons.continue')
+      end,
+    )
+  end
+
   context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
@@ -484,9 +506,9 @@ describe 'OpenID Connect' do
   end
 
   def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil
+    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
+    client_id: 'urn:gov:gsa:openidconnect:test'
   )
-    client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
