@@ -6,11 +6,7 @@ module Reports
 
     def fiscal_start_date
       now = Time.zone.now
-      if now.month >= 10
-        now.strftime('10-01-%Y')
-      else
-        "10-01-#{now.year - 1}"
-      end
+      now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1).to_date.to_s
     end
 
     def first_of_this_month
