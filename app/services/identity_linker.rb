@@ -23,8 +23,22 @@ class IdentityLinker
 
   def process_ial(extra_attrs)
     @ial = extra_attrs[:ial]
+    now = Time.zone.now
+    process_ial_at(now)
+    process_verified_at(now)
+  end
+
+  def process_ial_at(now)
+    if @ial == 2 || (@ial == 0 && identity.verified_at.present?)
+      identity.last_ial2_authenticated_at = now
+    else
+      identity.last_ial1_authenticated_at = now
+    end
+  end
+
+  def process_verified_at(now)
     return unless @ial == 2 && identity.verified_at.nil?
-    identity.verified_at = Time.zone.now
+    identity.verified_at = now
   end
 
   def identity
