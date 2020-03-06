@@ -6,7 +6,7 @@ module Db
         sql = <<~SQL
           SELECT
             issuer,
-            sum(total_ial1_active) AS total_ial1_active, 
+            sum(total_ial1_active) AS total_ial1_active,
             sum(total_ial2_active) AS total_ial2_active
           FROM (
             (SELECT
