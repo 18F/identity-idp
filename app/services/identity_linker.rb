@@ -29,7 +29,7 @@ class IdentityLinker
   end
 
   def process_ial_at(now)
-    if @ial == 2 || (@ial&.zero? && identity.verified_at.present?)
+    if @ial == 2 || (identity.verified_at.present? && @ial&.zero?)
       identity.last_ial2_authenticated_at = now
     else
       identity.last_ial1_authenticated_at = now
