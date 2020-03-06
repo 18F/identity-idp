@@ -3,6 +3,7 @@ module Db
     class SpActiveUserCounts
       # rubocop:disable Metrics/MethodLength
       def self.call(start_date)
+        quoted_start_date = ActiveRecord::Base.connection.quote(start_date)
         sql = <<~SQL
           SELECT
             issuer,
@@ -14,7 +15,7 @@ module Db
               count(*) AS total_ial1_active,
               0 AS total_ial2_active
             FROM identities
-            WHERE '#{start_date}' <= last_ial1_authenticated_at
+            WHERE #{quoted_start_date} <= last_ial1_authenticated_at
             GROUP BY issuer ORDER BY issuer)
             UNION
             (SELECT
@@ -22,7 +23,7 @@ module Db
               0 AS total_ial1_active,
               count(*) AS total_ial2_active
             FROM identities
-            WHERE '#{start_date}' <= last_ial2_authenticated_at
+            WHERE #{quoted_start_date} <= last_ial2_authenticated_at
             GROUP BY issuer ORDER BY issuer)
           ) AS union_of_ial1_and_ial2_results
           GROUP BY ISSUER ORDER BY issuer
