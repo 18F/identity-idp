@@ -6,8 +6,8 @@ module Db
         sql = <<~SQL
           SELECT
             issuer,
-            sum(total_ial1_active) AS total_ial1_active,
-            sum(total_ial2_active) AS total_ial2_active
+            CAST(SUM(total_ial1_active) AS INTEGER) AS total_ial1_active,
+            CAST(SUM(total_ial2_active) AS INTEGER) AS total_ial2_active
           FROM (
             (SELECT
               service_provider AS issuer,
