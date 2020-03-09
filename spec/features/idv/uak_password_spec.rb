@@ -16,7 +16,7 @@ feature 'A user with a UAK passwords attempts IdV' do
 
     expect(page).to have_current_path(sign_up_completed_path)
 
-    click_on t('forms.buttons.continue')
+    click_on t('sign_up.agree_and_continue')
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end

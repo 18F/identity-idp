@@ -266,6 +266,14 @@ module Features
       click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
+    def click_agree_and_continue(allow_missing: false)
+      if allow_missing
+        click_button t('sign_up.agree_and_continue') if page.has_button?(t('sign_up.agree_and_continue'))
+      else
+        click_button t('sign_up.agree_and_continue')
+      end
+    end
+
     def enter_correct_otp_code_for_user(user)
       fill_in 'code', with: user.reload.direct_otp
       click_submit_default

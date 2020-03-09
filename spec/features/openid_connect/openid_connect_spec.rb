@@ -152,7 +152,7 @@ describe 'OpenID Connect' do
       handoff_page_steps: proc do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
 
-        click_button t('forms.buttons.continue')
+        click_agree_and_continue
       end,
     )
 
@@ -175,7 +175,7 @@ describe 'OpenID Connect' do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
         expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
 
-        click_button t('forms.buttons.continue')
+        click_agree_and_continue
       end,
     )
 
@@ -208,7 +208,7 @@ describe 'OpenID Connect' do
         expect(page).to have_content(t('titles.sign_up.refresh_consent'))
         expect(page).to_not have_content(t('titles.sign_up.new_sp'))
 
-        click_button t('forms.buttons.continue')
+        click_agree_and_continue
       end,
     )
   end
@@ -302,7 +302,7 @@ describe 'OpenID Connect' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
-        click_button t('forms.buttons.continue')
+        click_agree_and_continue
         continue_as(email)
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -333,7 +333,7 @@ describe 'OpenID Connect' do
       expect(current_url).to eq(sign_up_completed_url)
       expect(page).to have_content(t('titles.sign_up.new_sp'))
 
-      click_continue
+      click_agree_and_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       visit sign_out_url
       visit oidc_path
@@ -416,7 +416,7 @@ describe 'OpenID Connect' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        click_button t('forms.buttons.continue')
+        click_agree_and_continue
 
         expect(current_url).to eq new_user_session_url
         expect(page).
@@ -581,7 +581,7 @@ describe 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
     sign_in_live_with_2fa(user)
-    click_continue
+    click_agree_and_continue(allow_missing: true)
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
