@@ -33,6 +33,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   skip_before_action :handle_two_factor_authentication
 
+  # BAD BAD BAD
+  before_action :log_action
+  def log_action
+    the_view = "#{controller_name}/#{action_name}"
+    puts "Rendered #{the_view}"
+    File.open("view_renders_in_test.txt", "a"){ |f| f.puts(the_view) }
+  end
+
   def session_expires_at
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
