@@ -49,7 +49,8 @@ describe SignUpCompletionsShow do
           let(:consent_has_expired?) { true }
 
           it 'uses refresh copy' do
-            expect(heading).to include(I18n.t('titles.sign_up.refresh_consent'))
+            expect(heading).
+              to include(view_model.content_tag(:strong, I18n.t('titles.sign_up.refresh_consent')))
           end
         end
       end
