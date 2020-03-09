@@ -268,7 +268,9 @@ module Features
 
     def click_agree_and_continue(allow_missing: false)
       if allow_missing
-        click_button t('sign_up.agree_and_continue') if page.has_button?(t('sign_up.agree_and_continue'))
+        if page.has_button?(t('sign_up.agree_and_continue'))
+          click_button t('sign_up.agree_and_continue')
+        end
       else
         click_button t('sign_up.agree_and_continue')
       end
