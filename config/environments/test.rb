@@ -28,6 +28,8 @@ Rails.application.configure do
   config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
 
   config.middleware.use RackSessionAccess::Middleware
+
+  # Lograge must be disabled to scan for view test coverage with `rake test:scan_logs_for_render`
   config.lograge.enabled = false
 
   config.after_initialize do

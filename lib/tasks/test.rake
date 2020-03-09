@@ -3,13 +3,12 @@ namespace :test do
   #  and then re-run tests to get a fresh view
   desc 'Scan test.log for rendered views'
   task scan_log_for_render: :environment do
-    test_log = File.read('log/test.log')
+    # match 'Rendered two_factor_authentication/otp_verification/show.html.erb'
     # Rendered + space + word + [/ + non-whitespace](any number of times)
     regex_finder = /Rendered\s\w*(\/\S*)*/
     results = []
-
-    test_log.each_line do |li|
-      results.push(li.match(regex_finder))
+    File.readlines('log/test.log').each do |line|
+      results.push(line.match(regex_finder))
     end
 
     puts results.map(&:to_s).compact.sort.uniq
