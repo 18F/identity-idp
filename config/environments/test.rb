@@ -30,7 +30,7 @@ Rails.application.configure do
   config.middleware.use RackSessionAccess::Middleware
 
   # Lograge must be disabled to scan for view test coverage with `rake test:scan_logs_for_render`
-  config.lograge.enabled = false
+  config.lograge.enabled = !ENV['COVERAGE']
 
   config.after_initialize do
     # Having bullet enabled in the test environment causes issues with unit
