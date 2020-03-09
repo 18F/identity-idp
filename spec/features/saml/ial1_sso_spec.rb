@@ -28,7 +28,7 @@ feature 'IAL1 Single Sign On' do
             to_not have_content t('help_text.requested_attributes.social_security_number')
         end
 
-        click_on t('sign_up.agree_and_continue')
+        click_agree_and_continue
 
         continue_as(email)
 

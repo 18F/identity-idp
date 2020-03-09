@@ -21,7 +21,7 @@ module IdvFromSpHelper
   def create_ial1_user_from_sp(email)
     visit_idp_from_sp_with_ial1(:oidc)
     register_user(email)
-    click_on t('sign_up.agree_and_continue')
+    click_agree_and_continue
   end
 
   def create_ial1_user_directly(email)
