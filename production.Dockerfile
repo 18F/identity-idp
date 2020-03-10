@@ -1,6 +1,9 @@
 # Use the official Ruby image because the Rails images have been deprecated
 FROM ruby:2.5-slim
 
+# Set necessary ENV
+ENV LC_ALL=C.UTF-8
+
 # Enable package fetch over https and add a few core tools
 RUN apt-get update \
     && apt-get install -y \
@@ -44,7 +47,7 @@ RUN apt-get update \
        patch \
        ruby-dev \
     && gem install bundler --conservative \
-    && bundle install --without deploy production \
+    && bundle install --deployment --without development test \
     && apt-get remove -y \
        build-essential \
        git \
