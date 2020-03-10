@@ -616,7 +616,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.6.0)
     uniform_notifier (1.13.0)
-    user_agent_parser (2.5.2)
+    user_agent_parser (2.6.0)
     uuid (2.3.9)
       macaddr (~> 1.0)
     valid_email (0.1.3)
