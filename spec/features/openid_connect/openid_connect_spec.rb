@@ -581,7 +581,7 @@ describe 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
     sign_in_live_with_2fa(user)
-    click_agree_and_continue(allow_missing: true)
+    click_agree_and_continue_optional
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 

@@ -266,12 +266,12 @@ module Features
       click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
-    def click_agree_and_continue(allow_missing: false)
-      if allow_missing
-        if page.has_button?(t('sign_up.agree_and_continue'))
-          click_button t('sign_up.agree_and_continue')
-        end
-      else
+    def click_agree_and_continue
+      click_button t('sign_up.agree_and_continue')
+    end
+
+    def click_agree_and_continue_optional
+      if page.has_button?(t('sign_up.agree_and_continue'))
         click_button t('sign_up.agree_and_continue')
       end
     end
