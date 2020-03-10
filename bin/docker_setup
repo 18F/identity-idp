@@ -56,15 +56,15 @@ Dir.chdir APP_ROOT do
   run "cp config/service_providers.localdev.yml config/service_providers.yml"
 
   puts "== Creating and migrating dev database =="
-  run "docker-compose run --rm web bundle exec rake db:create"
+  run "docker-compose run --rm development bundle exec rake db:create"
   # The following pattern prevents a database reset from happening in prod.
-  run "docker-compose run --rm web bundle exec rake db:environment:set"
-  run "docker-compose run --rm web bundle exec rake db:reset"
-  run "docker-compose run --rm web bundle exec rake db:environment:set"
+  run "docker-compose run --rm development bundle exec rake db:environment:set"
+  run "docker-compose run --rm development bundle exec rake db:reset"
+  run "docker-compose run --rm development bundle exec rake db:environment:set"
   # This populates the dev database with sample data
-  run "docker-compose run --rm web bundle exec rake dev:prime"
+  run "docker-compose run --rm development bundle exec rake dev:prime"
   # Create all parallell test databases
-  run "docker-compose run --rm web bundle exec rake parallel:setup"
+  run "docker-compose run --rm development bundle exec rake parallel:setup"
 
   puts "== Shut down cluster =="
   run "docker-compose down"

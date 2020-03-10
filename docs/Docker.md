@@ -4,9 +4,9 @@
 
 1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You may need to increase memory resources in Docker above the defaults to avoid timeouts.
 
-1. Build the production IDP image, which serves as a base for the development container: `bin/docker_build`
+1. Build the __Rails base__, __Rails development__, and __production IDP__ images: `bin/docker_build`
 
-1. Build the development Docker containers: `docker-compose build`
+1. Build the development Docker containers using __Rails base__ and __Rails development__ images: `docker-compose build`
 
 1. Run `make docker_setup` to copy configuration files and bootstrap the database.
 

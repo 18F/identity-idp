@@ -24,8 +24,11 @@ Dir.chdir APP_ROOT do
            |___/          |___/
   ]
 
-  # Build and tag the base production image
-  puts "== Building the base/production Docker image =="
-  run "docker build . -f production.Dockerfile -t identity-idp-production"
+  # Rebuild the base, build, and production images
+  # TODO - rails_base and rails_build should be moved out of this repo
+  {:base=>"rails_base", :build=>"rails_build", :production=>"idp_app"}.each do |d, n|
+    puts "== Building the #{d} Docker image =="
+    run "docker build . -f #{d}.Dockerfile -t identity-#{n} --no-cache"
+  end
 
 end
