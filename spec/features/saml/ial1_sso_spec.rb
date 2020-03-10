@@ -28,7 +28,7 @@ feature 'IAL1 Single Sign On' do
             to_not have_content t('help_text.requested_attributes.social_security_number')
         end
 
-        click_on t('forms.buttons.continue')
+        click_agree_and_continue
 
         continue_as(email)
 
@@ -45,7 +45,7 @@ feature 'IAL1 Single Sign On' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_continue
+      click_agree_and_continue
 
       expect(current_url).to eq saml_authn_request
 
@@ -92,7 +92,7 @@ feature 'IAL1 Single Sign On' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_continue
+      click_agree_and_continue
 
       expect(current_url).to eq saml_authn_request
     end
@@ -115,12 +115,12 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'returns to sp after clicking continue' do
-      click_continue
+      click_agree_and_continue
       expect(current_url).to eq(saml_authn_request)
     end
 
     it 'it confirms the user wants to continue to the SP after signing in again' do
-      click_continue
+      click_agree_and_continue
 
       set_new_browser_session
 
@@ -216,7 +216,7 @@ feature 'IAL1 Single Sign On' do
       expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
       expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
 
-      click_continue
+      click_agree_and_continue
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
