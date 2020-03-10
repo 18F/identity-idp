@@ -271,9 +271,8 @@ module Features
     end
 
     def click_agree_and_continue_optional
-      if page.has_button?(t('sign_up.agree_and_continue'))
-        click_button t('sign_up.agree_and_continue')
-      end
+      return unless page.has_button?(t('sign_up.agree_and_continue'))
+      click_button t('sign_up.agree_and_continue')
     end
 
     def enter_correct_otp_code_for_user(user)
