@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200115142141) do
+ActiveRecord::Schema.define(version: 20200305201944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -227,6 +227,10 @@ ActiveRecord::Schema.define(version: 20200115142141) do
     t.string "code_challenge"
     t.string "rails_session_id"
     t.json "verified_attributes"
+    t.datetime "verified_at"
+    t.datetime "last_consented_at"
+    t.datetime "last_ial1_authenticated_at"
+    t.datetime "last_ial2_authenticated_at"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -372,17 +376,6 @@ ActiveRecord::Schema.define(version: 20200115142141) do
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
-  create_table "service_provider_requests", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.string "loa", null: false
-    t.string "url", null: false
-    t.string "uuid", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "requested_attributes", default: [], array: true
-    t.index ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true
-  end
-
   create_table "service_providers", force: :cascade do |t|
     t.string "issuer", null: false
     t.string "friendly_name"
@@ -415,6 +408,8 @@ ActiveRecord::Schema.define(version: 20200115142141) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
+    t.boolean "signed_response_message_requested", default: false
+    t.integer "ial2_quota"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
