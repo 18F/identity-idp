@@ -62,6 +62,9 @@ Rails.application.routes.draw do
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
+      get '/account/forget_all_devices' => 'users/forget_all_devices#show', as: :forget_all_devices
+      delete '/account/forget_all_devices' => 'users/forget_all_devices#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session

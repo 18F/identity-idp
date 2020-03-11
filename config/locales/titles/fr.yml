@@ -13,6 +13,7 @@ fr:
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique
+    forget_all_devices: TODO
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte

@@ -3,6 +3,11 @@ fr:
   account:
     connected_apps:
       associated: Associé %{timestamp}
+    forget_all_devices:
+      confirm: TODO
+      description: TODO
+      link_title: TODO
+      longer_description: TODO
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée

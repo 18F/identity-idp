@@ -66,6 +66,16 @@
   <% @view_model.recent_devices.each do |device| %>
     <%= render device.device_partial, device: device %>
   <% end %>
+  <div class="p2 clearfix border-top">
+    <div class="clearfix mxn1">
+      <div class="sm-col sm-col-3 px1">
+        <%= link_to(t('account.forget_all_devices.link_title'), forget_all_devices_path, class: 'bold') %>
+      </div>
+      <div class="sm-col sm-col-9 px1 sm-right-align">
+        <%= t('account.forget_all_devices.description') %>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
