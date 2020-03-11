@@ -13,7 +13,7 @@ COPY package.json yarn.lock ./
 RUN NODE_ENV=development yarn install --force \
     && yarn cache clean
 
-# Use our base
+# Switch to base image
 FROM identity-rails_base
 WORKDIR /upaya
 

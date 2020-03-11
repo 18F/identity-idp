@@ -1,4 +1,5 @@
-# Build base image - Use to build only, not as a final base!
+# Build base image - Use to build only, not as a final base.
+# Docker multi-stage builds are used to copy output from this heavy image into others
 FROM identity-rails_base
 
 # Everything happens here from now on   

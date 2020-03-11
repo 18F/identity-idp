@@ -1,7 +1,7 @@
-# Docker Compose def for local development
+# Compose file for local development
 version: '3'
 services:
-  development:
+  app:
     build: 
       context: .
       dockerfile: development.Dockerfile
