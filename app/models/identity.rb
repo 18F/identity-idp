@@ -4,12 +4,16 @@ class Identity < ApplicationRecord
   belongs_to :user
   validates :service_provider, presence: true
 
+  delegate :metadata, to: :sp, prefix: true
+
+  CONSENT_EXPIRATION = 1.year
+
   def deactivate
     update!(session_uuid: nil)
   end
 
-  def sp_metadata
-    ServiceProvider.from_issuer(service_provider).metadata
+  def sp
+    @sp ||= ServiceProvider.from_issuer(service_provider)
   end
 
   def display_name

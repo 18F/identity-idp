@@ -47,7 +47,7 @@ feature 'Password recovery via personal key' do
     click_idv_continue
     complete_idv_profile_ok(user, new_password)
     acknowledge_and_confirm_personal_key
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
 

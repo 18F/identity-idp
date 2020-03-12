@@ -15,7 +15,7 @@ feature 'OIDC Authorization Confirmation' do
       check :remember_device
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_continue
+      click_agree_and_continue
 
       visit sign_out_url
 

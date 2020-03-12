@@ -40,6 +40,46 @@ test:
       - zipcode
     allow_prompt_login: true
 
+  'test_saml_sp_not_requesting_signed_response_message':
+    agency_id: 2
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    failure_to_proof_url: 'https://example.com/'
+    redirect_uris:
+      - 'http://example.com/'
+      - 'http://example.com/auth/result'
+      - 'http://example.com/logout'
+    friendly_name: 'Test SP requesting signed response message'
+    cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    ial: 1
+    attribute_bundle:
+      - email
+    allow_prompt_login: true
+    block_encryption: 'none'
+    signed_response_message_requested: false
+
+  'test_saml_sp_requesting_signed_response_message':
+    agency_id: 2
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    failure_to_proof_url: 'https://example.com/'
+    redirect_uris:
+      - 'http://example.com/'
+      - 'http://example.com/auth/result'
+      - 'http://example.com/logout'
+    friendly_name: 'Test SP requesting signed response message'
+    cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    ial: 1
+    attribute_bundle:
+      - email
+    allow_prompt_login: true
+    block_encryption: 'none'
+    signed_response_message_requested: true
+
   'https://rp2.serviceprovider.com/auth/saml/metadata':
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'

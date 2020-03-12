@@ -31,7 +31,7 @@ module SpAuthHelper
     click_continue
     click_acknowledge_personal_key
     expect(page).to have_current_path(sign_up_completed_path)
-    click_on t('forms.buttons.continue')
+    click_agree_and_continue
     visit sign_out_url
     user.reload
   end

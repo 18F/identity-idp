@@ -27,6 +27,7 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_bundle(attrs) if user.active_profile.present? && ial2_authn_context?
+    add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     user.asserted_attributes = attrs
   end
 
@@ -50,6 +51,10 @@ class AttributeAsserter
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
       attrs[attr] = { getter: getter }
     end
+    add_verified_at(attrs)
+  end
+
+  def add_verified_at(attrs)
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
@@ -61,7 +66,7 @@ class AttributeAsserter
   end
 
   def verified_at_getter_function
-    ->(principal) { principal.active_profile.verified_at.iso8601 }
+    ->(principal) { principal.active_profile&.verified_at&.iso8601 }
   end
 
   def attribute_getter_function(attr)
@@ -100,5 +105,9 @@ class AttributeAsserter
 
   def ascii?
     bundle.include?(:ascii)
+  end
+
+  def ial2_service_provider?
+    service_provider.ial.to_i >= 2
   end
 end

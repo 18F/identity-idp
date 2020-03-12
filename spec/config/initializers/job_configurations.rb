@@ -99,6 +99,18 @@ describe JobRunner::Runner do
       expect(job.callback.call).to eq 'the report test worked'
     end
 
+    it 'runs the sp user quotas report job' do
+      job = JobRunner::Runner.configurations.find { |c| c.name == 'SP user quotas report' }
+      expect(job).to be_instance_of(JobRunner::JobConfiguration)
+      expect(job.interval).to eq 24 * 60 * 60
+
+      service = instance_double(Reports::SpUserQuotasReport)
+      expect(Reports::SpUserQuotasReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
+
+      expect(job.callback.call).to eq 'the report test worked'
+    end
+
     it 'runs the sp success rate report job' do
       job = JobRunner::Runner.configurations.find { |c| c.name == 'SP success rate report' }
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
@@ -160,6 +172,20 @@ describe JobRunner::Runner do
 
       service = instance_double(Reports::TotalSpCostReport)
       expect(Reports::TotalSpCostReport).to receive(:new).and_return(service)
+      expect(service).to receive(:call).and_return('the report test worked')
+
+      expect(job.callback.call).to eq 'the report test worked'
+    end
+
+    it 'runs the SP active users report job' do
+      job = JobRunner::Runner.configurations.find do |c|
+        c.name == 'SP active users report'
+      end
+      expect(job).to be_instance_of(JobRunner::JobConfiguration)
+      expect(job.interval).to eq 24 * 60 * 60
+
+      service = instance_double(Reports::SpActiveUsersReport)
+      expect(Reports::SpActiveUsersReport).to receive(:new).and_return(service)
       expect(service).to receive(:call).and_return('the report test worked')
 
       expect(job.callback.call).to eq 'the report test worked'

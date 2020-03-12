@@ -62,7 +62,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         click_idv_continue
         complete_idv_profile_ok(user)
         click_acknowledge_personal_key
-        click_idv_continue
+        click_agree_and_continue
 
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       end

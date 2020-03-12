@@ -15,10 +15,15 @@ const longToByteArray = long => new Uint8Array(8).map(() => {
   return byte;
 });
 
-const extractCredentials = credentials => credentials.split(',').map(credential => ({
-  type: 'public-key',
-  id: base64ToArrayBuffer(credential),
-}));
+const extractCredentials = (credentials) => {
+  if (!credentials) { // empty string check
+    return [];
+  }
+  return credentials.split(',').map(credential => ({
+    type: 'public-key',
+    id: base64ToArrayBuffer(credential),
+  }));
+};
 
 const isWebAuthnEnabled = () => {
   if (navigator && navigator.credentials && navigator.credentials.create) {
@@ -70,6 +75,12 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
       timeout: 800000,
       attestation: 'none',
       excludeList: [],
+      authenticatorSelection: {
+        // Prevents user from needing to use PIN with Security Key
+        userVerification: 'discouraged',
+        // Defaults to "Security Key" instead of things like "Windows Hello"
+        authenticatorAttachment: 'cross-platform',
+      },
       excludeCredentials: extractCredentials(excludeCredentials),
     },
   };
@@ -101,6 +112,7 @@ const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
 };
 
 export {
+  extractCredentials,
   isWebAuthnEnabled,
   enrollWebauthnDevice,
   verifyWebauthnDevice,

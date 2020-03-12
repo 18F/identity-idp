@@ -13,6 +13,7 @@ class OpenidConnectUserInfoPresenter
       iss: root_url,
       email: email_from_sp_identity(identity),
       email_verified: true,
+      verified_at: verified_at,
     }.
            merge(x509_attributes).
            merge(ial2_attributes)
@@ -110,5 +111,11 @@ class OpenidConnectUserInfoPresenter
 
   def x509_session?
     identity.piv_cac_enabled?
+  end
+
+  def verified_at
+    return if identity.sp.ial.to_i < 2
+
+    identity.user.active_profile&.verified_at&.to_i
   end
 end
