@@ -49,6 +49,30 @@ describe IdentityLinker do
       expect(last_identity.code_challenge).to eq(code_challenge)
     end
 
+    context 'identity.last_consented_at' do
+      let(:now) { Time.zone.now }
+      let(:six_months_ago) { 6.months.ago }
+
+      it 'does override a previous last_consented_at by default' do
+        IdentityLinker.new(user, 'test.host').
+          link_identity(last_consented_at: six_months_ago)
+        last_identity = user.reload.last_identity
+        expect(last_identity.last_consented_at.to_i).to eq(six_months_ago.to_i)
+
+        IdentityLinker.new(user, 'test.host').link_identity
+        last_identity = user.reload.last_identity
+        expect(last_identity.last_consented_at.to_i).to eq(six_months_ago.to_i)
+      end
+
+      it 'updates last_consented_at when present' do
+        IdentityLinker.new(user, 'test.host').
+          link_identity(last_consented_at: now)
+
+        last_identity = user.reload.last_identity
+        expect(last_identity.last_consented_at.to_i).to eq(now.to_i)
+      end
+    end
+
     it 'rejects bad attributes names' do
       expect { IdentityLinker.new(user, 'test.host').link_identity(foobar: true) }.
         to raise_error(ArgumentError)

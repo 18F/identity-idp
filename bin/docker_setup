@@ -27,6 +27,9 @@ Dir.chdir APP_ROOT do
   # This file is intended to run after `docker-compose up`
   #  it runs commands that won't work at build time and therefore must be runuted at runtime.
 
+  puts "== Shut down cluster =="
+  run "docker-compose down"
+
   # The app dir is mounted as a volume, so new files also appear in the container.
   #  files copied during build can be overwritten by the mounted Volume.
   puts "== Copying new application.yml if file does not already exist"
@@ -53,14 +56,16 @@ Dir.chdir APP_ROOT do
   run "cp config/service_providers.localdev.yml config/service_providers.yml"
 
   puts "== Creating and migrating dev database =="
-  run "docker-compose run --rm web rake db:create"
+  run "docker-compose run --rm web bundle exec rake db:create"
   # The following pattern prevents a database reset from happening in prod.
-  run "docker-compose run --rm web rake db:environment:set"
-  run "docker-compose run --rm web rake db:reset"
-  run "docker-compose run --rm web rake db:environment:set"
+  run "docker-compose run --rm web bundle exec rake db:environment:set"
+  run "docker-compose run --rm web bundle exec rake db:reset"
+  run "docker-compose run --rm web bundle exec rake db:environment:set"
   # This populates the dev database with sample data
-  run "docker-compose run --rm web rake dev:prime"
+  run "docker-compose run --rm web bundle exec rake dev:prime"
   # Create all parallell test databases
-  run "docker-compose run --rm web rake parallel:setup"
+  run "docker-compose run --rm web bundle exec rake parallel:setup"
 
+  puts "== Shut down cluster =="
+  run "docker-compose down"
 end

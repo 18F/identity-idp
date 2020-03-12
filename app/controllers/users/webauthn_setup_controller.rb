@@ -85,8 +85,8 @@ module Users
     end
 
     def save_challenge_in_session
-      credential_creation_options = ::WebAuthn.credential_creation_options
-      user_session[:webauthn_challenge] = credential_creation_options[:challenge].bytes.to_a
+      credential_creation_options = WebAuthn::Credential.options_for_create(user: current_user)
+      user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
     end
 
     def process_valid_webauthn

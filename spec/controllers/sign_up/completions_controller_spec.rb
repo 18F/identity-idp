@@ -94,6 +94,8 @@ describe SignUp::CompletionsController do
   end
 
   describe '#update' do
+    let(:now) { Time.zone.now }
+
     before do
       stub_analytics
       allow(@analytics).to receive(:track_event)
@@ -128,8 +130,11 @@ describe SignUp::CompletionsController do
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
-        expect(@linker).to receive(:link_identity).with(ial: 1, verified_attributes: ['email'])
-        patch :update
+        expect(@linker).to receive(:link_identity).
+          with(ial: 1, verified_attributes: ['email'], last_consented_at: now)
+        Timecop.freeze(now) do
+          patch :update
+        end
       end
     end
 
@@ -159,11 +164,16 @@ describe SignUp::CompletionsController do
         subject.session[:sp] = {
           ial2: true,
           request_url: 'http://example.com',
-          requested_attributes: %w[email first_name],
+          requested_attributes: %w[email first_name verified_at],
         }
-        expect(@linker).to receive(:link_identity).
-          with(ial: 2, verified_attributes: %w[email first_name])
-        patch :update
+        expect(@linker).to receive(:link_identity).with(
+          ial: 2,
+          verified_attributes: %w[email first_name verified_at],
+          last_consented_at: now,
+        )
+        Timecop.freeze(now) do
+          patch :update
+        end
       end
     end
   end
