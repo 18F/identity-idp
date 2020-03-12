@@ -29,7 +29,7 @@ en:
       full_name: Full name
       login: Login Information
       password: Password
-      phone: Phone numberss
+      phone: Phone numbers
       phone_add: "+ Add phone"
       piv_cac_card: PIV/CAC Cards
       piv_cac_confirm_delete: Yes, remove card
