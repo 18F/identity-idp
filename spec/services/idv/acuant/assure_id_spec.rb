@@ -16,9 +16,9 @@ describe Idv::Acuant::AssureId do
     let(:path) { '/AssureIDService/Document/Instance' }
 
     it 'returns a good status with an instance id' do
-      stub_request(:post, acuant_base_url + path)
-        .with(headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' })
-        .to_return(status: 200, body: instance_id.to_json)
+      stub_request(:post, acuant_base_url + path).
+        with(headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }).
+        to_return(status: 200, body: instance_id.to_json)
 
       result = subject.create_document
 
