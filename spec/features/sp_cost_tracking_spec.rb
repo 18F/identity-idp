@@ -49,8 +49,7 @@ feature 'SP Costing', :email do
     click_submit_default
 
     expect_sp_cost_type(0, 1, 'digest')
-    expect_sp_cost_type(1, 1, 'sms')
-    expect_sp_cost_type(2, 1, 'authentication')
+    expect_sp_cost_type(1, 1, 'authentication')
   end
 
   it 'logs the correct costs for an ial2 authentication' do
@@ -66,8 +65,7 @@ feature 'SP Costing', :email do
     click_submit_default
 
     expect_sp_cost_type(0, 2, 'digest')
-    expect_sp_cost_type(1, 2, 'sms')
-    expect_sp_cost_type(2, 2, 'authentication')
+    expect_sp_cost_type(1, 2, 'authentication')
   end
 
   it 'logs the correct costs for a direct authentication' do

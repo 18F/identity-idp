@@ -18,7 +18,6 @@ class IdvController < ApplicationController
 
   def activated
     redirect_to idv_url unless active_profile?
-    redirect_to account_url if session[:ial2_request_with_no_sp]
     idv_session.clear
   end
 

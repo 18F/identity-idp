@@ -14,13 +14,13 @@ describe SamlRequestPresenter do
         allow(parser).to receive(:requested_attributes).and_return(nil)
 
         all_attributes = %w[
-          email first_name middle_name last_name dob ssn verified_at
+          email first_name middle_name last_name dob ssn
           phone address1 address2 city state zipcode foo
         ]
         service_provider = ServiceProvider.new(attribute_bundle: all_attributes)
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 
-        expect(presenter.requested_attributes).to eq(%i[email verified_at])
+        expect(presenter.requested_attributes).to eq(%i[email])
       end
     end
 
@@ -34,12 +34,12 @@ describe SamlRequestPresenter do
 
         service_provider = ServiceProvider.new(
           attribute_bundle: %w[
-            email first_name middle_name last_name dob foo ssn phone verified_at
+            email first_name middle_name last_name dob foo ssn phone
           ],
         )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
         valid_attributes = %i[
-          email given_name name family_name birthdate social_security_number phone verified_at
+          email given_name name family_name birthdate social_security_number phone
         ]
 
         expect(presenter.requested_attributes).to eq(valid_attributes)

@@ -140,79 +140,6 @@ describe 'OpenID Connect' do
     expect(page).to have_content(t('headings.sign_in_without_sp'))
   end
 
-  it 'returns verified_at in an ial1 session if requested', driver: :mobile_rack_test do
-    user = user_with_2fa
-    profile = create(:profile, :active, :verified,
-                     pii: { first_name: 'John', ssn: '111223333' },
-                     user: user)
-
-    token_response = sign_in_get_token_response(
-      user: user,
-      scope: 'openid email profile:verified_at',
-      handoff_page_steps: proc do
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-
-        click_agree_and_continue
-      end,
-    )
-
-    access_token = token_response[:access_token]
-    expect(access_token).to be_present
-
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
-
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:verified_at]).to eq(profile.verified_at.to_i)
-  end
-
-  it 'returns a null verified_at if the account has not been proofed', driver: :mobile_rack_test do
-    token_response = sign_in_get_token_response(
-      scope: 'openid email profile:verified_at',
-      handoff_page_steps: proc do
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
-
-        click_agree_and_continue
-      end,
-    )
-
-    access_token = token_response[:access_token]
-    expect(access_token).to be_present
-
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
-
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:email]).to be_present
-    expect(userinfo_response[:verified_at]).to be_nil
-  end
-
-  it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
-    client_id = 'urn:gov:gsa:openidconnect:test'
-    user = user_with_2fa
-    link_identity(user, client_id)
-
-    user.identities.last.update(
-      last_consented_at: 2.years.ago,
-      created_at: 2.years.ago,
-    )
-
-    sign_in_get_id_token(
-      user: user,
-      client_id: client_id,
-      handoff_page_steps: proc do
-        expect(page).to have_content(t('titles.sign_up.refresh_consent'))
-        expect(page).to_not have_content(t('titles.sign_up.new_sp'))
-
-        click_agree_and_continue
-      end,
-    )
-  end
-
   context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
@@ -302,7 +229,7 @@ describe 'OpenID Connect' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
-        click_agree_and_continue
+        click_button t('forms.buttons.continue')
         continue_as(email)
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -333,7 +260,7 @@ describe 'OpenID Connect' do
       expect(current_url).to eq(sign_up_completed_url)
       expect(page).to have_content(t('titles.sign_up.new_sp'))
 
-      click_agree_and_continue
+      click_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       visit sign_out_url
       visit oidc_path
@@ -416,7 +343,7 @@ describe 'OpenID Connect' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        click_agree_and_continue
+        click_button t('forms.buttons.continue')
 
         expect(current_url).to eq new_user_session_url
         expect(page).
@@ -500,19 +427,13 @@ describe 'OpenID Connect' do
     )
   end
 
-  def sign_in_get_id_token(**args)
-    token_response = sign_in_get_token_response(**args)
-    token_response[:id_token]
-  end
-
-  def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
-    client_id: 'urn:gov:gsa:openidconnect:test'
-  )
+  def sign_in_get_id_token
+    client_id = 'urn:gov:gsa:openidconnect:test'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.base64digest(code_verifier)
+    user = user_with_2fa
 
     link_identity(user, client_id)
     user.identities.last.update!(verified_attributes: ['email'])
@@ -521,7 +442,7 @@ describe 'OpenID Connect' do
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      scope: scope,
+      scope: 'openid email',
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
@@ -531,7 +452,6 @@ describe 'OpenID Connect' do
     )
 
     _user = sign_in_live_with_2fa(user)
-    handoff_page_steps&.call
 
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -544,7 +464,8 @@ describe 'OpenID Connect' do
                      code_verifier: code_verifier
     expect(page.status_code).to eq(200)
 
-    JSON.parse(page.body).with_indifferent_access
+    token_response = JSON.parse(page.body).with_indifferent_access
+    token_response[:id_token]
   end
 
   def sp_public_key
@@ -581,7 +502,7 @@ describe 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
     sign_in_live_with_2fa(user)
-    click_agree_and_continue_optional
+    click_continue
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 

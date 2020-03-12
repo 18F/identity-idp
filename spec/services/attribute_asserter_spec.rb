@@ -12,12 +12,10 @@ describe AttributeAsserter do
       session_uuid: SecureRandom.uuid,
     )
   end
-  let(:service_provider_ial) { 2 }
   let(:service_provider) do
     instance_double(
       ServiceProvider,
       issuer: 'http://localhost:3000',
-      ial: service_provider_ial,
       metadata: {},
     )
   end
@@ -166,31 +164,6 @@ describe AttributeAsserter do
         it 'gets UUID (MBUN) from Service Provider' do
           uuid_getter = user.asserted_attributes[:uuid][:getter]
           expect(uuid_getter.call(user)).to eq user.last_identity.uuid
-        end
-      end
-
-      context 'custom bundle includes verified_at' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email verified_at])
-          subject.build
-        end
-
-        context 'the service provider is ial1' do
-          let(:service_provider_ial) { 1 }
-
-          it 'only includes uuid + email (no verified_at)' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email]
-          end
-        end
-
-        context 'the service provider is ial2' do
-          let(:service_provider_ial) { 2 }
-
-          it 'includes verified_at' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at]
-          end
         end
       end
 
