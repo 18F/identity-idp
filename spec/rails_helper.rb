@@ -1,4 +1,14 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+require 'redis'
+
+begin
+  Redis.current.call 'INFO'
+rescue Redis::CannotConnectError => cce
+  puts "\n\nIt appears Redis is not running, but it is required for (some) specs to run\n\n"
+  puts cce
+  exit 1
+end
+
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start 'rails' do
@@ -48,14 +58,6 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     Rails.application.load_seed
-
-    begin
-      REDIS_POOL.with { |cache| cache.pool.with(&:info) }
-    rescue RuntimeError => error
-      puts error
-      puts 'It appears Redis is not running, but it is required for (some) specs to run'
-      exit 1
-    end
   end
 
   config.before(:each) do

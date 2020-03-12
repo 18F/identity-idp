@@ -9,7 +9,7 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -30,7 +30,7 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -64,7 +64,7 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -96,7 +96,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -138,7 +138,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
@@ -161,7 +161,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
 
     perform_in_browser(:two) do
       confirm_email_in_a_different_browser(first_email)
-      click_agree_and_continue
+      click_button t('forms.buttons.continue')
 
       continue_as(first_email)
 
@@ -181,7 +181,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
 
     perform_in_browser(:two) do
       confirm_email_in_a_different_browser(second_email)
-      click_agree_and_continue
+      click_button t('forms.buttons.continue')
 
       continue_as(second_email)
 

@@ -9,7 +9,6 @@ describe 'sign_up/completions/show.html.slim' do
       decorated_session: SessionDecorator.new,
       handoff: false,
       ialmax_requested: false,
-      consent_has_expired: false,
     )
   end
 
@@ -39,7 +38,6 @@ describe 'sign_up/completions/show.html.slim' do
         decorated_session: SessionDecorator.new,
         handoff: true,
         ialmax_requested: false,
-        consent_has_expired: false,
       )
       create_identities(@user)
     end

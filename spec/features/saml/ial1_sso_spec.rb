@@ -28,7 +28,7 @@ feature 'IAL1 Single Sign On' do
             to_not have_content t('help_text.requested_attributes.social_security_number')
         end
 
-        click_agree_and_continue
+        click_on t('forms.buttons.continue')
 
         continue_as(email)
 
@@ -45,7 +45,7 @@ feature 'IAL1 Single Sign On' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to eq saml_authn_request
 
@@ -92,7 +92,7 @@ feature 'IAL1 Single Sign On' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to eq saml_authn_request
     end
@@ -115,12 +115,12 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'returns to sp after clicking continue' do
-      click_agree_and_continue
+      click_continue
       expect(current_url).to eq(saml_authn_request)
     end
 
     it 'it confirms the user wants to continue to the SP after signing in again' do
-      click_agree_and_continue
+      click_continue
 
       set_new_browser_session
 
@@ -199,29 +199,6 @@ feature 'IAL1 Single Sign On' do
 
       expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
-    end
-  end
-
-  context 'requesting verified_at for an IAL1 account' do
-    it 'shows verified_at as a requested attribute, even if blank' do
-      user = create(:user, :signed_up)
-      saml_authn_request = auth_request.create(ial1_with_verified_at_saml_settings)
-
-      visit saml_authn_request
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      expect(current_url).to match new_user_session_path
-      expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-      expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
-
-      click_agree_and_continue
-
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-
-      expect(xmldoc.attribute_node_for('verified_at')).to be_present
-      expect(xmldoc.attribute_value_for('verified_at')).to be_blank
     end
   end
 end

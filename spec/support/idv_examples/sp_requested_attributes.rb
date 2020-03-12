@@ -49,7 +49,7 @@ shared_examples 'sp requesting attributes' do |sp|
       click_idv_continue
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
-      click_agree_and_continue
+      click_on I18n.t('forms.buttons.continue')
       visit account_path
       first(:link, t('links.sign_out')).click
     end
