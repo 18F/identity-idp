@@ -126,7 +126,7 @@ feature 'taking an action that revokes remember device' do
       expect_mfa_to_be_required_for_user(user)
     end
 
-    it 'forgets any other devices devices' do
+    it 'forgets all devices' do
       perform_in_browser(:one) do
         sign_in_with_remember_device_and_sign_out
       end
