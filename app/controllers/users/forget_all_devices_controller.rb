@@ -1,6 +1,5 @@
 module Users
   class ForgetAllDevicesController < ApplicationController
-    before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated
 
     def show

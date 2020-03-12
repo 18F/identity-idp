@@ -5,7 +5,6 @@ RSpec.describe Users::ForgetAllDevicesController do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
-        :authenticate_user!,
         :confirm_two_factor_authenticated,
       )
     end
