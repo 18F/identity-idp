@@ -20,12 +20,11 @@ module Idv
         url = '/AssureIDService/Document/Instance'
 
         options = default_options.merge(
-          headers: content_type_json,
+          headers: json_headers,
           body: image_params,
         )
 
         status, @instance_id = post(url, options) { |body| body.delete('"') }
-        @instance_id = Nokogiri::HTML(@instance_id).text
         [status, @instance_id]
       end
 
@@ -41,7 +40,7 @@ module Idv
         url = "/AssureIDService/Document/#{instance_id}"
 
         options = default_options.merge(
-          headers: accept_json,
+          headers: json_headers,
         )
 
         get(url, options, &JSON.method(:parse))
@@ -59,7 +58,7 @@ module Idv
         url = "/AssureIDService/Document/#{instance_id}/Image?side=#{side}&light=0"
 
         options = default_options.merge(
-          headers: accept_json,
+          headers: json_headers,
           body: image,
         )
 
