@@ -7,9 +7,10 @@ en:
       confirm: Confirm
       description: Use this to disconnect all your devices from your login.gov account
       link_title: Forget all devices
-      longer_description: 'FIXME: Some longer explanation that explains how this will
-        reset the "remember my device" setting across all devices, so you''ll have
-        to log in via second factor next time everywhere.'
+      longer_description: When you choose to ‘forget a device,’ we’ll need additional
+        information to know that it’s actually you signing in to your account. We’ll
+        ask for a multi-factor authentication method (such as text/SMS code or a security
+        key) each time you want to access your account.
     index:
       address: Current address
       auth_app_disabled: not enabled
