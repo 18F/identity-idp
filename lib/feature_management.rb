@@ -1,4 +1,8 @@
 class FeatureManagement
+  ENVS_DO_NOT_DISPLAY_FAKE_BANNER = %w[
+    idp.staging.login.gov secure.login.gov
+  ].freeze
+
   ENVS_WHERE_PREFILLING_OTP_ALLOWED = %w[
     idp.dev.login.gov idp.pt.login.gov idp.dev.identitysandbox.gov idp.pt.identitysandbox.gov
   ].freeze
@@ -70,7 +74,7 @@ class FeatureManagement
   end
 
   def self.fake_banner_mode?
-    Rails.env.production? && Figaro.env.domain_name != 'secure.login.gov'
+    Rails.env.production? && ENVS_DO_NOT_DISPLAY_FAKE_BANNER.exclude?(Figaro.env.domain_name)
   end
 
   def self.enable_saml_cert_rotation?
