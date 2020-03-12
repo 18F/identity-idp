@@ -18,7 +18,11 @@ A Identity Management System powering login.gov.
 - [Node.js v12.x.x](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
-#### Setting up and running the app
+#### Running the app with Docker
+
+See the [Docker documentation](./docs/Docker.md) to get up and running
+
+#### Setting up and running the app without Docker
 
 1. Make sure you have a working development environment with all the
   [dependencies](#dependencies) installed. On OS X, the easiest way
@@ -179,37 +183,6 @@ it into the "Index pattern" field, then click the "Next step" button.
 
 12. Refresh the Kibana website. You should now see new events show up in the
 Discover section.
-
-
-#### Using Docker Locally
-
-1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You should probably bump the memory resources in Docker above the defaults to avoid timeouts. 4 or 8 GB should work well.
-
-1. Build the Docker containers: `docker-compose build`
-
-1. Run `make docker_setup` to copy configuration files and bootstrap the database.
-
-1. Start the Docker containers `docker-compose up` and `open http://localhost:3000`
-
-Please note that the `docker_setup` script will destroy and re-create configuration files that were previously symlinked.  See the script source for more info.
-
-More useful Docker commands:
-
-* Force the images to re-build: `docker-compose build --no-cache`
-* Stop the containers: `docker-compose stop`
-* Stop and remove the containers (`-v` removes Volumes, which includes Postgres data): `docker-compose down`
-* Open a shell in a one-off web container: `docker-compose run --rm web bash`
-* Open a shell in the running web container: `docker-compose exec web bash`
-* Open a psql shell in the running db container: `docker-compose exec db psql -U postgres`
-
-#### Running Tests in Docker
-
-* After Docker is set up you can run the entire suite with `docker-compose run web bundle exec rspec`. This takes a while.
-* You can run a one-off test with `docker-compose run web bundle exec rspec spec/file.rb`
-* If the cluster is already running you can run the test on those containers using `exec` instead of `run`: `docker-compose exec web bundle exec rspec spec/file.rb`
-
-
-
 
 ### Viewing the app locally
 

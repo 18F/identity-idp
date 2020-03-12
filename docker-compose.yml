@@ -1,9 +1,12 @@
+# Docker Compose def for local development
 version: '3'
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: development.Dockerfile
     volumes:
-      - .:/upaya
+       - .:/upaya
     ports:
       - "3000:3000"
     environment:
@@ -14,6 +17,7 @@ services:
       # Set database timeouts to 30 seconds
       database_timeout: '30000'
       database_statement_timeout: '30000'
+      RACK_TIMEOUT_SERVICE_TIMEOUT: '30000'
       DOCKER_DB_HOST: 'db'
       DOCKER_DB_USER: 'postgres'
       # '' == 1 thread for tests; performs better in a container
@@ -24,11 +28,14 @@ services:
       - redis
       - mailcatcher
   db:
-    image: postgres
+    image: postgres:9.6-alpine
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    # Trust Docker network - Not suitable for production
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
   redis:
-    image: redis
+    image: redis:5-alpine
   mailcatcher:
     image: rordi/docker-mailcatcher
     container_name: mailcatcher

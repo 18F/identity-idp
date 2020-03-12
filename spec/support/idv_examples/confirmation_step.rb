@@ -32,7 +32,7 @@ shared_examples 'idv confirmation step' do |sp|
 
       expect(page).to have_current_path(sign_up_completed_path)
 
-      click_on t('forms.buttons.continue')
+      click_agree_and_continue
 
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')

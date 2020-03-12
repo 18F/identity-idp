@@ -11,6 +11,7 @@ class SamlRequestPresenter
     address2: :address,
     city: :address,
     state: :address,
+    verified_at: :verified_at,
     zipcode: :address,
   }.freeze
 
@@ -20,8 +21,13 @@ class SamlRequestPresenter
   end
 
   def requested_attributes
-    return [:email] unless ial2_authn_context? || ialmax_authn_context?
-    bundle.map { |attr| ATTRIBUTE_TO_FRIENDLY_NAME_MAP[attr] }.compact.uniq
+    if ial2_authn_context? || ialmax_authn_context?
+      bundle.map { |attr| ATTRIBUTE_TO_FRIENDLY_NAME_MAP[attr] }.compact.uniq
+    else
+      attrs = [:email]
+      attrs << :verified_at if bundle.include?(:verified_at)
+      attrs
+    end
   end
 
   private
