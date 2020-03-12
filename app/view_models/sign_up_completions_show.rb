@@ -1,15 +1,12 @@
-# rubocop:disable Metrics/ClassLength
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:, ialmax_requested:,
-                 consent_has_expired:)
+  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:, ialmax_requested:)
     @ial2_requested = ial2_requested
     @decorated_session = decorated_session
     @current_user = current_user
     @handoff = handoff
     @ialmax_requested = ialmax_requested
-    @consent_has_expired = consent_has_expired
   end
 
   attr_reader :ial2_requested, :ialmax_requested, :decorated_session
@@ -22,21 +19,18 @@ class SignUpCompletionsShow
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
-    [[:verified_at], :verified_at],
   ].freeze
 
   SORTED_IAL1_ATTRIBUTE_MAPPING = [
     [[:email], :email],
     [[:x509_subject], :x509_subject],
-    [[:verified_at], :verified_at],
   ].freeze
 
   MAX_RECENT_IDENTITIES = 5
 
   # rubocop:disable Rails/OutputSafety
   def heading
-    return handoff_heading if handoff?
-
+    return content_tag(:strong, I18n.t('titles.sign_up.new_sp')) if handoff?
     if requested_ial == 'ial2'
       return content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
     end
@@ -112,20 +106,8 @@ class SignUpCompletionsShow
 
   private
 
-  def handoff_heading
-    if consent_has_expired?
-      content_tag(:strong, I18n.t('titles.sign_up.refresh_consent'))
-    else
-      content_tag(:strong, I18n.t('titles.sign_up.new_sp'))
-    end
-  end
-
   def handoff?
     @handoff
-  end
-
-  def consent_has_expired?
-    @consent_has_expired
   end
 
   def requested_attributes
@@ -140,4 +122,3 @@ class SignUpCompletionsShow
     user_verified? ? 'ial2' : 'ial1'
   end
 end
-# rubocop:enable Metrics/ClassLength

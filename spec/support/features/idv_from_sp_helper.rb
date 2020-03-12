@@ -15,13 +15,13 @@ module IdvFromSpHelper
     fill_in 'Password', with: password
     click_continue
     click_acknowledge_personal_key
-    click_agree_and_continue
+    click_continue
   end
 
   def create_ial1_user_from_sp(email)
     visit_idp_from_sp_with_ial1(:oidc)
     register_user(email)
-    click_agree_and_continue
+    click_on t('forms.buttons.continue')
   end
 
   def create_ial1_user_directly(email)

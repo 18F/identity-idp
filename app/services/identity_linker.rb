@@ -8,7 +8,7 @@ class IdentityLinker
   end
 
   def link_identity(**extra_attrs)
-    process_ial(extra_attrs)
+    @ial =  extra_attrs[:ial]
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
     AgencyIdentityLinker.new(identity).link_identity
@@ -20,26 +20,6 @@ class IdentityLinker
   end
 
   private
-
-  def process_ial(extra_attrs)
-    @ial = extra_attrs[:ial]
-    now = Time.zone.now
-    process_ial_at(now)
-    process_verified_at(now)
-  end
-
-  def process_ial_at(now)
-    if @ial == 2 || (identity.verified_at.present? && @ial&.zero?)
-      identity.last_ial2_authenticated_at = now
-    else
-      identity.last_ial1_authenticated_at = now
-    end
-  end
-
-  def process_verified_at(now)
-    return unless @ial == 2 && identity.verified_at.nil?
-    identity.verified_at = now
-  end
 
   def identity
     @identity ||= find_or_create_identity_with_costing
@@ -74,8 +54,7 @@ class IdentityLinker
     nonce: nil,
     rails_session_id: nil,
     scope: nil,
-    verified_attributes: nil,
-    last_consented_at: nil
+    verified_attributes: nil
   )
     {
       code_challenge: code_challenge,
@@ -84,9 +63,7 @@ class IdentityLinker
       rails_session_id: rails_session_id,
       scope: scope,
       verified_attributes: merge_attributes(verified_attributes),
-    }.tap do |hash|
-      hash[:last_consented_at] = last_consented_at if last_consented_at
-    end
+    }
   end
 
   def merge_attributes(verified_attributes)
