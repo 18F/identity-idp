@@ -11,19 +11,19 @@ namespace :test do
       results.push(line.match(regex_finder))
     end
 
-    results = results.map{|r| r.to_s.remove("Rendered ")}
-    results = results.reject{|r| r.empty?}.sort.uniq
+    results = results.map { |r| r.to_s.remove('Rendered ') }
+    results = results.reject(&:empty?).sort.uniq
 
     puts "== #{results.size} rendered (covered) views present in test.log =="
 
     # Gets all .html, .html.slim, and .html.erb views
-    all_views =Dir.glob('app/views/**/*.{html,html.erb,html.slim}*').map{|v| v.remove("app/views/")}.sort.uniq
+    all_views = Dir.glob('app/views/**/*.{html,html.erb,html.slim}*')
+    all_views = all_views.map { |v| v.remove('app/views/') }.sort.uniq
     puts "== #{all_views.size} total views in the app =="
 
     # Get total - covered
-    uncovered_views = all_views.reject{|v| results.include?(v)}.sort.uniq
+    uncovered_views = all_views.reject { |v| results.include?(v) }.sort.uniq
     puts "== #{uncovered_views.size} uncovered views: =="
     puts uncovered_views
-
   end
 end
