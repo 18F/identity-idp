@@ -27,7 +27,6 @@ RSpec.describe OpenidConnectAttributeScoper do
     subject(:filtered) { scoper.filter(user_info) }
 
     let(:scope) { 'openid' }
-    let(:verified_at) { Time.zone.parse('2020-01-01').to_i }
     let(:user_info) do
       {
         sub: 'abcdef',
@@ -47,7 +46,6 @@ RSpec.describe OpenidConnectAttributeScoper do
           postal_code: '12345',
         },
         social_security_number: '666661234',
-        verified_at: verified_at,
       }
     end
 
@@ -95,7 +93,6 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:given_name]).to be_present
         expect(filtered[:family_name]).to be_present
         expect(filtered[:birthdate]).to be_present
-        expect(filtered[:verified_at]).to be_present
       end
     end
 
@@ -106,7 +103,6 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:given_name]).to be_present
         expect(filtered[:family_name]).to be_present
         expect(filtered[:birthdate]).to be_nil
-        expect(filtered[:verified_at]).to be_nil
       end
     end
 
@@ -117,21 +113,8 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:given_name]).to be_nil
         expect(filtered[:family_name]).to be_nil
         expect(filtered[:birthdate]).to be_present
-        expect(filtered[:verified_at]).to be_nil
       end
     end
-
-    context 'with profile:verified_at scope' do
-      let(:scope) { 'openid profile:verified_at' }
-
-      it 'includes the verified_at attribute' do
-        expect(filtered[:given_name]).to be_nil
-        expect(filtered[:family_name]).to be_nil
-        expect(filtered[:birthdate]).to be_nil
-        expect(filtered[:verified_at]).to eq(verified_at)
-      end
-    end
-
     context 'with social_security_number scope' do
       let(:scope) { 'openid social_security_number' }
 
@@ -148,7 +131,7 @@ RSpec.describe OpenidConnectAttributeScoper do
       let(:scope) { 'email profile' }
 
       it 'is the array of attributes corresponding to the scopes' do
-        expect(requested_attributes).to eq(%w[email given_name family_name birthdate verified_at])
+        expect(requested_attributes).to eq(%w[email given_name family_name birthdate])
       end
     end
 

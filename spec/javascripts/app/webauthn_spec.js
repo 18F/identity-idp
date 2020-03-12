@@ -31,12 +31,6 @@ describe('WebAuthn', () => {
     });
   });
 
-  describe('extractCredentials', () => {
-    it('returns [] if credentials are empty string', () => {
-      expect(WebAuthn.extractCredentials('')).to.eql([]);
-    });
-  });
-
   describe('enrollWebauthnDevice', () => {
     const userId = '123';
     const userEmail = 'test@test.com';
@@ -65,10 +59,6 @@ describe('WebAuthn', () => {
           timeout: 800000,
           attestation: 'none',
           excludeList: [],
-          authenticatorSelection: {
-            authenticatorAttachment: 'cross-platform',
-            userVerification: 'discouraged',
-          },
           excludeCredentials: [
             {
               // encodes to 'credential123'

@@ -26,7 +26,7 @@ shared_examples 'setting up backup mfa on sign up' do
 
     expect(page).to have_current_path(sign_up_completed_path)
 
-    click_agree_and_continue
+    click_button t('forms.buttons.continue')
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
     expect(user.reload.encrypted_recovery_code_digest).to be_empty

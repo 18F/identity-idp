@@ -147,7 +147,6 @@ feature 'Sign in' do
       click_submit_default
       click_continue
     end
-    click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
   scenario 'user cannot sign in with certificate timeout error' do
@@ -707,7 +706,7 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_agree_and_continue
+      click_continue
 
       redirect_uri = URI(current_url)
 
@@ -722,7 +721,7 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_agree_and_continue
+      click_continue
 
       visit_idp_from_oidc_sp_with_loa1_prompt_login
       expect(current_path).to eq(bounced_path)
@@ -787,7 +786,7 @@ feature 'Sign in' do
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content(user.email)
 
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
@@ -803,7 +802,7 @@ feature 'Sign in' do
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content('111223333')
 
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
@@ -820,7 +819,7 @@ feature 'Sign in' do
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content(user.email)
 
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to eq @saml_authn_request
     end
@@ -836,55 +835,9 @@ feature 'Sign in' do
       expect(current_path).to eq sign_up_completed_path
       expect(page).to have_content('111223333')
 
-      click_agree_and_continue
+      click_continue
 
       expect(current_url).to eq @saml_authn_request
-    end
-  end
-
-  context 'ial2 param on sign up screen' do
-    before do
-      enable_doc_auth
-      visit root_path(ial: 2)
-    end
-
-    it 'invokes ial2 flow if the user already has an ial1 account' do
-      user = create(:user, :signed_up)
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      complete_all_doc_auth_steps
-      click_continue
-      fill_in 'Password', with: user.password
-      click_continue
-      click_acknowledge_personal_key
-      click_continue
-
-      expect(current_path).to eq(account_path)
-    end
-
-    it 'invokes ial2 flow if the user does not have an ial1 account' do
-      register_user('foo@test.com')
-
-      complete_all_doc_auth_steps
-      click_continue
-      fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
-      click_continue
-      click_acknowledge_personal_key
-      click_continue
-
-      expect(current_path).to eq(account_path)
-    end
-
-    it 'goes to the account page if the user is already verified' do
-      user = create(:user, :signed_up)
-      create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' }, user: user)
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      expect(current_path).to eq(account_path)
     end
   end
 

@@ -25,7 +25,7 @@ shared_examples 'a saml endpoint' do
     it 'creates a valid auth request' do
       sign_in_and_2fa_user(user)
       visit endpoint_authn_request
-      click_agree_and_continue
+      click_continue
 
       response_node = page.find('#SAMLResponse', visible: false)
       decoded_response = Base64.decode64(response_node.value)
@@ -43,7 +43,7 @@ shared_examples 'a saml endpoint' do
     it 'create a valid logout request' do
       sign_in_and_2fa_user(user)
       visit endpoint_authn_request
-      click_agree_and_continue
+      click_continue
 
       service_provider = ServiceProvider.from_issuer(endpoint_saml_settings.issuer)
       uuid = user.decorate.active_identity_for(service_provider).uuid

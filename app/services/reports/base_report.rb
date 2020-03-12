@@ -4,13 +4,8 @@ module Reports
   class BaseReport
     private
 
-    def fiscal_start_date
-      now = Time.zone.now
-      now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1).to_date.to_s
-    end
-
     def first_of_this_month
-      Time.zone.today.beginning_of_month.strftime('%m-%d-%Y')
+      Time.zone.today.strftime('%m-01-%Y')
     end
 
     def end_of_today

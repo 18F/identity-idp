@@ -206,19 +206,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'when scope includes profile:verified_at but the sp is only ial1' do
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
-      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      let(:scope) { 'email profile:verified_at' }
-
-      it 'has errors' do
-        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('true')
-        expect(valid?).to eq(false)
-        expect(form.errors[:scope]).
-          to include(t('openid_connect.authorization.errors.unauthorized_scope'))
-      end
-    end
-
     context 'redirect_uri' do
       context 'without a redirect_uri' do
         let(:redirect_uri) { nil }
