@@ -25,6 +25,7 @@ module Idv
         )
 
         status, @instance_id = post(url, options) { |body| body.delete('"') }
+        @instance_id = Nokogiri::HTML(@instance_id).text
         [status, @instance_id]
       end
 
