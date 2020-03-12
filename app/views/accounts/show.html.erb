@@ -66,13 +66,20 @@
   <% @view_model.recent_devices.each do |device| %>
     <%= render device.device_partial, device: device %>
   <% end %>
+</div>
+
+<div class="mb3 profile-info-box">
+  <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
+    Remembered Browsers
+    <%= image_tag asset_url('history.svg'), width: 12, class: 'ml1' %>
+  </div>
   <div class="p2 clearfix border-top">
     <div class="clearfix mxn1">
-      <div class="sm-col sm-col-3 px1">
-        <%= link_to(t('account.forget_all_devices.link_title'), forget_all_devices_path, class: 'bold') %>
-      </div>
-      <div class="sm-col sm-col-9 px1 sm-right-align">
+      <div class="sm-col sm-col-9 px1">
         <%= t('account.forget_all_devices.description') %>
+      </div>
+      <div class="sm-col sm-col-3 px1 sm-right-align">
+        <%= link_to(t('account.forget_all_devices.link_title'), forget_all_devices_path) %>
       </div>
     </div>
   </div>
