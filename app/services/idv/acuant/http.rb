@@ -24,7 +24,6 @@ module Idv
 
       def handle_success(response, block)
         body = response.body
-        puts "body=#{body}"
         data = block ? block.call(body) : body
         [true, data]
       end
@@ -33,11 +32,12 @@ module Idv
         response.code.between?(200, 299)
       end
 
-      def json_headers
-        {
-          'Accept' => 'application/json',
-          'Content-Type' => 'application/json'
-        }
+      def accept_json
+        { 'Accept' => 'application/json' }
+      end
+
+      def content_type_json
+        { 'Content-Type' => 'application/json' }
       end
 
       def env

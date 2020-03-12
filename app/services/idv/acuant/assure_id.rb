@@ -40,7 +40,7 @@ module Idv
         url = "/AssureIDService/Document/#{instance_id}"
 
         options = default_options.merge(
-          headers: json_headers,
+          headers: accept_json,
         )
 
         get(url, options, &JSON.method(:parse))
@@ -58,7 +58,7 @@ module Idv
         url = "/AssureIDService/Document/#{instance_id}/Image?side=#{side}&light=0"
 
         options = default_options.merge(
-          headers: json_headers,
+          headers: accept_json,
           body: image,
         )
 
