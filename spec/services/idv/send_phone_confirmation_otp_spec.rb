@@ -37,18 +37,20 @@ describe Idv::SendPhoneConfirmationOtp do
   subject { described_class.new(user: user, idv_session: idv_session) }
 
   describe '#call' do
+    let(:now) { Time.zone.now }
+
     context 'with sms' do
       it 'sends an sms' do
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-        result = subject.call
+        result = Timecop.freeze(now) { subject.call }
 
         expect(result.success?).to eq(true)
 
         phone_confirmation_session = idv_session.user_phone_confirmation_session
 
         expect(phone_confirmation_session.code).to eq(otp_code)
-        expect(phone_confirmation_session.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_session.sent_at.to_i).to eq(now.to_i)
         expect(phone_confirmation_session.delivery_method).to eq(:sms)
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
@@ -66,14 +68,14 @@ describe Idv::SendPhoneConfirmationOtp do
       it 'makes a phone call' do
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-        result = subject.call
+        result = Timecop.freeze(now) { subject.call }
 
         expect(result.success?).to eq(true)
 
         phone_confirmation_session = idv_session.user_phone_confirmation_session
 
         expect(phone_confirmation_session.code).to eq(otp_code)
-        expect(phone_confirmation_session.sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(phone_confirmation_session.sent_at.to_i).to eq(now.to_i)
         expect(phone_confirmation_session.delivery_method).to eq(:voice)
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
