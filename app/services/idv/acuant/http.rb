@@ -36,8 +36,11 @@ module Idv
         { 'Accept' => 'application/json' }
       end
 
-      def content_type_json
-        { 'Content-Type' => 'application/json' }
+      def json_headers
+        {
+          'Accept' => 'application/json',
+          'Content-Type' => 'application/json'
+        }
       end
 
       def env
