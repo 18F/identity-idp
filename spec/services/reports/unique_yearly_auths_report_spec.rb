@@ -12,7 +12,8 @@ describe Reports::UniqueYearlyAuthsReport do
   end
 
   it 'returns 1 unique despite the count for the user being 7' do
-    MonthlySpAuthCount.create(issuer: 'foo', ial: 1, year_month: year_month, user_id: 2, auth_count: 7)
+    MonthlySpAuthCount.create(issuer: 'foo', ial: 1, year_month: year_month, user_id: 2,
+                              auth_count: 7)
     result = [{ issuer: 'foo', year: year, total: 1 }].to_json
 
     expect(subject.call).to eq(result)
