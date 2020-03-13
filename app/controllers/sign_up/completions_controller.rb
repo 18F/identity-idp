@@ -44,6 +44,7 @@ module SignUp
         current_user: current_user,
         handoff: new_service_provider_attributes,
         ialmax_requested: ialmax?,
+        consent_has_expired: consent_has_expired?,
       )
     end
 
@@ -115,6 +116,7 @@ module SignUp
       return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
       {
         email: email,
+        verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
       }
     end
@@ -122,6 +124,15 @@ module SignUp
     def dob
       pii_dob = pii[:dob]
       pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
+    end
+
+    def verified_at
+      timestamp = current_user.active_profile&.verified_at
+      if timestamp
+        I18n.l(timestamp, format: :event_timestamp)
+      else
+        I18n.t('help_text.requested_attributes.verified_at_blank')
+      end
     end
 
     def pii_to_displayable_attributes
@@ -132,6 +143,7 @@ module SignUp
         birthdate: dob,
         phone: PhoneFormatter.format(pii[:phone].to_s),
         email: email,
+        verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
       }
     end

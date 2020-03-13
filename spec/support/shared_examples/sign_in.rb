@@ -17,7 +17,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
     expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
 
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
@@ -120,7 +120,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
@@ -257,7 +257,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: old_personal_key)
     click_submit_default
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
@@ -277,7 +277,7 @@ def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
 
-  click_continue
+  click_agree_and_continue
   return unless sp == :oidc
   redirect_uri = URI(current_url)
 

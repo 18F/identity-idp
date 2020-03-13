@@ -32,7 +32,7 @@ shared_examples 'usps otp verfication step' do |sp|
     if %i[saml oidc].include?(sp)
       expect(current_path).to eq(sign_up_completed_path)
 
-      click_button t('forms.buttons.continue')
+      click_agree_and_continue
 
       if sp == :saml
         expect(current_url).to eq @saml_authn_request

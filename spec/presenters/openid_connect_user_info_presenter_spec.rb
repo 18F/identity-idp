@@ -5,10 +5,14 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
   let(:rails_session_id) { SecureRandom.uuid }
   let(:scope) { 'openid email address phone profile social_security_number x509:subject' }
+  let(:service_provider_ial) { 2 }
+  let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
+  let(:profile) { build(:profile, :active, :verified) }
   let(:identity) do
     build(:identity,
           rails_session_id: rails_session_id,
-          user: create(:user),
+          user: create(:user, profiles: [profile]),
+          service_provider: service_provider.issuer,
           scope: scope)
   end
 
@@ -111,6 +115,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
                 region: 'DC',
                 postal_code: '12345',
               )
+              expect(user_info[:verified_at]).to eq(profile.verified_at.to_i)
               expect(user_info[:social_security_number]).to eq('666661234')
             end
           end
@@ -135,7 +140,28 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:phone]).to eq('+1 (703) 555-5555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(nil)
+              expect(user_info[:verified_at]).to eq(nil)
               expect(user_info[:social_security_number]).to eq(nil)
+            end
+          end
+        end
+
+        context 'verified_at' do
+          let(:scope) { 'openid profile:verified_at' }
+
+          context 'when the service provider has ial1 access' do
+            let(:service_provider_ial) { 1 }
+
+            it 'does not provide verified_at' do
+              expect(user_info[:verified_at]).to eq(nil)
+            end
+          end
+
+          context 'when the service provider has ial2 access' do
+            let(:service_provider_ial) { 2 }
+
+            it 'provides verified_at' do
+              expect(user_info[:verified_at]).to eq(profile.verified_at.to_i)
             end
           end
         end

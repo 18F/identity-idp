@@ -107,7 +107,7 @@ describe 'signing in with an MFA method and upgrading personal key to another me
     expect(page).to have_content(t('help_text.requested_attributes.intro_html', sp: 'Test SP'))
     expect(page).to have_current_path(sign_up_completed_path)
 
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end

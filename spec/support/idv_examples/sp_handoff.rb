@@ -27,7 +27,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
-      click_on I18n.t('forms.buttons.continue')
+      click_agree_and_continue
 
       expect(user.events.account_verified.size).to be(1)
       expect_successful_oidc_handoff if sp == :oidc
@@ -57,7 +57,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
-      click_on I18n.t('forms.buttons.continue')
+      click_agree_and_continue
 
       expect(user.events.account_verified.size).to be(1)
       expect_successful_oidc_handoff if sp == :oidc
@@ -84,7 +84,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect_csp_headers_to_be_present if sp == :oidc
 
-      click_on I18n.t('forms.buttons.continue')
+      click_agree_and_continue
 
       expect_successful_oidc_handoff if sp == :oidc
       expect_successful_saml_handoff if sp == :saml
@@ -105,7 +105,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_idv_continue
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
-      click_on I18n.t('forms.buttons.continue')
+      click_agree_and_continue
       visit account_path
       first(:link, t('links.sign_out')).click
     end

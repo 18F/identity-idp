@@ -73,7 +73,7 @@ feature 'sign up with backup code' do
 
     expect(page).to have_current_path(sign_up_completed_path)
 
-    click_continue
+    click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end

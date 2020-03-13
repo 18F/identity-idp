@@ -5,31 +5,17 @@ const stub = sinon.stub;
 
 describe('focusTrap', () => {
   let proxy;
-  const fakeFocusTrap = {
-    build() {
-      return function() {
-        const thisTrap = sinon.createStubInstance(function() {});
-        thisTrap.deactivate = stub();
-        thisTrap.activate = stub();
-
-        return thisTrap;
-      };
-    },
-  };
 
   beforeEach(() => {
     proxy = proxyquire('../../../../app/javascript/app/components/focus-trap-proxy', {
-      // jump through this crazy hoop so we can spy on the method and ensure
-      // the proxy object is calling the underlying `focusTrap` constructor
-      'focus-trap': () => (fakeFocusTrap.build())(),
+      // Mock external focus-trap library
+      'focus-trap': function() {
+        const thisTrap = sinon.createStubInstance(function() {});
+        thisTrap.deactivate = stub();
+        thisTrap.activate = stub();
+        return thisTrap;
+      },
     }).default;
-  });
-
-  it('calls the underlying focusTrap object', () => {
-    sinon.spy(fakeFocusTrap, 'build');
-    proxy('foo');
-    expect(fakeFocusTrap.build.calledOnce).to.be.true();
-    fakeFocusTrap.build.restore();
   });
 
   context('#deactivate', () => {

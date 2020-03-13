@@ -162,7 +162,7 @@ feature 'User profile' do
 
         expect(current_path).to eq(sign_up_completed_path)
 
-        click_continue
+        click_agree_and_continue
 
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       end
