@@ -3,13 +3,13 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     def show
-      analytics.track_event(Analytics::FORGET_ALL_DEVICES_VISITED)
+      analytics.track_event(Analytics::FORGET_ALL_BROWSERS_VISITED)
     end
 
     def destroy
       DeviceTracking::ForgetAllBrowsers.new(current_user).call
 
-      analytics.track_event(Analytics::FORGET_ALL_DEVICES_SUBMITTED)
+      analytics.track_event(Analytics::FORGET_ALL_BROWSERS_SUBMITTED)
 
       redirect_to account_path
     end
