@@ -293,7 +293,6 @@ development:
       - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/logout'
     cert: 'sp_sinatra_demo'
-    opt_out_rem_me: true
     friendly_name: 'Example Sinatra App'
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
