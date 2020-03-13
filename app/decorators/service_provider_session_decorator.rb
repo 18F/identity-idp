@@ -11,7 +11,8 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     @service_provider_request = service_provider_request
   end
 
-  delegate :redirect_uris, :opt_out_rem_me, to: :sp, prefix: true
+  delegate :redirect_uris, to: :sp, prefix: true
+  delegate :opt_out_rem_me, to: :sp
 
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
