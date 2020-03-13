@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe DeviceTracking::ForgetAllDevices do
+RSpec.describe DeviceTracking::ForgetAllBrowsers do
   let(:user) { build(:user, remember_device_revoked_at: original_revoked_at) }
   let(:now) { Time.zone.now }
   let(:original_revoked_at) { 30.days.from_now }
 
   subject(:service) do
-    DeviceTracking::ForgetAllDevices.new(user, remember_device_revoked_at: now)
+    DeviceTracking::ForgetAllBrowsers.new(user, remember_device_revoked_at: now)
   end
 
   describe '#call' do

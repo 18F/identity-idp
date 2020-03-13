@@ -3,7 +3,7 @@ es:
   account:
     connected_apps:
       associated: Asociado %{timestamp}
-    forget_all_devices:
+    forget_all_browsers:
       confirm: TODO
       description: TODO
       link_title: TODO

@@ -13,7 +13,7 @@ es:
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code: Ingese su código de seguridad de sólo un uso
-    forget_all_devices: TODO
+    forget_all_browsers: TODO
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta

@@ -1,5 +1,5 @@
 module Users
-  class ForgetAllDevicesController < ApplicationController
+  class ForgetAllBrowsersController < ApplicationController
     before_action :confirm_two_factor_authenticated
 
     def show
@@ -7,7 +7,7 @@ module Users
     end
 
     def destroy
-      DeviceTracking::ForgetAllDevices.new(current_user).call
+      DeviceTracking::ForgetAllBrowsers.new(current_user).call
 
       analytics.track_event(Analytics::FORGET_ALL_DEVICES_SUBMITTED)
 

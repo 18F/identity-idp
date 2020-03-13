@@ -111,22 +111,22 @@ feature 'taking an action that revokes remember device' do
     end
   end
 
-  context 'clicking forget device' do
+  context 'clicking forget browsers' do
     let(:user) { create(:user, :signed_up) }
 
-    it 'forgets the current device' do
+    it 'forgets the current browser' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      click_on(t('account.forget_all_devices.link_title'))
-      click_on(t('account.forget_all_devices.confirm'))
+      click_on(t('account.forget_all_browsers.link_title'))
+      click_on(t('account.forget_all_browsers.confirm'))
 
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
 
-    it 'forgets all devices' do
+    it 'forgets all browsers' do
       perform_in_browser(:one) do
         sign_in_with_remember_device_and_sign_out
       end
@@ -135,8 +135,8 @@ feature 'taking an action that revokes remember device' do
         sign_in_with_remember_device_and_sign_out
 
         sign_in_user(user)
-        click_on(t('account.forget_all_devices.link_title'))
-        click_on(t('account.forget_all_devices.confirm'))
+        click_on(t('account.forget_all_browsers.link_title'))
+        click_on(t('account.forget_all_browsers.confirm'))
 
         first(:link, t('links.sign_out')).click
 

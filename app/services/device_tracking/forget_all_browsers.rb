@@ -1,5 +1,5 @@
 module DeviceTracking
-  class ForgetAllDevices
+  class ForgetAllBrowsers
     attr_reader :user, :remember_device_revoked_at
 
     def initialize(user, remember_device_revoked_at: Time.zone.now)
