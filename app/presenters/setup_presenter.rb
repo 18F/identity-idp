@@ -1,7 +1,8 @@
 class SetupPresenter
   attr_reader :current_user, :user_fully_authenticated, :user_opted_remember_device_cookie
 
-  def initialize(current_user:, user_fully_authenticated:, user_opted_remember_device_cookie:, opt_out_rem_me:)
+  def initialize(current_user:, user_fully_authenticated:, user_opted_remember_device_cookie:,
+                 opt_out_rem_me:)
     @current_user = current_user
     @user_fully_authenticated = user_fully_authenticated
     @user_opted_remember_device_cookie = user_opted_remember_device_cookie

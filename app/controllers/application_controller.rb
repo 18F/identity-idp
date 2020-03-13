@@ -62,6 +62,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     @user_event_creator ||= UserEventCreator.new(request, current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
+  delegate :opt_out_rem_me, to: :decorated_session
 
   def decorated_session
     @_decorated_session ||= DecoratedSession.new(
@@ -70,10 +71,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       sp_session: sp_session,
       service_provider_request: service_provider_request,
     ).call
-  end
-
-  def opt_out_rem_me
-    decorated_session.opt_out_rem_me
   end
 
   def default_url_options

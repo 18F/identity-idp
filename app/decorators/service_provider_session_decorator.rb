@@ -78,10 +78,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
 
-  def opt_out_rem_me
-    sp.opt_out_rem_me
-  end
-
   def sp_name
     sp.friendly_name || sp.agency
   end
