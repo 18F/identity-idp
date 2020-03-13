@@ -9,7 +9,7 @@ class CreateMonthlySpAuthCounts < ActiveRecord::Migration[5.1]
       t.integer :user_id, null: false
       t.integer :auth_count, default: 1, null: false
     end
-    add_index :monthly_sp_auth_counts, %i[issuer ial year_month user_id], algorithm: :concurrently,
+    add_index :monthly_sp_auth_counts, %i[issuer ial year_month user_id],
               unique: true, name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id"
   end
 end
