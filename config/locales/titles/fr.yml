@@ -13,7 +13,7 @@ fr:
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique
-    forget_all_browsers: TODO
+    forget_all_browsers: Oubliez tous les navigateurs
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte
@@ -45,6 +45,7 @@ fr:
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte
+    remembered_browsers: Navigateurs mémorisés
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé un compte
