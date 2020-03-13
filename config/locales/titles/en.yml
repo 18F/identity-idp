@@ -13,6 +13,7 @@ en:
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time security code
+    forget_all_browsers: Forget all browsers
     passwords:
       change: Change the password for your account
       confirm: Confirm the password for your account
@@ -44,6 +45,7 @@ en:
     reactivate_account: Reactivate your account
     registrations:
       new: Sign up for a account
+    remembered_browsers: Remembered browsers
     sign_up:
       completion_html: You've %{accent} with %{app}
       loa1: created an account

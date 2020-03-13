@@ -84,6 +84,8 @@ class Analytics
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
   EXPIRED_LETTERS = 'Expired Letters'.freeze
+  FORGET_ALL_DEVICES_SUBMITTED = 'Forget All Devices Submitted'.freeze
+  FORGET_ALL_DEVICES_VISITED = 'Forget All Devices Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze

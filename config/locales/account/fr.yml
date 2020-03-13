@@ -3,6 +3,16 @@ fr:
   account:
     connected_apps:
       associated: Associé %{timestamp}
+    forget_all_browsers:
+      confirm: Confirmer
+      description: Utilisez-le pour déconnecter tous les navigateurs mémorisés de
+        votre compte login.gov
+      link_title: Oubliez tous les navigateurs
+      longer_description: Une fois que vous aurez choisi "d'oublier tous les navigateurs",
+        nous aurons besoin d'informations supplémentaires pour savoir qu'il s'agit
+        bien de votre connexion à votre compte. Nous vous demanderons une méthode
+        d'authentification multifacteur (comme un code texte / SMS ou une clé de sécurité)
+        chaque fois que vous souhaitez accéder à votre compte.
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée

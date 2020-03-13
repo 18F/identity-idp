@@ -3,6 +3,16 @@ es:
   account:
     connected_apps:
       associated: Asociado %{timestamp}
+    forget_all_browsers:
+      confirm: Confirmar
+      description: Use esto para desconectar todos los navegadores recordados de su
+        cuenta login.gov
+      link_title: Olvídate de todos los navegadores
+      longer_description: Una vez que elija "olvidar todos los navegadores", necesitaremos
+        información adicional para saber que en realidad está iniciando sesión en
+        su cuenta. Le pediremos un método de autenticación de múltiples factores (como
+        texto / código de SMS o una clave de seguridad) cada vez que desee acceder
+        a su cuenta.
     index:
       address: Dirección actual
       auth_app_disabled: no permitido

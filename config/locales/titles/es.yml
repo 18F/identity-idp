@@ -13,6 +13,7 @@ es:
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code: Ingese su código de seguridad de sólo un uso
+    forget_all_browsers: Olvídate de todos los navegadores
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta
@@ -45,6 +46,7 @@ es:
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta
+    remembered_browsers: Navegadores recordados
     sign_up:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó una cuenta
