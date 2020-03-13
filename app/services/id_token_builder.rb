@@ -6,12 +6,13 @@ class IdTokenBuilder
   JWT_SIGNING_ALGORITHM = 'RS256'.freeze
   NUM_BYTES_FIRST_128_BITS = 128 / 8
 
-  attr_reader :identity
+  attr_reader :identity, :now
 
-  def initialize(identity:, code:, custom_expiration: nil)
+  def initialize(identity:, code:, custom_expiration: nil, now: Time.zone.now)
     @identity = identity
     @code = code
     @custom_expiration = custom_expiration
+    @now = now
   end
 
   def id_token
@@ -40,11 +41,10 @@ class IdTokenBuilder
   end
 
   def timestamp_claims
-    now = Time.zone.now.to_i
     {
       exp: @custom_expiration || expires,
-      iat: now,
-      nbf: now,
+      iat: now.to_i,
+      nbf: now.to_i,
     }
   end
 
@@ -61,7 +61,7 @@ class IdTokenBuilder
 
   def expires
     ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
-    Time.zone.now.to_i + ttl
+    now.to_i + ttl
   end
 
   def hash_token(token)
