@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Db::MonthlyAuthCount::TotalMonthlyAuthCounts do
+describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
   subject { described_class }
 
   let(:issuer) { 'foo' }
@@ -11,9 +11,9 @@ describe Db::MonthlyAuthCount::TotalMonthlyAuthCounts do
   end
 
   it 'returns the total auth counts' do
-    MonthlyAuthCount.create(issuer: issuer, year_month: year_month, user_id: 2, auth_count: 7)
-    MonthlyAuthCount.create(issuer: issuer, year_month: year_month, user_id: 3, auth_count: 3)
-    result = { issuer: issuer, year_month: year_month, total: 10 }.to_json
+    MonthlySpAuthCount.create(issuer: issuer, ial: 1, year_month: year_month, user_id: 2, auth_count: 7)
+    MonthlySpAuthCount.create(issuer: issuer, ial: 1, year_month: year_month, user_id: 3, auth_count: 3)
+    result = { issuer: issuer, ial: 1, year_month: year_month, total: 10 }.to_json
 
     expect(subject.call.ntuples).to eq(1)
     expect(subject.call[0].to_json).to eq(result)

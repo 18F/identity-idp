@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Db::MonthlyAuthCount::UniqueMonthlyAuthCounts do
+describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCounts do
   subject { described_class }
 
   let(:issuer) { 'foo' }
@@ -11,7 +11,7 @@ describe Db::MonthlyAuthCount::UniqueMonthlyAuthCounts do
   end
 
   it 'returns 1 unique despite the count for the user being 7' do
-    MonthlyAuthCount.create(issuer: issuer, year_month: year_month, user_id: 2, auth_count: 7)
+    MonthlySpAuthCount.create(issuer: issuer, ial: 1, year_month: year_month, user_id: 2, auth_count: 7)
     result = { issuer: issuer, year_month: year_month, total: 1 }.to_json
 
     expect(subject.call.ntuples).to eq(1)
