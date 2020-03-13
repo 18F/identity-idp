@@ -245,7 +245,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     return unless current_user&.id
     issuer = sp_session[:issuer]
     return if issuer.blank? || !first_auth_of_session?(issuer)
-    MonthlySpAuthCount.increment(current_user.id, issuer)
+    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session[:ial2] ? 2 : 1)
   end
 
   def first_auth_of_session?(issuer)
