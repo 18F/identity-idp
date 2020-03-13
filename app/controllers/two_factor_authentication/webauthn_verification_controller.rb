@@ -58,6 +58,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: { credential_ids: credential_ids,
                 user_opted_remember_device_cookie: user_opted_remember_device_cookie },
+        opt_out_rem_me: opt_out_rem_me,
       )
     end
 

@@ -11,7 +11,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     @service_provider_request = service_provider_request
   end
 
-  delegate :redirect_uris, to: :sp, prefix: true
+  delegate :redirect_uris, :opt_out_rem_me, to: :sp, prefix: true
 
   def sp_msg(section, args = {})
     args = args.merge(sp_name: sp_name)
@@ -76,6 +76,10 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
 
   def sp_create_link
     view_context.sign_up_email_path(request_id: sp_session[:request_id])
+  end
+
+  def opt_out_rem_me
+    sp.opt_out_rem_me
   end
 
   def sp_name

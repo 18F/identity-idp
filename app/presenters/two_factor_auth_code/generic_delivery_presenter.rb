@@ -6,12 +6,12 @@ module TwoFactorAuthCode
 
     attr_reader :code_value
 
-    def initialize(data:, view:)
+    def initialize(data:, view:, opt_out_rem_me: false)
       data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
-
       @view = view
+      @opt_out_rem_me = opt_out_rem_me
     end
 
     def header
@@ -46,6 +46,7 @@ module TwoFactorAuthCode
     end
 
     def remember_device_box_checked?
+      return false if @opt_out_rem_me
       return true if user_opted_remember_device_cookie.nil?
       ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
     end

@@ -72,6 +72,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     ).call
   end
 
+  def opt_out_rem_me
+    decorated_session.opt_out_rem_me
+  end
+
   def default_url_options
     { locale: locale_url_param, host: Figaro.env.domain_name }
   end

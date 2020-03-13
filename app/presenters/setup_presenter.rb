@@ -1,10 +1,11 @@
 class SetupPresenter
   attr_reader :current_user, :user_fully_authenticated, :user_opted_remember_device_cookie
 
-  def initialize(current_user:, user_fully_authenticated:, user_opted_remember_device_cookie:)
+  def initialize(current_user:, user_fully_authenticated:, user_opted_remember_device_cookie:, opt_out_rem_me:)
     @current_user = current_user
     @user_fully_authenticated = user_fully_authenticated
     @user_opted_remember_device_cookie = user_opted_remember_device_cookie
+    @opt_out_rem_me = opt_out_rem_me
   end
 
   def step
@@ -19,6 +20,7 @@ class SetupPresenter
   end
 
   def remember_device_box_checked?
+    return false if @opt_out_rem_me
     return true if user_opted_remember_device_cookie.nil?
     ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
   end

@@ -31,7 +31,8 @@ module Users
       @presenter = SetupPresenter.new(current_user: current_user,
                                       user_fully_authenticated: user_fully_authenticated?,
                                       user_opted_remember_device_cookie:
-                                          user_opted_remember_device_cookie)
+                                          user_opted_remember_device_cookie,
+                                      opt_out_rem_me: opt_out_rem_me)
     end
 
     def user_opted_remember_device_cookie

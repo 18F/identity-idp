@@ -7,6 +7,10 @@ class NullServiceProvider
     @friendly_name = friendly_name
   end
 
+  def opt_out_rem_me
+    false
+  end
+
   def active?
     false
   end
