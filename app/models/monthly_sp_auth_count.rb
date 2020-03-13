@@ -4,7 +4,7 @@ class MonthlySpAuthCount < ApplicationRecord
     sql = <<~SQL
       INSERT INTO monthly_sp_auth_counts (issuer, ial, year_month, user_id, auth_count)
       VALUES (?, ?, ?, ?, 1)
-      ON CONFLICT (issuer, year_month, user_id) DO UPDATE
+      ON CONFLICT (issuer, ial, year_month, user_id) DO UPDATE
       SET auth_count = monthly_sp_auth_counts.auth_count + 1
     SQL
     year_month = Time.zone.today.strftime('%Y%m')
