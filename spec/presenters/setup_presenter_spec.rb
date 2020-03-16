@@ -40,19 +40,19 @@ describe SetupPresenter do
   end
 
   describe 'shows correct value for remember device' do
-    it 'shows true for remember device cookie true and remember device default true' do
+    it 'shows true for cookie: true, default: true' do
       expect(rem_me_presenter(cookie: true, default: true).remember_device_box_checked?).to be_truthy
     end
 
-    it 'shows false for remember device cookie nil and remember device default true' do
+    it 'shows false for cookie: nil, default: true' do
       expect(rem_me_presenter(cookie: nil, default: true).remember_device_box_checked?).to be_truthy
     end
 
-    it 'shows true for remember device cookie true and remember device default false' do
+    it 'shows true for cookie: true, default: false' do
       expect(rem_me_presenter(cookie: true, default: false).remember_device_box_checked?).to be_truthy
     end
 
-    it 'shows false for remember device cookie nil and remember device default false' do
+    it 'shows false for cookie: nil, default: false' do
       expect(rem_me_presenter(cookie: nil, default: false).remember_device_box_checked?).to be_falsey
     end
   end
