@@ -59,9 +59,9 @@ describe SetupPresenter do
 
   def expect_remember_me_value_to_be(cookie:, default:, value:)
     presenter = described_class.new(current_user: user,
-                        user_fully_authenticated: true,
-                        user_opted_remember_device_cookie: cookie,
-                        remember_device_default: default)
+                                    user_fully_authenticated: true,
+                                    user_opted_remember_device_cookie: cookie,
+                                    remember_device_default: default)
     expect(presenter.remember_device_box_checked?).to eq(value)
   end
 end
