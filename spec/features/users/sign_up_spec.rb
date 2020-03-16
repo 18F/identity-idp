@@ -313,9 +313,9 @@ feature 'Sign Up' do
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
   end
 
-  it 'does not show the remember device option as the default when an SP opts out' do
+  it 'does not show the remember device option as the default when the SP is AAL2' do
     ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-      opt_out_remember_device: true,
+      aal: 2,
     )
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password

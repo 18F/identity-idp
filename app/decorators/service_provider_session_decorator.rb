@@ -14,7 +14,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   delegate :redirect_uris, to: :sp, prefix: true
 
   def remember_device_default
-    !sp.opt_out_remember_device
+    sp_aal < 2
   end
 
   def sp_msg(section, args = {})

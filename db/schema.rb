@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200312221631) do
+ActiveRecord::Schema.define(version: 20200312110645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,7 +419,6 @@ ActiveRecord::Schema.define(version: 20200312221631) do
     t.boolean "allow_prompt_login", default: false
     t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
-    t.boolean "opt_out_remember_device", default: false, null: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

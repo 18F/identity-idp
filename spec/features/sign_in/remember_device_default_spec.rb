@@ -12,10 +12,10 @@ describe 'Remember device checkbox' do
         to have_checked_field t('forms.messages.remember_device')
     end
   end
-  context 'when signing in from an SP that opted out of remember device' do
+  context 'when signing in from an SP when the SP is AAL2' do
     before do
       ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-        opt_out_remember_device: true,
+        aal: 2,
       )
     end
 
