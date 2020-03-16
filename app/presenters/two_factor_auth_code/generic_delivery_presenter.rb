@@ -6,7 +6,7 @@ module TwoFactorAuthCode
 
     attr_reader :code_value
 
-    def initialize(data:, view:, remember_device_default: false)
+    def initialize(data:, view:, remember_device_default: true)
       data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
