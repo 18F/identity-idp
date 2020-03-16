@@ -11,7 +11,7 @@ describe 'users/phone_setup/index.html.erb' do
     @presenter = SetupPresenter.new(current_user: user,
                                     user_fully_authenticated: false,
                                     user_opted_remember_device_cookie: true,
-                                    opt_out_rem_me: false)
+                                    remember_device_default: false)
     render
   end
 

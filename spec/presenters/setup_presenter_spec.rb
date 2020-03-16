@@ -6,7 +6,7 @@ describe SetupPresenter do
     described_class.new(current_user: user,
                         user_fully_authenticated: false,
                         user_opted_remember_device_cookie: true,
-                        opt_out_rem_me: false)
+                        remember_device_default: false)
   end
 
   describe 'shows correct step indication' do
@@ -16,7 +16,7 @@ describe SetupPresenter do
         described_class.new(current_user: user,
                             user_fully_authenticated: true,
                             user_opted_remember_device_cookie: true,
-                            opt_out_rem_me: false)
+                            remember_device_default: false)
       end
 
       it 'does not show step count' do

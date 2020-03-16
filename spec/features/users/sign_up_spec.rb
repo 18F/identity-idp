@@ -315,7 +315,7 @@ feature 'Sign Up' do
 
   it 'does not show the remember device option as the default when an SP opts out' do
     ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-      opt_out_rem_me: true,
+      opt_out_remember_device: true,
     )
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password

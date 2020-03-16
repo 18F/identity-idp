@@ -72,7 +72,7 @@ module Users
                                       user_fully_authenticated: user_fully_authenticated?,
                                       user_opted_remember_device_cookie:
                                           user_opted_remember_device_cookie,
-                                      opt_out_rem_me: opt_out_rem_me)
+                                      remember_device_default: remember_device_default)
     end
 
     def user_opted_remember_device_cookie

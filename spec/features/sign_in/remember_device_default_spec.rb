@@ -15,7 +15,7 @@ describe 'Remember device checkbox' do
   context 'when signing in from an SP that opted out of remember device' do
     before do
       ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-        opt_out_rem_me: true,
+        opt_out_remember_device: true,
       )
     end
 

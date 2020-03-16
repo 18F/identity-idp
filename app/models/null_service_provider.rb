@@ -7,7 +7,7 @@ class NullServiceProvider
     @friendly_name = friendly_name
   end
 
-  def opt_out_rem_me
+  def opt_out_remember_device
     false
   end
 

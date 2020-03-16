@@ -37,8 +37,8 @@ class SessionDecorator
 
   def failure_to_proof_url; end
 
-  def opt_out_rem_me
-    false
+  def remember_device_default
+    true
   end
 
   def sp_msg; end
