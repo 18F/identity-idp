@@ -11,6 +11,7 @@ module TwoFactorAuthentication
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
         data: { current_user: current_user },
+        remember_device_default: remember_device_default,
       )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end

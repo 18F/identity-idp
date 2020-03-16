@@ -312,4 +312,16 @@ feature 'Sign Up' do
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
   end
+
+  it 'does not show the remember device option as the default when the SP is AAL2' do
+    ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
+      aal: 2,
+    )
+    visit_idp_from_sp_with_ial1(:oidc)
+    sign_up_and_set_password
+    select_2fa_option('phone')
+    fill_in :new_phone_form_phone, with: '2025551313'
+    click_send_security_code
+    expect(page).to_not have_checked_field t('forms.messages.remember_device')
+  end
 end

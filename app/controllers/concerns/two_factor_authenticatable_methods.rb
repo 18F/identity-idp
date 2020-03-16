@@ -322,6 +322,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
       data: data,
       view: view_context,
+      remember_device_default: remember_device_default,
     )
   end
 

@@ -62,6 +62,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     @user_event_creator ||= UserEventCreator.new(request, current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
+  delegate :remember_device_default, to: :decorated_session
 
   def decorated_session
     @_decorated_session ||= DecoratedSession.new(

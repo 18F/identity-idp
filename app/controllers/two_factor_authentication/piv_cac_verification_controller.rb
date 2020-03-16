@@ -98,6 +98,7 @@ module TwoFactorAuthentication
       TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
         view: view_context,
         data: piv_cac_view_data,
+        remember_device_default: remember_device_default,
       )
     end
 
