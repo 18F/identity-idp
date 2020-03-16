@@ -417,8 +417,8 @@ ActiveRecord::Schema.define(version: 20200312110645) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
-    t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
+    t.integer "ial2_quota"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
