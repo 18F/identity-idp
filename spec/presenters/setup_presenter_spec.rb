@@ -42,9 +42,9 @@ describe SetupPresenter do
   describe 'shows correct value for remember device' do
     it 'shows true for remember device cookie true and remember device default true' do
       presenter = described_class.new(current_user: user,
-                            user_fully_authenticated: true,
-                            user_opted_remember_device_cookie: true,
-                            remember_device_default: true)
+                                      user_fully_authenticated: true,
+                                      user_opted_remember_device_cookie: true,
+                                      remember_device_default: true)
       expect(presenter.remember_device_box_checked?).to be_truthy
     end
 
