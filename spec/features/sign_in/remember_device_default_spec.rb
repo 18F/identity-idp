@@ -26,4 +26,13 @@ describe 'Remember device checkbox' do
       expect(page).to_not have_checked_field t('forms.messages.remember_device')
     end
   end
+
+  context 'when signing in from an SP that has not opted out of remember device' do
+    it 'does have remember device checked' do
+      user = create(:user, :signed_up)
+      visit_idp_from_sp_with_ial1(:oidc)
+      fill_in_credentials_and_submit(user.email, user.password)
+      expect(page).to have_checked_field t('forms.messages.remember_device')
+    end
+  end
 end
