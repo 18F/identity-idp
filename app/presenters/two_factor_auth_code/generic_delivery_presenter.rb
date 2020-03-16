@@ -46,8 +46,7 @@ module TwoFactorAuthCode
     end
 
     def remember_device_box_checked?
-      return false if @remember_device_default
-      return true if user_opted_remember_device_cookie.nil?
+      return @remember_device_default if user_opted_remember_device_cookie.nil?
       ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
     end
 
