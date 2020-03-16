@@ -262,6 +262,15 @@ ActiveRecord::Schema.define(version: 20200312221631) do
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
   end
 
+  create_table "monthly_sp_auth_counts", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.integer "ial", limit: 2, null: false
+    t.string "year_month", null: false
+    t.integer "user_id", null: false
+    t.integer "auth_count", default: 1, null: false
+    t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
+  end
+
   create_table "otp_requests_trackers", force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
