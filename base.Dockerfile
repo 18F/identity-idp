@@ -1,5 +1,5 @@
 # Base for all IdP images
-FROM ruby:2.5-slim
+FROM ruby:2.6-slim
 
 # Enable package fetch over https and add a few core tools
 RUN apt-get update \
