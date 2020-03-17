@@ -149,7 +149,7 @@ feature 'idv phone step' do
         expect(page).to have_content(t('idv.failure.phone.warning'))
         expect(page).to_not have_content(t('idv.form.activate_by_mail'))
 
-        click_on t("idv.failure.button.warning")
+        click_on t('idv.failure.button.warning')
       end
 
       fill_out_phone_form_fail
