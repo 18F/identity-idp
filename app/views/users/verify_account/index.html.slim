@@ -9,7 +9,7 @@ p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
     wrapper_html: { class: 'mb3' }, wrapper: :inline_form do
     = f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code
     = f.button :submit, t('forms.verify_profile.submit')
-- unless @mail_spammed
+- if FeatureManagement.enable_usps_verification? && !@mail_spammed
   = link_to t('idv.messages.usps.resend'), idv_usps_path,
     class: 'block mb2'
 = button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete,

@@ -135,6 +135,29 @@ feature 'idv phone step' do
 
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :phone
+
+    it 'does not render the link to proof by mail if proofing by mail is disabled' do
+      allow(FeatureManagement).to receive(:enable_usps_verification?).and_return(false)
+
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+
+      2.times do
+        fill_out_phone_form_fail
+        click_idv_continue
+
+        expect(page).to have_content(t('idv.failure.phone.warning'))
+        expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+
+        click_on t('idv.failure.button.warning')
+      end
+
+      fill_out_phone_form_fail
+      click_idv_continue
+
+      expect(page).to have_content(t('headings.lock_failure'))
+      expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+    end
   end
 
   context 'when the IdV background job fails' do
