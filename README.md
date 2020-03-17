@@ -12,7 +12,7 @@ A Identity Management System powering login.gov.
 
 #### Dependencies
 
-- Ruby 2.5
+- Ruby 2.6
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v12.x.x](https://nodejs.org)
@@ -34,7 +34,7 @@ See the [Docker documentation](./docs/Docker.md) to get up and running
   ```
   git clone git://github.com/tpope/rbenv-aliases.git "$(rbenv root)/plugins/rbenv-aliases" # install rbenv-aliases per its documentation
 
-  rbenv alias 2.5 2.5.3 # create the version alias
+  rbenv alias 2.6 2.6.5 # create the version alias
   ```
 
 2. Make sure Postgres and Redis are running.
