@@ -139,14 +139,11 @@ feature 'Sign in' do
     submit_form_with_valid_password
     expect(page).to have_current_path(two_factor_options_path)
 
-    %w[2025551313 2025551314].each do |phone_number|
-      select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: phone_number
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_continue
-    end
+    select_2fa_option('phone')
+    fill_in :new_phone_form_phone, with: '2025551314'
+    click_send_security_code
+    fill_in_code_with_last_phone_otp
+    click_submit_default
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
@@ -632,8 +629,6 @@ feature 'Sign in' do
   it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
-  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
-  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :oidc
 
   context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly

@@ -84,7 +84,7 @@ module TwoFactorAuthentication
       if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).sufficient_factors_enabled?
-        redirect_to after_multiple_2fa_sign_up
+        redirect_to after_mfa_setup_path
       else
         redirect_to two_factor_options_url
       end

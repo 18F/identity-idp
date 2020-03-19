@@ -6,37 +6,14 @@ describe 'phone rate limitting' do
   context 'on sign up' do
     let!(:user) { sign_up_and_set_password }
 
-    context 'as first MFA method' do
-      it_behaves_like 'phone rate limitting', :sms
-      it_behaves_like 'phone rate limitting', :voice
+    it_behaves_like 'phone rate limitting', :sms
+    it_behaves_like 'phone rate limitting', :voice
 
-      def visit_otp_confirmation(delivery_method)
-        select_2fa_option(:phone)
-        select_phone_delivery_option(delivery_method)
-        fill_in :new_phone_form_phone, with: phone
-        click_send_security_code
-      end
-    end
-
-    context 'as second MFA method' do
-      it_behaves_like 'phone rate limitting', :sms
-      it_behaves_like 'phone rate limitting', :voice
-
-      def visit_otp_confirmation(delivery_method)
-        select_2fa_option(:phone)
-        select_phone_delivery_option(:sms)
-        fill_in :new_phone_form_phone, with: '2025551313'
-        click_send_security_code
-        fill_in_code_with_last_phone_otp
-        click_submit_default
-
-        click_continue
-
-        select_2fa_option(:phone)
-        select_phone_delivery_option(delivery_method)
-        fill_in :new_phone_form_phone, with: phone
-        click_send_security_code
-      end
+    def visit_otp_confirmation(delivery_method)
+      select_2fa_option(:phone)
+      select_phone_delivery_option(delivery_method)
+      fill_in :new_phone_form_phone, with: phone
+      click_send_security_code
     end
   end
 

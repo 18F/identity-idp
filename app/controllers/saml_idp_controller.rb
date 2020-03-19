@@ -15,18 +15,14 @@ class SamlIdpController < ApplicationController
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
   before_action :bump_auth_count, only: [:auth]
 
-  # rubocop:disable Metrics/AbcSize
   def auth
     link_identity_from_session_data
     capture_analytics
-    return redirect_to two_factor_options_url unless
-      MfaPolicy.new(current_user).sufficient_factors_enabled?
     return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
     return redirect_to(user_authorization_confirmation_url) if auth_count == 1
     handle_successful_handoff
   end
-  # rubocop:enable Metrics/AbcSize
 
   def metadata
     render inline: saml_metadata.signed, content_type: 'text/xml'

@@ -75,8 +75,8 @@ module Users
       create_events
       mark_user_as_fully_authenticated
       handle_remember_device
-      flash[:success] = t('notices.totp_configured') if should_show_totp_configured_message?
-      redirect_to two_2fa_setup
+      flash[:success] = t('notices.totp_configured')
+      redirect_to after_mfa_setup_path
       user_session.delete(:new_totp_secret)
     end
 
@@ -88,13 +88,6 @@ module Users
     def create_events
       create_user_event(:authenticator_enabled)
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
-    end
-
-    def should_show_totp_configured_message?
-      # If the user's only MFA method is the one they just setup, then they will be redirected to
-      # the mfa option screen which will show them the first MFA success message. In that case we
-      # do not want to show this additional flash message here.
-      MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def process_successful_disable
