@@ -4,7 +4,6 @@ fr:
     connected_apps:
       associated: Associé %{timestamp}
     forget_all_browsers:
-      confirm: Confirmer
       description: Utilisez-le pour déconnecter tous les navigateurs mémorisés de
         votre compte login.gov
       link_title: Oubliez tous les navigateurs

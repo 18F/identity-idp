@@ -119,7 +119,7 @@ feature 'taking an action that revokes remember device' do
 
       sign_in_user(user)
       click_on(t('account.forget_all_browsers.link_title'))
-      click_on(t('account.forget_all_browsers.confirm'))
+      click_on(t('forms.buttons.confirm'))
 
       first(:link, t('links.sign_out')).click
 
@@ -136,7 +136,7 @@ feature 'taking an action that revokes remember device' do
 
         sign_in_user(user)
         click_on(t('account.forget_all_browsers.link_title'))
-        click_on(t('account.forget_all_browsers.confirm'))
+        click_on(t('forms.buttons.confirm'))
 
         first(:link, t('links.sign_out')).click
 
