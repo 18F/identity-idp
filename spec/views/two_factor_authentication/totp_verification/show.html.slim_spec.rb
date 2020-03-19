@@ -22,6 +22,13 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
   it_behaves_like 'an otp form'
 
+  it 'uses type=tel (to allow leading zeroes)' do
+    render
+
+    code_input = Nokogiri::HTML(rendered).at_css('input#code')
+    expect(code_input[:type]).to eq('tel')
+  end
+
   it 'shows the correct header' do
     expect(rendered).to have_content t('two_factor_authentication.totp_header_text')
   end
