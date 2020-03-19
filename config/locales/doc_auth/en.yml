@@ -13,16 +13,16 @@ en:
       address1: Address
       city: City
       dob: Date of Birth
-      doc_success: We've verified your social security number and state-issued ID.
+      doc_success: We've verified your social security number or ITIN and state-issued ID.
       first_name: First Name
       last_name: Last Name
-      ssn: Social Security Number
+      ssn: Social Security Number or ITIN
       state: State
       zip_code: Zip Code
     headings:
       address: Mailing Address
       capture_complete: We have verified your state issued ID
-      ssn: Please enter your social security number.
+      ssn: Please enter your social security number or ITIN.
       take_pic_back: Take a photo of the back of your ID
       take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone

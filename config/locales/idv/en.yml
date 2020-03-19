@@ -84,7 +84,7 @@ en:
         with a code in it."
       password: Password
       phone: Phone Number
-      ssn_label_html: Social Security Number
+      ssn_label_html: Social Security Number or ITIN
       state: State
       state_id: ID number
       state_id_tip: do not include spaces or dashes
