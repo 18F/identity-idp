@@ -213,6 +213,29 @@ describe 'OpenID Connect' do
     )
   end
 
+  it 'prompts for consent if consent was revoked/soft deleted', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    user = user_with_2fa
+    link_identity(user, client_id)
+
+    user.identities.last.update!(
+      last_consented_at: 2.years.ago,
+      created_at: 2.years.ago,
+      deleted_at: 2.days.ago
+    )
+
+    sign_in_get_id_token(
+      user: user,
+      client_id: client_id,
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('titles.sign_up.new_sp'))
+        expect(page).to_not have_content(t('titles.sign_up.refresh_consent'))
+
+        click_agree_and_continue
+      end,
+    )
+  end
+
   context 'with PKCE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'

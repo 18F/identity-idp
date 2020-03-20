@@ -9,13 +9,15 @@ module Users
     def show
       @service_provider = ServiceProvider.find(params[:sp_id])
       load_identity!(@service_provider)
+      analytics.track_event(Analytics::SP_REVOKE_CONSENT_VISITED, issuer: @service_provider.issuer)
     end
 
     def destroy
       @service_provider = ServiceProvider.find(params[:sp_id])
       identity = load_identity!(@service_provider)
 
-      
+      RevokeServiceProviderConsent.new(identity).call
+      analytics.track_event(Analytics::SP_REVOKE_CONSENT_REVOKED, issuer: @service_provider.issuer)
 
       redirect_to account_url
     end

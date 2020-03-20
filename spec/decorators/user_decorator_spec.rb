@@ -275,4 +275,18 @@ describe UserDecorator do
         to eq t('users.delete.bullet_2_loa3', app: APP_NAME)
     end
   end
+
+  describe '#connected_apps' do
+    let(:user) { create(:user) }
+    let(:app) { create(:identity, service_provider: 'aaa') }
+    let(:deleted_app) { create(:identity, service_provider: 'bbb', deleted_at: 5.days.ago) }
+
+    let(:user_decorator) { user.decorate}
+
+    before { user.identities << app << deleted_app }
+
+    it 'omits deleted apps' do
+      expect(user_decorator.connected_apps).to eq([IdentityDecorator.new(app)])
+    end
+  end
 end

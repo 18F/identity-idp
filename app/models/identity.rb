@@ -8,6 +8,8 @@ class Identity < ApplicationRecord
 
   CONSENT_EXPIRATION = 1.year
 
+  scope :not_deleted, proc { where(deleted_at: nil) }
+
   def deactivate
     update!(session_uuid: nil)
   end
