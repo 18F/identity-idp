@@ -128,7 +128,7 @@ describe AccountShow do
         ).to receive(:enabled?).and_return(true)
         allow_any_instance_of(
           MfaPolicy,
-        ).to receive(:more_than_two_factors_enabled?).and_return(true)
+        ).to receive(:multiple_factors_enabled?).and_return(true)
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,

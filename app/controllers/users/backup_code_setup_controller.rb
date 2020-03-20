@@ -55,16 +55,9 @@ module Users
     end
 
     def generate_codes
-      revoke_remember_device(current_user) if should_revoke_remember_device_after_adding_codes?
+      revoke_remember_device(current_user)
       @codes = generator.generate
       user_session[:backup_codes] = @codes
-    end
-
-    def should_revoke_remember_device_after_adding_codes?
-      # We don't want to revoke remember device if the user is setting up backup codes as their
-      # second MFA
-      return false unless MfaPolicy.new(current_user).sufficient_factors_enabled?
-      true
     end
 
     def set_backup_code_setup_presenter

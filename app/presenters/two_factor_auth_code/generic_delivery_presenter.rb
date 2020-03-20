@@ -34,17 +34,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def step
-      no_factors_enabled? ? '3' : '4'
-    end
-
-    def steps_visible?
-      SignUpProgressPolicy.new(
-        @view.current_user,
-        @view.user_fully_authenticated?,
-      ).sign_up_progress_visible?
-    end
-
     def remember_device_box_checked?
       return @remember_device_default if user_opted_remember_device_cookie.nil?
       ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)

@@ -16,17 +16,13 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :bump_auth_count, only: [:index]
 
-    # rubocop:disable Metrics/AbcSize
     def index
-      return redirect_to two_factor_options_url unless
-        MfaPolicy.new(current_user).sufficient_factors_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
       handle_successful_handoff
     end
-    # rubocop:enable Metrics/AbcSize
 
     private
 

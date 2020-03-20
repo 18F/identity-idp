@@ -9,11 +9,6 @@ class TwoFactorOptionsPresenter
     @is_desktop = DeviceDetector.new(user_agent)&.device_type == 'desktop'
   end
 
-  # TODO: tear down step code
-  def step
-    no_factors_enabled? ? '3' : '4'
-  end
-
   # i18n-tasks-use t('titles.two_factor_setup')
   # i18n-tasks-use t('titles.two_factor_recovery_setup')
   def title
