@@ -162,8 +162,8 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
-  SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'
-  SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'
+  SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'.freeze
+  SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'.freeze
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'.freeze
   BACKUP_CODE_CREATED = 'Backup Code Created'.freeze

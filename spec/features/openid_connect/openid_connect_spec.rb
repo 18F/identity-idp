@@ -221,7 +221,7 @@ describe 'OpenID Connect' do
     user.identities.last.update!(
       last_consented_at: 2.years.ago,
       created_at: 2.years.ago,
-      deleted_at: 2.days.ago
+      deleted_at: 2.days.ago,
     )
 
     sign_in_get_id_token(

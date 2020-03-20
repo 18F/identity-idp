@@ -54,7 +54,7 @@ describe 'Account connected applications' do
     identity_to_revoke = identity_with_link
 
     expect(page).to have_content(
-      t('event_types.authenticated_at', service_provider: identity_to_revoke.display_name)
+      t('event_types.authenticated_at', service_provider: identity_to_revoke.display_name),
     )
 
     within(find('.profile-info-box', text: t('headings.account.connected_apps'))) do

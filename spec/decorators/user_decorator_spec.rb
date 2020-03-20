@@ -281,7 +281,7 @@ describe UserDecorator do
     let(:app) { create(:identity, service_provider: 'aaa') }
     let(:deleted_app) { create(:identity, service_provider: 'bbb', deleted_at: 5.days.ago) }
 
-    let(:user_decorator) { user.decorate}
+    let(:user_decorator) { user.decorate }
 
     before { user.identities << app << deleted_app }
 
