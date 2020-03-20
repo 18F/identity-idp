@@ -40,7 +40,8 @@ then
   hatch_rate=${HATCH_RATE:-1}
 
   brew_install_or_upgrade 'libevent'
-  source /usr/local/bin/virtualenvwrapper.sh
+  eval "$(pyenv init -)"
+  pyenv virtualenvwrapper
   mkvirtualenv locust && \
     workon locust &&  \
     pip install -r scripts/load_testing/requirements.txt && \
