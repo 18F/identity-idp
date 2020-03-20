@@ -5,9 +5,8 @@ es:
     cancel:
       success: Su cuenta ha sido eliminada. No guardamos su información.
       warning_header: Si cancela ahora
-    current_step: Paso %{step} de 4
     email:
-      invalid_email_alert_head: 'Error: No es una dirección de correo electrónico
-        real. Asegúrese de que incluye una @ y un nombre de dominio.'
+      invalid_email_alert_head: "Error: No es una dirección de correo electrónico
+        real. Asegúrese de que incluye una @ y un nombre de dominio."
       invalid_email_alert_inline: Ingrese una dirección de correo electrónico real
       invalid_request: El formulario de correo electrónico no es válido
