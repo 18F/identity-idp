@@ -70,7 +70,10 @@ es:
           su perfil.
     revoke_consent:
       link_title: Revocar consentimiento
-      longer_description_html: Su información ya no se compartirá con %{service_provider}. Para acceder a %{service_provider} en el futuro, debe dar su consentimiento para compartir su información. Puede dar su consentimiento yendo al sitio %{service_provider} e iniciando sesión.
+      longer_description_html: Su información ya no se compartirá con %{service_provider}.
+        Para acceder a %{service_provider} en el futuro, debe dar su consentimiento
+        para compartir su información. Puede dar su consentimiento yendo al sitio
+        %{service_provider} e iniciando sesión.
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.
