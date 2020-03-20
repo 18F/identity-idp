@@ -7,7 +7,7 @@ describe Funnel::Registration::TotalRegisteredCount do
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
   end
 
-  it 'returns 0 if user is not fully registered' do
+  it 'returns 0 until the user is fully registered' do
     user = create(:user)
     user_id = user.id
     Funnel::Registration::Create.call(user_id)
@@ -20,7 +20,7 @@ describe Funnel::Registration::TotalRegisteredCount do
 
     Funnel::Registration::AddMfa.call(user_id, 'phone')
 
-    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
+    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
   end
 
   it 'returns 1 when a user is fully registered' do
