@@ -30,8 +30,6 @@ es:
       phone: Teléfono
       piv_cac: PIV/CAC
       webauthn: Llave de seguridad
-    first_factor_enabled: "%{device} se configuró correctamente como un método de
-      autenticación."
     header_text: Ingrese su código de seguridad
     invalid_backup_code: Esa código de respaldo no es válida.
     invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo de

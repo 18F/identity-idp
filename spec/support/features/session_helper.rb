@@ -492,7 +492,6 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
-      click_continue
       User.find_with_email(email)
     end
 

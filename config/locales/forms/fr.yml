@@ -146,7 +146,6 @@ fr:
       backup_code: Code de sécurité
       code: Code de sécurité
       personal_key: Clé personnelle
-      success: Ensuite, vous allez configurer une autre méthode.
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte
