@@ -134,7 +134,7 @@ describe SignUp::CompletionsController do
           ial: 1,
           verified_attributes: ['email'],
           last_consented_at: now,
-          clear_deleted_at: true
+          clear_deleted_at: true,
         )
         Timecop.freeze(now) do
           patch :update
