@@ -4,55 +4,13 @@ describe 'phone otp confirmation' do
   let(:phone) { '2025551234' }
   let(:formatted_phone) { PhoneFormatter.format(phone) }
 
-  context 'on sign up as first MFA' do
+  context 'on sign up' do
     let!(:user) { sign_up_and_set_password }
 
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
 
     def visit_otp_confirmation(delivery_method)
-      select_2fa_option(:phone)
-      fill_in :new_phone_form_phone, with: phone
-      select_phone_delivery_option(delivery_method)
-      click_send_security_code
-    end
-
-    def expect_successful_otp_confirmation(delivery_method)
-      # When setting up a method as a first MFA the user will see a success screen. The success
-      # flash for phone should not display because it would be duplicative.
-      expect(page).to_not have_content(t('notices.phone_confirmed'))
-      select_2fa_option(:backup_code)
-      click_continue
-
-      expect(page).to have_current_path(account_path)
-      expect(phone_configuration.confirmed_at).to_not be_nil
-      expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
-    end
-
-    def expect_failed_otp_confirmation(_delivery_method)
-      visit account_path
-
-      expect(current_path).to eq(two_factor_options_path)
-      expect(phone_configuration).to be_nil
-    end
-  end
-
-  context 'on sign up as second MFA method' do
-    let!(:user) { sign_up_and_set_password }
-
-    it_behaves_like 'phone otp confirmation', :sms
-    it_behaves_like 'phone otp confirmation', :voice
-
-    def visit_otp_confirmation(delivery_method)
-      select_2fa_option(:phone)
-      fill_in :new_phone_form_phone, with: '2025551313'
-      select_phone_delivery_option(:sms)
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      click_continue
-
       select_2fa_option(:phone)
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
@@ -61,9 +19,10 @@ describe 'phone otp confirmation' do
 
     def expect_successful_otp_confirmation(delivery_method)
       expect(page).to have_content(t('notices.phone_confirmed'))
+
       expect(page).to have_current_path(account_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
-      expect(phone_configuration.delivery_preference.to_s).to eq(delivery_method.to_s)
+      expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
     end
 
     def expect_failed_otp_confirmation(_delivery_method)

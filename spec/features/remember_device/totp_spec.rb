@@ -20,32 +20,7 @@ describe 'Remembering a TOTP device' do
     it_behaves_like 'remember device'
   end
 
-  context 'sign up with remember_device last' do
-    def remember_device_and_sign_out_user
-      user = sign_up_and_set_password
-      user.password = Features::SessionHelper::VALID_PASSWORD
-
-      select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551212'
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      click_continue
-
-      select_2fa_option('auth_app')
-      fill_in :code, with: totp_secret_from_page
-      check :remember_device
-      click_submit_default
-
-      first(:link, t('links.sign_out')).click
-      user
-    end
-
-    it_behaves_like 'remember device'
-  end
-
-  context 'sign up with remember_device first' do
+  context 'sign up' do
     def remember_device_and_sign_out_user
       user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
@@ -53,14 +28,6 @@ describe 'Remembering a TOTP device' do
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
       check :remember_device
-      click_submit_default
-
-      click_continue
-
-      select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551212'
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
       click_submit_default
 
       first(:link, t('links.sign_out')).click

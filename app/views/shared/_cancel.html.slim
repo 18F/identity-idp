@@ -1,9 +1,7 @@
 - other_cancel = link || decorated_session&.sp_return_url || profile_path
 
 .mt2.pt1.border-top
-  - if @retire_personal_key
-    = link_to t('links.cancel_sign_in'), destroy_user_session_path
-  - elsif user_signing_up?
+  - if user_signing_up?
     = link_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'btn btn-link'
   - else
     = link_to cancel_link_text, other_cancel

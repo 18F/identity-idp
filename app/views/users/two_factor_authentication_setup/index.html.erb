@@ -1,11 +1,5 @@
 <% title @presenter.title %>
 
-<% unless @retire_personal_key %>
-  <div class="h5 caps bold my1 accent-blue">
-    <%= t('sign_up.current_step', step: @presenter.step) %>
-  </div>
-<% end %>
-
 <h1 class="h4 my0"><%= @presenter.heading %></h1>
 
 <% @presenter.intro_parapraphs.each do |paragraph| %>

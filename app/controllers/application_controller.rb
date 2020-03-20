@@ -151,17 +151,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
   end
 
-  def two_2fa_setup
-    if MfaPolicy.new(current_user).sufficient_factors_enabled?
-      after_multiple_2fa_sign_up
-    elsif MfaPolicy.new(current_user).retire_personal_key?
-      two_factor_options_path
-    else
-      two_factor_options_success_url
-    end
-  end
-
-  def after_multiple_2fa_sign_up
+  def after_mfa_setup_path
     if needs_completions_screen?
       sign_up_completed_url
     elsif user_needs_to_reactivate_account?
@@ -211,16 +201,13 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     reauthn.present? && reauthn == 'true'
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
   def confirm_two_factor_authenticated(id = nil)
     return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
     authenticate_user!(force: true)
-    return if user_fully_authenticated? &&
-              MfaPolicy.new(current_user).sufficient_factors_enabled?
-    return prompt_to_set_up_2fa if user_fully_authenticated? || !two_factor_enabled?
+    return if user_fully_authenticated? # This verifies MFA is setup and the user has MFAed
+    return prompt_to_set_up_2fa unless two_factor_enabled?
     prompt_to_enter_otp
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
   def prompt_to_set_up_2fa
     redirect_to two_factor_options_url

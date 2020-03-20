@@ -128,27 +128,6 @@ feature 'PIV/CAC Management' do
         form = find_form(page, action: disable_piv_cac_url)
         expect(form).to be_nil
       end
-
-      context 'when the user does not have a 2nd mfa yet' do
-        it 'does prompt to set one up after configuring PIV/CAC' do
-          stub_piv_cac_service
-
-          MfaContext.new(user).phone_configurations.clear
-          sign_in_and_2fa_user(user)
-          visit account_path
-          click_link t('forms.buttons.enable'), href: setup_piv_cac_url
-
-          expect(page).to have_current_path(setup_piv_cac_path)
-
-          nonce = piv_cac_nonce_from_form_action
-          visit_piv_cac_service(setup_piv_cac_url,
-                                nonce: nonce,
-                                uuid: SecureRandom.uuid,
-                                subject: 'SomeIgnoredSubject')
-
-          expect(page).to have_current_path account_path
-        end
-      end
     end
   end
 

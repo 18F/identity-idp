@@ -1,6 +1,5 @@
 <% title t('titles.enter_2fa_code') %>
 
-<%= render 'partials/step_indicator', presenter: @presenter %>
 <h1 class="h3 my0">
   <%= @presenter.header %>
 </h1>
@@ -44,7 +43,7 @@
   <%= render 'shared/fallback_links', presenter: @presenter %>
 <% end %>
 
-<% if MfaPolicy.new(current_user).sufficient_factors_enabled? %>
+<% if MfaPolicy.new(current_user).two_factor_enabled? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
 <% else %>
   <%= render 'shared/cancel_or_back_to_options' %>

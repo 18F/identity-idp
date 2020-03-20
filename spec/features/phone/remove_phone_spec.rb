@@ -14,7 +14,7 @@ feature 'removing a phone number from an account' do
     expect(page).to have_content t('event_types.phone_removed')
     expect(page).to have_current_path(account_path)
     expect(PhoneConfiguration.find_by(id: phone_configuration.id)).to eq(nil)
-    expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq true
+    expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
   end
 
   context 'when deleting will mean the user will not have enough MFA methods' do
@@ -23,11 +23,11 @@ feature 'removing a phone number from an account' do
       phone_configuration = user.phone_configurations.first
       sign_in_and_2fa_user(user)
 
-      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq true
+      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
 
       visit manage_phone_path(id: phone_configuration.id)
 
-      expect(page).to_not have_button(t('forms.buttons.delete'))
+      expect(page).to_not have_button(t('forms.phone.buttons.delete'))
     end
   end
 end
