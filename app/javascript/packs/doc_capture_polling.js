@@ -37,7 +37,7 @@ const pollForDocCaptureCompletion = () => {
     return handleMaxPollAttempts();
   }
   totalDocCapturePollAttempts += 1;
-  sendDocAuthPollRequest();
+  return sendDocAuthPollRequest();
 };
 
 const startDocCaptureCompletePoll = () => {
