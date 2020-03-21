@@ -36,9 +36,11 @@ en:
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
-      link_sent: Please check your phone and follow instructions to take a photo of
-        your state issued ID. When you are done click continue here to finish verifying
-        your identity.
+      link_sent:
+        - Please check your phone and follow instructions to take a photo of
+          your state issued ID.
+        - When you are done click continue here to finish verifying
+          your identity.
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
       upload: We'll collect information about you by reading from your state-issued
@@ -48,7 +50,7 @@ en:
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
-      use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
+      use_cac_html: '<strong>Are you DoD or military?</strong> %{link}'
       use_cac_link: Use your CAC card instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
@@ -75,7 +77,7 @@ en:
       text2: using a phone number or mailing address
       text3: by re-entering your login.gov password
       text4: make sure you always have access
-      welcome: 'What you''ll need to do:'
+      welcome: "What you'll need to do:"
     tips:
       header_text: Guidelines for taking a photo of your ID
       text1: Take it in a room with lots of light. Indirect sunlight is best.

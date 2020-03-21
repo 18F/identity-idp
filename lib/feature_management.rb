@@ -127,4 +127,8 @@ class FeatureManagement
     # it controls if we hop over to identity-pki on a developers local machins
     Rails.env.development? && Figaro.env.identity_pki_local_dev == 'true'
   end
+
+  def self.doc_capture_polling_enabled?
+    Figaro.env.doc_capture_polling_enabled == 'true'
+  end
 end
