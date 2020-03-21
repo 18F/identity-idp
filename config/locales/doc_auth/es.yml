@@ -28,7 +28,7 @@ es:
       take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
-      upload: '¿Cómo te gustaría subir tu identificación emitida por el estado?'
+      upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_from_computer: Sube desde tu computadora
       upload_from_phone: Toma una foto con un teléfono para subir tu ID
@@ -39,10 +39,10 @@ es:
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
       link_sent:
-        - Verifique su teléfono y siga las instrucciones para tomar una fotografía
-          de la identificación emitida por su estado.
-        - Cuando haya terminado, haga clic
-          en continuar aquí para terminar de verificar su identidad.
+      - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
+        la identificación emitida por su estado.
+      - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
+        su identidad.
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su identificación emitida
@@ -52,7 +52,7 @@ es:
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
-      use_cac_html: '<strong>¿Eres DoD o militar?</strong> %{link}'
+      use_cac_html: "<strong>¿Eres DoD o militar?</strong> %{link}"
       use_cac_link: Use su tarjeta CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder
@@ -96,6 +96,6 @@ es:
         la información.
       text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono
         móvil o tableta funcionará.
-      title_html: '<b>¡No tome la foto en una superficie blanca!</b> Ver más...'
+      title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."
     titles:
       doc_auth: Autenticación de documentos
