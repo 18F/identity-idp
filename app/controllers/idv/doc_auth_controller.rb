@@ -19,7 +19,7 @@ module Idv
       doc_capture = DocCapture.find_by(user_id: user_id)
       render plain: 'Not authorized', status: :not_authorized if doc_capture.blank?
       if doc_capture.acuant_token.present?
-        render plain: 'Copmlete', status: :ok
+        render plain: 'Complete', status: :ok
       else
         render plain: 'Pending', status: :accepted
       end
