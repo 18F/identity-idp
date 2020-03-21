@@ -1,11 +1,15 @@
 module Idv
   class SsnForm
     include ActiveModel::Model
-    include FormSsnValidator
-
     ATTRIBUTES = [:ssn].freeze
 
     attr_accessor :ssn
+
+    validate :ssn_is_unique
+    validates_format_of :ssn,
+                        with: /\A\d{3}-?\d{2}-?\d{4}\z/,
+                        message: I18n.t('idv.errors.pattern_mismatch.ssn'),
+                        allow_blank: false
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Ssn')
