@@ -19,8 +19,6 @@ fr:
         warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
     errors:
       bad_dob: Votre date de naissance doit être une date valide.
-      duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
-        chiffres.
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
@@ -91,8 +89,8 @@ fr:
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: "<strong>%{link}</strong> Nous vous ferons parvenir
-        une lettre contenant un code."
+      no_alternate_phone_html: '<strong>%{link}</strong> Nous vous ferons parvenir
+        une lettre contenant un code.'
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale
@@ -154,11 +152,11 @@ fr:
           à deux facteurs</strong>, il peut s'agir d'un numéro différent."
         phone_of_record: numéro de téléphone enregistré
         rules:
-        - sur un plan de téléphone avec votre nom dessus
-        - pas un téléphone virtuel (comme Google Voice ou Skype)
-        - pas un numéro de téléphone prépayé
-        - un numéro américain
-      return_to_profile: "‹ Revenir à votre profil login.gov"
+          - sur un plan de téléphone avec votre nom dessus
+          - pas un téléphone virtuel (comme Google Voice ou Skype)
+          - pas un numéro de téléphone prépayé
+          - un numéro américain
+      return_to_profile: '‹ Revenir à votre profil login.gov'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}

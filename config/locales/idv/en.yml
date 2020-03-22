@@ -18,7 +18,6 @@ en:
         warning_5: You can manage or delete that account on your profile page
     errors:
       bad_dob: Your date of birth must be a valid date.
-      duplicate_ssn: An account already exists with the information you provided.
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:
@@ -131,17 +130,17 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert: "<strong>This phone number must...</strong>"
+        alert: '<strong>This phone number must...</strong>'
         description: We'll check this number with phone bill records.  This is to
           help verify your identity; we won't use it to call or text you.
-        final_note: "<strong>If you set up a phone for two-factor authentication</strong>,
-          this can be a different number."
+        final_note: '<strong>If you set up a phone for two-factor authentication</strong>,
+          this can be a different number.'
         phone_of_record: Phone of record
         rules:
-        - be on a phone plan with your name on it
-        - not be a virtual phone (such as Google Voice or Skype)
-        - be a U.S. number
-      return_to_profile: "‹ Return to your login.gov profile"
+          - be on a phone plan with your name on it
+          - not be a virtual phone (such as Google Voice or Skype)
+          - be a U.S. number
+      return_to_profile: '‹ Return to your login.gov profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information

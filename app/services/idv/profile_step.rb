@@ -61,7 +61,6 @@ module Idv
       {
         idv_attempts_exceeded: throttled?,
         vendor: idv_result.except(:errors, :success),
-        ssn_is_unique: ssn_is_unique?,
       }
     end
   end
