@@ -1,4 +1,6 @@
-image_description:
-  accordian_minus_buttom: 'Minus button'
-  accordian_plus_buttom: 'Plus button'
-  us_flag: 'US flag'
+---
+en:
+  image_description:
+    accordian_minus_buttom: Minus button
+    accordian_plus_buttom: Plus button
+    us_flag: US flag

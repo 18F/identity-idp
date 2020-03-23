@@ -1,4 +1,6 @@
-image_description:
-  accordian_minus_buttom: 'Bouton moins'
-  accordian_plus_buttom: 'Bouton Plus'
-  us_flag: 'Drapeau américain'
+---
+fr:
+  image_description:
+    accordian_minus_buttom: Bouton moins
+    accordian_plus_buttom: Bouton Plus
+    us_flag: Drapeau américain
