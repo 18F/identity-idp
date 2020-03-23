@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'OpenID Connect' do
   include IdvHelper
-  include CloudhsmMocks
   include OidcAuthHelper
 
   context 'with client_secret_jwt' do
@@ -207,6 +206,29 @@ describe 'OpenID Connect' do
       handoff_page_steps: proc do
         expect(page).to have_content(t('titles.sign_up.refresh_consent'))
         expect(page).to_not have_content(t('titles.sign_up.new_sp'))
+
+        click_agree_and_continue
+      end,
+    )
+  end
+
+  it 'prompts for consent if consent was revoked/soft deleted', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    user = user_with_2fa
+    link_identity(user, client_id)
+
+    user.identities.last.update!(
+      last_consented_at: 2.years.ago,
+      created_at: 2.years.ago,
+      deleted_at: 2.days.ago,
+    )
+
+    sign_in_get_id_token(
+      user: user,
+      client_id: client_id,
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('titles.sign_up.new_sp'))
+        expect(page).to_not have_content(t('titles.sign_up.refresh_consent'))
 
         click_agree_and_continue
       end,
@@ -422,65 +444,6 @@ describe 'OpenID Connect' do
         expect(page).
           to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end
-    end
-  end
-
-  context 'with cloudhsm enabed' do
-    before do
-      allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(true)
-      mock_cloudhsm
-    end
-
-    it 'succeeds with JWT' do
-      oidc_end_client_secret_jwt
-    end
-
-    it 'succeeds with PKCE' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
-      state = SecureRandom.hex
-      nonce = SecureRandom.hex
-      code_verifier = SecureRandom.hex
-      code_challenge = Digest::SHA256.base64digest(code_verifier)
-      user = user_with_2fa
-
-      link_identity(user, client_id)
-      user.identities.last.update!(verified_attributes: ['email'])
-
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
-        state: state,
-        prompt: 'select_account',
-        nonce: nonce,
-        code_challenge: code_challenge,
-        code_challenge_method: 'S256',
-      )
-
-      _user = sign_in_live_with_2fa(user)
-      expect(page.html).to_not include(code_challenge)
-
-      redirect_uri = URI(current_url)
-      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
-
-      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-      expect(redirect_params[:state]).to eq(state)
-
-      code = redirect_params[:code]
-      expect(code).to be_present
-
-      page.driver.post api_openid_connect_token_path,
-                       grant_type: 'authorization_code',
-                       code: code,
-                       code_verifier: code_verifier
-
-      expect(page.status_code).to eq(200)
-      token_response = JSON.parse(page.body).with_indifferent_access
-
-      id_token = token_response[:id_token]
-      expect(id_token).to be_present
     end
   end
 

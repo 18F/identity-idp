@@ -282,7 +282,6 @@ GEM
     gibberish (2.1.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    greenletters (0.3.0)
     guard (2.16.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -720,7 +719,6 @@ DEPENDENCIES
   figaro
   foundation_emails
   gibberish
-  greenletters
   guard-rspec
   hiredis
   http_accept_language
@@ -743,7 +741,6 @@ DEPENDENCIES
   parallel_tests
   pg
   phonelib
-  pkcs11
   premailer-rails
   proofer!
   pry-byebug
