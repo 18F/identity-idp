@@ -423,4 +423,163 @@ describe 'OpenID Connect' do
       end
     end
   end
+
+  def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)	
+    client_id = 'urn:gov:gsa:openidconnect:test'	
+    nonce = SecureRandom.hex	
+
+    visit openid_connect_authorize_path(	
+      client_id: client_id,	
+      response_type: 'code',	
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,	
+      scope: 'openid email',	
+      redirect_uri: 'gov.gsa.openidconnect.test://result',	
+      state: state,	
+      prompt: 'select_account',	
+      nonce: nonce,	
+    )	
+  end	
+
+  def sign_in_get_id_token(**args)	
+    token_response = sign_in_get_token_response(**args)	
+    token_response[:id_token]	
+  end	
+
+  def sign_in_get_token_response(	
+    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,	
+    client_id: 'urn:gov:gsa:openidconnect:test'	
+  )	
+    state = SecureRandom.hex	
+    nonce = SecureRandom.hex	
+    code_verifier = SecureRandom.hex	
+    code_challenge = Digest::SHA256.base64digest(code_verifier)	
+
+    link_identity(user, client_id)	
+    user.identities.last.update!(verified_attributes: ['email'])	
+
+    visit openid_connect_authorize_path(	
+      client_id: client_id,	
+      response_type: 'code',	
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,	
+      scope: scope,	
+      redirect_uri: 'gov.gsa.openidconnect.test://result',	
+      state: state,	
+      prompt: 'select_account',	
+      nonce: nonce,	
+      code_challenge: code_challenge,	
+      code_challenge_method: 'S256',	
+    )	
+
+    _user = sign_in_live_with_2fa(user)	
+    handoff_page_steps&.call	
+
+    redirect_uri = URI(current_url)	
+    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access	
+    code = redirect_params[:code]	
+    expect(code).to be_present	
+
+    page.driver.post api_openid_connect_token_path,	
+                     grant_type: 'authorization_code',	
+                     code: code,	
+                     code_verifier: code_verifier	
+    expect(page.status_code).to eq(200)	
+
+    JSON.parse(page.body).with_indifferent_access	
+  end	
+
+  def sp_public_key	
+    page.driver.get api_openid_connect_certs_path	
+
+    expect(page.status_code).to eq(200)	
+    certs_response = JSON.parse(page.body).with_indifferent_access	
+
+    JSON::JWK.new(certs_response[:keys].first).to_key	
+  end	
+
+  def client_private_key	
+    @client_private_key ||= begin	
+      OpenSSL::PKey::RSA.new(	
+        File.read(Rails.root.join('keys', 'saml_test_sp.key')),	
+      )	
+    end	
+  end	
+
+  def oidc_end_client_secret_jwt(prompt: nil, user: nil, redirs_to: nil)	
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'	
+    state = SecureRandom.hex	
+    nonce = SecureRandom.hex	
+
+    visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)	
+    continue_as(user.email) if user	
+    if redirs_to	
+      expect(current_path).to eq(redirs_to)	
+      return	
+    end	
+    expect(current_path).to eq('/')	
+
+    user ||= create(:profile, :active, :verified,	
+                    pii: { first_name: 'John', ssn: '111223333' }).user	
+
+    sign_in_live_with_2fa(user)	
+    click_agree_and_continue_optional	
+    redirect_uri = URI(current_url)	
+    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access	
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')	
+    expect(redirect_params[:state]).to eq(state)	
+
+    code = redirect_params[:code]	
+    expect(code).to be_present	
+
+    jwt_payload = {	
+      iss: client_id,	
+      sub: client_id,	
+      aud: api_openid_connect_token_url,	
+      jti: SecureRandom.hex,	
+      exp: 5.minutes.from_now.to_i,	
+    }	
+
+    client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')	
+    client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'	
+
+    page.driver.post api_openid_connect_token_path,	
+                     grant_type: 'authorization_code',	
+                     code: code,	
+                     client_assertion_type: client_assertion_type,	
+                     client_assertion: client_assertion	
+
+    expect(page.status_code).to eq(200)	
+    token_response = JSON.parse(page.body).with_indifferent_access	
+
+    id_token = token_response[:id_token]	
+    expect(id_token).to be_present	
+
+    decoded_id_token, _headers = JWT.decode(	
+      id_token, sp_public_key, true, algorithm: 'RS256'	
+    ).map(&:with_indifferent_access)	
+
+    sub = decoded_id_token[:sub]	
+    expect(sub).to be_present	
+    expect(decoded_id_token[:nonce]).to eq(nonce)	
+    expect(decoded_id_token[:aud]).to eq(client_id)	
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)	
+    expect(decoded_id_token[:iss]).to eq(root_url)	
+    expect(decoded_id_token[:email]).to eq(user.email)	
+    expect(decoded_id_token[:given_name]).to eq('John')	
+    expect(decoded_id_token[:social_security_number]).to eq('111223333')	
+
+    access_token = token_response[:access_token]	
+    expect(access_token).to be_present	
+
+    page.driver.get api_openid_connect_userinfo_path,	
+                    {},	
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"	
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access	
+    expect(userinfo_response[:sub]).to eq(sub)	
+    expect(userinfo_response[:email]).to eq(user.email)	
+    expect(userinfo_response[:given_name]).to eq('John')	
+    expect(userinfo_response[:social_security_number]).to eq('111223333')	
+    user
+  end
 end
