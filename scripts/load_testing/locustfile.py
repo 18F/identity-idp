@@ -433,7 +433,7 @@ class UserBehavior(locust.TaskSet):
             catch_response=True
         )
         with transition_resp as resp:
-            if resp.status_code is not 200:
+            if resp.status_code != 200:
                 resp.failure(
                     "Bad {} response at {} with headers {}. Response:".format(
                         resp.status_code, resp.url, resp.headers, resp.content
@@ -500,7 +500,7 @@ class UserBehavior(locust.TaskSet):
             catch_response=True
         )
         with sign_in_resp as resp:
-            if resp.status_code is not 200:
+            if resp.status_code != 200:
                 resp.failure(
                     "Bad {} response at {} with headers {}. Response:".format(
                         resp.status_code, resp.url, resp.headers, resp.content
@@ -564,7 +564,7 @@ class UserBehavior(locust.TaskSet):
             catch_response=True
         )
         with dash_response as resp:
-            if resp.status_code is not 200:
+            if resp.status_code != 200:
                 resp.failure(
                     "Bad {} response at {} with the headers {}: {}".format(
                         resp.status_code, resp.url, resp.headers, resp.content
@@ -582,7 +582,7 @@ class UserBehavior(locust.TaskSet):
             catch_response=True
         )
         with handshake_post as resp:
-            if resp.status_code is not 200:
+            if resp.status_code != 200:
                 resp.failure(
                     "Bad {} response at {} with the headers {}".format(
                         resp.status_code, resp.url, resp.headers
