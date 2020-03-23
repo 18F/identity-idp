@@ -13,10 +13,10 @@
     )
       span.mb0.mr2
         = header_text
-      = image_tag asset_url('plus.svg'),  alt: t('image_description.plus_button'), width: 16,
-        class: 'plus-icon display-none'
-      = image_tag asset_url('minus.svg'), alt: t('image_description.minus_button'), width: 16,
-        class: 'minus-icon display-none'
+      = image_tag asset_url('plus.svg'),  alt: t('image_description.accordian_plus_buttom'),
+        width: 16, class: 'plus-icon display-none'
+      = image_tag asset_url('minus.svg'), alt: t('image_description.accordian_minus_buttom'),
+        width: 16, class: 'minus-icon display-none'
   .accordion-content.clearfix.pt1(
     id="#{target_id}"
     role="region"
