@@ -130,8 +130,12 @@ describe SignUp::CompletionsController do
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
-        expect(@linker).to receive(:link_identity).
-          with(ial: 1, verified_attributes: ['email'], last_consented_at: now)
+        expect(@linker).to receive(:link_identity).with(
+          ial: 1,
+          verified_attributes: ['email'],
+          last_consented_at: now,
+          clear_deleted_at: true,
+        )
         Timecop.freeze(now) do
           patch :update
         end
@@ -170,6 +174,7 @@ describe SignUp::CompletionsController do
           ial: 2,
           verified_attributes: %w[email first_name verified_at],
           last_consented_at: now,
+          clear_deleted_at: true,
         )
         Timecop.freeze(now) do
           patch :update

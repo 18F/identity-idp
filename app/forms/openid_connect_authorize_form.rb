@@ -93,7 +93,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success, :already_linked
+  attr_reader :identity, :success
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]

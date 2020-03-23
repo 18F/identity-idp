@@ -62,5 +62,48 @@ RSpec.describe VerifySPAttributesConcern do
         expect(consent_has_expired?).to eq(true)
       end
     end
+
+    context 'when the identity has been soft-deleted (consent has been revoked)' do
+      let(:sp_session_identity) do
+        build(:identity,
+              deleted_at: 1.day.ago,
+              last_consented_at: 2.years.ago)
+      end
+
+      it 'is false' do
+        expect(consent_has_expired?).to eq(false)
+      end
+    end
+  end
+
+  describe '#consent_was_revoked?' do
+    let(:sp_session_identity) { build(:identity) }
+
+    before do
+      allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
+    end
+
+    subject(:consent_was_revoked?) { controller.consent_was_revoked? }
+
+    context 'when there is no sp_session_identity' do
+      let(:sp_session_identity) { nil }
+      it 'is false' do
+        expect(consent_was_revoked?).to eq(false)
+      end
+    end
+
+    context 'when the sp_session_identity exists and has not been deleted' do
+      it 'is false' do
+        expect(consent_was_revoked?).to eq(false)
+      end
+    end
+
+    context 'when the sp_session_identity exists and has been deleted' do
+      let(:sp_session_identity) { build(:identity, deleted_at: 2.days.ago) }
+
+      it 'is false' do
+        expect(consent_was_revoked?).to eq(true)
+      end
+    end
   end
 end

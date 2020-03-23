@@ -46,6 +46,7 @@ en:
     registrations:
       new: Sign up for a account
     remembered_browsers: Remembered browsers
+    revoke_consent: Revoke Consent
     sign_up:
       completion_html: You've %{accent} with %{app}
       loa1: created an account

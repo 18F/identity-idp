@@ -1,0 +1,19 @@
+<div class="p2 clearfix border-top">
+  <div class="clearfix mxn1">
+    <div class="sm-col sm-col-6 px1">
+      <div class="bold truncate">
+        <% if identity.return_to_sp_url.present? %>
+          <%= link_to(identity.display_name, identity.return_to_sp_url) %>
+        <% else %>
+          <%= identity.display_name %>
+        <% end %>
+      </div>
+      <%= t('account.connected_apps.associated',
+            timestamp: local_time(identity.created_at, t('time.formats.event_timestamp'))).html_safe %>
+    </div>
+    <div class="sm-col sm-col-6 px1 sm-right-align line-height-4">
+      <%= link_to(t('account.revoke_consent.link_title'),
+                  service_provider_revoke_url(identity.service_provider_id)) %>
+    </div>
+  </div>
+</div>
