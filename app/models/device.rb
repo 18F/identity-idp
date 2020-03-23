@@ -1,5 +1,6 @@
 class Device < ApplicationRecord
   belongs_to :user
+  validates :user_id, presence: true
   has_many :events, dependent: :destroy
   attr_accessor :nice_name
   validates :cookie_uuid, presence: true

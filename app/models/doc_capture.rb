@@ -1,5 +1,6 @@
 class DocCapture < ApplicationRecord
   belongs_to :user
+  validates :user_id, presence: true
   validates :request_token, presence: true
   validates :requested_at, presence: true
 
