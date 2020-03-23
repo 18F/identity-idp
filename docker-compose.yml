@@ -44,3 +44,15 @@ services:
     container_name: mailcatcher
     ports:
       - 1080:1080
+  load-test:
+    build:
+      context: scripts/load_testing
+      dockerfile: load-test.Dockerfile
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./scripts/load_testing:/load-test
+    environment:
+      - "TARGET_URL=http://0.0.0.0:3000"
+      - "LOCUSTFILE_PATH=/load-test/locustfile.py"
+      - "LOCUSTMODE=standalone"
