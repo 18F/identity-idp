@@ -43,7 +43,7 @@ gem 'rack-headers_filter'
 gem 'rack-timeout'
 gem 'raise-if-root'
 gem 'readthis'
-gem 'recaptcha', require: 'recaptcha/rails'
+gem 'recaptcha', '5.2.1'
 gem 'redis-session-store'
 gem 'rotp', '~> 3.3.1'
 gem 'rqrcode'
@@ -104,7 +104,7 @@ group :test do
   gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot'
   gem 'capybara-selenium'
-  gem 'codeclimate-test-reporter', require: false
+  gem 'codeclimate-test-reporter', '>= 1.0.9', require: false
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails'

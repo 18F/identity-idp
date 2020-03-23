@@ -320,7 +320,7 @@ GEM
     irb (1.0.0)
     jaro_winkler (1.5.4)
     jmespath (1.4.0)
-    json (2.2.0)
+    json (2.3.0)
     json-jwt (1.11.0)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -686,7 +686,7 @@ DEPENDENCIES
   bummr
   capybara-screenshot
   capybara-selenium
-  codeclimate-test-reporter
+  codeclimate-test-reporter (>= 1.0.9)
   database_cleaner
   derailed
   device_detector
@@ -744,7 +744,7 @@ DEPENDENCIES
   rails-erd
   raise-if-root
   readthis
-  recaptcha
+  recaptcha (= 5.2.1)
   redis-session-store
   rotp (~> 3.3.1)
   rqrcode
