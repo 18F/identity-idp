@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 shared_examples 'a saml endpoint' do
+
+end
+
+describe 'multiple saml endpoints' do
+  include SamlAuthHelper
+  include IdvHelper
+
+  let(:endpoint_suffix) { '2018' }
   let(:user) { create(:user, :signed_up) }
 
   let(:endpoint_saml_settings) do
@@ -90,23 +98,5 @@ shared_examples 'a saml endpoint' do
         ['/api/saml/logout', endpoint_suffix].join(''),
       )
     end
-  end
-end
-
-describe 'multiple saml endpoints' do
-  include SamlAuthHelper
-  include CloudhsmMocks
-  include IdvHelper
-
-  before { mock_cloudhsm }
-
-  context 'with a cloudhsm key' do
-    let(:endpoint_suffix) { 'cloudhsm' }
-    it_behaves_like 'a saml endpoint'
-  end
-
-  context 'with a local key' do
-    let(:endpoint_suffix) { '2018' }
-    it_behaves_like 'a saml endpoint'
   end
 end

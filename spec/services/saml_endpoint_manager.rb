@@ -1,10 +1,5 @@
 require 'rails_helper'
-
 describe SamlEndpoint do
-  before do
-    allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(true)
-  end
-
   let(:path) { '/api/saml/auth2018' }
   let(:request) do
     request_double = double
@@ -18,7 +13,7 @@ describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2019 2018 cloudhsm])
+      expect(result).to eq(%w[2019 2018])
     end
   end
 
@@ -30,7 +25,6 @@ describe SamlEndpoint do
         [
           { suffix: '2019', secret_key_passphrase: 'trust-but-verify' },
           { suffix: '2018', secret_key_passphrase: 'asdf1234' },
-          { suffix: 'cloudhsm', cloudhsm_key_label: 'key1' },
         ],
       )
     end
@@ -63,44 +57,6 @@ describe SamlEndpoint do
         expect { subject.secret_key }.to raise_error(
           "No private key at path #{Rails.root.join('keys', 'saml_dne.key.enc')}",
         )
-      end
-    end
-
-    context 'with a cloudhsm key' do
-      let(:path) { '/api/saml/authcloudhsm' }
-
-      it 'returns nil' do
-        expect(subject.secret_key).to eq(nil)
-      end
-    end
-  end
-
-  describe '#cloudhsm_key_label' do
-    context 'with a cloudhsm key label' do
-      let(:path) { '/api/saml/authcloudhsm' }
-
-      it 'returns the cloudhsm key label' do
-        expect(subject.cloudhsm_key_label).to eq('key1')
-      end
-    end
-
-    context 'with a local key' do
-      let(:path) { '/api/saml/auth2018' }
-
-      it 'returns nil' do
-        expect(subject.cloudhsm_key_label).to eq(nil)
-      end
-    end
-
-    context 'when cloudhsm is disabled' do
-      let(:path) { '/api/saml/authcloudhsm' }
-
-      before do
-        allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(false)
-      end
-
-      it 'returns nil' do
-        expect(subject.cloudhsm_key_label).to eq(nil)
       end
     end
   end

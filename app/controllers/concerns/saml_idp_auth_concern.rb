@@ -104,7 +104,6 @@ module SamlIdpAuthConcern
     {
       x509_certificate: endpoint.x509_certificate,
       secret_key: endpoint.secret_key,
-      cloudhsm_key_label: endpoint.cloudhsm_key_label,
     }
   end
 
