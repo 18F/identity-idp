@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-shared_examples 'a saml endpoint' do
-
-end
-
 describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
