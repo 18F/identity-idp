@@ -10,7 +10,7 @@ module Health
         health_check_summary: summary.as_json,
       )
 
-      render json: summary, status: (summary.healthy? ? :ok : :internal_error)
+      render json: summary, status: (summary.healthy? ? :ok : :internal_server_error)
     end
   end
 end
