@@ -53,6 +53,6 @@ services:
     volumes:
       - ./scripts/load_testing:/load-test
     environment:
-      - "TARGET_URL=http://0.0.0.0:3000"
+      - "TARGET_URL=http://app:3000"
       - "LOCUSTFILE_PATH=/load-test/locustfile.py"
       - "LOCUSTMODE=standalone"
