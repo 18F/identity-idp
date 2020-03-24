@@ -33,7 +33,6 @@ class Utf8Sanitizer
   end
 
   def invalid_string?(string)
-    string = string.dup if string.frozen?
     !string.force_encoding('UTF-8').valid_encoding?
   end
 
