@@ -159,6 +159,7 @@ class Analytics
   PIV_CAC_LOGIN = 'PIV/CAC Login'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
+  PX_CAPTURE_DOC = 'Px: Capture Doc'.freeze
   PX_DOC_AUTH = 'PX: Doc Auth'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze

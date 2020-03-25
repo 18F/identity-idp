@@ -6,8 +6,8 @@ module Px
     FSM_SETTINGS = {
       step_url: :px_capture_doc_step_url,
       final_url: :root_url,
-      flow: Idv::Flows::CaptureDocFlow,
-      analytics_id: Analytics::CAPTURE_DOC,
+      flow: Px::Flows::CaptureDocFlow,
+      analytics_id: Analytics::PX_CAPTURE_DOC,
     }.freeze
 
     private
