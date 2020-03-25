@@ -11,7 +11,7 @@ end
 
 describe '2FA options when signing in' do
   context 'when the user only has SMS configured' do
-    it 'only displays SMS, Voice and Personal key' do
+    it 'only displays SMS and Voice' do
       user = create(:user, :signed_up, otp_delivery_preference: 'sms')
       sign_in_user(user)
 
@@ -21,6 +21,26 @@ describe '2FA options when signing in' do
         to have_content t('two_factor_authentication.login_options.sms')
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.piv_cac')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.auth_app')
+    end
+  end
+
+  context 'when the user only has backup codes configured' do
+    it 'only displays backup codes' do
+      user = create(:user, :with_backup_code)
+      sign_in_user(user)
+
+      click_link t('two_factor_authentication.login_options_link_text')
+
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.sms')
+      expect(page).
+        to_not have_content t('two_factor_authentication.login_options.voice')
       expect(page).
         to have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
@@ -42,7 +62,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -63,7 +83,7 @@ describe '2FA options when signing in' do
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -84,7 +104,7 @@ describe '2FA options when signing in' do
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
       expect(page).
@@ -144,7 +164,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -164,7 +184,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -204,7 +224,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -226,7 +246,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_content t('two_factor_authentication.login_options.voice')
       expect(page).
-        to have_content t('two_factor_authentication.login_options.backup_code')
+        to_not have_content t('two_factor_authentication.login_options.backup_code')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
@@ -258,7 +278,7 @@ describe '2FA options when signing in' do
       expect(page).
         to have_selector("#two_factor_options_form_selection_voice_#{second_id}", count: 1)
       expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 1)
+      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
       expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 0)

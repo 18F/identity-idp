@@ -3,6 +3,14 @@ en:
   account:
     connected_apps:
       associated: Associated %{timestamp}
+    forget_all_browsers:
+      description: Use this to disconnect all remembered browers from your login.gov
+        account
+      link_title: Forget all browsers
+      longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional
+        information to know that it’s actually you signing in to your account. We’ll
+        ask for a multi-factor authentication method (such as text/SMS code or a security
+        key) each time you want to access your account.
     index:
       address: Current address
       auth_app_disabled: not enabled
@@ -58,6 +66,12 @@ en:
         ial2: If you have added your PIV/CAC card to your account, you may use it
           instead of your email. You will need to provide your password to unlock
           your profile.
+    revoke_consent:
+      link_title: Revoke Consent
+      longer_description_html: Your information will no longer be shared with %{service_provider}.
+        To access %{service_provider} in the future, you must give your consent to
+        share your information. You can give consent by going to the %{service_provider}
+        site and logging in.
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

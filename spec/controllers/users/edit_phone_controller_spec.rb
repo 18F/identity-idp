@@ -48,6 +48,7 @@ describe Users::EditPhoneController do
     end
 
     context 'when the user will not have enough phone configurations after deleting' do
+      let(:user) { create(:user, :with_phone) }
       let(:phone_configuration) { user.phone_configurations.first }
 
       it 'does not delete the phone configuration' do

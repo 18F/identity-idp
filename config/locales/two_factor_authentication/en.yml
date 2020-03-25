@@ -29,7 +29,6 @@ en:
       phone: Phone
       piv_cac: PIV/CAC
       webauthn: Security key
-    first_factor_enabled: "%{device} was successfully setup as an authentication method."
     header_text: Enter your security code
     invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
@@ -127,13 +126,6 @@ en:
     - Add a second layer of security so only you can sign in to your account.
     - You’ll only use one authentication method to sign in, but we ask you to set
       up two. This makes sure you can still sign in if you lose access to one.
-    two_factor_choice_intro_paragraphs_retire_personal_key:
-    - Replacing your Personal Key with a different authentication method helps keep
-      your account safe. It also makes sure you can sign in to your account even if
-      you lose or change your phone. <ul><li>You'll only have to use it when you don't
-      have your phone, not every time you sign in</li> <li>You won't be able to sign
-      in with a personal key anymore.  Personal keys are easily lost or stolen, so
-      we're removing it to keep your account safe.</li></ul>
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info_html: Get codes from an app on your phone, computer, or tablet.
@@ -162,8 +154,6 @@ en:
       webauthn_info_html: Use a security key that you have. It’s a physical device
         that you plug in or that is built in to your computer or phone (it often looks
         like a USB flash drive). Recommended because it is more phishing resistant.
-    two_factor_choice_retire_personal_key: Replace your Personal Key with an authentication
-      method (Required)
     two_factor_recovery_choice: Second authentication method setup (2 of 2)
     two_factor_recovery_choice_intro_paragraphs:
     - Adding a second authentication method makes sure you can sign in to you account

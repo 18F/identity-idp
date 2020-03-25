@@ -3,6 +3,15 @@ fr:
   account:
     connected_apps:
       associated: Associé %{timestamp}
+    forget_all_browsers:
+      description: Utilisez-le pour déconnecter tous les navigateurs mémorisés de
+        votre compte login.gov
+      link_title: Oubliez tous les navigateurs
+      longer_description: Une fois que vous aurez choisi "d'oublier tous les navigateurs",
+        nous aurons besoin d'informations supplémentaires pour savoir qu'il s'agit
+        bien de votre connexion à votre compte. Nous vous demanderons une méthode
+        d'authentification multifacteur (comme un code texte / SMS ou une clé de sécurité)
+        chaque fois que vous souhaitez accéder à votre compte.
     index:
       address: Adresse actuelle
       auth_app_disabled: non activée
@@ -60,6 +69,12 @@ fr:
         ial2: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
+    revoke_consent:
+      link_title: Révoquer le consentement
+      longer_description_html: Vos informations ne seront plus partagées avec %{service_provider}.
+        Pour accéder à %{service_provider} à l'avenir, vous devez donner votre consentement
+        pour partager vos informations. Vous pouvez donner votre consentement en allant
+        sur le site %{service_provider} et en vous connectant.
     security:
       link: En apprendre davantage dans le Centre d'aide
       text: L'information de votre profil est verrouillée pour votre sécurité.

@@ -37,6 +37,10 @@ class SessionDecorator
 
   def failure_to_proof_url; end
 
+  def remember_device_default
+    true
+  end
+
   def sp_msg; end
 
   def sp_name; end

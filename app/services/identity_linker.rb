@@ -15,10 +15,6 @@ class IdentityLinker
     identity
   end
 
-  def already_linked?
-    identity_relation.exists?
-  end
-
   private
 
   def process_ial(extra_attrs)
@@ -68,6 +64,7 @@ class IdentityLinker
     }
   end
 
+  # rubocop:disable Metrics/MethodLength
   def optional_attributes(
     code_challenge: nil,
     ial: nil,
@@ -75,7 +72,8 @@ class IdentityLinker
     rails_session_id: nil,
     scope: nil,
     verified_attributes: nil,
-    last_consented_at: nil
+    last_consented_at: nil,
+    clear_deleted_at: nil
   )
     {
       code_challenge: code_challenge,
@@ -86,8 +84,10 @@ class IdentityLinker
       verified_attributes: merge_attributes(verified_attributes),
     }.tap do |hash|
       hash[:last_consented_at] = last_consented_at if last_consented_at
+      hash[:deleted_at] = nil if clear_deleted_at
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def merge_attributes(verified_attributes)
     verified_attributes = verified_attributes.to_a.map(&:to_s)

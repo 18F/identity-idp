@@ -1,15 +1,16 @@
 require 'rails_helper'
 
-describe MonthlyAuthCount do
+describe MonthlySpAuthCount do
   let(:user_id) { 1 }
   let(:issuer) { 'foo' }
+  let(:ial) { 1 }
 
   describe '.increment' do
     it 'sets the monthly count to 1' do
       year_month = current_year_month
-      MonthlyAuthCount.increment(user_id, issuer)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
 
-      monthly_auth_count = MonthlyAuthCount.first
+      monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)
       expect(monthly_auth_count.issuer).to eq(issuer)
       expect(monthly_auth_count.year_month).to eq(year_month)
@@ -18,10 +19,10 @@ describe MonthlyAuthCount do
 
     it 'updates the monthly count to 2' do
       year_month = current_year_month
-      MonthlyAuthCount.increment(user_id, issuer)
-      MonthlyAuthCount.increment(user_id, issuer)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
 
-      monthly_auth_count = MonthlyAuthCount.first
+      monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)
       expect(monthly_auth_count.issuer).to eq(issuer)
       expect(monthly_auth_count.year_month).to eq(year_month)
@@ -30,11 +31,11 @@ describe MonthlyAuthCount do
 
     it 'updates the monthly count to 3' do
       year_month = current_year_month
-      MonthlyAuthCount.increment(user_id, issuer)
-      MonthlyAuthCount.increment(user_id, issuer)
-      MonthlyAuthCount.increment(user_id, issuer)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
+      MonthlySpAuthCount.increment(user_id, issuer, ial)
 
-      monthly_auth_count = MonthlyAuthCount.first
+      monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)
       expect(monthly_auth_count.issuer).to eq(issuer)
       expect(monthly_auth_count.year_month).to eq(year_month)

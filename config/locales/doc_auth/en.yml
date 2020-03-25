@@ -36,9 +36,10 @@ en:
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
-      link_sent: Please check your phone and follow instructions to take a photo of
-        your state issued ID. When you are done click continue here to finish verifying
-        your identity.
+      link_sent:
+      - Please check your phone and follow instructions to take a photo of your state
+        issued ID.
+      - When you are done click continue here to finish verifying your identity.
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
       upload: We'll collect information about you by reading from your state-issued

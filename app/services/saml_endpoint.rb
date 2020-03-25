@@ -13,17 +13,9 @@ class SamlEndpoint
     @endpoint_configs ||= JSON.parse(Figaro.env.saml_endpoint_configs, symbolize_names: true)
   end
 
-  def cloudhsm_key_label
-    return unless FeatureManagement.use_cloudhsm?
-    endpoint_config[:cloudhsm_key_label]
-  end
-
   def secret_key
     filepath = Rails.root.join('keys', "saml#{suffix}.key.enc")
-    unless File.exist?(filepath)
-      return if cloudhsm_key_label.present?
-      raise "No private key at path #{filepath}"
-    end
+    raise "No private key at path #{filepath}" unless File.exist?(filepath)
     OpenSSL::PKey::RSA.new(
       File.read(filepath),
       endpoint_config[:secret_key_passphrase],
@@ -48,7 +40,6 @@ class SamlEndpoint
       config,
       x509_certificate,
       secret_key,
-      cloudhsm_key_label,
     )
   end
 

@@ -3,6 +3,15 @@ es:
   account:
     connected_apps:
       associated: Asociado %{timestamp}
+    forget_all_browsers:
+      description: Use esto para desconectar todos los navegadores recordados de su
+        cuenta login.gov
+      link_title: Olvídate de todos los navegadores
+      longer_description: Una vez que elija "olvidar todos los navegadores", necesitaremos
+        información adicional para saber que en realidad está iniciando sesión en
+        su cuenta. Le pediremos un método de autenticación de múltiples factores (como
+        texto / código de SMS o una clave de seguridad) cada vez que desee acceder
+        a su cuenta.
     index:
       address: Dirección actual
       auth_app_disabled: no permitido
@@ -59,6 +68,12 @@ es:
         ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
+    revoke_consent:
+      link_title: Revocar consentimiento
+      longer_description_html: Su información ya no se compartirá con %{service_provider}.
+        Para acceder a %{service_provider} en el futuro, debe dar su consentimiento
+        para compartir su información. Puede dar su consentimiento yendo al sitio
+        %{service_provider} e iniciando sesión.
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.

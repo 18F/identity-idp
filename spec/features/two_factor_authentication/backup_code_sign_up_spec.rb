@@ -6,7 +6,6 @@ feature 'sign up with backup code' do
 
   it 'allows backup code only MFA configurations' do
     user = sign_up_and_set_password
-    expect(FirstMfaEnabledForUser.call(user)).to eq(:error)
     expect(page).to_not \
       have_content t('two_factor_authentication.login_options.backup_code_info_html')
     select_2fa_option('backup_code_only')
@@ -19,7 +18,6 @@ feature 'sign up with backup code' do
 
     expect(page).to have_content(t('notices.backup_codes_configured'))
     expect(current_path).to eq account_path
-    expect(FirstMfaEnabledForUser.call(user)).to eq(:backup_code)
     expect(user.backup_code_configurations.count).to eq(10)
   end
 

@@ -38,9 +38,11 @@ es:
       welcome: Nosotros necesitamos verificar tu identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
-      link_sent: Verifique su teléfono y siga las instrucciones para tomar una fotografía
-        de la identificación emitida por su estado. Cuando haya terminado, haga clic
-        en continuar aquí para terminar de verificar su identidad.
+      link_sent:
+      - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
+        la identificación emitida por su estado.
+      - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
+        su identidad.
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su identificación emitida

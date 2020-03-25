@@ -1,0 +1,22 @@
+<%= title t('titles.revoke_consent') %>
+
+<h1 class="h3 my0">
+  <%= t('titles.revoke_consent') %>
+</h1>
+
+<p class="mt3">
+  <%= t('account.revoke_consent.longer_description_html',
+        service_provider: content_tag(:b, @service_provider.friendly_name)) %>
+</p>
+
+<%= button_to(
+      t('forms.buttons.continue'),
+      service_provider_revoke_url(@service_provider.id),
+      method: 'delete',
+      class: 'btn btn-primary mt3') %>
+
+<div class="mt3 border-top">
+  <div class="mt1">
+    <%= link_to(t('links.cancel'), account_url) %>
+  </div>
+</div>

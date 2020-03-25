@@ -13,6 +13,7 @@ es:
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code: Ingese su código de seguridad de sólo un uso
+    forget_all_browsers: Olvídate de todos los navegadores
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta
@@ -45,6 +46,8 @@ es:
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta
+    remembered_browsers: Navegadores recordados
+    revoke_consent: Revocar consentimiento
     sign_up:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó una cuenta
@@ -56,7 +59,6 @@ es:
       new: Configure la autenticación de dos factores
     two_factor_recovery_setup: Añadir un método de autenticación de copia de seguridad
     two_factor_setup: Configuración de autenticación de dos factores
-    two_factor_setup_success: Configurar con éxito el primer método de autenticación
     verify_email: Revise su email
     verify_profile: Active su cuenta
     visitors:

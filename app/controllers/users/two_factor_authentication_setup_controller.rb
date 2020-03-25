@@ -11,7 +11,6 @@ module Users
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
-      @retire_personal_key = MfaPolicy.new(current_user).retire_personal_key?
     end
 
     def create
@@ -25,10 +24,6 @@ module Users
         @presenter = two_factor_options_presenter
         render :index
       end
-    end
-
-    def success
-      @presenter = two_factor_options_presenter
     end
 
     private
