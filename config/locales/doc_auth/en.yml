@@ -23,6 +23,7 @@ en:
       address: Mailing Address
       capture_complete: We have verified your state issued ID
       ssn: Please enter your social security number.
+      tag: Recommended
       take_pic_back: Take a photo of the back of your ID
       take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone
