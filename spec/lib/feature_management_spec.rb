@@ -138,32 +138,26 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '.fake_banner_mode?' do
-    context 'when on secure.login.gov' do
+    context 'when in the production environment: secure.login.gov, idp.staging.login.gov' do
       it 'does not display the fake banner' do
-        allow(Figaro.env).to receive(:domain_name).
-          and_return('secure.login.gov')
-        allow(Rails.env).to receive(:production?).
-          and_return(true)
+        allow(LoginGov::Hostdata).to receive(:domain).and_return('login.gov')
+        allow(Rails.env).to receive(:production?).and_return(true)
         expect(FeatureManagement.fake_banner_mode?).to eq(false)
       end
     end
 
-    context 'when the host is not secure.login.gov and the Rails env is production' do
+    context 'when the in the sandbox environment: identitysandbox.gov' do
       it 'displays the fake banner' do
-        allow(Figaro.env).to receive(:domain_name).
-          and_return('test.login.gov')
-        allow(Rails.env).to receive(:production?).
-          and_return(true)
+        allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+        allow(Rails.env).to receive(:production?).and_return(true)
         expect(FeatureManagement.fake_banner_mode?).to eq(true)
       end
     end
 
     context 'when the host is not secure.login.gov and the Rails env is not in production' do
       it 'does not display the fake banner' do
-        allow(Figaro.env).to receive(:domain_name).
-          and_return('test.login.gov')
-        allow(Rails.env).to receive(:production?).
-          and_return(false)
+        allow(LoginGov::Hostdata).to receive(:domain).and_return(nil)
+        allow(Rails.env).to receive(:production?).and_return(false)
         expect(FeatureManagement.fake_banner_mode?).to eq(false)
       end
     end

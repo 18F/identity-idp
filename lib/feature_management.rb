@@ -74,7 +74,7 @@ class FeatureManagement
   end
 
   def self.fake_banner_mode?
-    Rails.env.production? && ENVS_DO_NOT_DISPLAY_FAKE_BANNER.exclude?(Figaro.env.domain_name)
+    Rails.env.production? && LoginGov::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?
