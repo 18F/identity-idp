@@ -1,6 +1,6 @@
 module Px
   module Steps
-    class SendLinkStep < DocAuthBaseStep
+    class SendLinkStep < Idv::Steps::DocAuthBaseStep
       def call
         return failure(I18n.t('errors.doc_auth.send_link_throttle')) if throttled_else_increment
         telephony_result = send_link

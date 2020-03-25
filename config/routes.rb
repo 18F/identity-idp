@@ -329,6 +329,15 @@ Rails.application.routes.draw do
     root to: 'users/sessions#new'
   end
 
+  if FeatureManagement.px_enabled?
+    scope '/px', as: 'px', module: 'px' do
+      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+      put '/doc_auth/:step' => 'doc_auth#update'
+      get '/capture_doc/:step' => 'doc_auth#show', as: :capture_doc_step
+      put '/capture_doc/:step' => 'doc_auth#update'
+    end
+  end
+
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule

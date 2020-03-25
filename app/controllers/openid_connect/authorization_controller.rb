@@ -18,6 +18,7 @@ module OpenidConnect
 
     def index
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
+      # TODO Put something in here to redirect to PX flow
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1

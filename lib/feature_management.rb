@@ -127,4 +127,9 @@ class FeatureManagement
   def self.doc_capture_polling_enabled?
     Figaro.env.doc_capture_polling_enabled == 'true'
   end
+
+  # TODO Make this an actual feature flag
+  def self.px_enabled?
+    true
+  end
 end
