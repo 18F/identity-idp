@@ -5,7 +5,7 @@ ruby '~> 2.6.5'
 
 gem 'rails', '~> 5.2.4'
 
-gem 'ahoy_matey', '~> 2.0'
+gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
