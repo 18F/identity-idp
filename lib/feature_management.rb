@@ -127,4 +127,8 @@ class FeatureManagement
   def self.doc_capture_polling_enabled?
     Figaro.env.doc_capture_polling_enabled == 'true'
   end
+
+  def self.hide_phone_mfa_signup?
+    Figaro.env.hide_phone_mfa_signup == 'true'
+  end
 end

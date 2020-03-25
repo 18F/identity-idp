@@ -48,6 +48,8 @@ class TwoFactorOptionsPresenter
   end
 
   def phone_options
+    return [] if FeatureManagement.hide_phone_mfa_signup?
+
     if TwoFactorAuthentication::PhonePolicy.new(current_user).second_phone?
       [
         TwoFactorAuthentication::SecondPhoneSelectionPresenter.new(
