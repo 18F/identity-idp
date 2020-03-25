@@ -86,10 +86,6 @@ class FeatureManagement
       enabled?(session, reset)
   end
 
-  def self.use_cloudhsm?
-    Figaro.env.cloudhsm_enabled == 'true'
-  end
-
   def self.disallow_all_web_crawlers?
     Figaro.env.disallow_all_web_crawlers == 'true'
   end
@@ -126,5 +122,9 @@ class FeatureManagement
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
     Rails.env.development? && Figaro.env.identity_pki_local_dev == 'true'
+  end
+
+  def self.doc_capture_polling_enabled?
+    Figaro.env.doc_capture_polling_enabled == 'true'
   end
 end

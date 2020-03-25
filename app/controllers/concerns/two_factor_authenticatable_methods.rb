@@ -124,14 +124,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session[:authn_at] = Time.zone.now
     Funnel::Registration::AddMfa.call(current_user.id, 'phone')
     assign_phone
-    flash[:success] = t('notices.phone_confirmed') if should_show_phone_confirmed_message?
-  end
-
-  def should_show_phone_confirmed_message?
-    # If the user's only MFA method is the one they just setup, then they will be redirected to
-    # the mfa option screen which will show them the first MFA success message. In that case we
-    # do not want to show this additional flash message here.
-    MfaPolicy.new(current_user).multiple_factors_enabled?
+    flash[:success] = t('notices.phone_confirmed')
   end
 
   def handle_valid_otp_for_authentication_context
@@ -163,7 +156,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     create_user_event(:phone_confirmed)
     # If the user has MFA configured, then they are not adding a phone during sign up and are
     # instead adding it outside the sign up flow
-    return unless MfaPolicy.new(current_user).sufficient_factors_enabled?
+    return unless MfaPolicy.new(current_user).two_factor_enabled?
     send_phone_added_email
   end
 
@@ -189,27 +182,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_verification_confirmation_url
-    if after_otp_action_required?
-      after_otp_action_url
-    else
-      after_sign_in_path_for(current_user)
-    end
-  end
-
-  def after_otp_action_required?
-    user_needs_to_reactivate_account? ||
-      @updating_existing_number ||
-      !MfaPolicy.new(current_user).sufficient_factors_enabled?
-  end
-
-  def after_otp_action_url
-    if @updating_existing_number
-      account_url
-    elsif user_needs_to_reactivate_account?
-      reactivate_account_url
-    else
-      two_2fa_setup
-    end
+    return account_url if @updating_existing_number
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    after_sign_in_path_for(current_user)
   end
 
   def mark_user_session_authenticated(authentication_type)
@@ -322,6 +297,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
       data: data,
       view: view_context,
+      remember_device_default: remember_device_default,
     )
   end
 

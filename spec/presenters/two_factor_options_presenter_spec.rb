@@ -88,22 +88,4 @@ describe TwoFactorOptionsPresenter do
       end
     end
   end
-
-  describe 'shows correct step indicator' do
-    context 'with a user who has not chosen their first option' do
-      let(:user) { build(:user) }
-
-      it 'shows user is on step 3 of 4' do
-        expect(presenter.step).to eq '3'
-      end
-    end
-
-    context 'with a user who has chosen their first option' do
-      let(:user) { build(:user, :with_webauthn) }
-
-      it 'shows user is on step 4 of 4' do
-        expect(presenter.step).to eq '4'
-      end
-    end
-  end
 end

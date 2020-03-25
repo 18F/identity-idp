@@ -62,6 +62,13 @@ Rails.application.routes.draw do
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
+      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show', as: :forget_all_browsers
+      delete '/account/forget_all_browsers' => 'users/forget_all_browsers#destroy'
+
+      get '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#show',
+          as: :service_provider_revoke
+      delete '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
@@ -196,7 +203,6 @@ Rails.application.routes.draw do
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options_success' => 'users/two_factor_authentication_setup#success'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
@@ -291,6 +297,7 @@ Rails.application.routes.draw do
         get '/doc_auth' => 'doc_auth#index'
         get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
         put '/doc_auth/:step' => 'doc_auth#update'
+        get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
         put '/capture_doc/:step' => 'capture_doc#update'

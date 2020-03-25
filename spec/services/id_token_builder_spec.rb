@@ -16,15 +16,19 @@ RSpec.describe IdTokenBuilder do
           user: create(:user))
   end
 
-  let(:custom_expiration) { 5.minutes.from_now.to_i }
+  let(:now) { Time.zone.now }
+  let(:custom_expiration) { (now + 5.minutes).to_i }
   subject(:builder) do
-    IdTokenBuilder.new(identity: identity, code: code, custom_expiration: custom_expiration)
+    IdTokenBuilder.new(
+      identity: identity,
+      code: code,
+      custom_expiration: custom_expiration,
+      now: now,
+    )
   end
 
   describe '#id_token' do
     subject(:id_token) { Timecop.freeze(now) { builder.id_token } }
-
-    let(:now) { Time.zone.now }
 
     let(:decoded_id_token) do
       JWT.decode(id_token,

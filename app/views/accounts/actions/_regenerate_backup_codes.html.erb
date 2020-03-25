@@ -2,7 +2,7 @@
   <%= t('forms.backup_code.regenerate') %>
 <% end %>
 <div class='mt1'>
-  <% if MfaPolicy.new(current_user).more_than_two_factors_enabled? %>
+  <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
     &nbsp;<%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
   <% end %>
 </div>

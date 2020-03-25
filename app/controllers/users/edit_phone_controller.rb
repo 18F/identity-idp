@@ -38,7 +38,7 @@ module Users
     end
 
     def confirm_user_can_remove_phone
-      return if MfaPolicy.new(current_user).more_than_two_factors_enabled?
+      return if MfaPolicy.new(current_user).multiple_factors_enabled?
       flash[:error] = t('two_factor_authentication.phone.delete.failure')
       redirect_to account_url
       false

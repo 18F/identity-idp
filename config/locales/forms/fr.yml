@@ -41,6 +41,7 @@ fr:
       back: Retour
       cac: Present CAC card
       cancel: Oui, annuler
+      confirm: Confirmer
       continue: Continuer
       delete: Effacer
       disable: Effacer
@@ -146,12 +147,9 @@ fr:
       backup_code: Code de sécurité
       code: Code de sécurité
       personal_key: Clé personnelle
-      success: Ensuite, vous allez configurer une autre méthode.
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte
-    two_factor_choice_retire_personal_key:
-      legend: 'Sélectionnez une méthode d''authentification à deux facteurs:'
     two_factor_recovery_choice:
       legend: Sélectionnez une méthode supplémentaire pour sécuriser votre compte
     verify_profile:

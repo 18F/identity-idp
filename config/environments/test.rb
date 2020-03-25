@@ -30,7 +30,7 @@ Rails.application.configure do
   config.middleware.use RackSessionAccess::Middleware
 
   # Disable lograge when computing coverage and not in CircleCI, where lograge is required.
-  # This enables scanning for view test coverage with `rake test:scan_log_for_render`
+  # This enables scanning for view test coverage with `rake test:scan_log_for_view_coverage`
   config.lograge.enabled = !ENV['COVERAGE'] || ENV['CI']
 
   config.after_initialize do

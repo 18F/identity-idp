@@ -60,27 +60,10 @@ feature 'Sign Up' do
     end
   end
 
-  context 'user cancels on 1st MFA screen', email: true do
+  context 'user cancels on MFA screen', email: true do
     before(:each) do
       confirm_email('test@test.com')
       submit_form_with_valid_password
-      click_on t('links.cancel_account_creation')
-    end
-
-    it 'sends them to the cancel page' do
-      expect(current_path).to eq sign_up_cancel_path
-    end
-
-    it 'does not display a link to get back to their account' do
-      expect(page).to_not have_content t('links.back_to_account')
-    end
-  end
-
-  context 'user cancels on 2nd MFA screen', email: true do
-    before(:each) do
-      confirm_email('test@test.com')
-      submit_form_with_valid_password
-      set_up_2fa_with_valid_phone
       click_on t('links.cancel_account_creation')
     end
 
@@ -176,30 +159,8 @@ feature 'Sign Up' do
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
     set_up_2fa_with_authenticator_app
-    click_continue
-    set_up_2fa_with_backup_code
 
     expect(page).to have_current_path account_path
-  end
-
-  it 'allows a user to choose 2 TOTPs as 2FA method during sign up' do
-    user = sign_in_user
-    set_up_2fa_with_authenticator_app
-    click_continue
-    Timecop.travel 30.seconds.from_now do # wait the totp time step
-      set_up_2fa_with_authenticator_app
-      expect(page).to have_current_path account_path
-    end
-    expect(user.auth_app_configurations.count).to eq(2)
-  end
-
-  it 'allows a user to choose 2 PIV/CACs as 2FA method during sign up' do
-    user = sign_in_user
-    set_up_2fa_with_piv_cac
-    click_continue
-    set_up_2fa_with_piv_cac
-    expect(page).to have_current_path account_path
-    expect(user.piv_cac_configurations.count).to eq(2)
   end
 
   it 'does not allow PIV/CAC during setup on mobile' do
@@ -311,5 +272,17 @@ feature 'Sign Up' do
     click_on 'Continue'
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+  end
+
+  it 'does not show the remember device option as the default when the SP is AAL2' do
+    ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
+      aal: 2,
+    )
+    visit_idp_from_sp_with_ial1(:oidc)
+    sign_up_and_set_password
+    select_2fa_option('phone')
+    fill_in :new_phone_form_phone, with: '2025551313'
+    click_send_security_code
+    expect(page).to_not have_checked_field t('forms.messages.remember_device')
   end
 end

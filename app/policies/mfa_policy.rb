@@ -16,19 +16,6 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
-  def more_than_two_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 2
-  end
-
-  def sufficient_factors_enabled?
-    mfa_user.enabled_mfa_methods_count > 1 ||
-      mfa_user.backup_code_configurations.to_a.length.positive?
-  end
-
-  def retire_personal_key?
-    !sufficient_factors_enabled? && @user&.encrypted_recovery_code_digest&.present?
-  end
-
   def unphishable?
     mfa_user.phishable_configuration_count.zero? &&
       mfa_user.unphishable_configuration_count.positive?

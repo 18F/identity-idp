@@ -15,6 +15,16 @@ module Idv
       analytics_id: Analytics::DOC_AUTH,
     }.freeze
 
+    def doc_capture_poll
+      doc_capture = DocCapture.find_by(user_id: user_id)
+      render plain: 'Not authorized', status: :not_authorized if doc_capture.blank?
+      if doc_capture.acuant_token.present?
+        render plain: 'Complete', status: :ok
+      else
+        render plain: 'Pending', status: :accepted
+      end
+    end
+
     def redirect_if_mail_bounced
       redirect_to idv_usps_url if current_user.decorate.usps_mail_bounced?
     end

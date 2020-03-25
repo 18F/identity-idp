@@ -20,7 +20,7 @@ module Idv
 
       def assure_id
         @assure_id ||= new_assure_id
-        @assure_id.instance_id = flow_session[:instance_id]
+        @assure_id.instance_id = flow_session[:instance_id] if flow_session[:instance_id]
         @assure_id
       end
 

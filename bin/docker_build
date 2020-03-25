@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-require 'pathname'
+require "pathname"
 
 # path to your application root.
-APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+APP_ROOT = Pathname.new File.expand_path("../../", __FILE__)
 
 def run(command)
   puts("* Running command: #{command}")
@@ -24,8 +24,12 @@ Dir.chdir APP_ROOT do
            |___/          |___/
   ]
 
-  # Build and tag the base production image
-  puts "== Building the base/production Docker image =="
-  run "docker build . -f production.Dockerfile -t identity-idp-production"
-
+  # Rebuild the base, build, and production images
+  # ** Eventually we will keep the `base` and `build` images in a separate repo,
+  #   build them in a separate pipeline, and just pull them down for development
+  #   Note: building the production image here is not necessary for development work
+  { base: 'rails_base', build: 'rails_build', production: 'idp_app' }.each do |name, description|
+    puts "== Building the #{name} Docker image =="
+    run "docker build . --file #{name}.Dockerfile --tag identity-#{description} --no-cache"
+  end
 end

@@ -46,17 +46,9 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context
-      redirect_to next_step
+      redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
       user_session.delete(:mfa_device_remembered)
-    end
-
-    def next_step
-      if MfaPolicy.new(current_user).sufficient_factors_enabled?
-        after_otp_verification_confirmation_url
-      else
-        two_factor_options_success_url
-      end
     end
 
     def handle_invalid_piv_cac
@@ -98,6 +90,7 @@ module TwoFactorAuthentication
       TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
         view: view_context,
         data: piv_cac_view_data,
+        remember_device_default: remember_device_default,
       )
     end
 
