@@ -1,4 +1,4 @@
-module Px
+module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
       def call
