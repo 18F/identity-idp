@@ -33,6 +33,21 @@ describe TwoFactorOptionsPresenter do
       ]
     end
 
+    context 'when hide_phone_mfa_signup is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:hide_phone_mfa_signup?).and_return(true)
+      end
+
+      it 'supplies all the options except phone' do
+        expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
+        ]
+      end
+    end
+
     context 'with a user with a phone configured' do
       let(:user) { build(:user, :with_phone) }
 
