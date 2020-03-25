@@ -10,11 +10,11 @@ module Px
         email_sent: Px::Steps::EmailSentStep,
         front_image: Px::Steps::FrontImageStep,
         back_image: Px::Steps::BackImageStep,
-        # mobile_front_image: Px::Steps::MobileFrontImageStep,
-        # mobile_back_image: Px::Steps::MobileBackImageStep,
-        # ssn: Px::Steps::SsnStep,
-        # verify: Px::Steps::VerifyStep,
-        # doc_success: Px::Steps::DocSuccessStep,
+        mobile_front_image: Px::Steps::MobileFrontImageStep,
+        mobile_back_image: Px::Steps::MobileBackImageStep,
+        ssn: Px::Steps::SsnStep,
+        verify: Px::Steps::VerifyStep,
+        doc_success: Px::Steps::DocSuccessStep,
       }.freeze
 
       ACTIONS = {

@@ -39,6 +39,7 @@
 
 <%= render 'px/doc_auth/start_over_or_cancel' %>
 
-<% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= javascript_pack_tag 'doc_capture_polling' %>
-<% end %>
+<!-- TODO Fix polling under px -->
+<% # if FeatureManagement.doc_capture_polling_enabled? %>
+  <%= # javascript_pack_tag 'doc_capture_polling' %>
+<% # end %>
