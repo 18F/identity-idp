@@ -44,7 +44,7 @@ module Idv
     end
 
     def success?
-      idv_result[:success] && ssn_is_unique?
+      idv_result[:success]
     end
 
     def ssn_is_unique?
