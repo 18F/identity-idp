@@ -13,7 +13,7 @@ module Idv
       end
 
       def liveness(body)
-        url = "/api/v1/liveness"
+        url = '/api/v1/liveness'
 
         options = default_options.merge(
           headers: content_type_json.merge(accept_json),
@@ -23,7 +23,7 @@ module Idv
       end
 
       def facematch(body)
-        url = "/api/v1/facematch"
+        url = '/api/v1/facematch'
 
         options = default_options.merge(
           headers: content_type_json.merge(accept_json),
