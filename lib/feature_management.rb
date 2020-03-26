@@ -133,6 +133,6 @@ class FeatureManagement
   end
 
   def self.enable_compound_pii_fingerprint?
-    Figaro.env.hide_phone_mfa_signup == 'true'
+    Figaro.env.enable_compound_pii_fingerprint == 'true'
   end
 end
