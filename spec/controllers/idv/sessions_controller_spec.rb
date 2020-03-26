@@ -115,7 +115,6 @@ describe Idv::SessionsController do
         errors: {
           first_name: ['Unverified first name.'],
         },
-        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
@@ -137,7 +136,6 @@ describe Idv::SessionsController do
         success: true,
         idv_attempts_exceeded: false,
         errors: {},
-        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
