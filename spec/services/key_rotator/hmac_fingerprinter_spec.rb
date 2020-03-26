@@ -19,6 +19,8 @@ describe KeyRotator::HmacFingerprinter do
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
     end
 
+    # TODO: Rotate and test pii fingerprint and add tests
+
     it 'does not change the `updated_at` timestamp' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user

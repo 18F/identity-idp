@@ -56,6 +56,8 @@ describe Pii::Cacher do
       expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
     end
 
+    # TODO: Rotate the PII fingerprint and add tests
+
     it 'does not attempt to rotate nil attributes' do
       user = create(:user, password: password)
       cacher = described_class.new(user, user_session)

@@ -47,8 +47,8 @@ class Profile < ApplicationRecord
   end
 
   def encrypt_pii(pii, password)
-    ssn = pii.ssn
-    self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
+    encrypt_ssn_fingerprint(pii)
+    encrypt_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     encrypt_recovery_pii(pii)
@@ -67,5 +67,16 @@ class Profile < ApplicationRecord
 
   def personal_key_generator
     @_personal_key_generator ||= PersonalKeyGenerator.new(user)
+  end
+
+  def encrypt_ssn_fingerprint(pii)
+    ssn = pii.ssn
+    self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
+  end
+
+  def encrypt_pii_fingerprint(pii)
+    values = %i[first_name last_name dob ssn].map { |key| pii[key] }
+    return nil if values.any?(nil)
+    self.pii_fingerprint = Pii::Fingerprinter.fingerprint(values.join(':'))
   end
 end

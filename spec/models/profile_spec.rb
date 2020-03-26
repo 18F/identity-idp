@@ -37,6 +37,8 @@ describe Profile do
       expect(profile.encrypted_pii_recovery).to_not be_nil
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
+
+    # TODO: Test here for SSN and PII figerprinting
   end
 
   describe '#encrypt_recovery_pii' do
