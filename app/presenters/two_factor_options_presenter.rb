@@ -1,8 +1,6 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :current_user
-
   def initialize(user_agent:)
     @user_agent = user_agent
   end

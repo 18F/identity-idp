@@ -46,7 +46,7 @@ fr:
       delete: Effacer
       disable: Effacer
       edit: Modifier
-      enable: '+ Activer'
+      enable: "+ Activer"
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
@@ -129,7 +129,7 @@ fr:
     registration:
       labels:
         email: Adresse courriel
-    select: '- Sélectionner -'
+    select: "- Sélectionner -"
     totp_delete:
       caution: Si vous supprimez votre application d'authentification, vous ne pourrez
         plus l'utiliser pour accéder à votre compte login.gov.

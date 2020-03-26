@@ -70,6 +70,7 @@ module Users
     end
 
     def confirm_user_needs_2fa_setup
+      # TODO: Test this
       return unless MfaPolicy.new(current_user).two_factor_enabled?
       redirect_to after_mfa_setup_path
     end
