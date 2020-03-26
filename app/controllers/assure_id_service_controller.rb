@@ -50,6 +50,7 @@ class AssureIdServiceController < ApplicationController
   end
 
   def new_assure_id
-    Idv::Acuant::AssureId.new
+    klass = Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::AssureId
+    klass.new
   end
 end
