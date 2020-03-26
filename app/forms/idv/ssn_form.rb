@@ -29,7 +29,8 @@ module Idv
       return false if ssn.nil?
 
       @ssn_is_unique ||= DuplicateSsnFinder.new(
-        ssn: ssn, user: @user
+        ssn: ssn,
+        user: @user,
       ).ssn_is_unique?
     end
 
