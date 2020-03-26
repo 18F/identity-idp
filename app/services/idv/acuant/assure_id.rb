@@ -16,6 +16,25 @@ module Idv
         @instance_id = nil
       end
 
+      def subscriptions
+        options = default_options.merge(
+          headers: accept_json,
+        )
+
+        url = '/AssureIDService/subscriptions'
+
+        get(url, options)
+      end
+
+      def classification
+        options = default_options.merge(
+          headers: content_type_json.merge(accept_json),
+        )
+
+        url = "/AssureIDService/Document/#{instance_id}/Classification"
+        get(url, options)
+      end
+
       def create_document
         url = '/AssureIDService/Document/Instance'
 
@@ -52,8 +71,6 @@ module Idv
         get(url, default_options)
       end
 
-      private
-
       def post_image(image, side)
         url = "/AssureIDService/Document/#{instance_id}/Image?side=#{side}&light=0"
 
@@ -64,6 +81,26 @@ module Idv
 
         post(url, options)
       end
+
+      def field_image(key)
+        options = default_options.merge(
+          headers: content_type_json.merge(accept_json),
+        )
+
+        url = "/AssureIDService/Document/#{instance_id}/Field/Image?key=#{key}"
+        get(url, options)
+      end
+
+      def document
+        options = default_options.merge(
+          headers: content_type_json.merge(accept_json),
+        )
+
+        url = "/AssureIDService/Document/#{instance_id}"
+        get(url, options)
+      end
+
+      private
 
       def image_params
         {
