@@ -16,10 +16,6 @@ module TwoFactorAuthentication
       true
     end
 
-    def available?
-      true
-    end
-
     def enrollable?
       available? && !enabled?
     end

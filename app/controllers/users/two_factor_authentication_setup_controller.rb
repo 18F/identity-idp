@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :confirm_user_needs_2fa_setup
     before_action :handle_empty_selection, only: :create
 
     def index
@@ -41,7 +42,7 @@ module Users
     end
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp, request.user_agent)
+      TwoFactorOptionsPresenter.new(user_agent: request.user_agent)
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -66,6 +67,11 @@ module Users
 
       flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
       redirect_back(fallback_location: two_factor_options_path)
+    end
+
+    def confirm_user_needs_2fa_setup
+      return unless MfaPolicy.new(current_user).two_factor_enabled?
+      redirect_to after_mfa_setup_path
     end
 
     def two_factor_options_form_params

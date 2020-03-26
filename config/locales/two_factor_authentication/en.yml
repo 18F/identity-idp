@@ -22,7 +22,7 @@ en:
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it, you'll
       need to use a new key.
-    choose_another_option: "‹ Choose another option"
+    choose_another_option: '‹ Choose another option'
     devices:
       auth_app: Authentication app
       backup_code: Backup codes
@@ -44,9 +44,6 @@ en:
       backup_code: Backup codes
       backup_code_info_html: Use a backup code from your list of backup codes to sign
         in.
-      backup_code_only: Backup codes
-      backup_code_only_info_html: Use a backup code from your list of backup codes
-        to sign in.
       personal_key: Personal Key
       personal_key_info_html: Use the 16 character personal key you received at account
         creation.
@@ -121,19 +118,14 @@ en:
     totp_fallback:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code
-    two_factor_choice: First authentication method setup (1 of 2)
-    two_factor_choice_intro_paragraphs:
-    - Add a second layer of security so only you can sign in to your account.
-    - You’ll only use one authentication method to sign in, but we ask you to set
-      up two. This makes sure you can still sign in if you lose access to one.
+    two_factor_choice: Authentication method setup
+    two_factor_choice_intro: Add a second layer of security so only you can sign in to your account.
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info_html: Get codes from an app on your phone, computer, or tablet.
         Recommended because it is harder to intercept than texts or phone calls.
       backup_code: I don't have any of the above
-      backup_code_info_html: We’ll give you 10 codes to use and keep in a safe place
-      backup_code_only: I don't have any of the above
-      backup_code_only_info_html: We’ll give you 10 codes to use and keep in a safe
+      backup_code_info_html: We’ll give you 10 codes to use and keep in a safe
         place. You can use backup codes as your only authentication method. Not recommended
         because notes could get lost.
       less_secure_label: Less secure
@@ -154,10 +146,6 @@ en:
       webauthn_info_html: Use a security key that you have. It’s a physical device
         that you plug in or that is built in to your computer or phone (it often looks
         like a USB flash drive). Recommended because it is more phishing resistant.
-    two_factor_recovery_choice: Second authentication method setup (2 of 2)
-    two_factor_recovery_choice_intro_paragraphs:
-    - Adding a second authentication method makes sure you can sign in to you account
-      even if you lose or don’t have the other.
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key

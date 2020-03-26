@@ -1,10 +1,8 @@
-<% title @presenter.title %>
+<% title t('titles.two_factor_setup') %>
 
-<h1 class="h4 my0"><%= @presenter.heading %></h1>
+<h1 class="h4 my0"><%= t('two_factor_authentication.two_factor_choice') %></h1>
 
-<% @presenter.intro_parapraphs.each do |paragraph| %>
-  <p class="mt-tiny"><%== paragraph %></p>
-<% end %>
+<p class="mt-tiny"><%== t('two_factor_authentication.two_factor_choice_intro') %></p>
 
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off', role: 'form' },
@@ -12,7 +10,7 @@
                     url: two_factor_options_path do |f| %>
   <div class="mb3">
     <fieldset class="m0 p0 border-none">
-      <legend class="mb2 serif bold"><%= @presenter.label %></legend>
+      <legend class="mb2 serif bold"><%= t('forms.two_factor_choice.legend') %>:</legend>
       <% @presenter.options.each do |option| %>
         <label class="btn-border col-12 mb2 <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
           <div class="radio">
