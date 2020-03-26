@@ -9,6 +9,8 @@ module DocAuthHelper
       { 'Name' => 'Address City', 'Value' => 'New York' },
       { 'Name' => 'Address State', 'Value' => 'NY' },
       { 'Name' => 'Address Postal Code', 'Value' => '11364' },
+      { 'Name' => 'Issuing State Code', 'Value' => 'NY' },
+      { 'Name' => 'Document Number', 'Value' => '123ABC' },
       { 'Name' => 'Birth Date', 'Value' => '/Date(' +
         (Date.strptime('10-05-1938', '%m-%d-%Y').strftime('%Q').to_i + 43_200_000).to_s + ')/' },
     ],
@@ -26,8 +28,8 @@ module DocAuthHelper
       dob: '10/05/1938',
       ssn: '123',
       phone: '456',
-      state_id_jurisdiction: nil,
-      state_id_number: nil,
+      state_id_jurisdiction: 'NY',
+      state_id_number: '123ABC',
       state_id_type: 'drivers_license',
     }.freeze
 
