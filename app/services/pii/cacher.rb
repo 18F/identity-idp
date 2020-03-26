@@ -44,7 +44,9 @@ module Pii
     end
 
     def stale_fingerprints?(profile)
-      stale_email_fingerprint? || stale_ssn_signature?(profile)
+      stale_email_fingerprint? ||
+        stale_ssn_signature?(profile) ||
+        stale_compound_pii_signature?(profile)
     end
 
     def stale_email_fingerprint?
@@ -60,6 +62,15 @@ module Pii
       decrypted_pii = fetch
       return false unless decrypted_pii
       Pii::Fingerprinter.stale?(decrypted_pii.ssn, profile.ssn_signature)
+    end
+
+    def stale_compound_pii_signature?(profile)
+      return false unless profile
+      decrypted_pii = fetch
+      return false unless decrypted_pii
+      fingerprint = Profile.build_compound_pii_fingerprint(decrypted_pii)
+      return false unless fingerprint
+      Pii::Fingerprinter.stale?(fingerprint, profile.name_zip_birth_year_signature)
     end
   end
 end

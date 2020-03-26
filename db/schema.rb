@@ -321,8 +321,8 @@ ActiveRecord::Schema.define(version: 2020_03_26_160855) do
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
-    t.string "pii_fingerprint"
-    t.index ["pii_fingerprint"], name: "index_profiles_on_pii_fingerprint"
+    t.string "name_zip_birth_year_signature"
+    t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
