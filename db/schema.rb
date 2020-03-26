@@ -78,8 +78,8 @@ ActiveRecord::Schema.define(version: 2020_03_21_210321) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "code_fingerprint", default: "", null: false
     t.string "encrypted_code", default: "", null: false
+    t.string "code_fingerprint", default: "", null: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -321,10 +321,8 @@ ActiveRecord::Schema.define(version: 2020_03_21_210321) do
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
-    t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
-    t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -418,8 +416,8 @@ ActiveRecord::Schema.define(version: 2020_03_21_210321) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
-    t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
+    t.integer "ial2_quota"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
