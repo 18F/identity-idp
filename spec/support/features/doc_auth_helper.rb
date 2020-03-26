@@ -9,8 +9,8 @@ module DocAuthHelper
       { 'Name' => 'Address City', 'Value' => 'New York' },
       { 'Name' => 'Address State', 'Value' => 'NY' },
       { 'Name' => 'Address Postal Code', 'Value' => '11364' },
-      { 'Name' => 'Issuing State Code', 'Value' => 'NY'},
-      { 'Name' => 'Document Number', 'Value' => '123ABC'},
+      { 'Name' => 'Issuing State Code', 'Value' => 'NY' },
+      { 'Name' => 'Document Number', 'Value' => '123ABC' },
       { 'Name' => 'Birth Date', 'Value' => '/Date(' +
         (Date.strptime('10-05-1938', '%m-%d-%Y').strftime('%Q').to_i + 43_200_000).to_s + ')/' },
     ],

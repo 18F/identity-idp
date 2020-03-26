@@ -117,7 +117,7 @@ feature 'doc auth verify step' do
       agent = instance_double(Idv::Agent)
       allow(Idv::Agent).to receive(:new).and_return(agent)
       allow(agent).to receive(:proof).and_return(
-        success: true, errors: {}, context: { stages: [] }
+        success: true, errors: {}, context: { stages: [] },
       )
 
       stub_const(
@@ -139,7 +139,7 @@ feature 'doc auth verify step' do
       agent = instance_double(Idv::Agent)
       allow(Idv::Agent).to receive(:new).and_return(agent)
       allow(agent).to receive(:proof).and_return(
-        success: true, errors: {}, context: { stages: [] }
+        success: true, errors: {}, context: { stages: [] },
       )
 
       stub_const(
@@ -161,7 +161,7 @@ feature 'doc auth verify step' do
       agent = instance_double(Idv::Agent)
       allow(Idv::Agent).to receive(:new).and_return(agent)
       allow(agent).to receive(:proof).and_return(
-        success: true, errors: {}, context: { stages: [] }
+        success: true, errors: {}, context: { stages: [] },
       )
 
       allow(Figaro.env).to receive(:aamva_sp_banlist_issuers).
