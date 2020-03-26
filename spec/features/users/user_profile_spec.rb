@@ -64,17 +64,6 @@ feature 'User profile' do
     end
   end
 
-  it 'prevents a user from using the same credentials to sign up' do
-    pii = { ssn: '1234', dob: '1920-01-01' }
-    profile = create(:profile, :active, :verified, pii: pii)
-    sign_in_live_with_2fa(profile.user)
-    click_link(t('links.sign_out'), match: :first)
-
-    expect do
-      create(:profile, :active, :verified, pii: pii)
-    end.to raise_error(ActiveRecord::RecordInvalid)
-  end
-
   context 'ial2 user clicks the delete account button' do
     it 'deletes the account and signs the user out with a flash message' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })

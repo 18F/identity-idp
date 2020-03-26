@@ -106,38 +106,6 @@ describe Profile do
     end
   end
 
-  describe 'allows one unique SSN per user' do
-    it 'allows multiple records per user if only one is active' do
-      profile.active = true
-      pii_attrs = Pii::Attributes.new_from_hash(ssn: '1234')
-      profile.encrypt_pii(pii_attrs, user.password)
-      profile.save!
-      expect { create(:profile, pii: { ssn: '1234' }, user: user) }.to_not raise_error
-    end
-
-    it 'prevents save! via ActiveRecord uniqueness validation' do
-      profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(pii, user.password)
-      profile.save!
-      expect do
-        another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(pii, user.password)
-        another_profile.save!
-      end.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'prevents save! via psql unique partial index' do
-      profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(pii, user.password)
-      profile.save!
-      expect do
-        another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(pii, another_user.password)
-        another_profile.save!(validate: false)
-      end.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-  end
-
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
       active_profile = Profile.create(user: user, active: true)

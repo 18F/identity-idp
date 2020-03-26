@@ -85,30 +85,6 @@ describe Idv::SessionsController do
       expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
     end
 
-    it 'redirects to failure if the SSN exists' do
-      create(:profile, pii: { ssn: '666-66-1234' })
-
-      context = { stages: [{ resolution: 'ResolutionMock' }, { state_id: 'StateIdMock' }] }
-      result = {
-        success: false,
-        idv_attempts_exceeded: false,
-        errors: {},
-        ssn_is_unique: false,
-        vendor: { messages: [], context: context, exception: nil, timed_out: false },
-      }
-
-      expect(@analytics).to receive(:track_event).ordered.
-        with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, hash_including(success: true))
-      expect(@analytics).to receive(:track_event).ordered.
-        with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-
-      post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
-
-      expect(response).to redirect_to(idv_session_errors_warning_url)
-      expect(idv_session.profile_confirmation).to be_falsy
-      expect(idv_session.resolution_successful).to be_falsy
-    end
-
     it 'renders the forms if there are missing fields' do
       partial_attrs = user_attrs.tap { |attrs| attrs.delete :first_name }
 
@@ -139,7 +115,6 @@ describe Idv::SessionsController do
         errors: {
           first_name: ['Unverified first name.'],
         },
-        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 
@@ -161,7 +136,6 @@ describe Idv::SessionsController do
         success: true,
         idv_attempts_exceeded: false,
         errors: {},
-        ssn_is_unique: true,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
       }
 

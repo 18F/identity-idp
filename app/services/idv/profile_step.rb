@@ -44,16 +44,7 @@ module Idv
     end
 
     def success?
-      idv_result[:success] && ssn_is_unique?
-    end
-
-    def ssn_is_unique?
-      ssn = applicant[:ssn]
-      return false if ssn.nil?
-
-      @ssn_is_unique ||= DuplicateSsnFinder.new(
-        ssn: ssn, user: idv_session.current_user,
-      ).ssn_is_unique?
+      idv_result[:success]
     end
 
     def failed_due_to_timeout_or_exception?
@@ -70,7 +61,6 @@ module Idv
       {
         idv_attempts_exceeded: throttled?,
         vendor: idv_result.except(:errors, :success),
-        ssn_is_unique: ssn_is_unique?,
       }
     end
   end
