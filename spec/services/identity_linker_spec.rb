@@ -73,6 +73,41 @@ describe IdentityLinker do
       end
     end
 
+    context 'clear_deleted_at' do
+      let(:yesterday) { 1.day.ago }
+
+      before do
+        IdentityLinker.new(user, 'test.host').link_identity
+        last_identity = user.reload.last_identity
+        last_identity.update!(deleted_at: yesterday)
+      end
+
+      subject(:link_identity) do
+        IdentityLinker.new(user, 'test.host').
+          link_identity(clear_deleted_at: clear_deleted_at)
+      end
+
+      context 'clear_deleted_at is nil' do
+        let(:clear_deleted_at) { nil }
+
+        it 'nulls out deleted_at' do
+          expect { link_identity }.
+            to_not change { user.reload.last_identity.deleted_at&.to_i }.
+            from(yesterday.to_i)
+        end
+      end
+
+      context 'clear_deleted_at is true' do
+        let(:clear_deleted_at) { true }
+
+        it 'nulls out deleted_at' do
+          expect { link_identity }.
+            to change { user.reload.last_identity.deleted_at&.to_i }.
+            from(yesterday.to_i).to(nil)
+        end
+      end
+    end
+
     it 'rejects bad attributes names' do
       expect { IdentityLinker.new(user, 'test.host').link_identity(foobar: true) }.
         to raise_error(ArgumentError)
@@ -88,22 +123,6 @@ describe IdentityLinker do
 
       IdentityLinker.new(user, 'client1').link_identity(rails_session_id: rails_session_id)
       IdentityLinker.new(user, 'client2').link_identity(rails_session_id: rails_session_id)
-    end
-  end
-
-  describe '#already_linked?' do
-    let(:user) { create(:user) }
-    let(:provider) { 'test.host' }
-
-    subject(:identity_linker) { IdentityLinker.new(user, provider) }
-
-    it 'is false before an identity has been linked' do
-      expect(identity_linker.already_linked?).to eq(false)
-    end
-
-    it 'is true after an identity has been linked' do
-      expect { identity_linker.link_identity }.
-        to change { identity_linker.already_linked? }.from(false).to(true)
     end
   end
 end

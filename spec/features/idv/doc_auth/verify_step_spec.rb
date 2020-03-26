@@ -111,4 +111,68 @@ feature 'doc auth verify step' do
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
   end
+
+  context 'when the user lives in an AAMVA supported state' do
+    it 'performs a resolution and state ID check' do
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
+
+      stub_const(
+        'Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS',
+        Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS +
+          [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
+      )
+
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+      click_idv_continue
+
+      expect(agent).to have_received(:proof).with(:resolution, :state_id)
+    end
+  end
+
+  context 'when the user lives in an AAMVA unsupported state' do
+    it 'does not perform the state ID check' do
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
+
+      stub_const(
+        'Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS',
+        Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS -
+          [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
+      )
+
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+      click_idv_continue
+
+      expect(agent).to have_received(:proof).with(:resolution)
+    end
+  end
+
+  context 'when the SP is in the AAMVA banlist' do
+    it 'does not perform the state ID check' do
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
+
+      allow(Figaro.env).to receive(:aamva_sp_banlist_issuers).
+        and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+      click_idv_continue
+
+      expect(agent).to have_received(:proof).with(:resolution)
+    end
+  end
 end

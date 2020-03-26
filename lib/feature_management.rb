@@ -74,7 +74,7 @@ class FeatureManagement
   end
 
   def self.fake_banner_mode?
-    Rails.env.production? && ENVS_DO_NOT_DISPLAY_FAKE_BANNER.exclude?(Figaro.env.domain_name)
+    Rails.env.production? && LoginGov::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?
@@ -84,10 +84,6 @@ class FeatureManagement
   def self.recaptcha_enabled?(session, reset)
     AbTest.new(:ab_test_recaptcha_enabled, Figaro.env.recaptcha_enabled_percent).
       enabled?(session, reset)
-  end
-
-  def self.use_cloudhsm?
-    Figaro.env.cloudhsm_enabled == 'true'
   end
 
   def self.disallow_all_web_crawlers?
@@ -126,5 +122,13 @@ class FeatureManagement
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
     Rails.env.development? && Figaro.env.identity_pki_local_dev == 'true'
+  end
+
+  def self.doc_capture_polling_enabled?
+    Figaro.env.doc_capture_polling_enabled == 'true'
+  end
+
+  def self.hide_phone_mfa_signup?
+    Figaro.env.hide_phone_mfa_signup == 'true'
   end
 end

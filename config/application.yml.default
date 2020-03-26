@@ -22,6 +22,7 @@
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
 aamva_cert_enabled: 'true'
+aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
 account_reset_wait_period_days: '1'
 acuant_assure_id_password: ''
@@ -37,9 +38,6 @@ async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
 aws_http_timeout: '5'
 cac_proofing_enabled:
-cloudhsm_enabled: 'false'
-cloudhsm_pin: user:password
-cloudhsm_saml_key_label: key1
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
 doc_auth_enabled: 'true'
@@ -87,7 +85,6 @@ pinpoint_sms_shortcode:
 pinpoint_voice_credential_role_arn:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
-pkcs11_lib: "/opt/cloudhsm/lib/libcloudhsm_pkcs11.so"
 proofer_mock_fallback: 'true'
 proofer_vendors:
 push_notifications_enabled:
@@ -159,6 +156,7 @@ development:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_exclusive: 'true'
+  doc_capture_polling_enabled: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
@@ -262,6 +260,7 @@ production:
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_exclusive: 'true'
+  doc_capture_polling_enabled: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
@@ -362,6 +361,7 @@ test:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_exclusive: 'false'
+  doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
@@ -406,7 +406,7 @@ test:
   reset_password_email_window_in_minutes: '80'
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
-  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120

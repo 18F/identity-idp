@@ -107,12 +107,15 @@ namespace :dev do
     warn "Emails: #{emails.join(', ')}\nPassword: salty pickles"
   end
 
+  # rubocop:disable all
   def setup_user(user, args)
     user.encrypted_email = args[:ee].encrypted
     user.reset_password(args[:pw], args[:pw])
     MfaContext.new(user).phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
+    user.email_addresses.update_all(confirmed_at: Time.zone.now)
   end
+  # rubocop:enable all
 
   def setup_totp_user(user, args)
     user.encrypted_email = args[:ee].encrypted

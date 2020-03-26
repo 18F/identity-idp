@@ -65,6 +65,10 @@ Rails.application.routes.draw do
       get '/account/forget_all_browsers' => 'users/forget_all_browsers#show', as: :forget_all_browsers
       delete '/account/forget_all_browsers' => 'users/forget_all_browsers#destroy'
 
+      get '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#show',
+          as: :service_provider_revoke
+      delete '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
@@ -293,6 +297,7 @@ Rails.application.routes.draw do
         get '/doc_auth' => 'doc_auth#index'
         get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
         put '/doc_auth/:step' => 'doc_auth#update'
+        get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
         put '/capture_doc/:step' => 'capture_doc#update'

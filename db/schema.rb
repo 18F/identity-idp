@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200321210321) do
+ActiveRecord::Schema.define(version: 2020_03_21_210321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
   end
 
-  create_table "authorizations", force: :cascade do |t|
+  create_table "authorizations", id: :serial, force: :cascade do |t|
     t.string "provider", limit: 255
     t.string "uid", limit: 255
     t.integer "user_id"
@@ -78,8 +78,8 @@ ActiveRecord::Schema.define(version: 20200321210321) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "encrypted_code", default: "", null: false
     t.string "code_fingerprint", default: "", null: false
+    t.string "encrypted_code", default: "", null: false
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "event_type", null: false
     t.datetime "created_at", null: false
@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "identities", force: :cascade do |t|
+  create_table "identities", id: :serial, force: :cascade do |t|
     t.string "service_provider", limit: 255
     t.datetime "last_authenticated_at"
     t.integer "user_id"
@@ -231,6 +231,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.datetime "last_consented_at"
     t.datetime "last_ial1_authenticated_at"
     t.datetime "last_ial2_authenticated_at"
+    t.datetime "deleted_at"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -271,7 +272,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
   end
 
-  create_table "otp_requests_trackers", force: :cascade do |t|
+  create_table "otp_requests_trackers", id: :serial, force: :cascade do |t|
     t.datetime "otp_last_sent_at"
     t.integer "otp_send_count", default: 0
     t.string "attribute_cost"
@@ -307,7 +308,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true
   end
 
-  create_table "profiles", force: :cascade do |t|
+  create_table "profiles", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "active", default: false, null: false
     t.datetime "verified_at"
@@ -383,7 +384,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
-  create_table "service_providers", force: :cascade do |t|
+  create_table "service_providers", id: :serial, force: :cascade do |t|
     t.string "issuer", null: false
     t.string "friendly_name"
     t.text "description"
@@ -415,8 +416,8 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
     t.boolean "allow_prompt_login", default: false
-    t.boolean "signed_response_message_requested", default: false
     t.integer "ial2_quota"
+    t.boolean "signed_response_message_requested", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -451,7 +452,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["user_id", "throttle_type"], name: "index_throttles_on_user_id_and_throttle_type"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -499,7 +500,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
   create_table "usps_confirmation_codes", force: :cascade do |t|
     t.integer "profile_id", null: false
     t.string "otp_fingerprint", null: false
-    t.datetime "code_sent_at", default: -> { "now()" }, null: false
+    t.datetime "code_sent_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "bounced_at"
@@ -509,7 +510,7 @@ ActiveRecord::Schema.define(version: 20200321210321) do
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
 
-  create_table "usps_confirmations", force: :cascade do |t|
+  create_table "usps_confirmations", id: :serial, force: :cascade do |t|
     t.text "entry", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

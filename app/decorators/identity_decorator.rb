@@ -22,6 +22,10 @@ IdentityDecorator = Struct.new(:identity) do
     identity.sp_metadata[:friendly_name]
   end
 
+  def service_provider_id
+    identity.sp.id
+  end
+
   def created_at_in_words
     UtcTimePresenter.new(created_at).to_s
   end
