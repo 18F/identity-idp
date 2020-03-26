@@ -18,7 +18,6 @@ en:
         warning_5: You can manage or delete that account on your profile page
     errors:
       bad_dob: Your date of birth must be a valid date.
-      duplicate_ssn: An account already exists with the information you provided.
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:

@@ -19,7 +19,6 @@ es:
         warning_5: Puedes gestionar o eliminar esa cuenta desde tu página de perfil
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
-      duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
