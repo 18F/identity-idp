@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 module Idv
   module Acuant
     class AssureId
@@ -142,3 +143,4 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
