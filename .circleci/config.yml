@@ -5,7 +5,7 @@
 version: 2
 jobs:
   build:
-    parallelism: 8
+    parallelism: 10
     docker:
       # Specify the Ruby version you desire here
       - image: circleci/ruby:2.6.5-node-browsers
