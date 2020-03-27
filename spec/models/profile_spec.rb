@@ -62,48 +62,26 @@ describe Profile do
       end
     end
 
-    context 'compound PII fingerprinting' do
-      before do
-        allow(FeatureManagement).
-          to receive(:enable_compound_pii_fingerprint?).
-          and_return(enable_compound_pii_fingerprint?)
-      end
+    it 'fingerprints the PII' do
+      fingerprint = Pii::Fingerprinter.fingerprint([
+        pii.first_name,
+        pii.last_name,
+        pii.zipcode,
+        Date.parse(pii.dob).year,
+      ].join(':'))
 
-      context 'when enabled' do
-        let(:enable_compound_pii_fingerprint?) { true }
+      expect { encrypt_pii }.
+        to change { profile.name_zip_birth_year_signature }.
+        from(nil).to(fingerprint)
+    end
 
-        it 'fingerprints the PII' do
-          fingerprint = Pii::Fingerprinter.fingerprint([
-            pii.first_name,
-            pii.last_name,
-            pii.zipcode,
-            Date.parse(pii.dob).year,
-          ].join(':'))
+    context 'when a part of the compound PII key is missing' do
+      let(:dob) { nil }
 
-          expect { encrypt_pii }.
-            to change { profile.name_zip_birth_year_signature }.
-            from(nil).to(fingerprint)
-        end
-
-        context 'when a part of the compound PII key is missing' do
-          let(:dob) { nil }
-
-          it 'does not write a fingerprint' do
-            expect { encrypt_pii }.
-              to_not change { profile.name_zip_birth_year_signature }.
-              from(nil)
-          end
-        end
-      end
-
-      context 'when disabled' do
-        let(:enable_compound_pii_fingerprint?) { false }
-
-        it 'does not write a fingerprint' do
-          expect { profile.encrypt_pii(pii, user.password) }.
-            to_not change { profile.name_zip_birth_year_signature }.
-            from(nil)
-        end
+      it 'does not write a fingerprint' do
+        expect { encrypt_pii }.
+          to_not change { profile.name_zip_birth_year_signature }.
+          from(nil)
       end
     end
   end
