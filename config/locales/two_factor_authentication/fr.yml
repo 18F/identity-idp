@@ -47,9 +47,6 @@ fr:
       backup_code: Codes de sauvegarde
       backup_code_info_html: Utilisez un code de sauvegarde de votre liste de codes
         de sauvegarde pour vous connecter.
-      backup_code_only: Codes de sauvegarde
-      backup_code_only_info_html: Utilisez un code de sauvegarde de votre liste de
-        codes de sauvegarde pour vous connecter.
       personal_key: Clé personnelle
       personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
         avez utilisée lors de la création du compte.
@@ -129,23 +126,15 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
-    two_factor_choice: Configuration de la première méthode d'authentification (1
-      sur 2)
-    two_factor_choice_intro_paragraphs:
-    - Ajoutez une deuxième couche de sécurité pour que vous puissiez vous connecter
-      à votre compte.
-    - Vous utiliserez une seule méthode d'authentification pour vous connecter, mais
-      nous vous demandons d'en configurer deux. Cela garantit que vous pouvez toujours
-      vous connecter si vous perdez l'accès à l'un d'entre eux.
+    two_factor_choice: Configuration de la méthode d'authentification
+    two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
+      puissiez vous connecter à votre compte.
     two_factor_choice_options:
       auth_app: Application d'authentification
       auth_app_info_html: Obtenir des codes d'une application sur votre téléphone,
         votre ordinateur ou votre tablette
       backup_code: Je n'ai rien de ce qui précède
       backup_code_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
-        dans un endroit sûr
-      backup_code_only: Je n'ai rien de ce qui précède
-      backup_code_only_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
         dans un endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme seule
         méthode d'authentification.
       less_secure_label: Menos protección
@@ -166,11 +155,6 @@ fr:
       webauthn_info_html: Utilisez une clé de sécurité que vous avez. C’est un périphérique
         physique que vous branchez ou qui est intégré à votre ordinateur ou à votre
         téléphone (il ressemble souvent à une clé USB).
-    two_factor_recovery_choice: Configuration de la seconde méthode d'authentification
-      (2 sur 2)
-    two_factor_recovery_choice_intro_paragraphs:
-    - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
-      à votre compte même si vous perdez ou ne perdez pas l’autre.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité

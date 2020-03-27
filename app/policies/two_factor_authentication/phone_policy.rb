@@ -12,10 +12,6 @@ module TwoFactorAuthentication
       mfa_user.phone_configurations.any?(&:mfa_enabled?)
     end
 
-    def available?
-      true
-    end
-
     def visible?
       true
     end

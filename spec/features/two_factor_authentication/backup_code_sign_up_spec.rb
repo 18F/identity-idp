@@ -8,7 +8,7 @@ feature 'sign up with backup code' do
     user = sign_up_and_set_password
     expect(page).to_not \
       have_content t('two_factor_authentication.login_options.backup_code_info_html')
-    select_2fa_option('backup_code_only')
+    select_2fa_option('backup_code')
 
     expect(page).to have_link(t('forms.backup_code.download'))
     expect(current_path).to eq backup_code_setup_path
@@ -26,7 +26,7 @@ feature 'sign up with backup code' do
 
     sign_up_and_set_password
 
-    select_2fa_option('backup_code_only')
+    select_2fa_option('backup_code')
 
     expect(page).to_not have_link(t('forms.backup_code.download'))
   end
@@ -66,7 +66,7 @@ feature 'sign up with backup code' do
   it 'directs backup code only users to the SP during sign up' do
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
-    select_2fa_option('backup_code_only')
+    select_2fa_option('backup_code')
     click_continue
 
     expect(page).to have_current_path(sign_up_completed_path)
