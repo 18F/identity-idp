@@ -1,0 +1,51 @@
+<h1 class="h3 my0">
+  <%= t('idv.titles.otp_delivery_method') %>
+</h1>
+<p class="mt1">
+  <!-- TODO: Put an actual phone number in here -->
+  <%= t('idv.messages.otp_delivery_method.phone_number_html', phone: '+1 (555) 555-5555') %>
+</p>
+
+
+<%= form_tag(px_doc_auth_step_path(:otp_delivery_method),
+             autocomplete: 'off', role: 'form', class: 'mt3',
+             method: :put) do |f| %>
+
+  <fieldset class="mb3 p0 border-none">
+    <label class="btn-border col-12 mb1">
+      <div class="radio">
+        <%= radio_button_tag 'otp_delivery_preference', :sms, false, class: :otp_delivery_preference_sms %>
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">
+          <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
+        </span>
+        <div class="regular gray-dark fs-10p mb-tiny">
+          <%= t('two_factor_authentication.two_factor_choice_options.sms_info_html') %>
+        </div>
+      </div>
+    </label>
+    <label class="btn-border col-12 mb0">
+      <div class="radio">
+        <%= radio_button_tag 'otp_delivery_preference', :voice, false, class: :otp_delivery_preference_voice %>
+        <span class="indicator mt-tiny"></span>
+        <span class="blue bold fs-20p">
+          <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
+        </span>
+        <div class="regular gray-dark fs-10p mb-tiny">
+          <%= t('two_factor_authentication.two_factor_choice_options.voice_info_html') %>
+        </div>
+      </div>
+    </label>
+
+    <!-- TODO: Link to the try again link here -->
+    <div class="mt2">
+        <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), '#')) %>
+    </div>
+
+  </fieldset>
+  <div class="mt3">
+    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 btn btn-primary') %>
+  </div>
+<% end %>
+
+<%= render 'px/doc_auth/start_over_or_cancel' %>

@@ -1,0 +1,11 @@
+<h4>Bank account information</h4>
+
+<%= simple_form_for(
+  Px::BankAccountInfoForm.new,
+  url: px_bank_account_step_path(:bank_account_info),
+  method: :put,
+) do |f| %>
+  <%= f.input :routing_number, label: 'Routing number', required: true %>
+  <%= f.input :account_number, label: 'Account number', required: true %>
+  <%= f.submit 'Continue', class: 'mt3 btn btn-primary btn-wide' %>
+<% end %>

@@ -1,0 +1,7 @@
+- title t('doc_auth.titles.doc_auth')
+
+= image_tag(asset_url('state-id-confirm@3x.png'), width: 210)
+
+h1.h3.mb2.mt3.my0 = t('doc_auth.instructions.email_sent', email: current_user.email)
+
+= render 'px/doc_auth/start_over_or_cancel'

@@ -329,6 +329,22 @@ Rails.application.routes.draw do
     root to: 'users/sessions#new'
   end
 
+  scope :px, as: :px, module: :px do
+    get '/verify' => 'verify#index'
+    get '/verify/:step' => 'verify#show', as: :verify_step
+    put '/verify/:step' => 'verify#update'
+    get '/doc_auth' => 'doc_auth#index'
+    get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+    put '/doc_auth/:step' => 'doc_auth#update'
+    post '/doc_auth/:step' => 'doc_auth#update'
+    get '/bank_account' => 'bank_account#index'
+    get '/bank_account/:step' => 'bank_account#show', as: :bank_account_step
+    put '/bank_account/:step' => 'bank_account#update'
+    put '/capture_doc/' => 'capture_doc#index'
+    get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
+    put '/capture_doc/:step' => 'capture_doc#update'
+  end
+
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule

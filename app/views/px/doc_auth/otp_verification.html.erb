@@ -1,0 +1,47 @@
+<% title t('titles.enter_2fa_code') %>
+
+<h1 class='h3 my0'><%= t('two_factor_authentication.header_text') %></h1>
+
+<%= form_tag(px_doc_auth_step_path(:otp_verification), method: :put, role: 'form', class: 'mt3') do %>
+  <%= label_tag(
+    'code',
+    t('simple_form.required.html') + t('forms.two_factor.code'),
+    class: 'block bold'
+  ) %>
+  <div class='col-12 sm-col-5 mb2 sm-mb0 sm-mr-20p inline-block'>
+    <%= text_field_tag(
+      :code, '',
+      value: @code,
+      required: true,
+      autofocus: true,
+      pattern: '[0-9]*',
+      class: 'col-12 field monospace mfa',
+      'aria-describedby': 'code-instructs',
+      maxlength: Devise.direct_otp_length,
+      type: 'tel'
+    ) %>
+  </div>
+  <%= submit_tag(
+    t('forms.buttons.submit.default'),
+    class: 'btn btn-primary align-top sm-col-6 col-12 mb2',
+  ) %>
+<% end %>
+
+<!-- TODO: Wire up resend code here -->
+<%= button_to(
+  t('links.two_factor_authentication.get_another_code'),
+  '#',
+  method: :put,
+  class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
+  form_class: 'inline-block',
+) %>
+
+<!-- TODO: Wire up change phone here -->
+<p class='mt2'>
+  <%= t(
+    'instructions.mfa.wrong_number_html',
+    link: link_to(t('forms.two_factor.try_again'), '#')
+  ) %>
+</p>
+
+<%= render 'px/doc_auth/start_over_or_cancel' %>

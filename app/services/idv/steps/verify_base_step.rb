@@ -47,7 +47,7 @@ module Idv
       end
 
       def perform_resolution(pii_from_doc)
-        stages = should_use_aamva?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
+        stages = aamva_state?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
         idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
         add_proofing_costs(idv_result)
         FormResponse.new(
@@ -77,19 +77,9 @@ module Idv
         idv_result.except(:errors, :success)
       end
 
-      def should_use_aamva?(pii_from_doc)
-        aamva_state?(pii_from_doc) && !aamva_disallowed_for_service_provider?
-      end
-
       def aamva_state?(pii_from_doc)
         Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS.
           include? pii_from_doc['state_id_jurisdiction']
-      end
-
-      def aamva_disallowed_for_service_provider?
-        return false if sp_session.nil?
-        banlist = JSON.parse(Figaro.env.aamva_sp_banlist_issuers || '[]')
-        banlist.include?(sp_session[:issuer])
       end
     end
   end

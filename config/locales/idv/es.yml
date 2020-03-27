@@ -64,9 +64,9 @@ es:
         warning: Compruebe la información que ingresó. Los errores comunes son números
           incorrectos de Seguro Social, código postal o fecha de nacimiento.
     forgot_password:
-      link_html: "¿Se te olvidó tu contraseña? %{link}"
+      link_html: '¿Se te olvidó tu contraseña? %{link}'
       link_text: Siga estas instrucciones
-      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
       warnings:
@@ -82,8 +82,8 @@ es:
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: "<strong>%{link}</strong> Le enviaremos una carta con
-        un código."
+      no_alternate_phone_html: '<strong>%{link}</strong> Le enviaremos una carta con
+        un código.'
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
@@ -124,8 +124,8 @@ es:
           su identidad.
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
           estados y esperamos apoyar a %{state} pronto.
-        where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
-          del estado?"
+        where: '¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
+          del estado?'
         why: Para verificar su identidad, necesitará información de su identificación
           emitida por el estado.
       mail_sent: Su carta está en camino
@@ -134,18 +134,18 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert: Este número de teléfono <strong>debe ser</strong>
+        alert_html: Este número de teléfono <strong>debe ser</strong>
         description: Verificamos los registros para asegurarnos de que eres quien
           eres, y de que eres el propietario de tu cuenta.
-        final_note: "<strong>Si configura un teléfono para la autenticación de dos
-          factores</strong>, este puede ser un número diferente."
+        final_note_html: '<strong>Si configura un teléfono para la autenticación de dos
+          factores</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-        - en un plan de teléfono con su nombre en él
-        - no es un teléfono virtual (como Google Voice o Skype)
-        - no es un número de teléfono prepago
-        - un número de EE. UU.
-      return_to_profile: "‹ Volver a tu perfil de login.gov"
+          - en un plan de teléfono con su nombre en él
+          - no es un teléfono virtual (como Google Voice o Skype)
+          - no es un número de teléfono prepago
+          - un número de EE. UU.
+      return_to_profile: '‹ Volver a tu perfil de login.gov'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
@@ -186,11 +186,11 @@ es:
       intro: Ayúdenos a identificarlo
       jurisdiction: Elija su estado
       mail:
-        resend: "¿Desea otra carta?"
-        verify: "¿Desea una carta?"
+        resend: '¿Desea otra carta?'
+        verify: '¿Desea una carta?'
       no_id: No podemos verificar su identidad sin una identificación emitida por
         el estado
-      otp_delivery_method: "¿Cómo te gustaría recibir el código?"
+      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
       phone: Número de teléfono del registro
       review: Revise y envíe
       select_verification: Active su cuenta

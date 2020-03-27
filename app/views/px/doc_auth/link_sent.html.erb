@@ -1,0 +1,45 @@
+<% title t('doc_auth.titles.doc_auth') %>
+
+<!-- Hide meta refresh if we are polling -->
+<% if @meta_refresh && !FeatureManagement.doc_capture_polling_enabled? %>
+  <%= content_for(:meta_refresh) { "#{@meta_refresh}" } %>
+<% end %>
+<% if flow_session[:error_message] %>
+  <p class='alert alert-error mb0'>
+    <%= flow_session[:error_message] %>
+  </p>
+<% end %>
+<h1 class='h3 my0'><%= t('doc_auth.headings.text_message') %></h1>
+
+<br />
+
+<div class='clearfix mxn1'>
+  <div class='sm-col sm-col-3 px1'>
+    <%= image_tag asset_url('idv/phone.png') %>
+  </div>
+  <div class='sm-col sm-col-9 px1 h2 mb2 mt0 my0'>
+    <p><%= t('doc_auth.info.link_sent').first %></p>
+    <p id='doc_capture_continue_instructions' class='mb0'>
+      <%= t('doc_auth.info.link_sent').last %>
+    </p>
+  </div>
+</div>
+
+<div class='mt2 mb0'>
+    <%=
+      button_to(
+        t('forms.buttons.continue'),
+        url_for,
+        method: :put,
+        class: 'btn btn-primary btn-wide sm-col-6 col-12',
+        form_class: 'doc_capture_continue_button_form'
+      )
+    %>
+</div>
+
+<%= render 'px/doc_auth/start_over_or_cancel' %>
+
+<!-- TODO Fix polling under px -->
+<% # if FeatureManagement.doc_capture_polling_enabled? %>
+  <%= # javascript_pack_tag 'doc_capture_polling' %>
+<% # end %>

@@ -1,0 +1,40 @@
+<% title t('idv.titles.phone') %>
+
+<h1 class='h3 my0'>
+  <%= t('idv.titles.session.phone') %>
+</h1>
+
+<p class='py1 m0'>
+  <%= t('idv.messages.phone.description') %>
+</p>
+
+
+<p class='mt2 mb0'>
+  <%= t('idv.messages.phone.alert_html') %>
+</p>
+<ul class='py1 m0'>
+  <% t('idv.messages.phone.rules').each do |msg| %>
+    <li><%= msg %></li>
+  <% end %>
+</ul>
+
+
+<p><%= t('idv.messages.phone.final_note_html') %></p>
+
+<%= simple_form_for(
+  Idv::PhoneForm.new(user: current_user, previous_params: {}),
+  url: px_doc_auth_step_path(:phone),
+  html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' },
+) do |f| %>
+  <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
+  <%= f.input(
+    :phone,
+    required: true,
+    input_html: { class: 'sm-col-8' },
+    label: false,
+    wrapper_html: { class: 'mr2' },
+  ) %>
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide my1 sm-col-6 col-12' %>
+<% end %>
+
+<%= render 'px/doc_auth/start_over_or_cancel' %>
