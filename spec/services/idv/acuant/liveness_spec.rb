@@ -24,8 +24,8 @@ describe Idv::Acuant::Liveness do
 
     it 'returns a good status' do
       stub_request(:post, acuant_base_url + path).
-          with(headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }).
-          to_return(status: 200, body: body)
+        with(headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }).
+        to_return(status: 200, body: body)
 
       result = subject.facematch(body)
 
