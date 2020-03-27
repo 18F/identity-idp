@@ -297,6 +297,8 @@ Rails.application.routes.draw do
         get '/doc_auth' => 'doc_auth#index'
         get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
         put '/doc_auth/:step' => 'doc_auth#update'
+        get '/doc_auth/:step/update' => 'doc_auth#update',
+          as: :doc_auth_step_get # allows us to link to an update via GET
         get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
         get '/capture_doc' => 'capture_doc#index'
         get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step

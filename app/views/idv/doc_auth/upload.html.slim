@@ -26,7 +26,7 @@ hr
 .clearfix.mt3.mb3
   .sm-col.sm-col-12
     = t('doc_auth.info.upload_from_computer')
-    = link_to t('doc_auth.info.upload_computer_link'), url_for(type: :desktop)
+    = link_to t('doc_auth.info.upload_computer_link'), idv_doc_auth_step_get_url(type: :desktop)
 
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
