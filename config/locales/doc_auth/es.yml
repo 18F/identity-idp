@@ -24,6 +24,7 @@ es:
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
       ssn: Por favor ingrese su número de seguro social.
+      tag: Recomendar
       take_pic_back: Toma una foto de la parte posterior de tu identificación
       take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
@@ -31,7 +32,8 @@ es:
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_from_computer: Sube desde tu computadora
-      upload_from_phone: Toma una foto con un teléfono para subir tu ID
+      upload_from_phone: Tome una foto con un teléfono móvil para cargar el anverso y el 
+        reverso de su identificación
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
       verify: Por favor verifica tu información
@@ -45,11 +47,12 @@ es:
         su identidad.
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
-      upload: Recopilaremos información sobre usted leyendo su identificación emitida
-        por el estado. No almacenamos imágenes que subas. Solo verificamos su identidad.
-      upload_from_computer: Cargue imágenes de su identificación que tenga en su computadora
-        o use un escáner para capturar imágenes de su identificación
-      upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
+      upload: Le enviaremos un enlace para recopilar información sobre usted leyendo una foto 
+        de su identificación emitida por el estado. No almacenamos imágenes que cargue. Solo 
+        verificamos su identidad.
+      upload_computer_link: Sube desde tu computadora 
+      upload_from_computer: "¿No tienes teléfono? "
+      upload_from_phone: Su teléfono debe tener una cámara y un navegador web.
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
       use_cac_html: "<strong>¿Eres DoD o militar?</strong> %{link}"

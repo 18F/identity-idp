@@ -37,7 +37,7 @@ en:
       verify: Please verify your information
       welcome: We need to verify your identity
     info:
-      camera_required: Your mobile phone must have a camera and a web browser
+      camera_required: Your mobile phone must have a camera and a web browser.
       link_sent:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
@@ -48,7 +48,7 @@ en:
         state-issued ID. We do not store images you upload. We only verify your identity.
       upload_computer_link: Upload from your computer
       upload_from_computer: "Don't have a phone? "
-      upload_from_phone: Your phone must have a camera and a web browser
+      upload_from_phone: Your phone must have a camera and a web browser.
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
       use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
