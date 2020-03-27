@@ -34,12 +34,12 @@ class AssureIdServiceController < ApplicationController
   end
 
   def liveness
-    _status, value = Idv::Acuant::Liveness.new.liveness(request.body.read)
+    _status, value = liveness_service.liveness(request.body.read)
     render json: value
   end
 
   def facematch
-    _status, value = Idv::Acuant::Liveness.new.facematch(request.body.read)
+    _status, value = liveness_service.facematch(request.body.read)
     render json: value
   end
 
@@ -51,6 +51,11 @@ class AssureIdServiceController < ApplicationController
 
   def new_assure_id
     klass = Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::AssureId
+    klass.new
+  end
+
+  def liveness_service
+    klass = Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::Liveness
     klass.new
   end
 end

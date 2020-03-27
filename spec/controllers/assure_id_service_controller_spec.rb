@@ -34,4 +34,16 @@ describe AssureIdServiceController do
       get :classification, params: { guid: 'foo' }
     end
   end
+
+  describe '#liveness' do
+    it 'works' do
+      post :liveness
+    end
+  end
+
+  describe '#facematch' do
+    it 'works' do
+      post :facematch
+    end
+  end
 end

@@ -45,6 +45,14 @@ module Idv
       def results
         [true, FAKE_DATA]
       end
+
+      def liveness(_body)
+        [true, '']
+      end
+
+      def facematch(_body)
+        [true, '']
+      end
     end
   end
 end
