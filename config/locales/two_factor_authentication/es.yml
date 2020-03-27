@@ -23,7 +23,7 @@ es:
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it, you'll
       need to use a new key.
-    choose_another_option: "‹ Elige otra opción"
+    choose_another_option: '‹ Elige otra opción'
     devices:
       auth_app: Aplicación de autenticación
       backup_code: Códigos de seguridad personal
@@ -88,15 +88,15 @@ es:
       phone_unsupported: En este momento no podemos realizar llamadas a personas en
         %{location}.
       sms: Mensaje de texto (SMS, sigla en inglés)
-      title: "¿Cómo deberíamos enviarle un código?"
+      title: '¿Cómo deberíamos enviarle un código?'
       voice: Llamada telefónica
     otp_make_default_number:
       instruction: Marque la casilla a continuación si desea que este sea el teléfono
         predeterminado número que recibe mensajes de texto o llamadas telefónicas.
       label: Número de teléfono predeterminado
-      title: "¿Es este tu número de teléfono predeterminado?"
+      title: '¿Es este tu número de teléfono predeterminado?'
     personal_key_fallback:
-      question: "¿No tiene su clave personal?"
+      question: '¿No tiene su clave personal?'
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
@@ -105,7 +105,7 @@ es:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
     phone_fallback:
-      question: "¿No tiene acceso a su teléfono ahora mismo?"
+      question: '¿No tiene acceso a su teléfono ahora mismo?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad <strong>cada
       vez que inicie sesión</strong>.
@@ -117,17 +117,17 @@ es:
       que inicies sesión</strong>.
     phone_voice_label: Número de teléfono
     piv_cac_fallback:
-      question: "¿No tiene su tarjeta PIV/CAC disponible?"
+      question: '¿No tiene su tarjeta PIV/CAC disponible?'
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
     totp_fallback:
-      question: "¿No tiene su aplicación de autenticación?"
+      question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_choice: Configuración del método de autenticación
-    two_factor_choice_intro_paragraphs: Agregue una segunda capa de seguridad para
+    two_factor_choice_intro: Agregue una segunda capa de seguridad para
       que solo usted pueda iniciar sesión en su cuenta.
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
@@ -157,7 +157,7 @@ es:
         físico que se conecta o que está integrado en su computadora o teléfono (a
         menudo parece una unidad flash USB).
     webauthn_fallback:
-      question: "¿No tienes tu llave de seguridad disponible?"
+      question: '¿No tienes tu llave de seguridad disponible?'
     webauthn_header_text: Presenta tu llave de seguridad
     webauthn_verified:
       header: Llave de seguridad verificada

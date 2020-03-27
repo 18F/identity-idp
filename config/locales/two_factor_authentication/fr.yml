@@ -23,7 +23,7 @@ fr:
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it, you'll
       need to use a new key.
-    choose_another_option: "‹ Choisissez une autre option"
+    choose_another_option: '‹ Choisissez une autre option'
     devices:
       auth_app: Application d'authentification
       backup_code: Codes de sécurité personnels
@@ -127,7 +127,7 @@ fr:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
     two_factor_choice: Configuration de la méthode d'authentification
-    two_factor_choice_intro_paragraphs: Ajoutez une deuxième couche de sécurité pour
+    two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour
       que vous puissiez vous connecter à votre compte.
     two_factor_choice_options:
       auth_app: Application d'authentification
