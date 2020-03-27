@@ -44,6 +44,8 @@ plugins:
     enabled: true
   csslint:
     enabled: true
+    exclude_patterns:
+      - 'public/main.facf1c5e.chunk.css'
   duplication:
     enabled: true
     config:

@@ -315,6 +315,17 @@ Rails.application.routes.draw do
       get '/cac/:step' => 'cac#show', as: :cac_step
       put '/cac/:step' => 'cac#update'
     end
+    if Figaro.env.enable_mobile_capture == 'true'
+      get '/mobile_capture' => 'mobile_capture#new'
+      get '/AssureIDService/subscriptions' => 'assure_id_service#subscriptions'
+      post '/AssureIDService/Document/Instance' => 'assure_id_service#instance'
+      post '/AssureIDService/Document/:guid/Image' => 'assure_id_service#image'
+      get '/AssureIDService/Document/:guid/Classification' => 'assure_id_service#classification'
+      get '/AssureIDService/Document/:guid' => 'assure_id_service#document'
+      get '/AssureIDService/Document/:guid/Field/Image' => 'assure_id_service#field_image'
+      post '/api/v1/liveness' => 'assure_id_service#liveness'
+      post '/api/v1/facematch' => 'assure_id_service#facematch'
+    end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account
     post '/account/verify' => 'users/verify_account#create'
