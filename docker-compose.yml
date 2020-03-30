@@ -30,6 +30,8 @@ services:
       - db
       - redis
       - mailcatcher
+    tty: true
+    stdin_open: true
   db:
     image: postgres:9.6-alpine
     volumes:
