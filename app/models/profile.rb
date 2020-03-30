@@ -63,8 +63,6 @@ class Profile < ApplicationRecord
   end
 
   def self.build_compound_pii_fingerprint(pii)
-    return unless FeatureManagement.enable_compound_pii_fingerprint?
-
     values = [
       pii.first_name,
       pii.last_name,

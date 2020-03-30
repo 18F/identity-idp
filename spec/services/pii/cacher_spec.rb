@@ -20,13 +20,8 @@ describe Pii::Cacher do
   subject { described_class.new(user, user_session) }
 
   describe '#save' do
-    let(:enable_compound_pii_fingerprint?) { true }
-
     before do
       allow(FeatureManagement).to receive(:use_kms?).and_return(false)
-      allow(FeatureManagement).
-        to receive(:enable_compound_pii_fingerprint?).
-        and_return(enable_compound_pii_fingerprint?)
       profile.save!
     end
 
@@ -71,18 +66,6 @@ describe Pii::Cacher do
       expect(profile.ssn_signature).to_not eq old_ssn_signature
       expect(profile.name_zip_birth_year_signature).to_not eq old_compound_pii_fingerprint
       expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
-    end
-
-    context 'compound PII fingerprinting is disabled' do
-      let(:enable_compound_pii_fingerprint?) { false }
-
-      it 'does not update the compound PII fingerprint' do
-        expect do
-          rotate_all_keys
-          described_class.new(user, user_session).save(password)
-        end.to_not change { profile.reload.name_zip_birth_year_signature }.
-          from(nil)
-      end
     end
 
     it 'does not attempt to rotate nil attributes' do
