@@ -6,7 +6,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
 
-  connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com']
+  connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
+                 'sentry.io']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
