@@ -30,7 +30,7 @@ en:
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
       upload_from_computer: Upload from your computer
-      upload_from_phone: Take a photo with a phone to upload your ID
+      upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_front: Upload an image of the front of your state issued ID
       verify: Please verify your information
       welcome: We need to verify your identity
@@ -43,8 +43,8 @@ en:
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
-      upload: We'll collect information about you by reading from your state-issued
-        ID.  We do not store images you upload.  We only verify your identity.
+      upload: We'll collect information about you by reading your state-issued
+        ID. We do not store images you upload. We only verify your identity.
       upload_from_computer: Upload images of your ID you have on your computer or
         use a scanner to capture images of your ID
       upload_from_phone: Upload pictures directly from your phone camera

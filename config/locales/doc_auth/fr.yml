@@ -32,8 +32,8 @@ fr:
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
       upload_from_computer: Télécharger depuis votre ordinateur
-      upload_from_phone: Prenez une photo avec un téléphone pour télécharger votre
-        identifiant
+      upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger 
+        votre pièce d'identité
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
       verify: S'il vous plaît vérifier vos informations
@@ -45,12 +45,13 @@ fr:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
       - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      tag: Recommander
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
         vérifier votre identité.
-      upload: Nous collecterons des informations à votre sujet en lisant votre identifiant
-        émis par l'État Nous ne stockons pas les images que vous téléchargez. Nous
-        vérifions uniquement votre identité.
+      upload: Nous collecterons des informations vous concernant en lisant votre pièce 
+        d'identité délivrée par l'État. Nous ne stockons pas les images que vous téléchargez. 
+        Nous vérifions uniquement votre identité.
       upload_from_computer: Téléchargez des images de votre identifiant que vous avez
         sur votre ordinateur ou utilisez un scanner pour capturer des images de votre
         identifiant
