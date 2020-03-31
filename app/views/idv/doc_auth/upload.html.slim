@@ -27,11 +27,6 @@ hr
   .sm-col.sm-col-12
     = t('doc_auth.info.upload_from_computer')
     = link_to t('doc_auth.info.upload_computer_link'), idv_doc_auth_step_get_url(type: :desktop)
-    
-    // = simple_form_for(:doc_auth, url: url_for(type: :desktop),
-      method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
-      button type='submit' class='btn btn-primary'
-        = t('doc_auth.buttons.use_computer')
 
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
