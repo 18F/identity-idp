@@ -10,19 +10,6 @@ h1.h3.mt0.mb1 = t('doc_auth.headings.upload')
 hr
 
 .clearfix.mt3.mb3
-  .sm-col.sm-col-2 = image_tag asset_url('idv/desktop.png'), width: 100
-  .sm-col.sm-col-1 &nbsp;
-  .sm-col.sm-col-9
-    .bold.h1.mb1 = t('doc_auth.headings.upload_from_computer')
-    = t('doc_auth.info.upload_from_computer')
-    = simple_form_for(:doc_auth, url: url_for(type: :desktop),
-      method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
-      button type='submit' class='btn btn-primary'
-        = t('doc_auth.buttons.use_computer')
-
-hr
-
-.clearfix.mt3.mb3
   .sm-col.sm-col-2 = image_tag asset_url('idv/phone.png'), width: 100
   .sm-col.sm-col-1 &nbsp;
   .sm-col.sm-col-9
@@ -33,6 +20,20 @@ hr
             method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
       button type='submit' class='btn btn-primary'
         = t('doc_auth.buttons.use_phone')
+
+hr
+
+.clearfix.mt3.mb3
+  .sm-col.sm-col-2 = image_tag asset_url('idv/desktop.png'), width: 100
+  .sm-col.sm-col-1 &nbsp;
+  .sm-col.sm-col-9
+    .bold.h1.mb1 = t('doc_auth.headings.upload_from_computer')
+    = t('doc_auth.info.upload_from_computer')
+    = simple_form_for(:doc_auth, url: url_for(type: :desktop),
+      method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
+      button type='submit' class='btn btn-primary'
+        = t('doc_auth.buttons.use_computer')
+
 
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
