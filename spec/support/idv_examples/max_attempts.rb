@@ -13,37 +13,17 @@ shared_examples 'verification step max attempts' do |step, sp|
 
   context 'after completing the max number of attempts' do
     before do
-      if step == :profile
-        perfom_maximum_allowed_idv_step_attempts { fill_out_idv_form_fail }
-      elsif step == :phone
-        perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
-      end
+      perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
     end
 
     scenario 'more than 3 attempts in 24 hours prevents further attempts' do
       # Blocked if visiting verify directly
       visit idv_url
-      if step == :phone
-        advance_to_phone_step
-        expect_user_to_fail_at_phone_step
-      else
-        expect_user_to_fail_at_profile_step
-      end
+      expect_user_to_fail_at_phone_step
 
       # Blocked if visiting from an SP
       visit_idp_from_sp_with_ial2(:oidc)
-      if step == :phone
-        advance_to_phone_step
-        expect_user_to_fail_at_phone_step
-      else
-        expect_user_to_fail_at_profile_step
-      end
-
-      if step == :sessions
-        user.reload
-
-        expect(user.idv_attempted_at).to_not be_nil
-      end
+      expect_user_to_fail_at_phone_step
     end
 
     scenario 'after 24 hours the user can retry and complete idv' do
@@ -56,11 +36,12 @@ shared_examples 'verification step max attempts' do |step, sp|
         sign_in_live_with_2fa(user)
 
         expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
-        expect(current_url).to eq(idv_jurisdiction_url)
+        expect(current_url).to eq(idv_doc_auth_step_url(step: :welcome))
 
-        fill_out_idv_jurisdiction_ok
+        complete_all_doc_auth_steps
         click_idv_continue
-        complete_idv_profile_ok(user)
+        fill_in 'Password', with: user.password
+        click_idv_continue
         click_acknowledge_personal_key
         click_agree_and_continue
 
@@ -77,23 +58,16 @@ shared_examples 'verification step max attempts' do |step, sp|
   context 'after completing one less than the max attempts' do
     it 'allows the user to continue if their last attempt is successful' do
       max_attempts_less_one.times do
-        fill_out_idv_form_fail if step == :profile
-        fill_out_phone_form_fail if step == :phone
+        fill_out_phone_form_fail
         click_continue
         click_on t('idv.failure.button.warning')
       end
 
-      fill_out_idv_form_ok if step == :profile
-      fill_out_phone_form_ok if step == :phone
+      fill_out_phone_form_ok
       click_continue
 
-      if step == :profile
-        expect(page).to have_content(t('idv.titles.session.success'))
-        expect(page).to have_current_path(idv_session_success_path)
-      elsif step == :phone
-        expect(page).to have_content(t('idv.titles.otp_delivery_method'))
-        expect(page).to have_current_path(idv_otp_delivery_method_path)
-      end
+      expect(page).to have_content(t('idv.titles.otp_delivery_method'))
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
   end
 
@@ -107,20 +81,9 @@ shared_examples 'verification step max attempts' do |step, sp|
     click_idv_continue
   end
 
-  def expect_user_to_fail_at_profile_step
-    expect(page).to have_content(t('idv.titles.hardfail', app: 'login.gov'))
-    expect(current_url).to eq(idv_fail_url)
-  end
-
   def expect_user_to_fail_at_phone_step
     expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
     expect(current_url).to eq(idv_phone_errors_failure_url(locale: locale))
     expect(page).to have_link(t('idv.form.activate_by_mail'))
-  end
-
-  def advance_to_phone_step
-    # Currently on the session success path
-    # Click continue to advance to the phone step
-    click_idv_continue
   end
 end

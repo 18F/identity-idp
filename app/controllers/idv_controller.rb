@@ -29,6 +29,7 @@ class IdvController < ApplicationController
   private
 
   def verify_identity
+    analytics.track_event(Analytics::IDV_INTRO_VISIT)
     if proof_with_cac?
       redirect_to idv_cac_url
     else

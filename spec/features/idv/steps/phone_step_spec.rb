@@ -105,26 +105,15 @@ feature 'idv phone step' do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  it 'requires the user to complete the profile step before completing' do
+  it 'requires the user to complete the doc auth before completing' do
     start_idv_from_sp
-    complete_idv_steps_before_profile_step
+    sign_in_and_2fa_user(user_with_2fa)
     # Try to advance ahead to the phone step
     visit idv_phone_path
 
-    # Expect to land on the profile step
-    expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(idv_session_path)
-
-    # Try to submit and fail
-    fill_out_idv_form_fail
-    click_idv_continue
-
-    # Try to advance ahead to the phone step
-    visit idv_phone_path
-
-    # Expect to land on the profile step
-    expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(idv_session_path)
+    # Expect to land on doc auth
+    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
   context 'cancelling IdV' do
