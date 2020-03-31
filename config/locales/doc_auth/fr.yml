@@ -7,7 +7,6 @@ fr:
       continue: Continuer
       start_over: Recommencer
       take_picture: Prendre une photo
-      use_computer: Utilisez votre ordinateur
       use_phone: Utilisez votre téléphone
     forms:
       address1: Adresse
@@ -31,7 +30,6 @@ fr:
       upload: Comment voudriez-vous télécharger votre ID émis par l'état?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
-      upload_from_computer: Télécharger depuis votre ordinateur
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis

@@ -7,7 +7,6 @@ es:
       continue: Continue
       start_over: Comenzar de nuevo
       take_picture: Tomar la foto
-      use_computer: Usa tu computadora
       use_phone: Usa tu telefono
     forms:
       address1: Dirección
@@ -30,7 +29,6 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
-      upload_from_computer: Sube desde tu computadora
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
