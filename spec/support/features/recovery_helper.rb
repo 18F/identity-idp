@@ -18,7 +18,7 @@ module RecoveryHelper
 
   def complete_recovery_steps_before_front_image_step(user = user_with_2fa)
     complete_recovery_steps_before_upload_step(user)
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_recovery_steps_before_back_image_step(user = user_with_2fa)

@@ -20,7 +20,7 @@ feature 'recovery upload step' do
   end
 
   it 'proceeds to the next page' do
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
     expect(page).to have_current_path(idv_recovery_front_image_step)
   end
 end
