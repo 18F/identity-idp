@@ -83,5 +83,12 @@ describe Pii::Fingerprinter do
 
       expect(described_class.stale?(text, fingerprint)).to eq false
     end
+
+    it 'returns true if the fingerprint is nil and the text is not' do
+      text = SecureRandom.uuid
+      fingerprint = nil
+
+      expect(described_class.stale?(text, fingerprint)).to eq true
+    end
   end
 end
