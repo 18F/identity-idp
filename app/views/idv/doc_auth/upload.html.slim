@@ -26,6 +26,7 @@ hr
 .clearfix.mt3.mb3
   .sm-col.sm-col-12
     = t('doc_auth.info.upload_from_computer')
+    | &nbsp;
     = simple_form_for(:doc_auth, url: url_for(type: :desktop),
       method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'inline' }) do
       button type='submit' class='btn-link'
