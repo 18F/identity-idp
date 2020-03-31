@@ -118,7 +118,6 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_upload_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    binding.pry
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
   end
