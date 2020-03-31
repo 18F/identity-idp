@@ -12,8 +12,9 @@ hr
 .clearfix.mt3.mb3
   .sm-col.sm-col-2 = image_tag asset_url('idv/phone.png'), width: 100
   .sm-col.sm-col-1 &nbsp;
+  .usa-tag.bold.caps.float-left.text-primary.bg-primary-lighter = t('doc_auth.info.tag')
   .sm-col.sm-col-9
-    .bold.h1.mb1 = t('doc_auth.headings.upload_from_phone')
+    .bold.h1.margin-y-105 = t('doc_auth.headings.upload_from_phone')
     = t('doc_auth.info.upload_from_phone')
     br
     = simple_form_for(:doc_auth, url: url_for(type: :mobile),
@@ -33,7 +34,6 @@ hr
       method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
       button type='submit' class='btn btn-primary'
         = t('doc_auth.buttons.use_computer')
-
 
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
