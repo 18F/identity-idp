@@ -43,10 +43,10 @@ en:
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
-      upload: We'll collect information about you by reading your state-issued
-        ID. We do not store images you upload. We only verify your identity.
-      upload_from_computer: "Don't have a phone? "
+      upload: We'll collect information about you by reading your state-issued ID.
+        We do not store images you upload. We only verify your identity.
       upload_computer_link: Upload from your computer
+      upload_from_computer: 'Don''t have a phone? '
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.

@@ -46,10 +46,10 @@ es:
       tag: Recomendar
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
-      upload: Recopilaremos información sobre usted leyendo su identificación emitida por el estado. 
-        No almacenamos imágenes que cargue. Solo verificamos su identidad.
-      upload_from_computer: "¿No tienes teléfono? "
+      upload: Recopilaremos información sobre usted leyendo su identificación emitida
+        por el estado. No almacenamos imágenes que cargue. Solo verificamos su identidad.
       upload_computer_link: Sube desde tu computadora
+      upload_from_computer: "¿No tienes teléfono? "
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
