@@ -125,10 +125,10 @@ en:
       auth_app: Authentication application
       auth_app_info_html: Get codes from an app on your phone, computer, or tablet.
         Recommended because it is harder to intercept than texts or phone calls.
-      backup_code: I don't have any of the above
-      backup_code_info_html: We’ll give you 10 codes to use and keep in a safe place.
-        You can use backup codes as your only authentication method. Not recommended
-        because notes could get lost.
+      backup_code: Backup codes
+      backup_code_info_html: We’ll give you 10 codes to use and keep in a safe place
+      backup_code_only: Backup codes
+      backup_code_only_info_html: We’ll give you 10 codes. You can use backup codes as your only authentication method, but it is the least recommended method since notes can get lost. Keep them in a safe place.
       less_secure_label: Less secure
       phone: Phone
       phone_info_html: Get security codes by text message (SMS) or phone call
