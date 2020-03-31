@@ -7,6 +7,7 @@ p.mt-tiny.mb3 = @presenter.description
 
 - link = account_path
 
+/ TODO: This link will 404 if sign_up_or_idv_no_js_link is not nil
 - cancel = sign_up_or_idv_no_js_link || link
 .mt2.pt1.border-top
   = link_to t('forms.piv_cac_setup.choose_different_certificate'),

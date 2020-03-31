@@ -40,7 +40,6 @@ aws_http_timeout: '5'
 cac_proofing_enabled:
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
-doc_auth_enabled: 'true'
 doc_capture_request_valid_for_minutes: '15'
 doc_auth_extend_timeout_by_minutes: '40'
 email_from: no-reply@login.gov
@@ -155,7 +154,6 @@ development:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
-  doc_auth_exclusive: 'true'
   doc_capture_polling_enabled: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
@@ -260,7 +258,6 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
-  doc_auth_exclusive: 'true'
   doc_capture_polling_enabled: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
@@ -362,7 +359,6 @@ test:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
-  doc_auth_exclusive: 'false'
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'

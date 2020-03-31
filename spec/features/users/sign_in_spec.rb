@@ -839,7 +839,6 @@ feature 'Sign in' do
 
   context 'ial2 param on sign up screen' do
     before do
-      enable_doc_auth
       visit root_path(ial: 2)
     end
 

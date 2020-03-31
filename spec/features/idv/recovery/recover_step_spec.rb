@@ -12,7 +12,6 @@ shared_examples 'recover step' do |simulate|
 
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       sign_in_before_2fa(user)
       token = complete_recovery_steps_before_recover_step(user)
       mock_assure_id_ok

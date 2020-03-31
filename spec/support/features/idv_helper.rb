@@ -15,38 +15,6 @@ module IdvHelper
     Features::SessionHelper::VALID_PASSWORD
   end
 
-  def fill_out_idv_form_ok
-    fill_in 'profile_first_name', with: 'José'
-    fill_in 'profile_last_name', with: 'One'
-    fill_in 'profile_address1', with: '123 Main St'
-    fill_in 'profile_city', with: 'Nowhere'
-    select 'Virginia', from: 'profile_state'
-    fill_in 'profile_zipcode', with: '66044'
-    fill_in 'profile_dob', with: '01/02/1980'
-    fill_in 'profile_ssn', with: '666-66-1234'
-    find("label[for='profile_state_id_type_drivers_permit']").click
-    fill_in 'profile_state_id_number', with: '123456789'
-  end
-
-  def fill_out_idv_form_fail(state: 'Virginia')
-    fill_in 'profile_first_name', with: 'Bad'
-    fill_in 'profile_last_name', with: 'User'
-    fill_in 'profile_address1', with: '123 Main St'
-    fill_in 'profile_city', with: 'Nowhere'
-    select state, from: 'profile_state'
-    fill_in 'profile_zipcode', with: '00000'
-    fill_in 'profile_dob', with: '01/02/1900'
-    fill_in 'profile_ssn', with: '666-66-6666'
-    find("label[for='profile_state_id_type_drivers_permit']").click
-    fill_in 'profile_state_id_number', with: '123456789'
-  end
-
-  def fill_out_idv_jurisdiction_ok
-    select 'Washington', from: 'jurisdiction_state'
-    page.find('label[for=jurisdiction_ial2_consent_given]').click
-    expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
-  end
-
   def fill_out_phone_form_ok(phone = '415-555-0199')
     fill_in :idv_phone_form_phone, with: phone
   end
@@ -73,15 +41,6 @@ module IdvHelper
       text: t('two_factor_authentication.otp_delivery_preference.voice'),
     ).click
     click_on t('idv.buttons.send_confirmation_code')
-  end
-
-  def complete_idv_profile_ok(_user, password = user_password)
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
-    click_idv_continue
-    fill_in 'Password', with: password
-    click_continue
   end
 
   def visit_idp_from_sp_with_ial2(sp)

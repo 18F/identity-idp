@@ -1,6 +1,6 @@
 shared_examples 'sp requesting attributes' do |sp|
   include SamlAuthHelper
-  include IdvHelper
+  include IdvStepHelper
 
   let(:user) { user_with_2fa }
   let(:good_ssn) { '666-66-1234' }
@@ -14,11 +14,9 @@ shared_examples 'sp requesting attributes' do |sp|
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_jurisdiction_path
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-      complete_idv_profile_ok(user)
+      complete_idv_steps_with_phone_before_confirmation_step(user)
       click_acknowledge_personal_key
 
       expect(current_path).to eq(sign_up_completed_path)
@@ -45,9 +43,7 @@ shared_examples 'sp requesting attributes' do |sp|
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-      complete_idv_profile_ok(user)
+      complete_idv_steps_with_phone_before_confirmation_step(user)
       click_acknowledge_personal_key
       click_agree_and_continue
       visit account_path

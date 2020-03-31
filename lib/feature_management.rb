@@ -90,14 +90,6 @@ class FeatureManagement
     Figaro.env.disallow_all_web_crawlers == 'true'
   end
 
-  def self.doc_auth_enabled?
-    Figaro.env.doc_auth_enabled == 'true'
-  end
-
-  def self.doc_auth_exclusive?
-    Figaro.env.doc_auth_exclusive == 'true'
-  end
-
   def self.disallow_ial2_recovery?
     Figaro.env.disallow_ial2_recovery == 'true'
   end

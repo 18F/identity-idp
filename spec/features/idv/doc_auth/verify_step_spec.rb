@@ -7,7 +7,6 @@ feature 'doc auth verify step' do
 
   let(:max_attempts) { idv_max_attempts }
   before do
-    enable_doc_auth
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
   end

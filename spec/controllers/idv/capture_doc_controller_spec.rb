@@ -17,7 +17,6 @@ describe Idv::CaptureDocController do
   token = nil
 
   before do
-    enable_doc_auth
     stub_analytics
     allow(@analytics).to receive(:track_event)
     capture_doc = CaptureDoc::CreateRequest.call(user.id)

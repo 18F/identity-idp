@@ -10,7 +10,6 @@ shared_examples 'front image step' do |simulate|
     let(:user) { user_with_2fa }
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_front_image_step
       mock_assure_id_ok

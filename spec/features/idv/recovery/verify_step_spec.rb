@@ -13,7 +13,6 @@ feature 'recovery verify step' do
   before do
     profile
     sign_in_before_2fa(user)
-    enable_doc_auth
     mock_assure_id_ok
   end
 

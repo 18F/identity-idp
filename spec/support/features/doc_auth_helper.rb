@@ -118,6 +118,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_upload_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+    binding.pry
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
   end
@@ -220,11 +221,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       and_return([false, ''])
     allow_any_instance_of(Idv::Acuant::FakeAssureId).to receive(:create_document).
       and_return([false, ''])
-  end
-
-  def enable_doc_auth
-    allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(true)
-    allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
   end
 
   def setup_acuant_simulator(enabled:)

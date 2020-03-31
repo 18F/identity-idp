@@ -12,7 +12,6 @@ shared_examples 'recovery front image step' do |simulate|
     before do
       setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
-      enable_doc_auth
       complete_recovery_steps_before_front_image_step(user)
       mock_assure_id_ok
     end

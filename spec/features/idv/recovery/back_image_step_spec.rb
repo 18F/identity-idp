@@ -16,7 +16,6 @@ shared_examples 'recovery back image step' do |simulate|
       select_user = example.metadata[:no_phone] ? user_no_phone : user
       setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
-      enable_doc_auth
       complete_recovery_steps_before_back_image_step(select_user)
       mock_assure_id_ok
     end

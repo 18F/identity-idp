@@ -270,13 +270,6 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      if FeatureManagement.doc_auth_exclusive?
-        get '/session', to: redirect('/verify')
-      else
-        get '/session' => 'sessions#new'
-        put '/session' => 'sessions#create'
-      end
-      get '/session/success' => 'sessions#success'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/timeout' => 'session_errors#timeout'
       get '/session/errors/jobfail' => 'session_errors#jobfail'
@@ -286,26 +279,22 @@ Rails.application.routes.draw do
       get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction' => 'jurisdiction#new'
-      post '/jurisdiction' => 'jurisdiction#create'
       get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      if FeatureManagement.doc_auth_enabled?
-        get '/doc_auth' => 'doc_auth#index'
-        get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-        put '/doc_auth/:step' => 'doc_auth#update'
-        get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
-        get '/capture_doc' => 'capture_doc#index'
-        get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
-        put '/capture_doc/:step' => 'capture_doc#update'
-        unless FeatureManagement.disallow_ial2_recovery?
-          get '/recovery' => 'recovery#index'
-          get '/recovery/:step' => 'recovery#show', as: :recovery_step
-          put '/recovery/:step' => 'recovery#update'
-        end
+      get '/doc_auth' => 'doc_auth#index'
+      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+      put '/doc_auth/:step' => 'doc_auth#update'
+      get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
+      get '/capture_doc' => 'capture_doc#index'
+      get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
+      put '/capture_doc/:step' => 'capture_doc#update'
+      unless FeatureManagement.disallow_ial2_recovery?
+        get '/recovery' => 'recovery#index'
+        get '/recovery/:step' => 'recovery#show', as: :recovery_step
+        put '/recovery/:step' => 'recovery#update'
       end
       get '/in_person' => 'in_person#index'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
