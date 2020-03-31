@@ -52,9 +52,8 @@ fr:
       upload: Nous collecterons des informations vous concernant en lisant votre pièce 
         d'identité délivrée par l'État. Nous ne stockons pas les images que vous téléchargez. 
         Nous vérifions uniquement votre identité.
-      upload_from_computer: Téléchargez des images de votre identifiant que vous avez
-        sur votre ordinateur ou utilisez un scanner pour capturer des images de votre
-        identifiant
+      upload_from_computer: "Vous n'avez pas de téléphone? "
+      upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,

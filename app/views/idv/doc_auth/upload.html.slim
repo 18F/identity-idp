@@ -24,12 +24,11 @@ hr
 hr
 
 .clearfix.mt3.mb3
-  .sm-col.sm-col-2 = image_tag asset_url('idv/desktop.png'), width: 100
-  .sm-col.sm-col-1 &nbsp;
-  .sm-col.sm-col-9
-    .bold.h1.mb1 = t('doc_auth.headings.upload_from_computer')
+  .sm-col.sm-col-12
     = t('doc_auth.info.upload_from_computer')
-    = simple_form_for(:doc_auth, url: url_for(type: :desktop),
+    = link_to t('doc_auth.info.upload_computer_link'), idv_doc_auth_step_get_url(type: :desktop)
+    
+    // = simple_form_for(:doc_auth, url: url_for(type: :desktop),
       method: 'PUT', html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
       button type='submit' class='btn btn-primary'
         = t('doc_auth.buttons.use_computer')
