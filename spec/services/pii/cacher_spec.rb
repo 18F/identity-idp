@@ -75,6 +75,18 @@ describe Pii::Cacher do
 
       expect { cacher.save(password) }.to_not raise_error
     end
+
+    it 'does not raise an error if pii_fingerprint is nil but attributes are present' do
+      # The name_zip_birth_year_signature column was added after users  had
+      # ecrypted PII. As a result, those users may have a profile with valid PII
+      # and a nil value here. Caching the PII into the session for those users
+      # should update the signature column without raising an error
+      profile.update!(name_zip_birth_year_signature: nil)
+
+      subject.save(password, profile)
+
+      expect(profile.reload.name_zip_birth_year_signature).to_not be_nil
+    end
   end
 
   describe '#fetch' do
