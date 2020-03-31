@@ -32,7 +32,5 @@ hr
       button type='submit' class='btn-link'
         = t('doc_auth.info.upload_computer_link')
 
-    / = link_to t('doc_auth.info.upload_computer_link'), idv_doc_auth_step_get_url(step: params[:step], type: :desktop).tap { |x| puts "===="; puts x; "----" }
-
 = render 'idv/doc_auth/start_over_or_cancel'
 == javascript_pack_tag 'image-preview'
