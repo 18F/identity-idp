@@ -136,8 +136,8 @@ es:
       backup_code: No tengo ninguno de los anteriores
       backup_code_info_html: Le daremos 10 códigos para usar y guardar en un lugar
         seguro. Puede usar códigos de respaldo como su único método de autenticación.
-      less_secure_label: Menos protección
-      more_secure_label: Más protección
+      less_secure_label: Menos seguridad
+      more_secure_label: Más seguridad
       phone: Teléfono
       phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
         telefónica
@@ -147,7 +147,7 @@ es:
       second_phone: Segundo telefono
       second_phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS)
         o llamada telefónica a un número de teléfono secundario (uno que no sea %{phone})
-      secure_label: Secure
+      secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
         / SMS
