@@ -128,7 +128,9 @@ en:
       backup_code: Backup codes
       backup_code_info_html: We’ll give you 10 codes to use and keep in a safe place
       backup_code_only: Backup codes
-      backup_code_only_info_html: We’ll give you 10 codes. You can use backup codes as your only authentication method, but it is the least recommended method since notes can get lost. Keep them in a safe place.
+      backup_code_only_info_html: We’ll give you 10 codes. You can use backup codes
+        as your only authentication method, but it is the least recommended method
+        since notes can get lost. Keep them in a safe place.
       less_secure_label: Less secure
       more_secure_label: More Secure
       phone: Phone
