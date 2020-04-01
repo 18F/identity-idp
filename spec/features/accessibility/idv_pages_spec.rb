@@ -13,15 +13,6 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    scenario 'basic info' do
-      sign_in_and_2fa_user
-
-      visit idv_session_path
-
-      expect(current_path).to eq idv_session_path
-      expect(page).to be_accessible
-    end
-
     scenario 'cancel idv' do
       sign_in_and_2fa_user
 
