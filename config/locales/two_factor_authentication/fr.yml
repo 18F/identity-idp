@@ -138,6 +138,7 @@ fr:
         dans un endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme seule
         méthode d'authentification.
       less_secure_label: Menos protección
+      more_secure_label: Plus de protection
       phone: Téléphone
       phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
       piv_cac: Numéro d'employé du gouvernement
@@ -146,7 +147,7 @@ fr:
       second_phone: Deuxième téléphone
       second_phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
         vers un numéro de téléphone secondaire (autre que %{phone})
-      secure_label: Plus de protection
+      secure_label: Secure
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS
       voice: Appel téléphonique
