@@ -26,6 +26,7 @@ services:
       # '' == 1 thread for tests; performs better in a container
       TEST_ENV_NUMBER: ''
       SMTP_HOST: 'mailcatcher'
+      NODE_ENV: 'development'
     depends_on:
       - db
       - redis
