@@ -129,7 +129,6 @@ fr:
     registration:
       labels:
         email: Adresse courriel
-    select: "- Sélectionner -"
     totp_delete:
       caution: Si vous supprimez votre application d'authentification, vous ne pourrez
         plus l'utiliser pour accéder à votre compte login.gov.

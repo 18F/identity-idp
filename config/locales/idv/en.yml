@@ -26,8 +26,6 @@ en:
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         state_id_number: Your ID number cannot be more than 25 characters.
         zipcode: 'Your zipcode must be entered in as #####-####'
-      unsupported_jurisdiction: Sorry, we can't verify people from this state.
-      unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts_html:
@@ -75,23 +73,12 @@ en:
       address1: Address
       address2: Address (optional)
       city: City
-      dob: Date of birth
-      dob_hint: 'example: 01/17/1964'
-      first_name: First name
-      last_name: Last name
       no_alternate_phone_html: "<strong>%{link}</strong>  We'll mail you a letter
         with a code in it."
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
       state: State
-      state_id: ID number
-      state_id_tip: do not include spaces or dashes
-      state_id_type:
-        drivers_license: Driver's license
-        drivers_permit: Driver's permit
-        state_id_card: State ID
-      state_id_type_label: ID type
       zipcode: ZIP Code
     index:
       id:
@@ -121,9 +108,6 @@ en:
         no_id_failure: We're working hard to add more ways to verify your identity.
         unsupported_jurisdiction_failure: We're working hard to add more states and
           hope to support %{state} soon.
-        where: Where was your driver's license, driver's permit, or state ID issued?
-        why: To verify your identity, you'll need information from your state-issued
-          ID.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We'll send a code to <strong>%{phone}</strong>
@@ -149,13 +133,10 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
-        id_information_message: as it appears on your state-issued ID
-        id_information_subtitle: ID Information
         no_pii: TEST SITE - Do not use real personal information (demo purposes only)
           - TEST SITE
         review_message: When you re-enter your password, login.gov will encrypt your
           data to make sure no one else can access it.
-        success: Next, we'll need a phone number.
       usps:
         address_on_file: We will mail a letter with a confirmation code to your verified
           address on file.
@@ -190,6 +171,5 @@ en:
       session:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to encrypt your data
-        success: We've verified the information on your state-issued ID.
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

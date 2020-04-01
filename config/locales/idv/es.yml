@@ -27,9 +27,6 @@ es:
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         state_id_number: Su número de ID no puede tener más de 25 caracteres
         zipcode: 'Su código postal debe ser ingresado como #####-####'
-      unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
-        estado.
-      unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
       unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
       attempts_html:
@@ -78,23 +75,12 @@ es:
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
-      dob: Fecha de nacimiento
-      dob_hint: 'Ejemplo: 01/17/1964'
-      first_name: Nombre
-      last_name: Apellido
       no_alternate_phone_html: "<strong>%{link}</strong> Le enviaremos una carta con
         un código."
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
       state: Estado
-      state_id: Número de identificación
-      state_id_tip: sin espacios ni guiones
-      state_id_type:
-        drivers_license: Licencia de conducir
-        drivers_permit: Permiso de conducir
-        state_id_card: Identificación del estado
-      state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
     index:
       id:
@@ -124,10 +110,6 @@ es:
           su identidad.
         unsupported_jurisdiction_failure: Estamos trabajando duro para agregar más
           estados y esperamos apoyar a %{state} pronto.
-        where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
-          del estado?"
-        why: Para verificar su identidad, necesitará información de su identificación
-          emitida por el estado.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
@@ -155,13 +137,10 @@ es:
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
-        id_information_message: como aparece en su identificación emitida por el estado
-        id_information_subtitle: Información de identificación
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
         review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
-        success: A continuación, necesitaremos un número de teléfono.
       usps:
         address_on_file: Le enviaremos una carta con un código de confirmación a su
           dirección verificada en el archivo.
@@ -197,8 +176,6 @@ es:
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
-        success: Hemos verificado la información en su identificación emitida por
-          el estado.
       sessions: Información acerca de ti
       unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
         desde %{state}
