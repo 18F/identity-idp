@@ -7,7 +7,6 @@ feature 'doc auth verify step' do
 
   let(:max_attempts) { idv_max_attempts }
   before do
-    enable_doc_auth
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
   end
@@ -121,8 +120,8 @@ feature 'doc auth verify step' do
       )
 
       stub_const(
-        'Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS',
-        Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS +
+        'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
+        Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS +
           [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
       )
 
@@ -143,8 +142,8 @@ feature 'doc auth verify step' do
       )
 
       stub_const(
-        'Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS',
-        Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS -
+        'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
+        Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS -
           [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
       )
 

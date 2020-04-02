@@ -5,7 +5,6 @@ feature 'doc auth email sent step' do
   include DocAuthHelper
 
   before do
-    enable_doc_auth
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_email_sent_step
   end

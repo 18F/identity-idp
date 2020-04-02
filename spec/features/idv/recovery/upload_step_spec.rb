@@ -9,7 +9,6 @@ feature 'recovery upload step' do
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
   before do
-    enable_doc_auth
     sign_in_before_2fa(user)
     complete_recovery_steps_before_upload_step(user)
   end

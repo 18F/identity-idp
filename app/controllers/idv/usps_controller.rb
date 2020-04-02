@@ -103,7 +103,7 @@ module Idv
       return if current_user.decorate.pending_profile_requires_verification?
       return if idv_session.profile_confirmation == true
 
-      redirect_to idv_session_url
+      redirect_to idv_doc_auth_url
     end
 
     def resend_letter

@@ -222,11 +222,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       and_return([false, ''])
   end
 
-  def enable_doc_auth
-    allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(true)
-    allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
-  end
-
   def setup_acuant_simulator(enabled:)
     allow(Figaro.env).to receive(:acuant_simulator).and_return(enabled ? 'true' : 'false')
   end

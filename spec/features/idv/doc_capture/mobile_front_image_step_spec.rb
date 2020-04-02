@@ -9,7 +9,6 @@ shared_examples 'capture mobile front image step' do |simulate|
     token = nil
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       token = complete_doc_capture_steps_before_mobile_front_image_step
       mock_assure_id_ok
     end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Password recovery via personal key' do
   include PersonalKeyHelper
-  include IdvHelper
+  include IdvStepHelper
   include SamlAuthHelper
   include SpAuthHelper
 
@@ -43,9 +43,10 @@ feature 'Password recovery via personal key' do
     click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
     click_on t('forms.buttons.continue')
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    complete_idv_profile_ok(user, new_password)
+    complete_all_doc_auth_steps
+    click_continue
+    fill_in 'Password', with: new_password
+    click_continue
     acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
@@ -93,7 +94,7 @@ feature 'Password recovery via personal key' do
       click_on t('links.account.reactivate.with_key')
       click_on t('links.reverify')
 
-      expect(current_path).to eq(idv_jurisdiction_path)
+      expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
 
     scenario 'resets password, view modal and close it', email: true, js: true do

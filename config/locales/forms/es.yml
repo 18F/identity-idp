@@ -124,7 +124,6 @@ es:
     registration:
       labels:
         email: Email
-    select: "- Seleccionar -"
     totp_delete:
       caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
         a su cuenta login.gov.

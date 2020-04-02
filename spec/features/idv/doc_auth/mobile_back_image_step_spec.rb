@@ -7,7 +7,6 @@ shared_examples 'doc auth mobile back image step' do |simulate|
 
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_mobile_back_image_step
       mock_assure_id_ok

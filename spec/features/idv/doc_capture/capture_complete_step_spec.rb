@@ -6,7 +6,6 @@ feature 'capture complete step' do
   include DocCaptureHelper
 
   before do
-    enable_doc_auth
     complete_doc_capture_steps_before_capture_complete_step
   end
 
