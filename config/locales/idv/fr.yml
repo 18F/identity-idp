@@ -58,9 +58,6 @@ fr:
           est <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
-        jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
-          pour le moment. Veuillez réessayer demain.
-        timeout: Notre demande de vérification de vos renseignements a expiré.
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
           de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
           des erreurs communes.

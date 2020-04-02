@@ -52,9 +52,6 @@ en:
         fail_html: For your security, identity verification for your account is <strong>locked
           for 24 hours</strong>.
         heading: We could not find records matching your personal information.
-        jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
     forgot_password:
