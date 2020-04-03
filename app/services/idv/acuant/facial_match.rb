@@ -16,20 +16,19 @@ module Idv
         url = '/api/v1/facematch'
 
         options = default_options.merge(
-            headers: content_type_json.merge(accept_json),
-            body: body,
-            )
-        res = post(url, options)
-        res
+          headers: content_type_json.merge(accept_json),
+          body: body,
+        )
+        post(url, options)
       end
 
       private
 
       def default_cfg
         {
-            subscription_id: env.acuant_assure_id_subscription_id,
-            username: env.acuant_assure_id_username,
-            password: env.acuant_assure_id_password,
+          subscription_id: env.acuant_assure_id_subscription_id,
+          username: env.acuant_assure_id_username,
+          password: env.acuant_assure_id_password,
         }
       end
 

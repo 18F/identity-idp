@@ -37,9 +37,6 @@ class IpGeocoder
   end
 
   def geocoded_location
-    @geocoded_location ||= nil #Geocoder.search(IpAddress.new('96.35.56.45')).first
+    @geocoded_location ||= Geocoder.search(ip).first
   end
-  # def geocoded_location
-  #   @geocoded_location ||= Geocoder.search(ip).first
-  # end
 end

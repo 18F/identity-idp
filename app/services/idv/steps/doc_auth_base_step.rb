@@ -59,23 +59,16 @@ module Idv
 
       def verify_back_image(reset_step:)
         back_image_verified, data, analytics_hash = assure_id_results
-        puts "verified=#{back_image_verified} data=#{data}"
         data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
-        puts "XXX a"
         return friendly_failure(data, analytics_hash) unless back_image_verified
 
-        puts "XXX b"
         return [nil, data] if process_good_result(data)
 
-        puts "XXX c"
         mark_step_incomplete(reset_step)
-        puts "XXX d"
-
         friendly_failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
       def process_good_result(data)
-        puts "RESULT=#{data['Result'].inspect}"
         return unless data['Result'] == GOOD_RESULT
         save_proofing_components
         true
