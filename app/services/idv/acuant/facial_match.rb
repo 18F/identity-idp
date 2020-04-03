@@ -5,33 +5,36 @@ module Idv
 
       base_uri Figaro.env.acuant_facial_match_url
 
+      attr_accessor :instance_id
+
       def initialize(cfg = default_cfg)
-        @license_key = Base64.encode64(cfg.fetch(:license_key))
+        @subscription_id = cfg.fetch(:subscription_id)
+        @authentication_params = cfg.slice(:username, :password)
       end
 
-      def call(id_image, self_image)
-        url = '/FacialMatch'
+      def facematch(body)
+        url = '/api/v1/facematch'
 
-        options = {
-          headers: headers,
-          body: { idFaceImage: id_image, selfieImage: self_image },
-        }
-
-        post(url, options, &JSON.method(:parse))
+        options = default_options.merge(
+            headers: content_type_json.merge(accept_json),
+            body: body,
+            )
+        res = post(url, options)
+        res
       end
 
       private
 
       def default_cfg
-        { license_key: env.acuant_facial_match_license_key }
+        {
+            subscription_id: env.acuant_assure_id_subscription_id,
+            username: env.acuant_assure_id_username,
+            password: env.acuant_assure_id_password,
+        }
       end
 
-      def headers
-        accept_json.merge(license_key_auth)
-      end
-
-      def license_key_auth
-        { 'Authorization' => "LicenseKey #{@license_key}" }
+      def default_options
+        { basic_auth: @authentication_params }
       end
     end
   end
