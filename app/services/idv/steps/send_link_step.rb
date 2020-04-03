@@ -11,7 +11,6 @@ module Idv
 
       def send_link
         capture_doc = CaptureDoc::CreateRequest.call(user_id)
-        puts "link=#{link(capture_doc.request_token)}"
         Telephony.send_doc_auth_link(
           to: formatted_destination_phone,
           link: link(capture_doc.request_token),
