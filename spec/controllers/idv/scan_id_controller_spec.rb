@@ -8,15 +8,19 @@ describe Idv::ScanIdController do
 
   describe '#new' do
     it 'works' do
-      stub_sign_in
       get :new
     end
   end
 
   describe '#scan_complete' do
     it 'works' do
-      stub_sign_in
       get :scan_complete
+    end
+  end
+
+  describe '#field_image' do
+    it 'works' do
+      get :field_image, params: { instance_id: 'foo' }
     end
   end
 
@@ -53,6 +57,13 @@ describe Idv::ScanIdController do
   describe '#facematch' do
     it 'works' do
       post :facematch
+    end
+  end
+
+  describe '#liveness' do
+    it 'works' do
+      session[:scan_id] = {}
+      post :liveness, body: { Image: 'foo' }.to_json
     end
   end
 end
