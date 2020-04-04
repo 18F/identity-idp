@@ -50,7 +50,7 @@ en:
     sign_up:
       completion_html: You've %{accent} with %{app}
       loa1: created an account
-      new_sp: You are now signing in for the first time
+      new_sp: You are now logging in for the first time
       refresh_consent: It's been a year since you gave us consent to share your information
       verified: You've verified your identity with %{app}
     totp_setup:
