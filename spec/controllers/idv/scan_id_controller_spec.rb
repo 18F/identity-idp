@@ -38,6 +38,7 @@ describe Idv::ScanIdController do
 
   describe '#document' do
     it 'works' do
+      session[:scan_id] = {}
       get :document, params: { instance_id: 'foo' }
     end
   end

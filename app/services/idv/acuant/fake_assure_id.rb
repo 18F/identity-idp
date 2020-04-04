@@ -20,6 +20,7 @@ module Idv
       end
 
       def document
+        [true, FAKE_DATA.to_json]
       end
 
       def classification
