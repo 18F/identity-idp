@@ -178,7 +178,7 @@ module Idv
     end
 
     def all_checks_passed?
-      scan_id_session[:instance_id] && scan_id_session[:liveness_pass] &&
+      scan_id_session && scan_id_session[:instance_id] && scan_id_session[:liveness_pass] &&
         scan_id_session[:facematch_pass]
     end
 
