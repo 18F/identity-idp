@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::ScanIdController do
   before do
+    stub_sign_in
     allow(Figaro.env).to receive(:enable_mobile_capture).and_return('true')
   end
 
@@ -46,12 +47,6 @@ describe Idv::ScanIdController do
   describe '#classification' do
     it 'works' do
       get :classification, params: { instance_id: 'foo' }
-    end
-  end
-
-  describe '#liveness' do
-    it 'works' do
-      post :liveness
     end
   end
 
