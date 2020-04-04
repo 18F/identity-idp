@@ -18,6 +18,14 @@ describe Idv::ScanIdController do
     end
   end
 
+  describe '#scan_complete' do
+    it 'works when all the checks pass' do
+      controller.user_session['idv/doc_auth_v2'] = {}
+      session[:scan_id] = {instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {}}
+      get :scan_complete
+    end
+  end
+
   describe '#field_image' do
     it 'works' do
       get :field_image, params: { instance_id: 'foo' }
