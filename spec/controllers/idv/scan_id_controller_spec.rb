@@ -21,7 +21,7 @@ describe Idv::ScanIdController do
   describe '#scan_complete' do
     it 'works when all the checks pass' do
       controller.user_session['idv/doc_auth_v2'] = {}
-      session[:scan_id] = {instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {}}
+      session[:scan_id] = { instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {} }
       get :scan_complete
     end
   end
