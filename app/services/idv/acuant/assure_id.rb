@@ -72,12 +72,6 @@ module Idv
         get(url, default_options)
       end
 
-      def signature
-        url = "/AssureIDService/Document/#{instance_id}/Field/Image?key=Signature"
-
-        get(url, default_options)
-      end
-
       def post_image(image, side)
         url = "/AssureIDService/Document/#{instance_id}/Image?side=#{side}&light=0"
 
