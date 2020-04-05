@@ -136,6 +136,9 @@ describe Idv::ScanIdController do
       session[:scan_id] = {}
       post :liveness, body: { Image: 'live-selfie' }.to_json
       expect(session[:scan_id][:liveness_pass]).to be_falsey
+
+      get :scan_complete
+      expect(response).to redirect_to idv_session_errors_throttled_url
     end
   end
 end
