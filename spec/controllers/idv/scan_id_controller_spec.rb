@@ -43,9 +43,7 @@ describe Idv::ScanIdController do
     it 'works' do
       get :scan_complete
     end
-  end
 
-  describe '#scan_complete' do
     it 'works when all the checks pass' do
       controller.user_session['idv/doc_auth_v2'] = {}
       session[:scan_id] = { instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {} }
@@ -107,9 +105,16 @@ describe Idv::ScanIdController do
   end
 
   describe '#liveness' do
-    it 'works' do
+    it 'identifies live selfies as live' do
       session[:scan_id] = {}
-      post :liveness, body: { Image: 'foo' }.to_json
+      post :liveness, body: { Image: 'live-selfie' }.to_json
+      expect(session[:scan_id][:liveness_pass]).to eq(true)
+    end
+
+    it 'rejects images that are not live selfies' do
+      session[:scan_id] = {}
+      post :liveness, body: { Image: 'not-live-selfie' }.to_json
+      expect(session[:scan_id][:liveness_pass]).to be_falsey
     end
   end
 end
