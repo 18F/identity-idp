@@ -140,5 +140,10 @@ describe Idv::ScanIdController do
       get :scan_complete
       expect(response).to redirect_to idv_session_errors_throttled_url
     end
+
+    it 'returns service unavailable upon encountering errors calling the back end' do
+      post :liveness, body: 'network-error'
+      expect(response.status).to eq 503
+    end
   end
 end

@@ -51,6 +51,7 @@ module Idv
       end
 
       def liveness(body)
+        return [false, ''] if body == 'network-error'
         data = JSON.parse(body)['Image']=='live-selfie' ? GOOD_LIVENESS_DATA : BAD_LIVENESS_DATA
         [true, data.to_json]
       end
