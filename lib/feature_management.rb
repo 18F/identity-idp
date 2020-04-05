@@ -123,4 +123,8 @@ class FeatureManagement
   def self.hide_phone_mfa_signup?
     Figaro.env.hide_phone_mfa_signup == 'true'
   end
+
+  def self.liveness_checking_enabled?
+    Figaro.env.liveness_checking_enabled == 'true'
+  end
 end

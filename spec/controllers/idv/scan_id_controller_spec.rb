@@ -116,5 +116,12 @@ describe Idv::ScanIdController do
       post :liveness, body: { Image: 'not-live-selfie' }.to_json
       expect(session[:scan_id][:liveness_pass]).to be_falsey
     end
+
+    it 'does not do selfie checking if liveness checking is disabled' do
+      allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('false')
+      session[:scan_id] = {}
+      post :liveness, body: { Image: 'live-selfie' }.to_json
+      expect(session[:scan_id][:liveness_pass]).to be_falsey
+    end
   end
 end

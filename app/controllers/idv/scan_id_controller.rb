@@ -3,6 +3,8 @@ module Idv
   class ScanIdController < ApplicationController
     before_action :ensure_fully_authenticated_user_or_token
     before_action :ensure_user_not_throttled, only: [:new]
+    before_action :return_good_document_if_throttled_else_increment, only: [:document]
+    before_action :return_if_liveness_disabled, only: [:liveness]
 
     ACUANT_PASS = 1
     SUBSCRIPTION_DATA = [{
@@ -18,6 +20,7 @@ module Idv
       'Type': {
       },
     }.freeze
+    GOOD_DOCUMENT = { 'Result': 1, 'Fields': [{}] }.freeze
     USER_SESSION_FLOW_ID = 'idv/doc_auth_v2'.freeze
 
     def new
@@ -178,8 +181,8 @@ module Idv
     end
 
     def all_checks_passed?
-      scan_id_session && scan_id_session[:instance_id] && scan_id_session[:liveness_pass] &&
-        scan_id_session[:facematch_pass]
+      scan_id_session && scan_id_session[:instance_id] && scan_id_session[:facematch_pass] &&
+        (scan_id_session[:liveness_pass] || !FeatureManagement.liveness_checking_enabled?)
     end
 
     def token
@@ -242,7 +245,7 @@ module Idv
     end
 
     def idv_throttle_params
-      [current_user_id, :idv_resolution]
+      [current_user_id, :idv_acuant]
     end
 
     def attempter_increment
@@ -251,6 +254,18 @@ module Idv
 
     def attempter_throttled?
       Throttler::IsThrottled.call(*idv_throttle_params)
+    end
+
+    def return_good_document_if_throttled_else_increment
+      render_json(GOOD_DOCUMENT) if Throttler::IsThrottledElseIncrement.call(*idv_throttle_params)
+    end
+
+    def return_if_throttled_else_increment
+      render_json({}) if Throttler::IsThrottledElseIncrement.call(*idv_throttle_params)
+    end
+
+    def return_if_liveness_disabled
+      render_json({}) unless FeatureManagement.liveness_checking_enabled?
     end
   end
 end
