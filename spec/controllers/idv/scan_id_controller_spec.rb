@@ -123,5 +123,19 @@ describe Idv::ScanIdController do
       post :liveness, body: { Image: 'live-selfie' }.to_json
       expect(session[:scan_id][:liveness_pass]).to be_falsey
     end
+
+    it 'throttles liveness' do
+      session[:scan_id] = {}
+      post :liveness, body: { Image: 'live-selfie' }.to_json
+      expect(session[:scan_id][:liveness_pass]).to eq(true)
+
+      20.times do
+        post :liveness, body: { Image: 'live-selfie' }.to_json
+      end
+
+      session[:scan_id] = {}
+      post :liveness, body: { Image: 'live-selfie' }.to_json
+      expect(session[:scan_id][:liveness_pass]).to be_falsey
+    end
   end
 end

@@ -5,6 +5,7 @@ module Idv
     before_action :ensure_user_not_throttled, only: [:new]
     before_action :return_good_document_if_throttled_else_increment, only: [:document]
     before_action :return_if_liveness_disabled, only: [:liveness]
+    before_action :return_if_throttled_else_increment, only: [:liveness]
 
     ACUANT_PASS = 1
     SUBSCRIPTION_DATA = [{
@@ -228,7 +229,7 @@ module Idv
     end
 
     def current_user_id
-      token_user_id || current_user.id
+      token_user_id || current_user.id.to_i
     end
 
     def token_user_id
