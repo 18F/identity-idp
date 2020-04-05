@@ -1,8 +1,8 @@
 # rubocop:disable Metrics/ClassLength
 module Idv
   class ScanIdController < ApplicationController
-    before_action :ensure_user_not_throttled, only: [:new]
     before_action :ensure_fully_authenticated_user_or_token
+q    before_action :ensure_user_not_throttled, only: [:new]
 
     ACUANT_PASS = 1
     SUBSCRIPTION_DATA = [{

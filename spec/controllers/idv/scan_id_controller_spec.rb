@@ -1,14 +1,41 @@
 require 'rails_helper'
 
 describe Idv::ScanIdController do
-  before do
-    stub_sign_in
+  before do |test|
+    stub_sign_in unless test.metadata[:skip_sign_in]
     allow(Figaro.env).to receive(:enable_mobile_capture).and_return('true')
   end
 
   describe '#new' do
     it 'works' do
       get :new
+    end
+
+    context 'no user signed in', :skip_sign_in do
+      it 'redirects to the root url with no token' do
+        get :new
+
+        expect(response).to redirect_to root_url
+      end
+
+      it 'redirects to the root url with a bad token' do
+        get :new, params: { token: 'foo' }
+
+        expect(response).to redirect_to root_url
+      end
+
+      it 'redirects to the root url with a bad token' do
+        get :new, params: { token: 'foo' }
+
+        expect(response).to redirect_to root_url
+      end
+
+      it 'works with a good token' do
+        token = CaptureDoc::CreateRequest.call(create(:user).id).request_token
+        get :new, params: { token: token }
+
+        expect(response).to render_template(:new)
+      end
     end
   end
 
