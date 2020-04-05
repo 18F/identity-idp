@@ -50,6 +50,16 @@ describe Idv::ScanIdController do
       controller.user_session['idv/doc_auth_v2'] = {}
       session[:scan_id] = { instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {} }
       get :scan_complete
+      expect(response).to redirect_to(idv_doc_auth_v2_step_url(step: :ssn))
+    end
+
+    it 'works when all the checks pass in hybrid flow', :skip_sign_in do
+      token = CaptureDoc::CreateRequest.call(create(:user).id).request_token
+      get :new, params: { token: token }
+
+      session[:scan_id] = { instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {} }
+      get :scan_complete
+      expect(response).to render_template(:capture_complete)
     end
   end
 
