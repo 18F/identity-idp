@@ -33,6 +33,19 @@ shared_examples 'front image step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_back_image_step)
     end
 
+    it 'allows the use of a base64 encoded canvas url representation of the image' do
+      unless simulate
+        assure_id = Idv::Acuant::AssureId.new
+        expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
+        expect(assure_id).to receive(:post_front_image).with(doc_auth_image_canvas_data)
+      end
+
+      attach_image_canvas_url
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_back_image_step)
+    end
+
     it 'does not proceed to the next page with invalid info' do
       mock_assure_id_fail
       attach_image

@@ -15,7 +15,15 @@ module Idv
       private
 
       def image
-        flow_params[:image]
+        uploaded_image = flow_params[:image]
+        canvas_url_image if uploaded_image.blank?
+        uploaded_image
+      end
+
+      def canvas_url_image
+        canvas_url = flow_params[:image_url]
+        return if canvas_url.blank?
+        CanvasUrlImage.new(canvas_url)
       end
 
       def assure_id
