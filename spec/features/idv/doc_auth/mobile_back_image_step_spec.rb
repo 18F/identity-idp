@@ -24,6 +24,21 @@ shared_examples 'doc auth mobile back image step' do |simulate|
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
 
+    it 'allows the use of a base64 encoded canvas url representation of the image' do
+      unless simulate
+        assure_id = Idv::Acuant::AssureId.new
+        expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
+        expect(assure_id).to receive(:post_back_image).
+          with(doc_auth_image_canvas_data).
+          and_return([true, ''])
+      end
+
+      attach_image_canvas_url
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    end
+
     it 'proceeds to the next page if the user does not have a phone' do
       user = create(:user, :with_authentication_app, :with_piv_or_cac)
       sign_in_and_2fa_user(user)

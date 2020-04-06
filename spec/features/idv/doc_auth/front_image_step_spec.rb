@@ -37,7 +37,9 @@ shared_examples 'front image step' do |simulate|
       unless simulate
         assure_id = Idv::Acuant::AssureId.new
         expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
-        expect(assure_id).to receive(:post_front_image).with(doc_auth_image_canvas_data)
+        expect(assure_id).to receive(:post_front_image).
+          with(doc_auth_image_canvas_data).
+          and_return([true, ''])
       end
 
       attach_image_canvas_url
