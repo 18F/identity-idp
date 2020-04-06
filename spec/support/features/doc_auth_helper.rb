@@ -124,7 +124,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_front_image_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_doc_auth_steps_before_mobile_front_image_step
@@ -198,7 +198,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_email_sent_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def mock_assure_id_ok
