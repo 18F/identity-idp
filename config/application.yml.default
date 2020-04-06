@@ -207,7 +207,6 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
-  telephony_disabled: 'true'
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
@@ -309,7 +308,6 @@ production:
   secret_key_base:
   session_encryption_key:
   telephony_adapter: pinpoint
-  telephony_disabled:
   twilio_voice_callback_encryption_key:
   use_dashboard_service_providers: 'false'
   use_kms: 'true'
@@ -410,7 +408,6 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
-  telephony_disabled:
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'false'
   use_kms: 'false'

@@ -13,8 +13,8 @@ class FeatureManagement
     idp.pt.identitysandbox.gov
   ].freeze
 
-  def self.telephony_disabled?
-    Figaro.env.telephony_disabled == 'true'
+  def self.telephony_test_adapter?
+    Figaro.env.telephony_adapter.blank? || Figaro.env.telephony_adapter == 'test'
   end
 
   def self.identity_pki_disabled?
@@ -38,15 +38,15 @@ class FeatureManagement
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
     # We also allow this in production on a single server that is used for load testing.
-    development_and_telephony_disabled? || prefill_otp_codes_allowed_in_production?
+    development_and_telephony_test_adapter? || prefill_otp_codes_allowed_in_production?
   end
 
-  def self.development_and_telephony_disabled?
-    Rails.env.development? && telephony_disabled?
+  def self.development_and_telephony_test_adapter?
+    Rails.env.development? && telephony_test_adapter?
   end
 
   def self.prefill_otp_codes_allowed_in_production?
-    ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_disabled?
+    ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?

@@ -293,7 +293,7 @@ Next, you'll need to set the following values in your local `application.yml`:
 ```
 disable_email_sending: 'true'
 enable_load_testing_mode: 'true'
-telephony_disabled: 'true'
+telephony_adapter: 'test'
 ```
 
 Then, run the app with `make run`, and in a new Terminal tab or window, run:
