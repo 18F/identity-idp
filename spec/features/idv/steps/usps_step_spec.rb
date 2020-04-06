@@ -18,8 +18,8 @@ feature 'idv usps step' do
 
     click_on t('idv.messages.clear_and_start_over')
 
-    expect(page).to have_content(t('idv.messages.jurisdiction.why'))
-    expect(page).to have_current_path(idv_jurisdiction_path)
+    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
   context 'the user has sent a letter but not verified an OTP' do

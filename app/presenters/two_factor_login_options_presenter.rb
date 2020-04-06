@@ -42,11 +42,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     configurations.group_by(&:class).flat_map { |klass, set| klass.selection_presenters(set) }
   end
 
-  def should_display_account_reset_or_cancel_link?
-    # IAL2 non-docauth users should not be able to reset account to comply with AAL2 reqs
-    !current_user.decorate.identity_verified? || FeatureManagement.doc_auth_enabled?
-  end
-
   def account_reset_or_cancel_link
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end

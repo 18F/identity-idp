@@ -61,7 +61,7 @@ module ApplicationHelper
     if user_signing_up?
       destroy_user_path
     elsif user_verifying_identity?
-      idv_session_path
+      idv_doc_auth_url
     end
   end
 

@@ -4,12 +4,7 @@ shared_examples 'clearing and restarting idv' do
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
 
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    fill_in 'profile_address1', with: '8484 Peachtree St'
-    click_idv_continue
-    click_idv_continue
+    complete_all_doc_auth_steps
     click_idv_continue
     fill_in 'Password', with: user.password
     click_idv_continue
@@ -24,12 +19,7 @@ shared_examples 'clearing and restarting idv' do
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
 
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    fill_in 'profile_address1', with: '8484 Peachtree St'
-    click_idv_continue
-    click_idv_continue
+    complete_all_doc_auth_steps
     click_on t('idv.form.activate_by_mail')
     if page.has_button?(t('idv.buttons.mail.send'))
       click_on t('idv.buttons.mail.send')
@@ -46,7 +36,7 @@ shared_examples 'clearing and restarting idv' do
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.decorate.identity_verified?).to eq(false)
     expect(user.decorate.pending_profile?).to eq(true)
-    expect(usps_confirmation.entry[:address1]).to eq('8484 Peachtree St')
+    expect(usps_confirmation.entry[:address1]).to eq('1 Street')
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do

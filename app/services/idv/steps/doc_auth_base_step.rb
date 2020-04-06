@@ -15,7 +15,9 @@ module Idv
       private
 
       def image
-        flow_params[:image]
+        uploaded_image = flow_params[:image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:image_data_url])
       end
 
       def assure_id

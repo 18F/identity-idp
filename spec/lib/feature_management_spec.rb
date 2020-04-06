@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'FeatureManagement', type: :feature do
   describe '#prefill_otp_codes?' do
     context 'when SMS sending is disabled' do
-      before { allow(FeatureManagement).to receive(:telephony_disabled?).and_return(true) }
+      before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true) }
 
       it 'returns true in development mode' do
         allow(Rails.env).to receive(:development?).and_return(true)
@@ -20,7 +20,7 @@ describe 'FeatureManagement', type: :feature do
 
     context 'in production servers' do
       before do
-        allow(FeatureManagement).to receive(:telephony_disabled?).and_return(true)
+        allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true)
         allow(Rails.env).to receive(:production?).and_return(true)
         allow(Figaro.env).to receive(:domain_name).and_return(domain_name)
       end
@@ -51,7 +51,7 @@ describe 'FeatureManagement', type: :feature do
     end
 
     context 'when SMS sending is enabled' do
-      before { allow(FeatureManagement).to receive(:telephony_disabled?).and_return(false) }
+      before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(false) }
 
       it 'returns false in development mode' do
         allow(Rails.env).to receive(:development?).and_return(true)
@@ -309,34 +309,6 @@ describe 'FeatureManagement', type: :feature do
       allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'false' }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
-    end
-  end
-
-  describe '#doc_auth_enabled?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:doc_auth_enabled) { 'true' }
-
-      expect(FeatureManagement.doc_auth_enabled?).to eq(true)
-    end
-
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:doc_auth_enabled) { 'false' }
-
-      expect(FeatureManagement.doc_auth_enabled?).to eq(false)
-    end
-  end
-
-  describe '#doc_auth_exclusive?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'true' }
-
-      expect(FeatureManagement.doc_auth_exclusive?).to eq(true)
-    end
-
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:doc_auth_exclusive) { 'false' }
-
-      expect(FeatureManagement.doc_auth_exclusive?).to eq(false)
     end
   end
 

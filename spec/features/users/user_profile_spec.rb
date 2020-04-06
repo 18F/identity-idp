@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'User profile' do
-  include IdvHelper
+  include IdvStepHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
 
@@ -144,9 +144,10 @@ feature 'User profile' do
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_on t('links.account.reactivate.without_key')
-        fill_out_idv_jurisdiction_ok
+        complete_all_doc_auth_steps
         click_idv_continue
-        complete_idv_profile_ok(user)
+        fill_in 'Password', with: user_password
+        click_idv_continue
         click_acknowledge_personal_key
 
         expect(current_path).to eq(sign_up_completed_path)

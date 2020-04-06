@@ -10,7 +10,6 @@ feature 'recovery ssn step' do
 
   before do
     sign_in_before_2fa(user)
-    enable_doc_auth
     complete_recovery_steps_before_ssn_step(user)
     mock_assure_id_ok
   end

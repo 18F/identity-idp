@@ -10,7 +10,7 @@ module Idv
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
-      return redirect_to(idv_session_url) unless idv_profile_complete?
+      return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 

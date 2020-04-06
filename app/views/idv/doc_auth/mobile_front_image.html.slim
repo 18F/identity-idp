@@ -15,6 +15,7 @@ ul
 
 = simple_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
+  = f.input :image_data_url, as: :hidden
   .clearfix.mxn1
     .sm-col.sm-col-8.px1
       button class='btn btn-secondary' id='take_picture' = t('doc_auth.buttons.take_picture')

@@ -3,11 +3,22 @@ require 'rails_helper'
 describe Idv::ImageUploadForm do
   let(:subject) { Idv::ImageUploadForm.new }
   let(:image_data) { 'abc' }
+  let(:image_data_url) { 'data:image/jpeg;base64,abc' }
 
   describe '#submit' do
-    context 'when the form is valid' do
+    context 'when the form has an image' do
       it 'returns a successful form response' do
         result = subject.submit(image: image_data)
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
+    end
+
+    context 'when the form has an image_data_url' do
+      it 'returns a successful form response' do
+        result = subject.submit(image_data_url: image_data_url)
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
@@ -24,10 +35,13 @@ describe Idv::ImageUploadForm do
   end
 
   describe 'presence validations' do
-    it 'is invalid when required attribute is not present' do
-      subject.submit(image: nil)
+    it 'is invalid when image and image_data_url attribute is not present' do
+      result = subject.submit({})
 
       expect(subject).to_not be_valid
+      expect(subject.errors).to include(:image)
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
     end
   end
 end

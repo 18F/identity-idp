@@ -11,14 +11,12 @@ shared_examples 'sp handoff after identity verification' do |sp|
       visit_idp_from_sp_with_ial2(sp)
       register_user(email)
 
-      expect(current_path).to eq idv_jurisdiction_path
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-
-      expect(current_path).to eq idv_session_path
-
-      complete_idv_profile_ok(user)
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
+      click_continue
       click_acknowledge_personal_key
 
       expect(page).to have_content t(
@@ -44,11 +42,12 @@ shared_examples 'sp handoff after identity verification' do |sp|
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_jurisdiction_path
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-      complete_idv_profile_ok(user)
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
       click_acknowledge_personal_key
 
       expect(page).to have_content t(
@@ -70,8 +69,10 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     before do
       sign_in_and_2fa_user(user)
-      visit idv_session_path
-      complete_idv_profile_ok(user)
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
       click_acknowledge_personal_key
       first(:link, t('links.sign_out')).click
     end
@@ -101,9 +102,10 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       fill_in_code_with_last_phone_otp
       click_submit_default
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-      complete_idv_profile_ok(user)
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
       click_acknowledge_personal_key
       click_agree_and_continue
       visit account_path
@@ -174,7 +176,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
-    expect(decoded_id_token[:given_name]).to eq('José')
+    expect(decoded_id_token[:given_name]).to eq('Jane')
     expect(decoded_id_token[:social_security_number]).to eq('666-66-1234')
 
     access_token = token_response[:access_token]
@@ -188,7 +190,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(userinfo_response[:sub]).to eq(sub)
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
     expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:given_name]).to eq('José')
+    expect(userinfo_response[:given_name]).to eq('Jane')
     expect(userinfo_response[:social_security_number]).to eq('666-66-1234')
   end
 
