@@ -234,16 +234,16 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     attach_file 'doc_auth_image', 'app/assets/images/logo.png'
   end
 
-  def attach_image_canvas_url
-    page.find('#doc_auth_image_url', visible: false).set(doc_auth_image_canvas_url)
+  def attach_image_data_url
+    page.find('#doc_auth_image_data_url', visible: false).set(doc_auth_image_data_url)
   end
 
-  def doc_auth_image_canvas_url
-    File.read('spec/support/fixtures/doc_auth_image_canvas_url.data')
+  def doc_auth_image_data_url
+    File.read('spec/support/fixtures/doc_auth_image_data_url.data')
   end
 
-  def doc_auth_image_canvas_data
-    Base64.decode64(doc_auth_image_canvas_url.split(',').last)
+  def doc_auth_image_data_url_data
+    Base64.decode64(doc_auth_image_data_url.split(',').last)
   end
 
   def assure_id_results_with_result_2(disposition = '')

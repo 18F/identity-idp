@@ -17,7 +17,7 @@ module Idv
       def image
         uploaded_image = flow_params[:image]
         return uploaded_image if uploaded_image.present?
-        CanvasUrlImage.new(flow_params[:image_url])
+        DataUrlImage.new(flow_params[:image_data_url])
       end
 
       def assure_id

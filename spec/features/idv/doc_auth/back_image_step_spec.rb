@@ -36,16 +36,16 @@ shared_examples 'back image step' do |simulate|
       expect(user.proofing_component.document_type).to eq('state_id')
     end
 
-    it 'allows the use of a base64 encoded canvas url representation of the image' do
+    it 'allows the use of a base64 encoded data url representation of the image' do
       unless simulate
         assure_id = Idv::Acuant::AssureId.new
         expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
         expect(assure_id).to receive(:post_back_image).
-          with(doc_auth_image_canvas_data).
+          with(doc_auth_image_data_url_data).
           and_return([true, ''])
       end
 
-      attach_image_canvas_url
+      attach_image_data_url
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
