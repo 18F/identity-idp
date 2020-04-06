@@ -6,10 +6,6 @@ feature 'doc auth v2' do
 
   let(:user) { create(:user, :signed_up) }
 
-  before do
-    enable_doc_auth
-  end
-
   it 'works' do
     sign_in_and_2fa_user(user)
     complete_doc_auth_v2_steps
