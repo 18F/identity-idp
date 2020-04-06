@@ -324,6 +324,10 @@ Rails.application.routes.draw do
       end
     end
 
+    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
+      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
+    end
+
     root to: 'users/sessions#new'
   end
 
