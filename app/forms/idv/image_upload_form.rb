@@ -6,6 +6,8 @@ module Idv
 
     attr_accessor :image, :image_data_url
 
+    validate :image_or_image_data_url_presence
+
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Image')
     end
@@ -18,7 +20,7 @@ module Idv
 
     private
 
-    def validate_image_or_image_data_url
+    def image_or_image_data_url_presence
       return if image.present? || image_data_url.present?
       errors.add(:image, :blank)
     end
