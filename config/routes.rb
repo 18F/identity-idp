@@ -245,6 +245,10 @@ Rails.application.routes.draw do
 
     delete '/users' => 'users#destroy', as: :destroy_user
 
+    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
+      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
+    end
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
@@ -322,10 +326,6 @@ Rails.application.routes.draw do
         put '/usps' => 'usps#create'
         post '/usps' => 'usps#update'
       end
-    end
-
-    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
-      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
     end
 
     root to: 'users/sessions#new'
