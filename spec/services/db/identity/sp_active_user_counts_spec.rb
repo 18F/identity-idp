@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Db::Identity::SpActiveUserCounts do
   subject { described_class }
 
-  let(:fiscal_start_date) { 1.year.ago.strftime('%m-%d-%Y') }
+  let(:fiscal_start_date) { 1.year.ago }
   let(:issuer) { 'foo' }
   let(:issuer2) { 'foo2' }
 
