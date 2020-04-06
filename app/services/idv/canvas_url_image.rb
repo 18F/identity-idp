@@ -1,9 +1,8 @@
 module Idv
   class CanvasUrlImage
     def initialize(canvas_url)
-      @canvas_url = canvas_url
-      @header = canvas_url.split(',').first
-      @data = Base64.decode64(canvas_url.split(',').last)
+      @header, base64_data = canvas_url.split(',', 2)
+      @data = Base64.decode64(base64_data || '')
     end
 
     def content_type
