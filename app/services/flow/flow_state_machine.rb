@@ -17,6 +17,7 @@ module Flow
       step = params[:step]
       analytics.track_event(analytics_visited, step: step) if @analytics_id
       Funnel::DocAuth::RegisterStep.call(user_id, step, :view, true)
+      register_campaign
       render_step(step, flow.flow_session)
     end
 
@@ -30,6 +31,10 @@ module Flow
     end
 
     private
+
+    def register_campaign
+      Funnel::DocAuth::RegisterCampaign.call(user_id, session[:ial2_request_with_no_sp])
+    end
 
     def user_id
       current_user ? current_user.id : user_id_from_token
