@@ -6,7 +6,7 @@ describe 'requesting acuant SDK assets' do
       get '/verify/doc_auth/AcuantJavascriptWebSdk.min.js'
 
       expect(response.status).to eq(200)
-      expect(response.headers['Content-Type']).to eq('text/javascript')
+      expect(response.headers['Content-Type']).to eq('application/javascript')
       expect(response.body).to eq(File.read('public/AcuantJavascriptWebSdk.min.js'))
     end
 
@@ -15,7 +15,7 @@ describe 'requesting acuant SDK assets' do
 
       expect(response.status).to eq(200)
       expect(response.headers['Content-Type']).to eq('application/wasm')
-      expect(response.body).to eq(File.read('public/AcuantImageProcessingService.wasm'))
+      expect(response.body.length).to eq(File.size('public/AcuantImageProcessingService.wasm'))
     end
   end
 
