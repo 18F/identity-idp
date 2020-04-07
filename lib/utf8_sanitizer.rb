@@ -7,6 +7,8 @@ class Utf8Sanitizer
   end
 
   def call(env)
+    parser = RackRequestParser.new(Rack::Request.new(env))
+
     if invalid_strings(parser.values_to_check)
       return bad_request_and_log(invalid_utf8_event(env, parser.request))
     end
@@ -19,10 +21,6 @@ class Utf8Sanitizer
   end
 
   private
-
-  def parser
-    @parser ||= RackRequestParser.new(Rack::Request.new(env))
-  end
 
   def invalid_strings(values)
     string_values(values).any? { |string| invalid_string?(string) }
