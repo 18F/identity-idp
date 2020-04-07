@@ -7,25 +7,22 @@ class Utf8Sanitizer
   end
 
   def call(env)
-    parser = RackRequestParser.new(Rack::Request.new(env))
-    values_to_check = parser.values_to_check
-
-    if invalid_strings(values_to_check)
-      Rails.logger.info(invalid_utf8_event(env, parser.request))
-
-      return [400, {}, ['Bad request']]
+    if invalid_strings(parser.values_to_check)
+      return bad_request_and_log(invalid_utf8_event(env, parser.request))
     end
 
     @app.call(env)
   rescue Rack::QueryParser::InvalidParameterError => err
-    Rails.logger.info(invalid_parameter_event(err))
-    [400, {}, ['Bad request']]
+    bad_request_and_log(invalid_parameter_event(err))
   rescue EOFError => err
-    Rails.logger.info(eof_error_event(err))
-    [400, {}, ['Bad request']]
+    bad_request_and_log(eof_error_event(err))
   end
 
   private
+
+  def parser
+    @parser ||= RackRequestParser.new(Rack::Request.new(env))
+  end
 
   def invalid_strings(values)
     string_values(values).any? { |string| invalid_string?(string) }
@@ -82,5 +79,10 @@ class Utf8Sanitizer
       event: 'EOF error',
       message: error.message,
     }
+  end
+
+  def bad_request_and_log(event)
+    Rails.logger.info(event)
+    [400, {}, ['Bad request']]
   end
 end
