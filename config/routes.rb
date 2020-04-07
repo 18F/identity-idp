@@ -320,14 +320,14 @@ Rails.application.routes.draw do
       get '/capture/camera' => 'idv/scan_id#new'
       get '/photo/confirm' => 'idv/scan_id#new'
       get '/capture/selfie' => 'idv/scan_id#new'
-      get '/AssureIDService/subscriptions' => 'idv/scan_id#subscriptions'
-      post '/AssureIDService/Document/Instance' => 'idv/scan_id#instance'
-      post '/AssureIDService/Document/:instance_id/Image' => 'idv/scan_id#image'
-      get '/AssureIDService/Document/:instance_id/Classification' => 'idv/scan_id#classification'
-      get '/AssureIDService/Document/:instance_id' => 'idv/scan_id#document'
-      get '/AssureIDService/Document/:instance_id/Field/Image' => 'idv/scan_id#field_image'
-      post '/api/v1/liveness' => 'idv/scan_id#liveness'
-      post '/api/v1/facematch' => 'idv/scan_id#facematch'
+      get '/AssureIDService/subscriptions' => 'idv/scan_id_acuant#subscriptions'
+      post '/AssureIDService/Document/Instance' => 'idv/scan_id_acuant#instance'
+      post '/AssureIDService/Document/:instance_id/Image' => 'idv/scan_id_acuant#image'
+      get '/AssureIDService/Document/:instance_id/Classification' => 'idv/scan_id_acuant#classification'
+      get '/AssureIDService/Document/:instance_id' => 'idv/scan_id_acuant#document'
+      get '/AssureIDService/Document/:instance_id/Field/Image' => 'idv/scan_id_acuant#field_image'
+      post '/api/v1/liveness' => 'idv/scan_id_acuant#liveness'
+      post '/api/v1/facematch' => 'idv/scan_id_acuant#facematch'
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account
