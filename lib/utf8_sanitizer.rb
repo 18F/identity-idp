@@ -20,6 +20,9 @@ class Utf8Sanitizer
   rescue Rack::QueryParser::InvalidParameterError => err
     Rails.logger.info(invalid_parameter_event(err))
     [400, {}, ['Bad request']]
+  rescue EOFError => err
+    Rails.logger.info(eof_error_event(err))
+    [400, {}, ['Bad request']]
   end
 
   private
@@ -70,6 +73,13 @@ class Utf8Sanitizer
   def invalid_parameter_event(error)
     {
       event: 'Invalid parameter error',
+      message: error.message,
+    }
+  end
+
+  def eof_error_event(error)
+    {
+      event: 'EOF error',
       message: error.message,
     }
   end
