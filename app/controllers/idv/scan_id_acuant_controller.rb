@@ -29,7 +29,7 @@ module Idv
 
     def instance
       session[:scan_id] = {}
-      render_json(proxy_request { assure_id.create_document })
+      render_json(wrap_network_errors { assure_id.create_document })
     end
 
     def image
@@ -46,7 +46,7 @@ module Idv
     def document
       instance_id = params[:instance_id]
       assure_id.instance_id = instance_id
-      data = proxy_request { assure_id.document }
+      data = wrap_network_errors { assure_id.document }
       return unless data
       render_json process_data_and_store_pii_in_session_if_document_passes(data, instance_id)
     end
@@ -74,7 +74,7 @@ module Idv
     private
 
     def check_face_match(image1, image2)
-      data = proxy_request { facematch_service.facematch(facematch_body(image1, image2)) }
+      data = wrap_network_errors { facematch_service.facematch(facematch_body(image1, image2)) }
       return unless data
       scan_id_session[:facematch_pass] = facematch_pass?(data)
     end
@@ -89,14 +89,14 @@ module Idv
 
     def fetch_face_from_document
       assure_id.instance_id = scan_id_session[:instance_id]
-      data = proxy_request { assure_id.face_image }
+      data = wrap_network_errors { assure_id.face_image }
       return if data.blank?
       Base64.strict_encode64(data)
     end
 
     def process_selfie
       liveness_body = request.body.read
-      liveness_data = proxy_request { liveness_service.liveness(liveness_body) }
+      liveness_data = wrap_network_errors { liveness_service.liveness(liveness_body) }
       return unless liveness_data
       unless selfie_live?(liveness_data)
         render_json({})

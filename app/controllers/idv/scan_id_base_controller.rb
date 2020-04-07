@@ -23,7 +23,7 @@ module Idv
       render json: data
     end
 
-    def proxy_request
+    def wrap_network_errors
       request_successful, data = yield
       return data if request_successful
       render json: {}, status: :service_unavailable
