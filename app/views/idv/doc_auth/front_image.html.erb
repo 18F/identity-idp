@@ -23,7 +23,7 @@
   html: { autocomplete: 'off', role: 'form', class: 'mt2' }
 ) do |f| %>
   <%= f.input :image_data_url, as: :hidden %>
-  <div class='acuant-fallback-image-form'>
+  <div id='acuant-fallback-image-form'>
     <%= f.input :image, label: false, as: 'file', required: true, wrapper_class: 'mt3 sm-col-8' %>
     <div class='my2' id= 'target'></div>
     <div class='mt3'>
