@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 module Idv
   class ScanIdAcuantController < ScanIdBaseController
+    before_action :ensure_fully_authenticated_user_or_token_user_id
     before_action :return_good_document_if_throttled_else_increment, only: [:document]
     before_action :return_if_liveness_disabled, only: [:liveness]
     before_action :return_if_throttled_else_increment, only: [:liveness]
@@ -148,6 +149,11 @@ module Idv
 
     def return_if_liveness_disabled
       render_json({}) unless FeatureManagement.liveness_checking_enabled?
+    end
+
+    def ensure_fully_authenticated_user_or_token_user_id
+      return if token_user_id || (user_signed_in? && user_fully_authenticated?)
+      render json: {}, status: :unauthorized
     end
   end
 end
