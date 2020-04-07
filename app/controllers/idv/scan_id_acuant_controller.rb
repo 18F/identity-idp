@@ -90,7 +90,7 @@ module Idv
     def fetch_face_from_document
       assure_id.instance_id = scan_id_session[:instance_id]
       data = wrap_network_errors { assure_id.face_image }
-      return if data.blank?
+      return if data.nil?
       Base64.strict_encode64(data)
     end
 
@@ -106,7 +106,6 @@ module Idv
     end
 
     def process_data_and_store_pii_in_session_if_document_passes(data, instance_id)
-      data = JSON.parse(data)
       if data['Result'] == ACUANT_PASS
         scan_id_session[:instance_id] = instance_id
         scan_id_session[:pii] =
@@ -116,11 +115,11 @@ module Idv
     end
 
     def facematch_pass?(data)
-      JSON.parse(data)['IsMatch']
+      data['IsMatch']
     end
 
     def selfie_live?(data)
-      JSON.parse(data)['LivenessResult']['LivenessAssessment'] == 'Live'
+      data['LivenessResult']['LivenessAssessment'] == 'Live'
     end
 
     def assure_id

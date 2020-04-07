@@ -25,9 +25,16 @@ module Idv
 
     def wrap_network_errors
       request_successful, data = yield
+      data = parse_if_json(data)
       return data if request_successful
       render json: {}, status: :service_unavailable
       nil
+    end
+
+    def parse_if_json(data)
+      JSON.parse(data)
+    rescue JSON::ParserError
+      data
     end
 
     def attempter_increment
