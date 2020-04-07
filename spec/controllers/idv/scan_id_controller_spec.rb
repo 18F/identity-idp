@@ -7,8 +7,9 @@ describe Idv::ScanIdController do
   end
 
   describe '#new' do
-    it 'works' do
+    it 'renders the scan id page' do
       get :new
+      expect(response).to render_template(:new)
     end
 
     context 'no user signed in', :skip_sign_in do
@@ -30,7 +31,7 @@ describe Idv::ScanIdController do
         expect(response).to redirect_to root_url
       end
 
-      it 'works with a good token' do
+      it 'renders the scan id page with a good token' do
         token = CaptureDoc::CreateRequest.call(create(:user).id).request_token
         get :new, params: { token: token }
 
@@ -40,18 +41,19 @@ describe Idv::ScanIdController do
   end
 
   describe '#scan_complete' do
-    it 'works' do
+    it 'renders an error page when all the checks do not pass' do
       get :scan_complete
+      expect(response).to redirect_to idv_session_errors_warning_url
     end
 
-    it 'works when all the checks pass' do
+    it 'redirects to ssn page whe all the checks pass' do
       controller.user_session['idv/doc_auth_v2'] = {}
       session[:scan_id] = { instance_id: 'foo', liveness_pass: true, facematch_pass: true, pii: {} }
       get :scan_complete
       expect(response).to redirect_to(idv_doc_auth_v2_step_url(step: :ssn))
     end
 
-    it 'works when all the checks pass in hybrid flow', :skip_sign_in do
+    it 'renders scan id complete page when all the checks pass in hybrid flow', :skip_sign_in do
       token = CaptureDoc::CreateRequest.call(create(:user).id).request_token
       get :new, params: { token: token }
 
