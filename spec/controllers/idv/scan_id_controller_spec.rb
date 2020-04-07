@@ -59,5 +59,11 @@ describe Idv::ScanIdController do
       get :scan_complete
       expect(response).to render_template(:capture_complete)
     end
+
+    it 'displays throttled page when throttled' do
+      allow(Throttler::IsThrottled).to receive(:call).and_return(true)
+      get :scan_complete
+      expect(response).to redirect_to idv_session_errors_throttled_url
+    end
   end
 end
