@@ -1,8 +1,8 @@
 module Acuant
   class Classification < AcuantBase
     CLASSIFICATION_DATA = {
-        'Type': {
-        },
+      'Type': {
+      },
     }.freeze
 
     def call

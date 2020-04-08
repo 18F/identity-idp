@@ -82,10 +82,5 @@ describe Idv::ScanIdAcuantController do
       post :liveness, body: { Image: 'live-selfie' }.to_json
       expect(session[:scan_id][:liveness_pass]).to be_falsey
     end
-
-    it 'returns service unavailable upon encountering errors calling the back end' do
-      post :liveness, body: 'network-error'
-      expect(response.status).to eq 503
-    end
   end
 end

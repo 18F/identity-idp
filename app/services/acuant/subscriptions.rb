@@ -8,7 +8,7 @@ module Acuant
       'IsTrial': false,
       'Name': '',
       'StorePII': false,
-     }].freeze
+    }].freeze
 
     def call
       SUBSCRIPTION_DATA

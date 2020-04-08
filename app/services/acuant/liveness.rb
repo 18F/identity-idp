@@ -7,7 +7,7 @@ module Acuant
       face_image_from_document = fetch_face_from_document
       return [true, false] unless face_image_from_document
 
-      is_live, is_face_match = check_face_match(face_image_from_document, live_face_image)
+      check_face_match(face_image_from_document, live_face_image)
     end
 
     private
