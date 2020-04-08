@@ -7,44 +7,44 @@ describe Idv::ScanIdAcuantController do
   end
 
   describe '#field_image' do
-    it 'works' do
+    it 'fetches an image from the uploaded document instance id' do
       get :field_image, params: { instance_id: 'foo' }
     end
   end
 
   describe '#subscriptions' do
-    it 'works' do
+    it 'fetches the subscription settings related to the account' do
       get :subscriptions
     end
   end
 
   describe '#instance' do
-    it 'works' do
+    it 'creates a new working document and returns an instance id' do
       post :instance
     end
   end
 
   describe '#document' do
-    it 'works' do
+    it 'fetches the results of analysis of the uploaded front and back of a document' do
       session[:scan_id] = {}
       get :document, params: { instance_id: 'foo' }
     end
   end
 
   describe '#image' do
-    it 'works' do
+    it 'allows the user to upload an image for the working document' do
       post :image, params: { instance_id: 'foo' }
     end
   end
 
   describe '#classification' do
-    it 'works' do
+    it 'fetches the classification of the document so we can handle multiple document types' do
       get :classification, params: { instance_id: 'foo' }
     end
   end
 
   describe '#facematch' do
-    it 'works' do
+    it 'determines whether two images match (ie selfie and license image)' do
       post :facematch
     end
   end
