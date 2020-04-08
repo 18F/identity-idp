@@ -16,7 +16,6 @@ shared_examples 'recovery back image step' do |simulate|
       select_user = example.metadata[:no_phone] ? user_no_phone : user
       setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
-      enable_doc_auth
       complete_recovery_steps_before_back_image_step(select_user)
       mock_assure_id_ok
     end
@@ -35,6 +34,21 @@ shared_examples 'recovery back image step' do |simulate|
 
     it 'proceeds to the next page if the user does not have a phone', :no_phone do
       attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_recovery_ssn_step)
+    end
+
+    it 'allows the use of a base64 encoded data url representation of the image' do
+      unless simulate
+        assure_id = Idv::Acuant::AssureId.new
+        expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
+        expect(assure_id).to receive(:post_back_image).
+          with(doc_auth_image_data_url_data).
+          and_return([true, ''])
+      end
+
+      attach_image_data_url
       click_idv_continue
 
       expect(page).to have_current_path(idv_recovery_ssn_step)

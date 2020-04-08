@@ -94,10 +94,10 @@ describe 'IdvStepConcern' do
         allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       end
 
-      it 'redirects to idv session url' do
+      it 'redirects to idv doc auth url' do
         get :show
 
-        expect(response).to redirect_to(idv_session_url)
+        expect(response).to redirect_to(idv_doc_auth_url)
       end
     end
 

@@ -129,7 +129,6 @@ fr:
     registration:
       labels:
         email: Adresse courriel
-    select: "- Sélectionner -"
     totp_delete:
       caution: Si vous supprimez votre application d'authentification, vous ne pourrez
         plus l'utiliser pour accéder à votre compte login.gov.
@@ -150,8 +149,6 @@ fr:
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:
       legend: Sélectionnez une option pour sécuriser votre compte
-    two_factor_recovery_choice:
-      legend: Sélectionnez une méthode supplémentaire pour sécuriser votre compte
     verify_profile:
       instructions: Entrez le code à dix caractères qui se trouve dans la lettre que
         nous vous avons envoyée.

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'IAL2 Single Sign On' do
   include SamlAuthHelper
-  include IdvHelper
+  include IdvStepHelper
   include DocAuthHelper
 
   def perform_id_verification_with_usps_without_confirming_code(user)
@@ -12,11 +12,7 @@ feature 'IAL2 Single Sign On' do
     uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
     click_submit_default
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
+    complete_all_doc_auth_steps
     click_on t('idv.form.activate_by_mail')
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user.password
@@ -171,7 +167,7 @@ feature 'IAL2 Single Sign On' do
           fill_out_address_form_resolution_fail
           click_on t('idv.buttons.mail.resend')
           expect(current_path).to eq idv_usps_path
-          expect(page).to have_content(strip_tags(t('idv.failure.sessions.fail')))
+          expect(page).to have_content(strip_tags(t('idv.failure.sessions.heading')))
         end
       end
     end
@@ -183,19 +179,13 @@ feature 'IAL2 Single Sign On' do
 
         visit saml_authn_request
         sign_in_live_with_2fa(user)
-        fill_out_idv_jurisdiction_ok
-        click_idv_continue
-        fill_out_idv_form_ok
-        click_idv_continue
+        complete_all_doc_auth_steps
         click_on t('links.cancel')
         click_on t('forms.buttons.cancel')
         visit saml_authn_request
-        fill_out_idv_jurisdiction_ok
-        click_idv_continue
-        fill_out_idv_form_ok
-        click_idv_continue
+        complete_all_doc_auth_steps
 
-        expect(current_path).to eq idv_session_success_path
+        expect(current_path).to eq idv_phone_path
       end
     end
   end
@@ -207,7 +197,7 @@ feature 'IAL2 Single Sign On' do
       visit ial2_authnrequest
       visit sign_up_completed_path
 
-      expect(current_path).to eq idv_jurisdiction_path
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
     end
   end
 end

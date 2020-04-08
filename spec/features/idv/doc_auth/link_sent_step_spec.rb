@@ -10,7 +10,6 @@ shared_examples 'link sent step' do |simulate|
 
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       user
       complete_doc_auth_steps_before_link_sent_step
       mock_assure_id_ok

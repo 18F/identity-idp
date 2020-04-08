@@ -57,7 +57,6 @@ es:
       verified: Tiene verificó su identidad con %{app}
     totp_setup:
       new: Configure la autenticación de dos factores
-    two_factor_recovery_setup: Añadir un método de autenticación de copia de seguridad
     two_factor_setup: Configuración de autenticación de dos factores
     verify_email: Revise su email
     verify_profile: Active su cuenta

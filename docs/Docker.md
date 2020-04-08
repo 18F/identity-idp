@@ -23,7 +23,16 @@ Please note that the `docker_setup` script will destroy and re-create configurat
 
 If `Gemfile` or `package.json` change, you'll need to `docker-compose build` again to install those new dependencies.
 
-## More useful Docker commands:
+## Debugging in Docker
+
+Add `binding.pry` to code like usual.
+With the compose cluster running, open a new terminal window and attach to the app container:
+
+```sh
+docker attach identity-idp_app_1
+```
+
+## More useful Docker commands
 
 * Run migrations: `docker-compose run --rm app bundle exec rails db:migrate`
 * Force the images to re-build: `docker-compose build --no-cache`. You might have to do this if a "regular build" doesn't seem to correctly install new dependencies.

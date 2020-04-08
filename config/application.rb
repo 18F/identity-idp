@@ -60,7 +60,13 @@ module Upaya
       end
     end
 
-    config.middleware.use Rack::Attack if Figaro.env.enable_rate_limiting == 'true'
+    if Figaro.env.enable_rate_limiting == 'true'
+      config.middleware.use Rack::Attack
+    else
+      # Rack::Attack auto-includes itself as a Railtie, so we need to
+      # explicitly remove it when we want to disable it
+      config.middleware.delete Rack::Attack
+    end
 
     config.middleware.use(
       Rack::TwilioWebhookAuthentication,

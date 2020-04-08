@@ -20,18 +20,18 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
-    context 'when fully authenticated and phone enabled' do
+    context 'when fully authenticated and MFA enabled' do
       it 'loads the account page' do
         user = build(:user, :signed_up)
         stub_sign_in(user)
 
         get :index
 
-        expect(response).to render_template(:index)
+        expect(response).to redirect_to(account_url)
       end
     end
 
-    context 'when fully authenticated but not phone enabled' do
+    context 'when fully authenticated but not MFA enabled' do
       it 'allows access' do
         stub_sign_in
 

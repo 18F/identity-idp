@@ -19,10 +19,9 @@
   = f.input :request_id, as: :hidden, input_html: { value: request_id }
   .mb3
     = f.button :submit, t('links.next'), class: 'col-12 btn-wide mb2'
-    .create-box.bg-light-blue.center.py1.rounded-lg
-      = t('links.create_helper')
+    .create-box.usa-button--outline.center.py1.rounded-lg
       = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
-        class: 'ml1'
+        class: 'ml1 text-decoration-none'
 
 - if FeatureManagement.allow_piv_cac_login? && @ial && desktop_device?
   .mxn1.my1

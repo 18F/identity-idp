@@ -7,7 +7,6 @@ en:
       continue: Continue
       start_over: Start over
       take_picture: Take photo
-      use_computer: Use your computer
       use_phone: Use your phone
     forms:
       address1: Address
@@ -29,8 +28,7 @@ en:
       text_message: We sent a message to your phone
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
-      upload_from_computer: Upload from your computer
-      upload_from_phone: Take a photo with a phone to upload your ID
+      upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_front: Upload an image of the front of your state issued ID
       verify: Please verify your information
       welcome: We need to verify your identity
@@ -40,12 +38,13 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
+      tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
-      upload: We'll collect information about you by reading from your state-issued
-        ID.  We do not store images you upload.  We only verify your identity.
-      upload_from_computer: Upload images of your ID you have on your computer or
-        use a scanner to capture images of your ID
+      upload: We'll collect information about you by reading your state-issued ID.
+        We do not store images you upload. We only verify your identity.
+      upload_computer_link: Upload from your computer
+      upload_from_computer: Don't have a phone?
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.

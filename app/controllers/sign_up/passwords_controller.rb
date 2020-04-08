@@ -75,7 +75,6 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      user_session[:signing_up] = true
       redirect_to two_factor_options_url
     end
   end

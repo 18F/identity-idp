@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'IdV SP handoff', :email do
   include SamlAuthHelper
-  include IdvHelper
+  include IdvStepHelper
 
   context 'with oidc' do
     it_behaves_like 'sp handoff after identity verification', :oidc

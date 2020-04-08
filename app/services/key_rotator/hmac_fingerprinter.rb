@@ -6,7 +6,7 @@ module KeyRotator
         rotate_email_fingerprints(user)
         if pii_attributes
           profile ||= user.active_profile
-          rotate_ssn_signature(profile, pii_attributes)
+          rotate_pii_fingerprints(profile, pii_attributes)
         end
       end
     end
@@ -19,9 +19,18 @@ module KeyRotator
       user.update_columns(email_fingerprint: ee.fingerprint)
     end
 
-    def rotate_ssn_signature(profile, pii_attributes)
-      signature = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
-      profile.update_columns(ssn_signature: signature)
+    def rotate_pii_fingerprints(profile, pii_attributes)
+      ssn_fingerprint = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
+
+      columns_to_update = {
+        ssn_signature: ssn_fingerprint,
+      }
+
+      if (compound_pii_fingerprint = Profile.build_compound_pii_fingerprint(pii_attributes))
+        columns_to_update[:name_zip_birth_year_signature] = compound_pii_fingerprint
+      end
+
+      profile.update_columns(columns_to_update)
     end
 
     def rotate_email_fingerprints(user)

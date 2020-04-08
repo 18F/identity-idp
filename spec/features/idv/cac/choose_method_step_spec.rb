@@ -6,7 +6,6 @@ feature 'cac proofing choose method step' do
 
   let(:user) { user_with_2fa }
   before do
-    enable_doc_auth
     enable_cac_proofing
     sign_in_and_2fa_user(user)
     complete_cac_proofing_steps_before_choose_method_step

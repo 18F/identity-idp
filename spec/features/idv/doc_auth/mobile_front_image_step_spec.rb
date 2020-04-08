@@ -7,7 +7,6 @@ shared_examples 'mobile front image step' do |simulate|
 
     before do
       setup_acuant_simulator(enabled: simulate)
-      enable_doc_auth
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_mobile_front_image_step
       mock_assure_id_ok
@@ -20,6 +19,21 @@ shared_examples 'mobile front image step' do |simulate|
 
     it 'proceeds to the next page with valid info' do
       attach_image
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_mobile_back_image_step)
+    end
+
+    it 'allows the use of a base64 encoded data url representation of the image' do
+      unless simulate
+        assure_id = Idv::Acuant::AssureId.new
+        expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
+        expect(assure_id).to receive(:post_front_image).
+          with(doc_auth_image_data_url_data).
+          and_return([true, ''])
+      end
+
+      attach_image_data_url
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_mobile_back_image_step)

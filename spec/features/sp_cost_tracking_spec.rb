@@ -7,10 +7,6 @@ feature 'SP Costing', :email do
   include DocAuthHelper
   include IdvFromSpHelper
 
-  before do
-    enable_doc_auth
-  end
-
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:server' }
   let(:agency_id) { 2 }
   let(:email) { 'test@test.com' }
