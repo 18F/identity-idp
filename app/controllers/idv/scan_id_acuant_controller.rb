@@ -19,7 +19,7 @@ module Idv
 
     def image
       render_json ::Acuant::Image.new(params[:instance_id]).
-                    call(request.body.read, params[:side])
+        call(request.body.read, params[:side])
     end
 
     def classification
