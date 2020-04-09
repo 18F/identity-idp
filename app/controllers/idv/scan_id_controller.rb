@@ -12,6 +12,7 @@ module Idv
 
     def scan_complete
       if all_checks_passed?
+        save_proofing_components
         token_user_id ? continue_to_ssn_on_desktop : continue_to_ssn
       else
         idv_failure
@@ -84,6 +85,16 @@ module Idv
       else
         redirect_to idv_session_errors_warning_url
       end
+    end
+
+    def save_proofing_components
+      save_proofing_component(:document_check, 'acuant')
+      save_proofing_component(:document_type, 'state_id')
+      save_proofing_component(:liveness_check, 'acuant') if scan_id_session[:liveness_pass]
+    end
+
+    def save_proofing_component(key, value)
+      Db::ProofingComponent::Add.call(current_user_id, key, value)
     end
   end
 end
