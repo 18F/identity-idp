@@ -10,6 +10,14 @@ export const acuantSdkContinueForm = () => document.querySelector('#acuant-sdk-c
 export const acuantSdkCaptureButton = () => document.querySelector('#acuant-sdk-capture');
 export const acuantSdkPreviewImage = () => document.querySelector('#acuant-sdk-preview');
 
+export const fetchSdkInitializationCredentials = () => document.querySelector(
+  'meta[name="acuant-sdk-initialization-creds"]',
+).content;
+
+export const fetchSdkInitializationEndpoint = () => document.querySelector(
+  'meta[name="acuant-sdk-initialization-endpoint"]',
+).content;
+
 const hideAcuantSdkContainers = () => {
   acuantSdkUploadForm().classList.add('hidden');
   acuantSdkSpinner().classList.add('hidden');

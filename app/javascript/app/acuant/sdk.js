@@ -1,4 +1,6 @@
 const {
+  fetchSdkInitializationCredentials,
+  fetchSdkInitializationEndpoint,
   acuantSdkInitializationStarted,
   acuantSdkInitializeSuccess,
   acuantSdkInitializeFailed,
@@ -17,11 +19,13 @@ export const imageCaptureButtonClicked = (event) => {
   );
 };
 
-export const initializeAcuantSdk = () => {
+export const initializeAcuantSdk = (credentials = null, endpoint = null) => {
+  credentials = credentials || fetchSdkInitializationCredentials();
+  endpoint = endpoint || fetchSdkInitializationEndpoint();
   window.AcuantJavascriptWebSdk.initialize(
     // Dummy credentials for Acuant frontend
-    window.ACUANT_SDK_INITIALIZATION_CREDS,
-    window.ACUANT_SDK_INITIALIZATION_ENDPOINT,
+    credentials,
+    endpoint,
     {
       onSuccess: () => {
         addClickEventListenerToAcuantCaptureButton(imageCaptureButtonClicked);

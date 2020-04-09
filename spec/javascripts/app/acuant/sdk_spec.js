@@ -46,8 +46,6 @@ describe('acuant/sdk', () => {
     const dom = new JSDOM(INITIAL_HTML);
     global.window = dom.window;
     global.document = global.window.document;
-    global.window.ACUANT_SDK_INITIALIZATION_CREDS = 'test creds';
-    global.window.ACUANT_SDK_INITIALIZATION_ENDPOINT = 'test endpoint';
   });
 
   after(() => {
@@ -83,7 +81,7 @@ describe('acuant/sdk', () => {
     });
 
     it('initializes the Acuant SDK with the endpoint and creds', () => {
-      initializeAcuantSdk();
+      initializeAcuantSdk('test creds', 'test endpoint');
 
       const initializeSpy = window.AcuantJavascriptWebSdk.initialize;
 
@@ -93,7 +91,7 @@ describe('acuant/sdk', () => {
     });
 
     it('shows the acuant sdk form when successful', () => {
-      initializeAcuantSdk();
+      initializeAcuantSdk('test creds', 'test endpoint');
       const successCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
       successCallback();
 
@@ -103,7 +101,7 @@ describe('acuant/sdk', () => {
     });
 
     it('adds an event listener to the capture button when successful', () => {
-      initializeAcuantSdk();
+      initializeAcuantSdk('test creds', 'test endpoint');
       const successCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
       successCallback();
 
@@ -111,7 +109,7 @@ describe('acuant/sdk', () => {
     });
 
     it('shows the fallback form when failed', () => {
-      initializeAcuantSdk();
+      initializeAcuantSdk('test creds', 'test endpoint');
       const failCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onFail;
       failCallback();
 
