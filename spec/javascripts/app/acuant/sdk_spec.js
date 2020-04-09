@@ -46,6 +46,8 @@ describe('acuant/sdk', () => {
     const dom = new JSDOM(INITIAL_HTML);
     global.window = dom.window;
     global.document = global.window.document;
+    global.window.ACUANT_SDK_INITIALIZATION_CREDS = 'test creds';
+    global.window.ACUANT_SDK_INITIALIZATION_ENDPOINT = 'test endpoint';
   });
 
   after(() => {
@@ -80,10 +82,14 @@ describe('acuant/sdk', () => {
       acuantSdkSpinner().classList.remove('hidden');
     });
 
-    // TODO: Add test coverage for creds and endpoint
-    it('initializes the Acuant SDK', () => {
+    it('initializes the Acuant SDK with the endpoint and creds', () => {
       initializeAcuantSdk();
-      expect(window.AcuantJavascriptWebSdk.initialize.calledOnce).to.eq(true);
+
+      const initializeSpy = window.AcuantJavascriptWebSdk.initialize;
+
+      expect(initializeSpy.calledOnce).to.eq(true);
+      expect(initializeSpy.lastCall.args[0]).to.eq('test creds');
+      expect(initializeSpy.lastCall.args[1]).to.eq('test endpoint');
     });
 
     it('shows the acuant sdk form when successful', () => {

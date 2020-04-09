@@ -18,4 +18,10 @@
   <img id='acuant-sdk-preview'>
   <%= submit_tag t('forms.buttons.continue'), class: 'btn btn-primary btn-wide mt2' %>
 </div>
+
+<script>
+  // These are dummy credentials for initializing the SDK on the frontend
+  ACUANT_SDK_INITIALIZATION_ENDPOINT = '<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
+  ACUANT_SDK_INITIALIZATION_CREDS = '<%= Figaro.env.acuant_sdk_initialization_creds %>'
+</script>
 <%= javascript_pack_tag 'acuant_sdk_image_capture' %>
