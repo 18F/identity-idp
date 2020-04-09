@@ -1,7 +1,8 @@
 <% if Figaro.env.acuant_sdk_image_capture_enabled == 'true' %>
   <div id='acuant-sdk-upload-form' class='hidden'>
-    <!-- TODO: This text needs translations and to be moved to a local -->
-    <button id='acuant-sdk-capture' class='btn btn-primary'>Choose image</button>
+    <button id='acuant-sdk-capture' class='btn btn-primary'>
+      <%= capture_button_label %>
+    </button>
   </div>
 
   <div id='acuant-sdk-spinner' class='hidden'>

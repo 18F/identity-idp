@@ -31,7 +31,10 @@
     </div>
   </div>
   <div class='my3'>
-    <%= render 'idv/acuant_sdk_image_form' %>
+    <%= render(
+      'idv/acuant_sdk_image_form',
+      capture_button_label: t('doc_auth.buttons.upload_picture')
+    ) %>
   </div>
 <% end %>
 
