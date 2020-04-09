@@ -30,6 +30,9 @@ acuant_assure_id_subscription_id: ''
 acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '1440'
 acuant_facial_match_license_key: ''
+# These are dummy creds used to initialize the acuant SDK
+acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
+acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_doc_auth_test_credentials:
@@ -128,6 +131,7 @@ development:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'true'
   acuant_simulator: 'true'
   allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
@@ -236,6 +240,7 @@ production:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
@@ -336,6 +341,7 @@ test:
   acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://example.com
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$

@@ -39,6 +39,7 @@
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^11.2.0bass",
     "eslint-plugin-import": "^2.18.2",
+    "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
     "proxyquire": "^1.8.0"
   }

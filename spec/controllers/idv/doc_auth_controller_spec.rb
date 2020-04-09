@@ -78,6 +78,31 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' visited', result
       )
     end
+
+    it 'add unsafe-eval to the CSP for capture steps' do
+      mock_next_step(:front_image)
+
+      get :show, params: { step: 'front_image' }
+
+      script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+      expect(script_src).to include("'unsafe-eval'")
+
+      mock_next_step(:back_image)
+
+      get :show, params: { step: 'back_image' }
+
+      script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+      expect(script_src).to include("'unsafe-eval'")
+    end
+
+    it 'does not add unsafe-eval to the CSP for non-capture steps' do
+      mock_next_step(:ssn)
+
+      get :show, params: { step: 'ssn' }
+
+      secure_header_config = response.request.headers.env['secure_headers_request_config']
+      expect(secure_header_config).to be_nil
+    end
   end
 
   describe '#update' do
