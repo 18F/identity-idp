@@ -23,7 +23,6 @@ export const initializeAcuantSdk = (credentials = null, endpoint = null) => {
   credentials = credentials || fetchSdkInitializationCredentials();
   endpoint = endpoint || fetchSdkInitializationEndpoint();
   window.AcuantJavascriptWebSdk.initialize(
-    // Dummy credentials for Acuant frontend
     credentials,
     endpoint,
     {
