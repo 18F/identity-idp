@@ -3,22 +3,13 @@ require 'axe/rspec'
 
 feature 'Accessibility on IDV pages', :js do
   describe 'IDV pages' do
-    include IdvHelper
+    include IdvStepHelper
 
     scenario 'home page' do
       sign_in_and_2fa_user
 
       visit idv_path
 
-      expect(page).to be_accessible
-    end
-
-    scenario 'basic info' do
-      sign_in_and_2fa_user
-
-      visit idv_session_path
-
-      expect(current_path).to eq idv_session_path
       expect(page).to be_accessible
     end
 
@@ -33,10 +24,8 @@ feature 'Accessibility on IDV pages', :js do
 
     scenario 'phone info' do
       sign_in_and_2fa_user
-      visit idv_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_idv_continue
+      visit idv_path
+      complete_all_doc_auth_steps
 
       expect(current_path).to eq idv_phone_path
       expect(page).to be_accessible
@@ -44,11 +33,9 @@ feature 'Accessibility on IDV pages', :js do
 
     scenario 'review page' do
       sign_in_and_2fa_user
-      visit idv_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_idv_continue
-      click_button t('forms.buttons.continue')
+      visit idv_path
+      complete_all_doc_auth_steps
+      click_continue
 
       expect(current_path).to eq idv_review_path
       expect(page).to be_accessible
@@ -56,9 +43,8 @@ feature 'Accessibility on IDV pages', :js do
 
     scenario 'personal key / confirmation page' do
       sign_in_and_2fa_user
-      visit idv_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
+      visit idv_path
+      complete_all_doc_auth_steps
       click_idv_continue
       click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD

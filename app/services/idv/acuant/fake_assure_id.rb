@@ -17,8 +17,21 @@ module Idv
         @instance_id = '3899aab2-1da7-4e64-8c31-238f279663fc'
       end
 
+      def document
+      end
+
+      def classification
+      end
+
+      def subscriptions
+      end
+
       def create_document
         [true, @instance_id]
+      end
+
+      def post_image(_image, _side)
+        [true, '']
       end
 
       def post_front_image(_image)
@@ -31,6 +44,14 @@ module Idv
 
       def results
         [true, FAKE_DATA]
+      end
+
+      def liveness(_body)
+        [true, '']
+      end
+
+      def facematch(_body)
+        [true, '']
       end
     end
   end

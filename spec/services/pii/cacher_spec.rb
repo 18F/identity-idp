@@ -3,7 +3,17 @@ require 'rails_helper'
 describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
   let(:user) { create(:user, :with_phone, password: password) }
-  let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
+  let(:profile) do
+    build(:profile, :active, :verified,
+          user: user,
+          pii: {
+            ssn: '1234',
+            dob: '1970-01-01',
+            first_name: 'Test',
+            last_name: 'McTesterson',
+            zipcode: '20001',
+          })
+  end
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
   let(:user_session) { {} }
 
@@ -35,6 +45,7 @@ describe Pii::Cacher do
 
     it 'updates fingerprints when keys are rotated' do
       old_ssn_signature = profile.ssn_signature
+      old_compound_pii_fingerprint = profile.name_zip_birth_year_signature
       old_email_fingerprint = user.email_fingerprint
       old_encrypted_email = user.encrypted_email
       old_encrypted_phone = user.phone_configurations.first.encrypted_phone
@@ -53,6 +64,7 @@ describe Pii::Cacher do
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(profile.ssn_signature).to_not eq old_ssn_signature
+      expect(profile.name_zip_birth_year_signature).to_not eq old_compound_pii_fingerprint
       expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
     end
 
@@ -62,6 +74,18 @@ describe Pii::Cacher do
       rotate_all_keys
 
       expect { cacher.save(password) }.to_not raise_error
+    end
+
+    it 'does not raise an error if pii_fingerprint is nil but attributes are present' do
+      # The name_zip_birth_year_signature column was added after users  had
+      # ecrypted PII. As a result, those users may have a profile with valid PII
+      # and a nil value here. Caching the PII into the session for those users
+      # should update the signature column without raising an error
+      profile.update!(name_zip_birth_year_signature: nil)
+
+      subject.save(password, profile)
+
+      expect(profile.reload.name_zip_birth_year_signature).to_not be_nil
     end
   end
 

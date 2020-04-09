@@ -7,7 +7,6 @@ es:
       continue: Continue
       start_over: Comenzar de nuevo
       take_picture: Tomar la foto
-      use_computer: Usa tu computadora
       use_phone: Usa tu telefono
     forms:
       address1: Dirección
@@ -30,8 +29,7 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
-      upload_from_computer: Sube desde tu computadora
-      upload_from_phone: Toma una foto con un teléfono para subir tu ID
+      upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
       verify: Por favor verifica tu información
@@ -43,12 +41,13 @@ es:
         la identificación emitida por su estado.
       - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
         su identidad.
+      tag: Recomendar
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su identificación emitida
-        por el estado. No almacenamos imágenes que subas. Solo verificamos su identidad.
-      upload_from_computer: Cargue imágenes de su identificación que tenga en su computadora
-        o use un escáner para capturar imágenes de su identificación
+        por el estado. No almacenamos imágenes que cargue. Solo verificamos su identidad.
+      upload_computer_link: Sube desde tu computadora
+      upload_from_computer: "¿No tienes teléfono?"
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.

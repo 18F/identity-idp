@@ -2,11 +2,11 @@ module Idv
   class ImageUploadForm
     include ActiveModel::Model
 
-    validates :image, presence: true
+    ATTRIBUTES = %i[image image_data_url].freeze
 
-    ATTRIBUTES = [:image].freeze
+    attr_accessor :image, :image_data_url
 
-    attr_accessor :image
+    validate :image_or_image_data_url_presence
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Image')
@@ -19,6 +19,11 @@ module Idv
     end
 
     private
+
+    def image_or_image_data_url_presence
+      return if image.present? || image_data_url.present?
+      errors.add(:image, :blank)
+    end
 
     def consume_params(params)
       params.each do |key, value|

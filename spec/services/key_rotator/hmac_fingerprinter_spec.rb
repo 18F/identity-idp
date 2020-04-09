@@ -2,13 +2,23 @@ require 'rails_helper'
 
 describe KeyRotator::HmacFingerprinter do
   describe '#rotate' do
+    let(:pii_hash) do
+      {
+        first_name: 'Tony',
+        last_name: 'Tiger',
+        dob: '1980-12-31',
+        zipcode: '20001',
+      }
+    end
+
     it 'changes email and ssn fingerprints' do
       rotator = described_class.new
-      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+      profile = create(:profile, :active, :verified, pii: pii_hash)
       user = profile.user
       pii_attributes = profile.decrypt_pii(user.password)
 
       old_ssn_signature = profile.ssn_signature
+      old_compound_signature = profile.name_zip_birth_year_signature
       old_email_fingerprint = user.email_fingerprint
 
       rotate_hmac_key
@@ -16,6 +26,7 @@ describe KeyRotator::HmacFingerprinter do
       rotator.rotate(user: user, pii_attributes: pii_attributes)
 
       expect(user.active_profile.ssn_signature).to_not eq old_ssn_signature
+      expect(user.active_profile.name_zip_birth_year_signature).to_not eq old_compound_signature
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
     end
 

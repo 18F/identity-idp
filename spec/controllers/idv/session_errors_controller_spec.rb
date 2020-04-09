@@ -60,20 +60,6 @@ describe Idv::SessionErrorsController do
     it_behaves_like 'an idv session errors controller action'
   end
 
-  describe '#timeout' do
-    let(:action) { :timeout }
-    let(:template) { 'idv/session_errors/timeout' }
-
-    it_behaves_like 'an idv session errors controller action'
-  end
-
-  describe '#jobfail' do
-    let(:action) { :jobfail }
-    let(:template) { 'idv/session_errors/jobfail' }
-
-    it_behaves_like 'an idv session errors controller action'
-  end
-
   describe '#failure' do
     let(:action) { :failure }
     let(:template) { 'idv/session_errors/failure' }

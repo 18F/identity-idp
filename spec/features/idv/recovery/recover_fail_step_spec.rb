@@ -12,7 +12,6 @@ feature 'recovery doc fail step' do
 
   before do
     sign_in_before_2fa(user)
-    enable_doc_auth
     mock_assure_id_ok
     allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
       and_return(bad_pii.to_json)

@@ -5,6 +5,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :confirm_user_needs_2fa_setup
     before_action :handle_empty_selection, only: :create
 
     def index
@@ -18,7 +19,6 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 
       if result.success?
-        backup_code_only_processing
         process_valid_form
       else
         @presenter = two_factor_options_presenter
@@ -33,15 +33,8 @@ module Users
       @two_factor_options_form.submit(two_factor_options_form_params)
     end
 
-    def backup_code_only_processing
-      if user_session[:signing_up] &&
-         @two_factor_options_form.selection == 'backup_code_only'
-        user_session[:signing_up] = false
-      end
-    end
-
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(current_user, current_sp, request.user_agent)
+      TwoFactorOptionsPresenter.new(user_agent: request.user_agent)
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -55,7 +48,7 @@ module Users
         redirect_to setup_piv_cac_url
       when 'webauthn'
         redirect_to webauthn_setup_url
-      when 'backup_code', 'backup_code_only'
+      when 'backup_code'
         redirect_to backup_code_setup_url
       end
     end
@@ -66,6 +59,11 @@ module Users
 
       flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
       redirect_back(fallback_location: two_factor_options_path)
+    end
+
+    def confirm_user_needs_2fa_setup
+      return unless MfaPolicy.new(current_user).two_factor_enabled?
+      redirect_to after_mfa_setup_path
     end
 
     def two_factor_options_form_params

@@ -4,17 +4,22 @@ module Reports
   class BaseReport
     private
 
+    def arbitrary_start_day(month:, day:)
+      now = Time.zone.now.beginning_of_day
+      now.change(year: now.month >= month ? now.year : now.year - 1, month: month, day: day)
+    end
+
     def fiscal_start_date
-      now = Time.zone.now
-      now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1).to_date.to_s
+      now = Time.zone.now.beginning_of_day
+      now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1)
     end
 
     def first_of_this_month
-      Time.zone.today.beginning_of_month.strftime('%m-%d-%Y')
+      Time.zone.now.beginning_of_month
     end
 
     def end_of_today
-      Time.zone.today.strftime('%m-%d-%Y 23:59:59')
+      Time.zone.now.end_of_day
     end
 
     def ec2_data

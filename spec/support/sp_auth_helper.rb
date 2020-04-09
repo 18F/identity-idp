@@ -17,11 +17,7 @@ module SpAuthHelper
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
     click_submit_default
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
+    complete_all_doc_auth_steps
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.detect(&:mfa_enabled?).phone)
     click_idv_continue
     fill_in :user_password, with: user.password

@@ -44,6 +44,8 @@ plugins:
     enabled: true
   csslint:
     enabled: true
+    exclude_patterns:
+      - 'public/main.facf1c5e.chunk.css'
   duplication:
     enabled: true
     config:
@@ -60,6 +62,8 @@ plugins:
     - 'lib/rspec/formatters/user_flow_formatter.rb'
   eslint:
     enabled: true
+    exclude_patterns:
+      - 'public/idscan-go.js'
   fixme:
     enabled: true
     exclude_patterns:

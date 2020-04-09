@@ -44,7 +44,7 @@ shared_examples 'cancel at idv step' do |step, sp|
       # After visiting /verify, expect to redirect to the jurisdiction step,
       # the first step in the IdV flow
       visit idv_path
-      expect(current_path).to eq(idv_jurisdiction_path)
+      expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
   end
 
@@ -65,7 +65,7 @@ shared_examples 'cancel at idv step' do |step, sp|
       # After visiting /verify, expect to redirect to the jurisdiction step,
       # the first step in the IdV flow
       visit idv_path
-      expect(current_path).to eq(idv_jurisdiction_path)
+      expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
   end
 end

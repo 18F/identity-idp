@@ -99,7 +99,8 @@ feature 'phone otp rate limiting', :idv_job do
   end
 
   def expect_rate_limit_to_expire(user)
-    # Returning after session and lockout expires allows you to try again
+    Throttle.where(throttle_type: :idv_acuant).destroy_all
+
     retry_minutes = Figaro.env.lockout_period_in_minutes.to_i + 1
     Timecop.travel retry_minutes.minutes.from_now do
       start_idv_from_sp

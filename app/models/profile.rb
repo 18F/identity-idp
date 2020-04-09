@@ -5,7 +5,6 @@ class Profile < ApplicationRecord
   has_many :usps_confirmation_codes, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
-  validates :ssn_signature, uniqueness: { scope: :active, if: :active? }
 
   scope(:active, -> { where(active: true) })
   scope(:verified, -> { where.not(verified_at: nil) })
@@ -47,8 +46,8 @@ class Profile < ApplicationRecord
   end
 
   def encrypt_pii(pii, password)
-    ssn = pii.ssn
-    self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
+    encrypt_ssn_fingerprint(pii)
+    encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     encrypt_recovery_pii(pii)
@@ -63,9 +62,32 @@ class Profile < ApplicationRecord
     @personal_key = personal_key
   end
 
+  def self.build_compound_pii_fingerprint(pii)
+    values = [
+      pii.first_name,
+      pii.last_name,
+      pii.zipcode,
+      pii.dob && Date.parse(pii[:dob]).year,
+    ]
+
+    return unless values.all?(&:present?)
+
+    Pii::Fingerprinter.fingerprint(values.join(':'))
+  end
+
   private
 
   def personal_key_generator
     @_personal_key_generator ||= PersonalKeyGenerator.new(user)
+  end
+
+  def encrypt_ssn_fingerprint(pii)
+    ssn = pii.ssn
+    self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
+  end
+
+  def encrypt_compound_pii_fingerprint(pii)
+    compound_pii_fingerprint = self.class.build_compound_pii_fingerprint(pii)
+    self.name_zip_birth_year_signature = compound_pii_fingerprint if compound_pii_fingerprint
   end
 end

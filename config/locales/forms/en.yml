@@ -116,7 +116,6 @@ en:
     registration:
       labels:
         email: Email address
-    select: "- Select -"
     totp_delete:
       caution: If you remove your authentication app you won't be able to use it to
         access your login.gov account.
@@ -136,8 +135,6 @@ en:
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
-    two_factor_recovery_choice:
-      legend: Select an additional method to secure your account
     verify_profile:
       instructions: Enter the ten-character code in the letter we sent you.
       name: Confirmation code

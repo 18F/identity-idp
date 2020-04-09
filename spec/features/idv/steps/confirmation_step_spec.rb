@@ -12,7 +12,8 @@ feature 'idv confirmation step' do
       personal_key = 'a1b2c3d4e5f6g7h8'
 
       @user = sign_in_and_2fa_user
-      visit idv_session_path
+
+      visit idv_path
 
       allow(RandomPhrase).to receive(:to_s).and_return(personal_key)
       complete_idv_steps_before_confirmation_step(@user)

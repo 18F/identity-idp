@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200319233723) do
+ActiveRecord::Schema.define(version: 2020_04_05_233913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,8 @@ ActiveRecord::Schema.define(version: 20200319233723) do
     t.integer "capture_complete_view_count", default: 0
     t.integer "capture_mobile_back_image_submit_count", default: 0
     t.integer "capture_mobile_back_image_error_count", default: 0
+    t.datetime "no_sp_session_started_at"
+    t.string "no_sp_campaign"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -321,10 +323,10 @@ ActiveRecord::Schema.define(version: 20200319233723) do
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
-    t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
+    t.string "name_zip_birth_year_signature"
+    t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
-    t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 

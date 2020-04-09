@@ -11,123 +11,115 @@ feature 'PIV/CAC Management' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
 
-    context 'with an account allowed to use piv/cac' do
-      before(:each) do
-        allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy,
-        ).to receive(:available?).and_return(true)
-      end
+    scenario 'allows association of a piv/cac with an account' do
+      allow(LoginGov::Hostdata).to receive(:env).and_return('test')
+      allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
 
-      scenario 'allows association of a piv/cac with an account' do
-        allow(LoginGov::Hostdata).to receive(:env).and_return('test')
-        allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+      stub_piv_cac_service
 
-        stub_piv_cac_service
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        sign_in_and_2fa_user(user)
-        visit account_path
-        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include("form-action https://*.pivcac.test.example.com 'self';"))
 
-        expect(page.response_headers['Content-Security-Policy']).
-          to(include("form-action https://*.pivcac.test.example.com 'self';"))
+      nonce = piv_cac_nonce_from_form_action
 
-        nonce = piv_cac_nonce_from_form_action
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            uuid: uuid,
+                            subject: 'SomeIgnoredSubject')
 
-        visit_piv_cac_service(setup_piv_cac_url,
-                              nonce: nonce,
-                              uuid: uuid,
-                              subject: 'SomeIgnoredSubject')
+      expect(current_path).to eq account_path
+      expect(page.find('.remove-piv')).to_not be_nil
 
-        expect(current_path).to eq account_path
-        expect(page.find('.remove-piv')).to_not be_nil
+      user.reload
+      expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq uuid
+      expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
+    end
 
-        user.reload
-        expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq uuid
-        expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
-      end
+    scenario 'disallows add if 2 piv cacs' do
+      stub_piv_cac_service
+      user_id = user.id
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
 
-      scenario 'disallows add if 2 piv cacs' do
-        stub_piv_cac_service
-        user_id = user.id
-        ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
+      sign_in_and_2fa_user(user)
 
-        sign_in_and_2fa_user(user)
+      expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+      visit account_path
 
-        expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
-        visit account_path
+      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+      visit account_path
+      expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
-        ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
-        visit account_path
-        expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+      visit setup_piv_cac_path
+      expect(current_path).to eq account_path
+    end
 
-        visit setup_piv_cac_path
-        expect(current_path).to eq account_path
-      end
+    scenario 'disallows association of a piv/cac with the same name' do
+      stub_piv_cac_service
 
-      scenario 'disallows association of a piv/cac with the same name' do
-        stub_piv_cac_service
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        sign_in_and_2fa_user(user)
-        visit account_path
-        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+      nonce = piv_cac_nonce_from_form_action
 
-        nonce = piv_cac_nonce_from_form_action
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            uuid: uuid,
+                            subject: 'SomeIgnoredSubject')
 
-        visit_piv_cac_service(setup_piv_cac_url,
-                              nonce: nonce,
-                              uuid: uuid,
-                              subject: 'SomeIgnoredSubject')
+      expect(current_path).to eq account_path
 
-        expect(current_path).to eq account_path
+      click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+      user.reload
+      fill_in 'name', with: user.piv_cac_configurations.first.name
+      click_button t('forms.piv_cac_setup.submit')
 
-        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
-        user.reload
-        fill_in 'name', with: user.piv_cac_configurations.first.name
-        click_button t('forms.piv_cac_setup.submit')
+      expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
+    end
 
-        expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
-      end
+    scenario 'displays error for a bad piv/cac and accepts more error info' do
+      stub_piv_cac_service
 
-      scenario 'displays error for a bad piv/cac and accepts more error info' do
-        stub_piv_cac_service
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        sign_in_and_2fa_user(user)
-        visit account_path
-        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+      nonce = piv_cac_nonce_from_form_action
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            error: 'certificate.bad',
+                            key_id: 'AB:CD:EF')
+      expect(current_path).to eq setup_piv_cac_path
+      expect(page).to have_content(t('headings.piv_cac_setup.certificate.bad'))
+    end
 
-        nonce = piv_cac_nonce_from_form_action
-        visit_piv_cac_service(setup_piv_cac_url,
-                              nonce: nonce,
-                              error: 'certificate.bad',
-                              key_id: 'AB:CD:EF')
-        expect(current_path).to eq setup_piv_cac_path
-        expect(page).to have_content(t('headings.piv_cac_setup.certificate.bad'))
-      end
+    scenario 'displays error for an expired piv/cac and accepts more error info' do
+      stub_piv_cac_service
 
-      scenario 'displays error for an expired piv/cac and accepts more error info' do
-        stub_piv_cac_service
+      sign_in_and_2fa_user(user)
+      visit account_path
+      click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        sign_in_and_2fa_user(user)
-        visit account_path
-        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+      nonce = piv_cac_nonce_from_form_action
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            error: 'certificate.expired',
+                            key_id: 'AB:CD:EF')
+      expect(current_path).to eq setup_piv_cac_path
+      expect(page).to have_content(t('headings.piv_cac_setup.certificate.expired'))
+    end
 
-        nonce = piv_cac_nonce_from_form_action
-        visit_piv_cac_service(setup_piv_cac_url,
-                              nonce: nonce,
-                              error: 'certificate.expired',
-                              key_id: 'AB:CD:EF')
-        expect(current_path).to eq setup_piv_cac_path
-        expect(page).to have_content(t('headings.piv_cac_setup.certificate.expired'))
-      end
+    scenario "doesn't allow unassociation of a piv/cac" do
+      stub_piv_cac_service
 
-      scenario "doesn't allow unassociation of a piv/cac" do
-        stub_piv_cac_service
-
-        sign_in_and_2fa_user(user)
-        visit account_path
-        form = find_form(page, action: disable_piv_cac_url)
-        expect(form).to be_nil
-      end
+      sign_in_and_2fa_user(user)
+      visit account_path
+      form = find_form(page, action: disable_piv_cac_url)
+      expect(form).to be_nil
     end
   end
 

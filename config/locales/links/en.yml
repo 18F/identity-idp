@@ -1,7 +1,6 @@
 ---
 en:
   links:
-    access_help: How login.gov protects your data.
     account:
       reactivate:
         with_key: I have my key
@@ -12,11 +11,10 @@ en:
     contact: Contact
     copy: Copy
     create_account: Create an account
-    create_helper: Don't have an account?
     go_back: Go back
     help: Help
     my_account: my account
-    next: Sign In
+    next: Sign in
     passwords:
       forgot: Forgot your password?
     privacy_policy: Privacy & security
