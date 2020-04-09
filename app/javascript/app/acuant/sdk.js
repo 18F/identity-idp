@@ -1,4 +1,4 @@
-import {
+const {
   acuantSdkInitializationStarted,
   acuantSdkInitializeSuccess,
   acuantSdkInitializeFailed,
@@ -6,9 +6,9 @@ import {
   acuantImageCaptureStarted,
   acuantImageCaptureSuccess,
   acuantImageCaptureFailed,
-} from './domUpdateCallbacks';
+} = require('./domUpdateCallbacks');
 
-const imageCaptureButtonClicked = (event) => {
+export const imageCaptureButtonClicked = (event) => {
   event.preventDefault();
   acuantImageCaptureStarted();
   window.AcuantCameraUI.start(
@@ -17,8 +17,9 @@ const imageCaptureButtonClicked = (event) => {
   );
 };
 
-const initializeAcuantSdk = () => {
+export const initializeAcuantSdk = () => {
   window.AcuantJavascriptWebSdk.initialize(
+    // TODO: Move these into a meta tag or something
     // Dummy credentials for Acuant frontend
     'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA==',
     'https://services.assureid.net',
