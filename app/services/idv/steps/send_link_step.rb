@@ -27,7 +27,11 @@ module Idv
       end
 
       def link(token)
-        idv_capture_doc_step_url(step: :mobile_front_image, token: token)
+        if request.path.include?('doc_auth_v2')
+          idv_doc_auth_v2_step_url(step: :scan_id, token: token)
+        else
+          idv_capture_doc_step_url(step: :mobile_front_image, token: token)
+        end
       end
 
       def throttled_else_increment

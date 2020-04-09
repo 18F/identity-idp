@@ -127,6 +127,7 @@ development:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
   acuant_simulator: 'true'
   allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
@@ -166,6 +167,7 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   issuers_with_email_nameid_format: ''
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '5'
@@ -233,6 +235,7 @@ production:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
@@ -269,6 +272,7 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue:
   issuers_with_email_nameid_format: sp1,sp2
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'false'
   logins_per_email_and_ip_limit: '5'
@@ -331,6 +335,7 @@ test:
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
+  acuant_passlive_url: https://example.com
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
@@ -369,6 +374,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '5'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '2'
