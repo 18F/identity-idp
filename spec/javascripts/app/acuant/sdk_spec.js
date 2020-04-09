@@ -19,7 +19,6 @@ import {
 } from '../../../../app/javascript/app/acuant/domUpdateCallbacks';
 
 describe('acuant/sdk', () => {
-
   // This is the initial HTML on the page pulled from
   const INITIAL_HTML = `
     <input type='hidden' id='doc_auth_image_data_url'>
