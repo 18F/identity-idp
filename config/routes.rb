@@ -294,6 +294,9 @@ Rails.application.routes.draw do
       get '/capture_doc' => 'capture_doc#index'
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
+      get '/capture-doc/:step' => 'capture_doc#show',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :capture_doc_step_dashes
       unless FeatureManagement.disallow_ial2_recovery?
         get '/recovery' => 'recovery#index'
         get '/recovery/:step' => 'recovery#show', as: :recovery_step
@@ -313,6 +316,9 @@ Rails.application.routes.draw do
       get '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#show', as: :idv_doc_auth_v2_step
       put '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#update'
       get '/verify/doc_auth_v2/link_sent/poll' => 'idv/doc_auth_v2#doc_capture_poll'
+      get '/verify/doc-auth-v2/:step' => 'idv/doc_auth_v2#show',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :idv_doc_auth_v2_step_dashes
 
       get '/scan_id' => 'idv/scan_id#new'
       get '/scan_complete' => 'idv/scan_id#scan_complete'

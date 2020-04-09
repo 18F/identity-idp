@@ -30,6 +30,20 @@ feature 'doc auth send link step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
+  it 'sends a link that does not contain any underscores' do
+    # because URLs with underscores sometimes get messed up by carriers
+    expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+      expect(config[:link]).to_not include('_')
+
+      impl.call(config)
+    end
+
+    fill_in :doc_auth_phone, with: '415-555-0199'
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
   it 'does not proceed to the next page with invalid info' do
     fill_in :doc_auth_phone, with: ''
     click_idv_continue
