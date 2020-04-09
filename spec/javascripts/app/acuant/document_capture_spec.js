@@ -5,7 +5,7 @@ import {
   imageCaptureButtonClicked,
   initializeAcuantSdk,
   loadAndInitializeAcuantSdk,
-} from '../../../../app/javascript/app/acuant/sdk';
+} from '../../../../app/javascript/app/acuant/document_capture';
 
 import {
   fallbackImageForm,

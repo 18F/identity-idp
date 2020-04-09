@@ -130,7 +130,7 @@ development:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
-  acuant_sdk_image_capture_enabled: 'true'
+  acuant_sdk_document_capture_enabled: 'true'
   acuant_simulator: 'true'
   allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
@@ -239,7 +239,7 @@ production:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
-  acuant_sdk_image_capture_enabled: 'false'
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
@@ -340,7 +340,7 @@ test:
   acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://example.com
-  acuant_sdk_image_capture_enabled: 'false'
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$

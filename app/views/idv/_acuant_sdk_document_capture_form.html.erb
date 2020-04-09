@@ -1,4 +1,4 @@
-<% if Figaro.env.acuant_sdk_image_capture_enabled == 'true' %>
+<% if Figaro.env.acuant_sdk_document_capture_enabled == 'true' %>
   <% content_for :meta_tags do %>
     <meta
       name='acuant-sdk-initialization-endpoint'
@@ -31,5 +31,5 @@
     <%= submit_tag t('forms.buttons.continue'), class: 'btn btn-primary btn-wide mt2' %>
   </div>
 
-  <%= javascript_pack_tag 'acuant_sdk_image_capture' %>
+  <%= javascript_pack_tag 'acuant_document_capture' %>
 <% end %>
