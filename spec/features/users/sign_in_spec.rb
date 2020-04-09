@@ -838,8 +838,10 @@ feature 'Sign in' do
   end
 
   context 'ial2 param on sign up screen' do
+    let(:campaign) { 'campaign1' }
+
     before do
-      visit root_path(ial: 2)
+      visit root_path(ial: 2, campaign: campaign)
     end
 
     it 'invokes ial2 flow if the user already has an ial1 account' do
@@ -856,6 +858,9 @@ feature 'Sign in' do
       click_continue
 
       expect(current_path).to eq(account_path)
+      doc_auth_log = DocAuthLog.find_by(user_id: user.id)
+      expect(doc_auth_log.no_sp_campaign).to eq(campaign)
+      expect(doc_auth_log.no_sp_session_started_at).to be_present
     end
 
     it 'invokes ial2 flow if the user does not have an ial1 account' do

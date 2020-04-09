@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_160855) do
+ActiveRecord::Schema.define(version: 2020_04_08_213043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,8 @@ ActiveRecord::Schema.define(version: 2020_03_26_160855) do
     t.integer "capture_complete_view_count", default: 0
     t.integer "capture_mobile_back_image_submit_count", default: 0
     t.integer "capture_mobile_back_image_error_count", default: 0
+    t.datetime "no_sp_session_started_at"
+    t.string "no_sp_campaign"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -338,6 +340,7 @@ ActiveRecord::Schema.define(version: 2020_03_26_160855) do
     t.datetime "verified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "liveness_check"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end

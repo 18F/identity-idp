@@ -5,22 +5,22 @@ describe Idv::Acuant::FacialMatch do
   let(:acuant_facial_match_url) { 'https://example.com' }
 
   describe '#call' do
-    let(:path) { '/FacialMatch' }
+    let(:path) { '/api/v1/facematch' }
     let(:id_image) { '123' }
-    let(:image) { 'abc' }
+    let(:body) { 'abc' }
 
     it 'returns a good status' do
       stub_request(:post, acuant_facial_match_url + path).to_return(status: 200, body: '{}')
 
-      result = subject.call(id_image, image)
+      result = subject.facematch(body)
 
-      expect(result).to eq([true, {}])
+      expect(result).to eq([true, '{}'])
     end
 
     it 'returns a bad status' do
       stub_request(:post, acuant_facial_match_url + path).to_return(status: 441, body: '')
 
-      result = subject.call(id_image, image)
+      result = subject.facematch(body)
 
       expect(result).to eq([false, ''])
     end

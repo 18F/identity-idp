@@ -3,7 +3,7 @@ module Idv
     class Liveness
       include Idv::Acuant::Http
 
-      base_uri Figaro.env.acuant_facial_match_url
+      base_uri Figaro.env.acuant_passlive_url
 
       attr_accessor :instance_id
 
@@ -14,16 +14,6 @@ module Idv
 
       def liveness(body)
         url = '/api/v1/liveness'
-
-        options = default_options.merge(
-          headers: content_type_json.merge(accept_json),
-          body: body,
-        )
-        post(url, options)
-      end
-
-      def facematch(body)
-        url = '/api/v1/facematch'
 
         options = default_options.merge(
           headers: content_type_json.merge(accept_json),

@@ -1,0 +1,95 @@
+<% if flow_session[:error_message] %>
+  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
+<% end %>
+
+<h1 class='h3 my0'><%= t('doc_auth.headings.welcome') %></h1>
+<p class='mt-tiny mb3'><%= t('doc_auth.info.welcome') %></p>
+<h1 class='h3 mb2'><%= t('doc_auth.instructions.welcome') %></h1>
+
+<ul class='list-reset'>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      1
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('doc_auth.instructions.bullet1') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('doc_auth.instructions.text1') %>
+      </div>
+    </div>
+  </li>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      2
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('doc_auth.instructions.bullet2') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('doc_auth.instructions.text2') %>
+      </div>
+    </div>
+  </li>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      3
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('doc_auth.instructions.bullet3') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('doc_auth.instructions.text3') %>
+      </div>
+    </div>
+  </li>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      4
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('doc_auth.instructions.bullet4') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('doc_auth.instructions.text4') %>
+      </div>
+    </div>
+  </li>
+</ul>
+
+<%= simple_form_for :doc_auth,
+                    url: url_for,
+                    method: 'put',
+                    html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
+  <br/>
+  <label class="mtn1 mb3" for="ial2_consent_given">
+    <div class="checkbox">
+      <%= check_box_tag :ial2_consent_given, true, false %>
+      <span class="indicator"></span>
+      <%= t('doc_auth.instructions.consent') %>
+      <%= link_to(t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/', target: '_blank') %>
+    </div>
+  </label>
+  <%= f.button :submit, t('doc_auth.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6 no-auto-enable' %>
+<% end %>
+
+<br/>
+
+<div class='mt2 pt1 border-top'>
+  <% if user_fully_authenticated? %>
+    <%= link_to(cancel_link_text, account_path, class: 'h5') %>
+  <% else %>
+    <%= link_to(t('two_factor_authentication.choose_another_option'), two_factor_options_path) %>
+  <% end %>
+</div>
+
+<%= javascript_pack_tag('clipboard') %>
+<%= javascript_pack_tag('ial2-consent-button') %>
