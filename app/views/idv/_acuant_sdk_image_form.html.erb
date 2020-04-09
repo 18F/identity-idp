@@ -1,27 +1,29 @@
-<div id='acuant-sdk-upload-form' class='hidden'>
-  <!-- TODO: This text needs translations and to be moved to a local -->
-  <button id='acuant-sdk-capture' class='btn btn-primary'>Choose image</button>
-</div>
+<% if Figaro.env.acuant_sdk_image_capture_enabled == 'true' %>
+  <div id='acuant-sdk-upload-form' class='hidden'>
+    <!-- TODO: This text needs translations and to be moved to a local -->
+    <button id='acuant-sdk-capture' class='btn btn-primary'>Choose image</button>
+  </div>
 
-<div id='acuant-sdk-spinner' class='hidden'>
-  <%= image_tag(
-    asset_url('wait.gif'),
-    srcset: asset_url('wait.gif'),
-    height: 50,
-    width: 50,
-    # TODO: This needs a translated alt tag
-    alt: ''
-  ) %>
-</div>
+  <div id='acuant-sdk-spinner' class='hidden'>
+    <%= image_tag(
+      asset_url('wait.gif'),
+      srcset: asset_url('wait.gif'),
+      height: 50,
+      width: 50,
+      # TODO: This needs a translated alt tag
+      alt: ''
+    ) %>
+  </div>
 
-<div id='acuant-sdk-continue-form' class='hidden'>
-  <img id='acuant-sdk-preview'>
-  <%= submit_tag t('forms.buttons.continue'), class: 'btn btn-primary btn-wide mt2' %>
-</div>
+  <div id='acuant-sdk-continue-form' class='hidden'>
+    <img id='acuant-sdk-preview'>
+    <%= submit_tag t('forms.buttons.continue'), class: 'btn btn-primary btn-wide mt2' %>
+  </div>
 
-<script>
-  // These are dummy credentials for initializing the SDK on the frontend
-  ACUANT_SDK_INITIALIZATION_ENDPOINT = '<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
-  ACUANT_SDK_INITIALIZATION_CREDS = '<%= Figaro.env.acuant_sdk_initialization_creds %>'
-</script>
-<%= javascript_pack_tag 'acuant_sdk_image_capture' %>
+  <script>
+    // These are dummy credentials for initializing the SDK on the frontend
+    ACUANT_SDK_INITIALIZATION_ENDPOINT = '<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
+    ACUANT_SDK_INITIALIZATION_CREDS = '<%= Figaro.env.acuant_sdk_initialization_creds %>'
+  </script>
+  <%= javascript_pack_tag 'acuant_sdk_image_capture' %>
+<% end %>
