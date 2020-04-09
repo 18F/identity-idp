@@ -122,7 +122,7 @@ describe('acuant/sdk', () => {
   });
 
   describe('.imageCaptureButtonClicked', () => {
-    let event = { preventDefault: () => {} };
+    const event = { preventDefault: () => {} };
 
     beforeEach(() => {
       window.AcuantCameraUI = { start: sinon.spy() };

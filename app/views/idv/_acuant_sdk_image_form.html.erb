@@ -1,4 +1,15 @@
 <% if Figaro.env.acuant_sdk_image_capture_enabled == 'true' %>
+  <% content_for :meta_tags do %>
+    <meta
+      name='acuant-sdk-initialization-endpoint'
+      content='<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
+    >
+    <meta
+      name='acuant-sdk-initialization-creds'
+      content='<%= Figaro.env.acuant_sdk_initialization_creds %>'
+    >
+  <% end %>
+
   <div id='acuant-sdk-upload-form' class='hidden'>
     <button id='acuant-sdk-capture' class='btn btn-primary'>
       <%= capture_button_label %>
@@ -20,10 +31,5 @@
     <%= submit_tag t('forms.buttons.continue'), class: 'btn btn-primary btn-wide mt2' %>
   </div>
 
-  <script>
-    // These are dummy credentials for initializing the SDK on the frontend
-    ACUANT_SDK_INITIALIZATION_ENDPOINT = '<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
-    ACUANT_SDK_INITIALIZATION_CREDS = '<%= Figaro.env.acuant_sdk_initialization_creds %>'
-  </script>
   <%= javascript_pack_tag 'acuant_sdk_image_capture' %>
 <% end %>

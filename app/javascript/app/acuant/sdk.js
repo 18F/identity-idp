@@ -19,7 +19,6 @@ export const imageCaptureButtonClicked = (event) => {
 
 export const initializeAcuantSdk = () => {
   window.AcuantJavascriptWebSdk.initialize(
-    // TODO: Move these into a meta tag or something
     // Dummy credentials for Acuant frontend
     window.ACUANT_SDK_INITIALIZATION_CREDS,
     window.ACUANT_SDK_INITIALIZATION_ENDPOINT,

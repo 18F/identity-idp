@@ -50,6 +50,7 @@ export const acuantImageCaptureSuccess = (response) => {
 };
 
 export const acuantImageCaptureFailed = (error) => {
+  // eslint-disable-next-line
   console.log('Acuant SDK image capture error:', error);
   hideAcuantSdkContainers();
   fallbackImageForm().classList.remove('hidden');
