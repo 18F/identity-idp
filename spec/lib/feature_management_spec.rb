@@ -22,30 +22,25 @@ describe 'FeatureManagement', type: :feature do
       before do
         allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true)
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return(domain_name)
       end
 
-      context 'when the server is idp.pt.login.gov' do
-        let(:domain_name) { 'idp.pt.login.gov' }
-
-        it 'prefills codes' do
-          expect(FeatureManagement.prefill_otp_codes?).to eq(true)
+      context 'when the server is in production' do
+        before do
+          allow(LoginGov::Hostdata).to receive(:domain).and_return('login.gov')
         end
-      end
-
-      context 'when the server is idp.dev.login.gov' do
-        let(:domain_name) { 'idp.dev.login.gov' }
-
-        it 'prefills codes' do
-          expect(FeatureManagement.prefill_otp_codes?).to eq(true)
-        end
-      end
-
-      context 'when the server is idp.staging.login.gov' do
-        let(:domain_name) { 'idp.staging.login.gov' }
 
         it 'does not prefill codes' do
           expect(FeatureManagement.prefill_otp_codes?).to eq(false)
+        end
+      end
+
+      context 'when the server is in sandbox' do
+        before do
+          allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+        end
+
+        it 'prefills codes' do
+          expect(FeatureManagement.prefill_otp_codes?).to eq(true)
         end
       end
     end
