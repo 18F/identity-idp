@@ -39,7 +39,7 @@ class NullServiceProvider
     []
   end
 
-  def liveness_checking_enabled
+  def liveness_checking_required
     false
   end
 end

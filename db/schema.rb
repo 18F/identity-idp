@@ -423,7 +423,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_075651) do
     t.boolean "allow_prompt_login", default: false
     t.boolean "signed_response_message_requested", default: false
     t.integer "ial2_quota"
-    t.boolean "liveness_checking_enabled"
+    t.boolean "liveness_checking_required"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

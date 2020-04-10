@@ -36,11 +36,11 @@ module Idv
     end
 
     def liveness_checking_enabled?
-      FeatureManagement.liveness_checking_enabled? && sp_liveness_checking_enabled?
+      FeatureManagement.liveness_checking_enabled? && sp_liveness_checking_required?
     end
 
-    def sp_liveness_checking_enabled?
-      ServiceProvider.from_issuer(sp_session[:issuer].to_s)&.liveness_checking_enabled
+    def sp_liveness_checking_required?
+      ServiceProvider.from_issuer(sp_session[:issuer].to_s)&.liveness_checking_required
     end
   end
 end
