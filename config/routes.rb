@@ -293,6 +293,9 @@ Rails.application.routes.draw do
       get '/capture_doc' => 'capture_doc#index'
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
+      get '/capture-doc/:step' => 'capture_doc#show',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :capture_doc_step_dashes
       unless FeatureManagement.disallow_ial2_recovery?
         get '/recovery' => 'recovery#index'
         get '/recovery/:step' => 'recovery#show', as: :recovery_step

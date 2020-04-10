@@ -14,7 +14,7 @@ module Flow
     end
 
     def show
-      step = params[:step]
+      step = current_step
       analytics.track_event(analytics_visited, step: step) if @analytics_id
       Funnel::DocAuth::RegisterStep.call(user_id, step, :view, true)
       register_campaign
@@ -22,7 +22,7 @@ module Flow
     end
 
     def update
-      step = params[:step]
+      step = current_step
       result = flow.handle(step)
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
       register_update_step(step, result)
@@ -31,6 +31,10 @@ module Flow
     end
 
     private
+
+    def current_step
+      params[:step].underscore
+    end
 
     def register_campaign
       Funnel::DocAuth::RegisterCampaign.call(user_id, session[:ial2_with_no_sp_campaign])
@@ -81,7 +85,7 @@ module Flow
     end
 
     def ensure_correct_step
-      redirect_to_step(next_step) if next_step.to_s != params[:step]
+      redirect_to_step(next_step) if next_step.to_s != current_step
     end
 
     def flow_finish
