@@ -12,7 +12,7 @@ module JobRunner
           [job_configuration.name, successful_recent_job_run?(job_configuration)]
         end.to_h
         healthy = !result.value?(false)
-        HealthCheckerSummary.new(healthy, result)
+        JobRunner::HealthCheckerSummary.new(healthy, result)
       end
 
       private
