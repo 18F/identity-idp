@@ -64,7 +64,7 @@ describe Idv::ScanIdController do
 
     it 'redirects to ssn page when liveness fails but liveness is disabled for the sp' do
       controller.user_session['idv/doc_auth_v2'] = {}
-      session[:sp] = { issuer:'foo' }
+      session[:sp] = { issuer: 'foo' }
       session[:scan_id] = { instance_id: 'foo', liveness_pass: false, facematch_pass: false,
                             pii: {} }
       get :scan_complete
