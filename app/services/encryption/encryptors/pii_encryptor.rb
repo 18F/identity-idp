@@ -1,36 +1,6 @@
 module Encryption
   module Encryptors
     class PiiEncryptor
-      Ciphertext = Struct.new(:encrypted_data, :salt, :cost) do
-        include Encodable
-        class << self
-          include Encodable
-        end
-
-        def self.parse_from_string(ciphertext_string)
-          parsed_json = JSON.parse(ciphertext_string)
-          new(extract_encrypted_data(parsed_json), parsed_json['salt'], parsed_json['cost'])
-        rescue JSON::ParserError
-          raise EncryptionError, 'ciphertext is not valid JSON'
-        end
-
-        def to_s
-          {
-            encrypted_data: encode(encrypted_data),
-            salt: salt,
-            cost: cost,
-          }.to_json
-        end
-
-        def self.extract_encrypted_data(parsed_json)
-          encoded_encrypted_data = parsed_json['encrypted_data']
-          raise EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
-            encoded_encrypted_data,
-          )
-          decode(encoded_encrypted_data)
-        end
-      end
-
       def initialize(password)
         @password = password
         @aes_cipher = AesCipher.new
@@ -45,11 +15,11 @@ module Encryption
         kms_encrypted_ciphertext = kms_client.encrypt(
           aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
         )
-        Ciphertext.new(kms_encrypted_ciphertext, salt, cost).to_s
+        PiiCiphertext.new(kms_encrypted_ciphertext, salt, cost).to_s
       end
 
       def decrypt(ciphertext_string, user_uuid: nil)
-        ciphertext = Ciphertext.parse_from_string(ciphertext_string)
+        ciphertext = PiiCiphertext.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
         )

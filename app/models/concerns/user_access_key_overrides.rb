@@ -61,7 +61,7 @@ module UserAccessKeyOverrides
   # storing the user in the session.
   def authenticatable_salt
     return if encrypted_password_digest.blank?
-    Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
+    Encryption::PasswordDigest.parse_from_string(
       encrypted_password_digest,
     ).password_salt
   end
