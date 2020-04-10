@@ -12,7 +12,7 @@ RSpec.describe Health::HealthController do
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
+          and_return(JobRunner::HealthCheckerSummary.new(true, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -32,7 +32,7 @@ RSpec.describe Health::HealthController do
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
+          and_return(JobRunner::HealthCheckerSummary.new(true, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -53,7 +53,7 @@ RSpec.describe Health::HealthController do
         allow(AccountResetHealthChecker).to receive(:check).
           and_return(AccountResetHealthChecker::Summary.new(false, 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(false, 'foo'))
+          and_return(JobRunner::HealthCheckerSummary.new(false, 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
