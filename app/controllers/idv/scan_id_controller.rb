@@ -49,8 +49,8 @@ module Idv
     end
 
     def all_checks_passed?
-      scan_id_session && scan_id_session[:instance_id] && scan_id_session[:facematch_pass] &&
-        (scan_id_session[:liveness_pass] || !FeatureManagement.liveness_checking_enabled?)
+      scan_id_session && scan_id_session[:instance_id] &&
+        (selfie_live_and_matches_document? || !liveness_checking_enabled?)
     end
 
     def token
@@ -90,7 +90,7 @@ module Idv
     def save_proofing_components
       save_proofing_component(:document_check, 'acuant')
       save_proofing_component(:document_type, 'state_id')
-      save_proofing_component(:liveness_check, 'acuant') if scan_id_session[:liveness_pass]
+      save_proofing_component(:liveness_check, 'acuant') if selfie_live_and_matches_document?
     end
 
     def save_proofing_component(key, value)
