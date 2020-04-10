@@ -38,4 +38,8 @@ class NullServiceProvider
   def redirect_uris
     []
   end
+
+  def liveness_checking_enabled
+    false
+  end
 end

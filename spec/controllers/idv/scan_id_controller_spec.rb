@@ -62,6 +62,15 @@ describe Idv::ScanIdController do
       expect(response).to redirect_to(idv_doc_auth_v2_step_url(step: :ssn))
     end
 
+    it 'redirects to ssn page when liveness fails but liveness is disabled for the sp' do
+      controller.user_session['idv/doc_auth_v2'] = {}
+      session[:sp] = { issuer:'foo' }
+      session[:scan_id] = { instance_id: 'foo', liveness_pass: false, facematch_pass: false,
+                            pii: {} }
+      get :scan_complete
+      expect(response).to redirect_to(idv_doc_auth_v2_step_url(step: :ssn))
+    end
+
     it 'renders scan id complete page when all the checks pass in hybrid flow', :skip_sign_in do
       token = CaptureDoc::CreateRequest.call(create(:user).id).request_token
       get :new, params: { token: token }
