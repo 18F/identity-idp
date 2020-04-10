@@ -30,5 +30,17 @@ module Idv
     def attempter_throttled?
       Throttler::IsThrottled.call(*idv_throttle_params)
     end
+
+    def selfie_live_and_matches_document?
+      scan_id_session[:facematch_pass] && scan_id_session[:liveness_pass]
+    end
+
+    def liveness_checking_enabled?
+      FeatureManagement.liveness_checking_enabled? && sp_liveness_checking_required?
+    end
+
+    def sp_liveness_checking_required?
+      ServiceProvider.from_issuer(sp_session[:issuer].to_s)&.liveness_checking_required
+    end
   end
 end
