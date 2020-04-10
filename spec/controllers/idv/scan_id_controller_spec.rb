@@ -56,7 +56,8 @@ describe Idv::ScanIdController do
     it 'redirects to ssn page when liveness fails but liveness is disabled for all sps' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('false')
       controller.user_session['idv/doc_auth_v2'] = {}
-      session[:scan_id] = { instance_id: 'foo', liveness_pass: false, facematch_pass: false, pii: {} }
+      session[:scan_id] = { instance_id: 'foo', liveness_pass: false, facematch_pass: false,
+                            pii: {} }
       get :scan_complete
       expect(response).to redirect_to(idv_doc_auth_v2_step_url(step: :ssn))
     end
