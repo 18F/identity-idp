@@ -29,12 +29,6 @@ namespace :dev do
     Rails.logger.warn "email=#{ial2_user.email} personal_key=#{personal_key}"
   end
 
-  # protip: set ATTRIBUTE_COST and SCRYPT_COST env vars to '800$8$1$'
-  # or whatever the test env uses, to override config/application.yml
-  # before running this task.
-  # e.g.
-  # rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$' ATTRIBUTE_COST='800$8$1$'
-
   # some baseline metrics
   # $ rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$' ATTRIBUTE_COST='800$8$1$'
   # Users: 100% |==================================================| Time: 00:00:37
@@ -43,45 +37,20 @@ namespace :dev do
 
   desc 'Create N random User records'
   task random_users: :environment do
-    pw = 'salty pickles'
-    num_users = (ENV['NUM_USERS'] || 100).to_i
-    num_created = 0
-    unless ENV['PROGRESS'] == 'no'
-      progress = ProgressBar.create(
-        title: 'Users',
-        total: num_users,
-        format: '%t: |%B| %j%% [%a / %e]',
-      )
-    end
+    # split number of users by number of cores
+    proc_num = Concurrent.physical_processor_count
+    p "#{proc_num} physical cores found\n"
 
-    User.transaction do
-      while num_created < num_users
-        email_addr = "testuser#{num_created}@example.com"
-        ee = EncryptedAttribute.new_from_decrypted(email_addr)
-        User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
-          setup_user(user, ee: ee, pw: pw, num: num_created)
-        end
-
-        if ENV['VERIFIED']
-          user = User.find_by(email_fingerprint: ee.fingerprint)
-          profile = Profile.new(user: user)
-          pii = Pii::Attributes.new_from_hash(
-            first_name: 'Test',
-            last_name: "User #{num_created}",
-            dob: '1970-05-01',
-            ssn: "666-#{num_created}", # doesn't need to be legit 9 digits, just unique
-          )
-          personal_key = profile.encrypt_pii(pii, pw)
-          profile.verified_at = Time.zone.now
-          profile.activate
-
-          Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
-        end
-
-        num_created += 1
-        progress&.increment
+    pool = Concurrent::FixedThreadPool.new(ENV.fetch("CONCURRENCY", 8), fallback_policy: :caller_runs) # default to 4 threads
+    # pool = Concurrent::ThreadPoolExecutor.new(max_threads: ENV.fetch("CONCURRENCY", 4))
+    (1..10000).each do |user_num|
+      pool.post do
+        generate_user(user_num)
       end
     end
+      # batch_generate_users(100, num)
+      # execute the follwing in parallel
+  
   end
 
   desc 'Create a user with multiple emails and output the emails and passwords'
@@ -133,5 +102,76 @@ namespace :dev do
       phone: format('+1 (415) 555-%04d', args[:num]),
       confirmed_at: Time.zone.now,
     }
+  end
+
+  def generate_user(user_num)
+    pw = 'salty pickles'
+
+    User.transaction do
+      email_addr = "testuser#{user_num}@example.com"
+      ee = EncryptedAttribute.new_from_decrypted(email_addr)
+      User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
+        setup_user(user, ee: ee, pw: pw, num: user_num)
+      end
+
+      if ENV['VERIFIED']
+        user = User.find_by(email_fingerprint: ee.fingerprint)
+        profile = Profile.new(user: user)
+        pii = Pii::Attributes.new_from_hash(
+          first_name: 'Test',
+          last_name: "User #{user_num}",
+          dob: '1970-05-01',
+          ssn: "666-#{user_num}", # doesn't need to be legit 9 digits, just unique
+        )
+        personal_key = profile.encrypt_pii(pii, pw)
+        profile.verified_at = Time.zone.now
+        profile.activate
+
+        Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"  
+        progress&.increment
+      end
+    end
+  end
+
+  def batch_generate_users(count=100, proc_num)
+    pw = 'salty pickles'
+    num_users = count.to_i
+    num_created = 0
+    unless ENV['PROGRESS'] == 'no'
+      progress = ProgressBar.create(
+        title: "Users #{proc_num}",
+        total: num_users,
+        format: '%t: |%B| %j%% [%a / %e]',
+      )
+    end
+
+    User.transaction do
+      while num_created < num_users
+        email_addr = "testuser#{num_created}@example.com"
+        ee = EncryptedAttribute.new_from_decrypted(email_addr)
+        User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
+          setup_user(user, ee: ee, pw: pw, num: num_created)
+        end
+
+        if ENV['VERIFIED']
+          user = User.find_by(email_fingerprint: ee.fingerprint)
+          profile = Profile.new(user: user)
+          pii = Pii::Attributes.new_from_hash(
+            first_name: 'Test',
+            last_name: "User #{num_created}",
+            dob: '1970-05-01',
+            ssn: "666-#{num_created}", # doesn't need to be legit 9 digits, just unique
+          )
+          personal_key = profile.encrypt_pii(pii, pw)
+          profile.verified_at = Time.zone.now
+          profile.activate
+
+          Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
+        end
+
+        num_created += 1
+        progress&.increment
+      end
+    end
   end
 end
