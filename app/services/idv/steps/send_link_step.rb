@@ -27,7 +27,7 @@ module Idv
       end
 
       def link(token)
-        idv_capture_doc_step_url(step: :mobile_front_image, token: token)
+        idv_capture_doc_step_dashes_url(step: :mobile_front_image.to_s.dasherize, token: token)
       end
 
       def throttled_else_increment
