@@ -10,7 +10,7 @@ module Funnel
         doc_auth_log.save
       end
 
-      def campaign_whitelisted?(campaign)
+      def self.campaign_whitelisted?(campaign)
         whitelist = JSON.parse(Figaro.env.no_sp_campaigns_whitelist || '[]')
         whitelist.include?(campaign)
       end
