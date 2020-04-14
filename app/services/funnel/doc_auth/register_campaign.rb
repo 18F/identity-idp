@@ -2,7 +2,9 @@ module Funnel
   module DocAuth
     class RegisterCampaign
       def self.call(user_id, campaign)
+        puts "oone"
         return unless campaign_whitelisted?(campaign)
+        puts "two"
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)
         return if doc_auth_log.nil? || doc_auth_log.no_sp_campaign
         doc_auth_log.no_sp_campaign = campaign.to_s

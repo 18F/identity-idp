@@ -838,13 +838,14 @@ feature 'Sign in' do
   end
 
   context 'ial2 param on sign up screen' do
-    let(:campaign) { 'campaign1' }
+    let(:ok_campaign) { 'campaign1' }
+    let(:bad_campaign) { 'bad_campaign' }
 
-    before do
-      visit root_path(ial: 2, campaign: campaign)
+    before do |test|
+      visit root_path(ial: 2, campaign: test.metadata[:bad_campaign] ? bad_campaign : ok_campaign)
     end
 
-    it 'invokes ial2 flow if the user already has an ial1 account' do
+    it 'invokes ial2 flow if the user already has an ial1 account and saves a good campaign' do
       user = create(:user, :signed_up)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -859,8 +860,19 @@ feature 'Sign in' do
 
       expect(current_path).to eq(account_path)
       doc_auth_log = DocAuthLog.find_by(user_id: user.id)
-      expect(doc_auth_log.no_sp_campaign).to eq(campaign)
+      expect(doc_auth_log.no_sp_campaign).to eq(ok_campaign)
       expect(doc_auth_log.no_sp_session_started_at).to be_present
+    end
+
+    it 'does not save a bad campaign', :bad_campaign do
+      user = create(:user, :signed_up)
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      complete_all_doc_auth_steps
+      doc_auth_log = DocAuthLog.find_by(user_id: user.id)
+      expect(doc_auth_log.no_sp_campaign).to be_nil
     end
 
     it 'invokes ial2 flow if the user does not have an ial1 account' do
