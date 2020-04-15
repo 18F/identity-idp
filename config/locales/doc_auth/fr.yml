@@ -73,6 +73,8 @@ fr:
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
+      document_capture_fallback_html: Avoir des problèmes? %{link}
+      document_capture_fallback_link: Cliquez ici pour télécharger une image
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus.

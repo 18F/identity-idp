@@ -36,12 +36,15 @@
     ) %>
   </div>
 
-  <!-- TODO: Railsify and translate -->
   <p id='acuant-fallback-text' class='my3 hidden'>
-    Having trouble?
-    <a href='/' id='acuant-fallback-link'>
-      Click here to upload an image.
-    </a>
+    <%= t(
+      'doc_auth.instructions.document_capture_fallback_html',
+      link: link_to(
+        t('doc_auth.instructions.document_capture_fallback_link'),
+        '#',
+        id: 'acuant-fallback-link'
+      )
+    ) %>
   </p>
 
   <%= javascript_pack_tag 'acuant_document_capture' %>
