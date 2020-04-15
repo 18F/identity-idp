@@ -63,6 +63,8 @@ en:
       bullet4: Account recovery
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
+      document_capture_fallback_html: Having trouble? %{link}
+      document_capture_fallback_link: Click here to upload an image
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more.

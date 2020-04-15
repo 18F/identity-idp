@@ -8,7 +8,7 @@ const {
   acuantImageCaptureStarted,
   acuantImageCaptureSuccess,
   acuantImageCaptureFailed,
-} = require('./domUpdateCallbacks');
+} = require('./document_capture_dom');
 
 export const imageCaptureButtonClicked = (event) => {
   event.preventDefault();

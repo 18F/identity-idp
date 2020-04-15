@@ -26,7 +26,7 @@
     ) %>
   </div>
 
-  <div id='acuant-sdk-continue-form' class=''>
+  <div id='acuant-sdk-continue-form' class='hidden'>
     <img id='acuant-sdk-preview' class='mb2'>
     <%= submit_tag t('forms.buttons.continue'), class: 'block btn btn-primary btn-wide' %>
     <%= link_to(
@@ -35,6 +35,17 @@
       class: 'center btn btn-secondary btn-wide mt2',
     ) %>
   </div>
+
+  <p id='acuant-fallback-text' class='my3 hidden'>
+    <%= t(
+      'doc_auth.instructions.document_capture_fallback_html',
+      link: link_to(
+        t('doc_auth.instructions.document_capture_fallback_link'),
+        '#',
+        id: 'acuant-fallback-link'
+      )
+    ) %>
+  </p>
 
   <%= javascript_pack_tag 'acuant_document_capture' %>
 <% end %>
