@@ -1,3 +1,7 @@
+import {
+  documentCaptureFallbackModeEnabled,
+} from './document_capture_fallback';
+
 // Fallback form elements
 export const fallbackImageForm = () => document.querySelector('#acuant-fallback-image-form');
 export const imageFileInput = () => document.querySelector('#doc_auth_image');
@@ -9,6 +13,9 @@ export const acuantSdkContinueForm = () => document.querySelector('#acuant-sdk-c
 // Acuant UI elements
 export const acuantSdkCaptureButton = () => document.querySelector('#acuant-sdk-capture');
 export const acuantSdkPreviewImage = () => document.querySelector('#acuant-sdk-preview');
+// Fallback UI elements
+export const acuantSdkFallbackText = () => document.querySelector('#acuant-fallback-text');
+export const acuantSdkFallbackLink = () => document.querySelector('#acuant-fallback-link');
 
 export const fetchSdkInitializationCredentials = () => document.querySelector(
   'meta[name="acuant-sdk-initialization-creds"]',
@@ -24,20 +31,42 @@ const hideAcuantSdkContainers = () => {
   acuantSdkContinueForm().classList.add('hidden');
 };
 
-export const acuantSdkInitializationStarted = () => {
+const showFallbackForm = () => {
+  fallbackImageForm().classList.remove('hidden');
+};
+
+const showAcuantSdkContainer = (container) => {
+  if (documentCaptureFallbackModeEnabled()) return;
+
   hideAcuantSdkContainers();
+
+  switch (container) {
+    case 'upload-form':
+      acuantSdkUploadForm().classList.remove('hidden');
+      break;
+    case 'spinner':
+      acuantSdkSpinner().classList.remove('hidden');
+      break;
+    case 'continue-form':
+      acuantSdkContinueForm().classList.remove('hidden');
+      break;
+    default:
+      break;
+  }
+};
+
+export const acuantSdkInitializationStarted = () => {
   fallbackImageForm().classList.add('hidden');
-  acuantSdkSpinner().classList.remove('hidden');
+  showAcuantSdkContainer('spinner');
 };
 
 export const acuantSdkInitializeSuccess = () => {
-  hideAcuantSdkContainers();
-  acuantSdkUploadForm().classList.remove('hidden');
+  showAcuantSdkContainer('upload-form');
 };
 
 export const acuantSdkInitializeFailed = () => {
   hideAcuantSdkContainers();
-  fallbackImageForm().classList.remove('hidden');
+  showFallbackForm();
 };
 
 export const addClickEventListenerToAcuantCaptureButton = (clickCallback) => {
@@ -45,21 +74,33 @@ export const addClickEventListenerToAcuantCaptureButton = (clickCallback) => {
 };
 
 export const acuantImageCaptureStarted = () => {
-  hideAcuantSdkContainers();
-  acuantSdkSpinner().classList.remove('hidden');
+  showAcuantSdkContainer('spinner');
 };
 
 export const acuantImageCaptureSuccess = (response) => {
-  hideAcuantSdkContainers();
   acuantSdkPreviewImage().src = response.image.data;
   imageDataUrlInput().value = response.image.data;
   imageFileInput().required = false;
-  acuantSdkContinueForm().classList.remove('hidden');
+  showAcuantSdkContainer('continue-form');
 };
 
 export const acuantImageCaptureFailed = (error) => {
   // eslint-disable-next-line
   console.log('Acuant SDK image capture error:', error);
   hideAcuantSdkContainers();
-  fallbackImageForm().classList.remove('hidden');
+  showFallbackForm();
+};
+
+export const showAcuantSdkFallbackText = () => {
+  acuantSdkFallbackText().classList.remove('hidden');
+};
+
+export const addClickEventListenerToAcuantFallbackLink = (clickCallback) => {
+  acuantSdkFallbackLink().onclick = clickCallback;
+};
+
+export const acauntDocumentCaptureFallbackEnabled = () => {
+  hideAcuantSdkContainers();
+  showFallbackForm();
+  acuantSdkFallbackText().classList.add('hidden');
 };
