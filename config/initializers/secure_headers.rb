@@ -16,7 +16,14 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:', Figaro.env.asset_host, 'fonts.gstatic.com'],
-    img_src: ["'self'", 'data:', 'login.gov', Figaro.env.asset_host, 'idscangoweb.acuant.com'],
+    img_src: [
+      "'self'",
+      'data:',
+      'login.gov',
+      Figaro.env.asset_host,
+      'idscangoweb.acuant.com',
+      "https://s3.#{Figaro.env.aws_region}.amazonaws.com",
+    ],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [

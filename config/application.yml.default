@@ -40,6 +40,7 @@ asset_host:
 async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
 aws_http_timeout: '5'
+aws_logo_bucket:
 cac_proofing_enabled:
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
@@ -69,6 +70,7 @@ lexisnexis_username: test_username
 logins_per_email_and_ip_bantime: '60'
 logins_per_email_and_ip_period: '60'
 logins_per_ip_period: '60'
+logo_upload_enabled: 'false'
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: '2'
 max_emails_per_account: '12'
@@ -141,6 +143,7 @@ development:
     "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
     }]'
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
+  aws_logo_bucket:
   aws_region: us-east-1
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
@@ -177,6 +180,7 @@ development:
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'false'
+  logo_upload_enabled: 'true'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
@@ -249,6 +253,7 @@ production:
   attribute_encryption_key_queue:
   aws_kms_key_id:
   aws_region:
+  aws_logo_bucket:
   backup_codes_as_only_2fa:
   basic_auth_password:
   basic_auth_user_name:
@@ -284,6 +289,7 @@ production:
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'true'
+  logo_upload_enabled: 'false'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
