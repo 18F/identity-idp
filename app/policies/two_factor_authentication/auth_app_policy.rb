@@ -8,10 +8,6 @@ module TwoFactorAuthentication
       user&.auth_app_configurations&.any?
     end
 
-    def available?
-      !configured?
-    end
-
     def enabled?
       configured?
     end

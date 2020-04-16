@@ -13,6 +13,7 @@ fr:
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique
+    forget_all_browsers: Oubliez tous les navigateurs
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte
@@ -44,6 +45,8 @@ fr:
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte
+    remembered_browsers: Navigateurs mémorisés
+    revoke_consent: Révoquer le consentement
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       loa1: créé un compte
@@ -53,9 +56,7 @@ fr:
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
       new: Configurer l'authentification à deux facteurs
-    two_factor_recovery_setup: Ajouter une méthode d'authentification de sauvegarde
     two_factor_setup: Configuration de l'authentification à deux facteurs
-    two_factor_setup_success: Configurez avec succès la première méthode d'authentification
     verify_email: Consultez vos courriels
     verify_profile: Activez votre compte
     visitors:

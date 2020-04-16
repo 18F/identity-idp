@@ -16,7 +16,7 @@ module Idv
       end
 
       def form_submit
-        Idv::ImageUploadForm.new.submit(permit(:image))
+        Idv::ImageUploadForm.new.submit(permit(:image, :image_data_url))
       end
 
       def upload_front_image

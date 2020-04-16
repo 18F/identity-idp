@@ -76,6 +76,7 @@ class Analytics
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
+  DOC_AUTH_V2 = 'Doc Auth V2'.freeze # visited or submitted is appended
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
@@ -84,6 +85,8 @@ class Analytics
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
   EXPIRED_LETTERS = 'Expired Letters'.freeze
+  FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
+  FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
@@ -160,6 +163,8 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
+  SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'.freeze
+  SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'.freeze
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'.freeze
   BACKUP_CODE_CREATED = 'Backup Code Created'.freeze

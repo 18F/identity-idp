@@ -17,7 +17,6 @@ describe Idv::CaptureDocController do
   token = nil
 
   before do
-    enable_doc_auth
     stub_analytics
     allow(@analytics).to receive(:track_event)
     capture_doc = CaptureDoc::CreateRequest.call(user.id)
@@ -111,6 +110,31 @@ describe Idv::CaptureDocController do
         expect(@analytics).to have_received(:track_event).with(
           Analytics::CAPTURE_DOC + ' visited', result
         )
+      end
+
+      it 'add unsafe-eval to the CSP for capture steps' do
+        mock_next_step(:mobile_front_image)
+
+        get :show, params: { step: 'mobile_front_image' }
+
+        script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+        expect(script_src).to include("'unsafe-eval'")
+
+        mock_next_step(:capture_mobile_back_image)
+
+        get :show, params: { step: 'capture_mobile_back_image' }
+
+        script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+        expect(script_src).to include("'unsafe-eval'")
+      end
+
+      it 'does not add unsafe-eval to the CSP for non-capture steps' do
+        mock_next_step(:capture_complete)
+
+        get :show, params: { step: 'capture_complete' }
+
+        secure_header_config = response.request.headers.env['secure_headers_request_config']
+        expect(secure_header_config).to be_nil
       end
     end
   end

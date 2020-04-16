@@ -139,14 +139,11 @@ feature 'Sign in' do
     submit_form_with_valid_password
     expect(page).to have_current_path(two_factor_options_path)
 
-    %w[2025551313 2025551314].each do |phone_number|
-      select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: phone_number
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_continue
-    end
+    select_2fa_option('phone')
+    fill_in :new_phone_form_phone, with: '2025551314'
+    click_send_security_code
+    fill_in_code_with_last_phone_otp
+    click_submit_default
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
@@ -632,8 +629,6 @@ feature 'Sign in' do
   it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
-  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :saml
-  it_behaves_like 'signing with while PIV/CAC enabled but no other second factor', :oidc
 
   context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly
@@ -843,12 +838,15 @@ feature 'Sign in' do
   end
 
   context 'ial2 param on sign up screen' do
-    before do
-      enable_doc_auth
-      visit root_path(ial: 2)
-    end
+    let(:ok_campaign) { 'campaign1' }
+    let(:bad_campaign) { 'bad_campaign' }
 
-    it 'invokes ial2 flow if the user already has an ial1 account' do
+    before do
+      visit root_path(ial: 2, campaign: campaign)
+    end
+    let(:campaign) { ok_campaign }
+
+    it 'invokes ial2 flow if the user already has an ial1 account and saves a good campaign' do
       user = create(:user, :signed_up)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -862,6 +860,23 @@ feature 'Sign in' do
       click_continue
 
       expect(current_path).to eq(account_path)
+      doc_auth_log = DocAuthLog.find_by(user_id: user.id)
+      expect(doc_auth_log.no_sp_campaign).to eq(ok_campaign)
+      expect(doc_auth_log.no_sp_session_started_at).to be_present
+    end
+
+    context 'with a bad campaign' do
+      let(:campaign) { 'bad_campaign' }
+      it 'does not save' do
+        user = create(:user, :signed_up)
+        fill_in_credentials_and_submit(user.email, user.password)
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        complete_all_doc_auth_steps
+        doc_auth_log = DocAuthLog.find_by(user_id: user.id)
+        expect(doc_auth_log.no_sp_campaign).to be_nil
+      end
     end
 
     it 'invokes ial2 flow if the user does not have an ial1 account' do

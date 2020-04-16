@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200305201944) do
+ActiveRecord::Schema.define(version: 2020_04_09_075651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,8 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.integer "capture_complete_view_count", default: 0
     t.integer "capture_mobile_back_image_submit_count", default: 0
     t.integer "capture_mobile_back_image_error_count", default: 0
+    t.datetime "no_sp_session_started_at"
+    t.string "no_sp_campaign"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -231,6 +233,7 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.datetime "last_consented_at"
     t.datetime "last_ial1_authenticated_at"
     t.datetime "last_ial2_authenticated_at"
+    t.datetime "deleted_at"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -260,6 +263,15 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
+  end
+
+  create_table "monthly_sp_auth_counts", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.integer "ial", limit: 2, null: false
+    t.string "year_month", null: false
+    t.integer "user_id", null: false
+    t.integer "auth_count", default: 1, null: false
+    t.index ["issuer", "ial", "year_month", "user_id"], name: "index_monthly_sp_auth_counts_on_issuer_ial_month_user_id", unique: true
   end
 
   create_table "otp_requests_trackers", force: :cascade do |t|
@@ -311,10 +323,10 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.integer "deactivation_reason"
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
-    t.index ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)"
+    t.string "name_zip_birth_year_signature"
+    t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
-    t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -328,6 +340,7 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.datetime "verified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "liveness_check"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
@@ -410,6 +423,7 @@ ActiveRecord::Schema.define(version: 20200305201944) do
     t.boolean "allow_prompt_login", default: false
     t.boolean "signed_response_message_requested", default: false
     t.integer "ial2_quota"
+    t.boolean "liveness_checking_required"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

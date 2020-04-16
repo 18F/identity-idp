@@ -62,6 +62,13 @@ Rails.application.routes.draw do
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
+      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show', as: :forget_all_browsers
+      delete '/account/forget_all_browsers' => 'users/forget_all_browsers#destroy'
+
+      get '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#show',
+          as: :service_provider_revoke
+      delete '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#destroy'
+
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
@@ -196,7 +203,6 @@ Rails.application.routes.draw do
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options_success' => 'users/two_factor_authentication_setup#success'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
@@ -239,6 +245,11 @@ Rails.application.routes.draw do
 
     delete '/users' => 'users#destroy', as: :destroy_user
 
+    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
+      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      get "/verify/capture_doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
+    end
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
@@ -264,41 +275,33 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      if FeatureManagement.doc_auth_exclusive?
-        get '/session', to: redirect('/verify')
-      else
-        get '/session' => 'sessions#new'
-        put '/session' => 'sessions#create'
-      end
-      get '/session/success' => 'sessions#success'
       get '/session/errors/warning' => 'session_errors#warning'
-      get '/session/errors/timeout' => 'session_errors#timeout'
-      get '/session/errors/jobfail' => 'session_errors#jobfail'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/throttled' => 'session_errors#throttled'
       get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
       get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction' => 'jurisdiction#new'
-      post '/jurisdiction' => 'jurisdiction#create'
       get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      if FeatureManagement.doc_auth_enabled?
-        get '/doc_auth' => 'doc_auth#index'
-        get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-        put '/doc_auth/:step' => 'doc_auth#update'
-        get '/capture_doc' => 'capture_doc#index'
-        get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
-        put '/capture_doc/:step' => 'capture_doc#update'
-        unless FeatureManagement.disallow_ial2_recovery?
-          get '/recovery' => 'recovery#index'
-          get '/recovery/:step' => 'recovery#show', as: :recovery_step
-          put '/recovery/:step' => 'recovery#update'
-        end
+      get '/doc_auth' => 'doc_auth#index'
+      get '/doc_auth/scan_id' => 'idv/scan_id#new'
+      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
+      put '/doc_auth/:step' => 'doc_auth#update'
+      get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
+      get '/capture_doc' => 'capture_doc#index'
+      get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
+      put '/capture_doc/:step' => 'capture_doc#update'
+      get '/capture-doc/:step' => 'capture_doc#show',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :capture_doc_step_dashes
+      unless FeatureManagement.disallow_ial2_recovery?
+        get '/recovery' => 'recovery#index'
+        get '/recovery/:step' => 'recovery#show', as: :recovery_step
+        put '/recovery/:step' => 'recovery#update'
       end
       get '/in_person' => 'in_person#index'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
@@ -308,10 +311,35 @@ Rails.application.routes.draw do
       get '/cac/:step' => 'cac#show', as: :cac_step
       put '/cac/:step' => 'cac#update'
     end
+    if Figaro.env.enable_mobile_capture == 'true'
+      get '/verify/doc_auth_v2' => 'idv/doc_auth_v2#index'
+      get '/verify/doc_auth_v2/scan_id' => 'idv/scan_id#new'
+      get '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#show', as: :idv_doc_auth_v2_step
+      put '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#update'
+      get '/verify/doc_auth_v2/link_sent/poll' => 'idv/doc_auth_v2#doc_capture_poll'
+      get '/verify/doc-auth-v2/:step' => 'idv/doc_auth_v2#show',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :idv_doc_auth_v2_step_dashes
 
+      get '/scan_id' => 'idv/scan_id#new'
+      get '/scan_complete' => 'idv/scan_id#scan_complete'
+      get '/capture/photo' => 'idv/scan_id#new'
+      get '/capture/camera' => 'idv/scan_id#new'
+      get '/photo/confirm' => 'idv/scan_id#new'
+      get '/capture/selfie' => 'idv/scan_id#new'
+      get '/AssureIDService/subscriptions' => 'idv/scan_id_acuant#subscriptions'
+      post '/AssureIDService/Document/Instance' => 'idv/scan_id_acuant#instance'
+      post '/AssureIDService/Document/:instance_id/Image' => 'idv/scan_id_acuant#image'
+      get '/AssureIDService/Document/:instance_id/Classification' => 'idv/scan_id_acuant#classification'
+      get '/AssureIDService/Document/:instance_id' => 'idv/scan_id_acuant#document'
+      get '/AssureIDService/Document/:instance_id/Field/Image' => 'idv/scan_id_acuant#field_image'
+      post '/api/v1/liveness' => 'idv/scan_id_acuant#liveness'
+      post '/api/v1/facematch' => 'idv/scan_id_acuant#facematch'
+    end
+
+    get '/account/verify' => 'users/verify_account#index', as: :verify_account
+    post '/account/verify' => 'users/verify_account#create'
     if FeatureManagement.enable_usps_verification?
-      get '/account/verify' => 'users/verify_account#index', as: :verify_account
-      post '/account/verify' => 'users/verify_account#create'
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'

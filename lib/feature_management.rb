@@ -1,20 +1,12 @@
 class FeatureManagement
-  ENVS_DO_NOT_DISPLAY_FAKE_BANNER = %w[
-    idp.staging.login.gov secure.login.gov
-  ].freeze
-
-  ENVS_WHERE_PREFILLING_OTP_ALLOWED = %w[
-    idp.dev.login.gov idp.pt.login.gov idp.dev.identitysandbox.gov idp.pt.identitysandbox.gov
-  ].freeze
-
   ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
     idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
     idp.pt.identitysandbox.gov
   ].freeze
 
-  def self.telephony_disabled?
-    Figaro.env.telephony_disabled == 'true'
+  def self.telephony_test_adapter?
+    Figaro.env.telephony_adapter.blank? || Figaro.env.telephony_adapter == 'test'
   end
 
   def self.identity_pki_disabled?
@@ -38,15 +30,15 @@ class FeatureManagement
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
     # We also allow this in production on a single server that is used for load testing.
-    development_and_telephony_disabled? || prefill_otp_codes_allowed_in_production?
+    development_and_telephony_test_adapter? || prefill_otp_codes_allowed_in_sandbox?
   end
 
-  def self.development_and_telephony_disabled?
-    Rails.env.development? && telephony_disabled?
+  def self.development_and_telephony_test_adapter?
+    Rails.env.development? && telephony_test_adapter?
   end
 
-  def self.prefill_otp_codes_allowed_in_production?
-    ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_disabled?
+  def self.prefill_otp_codes_allowed_in_sandbox?
+    LoginGov::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
@@ -74,7 +66,7 @@ class FeatureManagement
   end
 
   def self.fake_banner_mode?
-    Rails.env.production? && ENVS_DO_NOT_DISPLAY_FAKE_BANNER.exclude?(Figaro.env.domain_name)
+    Rails.env.production? && LoginGov::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?
@@ -86,20 +78,8 @@ class FeatureManagement
       enabled?(session, reset)
   end
 
-  def self.use_cloudhsm?
-    Figaro.env.cloudhsm_enabled == 'true'
-  end
-
   def self.disallow_all_web_crawlers?
     Figaro.env.disallow_all_web_crawlers == 'true'
-  end
-
-  def self.doc_auth_enabled?
-    Figaro.env.doc_auth_enabled == 'true'
-  end
-
-  def self.doc_auth_exclusive?
-    Figaro.env.doc_auth_exclusive == 'true'
   end
 
   def self.disallow_ial2_recovery?
@@ -126,5 +106,17 @@ class FeatureManagement
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
     Rails.env.development? && Figaro.env.identity_pki_local_dev == 'true'
+  end
+
+  def self.doc_capture_polling_enabled?
+    Figaro.env.doc_capture_polling_enabled == 'true'
+  end
+
+  def self.hide_phone_mfa_signup?
+    Figaro.env.hide_phone_mfa_signup == 'true'
+  end
+
+  def self.liveness_checking_enabled?
+    Figaro.env.liveness_checking_enabled == 'true'
   end
 end

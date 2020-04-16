@@ -171,10 +171,8 @@ describe Users::TotpSetupController, devise: true do
           patch :confirm, params: { code: generate_totp_code(secret) }
         end
 
-        it 'redirects to setup another factor without a flash message' do
-          expect(response).to redirect_to(two_factor_options_success_url)
-          redirect_to(two_factor_options_url)
-          expect(flash[:success]).to be_nil
+        it 'redirects to account_path with a success message' do
+          expect(response).to redirect_to(account_path)
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
           result = {

@@ -13,7 +13,6 @@ describe Idv::RecoveryController do
   end
 
   before do |example|
-    enable_doc_auth
     stub_sign_in unless example.metadata[:skip_sign_in]
     stub_analytics
     allow(@analytics).to receive(:track_event)

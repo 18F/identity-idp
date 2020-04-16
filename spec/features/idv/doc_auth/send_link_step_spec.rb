@@ -5,7 +5,6 @@ feature 'doc auth send link step' do
   include DocAuthHelper
 
   before do
-    enable_doc_auth
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
   end
@@ -24,6 +23,20 @@ feature 'doc auth send link step' do
     expect(Telephony).to receive(:send_doc_auth_link).
       with(hash_including(to: '+1 415-555-0199')).
       and_call_original
+
+    fill_in :doc_auth_phone, with: '415-555-0199'
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
+  it 'sends a link that does not contain any underscores' do
+    # because URLs with underscores sometimes get messed up by carriers
+    expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+      expect(config[:link]).to_not include('_')
+
+      impl.call(config)
+    end
 
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue

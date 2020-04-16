@@ -1,15 +1,22 @@
 module Db
   module SpCost
     class TotalSpCostSummary
+      # rubocop:disable Metrics/MethodLength
       def self.call(start, finish)
-        sql = <<~SQL
+        params = {
+          start: ActiveRecord::Base.connection.quote(start),
+          finish: ActiveRecord::Base.connection.quote(finish),
+        }
+
+        sql = format(<<~SQL, params)
           SELECT cost_type,COUNT(*)
           FROM sp_costs
-          WHERE '#{start}' <= created_at and created_at <= '#{finish}'
+          WHERE %{start} <= created_at and created_at <= %{finish}
           GROUP BY cost_type ORDER BY cost_type
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end

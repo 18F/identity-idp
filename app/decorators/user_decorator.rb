@@ -127,7 +127,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def connected_apps
-    user.identities.order('created_at DESC').map(&:decorate)
+    user.identities.not_deleted.order('created_at DESC').map(&:decorate)
   end
 
   def verified_account_partial

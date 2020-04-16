@@ -4,12 +4,16 @@ describe Profile do
   let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :signed_up) }
   let(:profile) { create(:profile, user: user) }
+
+  let(:dob) { '1920-01-01' }
+  let(:ssn) { '666-66-1234' }
   let(:pii) do
     Pii::Attributes.new_from_hash(
-      dob: '1920-01-01',
-      ssn: '666-66-1234',
+      dob: dob,
+      ssn: ssn,
       first_name: 'Jane',
       last_name: 'Doe',
+      zipcode: '20001',
     )
   end
 
@@ -17,10 +21,12 @@ describe Profile do
   it { is_expected.to have_many(:usps_confirmation_codes).dependent(:destroy) }
 
   describe '#encrypt_pii' do
+    subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
+
     it 'encrypts PII' do
       expect(profile.encrypted_pii).to be_nil
 
-      profile.encrypt_pii(pii, user.password)
+      encrypt_pii
 
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Jane'
@@ -32,10 +38,51 @@ describe Profile do
 
       initial_personal_key = user.encrypted_recovery_code_digest
 
-      profile.encrypt_pii(pii, user.password)
+      encrypt_pii
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
+    end
+
+    context 'ssn fingerprinting' do
+      it 'fingerprints the ssn' do
+        expect { encrypt_pii }.
+          to change { profile.ssn_signature }.
+          from(nil).to(Pii::Fingerprinter.fingerprint(ssn))
+      end
+
+      context 'ssn is blank' do
+        let(:ssn) { nil }
+
+        it 'does not fingerprint the SSN' do
+          expect { encrypt_pii }.
+            to_not change { profile.ssn_signature }.
+            from(nil)
+        end
+      end
+    end
+
+    it 'fingerprints the PII' do
+      fingerprint = Pii::Fingerprinter.fingerprint([
+        pii.first_name,
+        pii.last_name,
+        pii.zipcode,
+        Date.parse(pii.dob).year,
+      ].join(':'))
+
+      expect { encrypt_pii }.
+        to change { profile.name_zip_birth_year_signature }.
+        from(nil).to(fingerprint)
+    end
+
+    context 'when a part of the compound PII key is missing' do
+      let(:dob) { nil }
+
+      it 'does not write a fingerprint' do
+        expect { encrypt_pii }.
+          to_not change { profile.name_zip_birth_year_signature }.
+          from(nil)
+      end
     end
   end
 
@@ -99,38 +146,6 @@ describe Profile do
       profile.save!
       expect do
         another_profile = Profile.new(user_id: user.id, active: true)
-        another_profile.save!(validate: false)
-      end.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-  end
-
-  describe 'allows one unique SSN per user' do
-    it 'allows multiple records per user if only one is active' do
-      profile.active = true
-      pii_attrs = Pii::Attributes.new_from_hash(ssn: '1234')
-      profile.encrypt_pii(pii_attrs, user.password)
-      profile.save!
-      expect { create(:profile, pii: { ssn: '1234' }, user: user) }.to_not raise_error
-    end
-
-    it 'prevents save! via ActiveRecord uniqueness validation' do
-      profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(pii, user.password)
-      profile.save!
-      expect do
-        another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(pii, user.password)
-        another_profile.save!
-      end.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'prevents save! via psql unique partial index' do
-      profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(pii, user.password)
-      profile.save!
-      expect do
-        another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(pii, another_user.password)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end

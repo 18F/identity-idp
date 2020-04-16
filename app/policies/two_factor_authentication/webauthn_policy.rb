@@ -13,10 +13,6 @@ module TwoFactorAuthentication
       configured?
     end
 
-    def available?
-      true
-    end
-
     def visible?
       true
     end

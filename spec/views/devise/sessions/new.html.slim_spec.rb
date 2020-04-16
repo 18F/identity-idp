@@ -15,7 +15,7 @@ describe 'devise/sessions/new.html.slim' do
   it 'sets autocomplete attribute off' do
     render
 
-    expect(rendered).to match(/<form autocomplete="off"/)
+    expect(rendered).to match(/<form[^>]*autocomplete="off"/)
   end
 
   it 'has a localized title' do

@@ -12,7 +12,7 @@
 <% end %>
 <br>
 <div class="mt2 pt1 border-top">
-  <% if MfaPolicy.new(current_user).sufficient_factors_enabled? %>
+  <% if MfaPolicy.new(current_user).two_factor_enabled? %>
     <%= link_to t('links.cancel'), account_path, class: 'h5' %>
   <% else %>
     <%= link_to @presenter.other_option_title, two_factor_options_path %>

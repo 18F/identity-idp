@@ -1,6 +1,5 @@
 - title t('forms.backup_code.title')
 
-= render 'partials/step_indicator', presenter: @presenter
 h1.h3.my0.mt0 = t('forms.backup_code.subtitle')
 = t('users.backup_code.generated_on_html',
         date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')))

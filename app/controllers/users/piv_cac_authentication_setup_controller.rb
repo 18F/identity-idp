@@ -91,26 +91,14 @@ module Users
     end
 
     def process_valid_submission
-      flash[:success] = t('notices.piv_cac_configured') if should_show_success_message?
+      flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
-      redirect_to next_step
-    end
-
-    def next_step
-      if MfaPolicy.new(current_user).sufficient_factors_enabled?
-        account_url
-      else
-        two_factor_options_success_url
-      end
-    end
-
-    def should_show_success_message?
-      MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def piv_cac_enabled?
@@ -130,8 +118,7 @@ module Users
 
     def authorize_piv_cac_disable
       return redirect_to account_url unless piv_cac_enabled? &&
-                                            MfaPolicy.new(current_user).
-                                            more_than_two_factors_enabled?
+                                            MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def good_nickname

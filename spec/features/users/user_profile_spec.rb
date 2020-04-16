@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'User profile' do
-  include IdvHelper
+  include IdvStepHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
 
@@ -27,7 +27,7 @@ feature 'User profile' do
       user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
       visit account_path
 
-      click_link(t('account.links.delete_account'))
+      click_link(t('account.links.delete_account'), href: account_delete_path)
       expect(User.count).to eq 1
       expect(AgencyIdentity.count).to eq 1
 
@@ -45,7 +45,7 @@ feature 'User profile' do
       user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
       visit account_path
 
-      click_link(t('account.links.delete_account'))
+      click_link(t('account.links.delete_account'), href: account_delete_path)
 
       request = stub_push_notification_request(
         sp_push_notification_endpoint: push_notification_url,
@@ -64,24 +64,13 @@ feature 'User profile' do
     end
   end
 
-  it 'prevents a user from using the same credentials to sign up' do
-    pii = { ssn: '1234', dob: '1920-01-01' }
-    profile = create(:profile, :active, :verified, pii: pii)
-    sign_in_live_with_2fa(profile.user)
-    click_link(t('links.sign_out'), match: :first)
-
-    expect do
-      create(:profile, :active, :verified, pii: pii)
-    end.to raise_error(ActiveRecord::RecordInvalid)
-  end
-
   context 'ial2 user clicks the delete account button' do
     it 'deletes the account and signs the user out with a flash message' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
       sign_in_live_with_2fa(profile.user)
       visit account_path
 
-      click_link(t('account.links.delete_account'))
+      click_link(t('account.links.delete_account'), href: account_delete_path)
       expect(User.count).to eq 1
       expect(Profile.count).to eq 1
 
@@ -99,7 +88,7 @@ feature 'User profile' do
       expect(User.count).to eq 1
       sign_in_live_with_2fa(profile.user)
       visit account_path
-      click_link(t('account.links.delete_account'))
+      click_link(t('account.links.delete_account'), href: account_delete_path)
       click_button t('users.delete.actions.delete')
 
       expect(User.count).to eq 0
@@ -155,9 +144,10 @@ feature 'User profile' do
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_on t('links.account.reactivate.without_key')
-        fill_out_idv_jurisdiction_ok
+        complete_all_doc_auth_steps
         click_idv_continue
-        complete_idv_profile_ok(user)
+        fill_in 'Password', with: user_password
+        click_idv_continue
         click_acknowledge_personal_key
 
         expect(current_path).to eq(sign_up_completed_path)

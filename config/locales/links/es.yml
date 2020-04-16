@@ -1,7 +1,6 @@
 ---
 es:
   links:
-    access_help: Cómo login.gov protege sus datos.
     account:
       reactivate:
         with_key: Tengo mi clave
@@ -9,11 +8,9 @@ es:
     back_to_sp: Volver a %{sp}
     cancel: Cancelar
     cancel_account_creation: "‹ Cancelar la creación de cuenta"
-    cancel_sign_in: "‹ Cancelar el inicio de sesión"
     contact: Contactar
     copy: Copiar
     create_account: Crear cuenta
-    create_helper: No tienes una cuenta?
     go_back: Regresa
     help: Ayuda
     my_account: mi cuenta

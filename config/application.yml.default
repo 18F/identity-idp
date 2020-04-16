@@ -22,6 +22,7 @@
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
 aamva_cert_enabled: 'true'
+aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
 account_reset_wait_period_days: '1'
 acuant_assure_id_password: ''
@@ -29,6 +30,9 @@ acuant_assure_id_subscription_id: ''
 acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '1440'
 acuant_facial_match_license_key: ''
+# These are dummy creds used to initialize the acuant SDK
+acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
+acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_doc_auth_test_credentials:
@@ -37,12 +41,8 @@ async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
 aws_http_timeout: '5'
 cac_proofing_enabled:
-cloudhsm_enabled: 'false'
-cloudhsm_pin: user:password
-cloudhsm_saml_key_label: key1
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
-doc_auth_enabled: 'true'
 doc_capture_request_valid_for_minutes: '15'
 doc_auth_extend_timeout_by_minutes: '40'
 email_from: no-reply@login.gov
@@ -87,7 +87,6 @@ pinpoint_sms_shortcode:
 pinpoint_voice_credential_role_arn:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
-pkcs11_lib: "/opt/cloudhsm/lib/libcloudhsm_pkcs11.so"
 proofer_mock_fallback: 'true'
 proofer_vendors:
 push_notifications_enabled:
@@ -131,6 +130,8 @@ development:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'true'
   acuant_simulator: 'true'
   allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
@@ -158,9 +159,10 @@ development:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
-  doc_auth_exclusive: 'true'
+  doc_capture_polling_enabled: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
+  enable_mobile_capture: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -169,6 +171,7 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   issuers_with_email_nameid_format: ''
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '5'
@@ -178,6 +181,7 @@ development:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
@@ -210,7 +214,6 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
-  telephony_disabled: 'true'
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
@@ -237,6 +240,8 @@ production:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
@@ -261,9 +266,10 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
-  doc_auth_exclusive: 'true'
+  doc_capture_polling_enabled: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
+  enable_mobile_capture: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -272,6 +278,7 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue:
   issuers_with_email_nameid_format: sp1,sp2
+  liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'false'
   logins_per_email_and_ip_limit: '5'
@@ -281,6 +288,7 @@ production:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
@@ -311,7 +319,6 @@ production:
   secret_key_base:
   session_encryption_key:
   telephony_adapter: pinpoint
-  telephony_disabled:
   twilio_voice_callback_encryption_key:
   use_dashboard_service_providers: 'false'
   use_kms: 'true'
@@ -335,6 +342,8 @@ test:
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
+  acuant_passlive_url: https://example.com
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
@@ -361,9 +370,10 @@ test:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
-  doc_auth_exclusive: 'false'
+  doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
+  enable_mobile_capture: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -372,6 +382,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '5'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '2'
@@ -381,6 +392,7 @@ test:
   newrelic_browser_app_id:
   newrelic_browser_key:
   newrelic_license_key:
+  no_sp_campaigns_whitelist: '["campaign1"]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'
@@ -406,12 +418,11 @@ test:
   reset_password_email_window_in_minutes: '80'
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
-  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"cloudhsm","cloudhsm_key_label":"key1"}]'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   telephony_adapter: test
-  telephony_disabled:
   twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'false'
   use_kms: 'false'

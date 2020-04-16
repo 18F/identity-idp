@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'IAL2 account creation' do
   include IdvHelper
+  include DocAuthHelper
   include SamlAuthHelper
   include WebAuthnHelper
 

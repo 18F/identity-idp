@@ -7,7 +7,9 @@ fr:
       continue: Continuer
       start_over: Recommencer
       take_picture: Prendre une photo
-      use_computer: Utilisez votre ordinateur
+      take_picture_retry: Reprendre la photo
+      upload_picture: Envoyer la photo
+      upload_picture_retry: Re-télécharger la photo
       use_phone: Utilisez votre téléphone
     forms:
       address1: Adresse
@@ -31,9 +33,8 @@ fr:
       upload: Comment voudriez-vous télécharger votre ID émis par l'état?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
-      upload_from_computer: Télécharger depuis votre ordinateur
-      upload_from_phone: Prenez une photo avec un téléphone pour télécharger votre
-        identifiant
+      upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
+        votre pièce d'identité
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
       verify: S'il vous plaît vérifier vos informations
@@ -41,18 +42,19 @@ fr:
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
-      link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
-        prendre une photo de votre identité émise par l'État. Lorsque vous avez terminé,
-        cliquez ici pour continuer à vérifier votre identité.
+      link_sent:
+      - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
+        une photo de votre identité émise par l'État.
+      - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      tag: Recommander
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
         vérifier votre identité.
-      upload: Nous collecterons des informations à votre sujet en lisant votre identifiant
-        émis par l'État Nous ne stockons pas les images que vous téléchargez. Nous
-        vérifions uniquement votre identité.
-      upload_from_computer: Téléchargez des images de votre identifiant que vous avez
-        sur votre ordinateur ou utilisez un scanner pour capturer des images de votre
-        identifiant
+      upload: Nous collecterons des informations vous concernant en lisant votre pièce
+        d'identité délivrée par l'État. Nous ne stockons pas les images que vous téléchargez.
+        Nous vérifions uniquement votre identité.
+      upload_computer_link: Téléchargez depuis votre ordinateur
+      upload_from_computer: Vous n'avez pas de téléphone?
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
@@ -71,6 +73,8 @@ fr:
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
+      document_capture_fallback_html: Avoir des problèmes? %{link}
+      document_capture_fallback_link: Cliquez ici pour télécharger une image
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus.

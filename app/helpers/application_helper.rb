@@ -35,8 +35,7 @@ module ApplicationHelper
 
   def user_signing_up?
     params[:confirmation_token].present? || (
-      current_user && !MfaPolicy.new(current_user).sufficient_factors_enabled? &&
-          !MfaPolicy.new(current_user).retire_personal_key?
+      current_user && !MfaPolicy.new(current_user).two_factor_enabled?
     )
   end
 
@@ -62,7 +61,7 @@ module ApplicationHelper
     if user_signing_up?
       destroy_user_path
     elsif user_verifying_identity?
-      idv_session_path
+      idv_doc_auth_url
     end
   end
 

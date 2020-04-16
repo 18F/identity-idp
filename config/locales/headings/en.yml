@@ -29,7 +29,6 @@ en:
       password: Change your password
       phone: Manage your phone settings
     lock_failure: Here's what you can do
-    mfa_success: You successfully set up %{method} as your first authentication method.
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue

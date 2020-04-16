@@ -111,6 +111,44 @@ feature 'taking an action that revokes remember device' do
     end
   end
 
+  context 'clicking forget browsers' do
+    let(:user) { create(:user, :signed_up) }
+
+    it 'forgets the current browser' do
+      sign_in_with_remember_device_and_sign_out
+
+      sign_in_user(user)
+      click_on(t('account.forget_all_browsers.link_title'))
+      click_on(t('forms.buttons.confirm'))
+
+      first(:link, t('links.sign_out')).click
+
+      expect_mfa_to_be_required_for_user(user)
+    end
+
+    it 'forgets all browsers' do
+      perform_in_browser(:one) do
+        sign_in_with_remember_device_and_sign_out
+      end
+
+      perform_in_browser(:two) do
+        sign_in_with_remember_device_and_sign_out
+
+        sign_in_user(user)
+        click_on(t('account.forget_all_browsers.link_title'))
+        click_on(t('forms.buttons.confirm'))
+
+        first(:link, t('links.sign_out')).click
+
+        expect_mfa_to_be_required_for_user(user)
+      end
+
+      perform_in_browser(:one) do
+        expect_mfa_to_be_required_for_user(user)
+      end
+    end
+  end
+
   def sign_in_with_remember_device_and_sign_out
     sign_in_user(user)
     choose_another_security_option('sms')

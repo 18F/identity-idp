@@ -8,18 +8,16 @@ class Utf8Sanitizer
 
   def call(env)
     parser = RackRequestParser.new(Rack::Request.new(env))
-    values_to_check = parser.values_to_check
 
-    if invalid_strings(values_to_check)
-      Rails.logger.info(invalid_utf8_event(env, parser.request))
-
-      return [400, {}, ['Bad request']]
+    if invalid_strings(parser.values_to_check)
+      return bad_request_and_log(invalid_utf8_event(env, parser.request))
     end
 
     @app.call(env)
   rescue Rack::QueryParser::InvalidParameterError => err
-    Rails.logger.info(invalid_parameter_event(err))
-    [400, {}, ['Bad request']]
+    bad_request_and_log(invalid_parameter_event(err))
+  rescue EOFError => err
+    bad_request_and_log(eof_error_event(err))
   end
 
   private
@@ -33,6 +31,7 @@ class Utf8Sanitizer
   end
 
   def invalid_string?(string)
+    string = string.dup if string.frozen?
     !string.force_encoding('UTF-8').valid_encoding?
   end
 
@@ -71,5 +70,17 @@ class Utf8Sanitizer
       event: 'Invalid parameter error',
       message: error.message,
     }
+  end
+
+  def eof_error_event(error)
+    {
+      event: 'EOF error',
+      message: error.message,
+    }
+  end
+
+  def bad_request_and_log(event)
+    Rails.logger.info(event)
+    [400, {}, ['Bad request']]
   end
 end

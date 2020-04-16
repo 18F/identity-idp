@@ -9,14 +9,6 @@ module Idv
       @remaining_step_attempts = remaining_step_attempts
     end
 
-    def timeout
-      @remaining_step_attempts = remaining_step_attempts
-    end
-
-    def jobfail
-      @remaining_step_attempts = remaining_step_attempts
-    end
-
     def failure; end
 
     private

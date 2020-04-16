@@ -5,7 +5,7 @@ class TwoFactorOptionsForm
   attr_reader :configuration_id
 
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
-                                            webauthn backup_code backup_code_only] }
+                                            webauthn backup_code] }
 
   def initialize(user)
     self.user = user

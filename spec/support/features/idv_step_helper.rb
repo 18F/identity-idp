@@ -4,6 +4,7 @@ module IdvStepHelper
       include IdvHelper
       include JavascriptDriverHelper
       include SamlAuthHelper
+      include DocAuthHelper
     end
   end
 
@@ -15,35 +16,9 @@ module IdvStepHelper
     end
   end
 
-  def complete_idv_steps_before_jurisdiction_step(user = user_with_2fa)
-    sign_in_and_2fa_user(user)
-    visit idv_jurisdiction_path unless current_path == idv_jurisdiction_path
-  end
-
-  def complete_idv_steps_before_profile_step(user = user_with_2fa)
-    complete_idv_steps_before_jurisdiction_step(user)
-    select 'Virginia', from: 'jurisdiction_state'
-    page.find('label[for=jurisdiction_ial2_consent_given]').click
-    click_idv_continue
-  end
-
-  def complete_idv_steps_before_profile_success_step(user = user_with_2fa)
-    complete_idv_steps_before_profile_step(user)
-    fill_out_idv_form_ok
-    click_idv_continue
-  end
-
-  def complete_idv_steps_before_address_step(user = user_with_2fa)
-    complete_idv_steps_before_profile_success_step(user)
-    click_idv_continue
-  end
-
   def complete_idv_steps_before_phone_step(user = user_with_2fa)
-    complete_idv_steps_before_profile_step(user)
-
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
+    sign_in_and_2fa_user(user)
+    complete_all_doc_auth_steps
   end
 
   def complete_idv_steps_before_usps_step(user = user_with_2fa)

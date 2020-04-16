@@ -30,7 +30,6 @@ fr:
       phone: Téléphone
       piv_cac: PIV/CAC
       webauthn: Clé de sécurité
-    first_factor_enabled: "%{device} a été configuré avec succès comme méthode d'authentification."
     header_text: Entrez votre code de sécurité
     invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
@@ -48,9 +47,6 @@ fr:
       backup_code: Codes de sauvegarde
       backup_code_info_html: Utilisez un code de sauvegarde de votre liste de codes
         de sauvegarde pour vous connecter.
-      backup_code_only: Codes de sauvegarde
-      backup_code_only_info_html: Utilisez un code de sauvegarde de votre liste de
-        codes de sauvegarde pour vous connecter.
       personal_key: Clé personnelle
       personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
         avez utilisée lors de la création du compte.
@@ -130,34 +126,19 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
-    two_factor_choice: Configuration de la première méthode d'authentification (1
-      sur 2)
-    two_factor_choice_intro_paragraphs:
-    - Ajoutez une deuxième couche de sécurité pour que vous puissiez vous connecter
-      à votre compte.
-    - Vous utiliserez une seule méthode d'authentification pour vous connecter, mais
-      nous vous demandons d'en configurer deux. Cela garantit que vous pouvez toujours
-      vous connecter si vous perdez l'accès à l'un d'entre eux.
-    two_factor_choice_intro_paragraphs_retire_personal_key:
-    - Le remplacement de votre clé personnelle par une méthode d'authentification
-      différente permet de protéger votre compte. Il vous permet également de vous
-      connecter à votre compte même si vous perdez ou changez de téléphone. <ul> <li>
-      Vous ne devrez l'utiliser que lorsque vous n'avez pas votre téléphone, pas à
-      chaque fois que vous vous connectez </li> <li> Vous ne pourrez plus vous connecter
-      avec une clé personnelle. Les clés personnelles sont facilement perdues ou volées.
-      Nous les supprimons pour protéger votre compte.</li></ul>
+    two_factor_choice: Configuration de la méthode d'authentification
+    two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
+      puissiez vous connecter à votre compte.
     two_factor_choice_options:
       auth_app: Application d'authentification
       auth_app_info_html: Obtenir des codes d'une application sur votre téléphone,
         votre ordinateur ou votre tablette
       backup_code: Je n'ai rien de ce qui précède
       backup_code_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
-        dans un endroit sûr
-      backup_code_only: Je n'ai rien de ce qui précède
-      backup_code_only_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
         dans un endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme seule
         méthode d'authentification.
-      less_secure_label: Menos protección
+      less_secure_label: Moins de protection
+      more_secure_label: Plus de protection
       phone: Téléphone
       phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
       piv_cac: Numéro d'employé du gouvernement
@@ -166,7 +147,7 @@ fr:
       second_phone: Deuxième téléphone
       second_phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
         vers un numéro de téléphone secondaire (autre que %{phone})
-      secure_label: Plus de protection
+      secure_label: A une protection
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS
       voice: Appel téléphonique
@@ -175,13 +156,6 @@ fr:
       webauthn_info_html: Utilisez une clé de sécurité que vous avez. C’est un périphérique
         physique que vous branchez ou qui est intégré à votre ordinateur ou à votre
         téléphone (il ressemble souvent à une clé USB).
-    two_factor_choice_retire_personal_key: Remplacez votre clé personnelle par une
-      méthode d'authentification (obligatoire).
-    two_factor_recovery_choice: Configuration de la seconde méthode d'authentification
-      (2 sur 2)
-    two_factor_recovery_choice_intro_paragraphs:
-    - L’ajout d’une deuxième méthode d’authentification vous permet de vous connecter
-      à votre compte même si vous perdez ou ne perdez pas l’autre.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité

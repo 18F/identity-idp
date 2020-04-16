@@ -1,11 +1,15 @@
 module Idv
   class SsnForm
     include ActiveModel::Model
-    include FormSsnValidator
-
     ATTRIBUTES = [:ssn].freeze
 
     attr_accessor :ssn
+
+    validates :ssn, presence: true
+    validates_format_of :ssn,
+                        with: /\A\d{3}-?\d{2}-?\d{4}\z/,
+                        message: I18n.t('idv.errors.pattern_mismatch.ssn'),
+                        allow_blank: false
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Ssn')
@@ -18,7 +22,22 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+    end
+
+    def ssn_is_unique?
+      return false if ssn.nil?
+
+      @ssn_is_unique ||= DuplicateSsnFinder.new(
+        ssn: ssn,
+        user: @user,
+      ).ssn_is_unique?
+    end
+
+    def extra_analytics_attributes
+      {
+        ssn_is_unique: ssn_is_unique?,
+      }
     end
 
     private

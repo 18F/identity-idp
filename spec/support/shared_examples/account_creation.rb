@@ -45,11 +45,8 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
   it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true do
     visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
+    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    complete_all_doc_auth_steps
     fill_out_phone_form_ok
     click_idv_continue
     choose_idv_otp_delivery_method_sms
@@ -80,17 +77,6 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     visit_idp_from_sp_with_ial1(sp)
     register_user_with_piv_cac
 
-    click_continue
-
-    expect(page).to have_current_path(two_factor_options_path)
-
-    select_2fa_option('phone')
-    click_link t('two_factor_authentication.choose_another_option')
-
-    expect(page).to have_current_path(two_factor_options_path)
-
-    set_up_2fa_with_valid_phone
-
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
@@ -115,15 +101,8 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     select_2fa_option('webauthn')
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
-    expect(current_path).to eq two_factor_options_success_path
-    click_continue
-    select_2fa_option('backup_code')
-    click_continue
-    fill_out_idv_jurisdiction_ok
-    click_idv_continue
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_continue
+    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    complete_all_doc_auth_steps
     fill_out_phone_form_ok
     click_idv_continue
     choose_idv_otp_delivery_method_sms

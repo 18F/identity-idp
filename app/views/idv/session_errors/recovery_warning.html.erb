@@ -1,6 +1,6 @@
 <% title t("idv.failure.sessions.heading") %>
 
-<%= image_tag('alert/warning-lg.svg', width: 54) %>
+<%= image_tag('alert/warning-lg.svg', alt: '', width: 54) %>
 
 <h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.heading") %></h1>
 
@@ -13,7 +13,7 @@
 <%= render 'idv/shared/reset_your_account' %>
 
 <div class='mt3'>
-  <%= link_to t("idv.failure.button.warning"), idv_session_path %>
+  <%= link_to t("idv.failure.button.warning"), idv_doc_auth_path %>
 </div>
 
 <%= render 'idv/doc_auth/in_person_proofing_option' %>

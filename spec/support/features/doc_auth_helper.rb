@@ -9,6 +9,8 @@ module DocAuthHelper
       { 'Name' => 'Address City', 'Value' => 'New York' },
       { 'Name' => 'Address State', 'Value' => 'NY' },
       { 'Name' => 'Address Postal Code', 'Value' => '11364' },
+      { 'Name' => 'Issuing State Code', 'Value' => 'NY' },
+      { 'Name' => 'Document Number', 'Value' => '123ABC' },
       { 'Name' => 'Birth Date', 'Value' => '/Date(' +
         (Date.strptime('10-05-1938', '%m-%d-%Y').strftime('%Q').to_i + 43_200_000).to_s + ')/' },
     ],
@@ -26,8 +28,8 @@ module DocAuthHelper
       dob: '10/05/1938',
       ssn: '123',
       phone: '456',
-      state_id_jurisdiction: nil,
-      state_id_number: nil,
+      state_id_jurisdiction: 'NY',
+      state_id_number: '123ABC',
       state_id_type: 'drivers_license',
     }.freeze
 
@@ -116,13 +118,13 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_upload_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    find('input[name="ial2_consent_given"]').set(true)
+    find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_front_image_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_doc_auth_steps_before_mobile_front_image_step
@@ -196,7 +198,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_email_sent_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_computer')
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def mock_assure_id_ok
@@ -220,11 +222,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       and_return([false, ''])
   end
 
-  def enable_doc_auth
-    allow(FeatureManagement).to receive(:doc_auth_enabled?).and_return(true)
-    allow(FeatureManagement).to receive(:doc_auth_exclusive?).and_return(true)
-  end
-
   def setup_acuant_simulator(enabled:)
     allow(Figaro.env).to receive(:acuant_simulator).and_return(enabled ? 'true' : 'false')
   end
@@ -235,6 +232,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def attach_image
     attach_file 'doc_auth_image', 'app/assets/images/logo.png'
+  end
+
+  def attach_image_data_url
+    page.find('#doc_auth_image_data_url', visible: false).set(doc_auth_image_data_url)
+  end
+
+  def doc_auth_image_data_url
+    File.read('spec/support/fixtures/doc_auth_image_data_url.data')
+  end
+
+  def doc_auth_image_data_url_data
+    Base64.decode64(doc_auth_image_data_url.split(',').last)
   end
 
   def assure_id_results_with_result_2(disposition = '')
@@ -268,5 +277,13 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
     fill_in :doc_auth_phone, with: phone
+  end
+
+  def complete_doc_auth_v2_steps
+    visit idv_doc_auth_v2_step_path(step: :welcome)
+    find('label', text: t('doc_auth.instructions.consent')).click
+    click_on t('doc_auth.buttons.continue')
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    click_on t('doc_auth.buttons.use_phone')
   end
 end

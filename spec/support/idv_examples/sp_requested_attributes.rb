@@ -1,6 +1,6 @@
 shared_examples 'sp requesting attributes' do |sp|
   include SamlAuthHelper
-  include IdvHelper
+  include IdvStepHelper
 
   let(:user) { user_with_2fa }
   let(:good_ssn) { '666-66-1234' }
@@ -14,11 +14,14 @@ shared_examples 'sp requesting attributes' do |sp|
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_jurisdiction_path
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      fill_out_idv_jurisdiction_ok
+      complete_all_doc_auth_steps
       click_idv_continue
-      complete_idv_profile_ok(user)
+      click_idv_continue
+      click_idv_continue
+      fill_in 'Password', with: user.password
+      click_continue
       click_acknowledge_personal_key
 
       expect(current_path).to eq(sign_up_completed_path)
@@ -29,7 +32,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to_not have_content t('help_text.requested_attributes.address')
         expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
         expect(page).to have_content t('help_text.requested_attributes.full_name')
-        expect(page).to have_content 'José One'
+        expect(page).to have_content 'Jane Doe'
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
@@ -45,9 +48,12 @@ shared_examples 'sp requesting attributes' do |sp|
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
-      fill_out_idv_jurisdiction_ok
+      complete_all_doc_auth_steps
       click_idv_continue
-      complete_idv_profile_ok(user)
+      click_idv_continue
+      click_idv_continue
+      fill_in 'Password', with: user.password
+      click_continue
       click_acknowledge_personal_key
       click_agree_and_continue
       visit account_path

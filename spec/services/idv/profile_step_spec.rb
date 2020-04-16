@@ -30,7 +30,6 @@ describe Idv::ProfileStep do
       extra = {
         idv_attempts_exceeded: false,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
-        ssn_is_unique: true,
       }
 
       result = subject.submit(user_attrs)
@@ -52,7 +51,6 @@ describe Idv::ProfileStep do
       extra = {
         idv_attempts_exceeded: false,
         vendor: { messages: [], context: context, exception: nil, timed_out: false },
-        ssn_is_unique: true,
       }
 
       result = subject.submit(user_attrs)

@@ -23,10 +23,10 @@ class UsersController < ApplicationController
   end
 
   def ensure_in_setup
-    redirect_to root_url if !session[:user_confirmation_token] && signed_in_user_with_multiple_mfa?
+    redirect_to root_url if !session[:user_confirmation_token] && two_factor_enabled
   end
 
-  def signed_in_user_with_multiple_mfa?
-    current_user && MfaPolicy.new(current_user).sufficient_factors_enabled?
+  def two_factor_enabled
+    current_user && MfaPolicy.new(current_user).two_factor_enabled?
   end
 end

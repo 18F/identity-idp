@@ -12,10 +12,6 @@ module TwoFactorAuthentication
       configured?
     end
 
-    def available?
-      !enabled?
-    end
-
     def visible?
       enabled? || available?
     end

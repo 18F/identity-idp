@@ -27,6 +27,7 @@ module Pii
     end
 
     def self.stale?(text, fingerprint)
+      return true if text.present? && fingerprint.nil?
       !verify_current(text, fingerprint)
     end
   end

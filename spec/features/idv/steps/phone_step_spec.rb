@@ -105,26 +105,15 @@ feature 'idv phone step' do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  it 'requires the user to complete the profile step before completing' do
+  it 'requires the user to complete the doc auth before completing' do
     start_idv_from_sp
-    complete_idv_steps_before_profile_step
+    sign_in_and_2fa_user(user_with_2fa)
     # Try to advance ahead to the phone step
     visit idv_phone_path
 
-    # Expect to land on the profile step
-    expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(idv_session_path)
-
-    # Try to submit and fail
-    fill_out_idv_form_fail
-    click_idv_continue
-
-    # Try to advance ahead to the phone step
-    visit idv_phone_path
-
-    # Expect to land on the profile step
-    expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(idv_session_path)
+    # Expect to land on doc auth
+    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
   context 'cancelling IdV' do
@@ -135,6 +124,29 @@ feature 'idv phone step' do
 
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :phone
+
+    it 'does not render the link to proof by mail if proofing by mail is disabled' do
+      allow(FeatureManagement).to receive(:enable_usps_verification?).and_return(false)
+
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+
+      2.times do
+        fill_out_phone_form_fail
+        click_idv_continue
+
+        expect(page).to have_content(t('idv.failure.phone.warning'))
+        expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+
+        click_on t('idv.failure.button.warning')
+      end
+
+      fill_out_phone_form_fail
+      click_idv_continue
+
+      expect(page).to have_content(t('headings.lock_failure'))
+      expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+    end
   end
 
   context 'when the IdV background job fails' do

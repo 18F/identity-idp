@@ -6,19 +6,17 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
 
+  connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
+                 'sentry.io', 'services.assureid.net']
+  connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: [
-      "'self'",
-      '*.newrelic.com',
-      '*.nr-data.net',
-      '*.google-analytics.com',
-    ],
-    font_src: ["'self'", 'data:', Figaro.env.asset_host],
-    img_src: ["'self'", 'data:', 'login.gov', Figaro.env.asset_host],
+    connect_src: connect_src.flatten,
+    font_src: ["'self'", 'data:', Figaro.env.asset_host, 'fonts.gstatic.com'],
+    img_src: ["'self'", 'data:', 'login.gov', Figaro.env.asset_host, 'idscangoweb.acuant.com'],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [
@@ -38,7 +36,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(
                    script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
-                   style_src: ["'self'", "'unsafe-inline'"],
+                   style_src: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
                  )
                else
                  default_csp_config

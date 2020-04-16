@@ -37,6 +37,7 @@ en:
       back: Back
       cac: Present CAC card
       cancel: Yes, cancel
+      confirm: Confirm
       continue: Continue
       delete: Delete
       disable: Delete
@@ -115,7 +116,6 @@ en:
     registration:
       labels:
         email: Email address
-    select: "- Select -"
     totp_delete:
       caution: If you remove your authentication app you won't be able to use it to
         access your login.gov account.
@@ -132,14 +132,9 @@ en:
       backup_code: Security code
       code: One-time security code
       personal_key: Personal key
-      success: Next, you'll set up another method.
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
-    two_factor_choice_retire_personal_key:
-      legend: 'Select a two-factor authentication method:'
-    two_factor_recovery_choice:
-      legend: Select an additional method to secure your account
     verify_profile:
       instructions: Enter the ten-character code in the letter we sent you.
       name: Confirmation code

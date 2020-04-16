@@ -2,7 +2,7 @@ module IdvSession
   extend ActiveSupport::Concern
 
   def confirm_idv_session_started
-    redirect_to idv_session_url if idv_session.applicant.blank?
+    redirect_to idv_doc_auth_url if idv_session.applicant.blank?
   end
 
   def confirm_idv_attempts_allowed
@@ -17,7 +17,7 @@ module IdvSession
 
   def confirm_idv_vendor_session_started
     return if flash[:allow_confirmations_continue]
-    redirect_to idv_session_url unless idv_session.proofing_started?
+    redirect_to idv_doc_auth_url unless idv_session.proofing_started?
   end
 
   def idv_session

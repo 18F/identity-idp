@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Remembering a phone' do
-  include IdvHelper
+  include IdvStepHelper
 
   before do
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
@@ -29,14 +29,6 @@ feature 'Remembering a phone' do
       user.password = Features::SessionHelper::VALID_PASSWORD
 
       select_2fa_option('phone')
-      fill_in :new_phone_form_phone, with: '2025551313'
-      click_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      click_continue
-
-      select_2fa_option('phone')
       fill_in :new_phone_form_phone, with: '2025551212'
       click_send_security_code
       check :remember_device
@@ -58,10 +50,8 @@ feature 'Remembering a phone' do
       check :remember_device
       fill_in_code_with_last_phone_otp
       click_submit_default
-      visit idv_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_idv_continue
+      visit idv_path
+      complete_all_doc_auth_steps
       fill_out_phone_form_ok('2022603829')
       click_idv_continue
       choose_idv_otp_delivery_method_sms

@@ -19,7 +19,7 @@ class OpenidConnectAuthorizeForm
 
   attr_reader(*ATTRS)
 
-  RANDOM_VALUE_MINIMUM_LENGTH = 32
+  RANDOM_VALUE_MINIMUM_LENGTH = 22
 
   validates :acr_values, presence: true
   validates :client_id, presence: true
@@ -93,7 +93,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity, :success, :already_linked
+  attr_reader :identity, :success
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]

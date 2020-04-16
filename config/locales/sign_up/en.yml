@@ -5,7 +5,6 @@ en:
     cancel:
       success: Your account has been deleted. We did not save your information.
       warning_header: If you cancel now
-    current_step: Step %{step} of 4
     email:
       invalid_email_alert_head: 'Error: This is not a real email address. Make sure
         it includes an @ and a domain name.'
