@@ -11,6 +11,7 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true
+  config.formatter = :documentation
 
   # allows you to run only the failures from the previous run:
   # rspec --only-failures
