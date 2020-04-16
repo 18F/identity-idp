@@ -31,7 +31,6 @@ class RegisterUserEmailForm
   def submit(params, instructions = nil)
     build_user_and_email_address_with_email(params[:email])
     self.request_id = params[:request_id]
-
     if valid_form?
       process_successful_submission(request_id, instructions)
     else
