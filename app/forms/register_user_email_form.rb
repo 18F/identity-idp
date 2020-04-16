@@ -40,6 +40,11 @@ class RegisterUserEmailForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
+  def email_taken?
+    return @email_taken unless @email_taken.nil?
+    @email_taken = set_email_taken
+  end
+
   private
 
   attr_writer :email, :email_address
@@ -55,6 +60,14 @@ class RegisterUserEmailForm
 
   def valid_form?
     @allow && valid? && !email_taken?
+  end
+
+  def set_email_taken
+    email_address = EmailAddress.find_with_email(email)
+    email_owner = email_address&.user
+    return false if email_owner.blank?
+    return email_address.confirmed? if email_owner.confirmed?
+    true
   end
 
   def service_provider_request_exists
