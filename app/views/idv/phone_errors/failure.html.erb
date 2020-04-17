@@ -16,12 +16,10 @@
 
 <hr>
 
-<% if FeatureManagement.enable_usps_verification? %>
-  <p>
-    <%= t('idv.form.no_alternate_phone_html',
-      link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
-  </p>
-<% end %>
+<p>
+  <%= t('idv.form.no_alternate_phone_html',
+    link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
+</p>
 
 <p>
   <%= t('idv.failure.errors.text_html',
