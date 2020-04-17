@@ -37,14 +37,14 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
   # unconfirmed email address
   ##
   def user_should_receive_registration_email?
-    return true if user.is_a?(NonexistentUser)
+    return true if user.nil?
     return false unless user.confirmed?
     return false if email_address_record.confirmed?
     true
   end
 
   def user
-    @user ||= email_address_record&.user || NonexistentUser.new
+    @user ||= email_address_record&.user
   end
 
   def email_address_record
