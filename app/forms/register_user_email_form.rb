@@ -42,7 +42,7 @@ class RegisterUserEmailForm
 
   def email_taken?
     return @email_taken unless @email_taken.nil?
-    @email_taken = set_email_taken
+    @email_taken = lookup_email_taken
   end
 
   private
@@ -62,7 +62,7 @@ class RegisterUserEmailForm
     @allow && valid? && !email_taken?
   end
 
-  def set_email_taken
+  def lookup_email_taken
     email_address = EmailAddress.find_with_email(email)
     email_owner = email_address&.user
     return false if email_owner.blank?
