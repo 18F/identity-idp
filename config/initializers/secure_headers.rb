@@ -22,8 +22,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       'login.gov',
       Figaro.env.asset_host,
       'idscangoweb.acuant.com',
-      "https://s3.#{Figaro.env.aws_region}.amazonaws.com",
-    ],
+      Figaro.env.aws_region && "https://s3.#{Figaro.env.aws_region}.amazonaws.com",
+    ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [
