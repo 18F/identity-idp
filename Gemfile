@@ -99,7 +99,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-matchers', '~> 1.3.4'
+  gem 'axe-matchers', '~> 2.6.0'
   gem 'capybara-screenshot'
   gem 'capybara-selenium'
   gem 'codeclimate-test-reporter', require: false
