@@ -86,7 +86,7 @@ class RegisterUserEmailForm
   def extra_analytics_attributes
     {
       email_already_exists: email_taken?,
-      user_id: existing_user.uuid,
+      user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
       throttled: @throttled,
     }.merge(@recaptcha_h)

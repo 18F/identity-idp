@@ -58,6 +58,26 @@ describe RegisterUserEmailForm do
       end
     end
 
+    context 'when the email exists but is unconfirmed and on a confirmed user' do
+      it 'is valid and sends a registration email for a new user' do
+        old_user = create(:user)
+        email_address = create(:email_address, user: old_user, confirmed_at: nil)
+
+        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
+        expect(send_sign_up_email_confirmation).to receive(:call)
+        expect(SendSignUpEmailConfirmation).to receive(:new).
+          and_return(send_sign_up_email_confirmation)
+
+        result = subject.submit(email: email_address.email)
+        uuid = result.extra[:user_id]
+        new_user = User.find_by(uuid: uuid)
+
+        expect(new_user).to_not be_nil
+        expect(new_user.id).to_not eq(old_user.id)
+        expect(new_user.email_addresses.first.email).to eq(email_address.email)
+      end
+    end
+
     context 'when email is not already taken' do
       it 'is valid' do
         result = instance_double(FormResponse)
