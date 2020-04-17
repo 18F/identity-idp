@@ -424,7 +424,7 @@ ActiveRecord::Schema.define(version: 2020_04_16_154923) do
     t.boolean "signed_response_message_requested", default: false
     t.integer "ial2_quota"
     t.boolean "liveness_checking_required"
-    t.string "logo_key"
+    t.string "remote_logo_key"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

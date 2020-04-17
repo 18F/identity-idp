@@ -34,7 +34,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_logo_url
-    if FeatureManagement.logo_upload_enabled? && sp.logo_key.present?
+    if FeatureManagement.logo_upload_enabled? && sp.remote_logo_key.present?
       s3_logo_url(sp)
     else
       legacy_logo_url
@@ -44,7 +44,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   def s3_logo_url(service_provider)
     region = Figaro.env.aws_region
     bucket = Figaro.env.aws_logo_bucket
-    key = service_provider.logo_key
+    key = service_provider.remote_logo_key
 
     "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
   end

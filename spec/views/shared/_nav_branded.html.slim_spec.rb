@@ -29,7 +29,7 @@ describe 'shared/_nav_branded.html.slim' do
         :service_provider,
         friendly_name: 'Awesome Application!',
         return_to_sp_url: 'www.awesomeness.com',
-        logo_key: 'key-to-logo',
+        remote_logo_key: 'key-to-logo',
       )
     end
     let(:bucket) { 'bucket_id' }
