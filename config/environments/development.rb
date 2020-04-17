@@ -21,9 +21,6 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
-  # Allow SVG's only because we will always serve them in an <img> element
-  config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
-
   config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
