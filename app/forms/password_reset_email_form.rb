@@ -24,13 +24,13 @@ class PasswordResetEmailForm
 
   def extra_analytics_attributes
     {
-      user_id: user.uuid,
-      confirmed: user.confirmed?,
-      active_profile: user.active_profile.present?,
+      user_id: user&.uuid || 'nonexistent-uuid',
+      confirmed: user&.confirmed? == true,
+      active_profile: user&.active_profile.present?,
     }.merge(@recaptcha_h)
   end
 
   def user
-    @_user ||= User.find_with_email(email) || NonexistentUser.new
+    @_user ||= User.find_with_email(email)
   end
 end

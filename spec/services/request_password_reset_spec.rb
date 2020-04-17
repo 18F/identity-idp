@@ -28,9 +28,10 @@ describe RequestPasswordReset do
     context 'when the user is found and confirmed' do
       it 'sends password reset instructions' do
         user = create(:user)
-        email = user.email_addresses.first.email
+        email_address = user.email_addresses.first
+        email = email_address.email
 
-        allow(User).to receive(:find_with_email).with(email).and_return(user)
+        allow(EmailAddress).to receive(:find_with_email).with(email).and_return(email_address)
 
         expect(user).to receive(:set_reset_password_token).and_return('asdf1234')
 
@@ -47,9 +48,10 @@ describe RequestPasswordReset do
     context 'when the user is found, not privileged, and not yet confirmed' do
       it 'sends password reset instructions' do
         user = create(:user, :unconfirmed)
-        email = user.email_addresses.first.email
+        email_address = user.email_addresses.first
+        email = email_address.email
 
-        allow(User).to receive(:find_with_email).with(email).and_return(user)
+        allow(EmailAddress).to receive(:find_with_email).with(email).and_return(email_address)
 
         expect(user).to receive(:set_reset_password_token).and_return('asdf1234')
 
@@ -60,6 +62,28 @@ describe RequestPasswordReset do
           and_return(mail)
 
         RequestPasswordReset.new(email).perform
+      end
+    end
+
+    context 'when the user is found and confirmed, but the email address is not' do
+      it 'sends the account registration email' do
+        user = create(:user, :with_multiple_emails)
+        unconfirmed_email_address = user.reload.email_addresses.last
+        unconfirmed_email_address.update!(confirmed_at: nil)
+
+        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
+        expect(send_sign_up_email_confirmation).to receive(:call).with(
+          hash_including(
+            instructions: I18n.t(
+              'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+            ),
+          ),
+        )
+        expect(SendSignUpEmailConfirmation).to receive(:new).and_return(
+          send_sign_up_email_confirmation,
+        )
+
+        RequestPasswordReset.new(unconfirmed_email_address.email).perform
       end
     end
   end
