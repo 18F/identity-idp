@@ -23,6 +23,38 @@ describe 'shared/_nav_branded.html.slim' do
     end
   end
 
+  context 'with a S3 SP-logo configured' do
+    let(:sp_with_s3_logo) do
+      build_stubbed(
+        :service_provider,
+        friendly_name: 'Awesome Application!',
+        return_to_sp_url: 'www.awesomeness.com',
+        logo_key: 'key-to-logo',
+      )
+    end
+    let(:bucket) { 'bucket_id' }
+    let(:region) { Figaro.env.aws_region }
+    let(:img_url) { "https://s3.#{region}.amazonaws.com/#{bucket}/key-to-logo" }
+
+    before do
+      allow(Figaro.env).to receive(:aws_logo_bucket).and_return(bucket)
+      allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
+      decorated_session = ServiceProviderSessionDecorator.new(
+        sp: sp_with_s3_logo,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: nil,
+      )
+      allow(view).to receive(:decorated_session).and_return(decorated_session)
+
+      render
+    end
+
+    it 'renders the logo from S3' do
+      expect(rendered).to match(/src=\"#{img_url}\"/)
+    end
+  end
+
   context 'without a SP-logo configured' do
     before do
       sp_without_logo = build_stubbed(:service_provider, friendly_name: 'No logo no problem')
