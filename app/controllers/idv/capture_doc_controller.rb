@@ -22,7 +22,8 @@ module Idv
     end
 
     def add_unsafe_eval_to_capture_steps
-      return unless %w[mobile_front_image capture_mobile_back_image].include?(params[:step])
+      step = params[:step]&.underscore
+      return unless %w[mobile_front_image capture_mobile_back_image].include?(step)
 
       # required to run wasm until wasm-eval is available
       SecureHeaders.append_content_security_policy_directives(
