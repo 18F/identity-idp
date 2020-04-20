@@ -108,12 +108,14 @@ describe ServiceProvider do
       missing_protocol_sp = build(:service_provider, failure_to_proof_url: 'foo.com')
       relative_uri_sp = build(:service_provider, failure_to_proof_url: '/asdf/hjkl')
       bad_uri_sp = build(:service_provider, failure_to_proof_url: ' http://foo.com')
-      malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:/result')
+      mobile_sp = build(:service_provider, failure_to_proof_url: 'sample-app://foo/bar')
+      malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:result')
 
       expect(valid_sp).to be_valid
       expect(missing_protocol_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
+      expect(mobile_sp).to be_valid
       expect(malformed_uri_sp).to_not be_valid
     end
 

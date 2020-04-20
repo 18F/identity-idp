@@ -119,4 +119,8 @@ class FeatureManagement
   def self.liveness_checking_enabled?
     Figaro.env.liveness_checking_enabled == 'true'
   end
+
+  def self.logo_upload_enabled?
+    Figaro.env.logo_upload_enabled == 'true'
+  end
 end
