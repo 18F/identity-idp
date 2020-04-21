@@ -13,7 +13,6 @@ require "rails_app/config/environment"
 require 'rspec'
 require 'capybara/rspec'
 require 'capybara/rails'
-require 'pry-byebug'
 
 require 'ruby-saml'
 require 'saml_idp'
