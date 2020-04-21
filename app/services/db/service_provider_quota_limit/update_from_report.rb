@@ -3,7 +3,7 @@ module Db
     class UpdateFromReport
       def self.call(report_data)
         report_data.each do |rec|
-          ::ServiceProviderQuotaLimit.find_or_create_by(issuer: rec['issuer'], ial: rec['ial'])&.
+          ::ServiceProviderQuotaLimit.find_or_create_by(issuer: rec['issuer'], ial: rec['ial'].to_i)&.
             update!(percent_full: rec['percent_ial2_quota'])
         end
       end
