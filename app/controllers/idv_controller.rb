@@ -18,6 +18,7 @@ class IdvController < ApplicationController
 
   def activated
     redirect_to idv_url unless active_profile?
+    redirect_to_account_if_quota_reached
     redirect_to account_url if session[:ial2_with_no_sp_campaign]
     idv_session.clear
   end
@@ -27,6 +28,10 @@ class IdvController < ApplicationController
   end
 
   private
+
+  def redirect_to_account_if_quota_reached
+    redirect_to account_url if Db::ServiceProviderQuota::IsSpOverQuota(sp_session[:issuer].to_s)
+  end
 
   def verify_identity
     analytics.track_event(Analytics::IDV_INTRO_VISIT)

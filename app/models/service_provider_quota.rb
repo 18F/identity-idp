@@ -1,0 +1,2 @@
+class ServiceProviderQuota < ApplicationRecord
+end

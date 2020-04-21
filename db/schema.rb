@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_16_154923) do
+ActiveRecord::Schema.define(version: 2020_04_21_124317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -387,6 +387,13 @@ ActiveRecord::Schema.define(version: 2020_04_16_154923) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
+  end
+
+  create_table "service_provider_quotas", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.integer "ial", limit: 2, null: false
+    t.integer "percent_full"
+    t.index ["issuer", "ial"], name: "index_service_provider_quotas_on_issuer_and_ial", unique: true
   end
 
   create_table "service_providers", force: :cascade do |t|
