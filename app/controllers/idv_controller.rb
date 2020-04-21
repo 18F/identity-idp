@@ -12,6 +12,7 @@ class IdvController < ApplicationController
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url
     else
+      return if redirect_to_account_if_quota_reached
       verify_identity
     end
   end
