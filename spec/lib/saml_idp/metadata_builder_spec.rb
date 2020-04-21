@@ -34,7 +34,6 @@ module SamlIdp
     it "includes logout element" do
       subject.configurator.single_logout_service_post_location = 'https://example.com/saml/logout'
       expect(subject.fresh).not_to include('SingleLogoutService')
-      )
     end
   end
 end
