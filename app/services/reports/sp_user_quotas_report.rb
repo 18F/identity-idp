@@ -8,7 +8,7 @@ module Reports
       results = transaction_with_timeout do
         Db::Identity::SpUserQuotas.call(fiscal_start_date)
       end
-      Db::ServiceProviderQuota::UpdateFromReport.call(results)
+      Db::ServiceProviderQuotaLimit::UpdateFromReport.call(results)
       save_report(REPORT_NAME, results.to_json)
     end
   end

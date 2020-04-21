@@ -389,11 +389,11 @@ ActiveRecord::Schema.define(version: 2020_04_21_124317) do
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
-  create_table "service_provider_quotas", force: :cascade do |t|
+  create_table "service_provider_quota_limits", force: :cascade do |t|
     t.string "issuer", null: false
     t.integer "ial", limit: 2, null: false
     t.integer "percent_full"
-    t.index ["issuer", "ial"], name: "index_service_provider_quotas_on_issuer_and_ial", unique: true
+    t.index ["issuer", "ial"], name: "index_service_provider_quota_limits_on_issuer_and_ial", unique: true
   end
 
   create_table "service_providers", force: :cascade do |t|

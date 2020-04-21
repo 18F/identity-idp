@@ -1,2 +1,0 @@
-class ServiceProviderQuota < ApplicationRecord
-end
