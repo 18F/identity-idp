@@ -30,7 +30,9 @@ class IdvController < ApplicationController
   private
 
   def redirect_to_account_if_quota_reached
-    redirect_to account_url if Db::ServiceProviderQuota::IsSpOverQuota(sp_session[:issuer].to_s)
+    return unless Db::ServiceProviderQuota::IsSpOverQuota(sp_session[:issuer].to_s)
+    flash[:error] = t('errors.doc_auth.quota_reached')
+    redirect_to account_url
   end
 
   def verify_identity
