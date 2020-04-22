@@ -11,8 +11,7 @@ class IdvController < ApplicationController
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url
-    else
-      return if redirect_to_account_if_quota_reached
+    elsif sp_below_quota_limit?
       verify_identity
     end
   end
@@ -30,10 +29,11 @@ class IdvController < ApplicationController
 
   private
 
-  def redirect_to_account_if_quota_reached
-    return unless Db::ServiceProviderQuotaLimit::IsSpOverQuota.call(sp_session[:issuer].to_s)
+  def sp_below_quota_limit?
+    return true unless Db::ServiceProviderQuotaLimit::IsSpOverQuota.call(sp_session[:issuer].to_s)
     flash[:error] = t('errors.doc_auth.quota_reached')
     redirect_to account_url
+    false
   end
 
   def verify_identity
