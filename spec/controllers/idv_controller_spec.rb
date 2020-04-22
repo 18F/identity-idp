@@ -58,7 +58,7 @@ describe IdvController do
     context 'sp has reached quota limit' do
       let(:issuer) { 'foo' }
 
-      it 'does not allow direct access and redirects to activated url' do
+      it 'does not allow user to be verified and redirects to account url with error message' do
         stub_sign_in
         ServiceProviderQuotaLimit.create(issuer: issuer, ial: 2, percent_full: 100)
         session[:sp] = { issuer: issuer, ial: 2 }
