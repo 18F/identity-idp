@@ -1,6 +1,6 @@
 # Build base image - Use to build only, not as a final base.
 # Docker multi-stage builds are used to copy output from this heavy image into others
-FROM identity-rails_base
+FROM logindotgov/base
 
 # Everything happens here from now on   
 WORKDIR /upaya
@@ -9,7 +9,6 @@ WORKDIR /upaya
 RUN apt-get update \
     && apt-get install -y \
        build-essential \
-       git \
        liblzma-dev \
        patch \
        ruby-dev \

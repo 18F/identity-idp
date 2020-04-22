@@ -1,5 +1,5 @@
 # Use build to install our required Gems
-FROM identity-rails_build as build
+FROM logindotgov/build as build
 
 # Everything happens here from now on   
 WORKDIR /upaya
@@ -10,11 +10,11 @@ RUN bundle install --deployment --clean --without development test
 
 # Prod NPM packages
 COPY package.json yarn.lock ./
-RUN NODE_ENV=development yarn install --force \
+RUN NODE_ENV=production yarn install --force \
     && yarn cache clean
 
 # Switch to base image
-FROM identity-rails_base
+FROM logindotgov/base
 WORKDIR /upaya
 
 # Copy Gems, NPMs, and other relevant items from build layer
