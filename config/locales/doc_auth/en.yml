@@ -7,6 +7,9 @@ en:
       continue: Continue
       start_over: Start over
       take_picture: Take photo
+      take_picture_retry: Retake photo
+      upload_picture: Upload photo
+      upload_picture_retry: Re-upload photo
       use_phone: Use your phone
     forms:
       address1: Address
@@ -60,6 +63,8 @@ en:
       bullet4: Account recovery
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
+      document_capture_fallback_html: Having trouble? %{link}
+      document_capture_fallback_link: Click here to upload an image
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more.

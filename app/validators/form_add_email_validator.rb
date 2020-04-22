@@ -15,10 +15,6 @@ module FormAddEmailValidator
               }
   end
 
-  def email_taken?
-    @email_taken == true
-  end
-
   private
 
   def downcase_and_strip

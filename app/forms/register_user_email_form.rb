@@ -31,7 +31,6 @@ class RegisterUserEmailForm
   def submit(params, instructions = nil)
     build_user_and_email_address_with_email(params[:email])
     self.request_id = params[:request_id]
-
     if valid_form?
       process_successful_submission(request_id, instructions)
     else
@@ -39,6 +38,11 @@ class RegisterUserEmailForm
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+  end
+
+  def email_taken?
+    return @email_taken unless @email_taken.nil?
+    @email_taken = lookup_email_taken
   end
 
   private
@@ -58,6 +62,14 @@ class RegisterUserEmailForm
     @allow && valid? && !email_taken?
   end
 
+  def lookup_email_taken
+    email_address = EmailAddress.find_with_email(email)
+    email_owner = email_address&.user
+    return false if email_owner.blank?
+    return email_address.confirmed? if email_owner.confirmed?
+    true
+  end
+
   def service_provider_request_exists
     return if request_id.blank?
     return if ServiceProviderRequestProxy.find_by(uuid: request_id)
@@ -74,7 +86,7 @@ class RegisterUserEmailForm
   def extra_analytics_attributes
     {
       email_already_exists: email_taken?,
-      user_id: existing_user.uuid,
+      user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
       throttled: @throttled,
     }.merge(@recaptcha_h)

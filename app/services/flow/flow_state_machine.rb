@@ -33,7 +33,7 @@ module Flow
     private
 
     def current_step
-      params[:step].underscore
+      params[:step]&.underscore
     end
 
     def register_campaign
