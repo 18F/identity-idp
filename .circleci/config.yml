@@ -112,6 +112,19 @@ jobs:
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:"${rev}"
           docker push logindotgov/idp:latest
+  build-latest-dev-container:
+    working_directory: ~/identity-idp
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          rev=$(git rev-parse --short HEAD)
+          docker build -t logindotgov/dev:latest -t logindotgov/dev:"${rev}" -f development.Dockerfile .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push logindotgov/dev:"${rev}"
+          docker push logindotgov/dev:latest
   build-release-container:
     working_directory: ~/identity-idp
     docker:
@@ -128,10 +141,10 @@ workflows:
   version: 2
   release:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: "/.*/"
+      - build
+      - build-latest-dev-container:
+          requires:
+            - build
       - build-latest-container:
           requires:
             - build

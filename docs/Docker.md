@@ -1,17 +1,15 @@
 # Docker
 
-We use [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds) to build different kinds of containers.
+We use [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds) to build different kinds of containers. They utilise two upstream containers run by the DevOps team, `logindotgov/build` and `logindotgov/base`.
 
-1. `base.Dockerfile` installs some core tools necessary for all images. All other images inherit from this base image.
-2. `build.Dockerfile` installs some heavier-weight tools used to compile code.
-3. `development.Dockerfile` installs development and test tools useful for local development.
-4. `production.Dockerfile` stays lightweight by `COPY`ing over built packages and other assets from the `build` image.
+1. `development.Dockerfile` installs development and test tools useful for local development.
+1. `production.Dockerfile` stays lightweight by `COPY`ing over built packages and other assets from the `logindotgov/build` image.
 
 ## Run the app locally with Docker
 
 1. Download, install, and launch [Docker](https://www.docker.com/products/docker-desktop). You may need to increase memory resources in Docker above the defaults to avoid timeouts.
 
-1. Build the __Rails base__, __Rails development__, and __production IDP__ images: `bin/docker_build`
+1. Build the __production IDP__ image: `docker build -t logindotgov/idp:latest -f production.Dockerfile .`
 
 1. Build the development Docker containers using __Rails base__ and __Rails development__ images: `docker-compose build`
 
