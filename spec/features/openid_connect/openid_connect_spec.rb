@@ -190,6 +190,22 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
+  it 'proofs the user if verified_within is more recent', driver: :mobile_rack_test do
+    user = user_with_2fa
+    profile = create(:profile, :active,
+                     verified_at: 60.days.ago,
+                     pii: { first_name: 'John', ssn: '111223333' },
+                     user: user)
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      scope: 'openid email profile',
+      verified_within: '30d',
+      expect_proofing: true
+    )
+  end
+
+
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
@@ -469,7 +485,11 @@ describe 'OpenID Connect' do
   end
 
   def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
+    user: user_with_2fa,
+    scope: 'openid email',
+    handoff_page_steps: nil,
+    verified_within: nil,
+    expect_proofing: false,
     client_id: 'urn:gov:gsa:openidconnect:test'
   )
     state = SecureRandom.hex
@@ -491,9 +511,16 @@ describe 'OpenID Connect' do
       nonce: nonce,
       code_challenge: code_challenge,
       code_challenge_method: 'S256',
+      verified_within: verified_within
     )
 
     _user = sign_in_live_with_2fa(user)
+
+    if expect_proofing
+      # assert something about proofing and fill out proofing
+      # TODO
+    end
+
     handoff_page_steps&.call
 
     redirect_uri = URI(current_url)
