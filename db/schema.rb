@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_05_233913) do
+ActiveRecord::Schema.define(version: 2020_04_16_154923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,6 +340,7 @@ ActiveRecord::Schema.define(version: 2020_04_05_233913) do
     t.datetime "verified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "liveness_check"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
@@ -422,6 +423,8 @@ ActiveRecord::Schema.define(version: 2020_04_05_233913) do
     t.boolean "allow_prompt_login", default: false
     t.boolean "signed_response_message_requested", default: false
     t.integer "ial2_quota"
+    t.boolean "liveness_checking_required"
+    t.string "remote_logo_key"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

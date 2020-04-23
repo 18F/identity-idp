@@ -19,7 +19,7 @@ class OpenidConnectConfigurationPresenter
       authorization_endpoint: openid_connect_authorize_url,
       issuer: root_url,
       jwks_uri: api_openid_connect_certs_url,
-      service_documentation: 'https://pages.18f.gov/identity-dev-docs/',
+      service_documentation: 'https://developers.login.gov/',
       token_endpoint: api_openid_connect_token_url,
       userinfo_endpoint: api_openid_connect_userinfo_url,
       end_session_endpoint: openid_connect_logout_url,

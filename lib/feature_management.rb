@@ -1,12 +1,4 @@
 class FeatureManagement
-  ENVS_DO_NOT_DISPLAY_FAKE_BANNER = %w[
-    idp.staging.login.gov secure.login.gov
-  ].freeze
-
-  ENVS_WHERE_PREFILLING_OTP_ALLOWED = %w[
-    idp.dev.login.gov idp.pt.login.gov idp.dev.identitysandbox.gov idp.pt.identitysandbox.gov
-  ].freeze
-
   ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
     idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
@@ -38,15 +30,15 @@ class FeatureManagement
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
     # We also allow this in production on a single server that is used for load testing.
-    development_and_telephony_test_adapter? || prefill_otp_codes_allowed_in_production?
+    development_and_telephony_test_adapter? || prefill_otp_codes_allowed_in_sandbox?
   end
 
   def self.development_and_telephony_test_adapter?
     Rails.env.development? && telephony_test_adapter?
   end
 
-  def self.prefill_otp_codes_allowed_in_production?
-    ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_test_adapter?
+  def self.prefill_otp_codes_allowed_in_sandbox?
+    LoginGov::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
@@ -122,5 +114,13 @@ class FeatureManagement
 
   def self.hide_phone_mfa_signup?
     Figaro.env.hide_phone_mfa_signup == 'true'
+  end
+
+  def self.liveness_checking_enabled?
+    Figaro.env.liveness_checking_enabled == 'true'
+  end
+
+  def self.logo_upload_enabled?
+    Figaro.env.logo_upload_enabled == 'true'
   end
 end

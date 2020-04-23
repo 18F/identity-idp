@@ -30,6 +30,9 @@ acuant_assure_id_subscription_id: ''
 acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '1440'
 acuant_facial_match_license_key: ''
+# These are dummy creds used to initialize the acuant SDK
+acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
+acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_doc_auth_test_credentials:
@@ -37,6 +40,7 @@ asset_host:
 async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
 aws_http_timeout: '5'
+aws_logo_bucket:
 cac_proofing_enabled:
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
@@ -66,6 +70,7 @@ lexisnexis_username: test_username
 logins_per_email_and_ip_bantime: '60'
 logins_per_email_and_ip_period: '60'
 logins_per_ip_period: '60'
+logo_upload_enabled: 'false'
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: '2'
 max_emails_per_account: '12'
@@ -127,6 +132,8 @@ development:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'true'
   acuant_simulator: 'true'
   allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
@@ -136,6 +143,7 @@ development:
     "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
     }]'
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
+  aws_logo_bucket:
   aws_region: us-east-1
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
@@ -166,15 +174,18 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   issuers_with_email_nameid_format: ''
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'false'
+  logo_upload_enabled: 'true'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
@@ -233,6 +244,8 @@ production:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
+  acuant_passlive_url: ''
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
@@ -240,6 +253,7 @@ production:
   attribute_encryption_key_queue:
   aws_kms_key_id:
   aws_region:
+  aws_logo_bucket:
   backup_codes_as_only_2fa:
   basic_auth_password:
   basic_auth_user_name:
@@ -269,15 +283,18 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue:
   issuers_with_email_nameid_format: sp1,sp2
+  liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
   login_with_piv_cac: 'false'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'true'
+  logo_upload_enabled: 'false'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
@@ -331,6 +348,8 @@ test:
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://example.com
   acuant_max_attempts: '4'
+  acuant_passlive_url: https://example.com
+  acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
@@ -369,6 +388,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
+  liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '5'
   login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '2'
@@ -378,6 +398,7 @@ test:
   newrelic_browser_app_id:
   newrelic_browser_key:
   newrelic_license_key:
+  no_sp_campaigns_whitelist: '["campaign1"]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'

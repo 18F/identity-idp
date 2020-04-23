@@ -1,6 +1,8 @@
 module Idv
   class CaptureDocController < ApplicationController
     before_action :ensure_user_id_in_session
+    before_action :add_unsafe_eval_to_capture_steps
+
     include Flow::FlowStateMachine
 
     FSM_SETTINGS = {
@@ -17,6 +19,16 @@ module Idv
       result = CaptureDoc::ValidateRequestToken.new(token).call
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
+    end
+
+    def add_unsafe_eval_to_capture_steps
+      return unless %w[mobile_front_image capture_mobile_back_image].include?(current_step)
+
+      # required to run wasm until wasm-eval is available
+      SecureHeaders.append_content_security_policy_directives(
+        request,
+        script_src: ['\'unsafe-eval\''],
+      )
     end
 
     def process_result(result)

@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: 087594b98207a412a9a3458fd475859a8169f37c
+  revision: 31d041f479d5479940b9c6c67a3ee37786ace68c
   branch: master
   specs:
-    identity_validations (0.2.0)
+    identity_validations (0.3.1)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
@@ -152,7 +152,7 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
-    axe-matchers (1.3.4)
+    axe-matchers (2.6.0)
       dumb_delegator (~> 0.8)
       virtus (~> 1.0)
     axiom-types (0.1.1)
@@ -240,7 +240,7 @@ GEM
     dotiw (4.0.1)
       actionpack (>= 4)
       i18n
-    dumb_delegator (0.8.0)
+    dumb_delegator (0.8.1)
     email_spec (2.2.0)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
@@ -684,7 +684,7 @@ DEPENDENCIES
   american_date
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
-  axe-matchers (~> 1.3.4)
+  axe-matchers (~> 2.6.0)
   base32-crockford
   better_errors
   binding_of_caller
