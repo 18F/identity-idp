@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
+  include DocAuthHelper
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -190,7 +191,7 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
-  it 'proofs the user if verified_within is more recent', driver: :mobile_rack_test do
+  it 'sends the user through idv the user if verified_within param is too recent', driver: :mobile_rack_test do
     user = user_with_2fa
     profile = create(:profile, :active,
                      verified_at: 60.days.ago,
@@ -516,9 +517,7 @@ describe 'OpenID Connect' do
 
     _user = sign_in_live_with_2fa(user)
 
-    if expect_proofing
-      complete_all_doc_auth_steps
-    end
+    complete_all_doc_auth_steps if expect_proofing
 
     handoff_page_steps&.call
 
