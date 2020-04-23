@@ -517,8 +517,7 @@ describe 'OpenID Connect' do
     _user = sign_in_live_with_2fa(user)
 
     if expect_proofing
-      # assert something about proofing and fill out proofing
-      # TODO
+      complete_all_doc_auth_steps
     end
 
     handoff_page_steps&.call
