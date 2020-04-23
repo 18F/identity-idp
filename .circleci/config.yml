@@ -107,8 +107,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-          docker build -t logindotgov/idp:latest -f production.Dockerfile .
+          rev=$(git rev-parse --short HEAD)
+          docker build -t logindotgov/idp:latest -t logindotgov/idp:"${rev}" -f production.Dockerfile .
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push logindotgov/idp:"${rev}"
           docker push logindotgov/idp:latest
   build-release-container:
     working_directory: ~/identity-idp
