@@ -191,8 +191,8 @@ fr:
         %{app} pour le réinitialiser.
     sps_over_quota_limit:
       help: ''
-      info: There are SPs that have gone over their quota limit.
-      subject: Some SPs have reached their quota limit
+      info: Certains SP ont dépassé leur limite de quota.
+      subject: Certains SP ont atteint leur limite de quota
     undeliverable_address:
       call_to_action: Veuillez vous connecter à %{link} et suivre les instructions.
       help: ''
