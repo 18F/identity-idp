@@ -200,6 +200,7 @@ describe 'OpenID Connect' do
 
     token_response = sign_in_get_token_response(
       user: user,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile',
       verified_within: '30d',
       expect_proofing: true
@@ -487,6 +488,7 @@ describe 'OpenID Connect' do
 
   def sign_in_get_token_response(
     user: user_with_2fa,
+    acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
     handoff_page_steps: nil,
     verified_within: nil,
@@ -504,7 +506,7 @@ describe 'OpenID Connect' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: acr_values,
       scope: scope,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
