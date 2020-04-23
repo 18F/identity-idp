@@ -27,7 +27,6 @@ jobs:
 
     steps:
       - checkout
-
       - restore-cache:
           keys:
             - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
@@ -39,7 +38,6 @@ jobs:
           key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-
       - restore-cache:
           keys:
             - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
@@ -57,18 +55,15 @@ jobs:
             sudo apt-get update
             sudo apt-get install python-pip python-dev jq
             sudo pip install awscli
-
       - run:
           name: Install Code Climate Test Reporter
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             aws s3 --region us-west-2 rm s3://login-gov-test-coverage/coverage/$CIRCLE_PREVIOUS_BUILD_NUM --recursive
-
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-
       - run:
           name: Test Setup
           command: |
@@ -80,7 +75,6 @@ jobs:
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile
-
       - run:
           name: Run Tests
           command: |
@@ -90,21 +84,60 @@ jobs:
             bundle exec rake knapsack:rspec
             yarn test
             bundle exec slim-lint app/views
-
       - run:
           name: Code Climate Test Coverage
           command: |
             ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
             aws s3 sync coverage/ "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM"
-
       # collect reports
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
-
       - deploy:
           command: |
             aws s3 sync "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM" coverage/
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  build-latest-container:
+    working_directory: ~/identity-idp
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          rev=$(git rev-parse --short HEAD)
+          docker build -t logindotgov/idp:latest -t logindotgov/idp:"${rev}" -f production.Dockerfile .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push logindotgov/idp:"${rev}"
+          docker push logindotgov/idp:latest
+  build-release-container:
+    working_directory: ~/identity-idp
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          if [ -z "$CIRCLE_TAG" ]; then exit 0; fi # this shouldn't be necessary...
+          docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push logindotgov/idp:$CIRCLE_TAG
+workflows:
+  version: 2
+  release:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: "/.*/"
+      - build-latest-container:
+          requires:
+            - build
+      - build-release-container:
+          requires:
+            - build
+          filters:
+            tags:
+              only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
