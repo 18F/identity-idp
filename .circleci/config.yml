@@ -104,6 +104,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.6
     steps:
+      - checkout
       - setup_remote_docker
       - run: |
           docker build -t logindotgov/idp:latest -f production.Dockerfile .
@@ -114,6 +115,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.6
     steps:
+      - checkout
       - setup_remote_docker
       - run: |
           if [ -z "$CIRCLE_TAG" ]; then exit 0; fi # this shouldn't be necessary...
