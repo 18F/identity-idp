@@ -1,5 +1,5 @@
 # Use build image first for heavy lifting
-FROM identity-rails_build as build
+FROM logindotgov/build as build
 
 # Everything happens here from now on   
 WORKDIR /upaya
@@ -14,7 +14,7 @@ RUN NODE_ENV=development yarn install --force \
     && yarn cache clean
 
 # Switch to base image and add in Gems
-FROM identity-rails_base
+FROM logindotgov/build
 WORKDIR /upaya
 
 # Copy system Gems into base container

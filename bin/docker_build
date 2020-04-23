@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 require "pathname"
 
+# todo (mxplusb): this should be a shell script so it can be used a bit easier for downstream CI tooling.
+
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../", __FILE__)
+
+# todo (mxplusb): there should be logic here for seeing if the rev is a tag, if it is, then use the tag instead.
+head = `git rev-parse --short HEAD`
 
 def run(command)
   puts("* Running command: #{command}")
@@ -28,8 +33,11 @@ Dir.chdir APP_ROOT do
   # ** Eventually we will keep the `base` and `build` images in a separate repo,
   #   build them in a separate pipeline, and just pull them down for development
   #   Note: building the production image here is not necessary for development work
-  { base: 'rails_base', build: 'rails_build', production: 'idp_app' }.each do |name, description|
+  { base: 'base', build: 'build', development: 'dev', production: 'idp' }.each do |name, description|
     puts "== Building the #{name} Docker image =="
-    run "docker build . --file #{name}.Dockerfile --tag identity-#{description} --no-cache"
+    run "docker build . --file #{name}.Dockerfile --tag logindotgov/#{description}:#{head}"
+
+    puts "== Pushing the #{name} image to Docker Hub =="
+    run "docker push logindotgov/#{description}:#{head}"
   end
 end
