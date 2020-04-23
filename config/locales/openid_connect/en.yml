@@ -11,6 +11,10 @@ en:
         redirect_uri_invalid: redirect_uri is invalid
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
         unauthorized_scope: Unauthorized scope
+        invalid_verified_within_duration:
+          one: verified_within value must be at least %{count} day or older
+          other: verified_within value must be at least %{count} days or older
+        invalid_verified_within_format: Unrecognized format for verified_within
     logout:
       errors:
         id_token_hint: id_token_hint was not recognized

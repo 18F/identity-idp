@@ -15,11 +15,12 @@ class OpenidConnectAuthorizeForm
     state
   ].freeze
 
-  ATTRS = [:unauthorized_scope, :acr_values, :scope, *SIMPLE_ATTRS].freeze
+  ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
 
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
   validates :client_id, presence: true
@@ -38,6 +39,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
+  validate :validate_verified_within
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -45,6 +47,7 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
+    @verified_within = parse_verified_within(params[:verified_within])
   end
 
   def submit
@@ -107,6 +110,28 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
+  # @param verified_within_param [String, nil]
+  # @return [ActiveSupport::Duration, nil]
+  def parse_verified_within(verified_within_param)
+    return if verified_within_param.blank?
+
+    case verified_within_param
+    when /^(\d+)d$/ # day
+      Integer($1, 10).days
+    when /^(\d+)w$/ # week
+      (7 * Integer($1, 10)).days
+    when /^(\d+)m$/ # month
+      (30 * Integer($1, 10)).days
+    when /^(\d+)y$/ # year
+      (365 * Integer($1, 10)).days
+    else
+      @invalid_verified_within_format = true
+    end
+  rescue ArgumentError
+    @invalid_verified_within_format = true
+    nil
+  end
+
   def validate_acr_values
     return if acr_values.present?
     errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'))
@@ -131,6 +156,20 @@ class OpenidConnectAuthorizeForm
     return if prompt == 'select_account'
     return if prompt == 'login' && service_provider.allow_prompt_login
     errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
+  end
+
+  def validate_verified_within
+    if @invalid_verified_within_format
+      errors.add(:verified_within,
+                 t('openid_connect.authorization.errors.invalid_verified_within_format'))
+      return false
+    end
+
+    return true if verified_within.blank? || verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
+
+    errors.add(:verified_within,
+               t('openid_connect.authorization.errors.invalid_verified_within_duration', count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
+    false
   end
 
   def ial
