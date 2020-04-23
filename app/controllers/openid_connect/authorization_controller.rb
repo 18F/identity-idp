@@ -75,10 +75,7 @@ module OpenidConnect
     end
 
     def sp_requested_more_recent_verification?
-      return if @authorize_form.verified_within.blank?
-
-      verified_at = current_user.active_profile&.verified_at
-      !verified_at || verified_at < @authorize_form.verified_within.ago
+      decorated_session.requested_more_recent_verification?
     end
 
     def build_authorize_form_from_params

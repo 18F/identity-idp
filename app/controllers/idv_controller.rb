@@ -44,7 +44,8 @@ class IdvController < ApplicationController
   end
 
   def active_profile?
-    current_user.active_profile.present?
+    # TODO: this results in an infinite loop....we do not replace the active profile....
+    current_user.active_profile.present? && !decorated_session.requested_more_recent_verification?
   end
 
   def proof_with_cac?
