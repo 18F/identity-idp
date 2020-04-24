@@ -18,10 +18,9 @@
   = f.input :password, label: t('account.index.password'), required: true
   = f.input :request_id, as: :hidden, input_html: { value: request_id }
   .mb3
-    = f.button :submit, t('links.next'), class: 'col-12 btn-wide mb2'
-    .create-box.usa-button--outline.center.py1.rounded-lg
-      = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
-        class: 'ml1 text-decoration-none'
+    = f.button :submit, t('links.next'), class: 'usa-button usa-button--primary grid-col-12 mb2'
+    = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
+      class: 'text-decoration-none usa-button usa-button--outline display-block btn-wide'
 
 - if FeatureManagement.allow_piv_cac_login? && @ial && desktop_device?
   .mxn1.my1
