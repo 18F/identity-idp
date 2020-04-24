@@ -5,9 +5,7 @@ import {
   teardownDocumentCaptureTestDOM,
 } from '../../support/acuant/document_capture_dom';
 
-import {
-  documentCaptureFallbackLinkClicked,
-} from '../../../../app/javascript/app/acuant/document_capture_fallback';
+import { documentCaptureFallbackLinkClicked } from '../../../../app/javascript/app/acuant/document_capture_fallback';
 
 import {
   fallbackImageForm,
@@ -15,6 +13,7 @@ import {
   imageDataUrlInput,
   acuantSdkUploadForm,
   acuantSdkSpinner,
+  acuantSdkCaptureView,
   acuantSdkContinueForm,
   acuantSdkCaptureButton,
   acuantSdkPreviewImage,
@@ -79,6 +78,7 @@ describe('acuant/document_catpure', () => {
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(true);
+      expect(acuantSdkCaptureView().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(false);
     });
 
@@ -109,6 +109,7 @@ describe('acuant/document_catpure', () => {
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(false);
       expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(true);
+      expect(acuantSdkCaptureView().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);
     });
   });
@@ -125,12 +126,13 @@ describe('acuant/document_catpure', () => {
       acuantSdkContinueForm().classList.add('hidden');
     });
 
-    it('shows the spinner', () => {
+    it('shows the image capture view', () => {
       imageCaptureButtonClicked(event);
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);
-      expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(false);
+      expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(true);
+      expect(acuantSdkCaptureView().classList.contains('hidden')).to.eq(false);
       expect(acuantSdkContinueForm().classList.contains('hidden')).to.eq(true);
     });
 
@@ -151,6 +153,7 @@ describe('acuant/document_catpure', () => {
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(true);
+      expect(acuantSdkCaptureView().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkContinueForm().classList.contains('hidden')).to.eq(false);
 
       expect(imageFileInput().required).to.eq(false);
@@ -182,6 +185,7 @@ describe('acuant/document_catpure', () => {
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(false);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkSpinner().classList.contains('hidden')).to.eq(true);
+      expect(acuantSdkCaptureView().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkContinueForm().classList.contains('hidden')).to.eq(true);
 
       expect(imageFileInput().required).to.eq(true);
