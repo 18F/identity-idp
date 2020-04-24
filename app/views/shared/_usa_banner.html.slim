@@ -3,3 +3,8 @@
     size: '18x12', class: 'mr1 align-bottom')
   span
     = t('.official_site')
+  span.usa-banner__header-action[aria-hidden="true"]
+    = t('.official_how')
+  button.usa-accordion__button.usa-banner__button[aria-expanded="false" aria-controls="gov-banner"]
+    span.usa-banner__button-text
+      = t('.official_how')
