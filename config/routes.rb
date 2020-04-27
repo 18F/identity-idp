@@ -248,6 +248,7 @@ Rails.application.routes.draw do
     AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
       get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
       get "/verify/capture_doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      get "/verify/capture-doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
     end
 
     scope '/verify', as: 'idv' do
