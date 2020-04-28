@@ -47,7 +47,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       analytics_hash = {
         context: 'authentication',
         multi_factor_auth_method: 'sms',
-        confirmation_for_phone_change: false,
+        confirmation_for_add_phone: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -86,7 +86,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         properties = {
           success: false,
           errors: {},
-          confirmation_for_phone_change: false,
+          confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
         }
@@ -132,7 +132,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         properties = {
           success: false,
           errors: {},
-          confirmation_for_phone_change: false,
+          confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
         }
@@ -182,7 +182,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         properties = {
           success: true,
           errors: {},
-          confirmation_for_phone_change: false,
+          confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
         }
@@ -303,7 +303,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             properties = {
               success: true,
               errors: {},
-              confirmation_for_phone_change: true,
+              confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
             }
@@ -366,7 +366,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             properties = {
               success: false,
               errors: {},
-              confirmation_for_phone_change: true,
+              confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
             }
@@ -404,7 +404,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               errors: {},
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              confirmation_for_phone_change: false,
+              confirmation_for_add_phone: false,
             }
 
             expect(@analytics).to have_received(:track_event).

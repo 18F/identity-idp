@@ -24,15 +24,15 @@ module TwoFactorAuthCode
 
     def update_phone_link
       return unless unconfirmed_phone
-
       link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
       t('instructions.mfa.wrong_number_html', link: link)
     end
 
     def cancel_link
       locale = LinkLocaleResolver.locale
-      if confirmation_for_phone_change || reauthn
+      if confirmation_for_add_phone || reauthn
         account_path(locale: locale)
+      
       else
         sign_out_path(locale: locale)
       end
@@ -45,7 +45,7 @@ module TwoFactorAuthCode
       :phone_number,
       :unconfirmed_phone,
       :account_reset_token,
-      :confirmation_for_phone_change,
+      :confirmation_for_add_phone,
       :voice_otp_delivery_unsupported,
     )
   end
