@@ -59,10 +59,6 @@ class SessionDecorator
 
   def sp_alert?(_path); end
 
-  def requested_more_recent_verification?
-    false
-  end
-
   private
 
   attr_reader :view_context

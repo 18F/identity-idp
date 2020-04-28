@@ -10,20 +10,17 @@ module Idv
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
-      puts "===== confirm_idv_steps_complete"
       return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
     def confirm_idv_phone_confirmed
-      puts "===== confirm_idv_phone_confirmed"
       return unless idv_session.address_verification_mechanism == 'phone'
       return if idv_session.phone_confirmed?
       redirect_to idv_otp_verification_path
     end
 
     def confirm_current_password
-      puts "===== confirm_current_password"
       return if valid_password?
 
       flash[:error] = t('idv.errors.incorrect_password')

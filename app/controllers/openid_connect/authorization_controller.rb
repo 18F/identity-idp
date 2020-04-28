@@ -70,9 +70,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      @authorize_form.ial2_requested? &&
-        (current_user.decorate.identity_not_verified? ||
-          decorated_session.requested_more_recent_verification?)
+      @authorize_form.ial2_requested? && current_user.decorate.identity_not_verified?
     end
 
     def build_authorize_form_from_params
