@@ -190,6 +190,36 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
+  it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    state = SecureRandom.hex
+    nonce = SecureRandom.hex
+    code_verifier = SecureRandom.hex
+    code_challenge = Digest::SHA256.base64digest(code_verifier)
+
+    _user = user_with_2fa
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+      code_challenge: code_challenge,
+      code_challenge_method: 'S256',
+      verified_within: '1w',
+    )
+
+    redirect_params = URIService.params(current_url)
+
+    expect(redirect_params[:error]).to eq('invalid_request')
+    expect(redirect_params[:error_description]).
+      to include('Verified within value must be at least 30 days or older')
+  end
+
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
