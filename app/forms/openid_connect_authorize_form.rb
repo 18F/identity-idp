@@ -39,7 +39,8 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
-  validate :validate_verified_within
+  validate :validate_verified_within_format
+  validate :validate_verified_within_duration
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -138,16 +139,17 @@ class OpenidConnectAuthorizeForm
     errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
   end
 
-  def validate_verified_within
-    if !@duration_parser.valid?
-      errors.add(:verified_within,
-                 t('openid_connect.authorization.errors.invalid_verified_within_format'))
-      return false
-    end
+  def validate_verified_within_format
+    return true if @duration_parser.valid?
 
-    if verified_within.blank? || verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
-      return true
-    end
+    errors.add(:verified_within,
+               t('openid_connect.authorization.errors.invalid_verified_within_format'))
+    false
+  end
+
+  def validate_verified_within_duration
+    return true if verified_within.blank?
+    return true if verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
 
     errors.add(:verified_within,
                t('openid_connect.authorization.errors.invalid_verified_within_duration',

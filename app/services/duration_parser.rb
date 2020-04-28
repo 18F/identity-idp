@@ -11,13 +11,21 @@ class DurationParser
   def parse
     return if value.blank?
 
-    unless (match = value.match(/^(?<number>\d+)(?<duration>\D)$/))
-      return nil
-    end
+    match = value.match(/^(?<number>\d+)(?<duration>\D)$/)
+    return nil unless match
 
-    number = Integer(match[:number], 10)
+    parse_duration(Integer(match[:number], 10), match[:duration])
+  rescue ArgumentError
+    nil
+  end
 
-    case match[:duration]
+  def valid?
+    value.blank? || !parse.nil?
+  end
+
+  # @api private
+  def parse_duration(number, duration)
+    case duration
     when 'd' # days
       number.days
     when 'w' # weeks
@@ -26,14 +34,6 @@ class DurationParser
       (30 * number).days
     when 'y' # years
       (365 * number).days
-    else
-      nil
     end
-  rescue ArgumentError
-    nil
-  end
-
-  def valid?
-    !value.present? || !!parse
   end
 end
