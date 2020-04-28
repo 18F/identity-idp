@@ -32,7 +32,6 @@ module TwoFactorAuthCode
       locale = LinkLocaleResolver.locale
       if confirmation_for_add_phone || reauthn
         account_path(locale: locale)
-      
       else
         sign_out_path(locale: locale)
       end

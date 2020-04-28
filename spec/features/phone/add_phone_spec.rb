@@ -49,11 +49,10 @@ describe 'Add a new phone number' do
     expect(user.reload.phone_configurations.count).to eq(1)
   end
 
-  context 'when the user does not have a phone' do 
+  context 'when the user does not have a phone' do
     scenario 'cancelling add phone otp confirmation redirect to account' do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
-     
       sign_in_and_2fa_user(user)
       click_on t('account.index.phone_add')
       fill_in :new_phone_form_phone, with: phone
