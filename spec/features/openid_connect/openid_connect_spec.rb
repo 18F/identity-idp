@@ -191,7 +191,7 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
-  it 'sends the user through idv the user if verified_within param is too recent', driver: :mobile_rack_test do
+  it 'sends the user through idv again via verified_within param', driver: :mobile_rack_test do
     user = user_with_2fa
     profile = create(:profile, :active,
                      verified_at: 60.days.ago,
