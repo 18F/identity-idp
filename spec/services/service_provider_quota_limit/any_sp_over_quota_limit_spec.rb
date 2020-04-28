@@ -10,7 +10,7 @@ describe Db::ServiceProviderQuotaLimit::AnySpOverQuotaLimit do
     end
 
     it 'it returns true' do
-      expect(subject.call).to be_truthy
+      expect(subject.call).to eq(true)
     end
   end
 
@@ -20,7 +20,7 @@ describe Db::ServiceProviderQuotaLimit::AnySpOverQuotaLimit do
     end
 
     it 'it returns false' do
-      expect(subject.call).to be_falsey
+      expect(subject.call).to eq(false)
     end
   end
 end
