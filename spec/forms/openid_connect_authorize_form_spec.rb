@@ -314,7 +314,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'has errors' do
         expect(form.valid?).to eq(false)
         expect(form.errors[:verified_within]).
-          to eq(['verified_within value must be at least 30 days or older'])
+          to eq(['value must be at least 30 days or older'])
       end
     end
 
@@ -326,41 +326,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with a format in weeks' do
-      let(:verified_within) { '8w' }
-      it 'parses the value as a number of 7-day weeks' do
-        expect(form.valid?).to eq(true)
-        expect(form.verified_within).to eq((8 * 7).days)
-      end
-    end
-
-    context 'with a format in months' do
-      let(:verified_within) { '5m' }
-      it 'parses the value as a number of 30-day months' do
-        expect(form.valid?).to eq(true)
-        expect(form.verified_within).to eq((5 * 30).days)
-      end
-    end
-
-    context 'with a format in years' do
-      let(:verified_within) { '2y' }
-      it 'parses the value as a number of 365-day years' do
-        expect(form.valid?).to eq(true)
-        expect(form.verified_within).to eq((2 * 365).days)
-      end
-    end
-
-    [
-      '123xyz', # bad suffix
-      '1 d',    # interior space
-      'aaa',    # not numeric
-    ].each do |bad_format|
-      context "with a verified_within with a bad format (#{bad_format})" do
-        let(:verified_within) { bad_format }
-        it 'has errors' do
-          expect(form.valid?).to eq(false)
-          expect(form.errors[:verified_within]).to eq(['Unrecognized format for verified_within'])
-        end
+    context 'with a verified_within with a bad format' do
+      let(:verified_within) { 'bbb' }
+      it 'has errors' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:verified_within]).to eq(['Unrecognized format for verified_within'])
       end
     end
   end

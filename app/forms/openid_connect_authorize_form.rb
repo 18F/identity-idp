@@ -47,7 +47,9 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
-    @verified_within = parse_verified_within(params[:verified_within])
+
+    @duration_parser = DurationParser.new(params[:verified_within])
+    @verified_within = @duration_parser.parse
   end
 
   def submit
@@ -110,28 +112,6 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
-  # @param verified_within_param [String, nil]
-  # @return [ActiveSupport::Duration, nil]
-  def parse_verified_within(verified_within_param)
-    return if verified_within_param.blank?
-
-    case verified_within_param
-    when /^(\d+)d$/ # day
-      Integer($1, 10).days
-    when /^(\d+)w$/ # week
-      (7 * Integer($1, 10)).days
-    when /^(\d+)m$/ # month
-      (30 * Integer($1, 10)).days
-    when /^(\d+)y$/ # year
-      (365 * Integer($1, 10)).days
-    else
-      @invalid_verified_within_format = true
-    end
-  rescue ArgumentError
-    @invalid_verified_within_format = true
-    nil
-  end
-
   def validate_acr_values
     return if acr_values.present?
     errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'))
@@ -159,16 +139,19 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_verified_within
-    if @invalid_verified_within_format
+    if !@duration_parser.valid?
       errors.add(:verified_within,
                  t('openid_connect.authorization.errors.invalid_verified_within_format'))
       return false
     end
 
-    return true if verified_within.blank? || verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
+    if verified_within.blank? || verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
+      return true
+    end
 
     errors.add(:verified_within,
-               t('openid_connect.authorization.errors.invalid_verified_within_duration', count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
+               t('openid_connect.authorization.errors.invalid_verified_within_duration',
+                 count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
     false
   end
 

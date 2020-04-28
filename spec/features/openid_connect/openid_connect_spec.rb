@@ -198,7 +198,7 @@ describe 'OpenID Connect' do
     code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.base64digest(code_verifier)
 
-    user = user_with_2fa
+    _user = user_with_2fa
 
     visit openid_connect_authorize_path(
       client_id: client_id,
