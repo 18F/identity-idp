@@ -191,22 +191,35 @@ describe 'OpenID Connect' do
     expect(userinfo_response[:verified_at]).to be_nil
   end
 
-  it 'sends the user through idv again via verified_within param', driver: :mobile_rack_test do
-    user = user_with_2fa
-    profile = create(:profile, :active,
-                     verified_at: 60.days.ago,
-                     pii: { first_name: 'John', ssn: '111223333' },
-                     user: user)
+  it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    state = SecureRandom.hex
+    nonce = SecureRandom.hex
+    code_verifier = SecureRandom.hex
+    code_challenge = Digest::SHA256.base64digest(code_verifier)
 
-    token_response = sign_in_get_token_response(
-      user: user,
+    user = user_with_2fa
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile',
-      verified_within: '30d',
-      expect_proofing: true
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+      code_challenge: code_challenge,
+      code_challenge_method: 'S256',
+      verified_within: '1w',
     )
-  end
 
+    redirect_params = URIService.params(current_url)
+
+    expect(redirect_params[:error]).to eq('invalid_request')
+    expect(redirect_params[:error_description]).
+      to include('Verified within value must be at least 30 days or older')
+  end
 
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
@@ -491,8 +504,6 @@ describe 'OpenID Connect' do
     acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
     handoff_page_steps: nil,
-    verified_within: nil,
-    expect_proofing: false,
     client_id: 'urn:gov:gsa:openidconnect:test'
   )
     state = SecureRandom.hex
@@ -514,7 +525,6 @@ describe 'OpenID Connect' do
       nonce: nonce,
       code_challenge: code_challenge,
       code_challenge_method: 'S256',
-      verified_within: verified_within
     )
 
     _user = sign_in_live_with_2fa(user)
