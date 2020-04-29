@@ -186,7 +186,7 @@ module Idv
 
       def friendly_failure_extra(data)
         return data if data.is_a? String
-        data&.dig('Alerts')
+        data.slice('Alerts')
       end
 
       def friendly_acuant_alert(data)
