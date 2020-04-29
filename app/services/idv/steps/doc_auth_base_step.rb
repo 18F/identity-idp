@@ -181,7 +181,12 @@ module Idv
         acuant_alert = friendly_acuant_alert(data)
         message = acuant_alert if acuant_alert.present?
         new_message = friendly_message(message)
-        failure(new_message, data)
+        failure(new_message, friendly_failure_extra(data))
+      end
+
+      def friendly_failure_extra(data)
+        return data if data.is_a? String
+        data&.slice('Alerts', :notice)
       end
 
       def friendly_acuant_alert(data)
