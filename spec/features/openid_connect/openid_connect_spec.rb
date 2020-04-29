@@ -221,6 +221,22 @@ describe 'OpenID Connect' do
       to include('Verified within value must be at least 30 days or older')
   end
 
+  it 'sends the user through idv again via verified_within param', driver: :mobile_rack_test do
+    user = user_with_2fa
+    profile = create(:profile, :active,
+                     verified_at: 60.days.ago,
+                     pii: { first_name: 'John', ssn: '111223333' },
+                     user: user)
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile',
+      verified_within: '30d',
+      expect_proofing: true
+    )
+  end
+
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
