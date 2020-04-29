@@ -185,8 +185,9 @@ module Idv
       end
 
       def friendly_failure_extra(data)
+        binding.pry
         return data if data.is_a? String
-        data.slice('Alerts')
+        data&.slice('Alerts', :notice)
       end
 
       def friendly_acuant_alert(data)
