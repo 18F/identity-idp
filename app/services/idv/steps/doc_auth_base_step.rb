@@ -58,10 +58,11 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        back_image_verified, data, analytics_hash = assure_id_results
-        data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
-        # return friendly_failure(data, analytics_hash) unless back_image_verified
-        return friendly_failure(I18n.t('errors.doc_auth.general_info'), data) unless back_image_verified
+        general_info_message = I18n.t('errors.doc_auth.general_info')
+
+        back_image_verified, data = assure_id_results
+        data[:notice] = general_info_message if data.class == Hash
+        return friendly_failure(general_info_message, data) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
 
