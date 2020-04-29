@@ -58,16 +58,15 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        general_info_message = I18n.t('errors.doc_auth.general_info')
-
+        general_error = I18n.t('errors.doc_auth.general_error')
         back_image_verified, data = assure_id_results
-        data[:notice] = general_info_message if data.class == Hash
-        return friendly_failure(general_info_message, data) unless back_image_verified
+        data[:notice] = I18n.t('errors.doc_auth.general_info')
+        return friendly_failure(general_error, data) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
 
         mark_step_incomplete(reset_step)
-        friendly_failure(I18n.t('errors.doc_auth.general_error'), data)
+        friendly_failure(general_error, data)
       end
 
       def process_good_result(data)
@@ -171,11 +170,9 @@ module Idv
         [
           false,
           {
-            'Alerts' => {
-              'Disposition' => I18n.t('errors.doc_auth.acuant_network_error'),
-              'Timeout' => true,
-              'Exception message' => exception.message,
-            },
+            'Alerts' => [{ 'Disposition' => I18n.t('errors.doc_auth.acuant_network_error') }],
+            'Timeout' => true,
+            'Exception message' => exception.message,
           },
         ]
       end
