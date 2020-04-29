@@ -185,7 +185,6 @@ module Idv
       end
 
       def friendly_failure_extra(data)
-        binding.pry
         return data if data.is_a? String
         data&.slice('Alerts', :notice)
       end
