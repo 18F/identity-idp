@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
+  include DocAuthHelper
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -499,7 +500,12 @@ describe 'OpenID Connect' do
   end
 
   def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
+    user: user_with_2fa,
+    acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    scope: 'openid email',
+    handoff_page_steps: nil,
+    verified_within: nil,
+    expect_proofing: false,
     client_id: 'urn:gov:gsa:openidconnect:test'
   )
     state = SecureRandom.hex
@@ -513,7 +519,7 @@ describe 'OpenID Connect' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: acr_values,
       scope: scope,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
@@ -521,9 +527,13 @@ describe 'OpenID Connect' do
       nonce: nonce,
       code_challenge: code_challenge,
       code_challenge_method: 'S256',
+      verified_within: verified_within
     )
 
     _user = sign_in_live_with_2fa(user)
+
+    complete_all_doc_auth_steps if expect_proofing
+
     handoff_page_steps&.call
 
     redirect_uri = URI(current_url)

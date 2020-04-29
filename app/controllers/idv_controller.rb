@@ -7,7 +7,10 @@ class IdvController < ApplicationController
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index
-    if active_profile?
+    # TODO: this results in an infinite loop....we do not replace the active profile....
+    if decorated_session.requested_more_recent_verification?
+      verify_identity
+    elsif active_profile?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url

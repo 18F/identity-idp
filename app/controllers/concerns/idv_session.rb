@@ -12,6 +12,7 @@ module IdvSession
   end
 
   def confirm_idv_needed
+    # BINGO BANGO
     redirect_to idv_activated_url if current_user.active_profile.present?
   end
 
