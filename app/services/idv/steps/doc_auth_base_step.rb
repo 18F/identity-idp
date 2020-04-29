@@ -58,15 +58,14 @@ module Idv
       end
 
       def verify_back_image(reset_step:)
-        general_error = I18n.t('errors.doc_auth.general_error')
-        back_image_verified, data = assure_id_results
-        data[:notice] = I18n.t('errors.doc_auth.general_info')
-        return friendly_failure(general_error, data) unless back_image_verified
+        back_image_verified, data, analytics_hash = assure_id_results
+        data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
+        return friendly_failure(data, analytics_hash) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
 
         mark_step_incomplete(reset_step)
-        friendly_failure(general_error, data)
+        friendly_failure(I18n.t('errors.doc_auth.general_error'), data)
       end
 
       def process_good_result(data)
@@ -169,11 +168,8 @@ module Idv
         NewRelic::Agent.notice_error(exception)
         [
           false,
-          {
-            'Alerts' => [{ 'Disposition' => I18n.t('errors.doc_auth.acuant_network_error') }],
-            'Timeout' => true,
-            'Exception message' => exception.message,
-          },
+          I18n.t('errors.doc_auth.acuant_network_error'),
+          { acuant_network_error: exception.message },
         ]
       end
 
@@ -185,7 +181,12 @@ module Idv
         acuant_alert = friendly_acuant_alert(data)
         message = acuant_alert if acuant_alert.present?
         new_message = friendly_message(message)
-        failure(new_message, alerts: data&.dig('Alerts'))
+        failure(new_message, friendly_failure_extra(data))
+      end
+
+      def friendly_failure_extra(data)
+        return data if data.is_a? String
+        data&.dig('Alerts')
       end
 
       def friendly_acuant_alert(data)
