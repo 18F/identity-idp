@@ -170,8 +170,13 @@ module Idv
         NewRelic::Agent.notice_error(exception)
         [
           false,
-          I18n.t('errors.doc_auth.acuant_network_error'),
-          { acuant_network_error: exception.message },
+          {
+            'Alerts' => {
+              'Disposition' => I18n.t('errors.doc_auth.acuant_network_error'),
+              'Timeout' => true,
+              'Exception message' => exception.message,
+            },
+          },
         ]
       end
 
@@ -183,7 +188,7 @@ module Idv
         acuant_alert = friendly_acuant_alert(data)
         message = acuant_alert if acuant_alert.present?
         new_message = friendly_message(message)
-        failure(new_message, alerts: data['Alerts'])
+        failure(new_message, alerts: data&.dig('Alerts'))
       end
 
       def friendly_acuant_alert(data)
