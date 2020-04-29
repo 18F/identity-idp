@@ -60,7 +60,8 @@ module Idv
       def verify_back_image(reset_step:)
         back_image_verified, data, analytics_hash = assure_id_results
         data[:notice] = I18n.t('errors.doc_auth.general_info') if data.class == Hash
-        return friendly_failure(data, analytics_hash) unless back_image_verified
+        # return friendly_failure(data, analytics_hash) unless back_image_verified
+        return friendly_failure(I18n.t('errors.doc_auth.general_info'), data) unless back_image_verified
 
         return [nil, data] if process_good_result(data)
 
@@ -181,7 +182,7 @@ module Idv
         acuant_alert = friendly_acuant_alert(data)
         message = acuant_alert if acuant_alert.present?
         new_message = friendly_message(message)
-        failure(new_message, data)
+        failure(new_message, alerts: data['Alerts'])
       end
 
       def friendly_acuant_alert(data)
