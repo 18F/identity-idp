@@ -150,7 +150,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def requested_more_recent_verification?
-    return if authorize_form.verified_within.blank?
+    return false if authorize_form.verified_within.blank?
 
     verified_at = view_context.current_user.active_profile&.verified_at
     !verified_at || verified_at < authorize_form.verified_within.ago

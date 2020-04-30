@@ -49,7 +49,7 @@ module VerifySPAttributesConcern
     verification_timestamp = current_user.active_profile&.verified_at
     !last_estimated_consent ||
       last_estimated_consent < Identity::CONSENT_EXPIRATION.ago ||
-      (verification_timestamp && last_estimated_consent < verification_timestamp)
+      (verification_timestamp.present? && last_estimated_consent < verification_timestamp)
   end
 
   def consent_was_revoked?
