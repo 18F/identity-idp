@@ -19,6 +19,12 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: phone
   end
 
+  # Fill out the phone form with a phone that's already been confirmed so the app will skip sending
+  # the token it would have to send for a new, unconfirmed number
+  def fill_out_phone_form_mfa_phone(user)
+    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+  end
+
   def fill_out_phone_form_fail
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end

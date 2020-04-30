@@ -221,8 +221,8 @@ describe 'OpenID Connect' do
       to include('Verified within value must be at least 30 days or older')
   end
 
-  it 'sends the user through idv again via verified_within param', driver: :mobile_rack_test do
-    client_id = 'urn:gov:gsa:openidconnect:test'
+  it 'sends the user through idv again via verified_within param' do
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
     user = user_with_2fa
     profile = create(:profile, :active,
                      verified_at: 60.days.ago,
@@ -233,10 +233,19 @@ describe 'OpenID Connect' do
       user: user,
       acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       client_id: client_id,
+      redirect_uri: 'http://localhost:7654/auth/result',
       scope: 'openid email profile',
       verified_within: '30d',
       proofing_steps: proc do
         complete_all_doc_auth_steps
+
+        fill_out_phone_form_mfa_phone(user)
+        click_idv_continue
+
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        click_continue
+
+        acknowledge_and_confirm_personal_key(js: false)
       end,
       handoff_page_steps: proc do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
@@ -539,6 +548,7 @@ describe 'OpenID Connect' do
     user: user_with_2fa,
     acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
+    redirect_uri: 'gov.gsa.openidconnect.test://result',
     handoff_page_steps: nil,
     proofing_steps: nil,
     verified_within: nil,
@@ -557,7 +567,7 @@ describe 'OpenID Connect' do
       response_type: 'code',
       acr_values: acr_values,
       scope: scope,
-      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      redirect_uri: redirect_uri,
       state: state,
       prompt: 'select_account',
       nonce: nonce,

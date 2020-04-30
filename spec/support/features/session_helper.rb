@@ -291,7 +291,7 @@ module Features
       click_submit_default
     end
 
-    def acknowledge_and_confirm_personal_key
+    def acknowledge_and_confirm_personal_key(js: true)
       extra_characters_get_ignored = 'abc123qwerty'
       code_words = []
 
@@ -301,11 +301,11 @@ module Features
 
       button_text = t('forms.buttons.continue')
 
-      click_on button_text, class: 'personal-key-continue'
+      click_on button_text, class: 'personal-key-continue' if js
 
       fill_in 'personal_key', with: code_words.join('-').downcase + extra_characters_get_ignored
 
-      click_on button_text, class: 'personal-key-confirm'
+      find_all('.personal-key-confirm', text: button_text).first.click
     end
 
     def click_acknowledge_personal_key
