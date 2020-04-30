@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'OpenID Connect' do
   include IdvHelper
-  include IdvStepHelper
   include OidcAuthHelper
   include DocAuthHelper
 
@@ -237,7 +236,11 @@ describe 'OpenID Connect' do
       scope: 'openid email profile',
       verified_within: '30d',
       proofing_steps: proc do
-        complete_doc_auth_v2_steps
+        complete_all_doc_auth_steps
+      end,
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
+        click_agree_and_continue
       end,
     )
 
