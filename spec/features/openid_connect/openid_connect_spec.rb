@@ -224,10 +224,10 @@ describe 'OpenID Connect' do
   it 'sends the user through idv again via verified_within param' do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     user = user_with_2fa
-    profile = create(:profile, :active,
-                     verified_at: 60.days.ago,
-                     pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
-                     user: user)
+    _profile = create(:profile, :active,
+                      verified_at: 60.days.ago,
+                      pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
+                      user: user)
 
     token_response = sign_in_get_token_response(
       user: user,
@@ -573,7 +573,7 @@ describe 'OpenID Connect' do
       nonce: nonce,
       code_challenge: code_challenge,
       code_challenge_method: 'S256',
-      verified_within: verified_within
+      verified_within: verified_within,
     )
 
     _user = sign_in_live_with_2fa(user)

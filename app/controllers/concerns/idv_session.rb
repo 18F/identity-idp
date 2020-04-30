@@ -12,9 +12,11 @@ module IdvSession
   end
 
   def confirm_idv_needed
-    if current_user.active_profile.present? && !decorated_session.requested_more_recent_verification?
-      redirect_to idv_activated_url
+    if current_user.active_profile.blank? || decorated_session.requested_more_recent_verification?
+      return
     end
+
+    redirect_to idv_activated_url
   end
 
   def confirm_idv_vendor_session_started
