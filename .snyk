@@ -1,10 +1,43 @@
-version: v1.38.1
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  'SNYK-RUBY-NOKOGIRI-20299':
+  SNYK-RUBY-NOKOGIRI-20299:
     - '* > nokogiri':
-        reason: 'We do not opt in to DTDLOAD and do not opt out of NONET'
+        reason: We do not opt in to DTDLOAD and do not opt out of NONET
         expires: '2018-01-01T00:00:00.000Z'
-  'SNYK-RUBY-ACTIONCABLE-20338':
+  SNYK-RUBY-ACTIONCABLE-20338:
     - '* > actioncable':
-        reason: 'We do not use actioncable'
+        reason: We do not use actioncable
         expires: '2017-09-10T00:00:00.000Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@rails/webpacker > @babel/core > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > node-sass > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - webpack-dev-server > http-proxy-middleware > lodash:
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > node-sass > sass-graph > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > optimize-css-assets-webpack-plugin > last-call-webpack-plugin > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - webpack-dev-server > portfinder > async > lodash:
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-classes > @babel/helper-define-map > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > node-sass > gaze > globule > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2020-04-30T23:17:28.387Z'
