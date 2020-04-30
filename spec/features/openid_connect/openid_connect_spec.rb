@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'OpenID Connect' do
   include IdvHelper
+  include IdvStepHelper
   include OidcAuthHelper
   include DocAuthHelper
 
@@ -221,8 +222,8 @@ describe 'OpenID Connect' do
       to include('Verified within value must be at least 30 days or older')
   end
 
-  it 'sends the user through idv again via verified_within param' do
-    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+  it 'sends the user through idv again via verified_within param', driver: :mobile_rack_test do
+    client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
     profile = create(:profile, :active,
                      verified_at: 60.days.ago,
@@ -235,8 +236,22 @@ describe 'OpenID Connect' do
       client_id: client_id,
       scope: 'openid email profile',
       verified_within: '30d',
-      expect_proofing: true
+      proofing_steps: proc do
+        complete_doc_auth_v2_steps
+      end,
     )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:verified_at]).to be > 60.days.ago.to_i
+    expect(userinfo_response[:verified_at]).to eq(user.active_profile.verified_at.to_i)
   end
 
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
@@ -522,8 +537,8 @@ describe 'OpenID Connect' do
     acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
     handoff_page_steps: nil,
+    proofing_steps: nil,
     verified_within: nil,
-    expect_proofing: false,
     client_id: 'urn:gov:gsa:openidconnect:test'
   )
     state = SecureRandom.hex
@@ -550,8 +565,7 @@ describe 'OpenID Connect' do
 
     _user = sign_in_live_with_2fa(user)
 
-    complete_all_doc_auth_steps if expect_proofing
-
+    proofing_steps&.call
     handoff_page_steps&.call
 
     redirect_uri = URI(current_url)
