@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
+  include DocAuthHelper
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -218,6 +219,51 @@ describe 'OpenID Connect' do
     expect(redirect_params[:error]).to eq('invalid_request')
     expect(redirect_params[:error_description]).
       to include('Verified within value must be at least 30 days or older')
+  end
+
+  it 'sends the user through idv again via verified_within param' do
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    user = user_with_2fa
+    _profile = create(:profile, :active,
+                      verified_at: 60.days.ago,
+                      pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
+                      user: user)
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      client_id: client_id,
+      redirect_uri: 'http://localhost:7654/auth/result',
+      scope: 'openid email profile',
+      verified_within: '30d',
+      proofing_steps: proc do
+        complete_all_doc_auth_steps
+
+        fill_out_phone_form_mfa_phone(user)
+        click_idv_continue
+
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        click_continue
+
+        acknowledge_and_confirm_personal_key(js: false)
+      end,
+      handoff_page_steps: proc do
+        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
+        click_agree_and_continue
+      end,
+    )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:verified_at]).to be > 60.days.ago.to_i
+    expect(userinfo_response[:verified_at]).to eq(user.active_profile.verified_at.to_i)
   end
 
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
@@ -499,7 +545,13 @@ describe 'OpenID Connect' do
   end
 
   def sign_in_get_token_response(
-    user: user_with_2fa, scope: 'openid email', handoff_page_steps: nil,
+    user: user_with_2fa,
+    acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    scope: 'openid email',
+    redirect_uri: 'gov.gsa.openidconnect.test://result',
+    handoff_page_steps: nil,
+    proofing_steps: nil,
+    verified_within: nil,
     client_id: 'urn:gov:gsa:openidconnect:test'
   )
     state = SecureRandom.hex
@@ -513,17 +565,20 @@ describe 'OpenID Connect' do
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: acr_values,
       scope: scope,
-      redirect_uri: 'gov.gsa.openidconnect.test://result',
+      redirect_uri: redirect_uri,
       state: state,
       prompt: 'select_account',
       nonce: nonce,
       code_challenge: code_challenge,
       code_challenge_method: 'S256',
+      verified_within: verified_within,
     )
 
     _user = sign_in_live_with_2fa(user)
+
+    proofing_steps&.call
     handoff_page_steps&.call
 
     redirect_uri = URI(current_url)
