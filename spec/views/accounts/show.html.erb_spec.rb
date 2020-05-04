@@ -130,10 +130,22 @@ describe 'accounts/show.html.erb' do
     expect(rendered).to have_content t('headings.account.account_history')
   end
 
-  it 'contains connected applications' do
-    render
+  context 'connected apps' do
+    it 'contains connected applications' do
+      render
 
-    expect(rendered).to have_content t('headings.account.connected_apps')
+      expect(rendered).to have_content t('headings.account.connected_apps')
+    end
+
+    context 'with a connected app that is a NullServiceProvider' do
+      before do
+        user.identities << create(:identity, :active, service_provider: 'aaaaa')
+      end
+
+      it 'renders' do
+        expect { render }.to_not raise_error
+      end
+    end
   end
 
   it 'shows the auth nav bar' do
