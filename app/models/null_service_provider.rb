@@ -7,6 +7,10 @@ class NullServiceProvider
     @friendly_name = friendly_name
   end
 
+  def id
+    nil
+  end
+
   def active?
     false
   end
