@@ -1,17 +1,5 @@
 <div aria-label="banner" role="banner">
   <%= render 'shared/no_pii_banner' if FeatureManagement.fake_banner_mode? %>
-  <div class="flex-justify-center grid-row bg-yellow desktop:padding-x-4 padding-y-2 font-lang-4 center">
-    <div class="grid-col-auto black margin-x-2">
-      <%= t('shared.covid_banner.question') %>
-    </div>
-    <div class="grid-col-auto covid">
-      <a href="https://share.hsforms.com/16DIoo--rTU2xbNW1MShkBg3ak9e"
-        class="bg-white black text-bold hover:text-no-underline text-decoration-none rounded-lg px1 py-tiny"
-        target="_blank">
-        <%= t('shared.covid_banner.button') %>
-      </a>
-    </div>
-  </div>
   <section class="usa-banner" aria-label="Official government website">
     <div class="usa-accordion">
       <header class="usa-banner__header">
@@ -23,9 +11,9 @@
             class: 'mr1'
           ) %>
           <div class="grid-col-fill tablet:grid-col-auto">
-            <p class="usa-banner__header-text"><%= t(
-              "shared.banner.#{FeatureManagement.fake_banner_mode? ? 'fake' : 'official'}_site"
-            ) %></p>
+            <p class="usa-banner__header-text"><%= FeatureManagement.fake_banner_mode? ?
+              t('shared.banner.fake_site') : t('shared.banner.official_site')
+            %></p>
             <p class="usa-banner__header-action" aria-hidden="true"><%= t('shared.banner.how') %></p>
           </div>
           <button class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner">
