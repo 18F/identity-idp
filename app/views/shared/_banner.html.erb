@@ -1,0 +1,64 @@
+<%= render 'shared/no_pii_banner' if fake %>
+<div class="flex-justify-center grid-row bg-yellow desktop:padding-x-4 padding-y-2 font-lang-4 center">
+  <div class="grid-col-auto black margin-x-2">
+    <%= t('shared.covid_banner.question') %>
+  </div>
+  <div class="grid-col-auto covid">
+    <a href="https://share.hsforms.com/16DIoo--rTU2xbNW1MShkBg3ak9e"
+      class="bg-white black text-bold hover:text-no-underline text-decoration-none rounded-lg px1 py-tiny"
+      target="_blank">
+      <%= t('shared.covid_banner.button') %>
+    </a>
+  </div>
+</div>
+<section class="usa-banner" aria-label="Official government website">
+  <div class="usa-accordion">
+    <header class="usa-banner__header">
+      <div class="usa-banner__inner">
+        <%= image_tag(
+          asset_url('us-flag.png'),
+          alt: t('image_description.us_flag'),
+          size: '18x12',
+          class: 'mr1'
+        ) %>
+        <div class="grid-col-fill tablet:grid-col-auto">
+          <p class="usa-banner__header-text"><%= t("shared.banner.#{fake ? 'fake' : 'official'}_site") %></p>
+          <p class="usa-banner__header-action" aria-hidden="true"><%= t('shared.banner.how') %></p>
+        </div>
+        <button class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner">
+          <span class="usa-banner__button-text"><%= t('shared.banner.how') %></span>
+        </button>
+      </div>
+    </header>
+    <div class="usa-banner__content usa-accordion__content hide" id="gov-banner">
+      <div class="grid-row grid-gap-lg">
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <%= image_tag(
+            asset_url('icon-dot-gov.svg'),
+            alt: 'Dot gov',
+            class: 'usa-banner__icon usa-media-block__img'
+          ) %>
+          <div class="usa-media-block__body">
+            <p>
+              <strong><%= t('shared.banner.gov_heading') %></strong>
+              <br> <%= t('shared.banner.gov_description') %>
+            </p>
+          </div>
+        </div>
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <%= image_tag(
+            asset_url('icon-https.svg'),
+            alt: 'Https',
+            class: 'usa-banner__icon usa-media-block__img'
+          ) %>
+          <div class="usa-media-block__body">
+            <p>
+              <strong><%= t('shared.banner.secure_heading') %></strong>
+              <br> <%= t('shared.banner.secure_description') %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

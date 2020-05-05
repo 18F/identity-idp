@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="no-js" lang="<%= I18n.locale %>">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="<%= content_for?(:description) ? yield(:description) : APP_NAME %>" name="description" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="none" name="msapplication-config" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="telephone=no" name="format-detection" />
+
+  <% if content_for?(:meta_refresh) %>
+  <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
+  <% end %>
+
+  <% if session_with_trust? || FeatureManagement.disallow_all_web_crawlers? %>
+  <meta content="noindex,nofollow" name="robots" />
+  <% end %>
+
+  <%= yield(:meta_tags) if content_for?(:meta_tags) %>
+
+  <title>
+    <%= APP_NAME %><%= " - #{yield(:title)}" if content_for?(:title) %>
+  </title>
+
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <!--[if IE 8]>
+  <%= javascript_include_tag 'es5-shim.min' %>
+  <![endif]-->
+  <%= javascript_include_tag 'application' %>
+  <%= javascript_pack_tag 'application' %>
+  <%= csrf_meta_tags %>
+
+  <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+  <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+  <link href="/manifest.json" rel="manifest" />
+  <link color="#e21c3d" href="/safari-pinned-tab.svg" rel="mask-icon" />
+  <meta content="#ffffff" name="theme-color" />
+
+  <!--[if lt IE 9]>
+  <%= javascript_include_tag 'html5shiv' %>
+  <%= javascript_include_tag 'respond.min' %>
+  <![endif]-->
+
+  <% if Figaro.env.google_analytics_key.present? && !page_with_trust? %>
+  <%= render 'shared/google_analytics/page_tracking' %>
+  <% end %>
+
+  <% if Figaro.env.newrelic_browser_key.present? && Figaro.env.newrelic_browser_app_id.present? %>
+  <%= render 'shared/newrelic/browser_instrumentation' %>
+  <% end %>
+</head>
+
+<body class="<%= Rails.env %>-env site <%= yield(:background_cls) %>">
+  <div class="site-wrap bg-light-blue">
+    <div aria-label="banner" role="banner">
+      <% if FeatureManagement.fake_banner_mode? %>
+      <%=   render 'shared/banner', :fake => true %>
+      <% else %>
+      <%=   render 'shared/banner', :fake => false %>
+      <% end %>
+    </div>
+    <div aria-label="main-navigation" role="navigation">
+      <% if content_for?(:nav) %>
+      <%=   yield(:nav) %>
+      <% else %>
+      <%=   render decorated_session.nav_partial %>
+      <% end %>
+    </div>
+    <div class="container">
+      <div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box card <%= yield(:card_cls) %>" role="main">
+        <%= render 'shared/flashes' %>
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'shared/footer_lite' %>
+
+  <div id="session-timeout-cntnr"></div>
+
+  <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
+  <div data-platform-authenticator-enabled="true"></div>
+  <%= auto_session_timeout_js %>
+  <% else %>
+  <%= auto_session_expired_js %>
+  <% end %>
+
+  <% render 'shared/dap_analytics' if Figaro.env.participate_in_dap == 'true' && !session_with_trust? %>
+</body>
+
+</html>

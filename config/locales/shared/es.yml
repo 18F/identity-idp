@@ -1,9 +1,16 @@
 ---
 es:
   shared:
-    fake_banner:
-      fake_site: Un sitio web de DEMO del gobierno de Estados Unidos
+    covid_banner:
+      question: ¿Tiene su agencia una necesidad urgente relacionada con los esfuerzos de respuesta de COVID-19?
+      button: Contacto login.gov sociedades
     footer_lite:
       gsa: Administración General de Servicios de EE. UU.
-    usa_banner:
-      official_site: Un sitio oficial del Gobierno de Estados Unidos
+    banner:
+      official_site: Un sitio oficial del Gobierno de Estados Unidos.
+      fake_site: Un sitio web de DEMO del gobierno de Estados Unidos.
+      how: Así es como sabes
+      gov_heading: La .gov significa que es oficial.
+      gov_description: Los sitios web del gobierno federal a menudo terminan en .gov o .mil. Antes de compartir información confidencial, asegúrese de estar en un sitio del gobierno federal.
+      secure_heading: El sitio es seguro.
+      secure_description: "El <strong>https://</strong> garantiza que se está conectando al sitio web oficial y que toda la información que proporciona está encriptada y transmitida de forma segura."
