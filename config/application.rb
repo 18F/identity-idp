@@ -20,7 +20,7 @@ module Upaya
     routes.default_url_options[:host] = Figaro.env.domain_name
 
     config.lograge.custom_options = lambda do |event|
-      event.payload[:timestamp] = event.time
+      event.payload[:timestamp] = Time.zone.now.iso8601
       event.payload[:uuid] = SecureRandom.uuid
       event.payload[:pid] = Process.pid
       event.payload.except(:params, :headers)

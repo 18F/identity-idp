@@ -26,6 +26,13 @@
     ) %>
   </div>
 
+  <!-- This view is never displayed, but it needs to be present in the DOM for
+  the SDK to capture the feed from the camer -->
+  <video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
+  <div id='acuant-sdk-capture-view' class='hidden'>
+    <canvas id="acuant-video-canvas" style='width: 100%;'></canvas>
+  </div>
+
   <div id='acuant-sdk-continue-form' class='hidden'>
     <img id='acuant-sdk-preview' class='mb2'>
     <%= submit_tag t('forms.buttons.continue'), class: 'block btn btn-primary btn-wide' %>

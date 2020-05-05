@@ -7,10 +7,15 @@ class IdvController < ApplicationController
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index
-    if active_profile?
+    if decorated_session.requested_more_recent_verification?
+      verify_identity
+    elsif active_profile?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url
+    elsif sp_over_quota_limit?
+      flash[:error] = t('errors.doc_auth.quota_reached')
+      redirect_to account_url
     else
       verify_identity
     end
@@ -27,6 +32,10 @@ class IdvController < ApplicationController
   end
 
   private
+
+  def sp_over_quota_limit?
+    Db::ServiceProviderQuotaLimit::IsSpOverQuota.call(sp_session[:issuer].to_s)
+  end
 
   def verify_identity
     analytics.track_event(Analytics::IDV_INTRO_VISIT)

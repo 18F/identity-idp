@@ -13,6 +13,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       state: state,
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
+      verified_within: verified_within,
     )
   end
 
@@ -31,6 +32,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:state) { SecureRandom.hex }
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
+  let(:verified_within) { nil }
 
   describe '#submit' do
     subject(:result) { form.submit }
@@ -295,6 +297,41 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     it 'is parsed into an array of valid ACR values' do
       expect(form.acr_values).to eq(%w[http://idmanagement.gov/ns/assurance/loa/1])
+    end
+  end
+
+  describe '#verified_within' do
+    context 'without a verified_within' do
+      let(:verified_within) { nil }
+      it 'is valid' do
+        expect(form.valid?).to eq(true)
+        expect(form.verified_within).to eq(nil)
+      end
+    end
+
+    context 'with a duration that is too short (<30 days)' do
+      let(:verified_within) { '2d' }
+      it 'has errors' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:verified_within]).
+          to eq(['value must be at least 30 days or older'])
+      end
+    end
+
+    context 'with a format in days' do
+      let(:verified_within) { '45d' }
+      it 'parses the value as a number of days' do
+        expect(form.valid?).to eq(true)
+        expect(form.verified_within).to eq(45.days)
+      end
+    end
+
+    context 'with a verified_within with a bad format' do
+      let(:verified_within) { 'bbb' }
+      it 'has errors' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:verified_within]).to eq(['Unrecognized format for verified_within'])
+      end
     end
   end
 

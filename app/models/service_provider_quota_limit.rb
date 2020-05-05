@@ -1,0 +1,2 @@
+class ServiceProviderQuotaLimit < ApplicationRecord
+end

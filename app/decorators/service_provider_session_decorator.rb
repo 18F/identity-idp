@@ -149,6 +149,13 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     aal_1_expiration
   end
 
+  def requested_more_recent_verification?
+    return false if authorize_form.verified_within.blank?
+
+    verified_at = view_context.current_user.active_profile&.verified_at
+    !verified_at || verified_at < authorize_form.verified_within.ago
+  end
+
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request

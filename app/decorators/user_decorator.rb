@@ -15,6 +15,12 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
     user.email_addresses.take&.email
   end
 
+  def visible_email_addresses
+    user.email_addresses.filter do |email_address|
+      email_address.confirmed? || !email_address.confirmation_period_expired?
+    end
+  end
+
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
 

@@ -15,7 +15,7 @@ p.mt2.mb2 == t('instructions.mfa.piv_cac.add_from_sign_in')
       .mt2
         = submit_tag t('forms.piv_cac_setup.submit'), class: 'btn btn-primary mr1'
         .inline-block
-          = button_to t('forms.piv_cac_setup.no_thanks'), login_add_piv_cac_prompt_url,
+          = link_to t('forms.piv_cac_setup.no_thanks'), new_user_session_url,
             class: 'btn btn-secondary'
 
 = render 'shared/cancel', link: new_user_session_url
