@@ -20,7 +20,7 @@
   <%= yield(:meta_tags) if content_for?(:meta_tags) %>
 
   <title>
-    <%= APP_NAME %><%= " - #{yield(:title)}" if content_for?(:title) %>
+    <%= APP_NAME %><%= raw(" - #{yield(:title)}") if content_for?(:title) %>
   </title>
 
   <%= stylesheet_link_tag 'application', media: 'all' %>
