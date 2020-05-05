@@ -1,21 +1,18 @@
 export default function toggleBanner() {
-
   const enableBannerToggling = () => {
     const bannerButton = document.querySelector('.usa-banner__button');
 
-    const toggleBanner = (evt) => {
+    const toggleBannerSection = (evt) => {
       evt.currentTarget.setAttribute(
         'aria-expanded',
-        evt.currentTarget.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
+        evt.currentTarget.getAttribute('aria-expanded') === 'true' ? 'false' : 'true',
       );
       const howYouKnowSection = document.querySelector('#gov-banner');
       if (howYouKnowSection) howYouKnowSection.classList.toggle('hide');
-    }
+    };
 
-    if (bannerButton) {
-      bannerButton.addEventListener('click', toggleBanner);
-    }
-  }
+    if (bannerButton) bannerButton.addEventListener('click', toggleBannerSection);
+  };
 
   window.onload = enableBannerToggling;
-}
+};
