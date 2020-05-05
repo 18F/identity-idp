@@ -81,7 +81,7 @@
   <%= auto_session_expired_js %>
   <% end %>
 
-  <% render 'shared/dap_analytics' if Figaro.env.participate_in_dap == 'true' && !session_with_trust? %>
+  <%= render 'shared/dap_analytics' if Figaro.env.participate_in_dap == 'true' && !session_with_trust? %>
 </body>
 
 </html>
