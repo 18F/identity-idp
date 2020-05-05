@@ -54,13 +54,7 @@
 
 <body class="<%= Rails.env %>-env site <%= yield(:background_cls) %>">
   <div class="site-wrap bg-light-blue">
-    <div aria-label="banner" role="banner">
-      <% if FeatureManagement.fake_banner_mode? %>
-      <%=   render 'shared/banner', :fake => true %>
-      <% else %>
-      <%=   render 'shared/banner', :fake => false %>
-      <% end %>
-    </div>
+    <%= render 'shared/banner' %>
     <div aria-label="main-navigation" role="navigation">
       <% if content_for?(:nav) %>
       <%=   yield(:nav) %>

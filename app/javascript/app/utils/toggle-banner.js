@@ -15,4 +15,4 @@ export default function toggleBanner() {
   };
 
   window.onload = enableBannerToggling;
-};
+}
