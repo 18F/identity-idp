@@ -5,7 +5,7 @@ FROM logindotgov/build as build
 WORKDIR /upaya
 
 # Install dev and test gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock .snyk ./
 RUN bundle install --system --with development test
 
 # Install NPM packages
