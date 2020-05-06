@@ -1,9 +1,17 @@
 ---
 es:
   shared:
-    fake_banner:
-      fake_site: Un sitio web de DEMO del gobierno de Estados Unidos
+    banner:
+      fake_site: Un sitio web de DEMO del gobierno de Estados Unidos.
+      gov_description: Los sitios web del gobierno federal a menudo terminan en .gov
+        o .mil. Antes de compartir información confidencial, asegúrese de estar en
+        un sitio del gobierno federal.
+      gov_heading: La .gov significa que es oficial.
+      how: Así es como sabes
+      official_site: Un sitio oficial del Gobierno de Estados Unidos.
+      secure_description: El <strong>https://</strong> garantiza que se está conectando
+        al sitio web oficial y que toda la información que proporciona está encriptada
+        y transmitida de forma segura.
+      secure_heading: El sitio es seguro.
     footer_lite:
       gsa: Administración General de Servicios de EE. UU.
-    usa_banner:
-      official_site: Un sitio oficial del Gobierno de Estados Unidos

@@ -54,7 +54,7 @@ describe 'layouts/application.html.slim' do
       render
 
       doc = Nokogiri::HTML(rendered)
-      expect(doc.at_css('title').text).to eq("login.gov - Something with 'single quotes'")
+      expect(doc.at_css('title').text).to include("login.gov - Something with 'single quotes'")
     end
   end
 

@@ -79,8 +79,7 @@ feature 'View personal key' do
 
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
 
-      expected_button_order = %w[Back Continue]
-      expect(all(:button).map(&:text).reject(&:empty?)).to eq expected_button_order
+      expect(page).to have_selector(:link_or_button, 'Back')
 
       click_back_button
 
@@ -106,8 +105,8 @@ feature 'View personal key' do
       click_acknowledge_personal_key
 
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-      expected_button_order = %w[Continue Back]
-      expect(all(:button).map(&:text).reject(&:empty?)).to eq expected_button_order
+
+      expect(page).to have_selector(:link_or_button, 'Back')
 
       click_back_button
 
