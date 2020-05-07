@@ -8,9 +8,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**_spec.js'",
-    "build": "true",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "build": "true"
   },
   "dependencies": {
     "@rails/webpacker": "^4.1.0",
@@ -29,8 +27,7 @@
     "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",
     "webpack-dev-server": "^3.10.3",
-    "zxcvbn": "^4.4.2",
-    "snyk": "^1.316.1"
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/register": "^7.4.4",
@@ -45,6 +42,5 @@
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
     "proxyquire": "^1.8.0"
-  },
-  "snyk": true
+  }
 }
