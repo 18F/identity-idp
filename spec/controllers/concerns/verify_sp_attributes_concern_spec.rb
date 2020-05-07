@@ -6,9 +6,11 @@ RSpec.describe VerifySPAttributesConcern do
   end
 
   describe '#consent_has_expired?' do
-    let(:sp_session_identity) { build(:identity) }
+    let(:sp_session_identity) { build(:identity, user: user) }
+    let(:user) { build(:user) }
 
     before do
+      allow(controller).to receive(:current_user).and_return(user)
       allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
     end
 
@@ -72,6 +74,30 @@ RSpec.describe VerifySPAttributesConcern do
 
       it 'is false' do
         expect(consent_has_expired?).to eq(false)
+      end
+    end
+
+    context 'when there is an active profile' do
+      let(:sp_session_identity) do
+        create(:identity, last_consented_at: 15.days.ago, user: user)
+      end
+
+      before do
+        create(:profile, :active, verified_at: verified_at, user: user)
+      end
+
+      context 'when the active profile was verified after last_consented_at' do
+        let(:verified_at) { 5.days.ago }
+        it 'is true because the new verified data needs to be consented to sharing' do
+          expect(consent_has_expired?).to eq(true)
+        end
+      end
+
+      context 'when the active profile was verified before last_consented_at' do
+        let(:verified_at) { 20.days.ago }
+        it 'is false' do
+          expect(consent_has_expired?).to eq(false)
+        end
       end
     end
   end

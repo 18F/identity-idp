@@ -54,6 +54,21 @@ describe IdvController do
 
       expect(response).to redirect_to idv_doc_auth_path
     end
+
+    context 'sp has reached quota limit' do
+      let(:issuer) { 'foo' }
+
+      it 'does not allow user to be verified and redirects to account url with error message' do
+        stub_sign_in
+        ServiceProviderQuotaLimit.create(issuer: issuer, ial: 2, percent_full: 100)
+        session[:sp] = { issuer: issuer, ial: 2 }
+
+        get :index
+
+        expect(flash[:error]).to eq t('errors.doc_auth.quota_reached')
+        expect(response).to redirect_to account_url
+      end
+    end
   end
 
   describe '#activated' do

@@ -17,6 +17,24 @@ feature 'managing email address' do
       expect(page).to have_content(email1)
       expect(page).to have_content(email2)
     end
+
+    scenario 'does not show a unconfirmed email with a expired confirmation period' do
+      user = create(:user, :signed_up)
+      confirmed_email = user.reload.email_addresses.first.email
+
+      expired_unconfirmed_email_address = create(
+        :email_address,
+        user: user,
+        confirmed_at: nil,
+        confirmation_sent_at: 36.hours.ago,
+      )
+      expired_unconfirmed_email = expired_unconfirmed_email_address.email
+
+      sign_in_and_2fa_user(user)
+
+      expect(page).to have_content(confirmed_email)
+      expect(page).to_not have_content(expired_unconfirmed_email)
+    end
   end
 
   context 'allows deletion of email address' do

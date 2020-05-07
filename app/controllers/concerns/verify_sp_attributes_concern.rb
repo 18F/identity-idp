@@ -46,7 +46,9 @@ module VerifySPAttributesConcern
     return false unless sp_session_identity
     return false if sp_session_identity.deleted_at.present?
     last_estimated_consent = sp_session_identity.last_consented_at || sp_session_identity.created_at
-    !last_estimated_consent || last_estimated_consent < Identity::CONSENT_EXPIRATION.ago
+    !last_estimated_consent ||
+      last_estimated_consent < Identity::CONSENT_EXPIRATION.ago ||
+      verified_after_consent?(last_estimated_consent)
   end
 
   def consent_was_revoked?
@@ -55,6 +57,12 @@ module VerifySPAttributesConcern
   end
 
   private
+
+  def verified_after_consent?(last_estimated_consent)
+    verification_timestamp = current_user.active_profile&.verified_at
+
+    verification_timestamp.present? && last_estimated_consent < verification_timestamp
+  end
 
   def sp_session_identity
     @sp_session_identity =

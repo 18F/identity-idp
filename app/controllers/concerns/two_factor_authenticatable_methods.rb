@@ -223,7 +223,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def phone_view_data
-    { confirmation_for_phone_change: confirmation_for_phone_change?,
+    { confirmation_for_add_phone: confirmation_for_add_phone?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
@@ -283,8 +283,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     phone_setup_path(locale: locale)
   end
 
-  def confirmation_for_phone_change?
-    confirmation_context? && MfaContext.new(current_user).phone_configurations.exists?
+  def confirmation_for_add_phone?
+    confirmation_context? && user_fully_authenticated?
   end
 
   def presenter_for_two_factor_authentication_method

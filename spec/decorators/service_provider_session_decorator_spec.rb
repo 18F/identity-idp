@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderSessionDecorator do
   let(:view_context) { ActionController::Base.new.view_context }
-  subject do
+  subject(:session_decorator) do
     ServiceProviderSessionDecorator.new(
       sp: sp,
       view_context: view_context,
@@ -237,7 +237,7 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe 'mfa_expiration_interval' do
+  describe '#mfa_expiration_interval' do
     context 'with an AAL2 sp' do
       before do
         allow(sp).to receive(:aal).and_return(2)
@@ -256,6 +256,53 @@ RSpec.describe ServiceProviderSessionDecorator do
 
     context 'with an sp that is not AAL2 or IAL2' do
       it { expect(subject.mfa_expiration_interval).to eq(30.days) }
+    end
+  end
+
+  describe '#requested_more_recent_verification?' do
+    let(:verified_within) { nil }
+    let(:user) { create(:user) }
+
+    before do
+      allow(view_context).to receive(:current_user).and_return(user)
+      allow(session_decorator).to receive(:authorize_form).
+        and_return(OpenidConnectAuthorizeForm.new(verified_within: verified_within))
+    end
+
+    subject(:requested_more_recent_verification?) do
+      session_decorator.requested_more_recent_verification?
+    end
+
+    it 'is false with no verified_within param' do
+      expect(requested_more_recent_verification?).to eq(false)
+    end
+
+    context 'with a valid verified_within' do
+      let(:verified_within) { '45d' }
+
+      it 'is true if the user does not have an activated profile' do
+        expect(requested_more_recent_verification?).to eq(true)
+      end
+
+      context 'the verified_at is newer than the verified_within ' do
+        before do
+          create(:profile, :active, user: user, verified_at: 15.days.ago)
+        end
+
+        it 'is false' do
+          expect(requested_more_recent_verification?).to eq(false)
+        end
+      end
+
+      context 'the verified_at is older than the verified_at' do
+        before do
+          create(:profile, :active, user: user, verified_at: 60.days.ago)
+        end
+
+        it 'is true' do
+          expect(requested_more_recent_verification?).to eq(true)
+        end
+      end
     end
   end
 end
