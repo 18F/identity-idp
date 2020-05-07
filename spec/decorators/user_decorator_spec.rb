@@ -1,6 +1,41 @@
 require 'rails_helper'
 
 describe UserDecorator do
+  describe '#visible_email_addresses' do
+    let(:user) { create(:user) }
+    let(:confirmed_email_address) { user.email_addresses.detect(&:confirmed?) }
+    let!(:unconfirmed_expired_email_address) do
+      create(
+        :email_address,
+        user: user,
+        confirmed_at: nil,
+        confirmation_sent_at: 36.hours.ago,
+      )
+    end
+    let!(:unconfirmed_unexpired_email_address) do
+      create(
+        :email_address,
+        user: user,
+        confirmed_at: nil,
+        confirmation_sent_at: 5.minutes.ago,
+      )
+    end
+
+    subject { described_class.new(user.reload) }
+
+    it 'shows email addresses that have been confirmed' do
+      expect(subject.visible_email_addresses).to include(confirmed_email_address)
+    end
+
+    it 'hides emails address that are unconfirmed and expired' do
+      expect(subject.visible_email_addresses).to_not include(unconfirmed_expired_email_address)
+    end
+
+    it 'shows emails that are not confirmed and not expired' do
+      expect(subject.visible_email_addresses).to include(unconfirmed_unexpired_email_address)
+    end
+  end
+
   describe '#lockout_time_remaining' do
     it 'returns the difference in seconds between otp drift and second_factor_locked_at' do
       Timecop.freeze(Time.zone.now) do

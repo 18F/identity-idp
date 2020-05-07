@@ -20,6 +20,11 @@ const INITIAL_HTML = `
   <img src='wait.gif' width=50 height=50>
 </div>
 
+<video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
+<div id='acuant-sdk-capture-view' class='hidden'>
+  <canvas id="acuant-video-canvas" style='width: 100%;'></canvas>
+</div>
+
 <div id='acuant-sdk-continue-form' class='hidden'>
   <img id='acuant-sdk-preview'>
   <input type='submit' value='Continue' class='btn btn-primary btn-wide mt2'>

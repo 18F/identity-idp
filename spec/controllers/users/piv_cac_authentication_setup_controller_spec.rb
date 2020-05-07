@@ -108,6 +108,12 @@ describe Users::PivCacAuthenticationSetupController do
 
             expect(subject.user_session[:decrypted_x509]).to eq json
           end
+
+          it 'sets the session to not require piv setup upon sign-in' do
+            get :new, params: { token: good_token }
+
+            expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+          end
         end
 
         context 'when redirected with an error token' do

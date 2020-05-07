@@ -15,11 +15,12 @@ class OpenidConnectAuthorizeForm
     state
   ].freeze
 
-  ATTRS = [:unauthorized_scope, :acr_values, :scope, *SIMPLE_ATTRS].freeze
+  ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
 
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
+  MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
   validates :acr_values, presence: true
   validates :client_id, presence: true
@@ -38,6 +39,8 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
+  validate :validate_verified_within_format
+  validate :validate_verified_within_duration
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -45,6 +48,9 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
+
+    @duration_parser = DurationParser.new(params[:verified_within])
+    @verified_within = @duration_parser.parse
   end
 
   def submit
@@ -131,6 +137,24 @@ class OpenidConnectAuthorizeForm
     return if prompt == 'select_account'
     return if prompt == 'login' && service_provider.allow_prompt_login
     errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
+  end
+
+  def validate_verified_within_format
+    return true if @duration_parser.valid?
+
+    errors.add(:verified_within,
+               t('openid_connect.authorization.errors.invalid_verified_within_format'))
+    false
+  end
+
+  def validate_verified_within_duration
+    return true if verified_within.blank?
+    return true if verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
+
+    errors.add(:verified_within,
+               t('openid_connect.authorization.errors.invalid_verified_within_duration',
+                 count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
+    false
   end
 
   def ial
