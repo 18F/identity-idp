@@ -81,7 +81,7 @@ describe 'multiple saml endpoints' do
       expect(cert_base64).to eq(Base64.strict_encode64(endpoint_cert.to_der))
     end
 
-    it 'includes the correct auth and logout urls' do
+    it 'includes the correct auth url, and no SingleLogoutService urls' do
       visit endpoint_metadata_path
       document = REXML::Document.new(page.html)
       auth_node = REXML::XPath.first(document, '//SingleSignOnService')
@@ -90,9 +90,8 @@ describe 'multiple saml endpoints' do
       expect(auth_node.attributes['Location']).to include(
         ['/api/saml/auth', endpoint_suffix].join(''),
       )
-      expect(logout_node.attributes['Location']).to include(
-        ['/api/saml/logout', endpoint_suffix].join(''),
-      )
+
+      expect(logout_node).to be_nil
     end
   end
 end
