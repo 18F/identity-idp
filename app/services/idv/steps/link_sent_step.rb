@@ -31,6 +31,7 @@ module Idv
            back_image scan_id].each do |step|
           mark_step_complete(step)
         end
+        mark_step_complete(:selfie) unless liveness_checking_enabled?
       end
     end
   end
