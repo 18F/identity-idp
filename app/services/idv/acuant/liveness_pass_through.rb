@@ -1,6 +1,6 @@
 module Idv
   module Acuant
-    class Liveness
+    class LivenessPassThrough
       include Idv::Acuant::Http
 
       base_uri Figaro.env.acuant_passlive_url
@@ -12,11 +12,12 @@ module Idv
         @authentication_params = cfg.slice(:username, :password)
       end
 
-      def liveness(base64_image)
+      def liveness(body)
         url = '/api/v1/liveness'
+
         options = default_options.merge(
           headers: content_type_json.merge(accept_json),
-          body: liveness_body(base64_image),
+          body: body,
         )
         post(url, options)
       end
@@ -33,14 +34,6 @@ module Idv
 
       def default_options
         { basic_auth: @authentication_params }
-      end
-
-      def liveness_body(base64_image)
-        %(
-{"Settings":{"SubscriptionId":"#{@subscription_id}",\
-"AdditionalSettings":{"OS":"UNKNOWN"}},\
-"Image":"#{base64_image}"}\
-        )
       end
     end
   end

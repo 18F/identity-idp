@@ -1,8 +1,7 @@
 module Acuant
-  class Liveness < AcuantBase
-    def call(image)
-      base64_image = Base64.strict_encode64(image)
-      live_face_image = process_selfie(base64_image)
+  class LivenessPassThrough < AcuantBase
+    def call(liveness_body)
+      live_face_image = process_selfie(liveness_body)
       return unless live_face_image
 
       face_image_from_document = fetch_face_from_document
@@ -13,11 +12,11 @@ module Acuant
 
     private
 
-    def process_selfie(image)
-      liveness_data = wrap_network_errors { liveness_service.liveness(image) }
+    def process_selfie(liveness_body)
+      liveness_data = wrap_network_errors { liveness_service.liveness(liveness_body) }
       return unless liveness_data
       return unless selfie_live?(liveness_data)
-      image
+      JSON.parse(liveness_body)['Image']
     end
 
     def fetch_face_from_document

@@ -8,6 +8,8 @@ module Idv
         failure_data, data = verify_back_image(reset_step: :front_image)
         return failure_data if failure_data
 
+        mark_selfie_step_complete_unless_liveness_checking_is_enabled
+
         extract_pii_from_doc(data)
       end
 
