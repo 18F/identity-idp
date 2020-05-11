@@ -49,7 +49,7 @@ module Acuant
     end
 
     def liveness_service
-      (simulator_or_env_test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::Liveness).new
+      (simulator_or_env_test? ? Idv::Acuant::FakeLiveness : Idv::Acuant::Liveness).new
     end
 
     def facematch_service
