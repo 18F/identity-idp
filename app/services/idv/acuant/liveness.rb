@@ -36,11 +36,13 @@ module Idv
       end
 
       def liveness_body(base64_image)
-        %(
-{"Settings":{"SubscriptionId":"#{@subscription_id}",\
-"AdditionalSettings":{"OS":"UNKNOWN"}},\
-"Image":"#{base64_image}"}\
-        )
+        {
+          'Settings' => {
+            'SubscriptionId' => @subscription_id,
+            'AdditionalSettings' => { 'OS' => 'UNKNOWN' },
+            'Image' => base64_image,
+          },
+        }.to_json
       end
     end
   end
