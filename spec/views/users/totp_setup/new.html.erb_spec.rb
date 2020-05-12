@@ -39,6 +39,16 @@ describe 'users/totp_setup/new.html.erb' do
 
       expect(rendered).to have_button(t('links.copy'))
     end
+
+    it 'has the correct aria-labelledby on the nickname field' do
+      render
+      page = Capybara.string(rendered)
+
+      nickname_field = page.find_field(:name)
+      label = page.find_by_id(nickname_field['aria-labelledby'])
+
+      expect(label.text).to include(t('forms.totp_setup.totp_step_1'))
+    end
   end
 
   context 'user is setting up 2FA' do

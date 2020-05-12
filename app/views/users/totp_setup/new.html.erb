@@ -6,14 +6,14 @@
     <li class="py2 border-top">
       <div class="mb2">
         <div class="mr1 inline-block circle circle-number bg-blue white">1</div>
-        <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_1') %></div>
+        <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
         <div class="inline-block ml3"><%= t('forms.totp_setup.totp_step_1a') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
             <%= text_field_tag :name, '', required: true, class: 'block col-12 field monospace',
-                                maxlength: 20, 'aria-labelledby': 'totp-label' %>
+                                maxlength: 20, 'aria-labelledby': 'totp-nickname' %>
           </div>
         </div>
       </div>
