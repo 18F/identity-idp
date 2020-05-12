@@ -21,7 +21,7 @@ describe 'webauthn hide' do
     def webauthn_option_hidden?
       page.find(
         'label[for=two_factor_options_form_selection_webauthn]',
-        visible: :all
+        visible: :all,
       )[:class].include?('hide')
     end
   end

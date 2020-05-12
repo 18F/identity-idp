@@ -98,7 +98,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_ial2(sp)
     confirm_email_and_password('test@test.com')
-    select_2fa_option('webauthn',visible: :all)
+    select_2fa_option('webauthn', visible: :all)
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
