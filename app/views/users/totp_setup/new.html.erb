@@ -30,10 +30,10 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="px2 py1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
-          <div class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
-               data-clipboard-text="<%= @code.upcase %>">
+          <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+                  data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
-          </div>
+          </button>
         </div>
         <div class="py2 center bold"><%= t('instructions.mfa.authenticator.or') %></div>
         <%= accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),

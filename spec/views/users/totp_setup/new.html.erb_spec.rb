@@ -33,6 +33,12 @@ describe 'users/totp_setup/new.html.erb' do
 
       expect(rendered).to have_link(t('links.cancel'), href: account_path)
     end
+
+    it 'has a button to copy the QR code' do
+      render
+
+      expect(rendered).to have_button(t('links.copy'))
+    end
   end
 
   context 'user is setting up 2FA' do
