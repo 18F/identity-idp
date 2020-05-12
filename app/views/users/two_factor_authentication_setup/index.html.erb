@@ -12,7 +12,9 @@
     <fieldset class="m0 p0 border-none">
       <legend class="mb2 serif bold"><%= t('forms.two_factor_choice.legend') %>:</legend>
       <% @presenter.options.each do |option| %>
-        <label class="btn-border col-12 mb2 <%= option.html_class %>" for="two_factor_options_form_selection_<%= option.type %>">
+        <%= label_tag "two_factor_options_form_selection_#{option.type}",
+                      class: "btn-border col-12 mb2 #{option.html_class}",
+                      hidden: option.html_class == 'hide' do %>
           <div class="radio">
             <%= radio_button_tag('two_factor_options_form[selection]', option.type) %>
             <span class="indicator mt-tiny"></span>
@@ -22,7 +24,7 @@
           <% if option.security_level %>
             <span class="usa-tag float-right bg-info-dark"><%= option.security_level %></span>
           <% end %>
-        </label>
+        <% end %>
     <% end %>
     </fieldset>
   </div>
