@@ -45,7 +45,7 @@ describe 'users/totp_setup/new.html.erb' do
       page = Capybara.string(rendered)
 
       nickname_field = page.find_field(:name)
-      label = page.find_by_id(nickname_field['aria-labelledby'])
+      label = page.find(:id, nickname_field['aria-labelledby'])
 
       expect(label.text).to include(t('forms.totp_setup.totp_step_1'))
     end
