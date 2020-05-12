@@ -1,5 +1,6 @@
 module Acuant
   class Liveness < AcuantBase
+    # @return [is_photo_live?, does_face_in_photo_match_license_face?]
     def call(image)
       base64_image = Base64.strict_encode64(image)
       live_face_image = process_selfie(base64_image)
