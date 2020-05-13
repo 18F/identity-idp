@@ -18,6 +18,7 @@
 
 <%= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
     html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
+  <%= f.input :image_data_url, as: :hidden %>
   <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
   <%= f.input :image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
   <div class='my2' id='target'></div>
