@@ -1,3 +1,0 @@
-Faker==0.7.9
-locustio==0.8a2
-pyquery==1.2.17
