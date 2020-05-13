@@ -33,7 +33,7 @@ const showFallbackForm = () => {
   fallbackImageForm().classList.remove('hidden');
 };
 
-const showAcuantSdkContainer = (container) => {
+export const showAcuantSdkContainer = (container) => {
   if (documentCaptureFallbackModeEnabled()) return;
 
   hideAcuantSdkContainers();
@@ -79,6 +79,7 @@ export const acuantImageCaptureStarted = () => {
 };
 
 export const acuantImageCaptureSuccess = (response) => {
+  alert(response.image.data);
   acuantSdkPreviewImage().src = response.image.data;
   imageDataUrlInput().value = response.image.data;
   imageFileInput().required = false;

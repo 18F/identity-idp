@@ -1,3 +1,6 @@
+import { acuantSdkPreviewImage, imageDataUrlInput, imageFileInput, showAcuantSdkContainer }
+  from './document_capture_dom';
+
 const {
   fetchSdkInitializationCredentials,
   fetchSdkInitializationEndpoint,
@@ -10,13 +13,16 @@ const {
   acuantImageCaptureFailed,
 } = require('./document_capture_dom');
 
+export const onCaptured = (image) => {
+  acuantSdkPreviewImage().src = 'data:image/jpeg;base64,' + image;
+  imageDataUrlInput().value = 'data:image/jpeg;base64,' + image;
+  imageFileInput().required = false;
+  showAcuantSdkContainer('continue-form');
+}
+
 export const imageCaptureButtonClicked = (event) => {
   event.preventDefault();
-  acuantImageCaptureStarted();
-  window.AcuantCameraUI.start(
-    acuantImageCaptureSuccess,
-    acuantImageCaptureFailed,
-  );
+  window.AcuantPassiveLiveness.startSelfieCapture(onCaptured.bind(this));
 };
 
 export const initializeAcuantSdk = (credentials = null, endpoint = null) => {
