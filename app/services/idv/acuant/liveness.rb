@@ -40,8 +40,8 @@ module Idv
           'Settings' => {
             'SubscriptionId' => @subscription_id,
             'AdditionalSettings' => { 'OS' => 'UNKNOWN' },
-            'Image' => base64_image,
           },
+          'Image' => base64_image,
         }.to_json
       end
     end
