@@ -20,4 +20,13 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
   end
+
+  it 'restarts doc auth upon failure' do
+    allow_any_instance_of(Acuant::Liveness).to receive(:call).and_return(nil)
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(page).to have_content(t('errors.doc_auth.selfie'))
+  end
 end
