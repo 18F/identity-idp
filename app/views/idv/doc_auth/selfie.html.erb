@@ -3,7 +3,7 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <h1 class='h3 my0'>
-  <%= 'Take a selfie' %>
+  <%= t('doc_auth.headings.selfie') %>
 </h1>
 
 <%= simple_form_for(:doc_auth, url: url_for, method: 'PUT',
