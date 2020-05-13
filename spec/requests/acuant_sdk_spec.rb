@@ -31,5 +31,11 @@ describe 'requesting acuant SDK assets' do
 
       expect(response.status).to eq(404)
     end
+
+    it 'renders a 404 for map files' do
+      get '/verify/doc_auth/AcuantImageProcessingService.wasm.map'
+
+      expect(response.status).to eq(404)
+    end
   end
 end
