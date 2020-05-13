@@ -227,6 +227,11 @@ module Idv
         sp_session[:issuer].blank?
       end
 
+      def mobile?
+        client = DeviceDetector.new(request.user_agent)
+        client.device_type != 'desktop'
+      end
+
       delegate :idv_session, :session, to: :@flow
     end
   end
