@@ -2,8 +2,8 @@ module Idv
   module Steps
     class SelfieStep < DocAuthBaseStep
       def call
-        is_live, is_face_match = ::Acuant::Liveness.new(instance_id).call(image.read)
-        return selfie_failure unless is_live && is_face_match
+        success, error_results = ::Acuant::Liveness.new(instance_id).call(image.read)
+        return selfie_failure(error_results) unless success
       end
 
       private
@@ -16,7 +16,7 @@ module Idv
         flow_session[:instance_id]
       end
 
-      def selfie_failure
+      def selfie_failure(error_results)
         if mobile?
           mark_step_incomplete(:mobile_front_image)
           mark_step_incomplete(:mobile_back_image)
@@ -25,7 +25,7 @@ module Idv
           mark_step_incomplete(:front_image)
           mark_step_incomplete(:back_image)
         end
-        failure(I18n.t('errors.doc_auth.selfie'))
+        failure(I18n.t('errors.doc_auth.selfie'), error_results)
       end
     end
   end

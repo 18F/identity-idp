@@ -1,6 +1,5 @@
 module Acuant
   class LivenessPassThrough < AcuantBase
-    # @return [Array(Boolean, Boolean)] a tuple of (is photo live, does face match license)
     def call(liveness_body)
       live_face_image = process_selfie(liveness_body)
       return unless live_face_image

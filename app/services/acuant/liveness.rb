@@ -1,24 +1,30 @@
 module Acuant
   class Liveness < AcuantBase
-    # @return [Array(Boolean, Boolean)] a tuple of (is photo live, does face match license)
-    def call(image)
-      base64_image = Base64.strict_encode64(image)
-      live_face_image = process_selfie(base64_image)
-      return unless live_face_image
+    def call(selfie)
+      base64_selfie = Base64.strict_encode64(selfie)
+      return failure unless selfie_live?(base64_selfie)
 
       face_image_from_document = fetch_face_from_document
-      return [true, false] unless face_image_from_document
+      return failure unless face_image_from_document
 
-      [true, check_face_match(face_image_from_document, live_face_image)]
+      selfie_face_matches_document?(face_image_from_document, base64_selfie) ? success : failure
     end
 
     private
 
-    def process_selfie(image)
-      liveness_data = wrap_network_errors { liveness_service.liveness(image) }
-      return unless liveness_data
-      return unless selfie_live?(liveness_data)
-      image
+    attr_accessor :results
+
+    def failure
+      [false, results]
+    end
+
+    def success
+      true
+    end
+
+    def selfie_live?(image)
+      @results = wrap_network_errors { liveness_service.liveness(image) }
+      liveness_result_returns_live?
     end
 
     def fetch_face_from_document
@@ -27,18 +33,18 @@ module Acuant
       Base64.strict_encode64(data)
     end
 
-    def check_face_match(image1, image2)
-      data = wrap_network_errors { facematch_service.facematch(facematch_body(image1, image2)) }
-      return unless data
-      facematch_pass?(data)
+    def selfie_face_matches_document?(img1, img2)
+      @results = wrap_network_errors { facematch_service.facematch(facematch_body(img1, img2)) }
+      facematch_pass?
     end
 
-    def facematch_pass?(data)
-      data['IsMatch']
+    def facematch_pass?
+      results&.[]('IsMatch')
     end
 
-    def selfie_live?(data)
-      data['LivenessResult'] && data['LivenessResult']['LivenessAssessment'] == 'Live'
+    def liveness_result_returns_live?
+      results&.[]('LivenessResult') &&
+        results['LivenessResult']['LivenessAssessment'] == 'Live'
     end
 
     def facematch_body(image1, image2)
