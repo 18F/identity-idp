@@ -28,6 +28,6 @@ describe Acuant::Liveness do
       and_return(good_facematch_result)
     result = subject.call(image_data)
 
-    expect(result).to eq([true, true])
+    expect(result).to eq([true, nil])
   end
 end
