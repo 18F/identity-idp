@@ -1,10 +1,9 @@
 module Acuant
   class Liveness < AcuantBase
     # @return [Array(Boolean, Hash)] a tuple of (overall success, error hash)
-    def call(image)
-      base64_image = Base64.strict_encode64(image)
-      live_face_image = selfie_live?(base64_image)
-      return failure unless live_face_image
+    def call(selfie)
+      base64_selfie = Base64.strict_encode64(selfie)
+      return failure unless selfie_live?(base64_selfie)
 
       face_image_from_document = fetch_face_from_document
       return failure unless face_image_from_document
