@@ -3,7 +3,7 @@ module Acuant
     # @return [Array(Boolean, Hash)] a tuple of (overall success, error hash)
     def call(image)
       base64_image = Base64.strict_encode64(image)
-      live_face_image = process_selfie(base64_image)
+      live_face_image = selfie_live?(base64_image)
       return failure unless live_face_image
 
       face_image_from_document = fetch_face_from_document
