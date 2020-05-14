@@ -45,8 +45,7 @@ module Acuant
     end
 
     def liveness_result_returns_live?
-      results&.dig('LivenessResult') &&
-        results['LivenessResult']['LivenessAssessment'] == 'Live'
+      results&.dig('LivenessResult', 'LivenessAssessment') == 'Live'
     end
 
     def facematch_body(image1, image2)
