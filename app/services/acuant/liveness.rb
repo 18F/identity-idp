@@ -38,7 +38,7 @@ module Acuant
     end
 
     def selfie_live?(data)
-      data['LivenessResult']['LivenessAssessment'] == 'Live'
+      data['LivenessResult'] && data['LivenessResult']['LivenessAssessment'] == 'Live'
     end
 
     def facematch_body(image1, image2)
