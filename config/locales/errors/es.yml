@@ -44,7 +44,7 @@ es:
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
         de verificación de identidad. Póngase en contacto con su proveedor de servicios
         para obtener más información.
-      selfie: Sorry your photo did not pass liveness validation. Please try again.
+      selfie: Lo sentimos, tu foto no pasó la validación de vida. Inténtalo de nuevo.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
