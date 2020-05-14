@@ -39,11 +39,11 @@ module Acuant
     end
 
     def facematch_pass?
-      results&.[]('IsMatch')
+      results&.dig('IsMatch')
     end
 
     def liveness_result_returns_live?
-      results&.[]('LivenessResult') &&
+      results&.dig('LivenessResult') &&
         results['LivenessResult']['LivenessAssessment'] == 'Live'
     end
 
