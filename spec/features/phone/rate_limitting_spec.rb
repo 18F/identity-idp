@@ -17,21 +17,6 @@ describe 'phone rate limitting' do
     end
   end
 
-  context 'on sign in' do
-    let(:user) { create(:user, :signed_up) }
-
-    it_behaves_like 'phone rate limitting', :sms
-    it_behaves_like 'phone rate limitting', :voice
-
-    def visit_otp_confirmation(delivery_method)
-      user.phone_configurations.first.update!(
-        phone: PhoneFormatter.format(phone),
-        delivery_preference: delivery_method,
-      )
-      sign_in_user(user)
-    end
-  end
-
   context 'on add phone' do
     let(:user) { create(:user, :signed_up) }
 

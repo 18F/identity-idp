@@ -48,6 +48,7 @@ module Idv
       @otp_rate_limiter ||= OtpRateLimiter.new(
         user: user,
         phone: phone,
+        phone_confirmed: true,
       )
     end
 
