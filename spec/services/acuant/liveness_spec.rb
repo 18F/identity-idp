@@ -35,7 +35,7 @@ describe Acuant::Liveness do
       and_return(good_facematch_result)
     result = subject.call(image_data)
 
-    expect(result).to eq([true, nil])
+    expect(result).to eq([true, {}])
   end
 
   it 'fails liveness and returns the api body if the selfie is not live' do

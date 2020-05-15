@@ -20,7 +20,7 @@ module Acuant
     end
 
     def success
-      [true, nil]
+      [true, {}]
     end
 
     def selfie_live?(image)
