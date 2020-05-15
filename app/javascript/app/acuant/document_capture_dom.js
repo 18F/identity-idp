@@ -33,7 +33,7 @@ const showFallbackForm = () => {
   fallbackImageForm().classList.remove('hidden');
 };
 
-const showAcuantSdkContainer = (container) => {
+export const showAcuantSdkContainer = (container) => {
   if (documentCaptureFallbackModeEnabled()) return;
 
   hideAcuantSdkContainers();

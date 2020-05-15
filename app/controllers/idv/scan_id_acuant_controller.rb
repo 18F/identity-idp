@@ -40,7 +40,7 @@ module Idv
     end
 
     def liveness
-      is_live, is_face_match = ::Acuant::Liveness.
+      is_live, is_face_match = ::Acuant::LivenessPassThrough.
                                new(scan_id_session[:instance_id]).call(request.body.read)
       scan_id_session[:liveness_pass] = is_live
       scan_id_session[:facematch_pass] = is_face_match

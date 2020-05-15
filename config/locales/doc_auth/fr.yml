@@ -23,6 +23,7 @@ fr:
     headings:
       address: Adresse mail
       capture_complete: Nous avons vérifié votre ID émis par l'état
+      selfie: Prendre un selfie.
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
       take_pic_front: Prenez une photo du recto de votre identifiant

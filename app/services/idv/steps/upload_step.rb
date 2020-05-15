@@ -12,11 +12,6 @@ module Idv
 
       private
 
-      def mobile?
-        client = DeviceDetector.new(request.user_agent)
-        client.device_type != 'desktop'
-      end
-
       def identity
         current_user&.identities&.order('created_at DESC')&.first&.decorate
       end
