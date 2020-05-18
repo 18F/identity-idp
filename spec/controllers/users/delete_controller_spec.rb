@@ -4,8 +4,13 @@ describe Users::DeleteController do
   include Features::MailerHelper
 
   describe '#show' do
-    it 'shows' do
+    it 'shows and logs a visit' do
+      stub_analytics
       stub_signed_in_user
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_DELETE_VISITED)
+
       get :show
 
       expect(response).to render_template(:show)
@@ -30,6 +35,16 @@ describe Users::DeleteController do
         stub_signed_in_user
         expect { delete }.to_not change(User, :count)
       end
+
+      it 'logs a failed submit' do
+        stub_analytics
+        stub_signed_in_user
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::ACCOUNT_DELETE_SUBMITTED, success: false)
+
+        delete
+      end
     end
 
     it 'redirects to the root path' do
@@ -43,6 +58,16 @@ describe Users::DeleteController do
       expect(User.where(id: user.id).length).to eq(1)
       delete
       expect(User.where(id: user.id).length).to eq(0)
+    end
+
+    it 'logs a succesful submit' do
+      stub_analytics
+      stub_signed_in_user
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_DELETE_SUBMITTED, success: true)
+
+      delete
     end
 
     it 'does not delete identities to prevent uuid reuse' do
