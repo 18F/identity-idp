@@ -28,7 +28,7 @@ describe Users::DeleteController do
 
       it 'does not delete the user' do
         stub_signed_in_user
-        expect { delete }.to_not change { User.count }
+        expect { delete }.to_not change(User, :count)
       end
     end
 
