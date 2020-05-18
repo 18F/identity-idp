@@ -16,6 +16,8 @@ fr:
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
         utilisant %{app}.
       heading: Êtes-vous sûr de vouloir supprimer votre compte?
+      instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
+        supprimer votre compte.
       subheading: Si vous supprimez votre compte
     personal_key:
       close: Fermer
