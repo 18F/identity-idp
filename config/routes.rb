@@ -146,7 +146,7 @@ Rails.application.routes.draw do
     get '/account' => 'accounts#show'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
-    delete '/account/delete' => 'users/delete#delete'
+    post '/account/delete' => 'users/delete#delete'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
     get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password

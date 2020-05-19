@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/delete/show.html.slim' do
+describe 'users/delete/show.html.erb' do
   let(:user) { build_stubbed(:user, :signed_up) }
   let(:decorated_user) { user.decorate }
 
