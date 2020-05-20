@@ -39,7 +39,8 @@ describe 'Remembering a webauthn device' do
       user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
 
-      select_2fa_option('webauthn')
+      # webauthn option is hidden in browsers that don't support it
+      select_2fa_option('webauthn', visible: :all)
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup

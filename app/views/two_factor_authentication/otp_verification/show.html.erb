@@ -10,30 +10,46 @@
 
 <%= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3') do %>
   <%= render @presenter.reauthn_hidden_field_partial %>
-  <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'), class: 'block bold' %>
+  <%= label_tag 'code',
+                t('simple_form.required.html') + t('forms.two_factor.code'),
+                class: 'block bold' %>
   <div class="col-12 sm-col-5 mb2 sm-mb0 sm-mr-20p inline-block">
-    <%= text_field_tag(:code, '', value: @presenter.code_value, required: true, autofocus: true,
-                       pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-                       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
+    <%= text_field_tag(:code, '',
+                       value: @presenter.code_value,
+                       required: true,
+                       autofocus: true,
+                       pattern: '[0-9]*',
+                       class: 'col-12 field monospace mfa',
+                       'aria-describedby': 'code-instructs',
+                       maxlength: Devise.direct_otp_length,
                        type: 'tel') %>
   </div>
-  <%= hidden_field_tag 'otp_make_default_number', @presenter.otp_make_default_number %>
-  <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12' %>
+  <%= hidden_field_tag 'otp_make_default_number',
+                       @presenter.otp_make_default_number %>
+  <%= submit_tag t('forms.buttons.submit.default'),
+                 class: 'btn btn-primary align-top sm-col-6 col-12' %>
 
   <br/><br/>
-  <%= link_to(t('links.two_factor_authentication.get_another_code'),
-              otp_send_path(otp_delivery_selection_form:
-                { otp_delivery_preference: @presenter.otp_delivery_preference, resend: true }),
-              class: 'btn btn-link btn-border ico ico-refresh text-decoration-none',
-              form_class: 'inline-block') %>
+  <div class="flex flex-row flex-align-center flex-wrap">
+    <%= link_to(t('links.two_factor_authentication.get_another_code'),
+                otp_send_path(otp_delivery_selection_form: {
+                  otp_delivery_preference: @presenter.otp_delivery_preference,
+                  resend: true
+                }),
+                class: 'btn btn-link btn-border ico ico-refresh text-decoration-none flex-no-shrink margin-right-205',
+                form_class: 'inline-block') %>
 
-  <inline-block class="span" style="white-space:nowrap">
-    <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-    <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'my2 ml2 mr1' %>
-    <%= label_tag 'remember_device',
-                t('forms.messages.remember_device'),
-                class: 'blue' %>
-  </inline-block>
+    <span class="text-no-wrap flex-no-shrink flex flex-row flex-align-center">
+      <%= hidden_field_tag 'remember_device', false,
+                           id: 'remember_device_preference' %>
+      <%= check_box_tag 'remember_device', true,
+                        @presenter.remember_device_box_checked?,
+                        class: 'my2 ml2 mr1 margin-left-0' %>
+      <%= label_tag 'remember_device',
+                    t('forms.messages.remember_device'),
+                    class: 'blue margin-bottom-0' %>
+    </span>
+  </div>
 <% end %>
 
 <% if @presenter.update_phone_link.present? %>

@@ -3,15 +3,16 @@ require 'rails_helper'
 RSpec.describe OtpRateLimiter do
   let(:current_user) { build(:user, :with_phone) }
   let(:phone) { MfaContext.new(current_user).phone_configurations.first.phone }
-
   subject(:otp_rate_limiter) do
-    OtpRateLimiter.new(phone: phone, user: current_user)
+    OtpRateLimiter.new(phone: phone, user: current_user, phone_confirmed: false)
   end
-
-  let(:phone_fingerprint) do
-    Pii::Fingerprinter.fingerprint(phone)
+  subject(:otp_rate_limiter_confirmed) do
+    OtpRateLimiter.new(phone: phone, user: current_user, phone_confirmed: true)
   end
-  let(:rate_limited_phone) { OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint) }
+  let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(phone) }
+  let(:rate_limited_phone) do
+    OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint, phone_confirmed: false)
+  end
 
   describe '#exceeded_otp_send_limit?' do
     it 'is false by default' do
@@ -27,11 +28,23 @@ RSpec.describe OtpRateLimiter do
 
       expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(true)
     end
+
+    it 'tracks verified phones separately. limiting one does not limit the other' do
+      expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
+
+      (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
+        otp_rate_limiter.increment
+      end
+
+      expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(true)
+      expect(otp_rate_limiter_confirmed.exceeded_otp_send_limit?).to eq(false)
+    end
   end
 
   describe '#increment' do
     it 'updates otp_last_sent_at' do
-      tracker = OtpRequestsTracker.find_or_create_with_phone(phone)
+      tracker = OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone,
+                                                                           false)
       old_otp_last_sent_at = tracker.reload.otp_last_sent_at
       otp_rate_limiter.increment
       new_otp_last_sent_at = tracker.reload.otp_last_sent_at

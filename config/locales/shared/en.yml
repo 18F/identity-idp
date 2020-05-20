@@ -1,9 +1,16 @@
 ---
 en:
   shared:
-    fake_banner:
-      fake_site: A DEMO website of the United States government
+    banner:
+      fake_site: A DEMO website of the United States government.
+      gov_description: Federal government websites often end in .gov or .mil. Before
+        sharing sensitive information, make sure you’re on a federal government site.
+      gov_heading: The .gov means it’s official.
+      how: Here’s how you know
+      official_site: An official website of the United States government.
+      secure_description: The <strong>https://</strong> ensures that you are connecting
+        to the official website and that any information you provide is encrypted
+        and transmitted securely.
+      secure_heading: The site is secure.
     footer_lite:
-      gsa: U.S. General Services Administration
-    usa_banner:
-      official_site: An official website of the United States government
+      gsa: US General Services Administration

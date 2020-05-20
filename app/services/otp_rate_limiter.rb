@@ -1,7 +1,8 @@
 class OtpRateLimiter
-  def initialize(phone:, user:)
+  def initialize(phone:, user:, phone_confirmed:)
     @phone = phone
     @user = user
+    @phone_confirmed = phone_confirmed
   end
 
   def exceeded_otp_send_limit?
@@ -38,10 +39,10 @@ class OtpRateLimiter
 
   private
 
-  attr_reader :phone, :user
+  attr_reader :phone, :user, :phone_confirmed
 
   def entry_for_current_phone
-    @entry ||= OtpRequestsTracker.find_or_create_with_phone(phone)
+    @entry ||= OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone, phone_confirmed)
   end
 
   def otp_last_sent_at

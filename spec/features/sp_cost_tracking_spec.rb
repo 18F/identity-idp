@@ -32,6 +32,42 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(6, 2, 'authentication')
   end
 
+  it 'logs the cost to the SP for reproofing' do
+    create_ial2_user_from_sp(email)
+
+    # track costs without dealing with 'remember device'
+    Capybara.reset_session!
+
+    user = User.find_with_email(email)
+    user.active_profile.update!(verified_at: 60.days.ago)
+
+    visit_idp_from_sp_with_ial2(:oidc, verified_within: '45d')
+    fill_in_credentials_and_submit(user.email, password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    complete_all_doc_auth_steps
+    click_continue
+    fill_in 'Password', with: password
+    click_continue
+    click_acknowledge_personal_key
+    click_agree_and_continue
+
+    %w[
+      acuant_front_image
+      acuant_back_image
+      lexis_nexis_resolution
+      lexis_nexis_address
+    ].each do |cost_type|
+      sp_costs = SpCost.where(cost_type: cost_type)
+      expect(sp_costs.count).to eq(2)
+      sp_costs.each do |sp_cost|
+        expect(sp_cost.ial).to eq(2)
+        expect(sp_cost.issuer).to eq(issuer)
+        expect(sp_cost.agency_id).to eq(agency_id)
+      end
+    end
+  end
+
   it 'logs the correct costs for an ial1 authentication' do
     create_ial1_user_from_sp(email)
     SpCost.delete_all

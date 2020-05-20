@@ -37,7 +37,7 @@ class UserEventCreator
 
     return event unless user_has_multiple_devices
 
-    send_new_device_notificaiton(user: user, event: event, device: device)
+    send_new_device_notification(user: user, event: event, device: device)
     event
   end
 
@@ -53,7 +53,7 @@ class UserEventCreator
     cookies.permanent[:device] = device_cookie unless device_cookie == cookies[:device]
   end
 
-  def send_new_device_notificaiton(user:, device:, event:)
+  def send_new_device_notification(user:, device:, event:)
     disavowal_token = EventDisavowal::GenerateDisavowalToken.new(event).call
     UserAlerts::AlertUserAboutNewDevice.call(user, device, disavowal_token)
   end

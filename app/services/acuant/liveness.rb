@@ -1,22 +1,31 @@
 module Acuant
   class Liveness < AcuantBase
-    def call(liveness_body)
-      live_face_image = process_selfie(liveness_body)
-      return unless live_face_image
+    # @return [Array(Boolean, Hash)] a tuple of (overall success, error hash)
+    def call(selfie)
+      base64_selfie = Base64.strict_encode64(selfie)
+      return failure unless selfie_live?(base64_selfie)
 
       face_image_from_document = fetch_face_from_document
-      return [true, false] unless face_image_from_document
+      return failure unless face_image_from_document
 
-      [true, check_face_match(face_image_from_document, live_face_image)]
+      selfie_face_matches_document?(face_image_from_document, base64_selfie) ? success : failure
     end
 
     private
 
-    def process_selfie(liveness_body)
-      liveness_data = wrap_network_errors { liveness_service.liveness(liveness_body) }
-      return unless liveness_data
-      return unless selfie_live?(liveness_data)
-      JSON.parse(liveness_body)['Image']
+    attr_accessor :results
+
+    def failure
+      [false, results]
+    end
+
+    def success
+      [true, {}]
+    end
+
+    def selfie_live?(image)
+      @results = wrap_network_errors { liveness_service.liveness(image) }
+      liveness_result_returns_live?
     end
 
     def fetch_face_from_document
@@ -25,18 +34,17 @@ module Acuant
       Base64.strict_encode64(data)
     end
 
-    def check_face_match(image1, image2)
-      data = wrap_network_errors { facematch_service.facematch(facematch_body(image1, image2)) }
-      return unless data
-      facematch_pass?(data)
+    def selfie_face_matches_document?(img1, img2)
+      @results = wrap_network_errors { facematch_service.facematch(facematch_body(img1, img2)) }
+      facematch_pass?
     end
 
-    def facematch_pass?(data)
-      data['IsMatch']
+    def facematch_pass?
+      results&.dig('IsMatch')
     end
 
-    def selfie_live?(data)
-      data['LivenessResult']['LivenessAssessment'] == 'Live'
+    def liveness_result_returns_live?
+      results&.dig('LivenessResult', 'LivenessAssessment') == 'Live'
     end
 
     def facematch_body(image1, image2)
@@ -48,11 +56,15 @@ module Acuant
     end
 
     def liveness_service
-      (Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::Liveness).new
+      (simulator_or_env_test? ? Idv::Acuant::FakeLiveness : Idv::Acuant::Liveness).new
     end
 
     def facematch_service
-      (Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::FacialMatch).new
+      (simulator_or_env_test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::FacialMatch).new
+    end
+
+    def simulator_or_env_test?
+      Rails.env.test? || Figaro.env.acuant_simulator == 'true'
     end
   end
 end

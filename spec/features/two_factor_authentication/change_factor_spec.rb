@@ -49,15 +49,6 @@ feature 'Changing authentication factor' do
         end
       end
     end
-
-    scenario 'deleting account' do
-      visit account_delete_path
-
-      expect(page).to have_content t('help_text.no_factor.delete_account')
-      complete_2fa_confirmation
-
-      expect(current_path).to eq account_delete_path
-    end
   end
 
   def complete_2fa_confirmation

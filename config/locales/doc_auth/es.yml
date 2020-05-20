@@ -25,6 +25,7 @@ es:
     headings:
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
+      selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
       take_pic_front: Toma una foto del frente de tu identificación

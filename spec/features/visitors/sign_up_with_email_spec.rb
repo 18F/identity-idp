@@ -12,7 +12,7 @@ feature 'Visitor signs up with email address' do
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
   end
 
-  scenario 'visitor cannot sign up with invalid email address' do
+  scenario 'visitor cannot sign up with invalid email address', js: true do
     sign_up_with('bogus')
     expect_email_invalid(page)
   end
@@ -26,11 +26,11 @@ feature 'Visitor signs up with email address' do
 
     invalid_addresses.each do |email|
       sign_up_with(email)
-      expect_email_invalid(page)
+      expect(page).to have_content(t('valid_email.validations.email.invalid'))
     end
   end
 
-  scenario 'visitor cannot sign up with empty email address' do
+  scenario 'visitor cannot sign up with empty email address', js: true do
     sign_up_with('')
 
     expect_email_invalid(page)

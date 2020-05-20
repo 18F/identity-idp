@@ -4,6 +4,10 @@ en:
     authorization:
       errors:
         bad_client_id: Bad client_id
+        invalid_verified_within_duration:
+          one: value must be at least %{count} day or older
+          other: value must be at least %{count} days or older
+        invalid_verified_within_format: Unrecognized format for verified_within
         no_auth: The acr_values are not authorized
         no_valid_acr_values: No acceptable acr_values found
         no_valid_scope: No valid scope values found
@@ -11,10 +15,6 @@ en:
         redirect_uri_invalid: redirect_uri is invalid
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
         unauthorized_scope: Unauthorized scope
-        invalid_verified_within_duration:
-          one: value must be at least %{count} day or older
-          other: value must be at least %{count} days or older
-        invalid_verified_within_format: Unrecognized format for verified_within
     logout:
       errors:
         id_token_hint: id_token_hint was not recognized

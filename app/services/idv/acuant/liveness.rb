@@ -12,12 +12,11 @@ module Idv
         @authentication_params = cfg.slice(:username, :password)
       end
 
-      def liveness(body)
+      def liveness(base64_image)
         url = '/api/v1/liveness'
-
         options = default_options.merge(
           headers: content_type_json.merge(accept_json),
-          body: body,
+          body: liveness_body(base64_image),
         )
         post(url, options)
       end
@@ -34,6 +33,16 @@ module Idv
 
       def default_options
         { basic_auth: @authentication_params }
+      end
+
+      def liveness_body(base64_image)
+        {
+          'Settings' => {
+            'SubscriptionId' => @subscription_id,
+            'AdditionalSettings' => { 'OS' => 'UNKNOWN' },
+          },
+          'Image' => base64_image,
+        }.to_json
       end
     end
   end

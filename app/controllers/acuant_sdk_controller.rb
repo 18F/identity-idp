@@ -10,7 +10,7 @@ class AcuantSdkController < ApplicationController
 
   def show
     # Only render files on an allowlist to prevent path traversal issues
-    render plain: 'Not found', status: :not_found unless requested_asset_permitted?
+    return render(plain: 'Not found', status: :not_found) unless requested_asset_permitted?
 
     SecureHeaders.append_content_security_policy_directives(
       request,

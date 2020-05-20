@@ -49,7 +49,7 @@ module IdvHelper
     click_on t('idv.buttons.send_confirmation_code')
   end
 
-  def visit_idp_from_sp_with_ial2(sp)
+  def visit_idp_from_sp_with_ial2(sp, **extra)
     if sp == :saml
       settings = ial2_with_bundle_saml_settings
       settings.security[:embed_sign] = false
@@ -64,11 +64,16 @@ module IdvHelper
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end
   end
 
-  def visit_idp_from_oidc_sp_with_ial2(state: SecureRandom.hex, client_id:, nonce:)
+  def visit_idp_from_oidc_sp_with_ial2(
+    state: SecureRandom.hex,
+    client_id:,
+    nonce:,
+    verified_within: nil
+  )
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
@@ -78,6 +83,7 @@ module IdvHelper
       state: state,
       prompt: 'select_account',
       nonce: nonce,
+      verified_within: verified_within,
     )
   end
 

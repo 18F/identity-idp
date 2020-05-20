@@ -6,7 +6,8 @@ feature 'webauthn sign up' do
   let!(:user) { sign_up_and_set_password }
 
   def visit_webauthn_setup
-    select_2fa_option('webauthn')
+    # webauthn option is hidden in browsers that don't support it
+    select_2fa_option('webauthn', visible: :all)
   end
 
   def expect_webauthn_setup_success

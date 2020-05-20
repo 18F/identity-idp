@@ -77,6 +77,8 @@ module Idv
       def save_proofing_components
         Db::ProofingComponent::Add.call(user_id, :document_check, 'acuant')
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
+        return unless liveness_checking_enabled?
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, 'acuant')
       end
 
       def extract_pii_from_doc(data)
@@ -207,6 +209,27 @@ module Idv
 
       def sp_session
         session.fetch(:sp, {})
+      end
+
+      def mark_selfie_step_complete_unless_liveness_checking_is_enabled
+        mark_step_complete(:selfie) unless liveness_checking_enabled?
+      end
+
+      def liveness_checking_enabled?
+        FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_liveness_checking_required?)
+      end
+
+      def sp_liveness_checking_required?
+        ServiceProvider.from_issuer(sp_session[:issuer].to_s)&.liveness_checking_required
+      end
+
+      def no_sp?
+        sp_session[:issuer].blank?
+      end
+
+      def mobile?
+        client = DeviceDetector.new(request.user_agent)
+        client.device_type != 'desktop'
       end
 
       delegate :idv_session, :session, to: :@flow
