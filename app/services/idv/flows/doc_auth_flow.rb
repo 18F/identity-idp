@@ -11,6 +11,7 @@ module Idv
         back_image: Idv::Steps::BackImageStep,
         mobile_front_image: Idv::Steps::MobileFrontImageStep,
         mobile_back_image: Idv::Steps::MobileBackImageStep,
+        selfie: Idv::Steps::SelfieStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::VerifyStep,
         doc_success: Idv::Steps::DocSuccessStep,

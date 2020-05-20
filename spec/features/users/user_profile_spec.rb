@@ -31,6 +31,7 @@ feature 'User profile' do
       expect(User.count).to eq 1
       expect(AgencyIdentity.count).to eq 1
 
+      fill_in(t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
       expect(current_path).to eq root_path
@@ -59,6 +60,7 @@ feature 'User profile' do
         },
       )
 
+      fill_in(t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD)
       click_button t('users.delete.actions.delete')
       expect(request).to have_been_requested
     end
@@ -74,6 +76,7 @@ feature 'User profile' do
       expect(User.count).to eq 1
       expect(Profile.count).to eq 1
 
+      fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
       expect(current_path).to eq root_path
@@ -89,6 +92,7 @@ feature 'User profile' do
       sign_in_live_with_2fa(profile.user)
       visit account_path
       click_link(t('account.links.delete_account'), href: account_delete_path)
+      fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
 
       expect(User.count).to eq 0

@@ -34,7 +34,7 @@ describe 'Unchecking remember device' do
       before do
         user = sign_in_user
         mock_webauthn_setup_challenge
-        select_2fa_option('webauthn')
+        select_2fa_option('webauthn', visible: :all)
 
         allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 

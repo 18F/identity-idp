@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/delete/show.html.slim' do
+describe 'users/delete/show.html.erb' do
   let(:user) { build_stubbed(:user, :signed_up) }
   let(:decorated_user) { user.decorate }
 
@@ -44,7 +44,10 @@ describe 'users/delete/show.html.slim' do
 
   it 'contains link to cancel delete account link' do
     render
+    page = Capybara.string(rendered)
+    link = page.find_link(t('users.delete.actions.cancel'), href: account_path)
 
-    expect(rendered).to have_link(t('users.delete.actions.cancel'), href: account_path)
+    expect(link).to be_present
+    expect(link['role']).to eq('button')
   end
 end

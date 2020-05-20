@@ -281,40 +281,6 @@ $ RAILS_ASSET_HOST=localhost:3000 FEDERALIST_PATH=/site/user/repository rake spe
 
 This will output your site to `public/site/user/repository` for quick publishing to [Federalist](https://federalist-docs.18f.gov/pages/using-federalist/). To test compatibility, run `simplehttpserver` from the app's `public` folder and visit `http://localhost:8000/<FEDERALIST PATH>/user_flows` in your browser.
 
-### Load testing
-
-We provide some [Locust.io] Python scripts you can run to test how the
-app responds to load. You'll need to have Python and `pyenv-virtualenvwrapper`
-installed on your machine. If you're on a Mac, the easiest way to set up Python
-and `pyenv-virtualenvwrapper` is to run the [laptop script].
-
-Next, you'll need to set the following values in your local `application.yml`:
-
-```
-disable_email_sending: 'true'
-enable_load_testing_mode: 'true'
-telephony_adapter: 'test'
-```
-
-Then, run the app with `make run`, and in a new Terminal tab or window, run:
-```
-make load_test type=create_account
-```
-This will simulate 3 concurrent users going through the entire account creation
-flow and then signing out. To change the number of concurrent users, number of
-requests, and the rate at which users are created, modify the `-c`,
-`-n`, and `-r` Locust parameters in `bin/load_test`. Run `locust --help` for
-more details.
-
-By default, the test will target the host running at `http://localhost:3000`.
-To change the target host, set the `TARGET_HOST` environment variable.
-For example:
-
-```
-TARGET_HOST=https://awesome.loadtesting.com make load_test type=create_account
-```
-
-[Locust.io]: http://locust.io/
 [laptop script]: https://github.com/18F/laptop
 
 ### Proofing vendors

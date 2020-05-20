@@ -96,8 +96,8 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :verify)
   end
 
-  def idv_doc_auth_self_image_step
-    idv_doc_auth_step_path(step: :self_image)
+  def idv_doc_auth_selfie_step
+    idv_doc_auth_step_path(step: :selfie)
   end
 
   def idv_doc_auth_send_link_step

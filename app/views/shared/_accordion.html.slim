@@ -3,9 +3,8 @@
 )
   .accordion-header(
     class=('display-none' if options[:hide_header])
-    role="heading"
+    role="button"
     aria-labelledby=target_id
-    aria-level=options.fetch(:aria_level, 1)
   )
     .accordion-header-controls.py1.px2.mt-tiny.mb-tiny(
       aria-controls="#{target_id}"

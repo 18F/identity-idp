@@ -6,14 +6,14 @@
     <li class="py2 border-top">
       <div class="mb2">
         <div class="mr1 inline-block circle circle-number bg-blue white">1</div>
-        <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_1') %></div>
+        <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
         <div class="inline-block ml3"><%= t('forms.totp_setup.totp_step_1a') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
             <%= text_field_tag :name, '', required: true, class: 'block col-12 field monospace',
-                                maxlength: 20, 'aria-labelledby': 'totp-label' %>
+                                maxlength: 20, 'aria-labelledby': 'totp-nickname' %>
           </div>
         </div>
       </div>
@@ -30,10 +30,10 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="px2 py1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
-          <div class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
-               data-clipboard-text="<%= @code.upcase %>">
+          <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+                  data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
-          </div>
+          </button>
         </div>
         <div class="py2 center bold"><%= t('instructions.mfa.authenticator.or') %></div>
         <%= accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),

@@ -4,6 +4,7 @@ module Idv
       STEPS = {
         mobile_front_image: Idv::Steps::MobileFrontImageStep,
         capture_mobile_back_image: Idv::Steps::CaptureMobileBackImageStep,
+        selfie: Idv::Steps::SelfieStep,
         capture_complete: Idv::Steps::CaptureCompleteStep,
       }.freeze
 

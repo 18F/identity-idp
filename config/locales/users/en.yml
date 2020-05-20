@@ -13,6 +13,7 @@ en:
         name, address, date of birth and Social Security number from our system."
       bullet_3: You won't be able to securely access your information using %{app}.
       heading: Are you sure you want to delete your account?
+      instructions: Enter your password to confirm that you want to delete your account.
       subheading: If you delete your account
     personal_key:
       close: Close
