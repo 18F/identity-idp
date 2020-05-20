@@ -5,16 +5,13 @@ module AccountReset
     before_action :render_404_if_request_missing
 
     def show
-      analytics.track_event({
-        event: 'account reset is pending',
-        user_id: current_user.uuid,
-      })
+      analytics.track_event event: 'account reset is pending', user_id: current_user.uuid
+
       @pending_presenter = AccountReset::PendingPresenter.new(account_reset_request)
     end
 
     def cancel
-      rec_to_cancel = AccountResetRequest.find_by_id(params[:id])
-      pp rec_to_cancel
+      rec_to_cancel = AccountResetRequest.find_by(id: params[:id])
       rec_to_cancel.cancelled_at = Time.zone.now
       rec_to_cancel.save!
       # this is wrong; needs to at least send 'successful cancel' email to user

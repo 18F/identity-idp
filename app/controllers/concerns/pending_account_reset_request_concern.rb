@@ -5,7 +5,7 @@ module PendingAccountResetRequestConcern
     AccountResetRequest.where(
       user_id: user.id,
       granted_at: nil,
-      cancelled_at: nil
+      cancelled_at: nil,
     ).order(requested_at: :asc).first
   end
 end
