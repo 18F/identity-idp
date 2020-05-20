@@ -1,0 +1,9 @@
+<h1 class="h3 my0">
+  <%= 'You have requested an account reset' %>
+</h1>
+
+<p>In <strong><%= @pending_presenter.time_remaining_until_granted %></strong>
+  you will be able to delete and recreate your account.</p>
+
+<p>Click <%= link_to 'here', account_reset_pending_cancel_path(id: @pending_presenter.account_reset_request.id) %>
+  to cancel your account reset request.</p>

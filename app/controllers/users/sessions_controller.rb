@@ -4,6 +4,7 @@ module Users
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
+    include PendingAccountResetRequestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -99,7 +100,9 @@ module Users
       add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
       update_last_sign_in_at_on_email
-      redirect_to user_two_factor_authentication_url
+      redirect_to pending_account_reset_request(current_user) ?
+        account_reset_pending_url :
+        user_two_factor_authentication_url
     end
 
     def now
