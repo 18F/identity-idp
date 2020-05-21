@@ -86,5 +86,22 @@ describe RequestPasswordReset do
         RequestPasswordReset.new(unconfirmed_email_address.email).perform
       end
     end
+
+    context 'when two users have the same email address' do
+      let(:email) { 'aaa@test.com' }
+
+      before do
+        # order matters here
+        @user_unconfirmed = create(:user, email: email, confirmed_at: nil)
+        @user_confirmed = create(:user, email: email, confirmed_at: Time.zone.now)
+      end
+
+      it 'always finds the user with the confirmed email address' do
+        form = RequestPasswordReset.new(email)
+        form.perform
+
+        expect(form.send(:user)).to eq(@user_confirmed)
+      end
+    end
   end
 end
