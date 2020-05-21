@@ -93,9 +93,13 @@ describe RequestPasswordReset do
       before do
         @user_unconfirmed = create(:user, email: email, confirmed_at: nil)
         @user_confirmed = create(:user, email: email, confirmed_at: Time.zone.now)
+      end
 
+      around do |example|
         # make the test more deterministic
         EmailAddress.default_scopes = [-> { order('id ASC') }]
+        example.run
+        EmailAddress.default_scopes = []
       end
 
       it 'always finds the user with the confirmed email address' do
@@ -103,10 +107,6 @@ describe RequestPasswordReset do
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
-      end
-
-      after do
-        EmailAddress.default_scopes = []
       end
     end
   end
