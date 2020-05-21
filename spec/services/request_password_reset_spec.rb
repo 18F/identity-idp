@@ -95,7 +95,7 @@ describe RequestPasswordReset do
         @user_confirmed = create(:user, email: email, confirmed_at: Time.zone.now)
 
         # make the test more deterministic
-        EmailAddress.default_scopes = [ -> { order('id ASC') } ]
+        EmailAddress.default_scopes = [-> { order('id ASC') }]
       end
 
       it 'always finds the user with the confirmed email address' do
