@@ -13,7 +13,10 @@
 }
 
 .hr { margin: $hr-margin; }
-.lead { margin-bottom: 30px; }
+.lead {
+  margin-bottom: 30px;
+  hyphens: none;
+}
 .mr-tiny { margin-right: 4px; }
 
 .s10 {

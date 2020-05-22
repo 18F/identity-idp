@@ -2,7 +2,7 @@
 es:
   date:
     month_names:
-    - 
+    -
     - enero
     - febrero
     - marzo
@@ -20,4 +20,10 @@ es:
     formats:
       event_timestamp: "%e de %B de %Y a las %H:%M"
       event_timestamp_utc: "%e de %B de %Y a las %H:%M UTC"
+    hour: hora
+    hours: horas
+    minute: minuto
+    minutes: minutos
     pm: PM
+    second: segundo
+    seconds: segundos

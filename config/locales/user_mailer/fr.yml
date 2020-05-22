@@ -114,6 +114,14 @@ fr:
         votre mot de passe %{disavowal_link}. Pour plus d'aide, veuillez visiter le
         %{help_link} de %{app} ou %{contact_link}.
       intro: Le mot de passe de votre compte %{app} a été changé.
+    pending_account_reset_request_cancelled:
+      header: Votre demande de réinitialisation de compte en attente a été annulée
+      help: ''
+      intro: Plus tôt, vous avez demandé cette annulation au lieu de choisir une
+        deuxième forme d'authentification.
+      more_info: "Bien que votre compte soit toujours actif, <strong>vous devez choisir un
+         authentification par deuxième formulaire pour l'utiliser.</strong>"
+      subject: Votre demande de réinitialisation de compte en attente a été annulée
     personal_key_regenerated:
       help_html: <p>Votre compte login.gov vient de recevoir une nouvelle clé personnelle
         de 16 caractères. Le but de cet e-mail est de s'assurer que c'est bien vous

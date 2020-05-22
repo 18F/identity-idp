@@ -335,6 +335,25 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe 'pending_account_reset_request_cancelled' do
+    let(:mail) { UserMailer.pending_account_reset_request_cancelled(user.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.pending_account_reset_request_cancelled.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(strip_tags(t('user_mailer.pending_account_reset_request_cancelled.intro')))
+    end
+  end
+
   describe 'please_reset_password' do
     let(:mail) { UserMailer.please_reset_password(email_address.email, 'This is a test.') }
 

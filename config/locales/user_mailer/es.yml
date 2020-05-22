@@ -108,6 +108,14 @@ es:
       help: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
         Para más ayuda, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
+    pending_account_reset_request_cancelled:
+      header: Su solicitud de restablecimiento de cuenta pendiente ha sido cancelada
+      help: ''
+      intro: Anteriormente, solicitó esta cancelación en lugar de elegir una
+        segunda forma de autenticación.
+      more_info: "Aunque su cuenta aún está activa, <strong>debe elegir un
+         autenticación de segundo formulario para usarlo. </strong>"
+      subject: Su solicitud de restablecimiento de cuenta pendiente ha sido cancelada
     personal_key_regenerated:
       help_html: <p>Tu cuenta de login.gov acaba de emitir una nueva clave personal
         de 16 caracteres. Estás recibiendo este correo electrónico para verificar

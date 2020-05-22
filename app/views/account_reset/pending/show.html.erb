@@ -1,9 +1,11 @@
 <h1 class="h3 my0">
-  <%= 'You have requested an account reset' %>
+  <%= t('account_reset.pending.header') %>
 </h1>
 
-<p>In <strong><%= @pending_presenter.time_remaining_until_granted %></strong>
-  you will be able to delete and recreate your account.</p>
+<p><%= t('misc.in').capitalize %>
+  <strong><%= @pending_presenter.time_remaining_until_granted %></strong>,
+  <%= t('account_reset.pending.delete_and_recreate') %></p>
 
-<p>Click <%= link_to 'here', account_reset_pending_cancel_path(id: @pending_presenter.account_reset_request.id) %>
-  to cancel your account reset request.</p>
+<p><%= t('misc.command.click') %>
+  <%= link_to t('misc.here'), account_reset_pending_cancel_path %>
+  <%= t('account_reset.pending.cancel') %></p>

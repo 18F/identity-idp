@@ -105,6 +105,14 @@ en:
       help: If you did not make this change, you can reset your password %{disavowal_link}.
         For more help, please visit the %{app} %{help_link} or %{contact_link}.
       intro: You have a new password for your %{app} account.
+    pending_account_reset_request_cancelled:
+      header: Your pending account reset request has been cancelled
+      help: ''
+      intro: Earlier, you requeted this cancellation instead of choosing a second
+        form of authentication for your account.
+      more_info: "Although your account is still active, <strong>you must choose a
+        second form authentication to use it.</strong>"
+      subject: Your pending account reset request has been cancelled
     personal_key_regenerated:
       help_html: <p>Your login.gov account was just issued a new 16-character personal
         key. You're getting this email to make sure it was you.</p><p>If you just

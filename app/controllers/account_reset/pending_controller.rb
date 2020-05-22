@@ -11,12 +11,15 @@ module AccountReset
     end
 
     def cancel
-      rec_to_cancel = AccountResetRequest.find_by(id: params[:id])
-      rec_to_cancel.cancelled_at = Time.zone.now
-      rec_to_cancel.save!
-      # this is wrong; needs to at least send 'successful cancel' email to user
-      # but do we need to flash a message on the UI first?
+      # the record must be deleted b/c there's a unique user id constraint on the
+      # table, so we can't soft delete and add new requests for the same user
+
+      # AccountResetRequest.where(user_id: current_user.id).delete_all
+      UserMailer.pending_account_reset_request_cancelled(current_user.email).deliver_now
       redirect_to user_two_factor_authentication_url
+    rescue StandardError
+      flash[:error] = t('account_reset.pending.cancel_error')
+      redirect_to account_reset_pending_url
     end
 
     private
