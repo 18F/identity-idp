@@ -28,9 +28,10 @@ en:
         the same email address.
       title: Deleting your account should be your last resort
     pending:
-      cancel: to cancel your account reset request.
-      cancel_error: The request could not be cancelled.  Please try again shortly.
-      delete_and_recreate: you will be able to delete and recreate your account.
+      cancel_html: "%{click_here} to cancel your account reset request."
+      click_here: Click here
+      delete_and_recreate_html: In <strong>%{interval}</strong> you will be able to
+        delete and recreate your account.
       header: You have requested an account reset
     request:
       access_your_account: access your account

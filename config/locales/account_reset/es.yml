@@ -22,27 +22,28 @@ es:
         a su registro número de teléfono.
     delete_account:
       are_you_sure: "¿Seguro que quieres eliminar tu cuenta?"
-      info: Eliminar su cuenta debe ser su último recurso si está bloqueado         
-        de tu cuenta No podrá recuperar ninguna información vinculada a su cuenta.
-        Una vez que se elimine su cuenta, puede crear una nueva usando la misma dirección
+      info: Eliminar su cuenta debe ser su último recurso si está bloqueado de tu
+        cuenta No podrá recuperar ninguna información vinculada a su cuenta. Una vez
+        que se elimine su cuenta, puede crear una nueva usando la misma dirección
         de correo electrónico.
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
-      cancel: para cancelar su solicitud de restablecimiento de cuenta.
-      cancel_error: La solicitud no pudo ser cancelada. Por favor intente nuevamente
-        en breve.
-      delete_and_recreate: podrá eliminar y volver a crear su cuenta.
+      cancel_html: "%{click_here} para cancelar su solicitud de restablecimiento de
+        cuenta."
+      click_here: Haga clic aquí
+      delete_and_recreate_html: En <strong>%{interval}</strong> podrá eliminar y volver
+        a crear su cuenta.
       header: Has solicitado un restablecimiento de cuenta
     request:
       access_your_account: acceder a tu cuenta
       are_you_sure: "¿Estás seguro de que no tienes acceso a ninguno de tus métodos
         de seguridad?"
       delete_account: Eliminar su cuenta
-      delete_account_info: Eliminar su cuenta existente y crear una nueva         
-        le permite usar la misma dirección de correo electrónico y configurar nuevas
-        opciones de seguridad. Sin embargo, eliminar eliminará cualquier aplicación
-        de agencia que haya vinculado a su cuenta y deberá restaurar cada conexión.
-        <br><br> Si continúas, tú primero recibirá una confirmación por correo electrónico.
+      delete_account_info: Eliminar su cuenta existente y crear una nueva le permite
+        usar la misma dirección de correo electrónico y configurar nuevas opciones
+        de seguridad. Sin embargo, eliminar eliminará cualquier aplicación de agencia
+        que haya vinculado a su cuenta y deberá restaurar cada conexión. <br><br>
+        Si continúas, tú primero recibirá una confirmación por correo electrónico.
         Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace
         para seguir eliminando su cuenta las 24 horas después del correo electrónico
         de confirmación inicial llega.
@@ -55,7 +56,7 @@ es:
       personal_key_info: Su clave personal es un código de 16 caracteres que se le
         dio a en la creación de la cuenta como método de recuperación; consulte el
         ejemplo a continuación.
-      personal_key_trailer: Si tiene su clave personal, puede usarla en %{link}         
-        en lugar de restablecer.
+      personal_key_trailer: Si tiene su clave personal, puede usarla en %{link} en
+        lugar de restablecer.
       title: Eliminación y restablecimiento de cuenta
       yes_continue: Sí, continúa la eliminación.

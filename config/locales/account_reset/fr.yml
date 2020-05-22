@@ -29,9 +29,9 @@ fr:
         nouveau en utilisant la même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours
     pending:
-      cancel: pour annuler votre demande de réinitialisation de compte.
-      cancel_error: La demande n'a pas pu être annulée. Veuillez réessayer sous peu.
-      delete_and_recreate: vous pourrez supprimer et recréer votre compte.
+      cancel_html: "%{click_here} pour annuler votre demande de réinitialisation de
+        compte."
+      click_here: Cliquez ici
       header: Vous avez demandé une réinitialisation de compte
     request:
       access_your_account: accéder à votre compte

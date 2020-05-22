@@ -99,7 +99,7 @@ Rails.application.routes.draw do
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       get '/account_reset/pending' => 'account_reset/pending#show'
-      get '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
+      post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
