@@ -88,11 +88,6 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
   end
 
-  def pending_account_reset_request_cancelled(email_address)
-    mail(to: email_address,
-         subject: t('user_mailer.pending_account_reset_request_cancelled.subject'))
-  end
-
   def please_reset_password(email_address, message)
     @message = message
     mail(to: email_address, subject: t('user_mailer.please_reset_password.subject'))

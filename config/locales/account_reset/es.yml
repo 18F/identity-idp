@@ -29,7 +29,8 @@ es:
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
       cancel: para cancelar su solicitud de restablecimiento de cuenta.
-      cancel_error: La solicitud no pudo ser cancelada. Por favor intente nuevamente en breve.
+      cancel_error: La solicitud no pudo ser cancelada. Por favor intente nuevamente
+        en breve.
       delete_and_recreate: podrá eliminar y volver a crear su cuenta.
       header: Has solicitado un restablecimiento de cuenta
     request:

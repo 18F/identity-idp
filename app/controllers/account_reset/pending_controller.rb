@@ -11,11 +11,10 @@ module AccountReset
     end
 
     def cancel
-      # the record must be deleted b/c there's a unique user id constraint on the
-      # table, so we can't soft delete and add new requests for the same user
-
-      # AccountResetRequest.where(user_id: current_user.id).delete_all
-      UserMailer.pending_account_reset_request_cancelled(current_user.email).deliver_now
+      AccountResetRequest.find_by(user_id: current_user.id).update(cancelled_at: Time.zone.now)
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_cancel(email_address).deliver_now
+      end
       redirect_to user_two_factor_authentication_url
     rescue StandardError
       flash[:error] = t('account_reset.pending.cancel_error')
