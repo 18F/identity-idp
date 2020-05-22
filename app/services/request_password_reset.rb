@@ -48,6 +48,9 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
   end
 
   def email_address_record
-    @email_address_record ||= EmailAddress.find_with_email(email)
+    @email_address_record ||= begin
+      EmailAddress.confirmed.find_with_email(email) ||
+        EmailAddress.unconfirmed.find_with_email(email)
+    end
   end
 end
