@@ -1,12 +1,10 @@
 module AccountReset
   class PendingController < ApplicationController
-    include PendingAccountResetRequestConcern
-
     before_action :confirm_account_reset_request_exists
 
     def show
       analytics.track_event event: 'account reset is pending', user_id: current_user.uuid
-      @pending_presenter = AccountReset::PendingPresenter.new(account_reset_request)
+      @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
     def cancel
@@ -21,11 +19,13 @@ module AccountReset
     private
 
     def confirm_account_reset_request_exists
-      render_not_found if account_reset_request.blank?
+      render_not_found if pending_account_reset_request.blank?
     end
 
-    def account_reset_request
-      @account_reset_request ||= pending_account_reset_request(current_user)
+    def pending_account_reset_request
+      @account_reset_request ||= AccountReset::FindPendingRequestForUser.new(
+        current_user,
+      ).call
     end
   end
 end

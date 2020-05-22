@@ -4,7 +4,6 @@ module Users
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
-    include PendingAccountResetRequestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -164,11 +163,17 @@ module Users
     end
 
     def redirect_to_2fa_or_pending_reset(user)
-      if pending_account_reset_request(user)
+      if pending_account_reset_request.present?
         redirect_to account_reset_pending_url
       else
         redirect_to user_two_factor_authentication_url
       end
+    end
+
+    def pending_account_reset_request
+      AccountReset::FindPendingRequestForUser.new(
+        current_user,
+      ).call
     end
   end
 end
