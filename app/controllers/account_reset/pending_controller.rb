@@ -1,17 +1,18 @@
 module AccountReset
   class PendingController < ApplicationController
+    include UserAuthenticator
+
+    before_action :authenticate_user
     before_action :confirm_account_reset_request_exists
 
     def show
-      analytics.track_event event: 'account reset is pending', user_id: current_user.uuid
+      analytics.track_event(Analytics::PENDING_ACCOUNT_RESET_VISITED)
       @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
     def cancel
+      analytics.track_event(Analytics::PENDING_ACCOUNT_RESET_CANCELLED)
       AccountReset::CancelRequestForUser.new(user).call
-      # current_user.confirmed_email_addresses.each do |email_address|
-      #   UserMailer.account_reset_cancel(email_address).deliver_now
-      # end
       redirect_to user_two_factor_authentication_url
     end
 
