@@ -12,9 +12,7 @@ module AccountReset
 
     def cancel
       account_reset_request.update(cancelled_at: Time.zone.now)
-      current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_cancel(email_address).deliver_now
-      end
+      send_cancellation_email
       redirect_to user_two_factor_authentication_url
     rescue StandardError
       flash[:error] = t('account_reset.pending.cancel_error')
@@ -29,6 +27,12 @@ module AccountReset
 
     def account_reset_request
       @account_reset_request ||= pending_account_reset_request(current_user)
+    end
+
+    def send_cancellation_email
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.account_reset_cancel(email_address).deliver_now
+      end
     end
   end
 end
