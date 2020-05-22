@@ -4,7 +4,7 @@ describe AccountReset::PendingController do
   descirbe '#show' do
     it 'renders'
 
-    context 'when the account reset request does not exist'
+    context 'when the account reset request does not exist' do
       it 'renders a 404'
     end
   end

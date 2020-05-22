@@ -2,28 +2,22 @@
 fr:
   date:
     month_names:
-    - 
-    - janvier
-    - février
-    - mars
-    - avril
-    - mai
-    - juin
-    - juillet
-    - août
-    - septembre
-    - octobre
-    - novembre
-    - décembre
+      -
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
   time:
     am: A.M.
     formats:
-      event_timestamp: "%e %B %Y à %H:%M"
-      event_timestamp_utc: "%e %B %Y à %H:%M UTC"
-    hour: heure
-    hours: heures
-    minute: minute
-    minutes: minutes
+      event_timestamp: '%e %B %Y à %H:%M'
+      event_timestamp_utc: '%e %B %Y à %H:%M UTC'
     pm: P.M.
-    second: seconde
-    seconds: secondes
