@@ -99,7 +99,7 @@ module Users
       add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
       update_last_sign_in_at_on_email
-      redirect_to_2fa_or_pending_reset(current_user)
+      redirect_to_2fa_or_pending_reset
     end
 
     def now
@@ -162,7 +162,7 @@ module Users
       sp_session[:ial2] ? 2 : 1
     end
 
-    def redirect_to_2fa_or_pending_reset(user)
+    def redirect_to_2fa_or_pending_reset
       if pending_account_reset_request.present?
         redirect_to account_reset_pending_url
       else
