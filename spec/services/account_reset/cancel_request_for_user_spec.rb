@@ -23,7 +23,13 @@ describe AccountReset::CancelRequestForUser do
     end
 
     it "sends an email to the user's confirmed email addresses" do
+      notify_user_of_cancellation = instance_double(AccountReset::NotifyUserOfRequestCancellation)
+      expect(AccountReset::NotifyUserOfRequestCancellation).to receive(:new).
+        with(user).
+        and_return(notify_user_of_cancellation)
+      expect(notify_user_of_cancellation).to receive(:call)
 
+      subject.call
     end
   end
 end

@@ -8,6 +8,7 @@ module AccountReset
 
     def call
       account_reset_request.update!(cancelled_at: Time.zone.now)
+      NotifyUserOfRequestCancellation.new(user).call
     end
 
     private
