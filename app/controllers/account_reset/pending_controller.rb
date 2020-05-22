@@ -11,7 +11,7 @@ module AccountReset
     end
 
     def cancel
-      AccountResetRequest.find_by(user_id: current_user.id).update(cancelled_at: Time.zone.now)
+      account_reset_request.update(cancelled_at: Time.zone.now)
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.account_reset_cancel(email_address).deliver_now
       end
