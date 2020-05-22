@@ -32,6 +32,8 @@ fr:
       cancel_html: "%{click_here} pour annuler votre demande de réinitialisation de
         compte."
       click_here: Cliquez ici
+      delete_and_recreate_html: En <strong>%{interval}</strong> vous pourrez supprimer
+        et recréer votre compte.
       header: Vous avez demandé une réinitialisation de compte
     request:
       access_your_account: accéder à votre compte
