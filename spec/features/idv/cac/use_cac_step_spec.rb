@@ -9,7 +9,6 @@ feature 'use cac step' do
   end
 
   it 'shows cac proofing option if cac proofing is enabled' do
-    enable_cac_proofing
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_upload_step
 
@@ -27,7 +26,6 @@ feature 'use cac step' do
   end
 
   it 'does not show cac proofing option on mobile' do
-    enable_cac_proofing
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
 
     sign_in_and_2fa_user
