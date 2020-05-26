@@ -23,10 +23,6 @@ module CacProofingHelper
     idv_cac_step_path(step: :success)
   end
 
-  def enable_cac_proofing
-    allow(Figaro.env).to receive(:cac_proofing_enabled).and_return('true')
-  end
-
   def complete_cac_proofing_steps_before_choose_method_step
     visit idv_cac_proofing_choose_method_step
   end

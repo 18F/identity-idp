@@ -11,7 +11,6 @@ feature 'cac proofing present cac step' do
   end
 
   before do
-    enable_cac_proofing
     sign_in_and_2fa_user
     complete_cac_proofing_steps_before_present_cac_step
   end
