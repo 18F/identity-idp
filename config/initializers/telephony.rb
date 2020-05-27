@@ -11,19 +11,51 @@ Telephony.config do |c|
   c.twilio.timeout = Figaro.env.twilio_timeout.to_i unless Figaro.env.twilio_timeout.nil?
   c.twilio.record_voice = Figaro.env.twilio_record_voice == 'true'
 
-  c.pinpoint.sms.region = Figaro.env.pinpoint_sms_region
-  c.pinpoint.sms.application_id = Figaro.env.pinpoint_sms_application_id
-  c.pinpoint.sms.shortcode = Figaro.env.pinpoint_sms_shortcode
-  c.pinpoint.sms.longcode_pool = JSON.parse(Figaro.env.pinpoint_sms_longcode_pool || '[]')
-  c.pinpoint.sms.credential_role_arn = Figaro.env.pinpoint_sms_credential_role_arn
-  if Figaro.env.pinpoint_sms_credential_role_arn.present?
-    c.pinpoint.sms.credential_role_session_name = Socket.gethostname
+  if Figaro.env.pinpoint_sms_configs.present?
+    JSON.parse(Figaro.env.pinpoint_sms_configs || '[]').each do |sms_json_config|
+      c.pinpont.add_sms_config do |sms|
+        sms.application_id = sms_json_config['application_id']
+        sms.region = sms_json_config['region']
+        sms.shortcode = sms_json_config['shortcode']
+        sms.longcode_pool = sms_json_config['longcode_pool'] || []
+        sms.credential_role_arn = sms_json_config['credential_role_arn']
+        if sms_json_config['credential_role_arn'].present?
+          sms.credential_role_session_name = Socket.gethostname
+        end
+      end
+    end
+  else
+    c.pinpont.add_sms_config do |sms|
+      sms.region = Figaro.env.pinpoint_sms_region
+      sms.application_id = Figaro.env.pinpoint_sms_application_id
+      sms.shortcode = Figaro.env.pinpoint_sms_shortcode
+      sms.longcode_pool = JSON.parse(Figaro.env.pinpoint_sms_longcode_pool || '[]')
+      sms.credential_role_arn = Figaro.env.pinpoint_sms_credential_role_arn
+      if Figaro.env.pinpoint_sms_credential_role_arn.present?
+        sms.credential_role_session_name = Socket.gethostname
+      end
+    end
   end
 
-  c.pinpoint.voice.region = Figaro.env.pinpoint_voice_region
-  c.pinpoint.voice.longcode_pool = JSON.parse(Figaro.env.pinpoint_voice_longcode_pool || '[]')
-  c.pinpoint.voice.credential_role_arn = Figaro.env.pinpoint_voice_credential_role_arn
-  if Figaro.env.pinpoint_voice_credential_role_arn.present?
-    c.pinpoint.voice.credential_role_session_name = Socket.gethostname
+  if Figaro.env.pinpoint_voice_configs.present?
+    JSON.parse(Figaro.env.pinpoint_voice_configs || '[]').each do |voice_json_config|
+      c.pinpoint.add_voice_config do |voice|
+        voice.region = voice_json_config['region']
+        voice.longcode_pool = voice_json_config['longcode_pool'] || []
+        voice.credential_role_arn = voice_json_config['credential_role_arn']
+        if voice_json_config['credential_role_arn'].present?
+          voice.credential_role_session_name = Socket.gethostname
+        end
+      end
+    end
+  else
+    c.pinpoint.add_voice_config do |voice|
+      voice.region = Figaro.env.pinpoint_voice_region
+      voice.longcode_pool = JSON.parse(Figaro.env.pinpoint_voice_longcode_pool || '[]')
+      voice.credential_role_arn = Figaro.env.pinpoint_voice_credential_role_arn
+      if Figaro.env.pinpoint_voice_credential_role_arn.present?
+        voice.credential_role_session_name = Socket.gethostname
+      end
+    end
   end
 end
