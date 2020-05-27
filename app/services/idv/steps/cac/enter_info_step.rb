@@ -16,6 +16,7 @@ module Idv
           PII_FIELDS.each do |key|
             flow_session[:pii_from_doc][key] = data[key]
           end
+          flow_session[:pii_from_doc]['uuid'] = current_user.uuid
         end
 
         def form_submit
