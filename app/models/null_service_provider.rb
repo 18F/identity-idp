@@ -80,4 +80,8 @@ class NullServiceProvider
   end
 
   def encryption_opts; end
+
+  def allow_prompt_login
+    false
+  end
 end
