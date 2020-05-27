@@ -75,4 +75,20 @@ describe NullServiceProvider do
       expect(subject.redirect_uris).to eq([])
     end
   end
+
+  context 'matching methods on ServiceProvider' do
+    it 'has all the methods that ServiceProvider has' do
+      sp_methods = ServiceProvider.instance_methods(false)
+      null_sp_methods = NullServiceProvider.instance_methods
+
+      expect(sp_methods - null_sp_methods).to be_empty
+    end
+
+    it 'has stubs for all the column names' do
+      attributes = ServiceProvider.columns.map(&:name).map(&:to_sym)
+      null_sp_methods = NullServiceProvider.instance_methods
+
+      expect(attributes - null_sp_methods).to be_empty
+    end
+  end
 end
