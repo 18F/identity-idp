@@ -14,7 +14,7 @@ Telephony.config do |c|
 
   if Figaro.env.pinpoint_sms_configs.present?
     JSON.parse(Figaro.env.pinpoint_sms_configs || '[]').each do |sms_json_config|
-      c.pinpont.add_sms_config do |sms|
+      c.pinpoint.add_sms_config do |sms|
         sms.application_id = sms_json_config['application_id']
         sms.region = sms_json_config['region']
         sms.shortcode = sms_json_config['shortcode']
@@ -26,7 +26,7 @@ Telephony.config do |c|
       end
     end
   else
-    c.pinpont.add_sms_config do |sms|
+    c.pinpoint.add_sms_config do |sms|
       sms.region = Figaro.env.pinpoint_sms_region
       sms.application_id = Figaro.env.pinpoint_sms_application_id
       sms.shortcode = Figaro.env.pinpoint_sms_shortcode
