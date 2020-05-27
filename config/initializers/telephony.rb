@@ -18,7 +18,6 @@ Telephony.config do |c|
         sms.application_id = sms_json_config['application_id']
         sms.region = sms_json_config['region']
         sms.shortcode = sms_json_config['shortcode']
-        sms.longcode_pool = sms_json_config['longcode_pool'] || []
         sms.credential_role_arn = sms_json_config['credential_role_arn']
         if sms_json_config['credential_role_arn'].present?
           sms.credential_role_session_name = Socket.gethostname
@@ -30,7 +29,6 @@ Telephony.config do |c|
       sms.region = Figaro.env.pinpoint_sms_region
       sms.application_id = Figaro.env.pinpoint_sms_application_id
       sms.shortcode = Figaro.env.pinpoint_sms_shortcode
-      sms.longcode_pool = JSON.parse(Figaro.env.pinpoint_sms_longcode_pool || '[]')
       sms.credential_role_arn = Figaro.env.pinpoint_sms_credential_role_arn
       if Figaro.env.pinpoint_sms_credential_role_arn.present?
         sms.credential_role_session_name = Socket.gethostname
