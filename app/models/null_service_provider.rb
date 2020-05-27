@@ -40,7 +40,7 @@ class NullServiceProvider
     sp_initiated_login_url
     ssl_cert
     updated_at
-  ]
+  ].freeze
 
   COLUMNS.each do |col|
     define_method(col) { nil }
