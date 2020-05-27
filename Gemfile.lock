@@ -56,8 +56,8 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 3505cda900b0e96a59a06f7fc1289473cebc35c1
-  branch: margolis-multiple-pinpoint-configs
+  revision: c98371810cd79d0d35e7d955f09b3fa826db3984
+  tag: v0.1.0
   specs:
     identity-telephony (0.1.0)
       aws-sdk-pinpoint
