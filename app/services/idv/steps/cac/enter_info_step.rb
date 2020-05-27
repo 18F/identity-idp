@@ -12,11 +12,10 @@ module Idv
 
         def store_info_in_session
           data = params[:doc_auth]
-          flow_session[:pii_from_doc] = {}
+          flow_session[:pii_from_doc] = { 'uuid' => current_user.uuid }
           PII_FIELDS.each do |key|
             flow_session[:pii_from_doc][key] = data[key]
           end
-          flow_session[:pii_from_doc]['uuid'] = current_user.uuid
         end
 
         def form_submit
