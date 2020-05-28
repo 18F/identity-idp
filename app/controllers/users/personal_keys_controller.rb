@@ -27,7 +27,8 @@ module Users
       user_session[:personal_key] = create_new_code
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
       create_user_event(:new_personal_key)
-      send_new_personal_key_notification
+      result = send_new_personal_key_notifications
+      analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS, result.to_h)
       redirect_to manage_personal_key_url
     end
 
@@ -47,13 +48,25 @@ module Users
       current_user.identities.pluck(:last_authenticated_at).compact.empty?
     end
 
-    def send_new_personal_key_notification
-      current_user.confirmed_email_addresses.each do |email_address|
+    # @return [FormResponse]
+    def send_new_personal_key_notifications
+      emails = current_user.confirmed_email_addresses.map do |email_address|
         UserMailer.personal_key_regenerated(email_address.email).deliver_now
       end
-      MfaContext.new(current_user).phone_configurations.each do |phone_configuration|
-        Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
-      end
+
+      telephony_responses = MfaContext.new(current_user).
+        phone_configurations.map do |phone_configuration|
+          Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
+        end
+
+      FormResponse.new(
+        success: true,
+        errors: {},
+        extra: {
+          emails: emails.count,
+          sms_message_ids: telephony_responses.map { |resp| resp.to_h[:message_id] },
+        }
+      )
     end
   end
 end

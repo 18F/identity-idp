@@ -16,7 +16,7 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
       allow(UserMailer).to receive(:personal_key_sign_in).and_call_original
       allow(Telephony).to receive(:send_personal_key_sign_in_notice)
 
-      described_class.call(user, disavowal_token)
+      response = described_class.call(user, disavowal_token)
 
       expect(UserMailer).to have_received(:personal_key_sign_in).twice
       expect(UserMailer).to have_received(:personal_key_sign_in).
@@ -27,6 +27,9 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
         with(to: phone_configurations[0].phone)
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
         with(to: phone_configurations[1].phone)
+
+      expect(response.to_h[:emails]).to eq(2)
+      expect(response.to_h[:sms_message_ids].size).to eq(2)
     end
   end
 end

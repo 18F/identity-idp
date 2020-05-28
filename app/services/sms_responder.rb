@@ -14,8 +14,12 @@ class SmsResponder
   def call
     return invalid_signature_response unless signature_valid?
     return not_a_valid_keyword_response unless valid_keyword?
-    respond_to_sms
-    FormResponse.new(success: true, errors: {}, extra: extra_analytics_attributes)
+    telepony_response = respond_to_sms
+    FormResponse.new(
+      success: true,
+      errors: {},
+      extra: telephony_response.to_h.merge(extra_analytics_attributes),
+    )
   end
 
   def signature_valid?
@@ -30,6 +34,7 @@ class SmsResponder
 
   private
 
+  # @return [Telephony::Response]
   def respond_to_sms
     if JOIN_KEYWORDS.include?(message_body)
       Telephony.send_join_keyword_response(to: message_from)
