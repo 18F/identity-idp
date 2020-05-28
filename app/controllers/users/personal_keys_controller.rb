@@ -55,17 +55,21 @@ module Users
       end
 
       telephony_responses = MfaContext.new(current_user).
-        phone_configurations.map do |phone_configuration|
-          Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
-        end
+                            phone_configurations.map do |phone_configuration|
+        Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
+      end
 
+      form_response(emails: emails, telephony_responses: telephony_responses)
+    end
+
+    def form_response(emails:, telephony_responses:)
       FormResponse.new(
         success: true,
         errors: {},
         extra: {
           emails: emails.count,
           sms_message_ids: telephony_responses.map { |resp| resp.to_h[:message_id] },
-        }
+        },
       )
     end
   end

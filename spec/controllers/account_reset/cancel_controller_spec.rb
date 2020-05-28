@@ -16,6 +16,8 @@ describe AccountReset::CancelController do
         errors: {},
         event: 'cancel',
         user_id: user.uuid,
+        message_id: 'fake-message-id',
+        request_id: 'fake-message-request-id',
       }
 
       expect(@analytics).to receive(:track_event).

@@ -12,7 +12,7 @@ module AccountReset
       FormResponse.new(
         success: true,
         errors: {},
-        extra: extra_analytics_attributes
+        extra: extra_analytics_attributes,
       )
     end
 

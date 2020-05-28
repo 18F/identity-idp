@@ -88,7 +88,7 @@ describe AccountReset::RequestController do
         totp: false,
         piv_cac: true,
         email_addresses: 1,
-        errors: {}
+        errors: {},
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)

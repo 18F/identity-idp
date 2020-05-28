@@ -14,7 +14,7 @@ class SmsResponder
   def call
     return invalid_signature_response unless signature_valid?
     return not_a_valid_keyword_response unless valid_keyword?
-    telepony_response = respond_to_sms
+    telephony_response = respond_to_sms
     FormResponse.new(
       success: true,
       errors: {},
