@@ -13,7 +13,7 @@ module UserAlerts
       form_response(emails: emails, telephony_responses: telephony_responses)
     end
 
-    def form_response(emails:, telephony_responses:)
+    def self.form_response(emails:, telephony_responses:)
       FormResponse.new(
         success: true,
         errors: {},
