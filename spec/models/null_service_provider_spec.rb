@@ -91,4 +91,10 @@ describe NullServiceProvider do
       expect(attributes - null_sp_methods).to be_empty
     end
   end
+
+  describe '#allow_prompt_login' do
+    it 'returns false' do
+      expect(subject.allow_prompt_login).to eq(false)
+    end
+  end
 end
