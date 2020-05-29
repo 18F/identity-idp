@@ -32,7 +32,7 @@ describe AccountReset::PendingPresenter do
     end
 
     context 'when the remaining time is less than 2 hours' do
-      let(:requested_at) { 24.hours.ago - (1.hours + 49.minutes) }
+      let(:requested_at) { 24.hours.ago - (1.hour + 49.minutes) }
 
       it 'returns its description in 1 hour and minutes' do
         expect(subject.time_remaining_until_granted).to eq '1 hour and 49 minutes'
