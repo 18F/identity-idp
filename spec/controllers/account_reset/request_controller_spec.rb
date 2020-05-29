@@ -40,11 +40,13 @@ describe AccountReset::RequestController do
 
       stub_analytics
       attributes = {
+        success: true,
         event: 'request',
         sms_phone: false,
         totp: true,
         piv_cac: false,
         email_addresses: 1,
+        errors: {},
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)
@@ -58,11 +60,15 @@ describe AccountReset::RequestController do
 
       stub_analytics
       attributes = {
+        success: true,
         event: 'request',
         sms_phone: true,
         totp: false,
         piv_cac: false,
         email_addresses: 1,
+        request_id: 'fake-message-request-id',
+        message_id: 'fake-message-id',
+        errors: {},
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)
@@ -76,11 +82,13 @@ describe AccountReset::RequestController do
 
       stub_analytics
       attributes = {
+        success: true,
         event: 'request',
         sms_phone: false,
         totp: false,
         piv_cac: true,
         email_addresses: 1,
+        errors: {},
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, attributes)

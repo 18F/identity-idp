@@ -36,7 +36,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
   describe '#create' do
     context 'when the user enters a valid personal key' do
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa(create(:user, :with_webauthn))
+        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone))
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -51,6 +51,11 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash, ga_client_id)
+
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN,
+          hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
+        )
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)

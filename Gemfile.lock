@@ -56,10 +56,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 48366635ba1e579f39a9a621aefeffedc7d0e951
-  tag: v0.1.1
+  revision: cfced9e92532e2da716ce61af5675621ca8d1617
+  tag: v0.1.2
   specs:
-    identity-telephony (0.1.1)
+    identity-telephony (0.1.2)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -137,10 +137,10 @@ GEM
     aws-sdk-kms (1.25.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-pinpoint (1.39.0)
+    aws-sdk-pinpoint (1.40.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-pinpointsmsvoice (1.15.0)
+    aws-sdk-pinpointsmsvoice (1.16.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.53.0)

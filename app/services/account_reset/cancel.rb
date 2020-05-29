@@ -30,7 +30,7 @@ module AccountReset
     end
 
     def notify_user_via_phone_of_account_reset_cancellation
-      Telephony.send_account_reset_cancellation_notice(to: phone)
+      @telephony_response = Telephony.send_account_reset_cancellation_notice(to: phone)
     end
 
     def update_account_reset_request
@@ -48,10 +48,10 @@ module AccountReset
     end
 
     def extra_analytics_attributes
-      {
+      @telephony_response.to_h.merge(
         event: 'cancel',
         user_id: user.uuid,
-      }
+      )
     end
   end
 end
