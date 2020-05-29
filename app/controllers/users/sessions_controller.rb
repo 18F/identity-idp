@@ -108,7 +108,8 @@ module Users
     end
 
     def update_sp_return_logs_with_user(user_id)
-      Db::SpReturnLog::UpdateUser.call(session[:sp][:request_id], user_id)
+      sp_session = session[:sp]
+      Db::SpReturnLog::UpdateUser.call(sp_session[:request_id], user_id) if sp_session
     end
 
     def expires_at
