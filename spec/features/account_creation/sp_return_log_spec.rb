@@ -5,7 +5,7 @@ feature 'SP return logs' do
 
   let(:email) { 'test@test.com' }
 
-  it 'updates user id after user registers an email so we can track any user back to issuer' do
+  it 'updates user id after registration to allow tracking user back to issuer', :email do
     visit_idp_from_sp_with_ial1(:oidc)
     expect(SpReturnLog.count).to eq(1)
     expect(SpReturnLog.first.user_id).to be_nil
