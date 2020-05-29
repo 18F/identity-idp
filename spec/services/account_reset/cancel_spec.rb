@@ -33,6 +33,14 @@ describe AccountReset::Cancel do
           I18n.t('telephony.account_reset_cancellation_notice'),
         )
       end
+
+      it 'returns a FormResponse with message_id' do
+        token = create_account_reset_request_for(user)
+
+        response = AccountReset::Cancel.new(token).call
+
+        expect(response.to_h[:message_id]).to be_present
+      end
     end
 
     context 'when the user does not have a phone enabled for SMS' do

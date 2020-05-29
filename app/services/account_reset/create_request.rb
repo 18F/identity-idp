@@ -8,6 +8,12 @@ module AccountReset
       request = create_request
       notify_user_by_email(request)
       notify_user_by_sms_if_applicable
+
+      FormResponse.new(
+        success: true,
+        errors: {},
+        extra: extra_analytics_attributes,
+      )
     end
 
     private
@@ -38,7 +44,11 @@ module AccountReset
       cancel_link = Rails.application.routes.url_helpers.account_reset_cancel_url(
         token: user.account_reset_request.request_token,
       )
-      Telephony.send_account_reset_notice(to: phone, cancel_link: cancel_link)
+      @telephony_response = Telephony.send_account_reset_notice(to: phone, cancel_link: cancel_link)
+    end
+
+    def extra_analytics_attributes
+      @telephony_response&.extra&.slice(:request_id, :message_id) || {}
     end
   end
 end
