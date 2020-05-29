@@ -41,6 +41,7 @@ module SignUp
 
     def process_successful_creation
       user = @register_user_email_form.user
+      update_sp_return_logs_with_user(user.id)
       create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
 
       resend_confirmation = params[:user][:resend]
@@ -49,6 +50,10 @@ module SignUp
       redirect_to sign_up_verify_email_url(
         resend: resend_confirmation, request_id: permitted_params[:request_id],
       )
+    end
+
+    def update_sp_return_logs_with_user(user_id)
+      Db::SpReturnLog::UpdateUser.call(sp_request_id, user_id)
     end
 
     def sp_request_id
