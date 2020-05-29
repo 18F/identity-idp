@@ -98,12 +98,17 @@ module Users
       cache_active_profile(auth_params[:password])
       add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
+      update_sp_return_logs_with_user(current_user.id)
       update_last_sign_in_at_on_email
       redirect_to user_two_factor_authentication_url
     end
 
     def now
       @_now ||= Time.zone.now
+    end
+
+    def update_sp_return_logs_with_user(user_id)
+      Db::SpReturnLog::UpdateUser.call(request_id, user_id)
     end
 
     def expires_at
