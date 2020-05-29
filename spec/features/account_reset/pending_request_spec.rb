@@ -22,7 +22,7 @@ feature 'Pending account reset request sign in' do
       login_two_factor_path(otp_delivery_preference: :sms, reauthn: false),
     )
 
-    # Signing in a after cancelling should not show a pending request and go string to MFA
+    # Signing in after cancelling should not show a pending request and go string to MFA
     Capybara.reset_session!
     sign_in_user(user)
     expect(page).to have_current_path(

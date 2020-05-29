@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 describe AccountReset::PendingPresenter do
+  # I18n.locale = :en
+
   let(:user) { create(:user) }
-  let(:hours) { 21 }
-  let(:minutes) { 13 }
-  let(:seconds) { 40 }
-  let(:requested_at) do
-    24.hours.ago + hours.hours + minutes.minutes + seconds.seconds
-  end
+  let(:requested_at) { 22.hours.ago }
   let(:account_reset_request) do
     AccountResetRequest.new(
       user: user,
@@ -18,48 +15,58 @@ describe AccountReset::PendingPresenter do
   subject { described_class.new(account_reset_request) }
 
   describe '#account_reset_request' do
-    it 'returns account reset request' do
+    it 'returns the account reset request' do
       expect(subject.account_reset_request.requested_at).to eq(requested_at)
     end
   end
 
   describe '#time_remaining_until_granted' do
-    around(:each) do |example|
-      I18n.locale = :en
-      Timecop.freeze Time.zone.now do
-        example.run
+    before { I18n.locale = :en }
+
+    context 'when the remaining time is greater than 1 hour' do
+      let(:requested_at) { 24.hours.ago - (2.hours + 21.minutes) }
+
+      it 'returns its description in hours and minutes' do
+        expect(subject.time_remaining_until_granted).to eq '2 hours and 21 minutes'
       end
     end
 
-    context 'when requested at is greater than an hour' do
-      it 'returns the description in hours and minutes' do
-        expect(subject.time_remaining_until_granted).to eq '21 hours and 13 minutes'
+    context 'when the remaining time is less than 2 hours' do
+      let(:requested_at) { 24.hours.ago - (1.hours + 49.minutes) }
+
+      it 'returns its description in 1 hour and minutes' do
+        expect(subject.time_remaining_until_granted).to eq '1 hour and 49 minutes'
       end
     end
 
-    context 'when requested at is greater than a minute' do
-      let(:hours) { 0 }
+    context 'when the remaining time is greater than 1 minute' do
+      let(:requested_at) { 24.hours.ago - (13.minutes + 40.seconds) }
 
-      it 'returns the description in minutes and seconds' do
+      it 'returns its description in minutes and seconds' do
         expect(subject.time_remaining_until_granted).to eq '13 minutes and 40 seconds'
       end
     end
 
-    context 'when requested at is less than a minute' do
-      let(:hours) { 0 }
-      let(:minutes) { 0 }
+    context 'when the remaining time is less than 2 minutes' do
+      let(:requested_at) { 24.hours.ago - (1.minute + 25.seconds) }
 
-      it 'returns the description in minutes and seconds' do
+      it 'returns its description in 1 minute and seconds' do
+        expect(subject.time_remaining_until_granted).to eq '1 minute and 25 seconds'
+      end
+    end
+
+    context 'when the remaining time is less than 1 minute' do
+      let(:requested_at) { 24.hours.ago - 40.seconds }
+
+      it 'returns its description in minutes and seconds' do
         expect(subject.time_remaining_until_granted).to eq '40 seconds'
       end
     end
 
-    context 'when the request is less than a second' do
-      let(:hours) { 0 }
-      let(:minutes) { 0 }
-      let(:seconds) { 0 }
+    context 'when the remaining time is less than 1 second' do
+      let(:requested_at) { 24.hours.ago - 0.5.seconds }
 
-      it 'returns the description in minutes and seconds' do
+      it 'returns less than 1 second' do
         expect(subject.time_remaining_until_granted).to eq 'less than 1 second'
       end
     end
