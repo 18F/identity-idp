@@ -7,6 +7,9 @@ class EmailAddress < ApplicationRecord
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
 
+  scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
+  scope :unconfirmed, -> { where(confirmed_at: nil) }
+
   def email=(email)
     set_encrypted_attribute(name: :email, value: email)
     self.email_fingerprint = email.present? ? encrypted_attributes[:email].fingerprint : ''
