@@ -21,6 +21,10 @@ module Funnel
         usps_letter_sent
         capture_mobile_back_image
         capture_complete
+        choose_method
+        present_cac
+        enter_info
+        success
       ].freeze
       STEP_TYPE_TO_CLASS = {
         update: RegisterSubmitStep,

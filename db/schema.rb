@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_08_192702) do
+ActiveRecord::Schema.define(version: 2020_05_30_185607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,16 @@ ActiveRecord::Schema.define(version: 2020_05_08_192702) do
     t.integer "capture_mobile_back_image_error_count", default: 0
     t.datetime "no_sp_session_started_at"
     t.string "no_sp_campaign"
+    t.datetime "choose_method_view_at"
+    t.integer "choose_method_view_count", default: 0
+    t.datetime "present_cac_view_at"
+    t.integer "present_cac_view_count", default: 0
+    t.datetime "enter_info_view_at"
+    t.integer "enter_info_view_count", default: 0
+    t.datetime "success_view_at"
+    t.integer "success_view_count", default: 0
+    t.integer "present_cac_submit_count", default: 0
+    t.integer "present_cac_error_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
