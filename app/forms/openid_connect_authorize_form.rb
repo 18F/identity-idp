@@ -108,9 +108,13 @@ class OpenidConnectAuthorizeForm
   def check_for_unauthorized_scope(params)
     return true if ial3_requested_but_disabled?
     param_value = params[:scope]
-    return false if ial2_requested? || ial3_requested? || param_value.blank?
+    return false if ial2_or_greater? || param_value.blank?
     return true if verified_at_requested? && !ial2_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def ial2_or_greater?
+    ial2_requested? || ial3_requested?
   end
 
   def ial3_requested_but_disabled?
