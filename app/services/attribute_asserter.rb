@@ -97,7 +97,7 @@ class AttributeAsserter
 
   def ial2_authn_context?
     (Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? authn_context) ||
-      (authn_context == IAL3_AUTHN_CONTEXT_CLASSREF)
+      (authn_context == Saml::Idp::Constants::IAL3_AUTHN_CONTEXT_CLASSREF)
   end
 
   def authn_context
@@ -110,5 +110,9 @@ class AttributeAsserter
 
   def ial2_service_provider?
     service_provider.ial.to_i >= 2
+  end
+
+  def ial2_or_ial3_authn_context?
+    ial2_authn_context? || (authn_context == Saml::Idp::Constants::IAL3_AUTHN_CONTEXT_CLASSREF)
   end
 end
