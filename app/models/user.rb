@@ -29,10 +29,10 @@ class User < ApplicationRecord
   has_many :authorizations, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :identities # identities need to be orphaned to prevent UUID reuse
+  has_many :events # we are retaining events after delete
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
-  has_many :events # we are retaining events after delete
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
