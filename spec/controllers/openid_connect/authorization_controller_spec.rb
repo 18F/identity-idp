@@ -218,6 +218,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         expect(session[:sp]).to eq(
           ial2: false,
+          ial3: false,
           ialmax: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,

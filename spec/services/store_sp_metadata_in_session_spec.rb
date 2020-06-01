@@ -41,6 +41,7 @@ describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           ial2: false,
+          ial3: false,
           ialmax: false,
           request_url: 'http://issuer.gov',
           request_id: request_id,
