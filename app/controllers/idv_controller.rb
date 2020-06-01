@@ -9,7 +9,7 @@ class IdvController < ApplicationController
   def index
     if decorated_session.requested_more_recent_verification?
       verify_identity
-    elsif active_profile?
+    elsif active_profile? && !liveness_upgrade_required?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       redirect_to idv_fail_url
@@ -50,6 +50,10 @@ class IdvController < ApplicationController
     return unless reactivate_account_session.started?
     confirm_password_reset_profile
     redirect_to reactivate_account_url
+  end
+
+  def liveness_upgrade_required?
+    sp_session[:ial3] && !Db::Profile::HasLivenessCheck.call(current_user.id)
   end
 
   def active_profile?

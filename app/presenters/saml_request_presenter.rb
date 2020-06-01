@@ -38,6 +38,10 @@ class SamlRequestPresenter
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? authn_context
   end
 
+  def ial2_or_ial3_authn_context?
+    ial2_authn_context? || (authn_context == IAL3_AUTHN_CONTEXT_CLASSREF)
+  end
+
   def ialmax_authn_context?
     Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == authn_context
   end

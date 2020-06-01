@@ -64,7 +64,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial2_requested?
-    ial == 2
+    ial == 2 && !service_provider.liveness_checking_required
+  end
+
+  def ial3_requested?
+    ial == 3 || (ial == 2 && service_provider.liveness_checking_required)
   end
 
   def ialmax_requested?
@@ -103,7 +107,8 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if ial2_requested? || param_value.blank?
+    return true if ial3_requested? && !FeatureManagement.liveness_checking_enabled?
+    return false if (ial2_requested? || ial3_requested?) || param_value.blank?
     return true if verified_at_requested? && !ial2_service_provider?
     @scope != param_value.split(' ').compact
   end
@@ -158,16 +163,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial
-    case acr_values.sort.max
-    when Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-      0
-    when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-      1
-    when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-      2
-    end
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[acr_values.sort.max]
   end
 
   def extra_analytics_attributes
@@ -194,7 +190,9 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
+    if ialmax_requested? || ial2_requested? || ial3_requested?
+      return OpenidConnectAttributeScoper::VALID_SCOPES
+    end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
