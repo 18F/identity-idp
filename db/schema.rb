@@ -87,6 +87,15 @@ ActiveRecord::Schema.define(version: 2020_06_01_235647) do
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
   end
 
+  create_table "deleted_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "uuid", null: false
+    t.datetime "user_created_at", null: false
+    t.datetime "deleted_at", null: false
+    t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
+    t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
+  end
+
   create_table "devices", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "cookie_uuid", null: false
@@ -560,5 +569,4 @@ ActiveRecord::Schema.define(version: 2020_06_01_235647) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
-  add_foreign_key "events", "users"
 end
