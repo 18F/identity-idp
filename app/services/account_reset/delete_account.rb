@@ -39,6 +39,7 @@ module AccountReset
     end
 
     def destroy_user
+      Db::DeletedUser::Create.call(user.id)
       user.destroy!
     end
 

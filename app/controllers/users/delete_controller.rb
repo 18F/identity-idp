@@ -9,6 +9,7 @@ module Users
 
     def delete
       send_push_notifications
+      Db::DeletedUser::Create.call(current_user.id)
       current_user.destroy!
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
