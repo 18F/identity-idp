@@ -30,6 +30,10 @@ module DocCaptureHelper
     idv_capture_doc_step_path(step: :capture_complete)
   end
 
+  def idv_capture_doc_capture_selfie_step
+    idv_capture_doc_step_path(step: :selfie)
+  end
+
   def mock_doc_captured(user_id)
     doc_capture = CaptureDoc::CreateRequest.call(user_id)
     doc_capture.acuant_token = 'foo'
