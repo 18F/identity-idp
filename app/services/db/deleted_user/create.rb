@@ -6,7 +6,7 @@ module Db
         return unless user
         ::DeletedUser.create!(user_id: user.id,
                               uuid: user.uuid,
-                              created_at: user.created_at,
+                              user_created_at: user.created_at,
                               deleted_at: Time.zone.now)
       end
     end
