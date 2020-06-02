@@ -7,6 +7,7 @@ describe Idv::ScanIdAcuantController do
     stub_sign_in unless test.metadata[:skip_sign_in]
     allow(Figaro.env).to receive(:enable_mobile_capture).and_return('true')
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+    allow(Figaro.env).to receive(:acuant_simulator).and_return('true')
   end
 
   describe '#field_image' do
