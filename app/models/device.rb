@@ -1,6 +1,8 @@
 class Device < ApplicationRecord
   belongs_to :user
-  has_many :events, dependent: :destroy
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :events # we are retaining events after delete
+  # rubocop:enable Rails/HasManyOrHasOneDependent
   attr_accessor :nice_name
   validates :user_id, presence: true
   validates :cookie_uuid, presence: true
