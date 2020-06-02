@@ -37,6 +37,8 @@ describe Encryption::KmsClient do
     )
   end
 
+  kms_regions = JSON.parse(Figaro.env.aws_kms_regions)
+
   let(:kms_ciphertext) do
     'KMSc' + %w[kms1 kms2 kms3].map { |c| Base64.strict_encode64(c) }.to_json
   end
@@ -50,7 +52,6 @@ describe Encryption::KmsClient do
     context 'with KMS enabled' do
       it 'encrypts with KMS' do
         result = subject.encrypt(plaintext, encryption_context)
-
         expect(result).to eq(kms_ciphertext)
       end
     end
@@ -76,7 +77,6 @@ describe Encryption::KmsClient do
     context 'with a ciphertext encrypted with KMS' do
       it 'decrypts the ciphertext with KMS' do
         result = subject.decrypt(kms_ciphertext, encryption_context)
-
         expect(result).to eq(plaintext)
       end
     end
@@ -120,7 +120,6 @@ describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
-
       subject.decrypt(kms_ciphertext, encryption_context)
     end
   end

@@ -45,24 +45,21 @@ module Encryption
         Base64.strict_encode64(
           encrypt_raw_kms(chunk, encryption_context),
         )
-      end.to_json
+      end.join('')
     end
 
     def encrypt_raw_kms(plaintext, encryption_context)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      aws_client.encrypt(
-        key_id: Figaro.env.aws_kms_key_id,
-        plaintext: plaintext,
-        encryption_context: encryption_context,
-      ).ciphertext_blob
+      multi_aws_client.encrypt(Figaro.env.aws_kms_key_id, plaintext, encryption_context)
     end
 
     def decrypt_kms(ciphertext, encryption_context)
       clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
+        dec = Base64.strict_decode64(chunk)
         decrypt_raw_kms(
-          Base64.strict_decode64(chunk),
+          dec,
           encryption_context,
         )
       end.join('')
@@ -71,10 +68,7 @@ module Encryption
     end
 
     def decrypt_raw_kms(ciphertext, encryption_context)
-      aws_client.decrypt(
-        ciphertext_blob: ciphertext,
-        encryption_context: encryption_context,
-      ).plaintext
+      multi_aws_client.decrypt(ciphertext, encryption_context)
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
@@ -121,15 +115,12 @@ module Encryption
       plaintext.scan(/.{1,#{chunk_size}}/m)
     end
 
-    def aws_client
-      @aws_client ||= Aws::KMS::Client.new(
-        instance_profile_credentials_timeout: 1, # defaults to 1 second
-        instance_profile_credentials_retries: 5, # defaults to 0 retries
-      )
-    end
-
     def encryptor
       @encryptor ||= Encryptors::AesEncryptor.new
+    end
+
+    def multi_aws_client
+      @multi_aws_client ||= MultiRegionKMSClient.new
     end
   end
 end
