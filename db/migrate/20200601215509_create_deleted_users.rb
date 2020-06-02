@@ -8,5 +8,7 @@ class CreateDeletedUsers < ActiveRecord::Migration[5.1]
     end
     add_index :deleted_users, %i[user_id], unique: true
     add_index :deleted_users, %i[uuid], unique: true
+
+    remove_foreign_key :events, :users
   end
 end
