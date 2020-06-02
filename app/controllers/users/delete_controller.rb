@@ -9,8 +9,7 @@ module Users
 
     def delete
       send_push_notifications
-      Db::DeletedUser::Create.call(current_user.id)
-      current_user.destroy!
+      delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
       analytics.track_event(Analytics::ACCOUNT_DELETE_SUBMITTED, success: true)
@@ -18,6 +17,13 @@ module Users
     end
 
     private
+
+    def delete_user
+      ActiveRecord::Base.transaction do
+        Db::DeletedUser::Create.call(current_user.id)
+        current_user.destroy!
+      end
+    end
 
     def confirm_current_password
       return if valid_password?

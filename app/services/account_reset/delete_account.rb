@@ -39,8 +39,10 @@ module AccountReset
     end
 
     def destroy_user
-      Db::DeletedUser::Create.call(user.id)
-      user.destroy!
+      ActiveRecord::Base.transaction do
+        Db::DeletedUser::Create.call(user.id)
+        user.destroy!
+      end
     end
 
     def send_push_notifications
