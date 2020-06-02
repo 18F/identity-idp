@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 5.2.4'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.2'
 
 gem 'ahoy_matey', '~> 2.0'
 gem 'american_date'
@@ -47,7 +47,7 @@ gem 'rotp', '~> 3.3.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
-gem 'safe_target_blank'
+gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
@@ -59,7 +59,7 @@ gem 'stringex', require: false
 gem 'strong_migrations'
 gem 'subprocess', require: false
 gem 'twilio-ruby'
-gem 'two_factor_authentication'
+gem 'two_factor_authentication', '>= 2.1.1'
 gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
