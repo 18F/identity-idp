@@ -41,11 +41,11 @@ describe Encryption::KmsClient do
 
   let(:kms_ciphertext) do
     'KMSc' + %w[kms1 kms2 kms3].map { |c|
-      region_hash = Hash.new
+      region_hash = {}
       kms_regions.each do |r|
         region_hash[r] = c
       end
-      Base64.strict_encode64({:reg => region_hash}.to_json)
+      Base64.strict_encode64({ reg: region_hash }.to_json)
     }.to_json
   end
 

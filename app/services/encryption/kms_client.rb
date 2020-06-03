@@ -57,9 +57,8 @@ module Encryption
       clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
-        dec = Base64.strict_decode64(chunk)
         decrypt_raw_kms(
-          dec,
+          Base64.strict_decode64(chunk),
           encryption_context,
         )
       end.join('')
