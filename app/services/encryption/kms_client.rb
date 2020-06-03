@@ -45,7 +45,7 @@ module Encryption
         Base64.strict_encode64(
           encrypt_raw_kms(chunk, encryption_context),
         )
-      end.join('')
+      end.to_json
     end
 
     def encrypt_raw_kms(plaintext, encryption_context)
