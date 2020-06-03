@@ -38,7 +38,10 @@ module Encryption
 
     def resolve_region_decryption(regions)
       # For each region that the ciphertext has a cipher for, check to see if that region is
-      # represented in the clients available
+      # represented in the clients available. Check default region before checking others
+      curr_region_client = @aws_clients[Figaro.env.aws_region]
+      curr_region_cipher = regions[Figaro.env.aws_region]
+      return curr_region_client, curr_region_cipher if curr_region_client && curr_region_cipher
       regions.each do |region, cipher|
         region_client = @aws_clients[region]
         resolved_ciphertext = cipher
