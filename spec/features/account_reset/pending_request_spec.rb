@@ -13,20 +13,19 @@ feature 'Pending account reset request sign in' do
     Capybara.reset_session!
 
     sign_in_user(user)
-
     expect(page).to have_content(t('account_reset.pending.header'))
 
-    click_on t('account_reset.pending.click_here')
+    click_on t('account_reset.pending.cancel_request')
+    expect(page).to have_current_path(account_reset_pending_confirm_path)
 
-    expect(page).to have_current_path(
-      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false),
-    )
+    click_on t('links.go_back')
+    expect(page).to have_content(t('account_reset.pending.header'))
 
-    # Signing in after cancelling should not show a pending request and go string to MFA
-    Capybara.reset_session!
-    sign_in_user(user)
-    expect(page).to have_current_path(
-      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false),
-    )
+    click_on t('account_reset.pending.cancel_request')
+    click_on t('forms.buttons.continue')
+    expect(page).to have_content(t('account_reset.pending.cancelled'))
+
+    click_on t('links.continue_sign_in')
+    expect(page).to have_content(t('two_factor_authentication.header_text'))
   end
 end

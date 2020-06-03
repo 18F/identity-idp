@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe AccountReset::PendingPresenter do
-  # I18n.locale = :en
-
   let(:user) { create(:user) }
   let(:requested_at) { 22.hours.ago }
   let(:account_reset_request) do

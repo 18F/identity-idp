@@ -28,12 +28,14 @@ es:
         de correo electrónico.
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
-      cancel_html: "%{click_here} para cancelar su solicitud de restablecimiento de
-        cuenta."
-      click_here: Haga clic aquí
-      delete_and_recreate_html: En <strong>%{interval}</strong> podrá eliminar y volver
-        a crear su cuenta.
-      header: Has solicitado un restablecimiento de cuenta
+      cancel_request: Cancelar petición
+      cancelled: Hemos cancelado su solicitud para eliminar su cuenta.
+      confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras 24
+        horas para eliminar su cuenta.
+      header: Solicitaste eliminar tu cuenta
+      wait_html: Hay un período de espera de 24 horas para eliminar su cuenta. En
+        <strong>%{interval}</strong>, recibirá un correo electrónico con instrucciones
+        para completar la eliminación.
     request:
       access_your_account: acceder a tu cuenta
       are_you_sure: "¿Estás seguro de que no tienes acceso a ninguno de tus métodos

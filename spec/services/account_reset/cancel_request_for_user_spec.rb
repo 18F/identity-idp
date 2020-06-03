@@ -7,10 +7,11 @@ describe AccountReset::CancelRequestForUser do
   subject { described_class.new(user) }
 
   describe '#call' do
+    let(:now) { Time.zone.now }
     it 'cancels the account reset request' do
-      subject.call
+      subject.call(now: now)
 
-      expect(account_reset_request.reload.cancelled_at).to be_within(1.second).of(Time.zone.now)
+      expect(account_reset_request.reload.cancelled_at).to eq(now)
     end
 
     it 'does not cancel account reset requests for a different user' do

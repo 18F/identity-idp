@@ -10,10 +10,11 @@ module AccountReset
       @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
+    def confirm; end
+
     def cancel
       analytics.track_event(Analytics::PENDING_ACCOUNT_RESET_CANCELLED)
       AccountReset::CancelRequestForUser.new(current_user).call
-      redirect_to user_two_factor_authentication_url
     end
 
     private
