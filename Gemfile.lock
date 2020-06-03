@@ -680,7 +680,7 @@ PLATFORMS
 
 DEPENDENCIES
   aamva!
-  ahoy_matey (~> 2.0)
+  ahoy_matey (~> 2.2, >= 2.2.1)
   american_date
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
@@ -689,7 +689,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   brakeman
-  bullet
+  bullet (>= 6.0.2)
   bummr
   capybara-screenshot
   capybara-selenium
@@ -698,10 +698,10 @@ DEPENDENCIES
   derailed
   device_detector
   devise (~> 4.7.1)
-  dotiw
+  dotiw (>= 4.0.1)
   email_spec
-  exception_notification
-  factory_bot_rails
+  exception_notification (>= 4.4.0)
+  factory_bot_rails (>= 5.1.1)
   fakefs
   faker
   fasterer
@@ -712,16 +712,16 @@ DEPENDENCIES
   hiredis
   http_accept_language
   httparty
-  i18n-tasks
+  i18n-tasks (>= 0.9.29)
   identity-hostdata!
   identity-telephony!
   identity_validations!
   irb
-  json-jwt
+  json-jwt (>= 1.11.0)
   knapsack
   lexisnexis!
   local_time
-  lograge
+  lograge (>= 0.11.2)
   maxminddb
   net-sftp
   newrelic_rpm
@@ -730,7 +730,7 @@ DEPENDENCIES
   parallel_tests
   pg
   phonelib
-  premailer-rails
+  premailer-rails (>= 1.10.3)
   proofer!
   pry-byebug
   pry-doc
@@ -744,16 +744,16 @@ DEPENDENCIES
   rack-test
   rack-timeout
   rack_session_access
-  rails (~> 5.2.4, >= 5.2.4.2)
-  rails-controller-testing
-  rails-erd
+  rails (~> 5.2.4, >= 5.2.4.3)
+  rails-controller-testing (>= 1.0.4)
+  rails-erd (>= 1.6.0)
   raise-if-root
   readthis
   recaptcha
-  redis-session-store
+  redis-session-store (>= 0.11.1)
   rotp (~> 3.3.1)
   rqrcode
-  rspec-rails (~> 3.7)
+  rspec-rails (~> 3.9, >= 3.9.0)
   rubocop (~> 0.72.0)
   rubocop-rails
   ruby-progressbar
@@ -764,12 +764,12 @@ DEPENDENCIES
   scrypt
   secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0.1)
-  simple_form
+  simple_form (>= 5.0.1)
   sinatra
-  slim-rails
+  slim-rails (>= 3.2.0)
   slim_lint
   stringex
-  strong_migrations
+  strong_migrations (>= 0.4.2)
   subprocess
   timecop
   twilio-ruby
@@ -777,12 +777,12 @@ DEPENDENCIES
   typhoeus
   uglifier (~> 3.2)
   user_agent_parser
-  valid_email
+  valid_email (>= 0.1.3)
   webauthn (~> 2.1.0)
   webdrivers (~> 3.0)
   webmock
-  webpacker (~> 3.4)
-  xmlenc (~> 0.6)
+  webpacker (~> 3.6, >= 3.6.0)
+  xmlenc (~> 0.7, >= 0.7.1)
   zonebie
   zxcvbn-js
 
