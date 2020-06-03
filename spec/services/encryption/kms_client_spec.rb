@@ -40,13 +40,13 @@ describe Encryption::KmsClient do
   kms_regions = JSON.parse(Figaro.env.aws_kms_regions)
 
   let(:kms_ciphertext) do
-    'KMSc' + %w[kms1 kms2 kms3].map { |c|
+    'KMSc' + %w[kms1 kms2 kms3].map do |c|
       region_hash = {}
       kms_regions.each do |r|
         region_hash[r] = c
       end
       Base64.strict_encode64({ reg: region_hash }.to_json)
-    }.to_json
+    end.to_json
   end
 
   let(:oth_kms_ciphertext) do
