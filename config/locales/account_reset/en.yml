@@ -27,6 +27,14 @@ en:
         your account. Once your account is deleted, you can create a new one using
         the same email address.
       title: Deleting your account should be your last resort
+    pending:
+      cancel_request: Cancel request
+      cancelled: We have cancelled your request to delete your account.
+      confirm: If you cancel now, you must create a new request and wait another 24
+        hours to delete your account.
+      header: You requested to delete your account
+      wait_html: There is a 24-hour waiting period to delete your account. In <strong>%{interval}</strong>,
+        you will receive an email with instructions to complete the deletion.
     request:
       access_your_account: access your account
       are_you_sure: Are you sure you don't have access to any of your authentication
