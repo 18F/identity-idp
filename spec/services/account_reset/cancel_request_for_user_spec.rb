@@ -11,7 +11,7 @@ describe AccountReset::CancelRequestForUser do
     it 'cancels the account reset request' do
       subject.call(now: now)
 
-      expect(account_reset_request.reload.cancelled_at).to eq(now)
+      expect(account_reset_request.reload.cancelled_at.to_i).to eq(now.to_i)
     end
 
     it 'does not cancel account reset requests for a different user' do
