@@ -41,6 +41,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
+  validate :validate_liveness_checking_enabled_if_ial3_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -106,7 +107,6 @@ class OpenidConnectAuthorizeForm
   attr_reader :identity, :success
 
   def check_for_unauthorized_scope(params)
-    return true if ial3_requested_but_disabled?
     param_value = params[:scope]
     return false if ial2_or_greater? || param_value.blank?
     return true if verified_at_requested? && !ial2_service_provider?
@@ -115,10 +115,6 @@ class OpenidConnectAuthorizeForm
 
   def ial2_or_greater?
     ial2_requested? || ial3_requested?
-  end
-
-  def ial3_requested_but_disabled?
-    ial3_requested? && !FeatureManagement.liveness_checking_enabled?
   end
 
   def parse_to_values(param_value, possible_values)
@@ -209,6 +205,11 @@ class OpenidConnectAuthorizeForm
        (ialmax_requested? && !ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
+  end
+
+  def validate_liveness_checking_enabled_if_ial3_requested
+    return unless ial3_requested? && !FeatureManagement.liveness_checking_enabled?
+    errors.add(:acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'))
   end
 end
 # rubocop:enable Metrics/ClassLength
