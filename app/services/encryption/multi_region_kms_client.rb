@@ -41,8 +41,7 @@ module Encryption
     def find_available_region(regions)
       regions.each do |region, cipher|
         region_client = @aws_clients[region]
-        resolved_ciphertext = cipher
-        return CipherData.new(region_client, resolved_ciphertext) if region_client
+        return CipherData.new(region_client, cipher) if region_client
       end
       raise EncryptionError, 'No supported region found in ciphertext'
     end
@@ -53,7 +52,7 @@ module Encryption
       curr_region_client = @aws_clients[Figaro.env.aws_region]
       curr_region_cipher = regions[Figaro.env.aws_region]
       if curr_region_cipher && curr_region_client
-        CipherData.new(curr_region_client, curr_region_cipher) if curr_region_client && curr_region_cipher
+        CipherData.new(curr_region_client, curr_region_cipher)
       else
         find_available_region(regions)
       end

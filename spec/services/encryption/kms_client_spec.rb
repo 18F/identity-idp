@@ -37,7 +37,7 @@ describe Encryption::KmsClient do
     )
   end
 
-  kms_regions = JSON.parse(Figaro.env.aws_kms_regions)
+  let(:kms_regions) { %w[us-west-2 us-east-1] }
 
   let(:kms_ciphertext) do
     'KMSc' + %w[kms1 kms2 kms3].map do |c|

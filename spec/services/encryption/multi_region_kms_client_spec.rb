@@ -14,7 +14,9 @@ describe Encryption::MultiRegionKMSClient do
   let(:second_plaintext) { 'b' * 3000 }
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
 
-  kms_regions = JSON.parse(Figaro.env.aws_kms_regions)
+  let(:kms_regions) { %w[us-west-2 us-east-1] }
+  let(:current_aws_region) { 'us-east-1' }
+
 
   let(:regionalized_kms_ciphertext) do
     region_hash = {}
@@ -66,7 +68,7 @@ describe Encryption::MultiRegionKMSClient do
       expect(result).to eq(first_plaintext)
     end
 
-    it 'decrypts unsuccessfully if none of the encryption regions are present' do
+    it 'errors if none of the encryption regions are present' do
       bad_region_ciphertext = {
         regions: {
           foo: 'kms1',
@@ -90,8 +92,6 @@ describe Encryption::MultiRegionKMSClient do
     end
 
     it 'decrypts in default region where multiple regions present' do
-      # At the moment, 'us-east-1' is the default AWS region for testing in application.yml.
-      # This test will fail if that changes, make sure to update accordingly
       multi_region_ciphertext = {
         regions: {
           'us-east-1': 'kms1',
