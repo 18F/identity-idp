@@ -127,7 +127,7 @@ describe Users::PersonalKeysController do
 
   describe '#create' do
     it 'generates a new personal key, tracks an analytics event, and redirects' do
-      stub_sign_in
+      stub_sign_in(create(:user, :with_phone))
       stub_analytics
 
       generator = instance_double(PersonalKeyGenerator)
@@ -136,6 +136,10 @@ describe Users::PersonalKeysController do
 
       expect(generator).to receive(:create)
       expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
+      expect(@analytics).to receive(:track_event).with(
+        Analytics::PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS,
+        hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
+      )
 
       post :create
 

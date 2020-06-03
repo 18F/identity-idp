@@ -23,7 +23,10 @@ COPY --chown=appuser:appuser --from=build /upaya .
 # Copy in whole source (minus items matched in .dockerignore)
 COPY --chown=appuser:appuser . .
 COPY --chown=appuser:appuser --from=build /usr/local/bundle/config /usr/local/bundle
+RUN mkdir -p /upaya/log /usr/local/share/aws ; chown appuser /upaya/log
 
+# update CA certs so that we can trust RDS
+RUN curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem && grep 'END CERTIFICATE' /usr/local/share/aws/rds-combined-ca-bundle.pem >/dev/null
 
 # Up to this point we've been root, change to a lower priv. user
 USER appuser

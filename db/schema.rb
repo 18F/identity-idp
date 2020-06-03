@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_30_185607) do
+ActiveRecord::Schema.define(version: 2020_06_01_235647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,15 @@ ActiveRecord::Schema.define(version: 2020_05_30_185607) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
+  end
+
+  create_table "deleted_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "uuid", null: false
+    t.datetime "user_created_at", null: false
+    t.datetime "deleted_at", null: false
+    t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
+    t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
   end
 
   create_table "devices", force: :cascade do |t|
@@ -165,6 +174,10 @@ ActiveRecord::Schema.define(version: 2020_05_30_185607) do
     t.integer "success_view_count", default: 0
     t.integer "present_cac_submit_count", default: 0
     t.integer "present_cac_error_count", default: 0
+    t.datetime "selfie_view_at"
+    t.integer "selfie_view_count", default: 0
+    t.integer "selfie_submit_count", default: 0
+    t.integer "selfie_error_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -556,5 +569,4 @@ ActiveRecord::Schema.define(version: 2020_05_30_185607) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
-  add_foreign_key "events", "users"
 end
