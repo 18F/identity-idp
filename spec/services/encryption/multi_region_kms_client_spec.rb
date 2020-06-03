@@ -38,6 +38,25 @@ describe Encryption::MultiRegionKMSClient do
       end
     end
 
+    it 'decrypts successfully if the default region is not present' do
+      ciphertext = {
+        regions: { 'us-east-1' => 'kms1' },
+      }.to_json
+      result = subject.decrypt(ciphertext, encryption_context)
+      expect(result).to eq(plaintext)
+    end
+
+    it 'decrypts unsuccessfully if none of the encryption regions are present' do
+      ciphertext = {
+        regions: {
+          foo: 'kms1',
+          bar: 'kms2',
+        },
+      }.to_json
+      expect {
+        subject.decrypt(ciphertext, encryption_context)
+      }.to raise_error(Encryption::EncryptionError)
+    end
   end
 
   describe '#decrypt' do
@@ -54,6 +73,5 @@ describe Encryption::MultiRegionKMSClient do
         expect(result).to eq(plaintext)
       end
     end
-
   end
 end

@@ -27,27 +27,36 @@ module Encryption
     end
 
     def decrypt(ciphertext, encryption_context)
-      region_client, resolved_ciphertext = resolve_decryption(ciphertext)
-      region_client.decrypt(
-        ciphertext_blob: resolved_ciphertext,
+      cipher_data = resolve_decryption(ciphertext)
+      cipher_data.region_client.decrypt(
+        ciphertext_blob: cipher_data.resolved_ciphertext,
         encryption_context: encryption_context,
       ).plaintext
     end
 
     private
 
+    CipherData = Struct.new(:region_client, :resolved_ciphertext)
+
+    def find_available_region(regions)
+      regions.each do |region, cipher|
+        region_client = @aws_clients[region]
+        resolved_ciphertext = cipher
+        return CipherData.new(region_client, resolved_ciphertext) if region_client
+      end
+      raise EncryptionError, 'No supported region found in ciphertext'
+    end
+
     def resolve_region_decryption(regions)
       # For each region that the ciphertext has a cipher for, check to see if that region is
       # represented in the clients available. Check default region before checking others
       curr_region_client = @aws_clients[Figaro.env.aws_region]
       curr_region_cipher = regions[Figaro.env.aws_region]
-      return curr_region_client, curr_region_cipher if curr_region_client && curr_region_cipher
-      regions.each do |region, cipher|
-        region_client = @aws_clients[region]
-        resolved_ciphertext = cipher
-        return region_client, resolved_ciphertext if region_client
+      if curr_region_cipher && curr_region_client
+        CipherData.new(curr_region_client, curr_region_cipher) if curr_region_client && curr_region_cipher
+      else
+        find_available_region(regions)
       end
-      raise EncryptionError, 'No supported region found in ciphertext'
     end
 
     def resolve_legacy_decryption(ciphertext)
@@ -55,7 +64,7 @@ module Encryption
       curr_region = Figaro.env.aws_region
       region_client = @aws_clients[curr_region]
       resolved_ciphertext = ciphertext
-      return region_client, resolved_ciphertext if region_client
+      return CipherData.new(region_client, resolved_ciphertext) if region_client
       raise EncryptionError, "No client found for region #{curr_region}"
     end
 
