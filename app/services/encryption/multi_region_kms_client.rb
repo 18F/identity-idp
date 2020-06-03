@@ -14,7 +14,7 @@ module Encryption
     end
 
     # Use each KMS client to encrypt with params and options
-    # Region format example: '{"reg": {"us-east-1": "cipher", "us-west-2": "othercipher"}}'
+    # Region format example: '{"regions": {"us-east-1": "cipher", "us-west-2": "othercipher"}}'
     def encrypt(key_id, plaintext, encryption_context)
       region_ciphers = {}
       @aws_clients.each do |region, kms_client|
@@ -23,14 +23,11 @@ module Encryption
                                       encryption_context: encryption_context)
         region_ciphers[region] = r_cipher.ciphertext_blob
       end
-      { reg: region_ciphers }.to_json
+      { regions: region_ciphers }.to_json
     end
 
     def decrypt(ciphertext, encryption_context)
-      # The client that will be used to decode the ciphertext, the ciphertext after being parsed out
-      # of whatever format it's in
       region_client, resolved_ciphertext = resolve_decryption(ciphertext)
-      # If the ciphertext is valid and there's a relevant client, try to actually decode it
       region_client.decrypt(
         ciphertext_blob: resolved_ciphertext,
         encryption_context: encryption_context,
@@ -60,18 +57,17 @@ module Encryption
     end
 
     def resolve_decryption(ciphertext)
-      # The ciphertext should either be a json HASH keyed by "reg", or a plain string. Start by
+      # The ciphertext should either be a json HASH keyed by "regions", or a plain string. Start by
       # checking if it looks like the JSON hash we want
-      if ciphertext.start_with?('{"reg"')
-        parsed_ciphertext = JSON.parse(ciphertext)
-        unless parsed_ciphertext.is_a?(Hash)
+      if ciphertext.start_with?('{"regions"')
+        parsed_payload = JSON.parse(ciphertext)
+        if parsed_payload.is_a?(Hash)
+          regions = parsed_payload['regions']
+          resolve_region_decryption(regions)
+        else
           raise EncryptionError, 'Malformed JSON ciphertext, not a hash'
         end
-        # It's a hash, make sure that it has the "reg" key. If not, this is a malformed key error
-        regions = parsed_ciphertext['reg']
-        resolve_region_decryption(regions)
-      else
-        resolve_legacy_decryption(ciphertext)
+      else resolve_legacy_decryption(ciphertext)
       end
     end
   end
