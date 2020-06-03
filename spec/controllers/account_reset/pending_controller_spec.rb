@@ -24,7 +24,6 @@ describe AccountReset::PendingController do
       post :cancel
 
       expect(account_reset_request.reload.cancelled_at).to_not be_nil
-      expect(response).to redirect_to(user_two_factor_authentication_url)
     end
 
     context 'when the account reset request does not exist' do
