@@ -29,6 +29,9 @@ feature 'cac proofing present cac step' do
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
 
     expect(page.current_path).to eq(idv_cac_proofing_enter_info_step)
+
+    expect(DocAuthLog.first.present_cac_submit_count).to eq(1)
+    expect(DocAuthLog.first.present_cac_error_count).to eq(0)
   end
 
   it 'does not proceed to the next page with a bad CAC and allows doc auth' do
@@ -40,6 +43,9 @@ feature 'cac proofing present cac step' do
 
     expect(page.current_path).to eq(idv_cac_proofing_present_cac_step)
     expect(page).to have_link(t('cac_proofing.errors.state_id'), href: idv_doc_auth_path)
+
+    expect(DocAuthLog.first.present_cac_submit_count).to eq(2)
+    expect(DocAuthLog.first.present_cac_error_count).to eq(1)
   end
 
   it 'does not proceed to the next page if card_type is not CAC' do
