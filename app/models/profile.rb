@@ -91,7 +91,7 @@ class Profile < ApplicationRecord
     self.name_zip_birth_year_signature = compound_pii_fingerprint if compound_pii_fingerprint
   end
 
-  def has_liveness_check?
+  def liveness_check?
     return if proofing_components.blank?
     JSON.parse(proofing_components)['liveness_check']
   end
