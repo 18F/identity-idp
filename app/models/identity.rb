@@ -8,6 +8,7 @@ class Identity < ApplicationRecord
 
   CONSENT_EXPIRATION = 1.year
 
+  IAL_MAX = 0
   IAL1 = 1
   IAL2 = 2
   IAL2_STRICT = 22
