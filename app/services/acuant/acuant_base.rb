@@ -23,7 +23,7 @@ module Acuant
     end
 
     def new_assure_id
-      (Rails.env.test? ? Idv::Acuant::FakeAssureId : Idv::Acuant::AssureId).new
+      (Figaro.env.acuant_simulator == 'true' ? Idv::Acuant::FakeAssureId : Idv::Acuant::AssureId).new
     end
   end
 end
