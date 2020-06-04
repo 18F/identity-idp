@@ -8,6 +8,7 @@ describe Encryption::MultiRegionKMSClient do
     )
 
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
+    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Metrics/LineLength
   end
 
   let(:first_plaintext) { 'a' * 3000 }
@@ -20,16 +21,15 @@ describe Encryption::MultiRegionKMSClient do
   let(:regionalized_kms_ciphertext) do
     region_hash = {}
     kms_regions.each do |r|
-      region_hash[r] = 'kms1'
+      region_hash[r] = Base64.strict_encode64('kms1')
     end
     { regions: region_hash }.to_json
   end
 
-  let(:legacy_kms_ciphertext) do
-    'kms1'
-  end
+  let(:legacy_kms_ciphertext) { 'kms1' }
 
   let(:kms_enabled) { true }
+  let(:kms_multi_region_enabled) { true }
 
   let(:aws_key_id) { Figaro.env.aws_kms_key_id }
 
@@ -38,6 +38,13 @@ describe Encryption::MultiRegionKMSClient do
       it 'encrypts with KMS' do
         result = subject.encrypt(aws_key_id, first_plaintext, encryption_context)
         expect(result).to eq(regionalized_kms_ciphertext)
+      end
+    end
+    context 'with multi region disabled' do
+      let(:kms_multi_region_enabled) { false }
+      it 'encrypts with KMS' do
+        result = subject.encrypt(aws_key_id, first_plaintext, encryption_context)
+        expect(result).to eq(legacy_kms_ciphertext)
       end
     end
   end
@@ -59,7 +66,7 @@ describe Encryption::MultiRegionKMSClient do
 
     it 'decrypts successfully if the default region is not present' do
       non_default_ciphertext = {
-        regions: { 'us-east-1' => 'kms1' },
+        regions: { 'us-east-1' => Base64.strict_encode64('kms1') },
       }.to_json
       result = subject.decrypt(non_default_ciphertext, encryption_context)
       expect(result).to eq(first_plaintext)
@@ -91,8 +98,8 @@ describe Encryption::MultiRegionKMSClient do
     it 'decrypts in default region where multiple regions present' do
       multi_region_ciphertext = {
         regions: {
-          'us-east-1': 'kms1',
-          'us-west-2': 'kms2',
+          'us-east-1': Base64.strict_encode64('kms1'),
+          'us-west-2': Base64.strict_encode64('kms2'),
         },
       }.to_json
       result = subject.decrypt(multi_region_ciphertext, encryption_context)

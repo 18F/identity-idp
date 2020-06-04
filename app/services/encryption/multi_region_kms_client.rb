@@ -16,14 +16,11 @@ module Encryption
     # Use each KMS client to encrypt with params and options
     # Region format example: '{"regions": {"us-east-1": "cipher", "us-west-2": "othercipher"}}'
     def encrypt(key_id, plaintext, encryption_context)
-      region_ciphers = {}
-      @aws_clients.each do |region, kms_client|
-        r_cipher = kms_client.encrypt(key_id: key_id,
-                                      plaintext: plaintext,
-                                      encryption_context: encryption_context)
-        region_ciphers[region] = r_cipher.ciphertext_blob
+      if FeatureManagement.kms_multi_region_enabled?
+        encrypt_multi(key_id, plaintext, encryption_context)
+      else
+        encrypt_legacy(key_id, plaintext, encryption_context)
       end
-      { regions: region_ciphers }.to_json
     end
 
     def decrypt(ciphertext, encryption_context)
@@ -35,6 +32,27 @@ module Encryption
     end
 
     private
+
+    def encrypt_multi(key_id, plaintext, encryption_context)
+      region_ciphers = {}
+      @aws_clients.each do |region, kms_client|
+        raw_region_ciphertext = kms_client.encrypt(key_id: key_id,
+                                                   plaintext: plaintext,
+                                                   encryption_context: encryption_context)
+        region_ciphers[region] = Base64.strict_encode64(raw_region_ciphertext.ciphertext_blob)
+      end
+      { regions: region_ciphers }.to_json
+    end
+
+    def encrypt_legacy(key_id, plaintext, encryption_context)
+      region_client = @aws_clients[Figaro.env.aws_region]
+      unless region_client
+        raise EncryptionError, 'Current region not found in clients for legacy encryption'
+      end
+      region_client.encrypt(key_id: key_id,
+                            plaintext: plaintext,
+                            encryption_context: encryption_context).ciphertext_blob
+    end
 
     CipherData = Struct.new(:region_client, :resolved_ciphertext)
 
@@ -52,7 +70,7 @@ module Encryption
       curr_region_client = @aws_clients[Figaro.env.aws_region]
       curr_region_cipher = regions[Figaro.env.aws_region]
       if curr_region_cipher && curr_region_client
-        CipherData.new(curr_region_client, curr_region_cipher)
+        CipherData.new(curr_region_client, Base64.strict_decode64(curr_region_cipher))
       else
         find_available_region(regions)
       end
