@@ -168,7 +168,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_for_identity_record
-    ial == Identity::IAL2 && service_provider.liveness_checking_required ? Identity::IAL2_STRICT : ial
+    return ial unless ial == Identity::IAL2 && service_provider.liveness_checking_required
+    Identity::IAL2_STRICT
   end
 
   def ial
