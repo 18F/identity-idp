@@ -41,7 +41,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
-  validate :validate_liveness_checking_enabled_if_ial3_requested
+  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -68,8 +68,8 @@ class OpenidConnectAuthorizeForm
     ial == 2 && !service_provider.liveness_checking_required
   end
 
-  def ial3_requested?
-    ial == 3 || (ial == 2 && service_provider.liveness_checking_required)
+  def ial2_strict_requested?
+    ial == 22 || (ial == 2 && service_provider.liveness_checking_required)
   end
 
   def ialmax_requested?
@@ -114,7 +114,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial2_or_greater?
-    ial2_requested? || ial3_requested?
+    ial2_requested? || ial2_strict_requested?
   end
 
   def parse_to_values(param_value, possible_values)
@@ -198,7 +198,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if ialmax_requested? || ial2_requested? || ial3_requested?
+    if ialmax_requested? || ial2_requested? || ial2_strict_requested?
       return OpenidConnectAttributeScoper::VALID_SCOPES
     end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
@@ -211,8 +211,8 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def validate_liveness_checking_enabled_if_ial3_requested
-    return unless ial3_requested? && !FeatureManagement.liveness_checking_enabled?
+  def validate_liveness_checking_enabled_if_ial2_strict_requested
+    return unless ial2_strict_requested? && !FeatureManagement.liveness_checking_enabled?
     errors.add(:acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'))
   end
 end

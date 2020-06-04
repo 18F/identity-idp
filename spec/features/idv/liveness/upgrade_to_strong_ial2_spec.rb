@@ -12,7 +12,7 @@ describe 'Strong IAL2' do
       )
     end
 
-    it 'upgrades user to IAL3 if liveness checking is enabled' do
+    it 'upgrades user to IAL2 strict if liveness checking is enabled' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
       user ||= create(:profile, :active, :verified,
@@ -36,13 +36,13 @@ describe 'Strong IAL2' do
     end
   end
 
-  context 'with an sp that sends an IAL3 request and a current verified profile with no liveness' do
-    it 'upgrades user to IAL3 if liveness checking is enabled' do
+  context 'with an sp that sends an IAL2 strict request and a current verified profile with no liveness' do
+    it 'upgrades user to IAL2 strict if liveness checking is enabled' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
       user ||= create(:profile, :active, :verified,
                       pii: { first_name: 'John', ssn: '111223333' }).user
-      visit_idp_from_oidc_sp_with_ial3
+      visit_idp_from_oidc_sp_with_ial2_strict
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -54,7 +54,7 @@ describe 'Strong IAL2' do
     it 'returns an error if liveness checking is disabled' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('false')
 
-      visit_idp_from_oidc_sp_with_ial3
+      visit_idp_from_oidc_sp_with_ial2_strict
 
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=invalid_request'\
 '&error_description=Acr+values+Liveness+checking+is+disabled')

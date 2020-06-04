@@ -100,11 +100,11 @@ module IdvHelper
     )
   end
 
-  def visit_idp_from_oidc_sp_with_ial3
+  def visit_idp_from_oidc_sp_with_ial2_strict
     visit openid_connect_authorize_path(
       client_id: 'urn:gov:gsa:openidconnect:sp:server',
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL3_AUTHN_CONTEXT_CLASSREF,
+      acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: SecureRandom.hex,

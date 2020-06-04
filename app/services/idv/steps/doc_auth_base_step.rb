@@ -216,7 +216,7 @@ module Idv
       end
 
       def liveness_checking_enabled?
-        FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial3])
+        FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end
 
       def no_sp?
