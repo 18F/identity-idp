@@ -36,6 +36,6 @@ module AwsKmsClientHelper
   end
 
   def random_str
-    SecureRandom.random_bytes(32)
+    SecureRandom.alphanumeric(32)
   end
 end
