@@ -24,6 +24,16 @@ describe 'Strong IAL2' do
       click_agree_and_continue_optional
 
       expect(page.current_path).to eq(idv_doc_auth_welcome_step)
+
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
+      click_acknowledge_personal_key
+      click_agree_and_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(user.active_profile.includes_liveness_check?).to be_truthy
     end
 
     it 'returns an error if liveness checking is disabled' do
@@ -49,6 +59,16 @@ describe 'Strong IAL2' do
       click_agree_and_continue_optional
 
       expect(page.current_path).to eq(idv_doc_auth_welcome_step)
+
+      complete_all_doc_auth_steps
+      click_continue
+      fill_in 'Password', with: user.password
+      click_continue
+      click_acknowledge_personal_key
+      click_agree_and_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(user.active_profile.includes_liveness_check?).to be_truthy
     end
 
     it 'returns an error if liveness checking is disabled' do
