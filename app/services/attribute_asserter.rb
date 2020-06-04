@@ -113,6 +113,7 @@ class AttributeAsserter
   end
 
   def ial2_or_ial2_strict_authn_context?
-    ial2_authn_context? || (authn_context == Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF)
+    ial2_authn_context? ||
+      (authn_context == Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF)
   end
 end

@@ -36,7 +36,7 @@ describe 'Strong IAL2' do
     end
   end
 
-  context 'with an sp that sends an IAL2 strict request and a current verified profile with no liveness' do
+  context 'with SP that sends an IAL2 strict request and a verified profile with no liveness' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
