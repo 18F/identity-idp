@@ -89,7 +89,7 @@ class OpenidConnectAuthorizeForm
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial,
+      ial: ial_for_identity_record,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -164,6 +164,10 @@ class OpenidConnectAuthorizeForm
                t('openid_connect.authorization.errors.invalid_verified_within_duration',
                  count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
     false
+  end
+
+  def ial_for_identity_record
+    ial == 2 && service_provider.liveness_checking_required ? 3 : ial
   end
 
   def ial
