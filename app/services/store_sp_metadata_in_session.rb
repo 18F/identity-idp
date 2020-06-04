@@ -45,7 +45,7 @@ class StoreSpMetadataInSession
   end
 
   def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? sp_request.ial
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(sp_request.ial)
   end
 
   def ial2_strict_requested?
