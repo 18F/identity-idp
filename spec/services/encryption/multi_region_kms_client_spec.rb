@@ -17,7 +17,6 @@ describe Encryption::MultiRegionKMSClient do
   let(:kms_regions) { %w[us-west-2 us-east-1] }
   let(:current_aws_region) { 'us-east-1' }
 
-
   let(:regionalized_kms_ciphertext) do
     region_hash = {}
     kms_regions.each do |r|
@@ -32,7 +31,7 @@ describe Encryption::MultiRegionKMSClient do
 
   let(:kms_enabled) { true }
 
-  aws_key_id = Figaro.env.aws_kms_key_id
+  let(:aws_key_id) { Figaro.env.aws_kms_key_id }
 
   describe '#encrypt' do
     context 'with multi region enabled' do
@@ -41,8 +40,6 @@ describe Encryption::MultiRegionKMSClient do
         expect(result).to eq(regionalized_kms_ciphertext)
       end
     end
-
-
   end
 
   describe '#decrypt' do
