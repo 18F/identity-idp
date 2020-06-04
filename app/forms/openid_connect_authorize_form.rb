@@ -61,15 +61,16 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial2_service_provider?
-    service_provider.ial == 2
+    service_provider.ial == Identity::IAL2
   end
 
   def ial2_requested?
-    ial == 2 && !service_provider.liveness_checking_required
+    ial == Identity::IAL2 && !service_provider.liveness_checking_required
   end
 
   def ial2_strict_requested?
-    ial == 22 || (ial == 2 && service_provider.liveness_checking_required)
+    ial == Identity::IAL2_STRICT ||
+      (ial == Identity::IAL2 && service_provider.liveness_checking_required)
   end
 
   def ialmax_requested?
@@ -167,7 +168,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_for_identity_record
-    ial == 2 && service_provider.liveness_checking_required ? 3 : ial
+    ial == Identity::IAL2 && service_provider.liveness_checking_required ? Identity::IAL2_STRICT : ial
   end
 
   def ial
