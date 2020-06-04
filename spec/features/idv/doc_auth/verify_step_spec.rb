@@ -48,6 +48,10 @@ feature 'doc auth verify step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
+
+    click_on t('idv.failure.button.warning')
+
+    expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
   it 'does not proceed to the next page if ssn is a duplicate' do

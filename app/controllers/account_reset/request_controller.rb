@@ -9,13 +9,17 @@ module AccountReset
     end
 
     def create
-      analytics.track_event(Analytics::ACCOUNT_RESET, analytics_attributes)
-      AccountReset::CreateRequest.new(current_user).call
+      create_account_reset_request
       flash[:email] = current_user.email_addresses.take.email
       redirect_to account_reset_confirm_request_url
     end
 
     private
+
+    def create_account_reset_request
+      response = AccountReset::CreateRequest.new(current_user).call
+      analytics.track_event(Analytics::ACCOUNT_RESET, response.to_h.merge(analytics_attributes))
+    end
 
     def confirm_two_factor_enabled
       return if MfaPolicy.new(current_user).two_factor_enabled?
