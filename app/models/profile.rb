@@ -75,6 +75,11 @@ class Profile < ApplicationRecord
     Pii::Fingerprinter.fingerprint(values.join(':'))
   end
 
+  def includes_liveness_check?
+    return if proofing_components.blank?
+    JSON.parse(proofing_components)['liveness_check']
+  end
+
   private
 
   def personal_key_generator
@@ -89,10 +94,5 @@ class Profile < ApplicationRecord
   def encrypt_compound_pii_fingerprint(pii)
     compound_pii_fingerprint = self.class.build_compound_pii_fingerprint(pii)
     self.name_zip_birth_year_signature = compound_pii_fingerprint if compound_pii_fingerprint
-  end
-
-  def liveness_check?
-    return if proofing_components.blank?
-    JSON.parse(proofing_components)['liveness_check']
   end
 end
