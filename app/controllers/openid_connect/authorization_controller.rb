@@ -74,7 +74,7 @@ module OpenidConnect
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
         (@authorize_form.ial2_strict_requested? &&
-        !Db::Profile::HasLivenessCheck.call(current_user.id))
+        !current_user.active_profile&.includes_liveness_check?)
     end
 
     def build_authorize_form_from_params

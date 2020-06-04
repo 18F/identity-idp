@@ -21,7 +21,7 @@ module IdvSession
   end
 
   def liveness_upgrade_required?
-    sp_session[:ial2_strict] && !Db::Profile::HasLivenessCheck.call(current_user.id)
+    sp_session[:ial2_strict] && !current_user.active_profile&.includes_liveness_check?
   end
 
   def confirm_idv_vendor_session_started
