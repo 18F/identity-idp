@@ -92,7 +92,7 @@ class Profile < ApplicationRecord
   end
 
   def has_liveness_check?
-    return unless proofing_components.present?
+    return if proofing_components.blank?
     JSON.parse(proofing_components)['liveness_check']
   end
 end
