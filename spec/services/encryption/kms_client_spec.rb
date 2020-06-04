@@ -37,18 +37,9 @@ describe Encryption::KmsClient do
     )
   end
 
-  let(:kms_regions) { %w[us-west-2 us-east-1] }
-
   let(:kms_ciphertext) do
-    'KMSc' + %w[kms1 kms2 kms3].map do |c|
-      region_hash = {}
-      kms_regions.each do |r|
-        region_hash[r] = c
-      end
-      Base64.strict_encode64({ regions: region_hash }.to_json)
-    end.to_json
+    'KMSc' + %w[kms1 kms2 kms3].map { |c| Base64.strict_encode64(c) }.to_json
   end
-
   let(:local_ciphertext) do
     'LOCc' + %w[local1 local2 local3].map { |c| Base64.strict_encode64(c) }.to_json
   end
@@ -59,6 +50,7 @@ describe Encryption::KmsClient do
     context 'with KMS enabled' do
       it 'encrypts with KMS' do
         result = subject.encrypt(plaintext, encryption_context)
+
         expect(result).to eq(kms_ciphertext)
       end
     end
@@ -84,6 +76,7 @@ describe Encryption::KmsClient do
     context 'with a ciphertext encrypted with KMS' do
       it 'decrypts the ciphertext with KMS' do
         result = subject.decrypt(kms_ciphertext, encryption_context)
+
         expect(result).to eq(plaintext)
       end
     end
@@ -127,6 +120,7 @@ describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
+
       subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
