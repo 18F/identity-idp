@@ -32,9 +32,8 @@ es:
       bullet3: Print or save your enrollment form
       bullet4: Visit the post office to get verified
       bullet5: Come back to login.gov
-      encrypt: When you re-enter your password, login.gov will encrypt your information
-        to make sure no one else can access it.
-      read_more_encrypt: Read more about how login.gov protects your personal information
+      encrypt: Cuando vuelva a ingresar su contraseña, login.gov protegerá la información que nos ha proporcionado, de modo que solo usted pueda acceder a ella.
+      read_more_encrypt: Lea más sobre cómo login.gov protege su información personal
       enrollment_form: 'Bring this code to the following post office along with a
         government-issued ID:'
       text1: by entering your ZIP code

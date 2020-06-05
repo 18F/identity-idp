@@ -150,6 +150,7 @@ fr:
           s'agit d'une démonstration seulement) - SITE DE TEST
         review_message: Lorsque vous entrez à nouveau votre mot de passe, login.gov
           crypte vos données pour vous assurer que personne ne peut y accéder.
+        read_more_encrypt: En savoir plus sur la façon dont login.gov protège vos informations personnelles
       usps:
         address_on_file: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
           Celle-ci contient un code de confirmation.

@@ -138,6 +138,7 @@ es:
           propósitos de demostración) - SITIO DE PRUEBA
         review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
           sus datos para asegurarse de que nadie más pueda acceder a ellos.
+        read_more_encrypt: Lea más sobre cómo login.gov protege su información personal
       usps:
         address_on_file: Le enviaremos una carta con un código de confirmación a su
           dirección verificada en el archivo.
