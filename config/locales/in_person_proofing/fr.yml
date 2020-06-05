@@ -32,10 +32,12 @@ fr:
       bullet3: Print or save your enrollment form
       bullet4: Visit the post office to get verified
       bullet5: Come back to login.gov
-      encrypt: Lorsque vous ressaisissez votre mot de passe, login.gov protégera les informations que vous nous avez fournies, afin que vous seul puissiez y accéder.
-      read_more_encrypt: En savoir plus sur la façon dont login.gov protège vos informations personnelles
+      encrypt: Lorsque vous ressaisissez votre mot de passe, login.gov protégera les
+        informations que vous nous avez fournies, afin que vous seul puissiez y accéder.
       enrollment_form: 'Bring this code to the following post office along with a
         government-issued ID:'
+      read_more_encrypt: En savoir plus sur la façon dont login.gov protège vos informations
+        personnelles
       text1: by entering your ZIP code
       text2: name, date of birth, address, and social security number
       text3: a bar code that you need to take to the post office with you
