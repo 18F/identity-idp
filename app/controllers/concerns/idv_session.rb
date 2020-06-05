@@ -12,11 +12,16 @@ module IdvSession
   end
 
   def confirm_idv_needed
-    if current_user.active_profile.blank? || decorated_session.requested_more_recent_verification?
+    if current_user.active_profile.blank? ||
+       decorated_session.requested_more_recent_verification? || liveness_upgrade_required?
       return
     end
 
     redirect_to idv_activated_url
+  end
+
+  def liveness_upgrade_required?
+    sp_session[:ial2_strict] && !current_user.active_profile&.includes_liveness_check?
   end
 
   def confirm_idv_vendor_session_started

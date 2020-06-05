@@ -32,6 +32,7 @@ class StoreSpMetadataInSession
     session[:sp] = {
       issuer: sp_request.issuer,
       ial2: ial2_requested?,
+      ial2_strict: ial2_strict_requested?,
       ialmax: ialmax_requested?,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
@@ -44,6 +45,15 @@ class StoreSpMetadataInSession
   end
 
   def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? sp_request.ial
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(sp_request.ial)
+  end
+
+  def ial2_strict_requested?
+    Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF == sp_request.ial ||
+      (ial2_requested? && service_provider&.liveness_checking_required)
+  end
+
+  def service_provider
+    ServiceProvider.find_by(issuer: sp_request.issuer)
   end
 end

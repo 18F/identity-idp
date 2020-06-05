@@ -41,6 +41,7 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
+  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -60,11 +61,16 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial2_service_provider?
-    service_provider.ial == 2
+    service_provider.ial == Identity::IAL2
   end
 
   def ial2_requested?
-    ial == 2
+    ial == Identity::IAL2 && !service_provider.liveness_checking_required
+  end
+
+  def ial2_strict_requested?
+    ial == Identity::IAL2_STRICT ||
+      (ial == Identity::IAL2 && service_provider.liveness_checking_required)
   end
 
   def ialmax_requested?
@@ -84,7 +90,7 @@ class OpenidConnectAuthorizeForm
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial,
+      ial: ial_for_identity_record,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -103,9 +109,13 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if ial2_requested? || param_value.blank?
+    return false if ial2_or_greater? || param_value.blank?
     return true if verified_at_requested? && !ial2_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def ial2_or_greater?
+    ial2_requested? || ial2_strict_requested?
   end
 
   def parse_to_values(param_value, possible_values)
@@ -157,17 +167,13 @@ class OpenidConnectAuthorizeForm
     false
   end
 
+  def ial_for_identity_record
+    return ial unless ial == Identity::IAL2 && service_provider.liveness_checking_required
+    Identity::IAL2_STRICT
+  end
+
   def ial
-    case acr_values.sort.max
-    when Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-      0
-    when Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-      1
-    when Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-      2
-    end
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[acr_values.sort.max]
   end
 
   def extra_analytics_attributes
@@ -194,7 +200,9 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    return OpenidConnectAttributeScoper::VALID_SCOPES if ialmax_requested? || ial2_requested?
+    if ialmax_requested? || ial2_requested? || ial2_strict_requested?
+      return OpenidConnectAttributeScoper::VALID_SCOPES
+    end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
@@ -203,6 +211,11 @@ class OpenidConnectAuthorizeForm
        (ialmax_requested? && !ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
+  end
+
+  def validate_liveness_checking_enabled_if_ial2_strict_requested
+    return unless ial2_strict_requested? && !FeatureManagement.liveness_checking_enabled?
+    errors.add(:acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'))
   end
 end
 # rubocop:enable Metrics/ClassLength
