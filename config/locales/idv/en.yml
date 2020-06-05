@@ -132,8 +132,8 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only)
           - TEST SITE
-        review_message: When you re-enter your password, login.gov will encrypt your
-          data to make sure no one else can access it.
+        review_message: When you re-enter your password, login.gov will protect the information you've given us, so that only you can access it
+        read_more_encrypt: Read more about how login.gov protects your personal information
       usps:
         address_on_file: We will mail a letter with a confirmation code to your verified
           address on file.
