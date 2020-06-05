@@ -167,6 +167,6 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Enter a phone number with your name on the plan
-        review: Re-enter your login.gov password to encrypt your data
+        review: Re-enter your login.gov password to protect your data
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.
