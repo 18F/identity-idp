@@ -20,6 +20,7 @@ class PivCacProofingForm
   end
 
   def card_type
+    return unless @data
     @data['card_type']
   end
 

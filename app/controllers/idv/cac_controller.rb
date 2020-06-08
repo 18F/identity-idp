@@ -34,7 +34,7 @@ module Idv
       return unless request.path == idv_cac_step_path(:present_cac) && params[:token]
 
       result = piv_cac_proofing_form.submit
-      analytics.track_event(Analytics::CAC_PROOFING + ' submitted', result.to_h)
+      analytics.track_event(Analytics::CAC_PROOFING_SUBMITTED, result.to_h)
       if result.success?
         process_cac_success
       else

@@ -76,6 +76,7 @@ class Analytics
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
+  CAC_PROOFING_SUBMITTED = 'CAC Proofing submitted'.freeze
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_V2 = 'Doc Auth V2'.freeze # visited or submitted is appended

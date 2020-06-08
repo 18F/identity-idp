@@ -6,7 +6,7 @@ describe PivCac::IsFullNameInCn do
   describe '#call' do
     let(:cn) { 'DOE.JANE.Q.123456' }
 
-    it 'returns true case insensitive and names backwards' do
+    it 'returns true when both names found and not in order using a case insensitive match' do
       results = subject.call(cn, 'Jane', 'Doe')
 
       expect(results).to eq(true)
