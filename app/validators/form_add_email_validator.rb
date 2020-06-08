@@ -22,7 +22,7 @@ module FormAddEmailValidator
   end
 
   def email_is_available_to_user
-    email_address = EmailAddress.find_with_email(email)
+    email_address = EmailAddress.confirmed.find_with_email(email)
     return unless email_address&.user_id == @user.id
     errors.add(:email, I18n.t('email_addresses.add.duplicate'))
   end
