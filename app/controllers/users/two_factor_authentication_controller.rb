@@ -6,7 +6,11 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
+      aal3_redirect_or_fail || non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
+    end
+
+    def no_auth_option
+      render :'two_factor_authentication/options/no_option'
     end
 
     def send_code
@@ -207,11 +211,7 @@ module Users
     end
 
     def redirect_url
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
-        login_two_factor_piv_cac_url
-      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url
-      elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
+      if TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url
       end
     end
@@ -225,6 +225,21 @@ module Users
       url = redirect_url
       redirect_to url if url.present?
     end
+
+    def aal3_redirect_or_fail
+      aal3_url = aal3_redirect_url
+      redirect_to aal3_url if aal3_url.present?
+      no_auth_option if AAL3Policy.new(current_user).aal3_required?
+    end
+
+    def aal3_redirect_url
+      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+        login_two_factor_piv_cac_url
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+        login_two_factor_webauthn_url
+      end
+    end
+
   end
   # rubocop:enable Metrics/ClassLength
 end
