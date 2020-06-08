@@ -10,7 +10,7 @@ describe PivCacProofingForm do
       allow(PivCacService).to receive(:decode_token).with(token) { token_response }
     end
 
-    context 'when token is valid' do
+    context 'when token is valid on cac' do
       let(:token) { 'good-token' }
       let(:x509_dn_uuid) { 'random-uuid-for-x509-subject' }
 
@@ -26,6 +26,30 @@ describe PivCacProofingForm do
       it 'returns FormResponse with success: true' do
         result = instance_double(FormResponse)
         extra = { cac_first_name_present: true, cac_last_name_present: true, card_type: 'cac',
+                  cn_format: 'Aaaa.Aaa.NNNN', cn_present: true, step: 'present_cac' }
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit).to eq result
+      end
+    end
+
+    context 'when token is valid on piv' do
+      let(:token) { 'good-token' }
+      let(:x509_dn_uuid) { 'random-uuid-for-x509-subject' }
+
+      let(:token_response) do
+        {
+          'uuid' => x509_dn_uuid,
+          'subject' => 'O=US, OU=DoD, CN=John.Doe.1234',
+          'nonce' => nonce,
+          'card_type' => 'piv',
+        }
+      end
+
+      it 'returns FormResponse with success: true' do
+        result = instance_double(FormResponse)
+        extra = { cac_first_name_present: false, cac_last_name_present: false, card_type: 'piv',
                   cn_format: 'Aaaa.Aaa.NNNN', cn_present: true, step: 'present_cac' }
 
         expect(FormResponse).to receive(:new).
