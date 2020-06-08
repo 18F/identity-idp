@@ -43,6 +43,7 @@ module CacProofingHelper
     decoded_token = {
       'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'cac',
+      'nonce' => 'foo',
     }
     allow(PivCacService).to receive(:decode_token).and_return(decoded_token)
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
