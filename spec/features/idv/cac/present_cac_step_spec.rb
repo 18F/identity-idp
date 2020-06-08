@@ -48,7 +48,7 @@ feature 'cac proofing present cac step' do
     expect(DocAuthLog.first.present_cac_error_count).to eq(1)
   end
 
-  it 'does proceed to the next page if card_type is not CAC' do
+  it 'does proceed to the next page if card_type is PIV' do
     decoded_token_piv = {
       'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'piv',
