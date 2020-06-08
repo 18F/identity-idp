@@ -53,9 +53,9 @@ module CacProofingHelper
     complete_cac_proofing_steps_before_present_cac_step
     click_link t('forms.buttons.cac')
     decoded_token = {
-        'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        'card_type' => 'piv',
-        'nonce' => 'foo',
+      'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      'card_type' => 'piv',
+      'nonce' => 'foo',
     }
     simulate_piv_cac_token(decoded_token)
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
