@@ -6,13 +6,13 @@ module Users
     before_action :retain_confirmed_emails, only: %i[delete]
 
     def show
-      @register_user_email_form = AddUserEmailForm.new
+      @add_user_email_form = AddUserEmailForm.new
     end
 
     def add
-      @register_user_email_form = AddUserEmailForm.new
+      @add_user_email_form = AddUserEmailForm.new
 
-      result = @register_user_email_form.submit(current_user, permitted_params)
+      result = @add_user_email_form.submit(current_user, permitted_params)
 
       if result.success?
         process_successful_creation
@@ -75,7 +75,7 @@ module Users
 
     def process_successful_creation
       resend_confirmation = params[:user][:resend]
-      session[:email] = @register_user_email_form.email
+      session[:email] = @add_user_email_form.email
 
       redirect_to add_email_verify_email_url(resend: resend_confirmation,
                                              request_id: permitted_params[:request_id])
