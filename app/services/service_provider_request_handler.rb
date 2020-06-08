@@ -29,6 +29,10 @@ class ServiceProviderRequestHandler
     protocol.issuer
   end
 
+  def requested_aal
+    protocol.aal
+  end
+
   def sp_stored_in_session
     return if sp_request_id.blank?
     ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).issuer

@@ -8,6 +8,7 @@ module Saml
       IAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2'.freeze
       IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2?strict=true'.freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/0'.freeze
+      AAL3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3'.freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 
@@ -21,6 +22,9 @@ module Saml
         IAL2_AUTHN_CONTEXT_CLASSREF => 2,
         IAL2_STRICT_AUTHN_CONTEXT_CLASSREF => 22,
         IALMAX_AUTHN_CONTEXT_CLASSREF => 0,
+      }.freeze
+      AUTHN_CONTEXT_CLASSREF_TO_AAL = {
+        AAL3_AUTHN_CONTEXT_CLASSREF => 3,
       }.freeze
     end
   end

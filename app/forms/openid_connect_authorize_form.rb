@@ -73,6 +73,10 @@ class OpenidConnectAuthorizeForm
       (ial == Identity::IAL2 && service_provider.liveness_checking_required)
   end
 
+  def aal3_requested?
+    aal == Authorization::AAL3
+  end
+
   def ialmax_requested?
     ial&.zero?
   end
@@ -173,7 +177,19 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[acr_values.sort.max]
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+  end
+
+  def aal
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max]
+  end
+
+  def ial_values
+    acr_values.filter {|acr| /\/ial\//.match? acr }
+  end
+
+  def aal_values
+    acr_values.filter {|acr| /\/aal\//.match? acr }
   end
 
   def extra_analytics_attributes
