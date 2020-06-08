@@ -31,8 +31,7 @@ module Idv
     end
 
     def cac_callback
-      token = params[:token]
-      return unless request.path == idv_cac_step_path(:present_cac) && token
+      return unless request.path == idv_cac_step_path(:present_cac) && params[:token]
 
       result = piv_cac_proofing_form.submit
       analytics.track_event(Analytics::CAC_PROOFING + ' submitted', result.to_h)
