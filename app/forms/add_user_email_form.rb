@@ -32,7 +32,7 @@ class AddUserEmailForm
 
   def email_address_record(email)
     record = EmailAddress.where(user_id: user.id).find_with_email(email) ||
-      EmailAddress.new(user_id: user.id,email: email)
+             EmailAddress.new(user_id: user.id, email: email)
 
     record.confirmation_token = SecureRandom.uuid
     record.confirmation_sent_at = Time.zone.now
