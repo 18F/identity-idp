@@ -18,8 +18,8 @@ class AddUserEmailForm
 
   def submit(user, params)
     @user = user
-    @email_address = new_email_address(params)
     @email = params[:email]
+    @email_address = email_address_record(@email)
 
     if valid_form?
       process_successful_submission
@@ -30,11 +30,14 @@ class AddUserEmailForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def new_email_address(params)
-    EmailAddress.new(user_id: user.id,
-                     email: params[:email],
-                     confirmation_token: SecureRandom.uuid,
-                     confirmation_sent_at: Time.zone.now)
+  def email_address_record(email)
+    record = EmailAddress.where(user_id: user.id).find_with_email(email) ||
+             EmailAddress.new(user_id: user.id, email: email)
+
+    record.confirmation_token = SecureRandom.uuid
+    record.confirmation_sent_at = Time.zone.now
+
+    record
   end
 
   private
