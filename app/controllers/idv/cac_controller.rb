@@ -33,20 +33,43 @@ module Idv
     def cac_callback
       token = params[:token]
       return unless request.path == idv_cac_step_path(:present_cac) && token
-      data = PivCacService.decode_token(token)
-      cn_array = PivCac::CnFieldsFromSubject.call(data['subject'])
-      if cn_array.size > 2 && data['card_type'] == 'cac'
-        process_cac_success(cn_array)
+
+      result = piv_cac_proofing_form.submit
+      analytics.track_event(Analytics::CAC_PROOFING + ' submitted', result.to_h)
+      if result.success?
+        process_cac_success
       else
         process_cac_fail
       end
     end
 
-    def process_cac_success(cn_array)
+    def piv_cac_proofing_form
+      @piv_cac_proofing_form ||= PivCacProofingForm.new(
+        token: params[:token],
+        nonce: piv_cac_nonce,
+      )
+    end
+
+    def process_cac_success
+      store_full_name_or_cn_in_session
+      store_proofing_components
       flow_session['Idv::Steps::Cac::PresentCacStep'] = true
-      flow_session['first_name'] = cn_array[1]
-      flow_session['last_name'] = cn_array[0]
       redirect_to idv_cac_step_path(:enter_info)
+    end
+
+    def store_proofing_components
+      user_id = current_user.id
+      Db::ProofingComponent::Add.call(user_id, :document_check, 'pki') # eventually DEERS
+      Db::ProofingComponent::Add.call(user_id, :document_type, piv_cac_proofing_form.card_type)
+    end
+
+    def store_full_name_or_cn_in_session
+      if piv_cac_proofing_form.first_name && piv_cac_proofing_form.last_name
+        flow_session['first_name'] = piv_cac_proofing_form.first_name
+        flow_session['last_name'] = piv_cac_proofing_form.last_name
+      else
+        flow_session['piv_cac_cn'] = piv_cac_proofing_form.cn
+      end
     end
 
     def process_cac_fail
