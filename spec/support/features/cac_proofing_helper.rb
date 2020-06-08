@@ -46,6 +46,8 @@ module CacProofingHelper
       'nonce' => 'foo',
     }
     allow(PivCacService).to receive(:decode_token).and_return(decoded_token)
+    # Temporary until I figure out how to test nonce...
+    allow_any_instance_of(PivCacProofingForm).to receive(:token_has_correct_nonce).and_return(true)
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
   end
 
