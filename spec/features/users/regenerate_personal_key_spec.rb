@@ -4,7 +4,6 @@ feature 'View personal key' do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper
-  include JavascriptDriverHelper
 
   let(:user) { create(:user, :signed_up, :with_personal_key) }
 
