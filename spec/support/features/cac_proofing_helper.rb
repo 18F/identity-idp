@@ -43,8 +43,21 @@ module CacProofingHelper
     decoded_token = {
       'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       'card_type' => 'cac',
+      'nonce' => 'foo',
     }
-    allow(PivCacService).to receive(:decode_token).and_return(decoded_token)
+    simulate_piv_cac_token(decoded_token)
+    visit idv_cac_step_path(step: :present_cac, token: 'foo')
+  end
+
+  def complete_piv_proofing_steps_before_enter_info_step
+    complete_cac_proofing_steps_before_present_cac_step
+    click_link t('forms.buttons.cac')
+    decoded_token = {
+      'subject' => 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      'card_type' => 'piv',
+      'nonce' => 'foo',
+    }
+    simulate_piv_cac_token(decoded_token)
     visit idv_cac_step_path(step: :present_cac, token: 'foo')
   end
 
@@ -66,5 +79,21 @@ module CacProofingHelper
     fill_in 'doc_auth[zipcode]', with: '66044'
     fill_in 'doc_auth[dob]', with: '01/02/1980'
     fill_in 'doc_auth[ssn]', with: '666-66-1234'
+  end
+
+  def fill_out_piv_proofing_form_ok
+    fill_in 'doc_auth[first_name]', with: 'John'
+    fill_in 'doc_auth[last_name]', with: 'Doe'
+    fill_in 'doc_auth[address1]', with: '123 Main St'
+    fill_in 'doc_auth[city]', with: 'Nowhere'
+    select 'Virginia', from: 'doc_auth[state]'
+    fill_in 'doc_auth[zipcode]', with: '66044'
+    fill_in 'doc_auth[dob]', with: '01/02/1980'
+    fill_in 'doc_auth[ssn]', with: '666-66-1234'
+  end
+
+  def simulate_piv_cac_token(decoded_token)
+    allow(PivCacService).to receive(:decode_token).and_return(decoded_token)
+    allow_any_instance_of(PivCacProofingForm).to receive(:token_has_correct_nonce).and_return(true)
   end
 end
