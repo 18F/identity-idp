@@ -360,6 +360,104 @@ describe 'OpenID Connect' do
       expect(id_token).to be_present
     end
 
+    it 'returns the most recent nonce when there are multiple authorize calls' do
+      client_id = 'urn:gov:gsa:openidconnect:test'
+      state1 = SecureRandom.hex
+      nonce1 = SecureRandom.hex
+      code_verifier1 = SecureRandom.hex
+      code_challenge1 = Digest::SHA256.base64digest(code_verifier1)
+      user = user_with_2fa
+
+      link_identity(user, client_id)
+      user.identities.last.update!(verified_attributes: ['email'])
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: state1,
+        prompt: 'select_account',
+        nonce: nonce1,
+        code_challenge: code_challenge1,
+        code_challenge_method: 'S256',
+      )
+
+      sign_in_live_with_2fa(user)
+
+      redirect_uri1 = URI(current_url)
+      redirect_params1 = Rack::Utils.parse_query(redirect_uri1.query).with_indifferent_access
+
+      expect(redirect_uri1.to_s).to start_with('gov.gsa.openidconnect.test://result')
+      expect(redirect_params1[:state]).to eq(state1)
+
+      code1 = redirect_params1[:code]
+      expect(code1).to be_present
+
+      page.driver.post api_openid_connect_token_path,
+                       grant_type: 'authorization_code',
+                       code: code1,
+                       code_verifier: code_verifier1
+
+
+      expect(page.status_code).to eq(200)
+      token_response1 = JSON.parse(page.body).with_indifferent_access
+
+      id_token1 = token_response1[:id_token]
+      expect(id_token1).to be_present
+      decoded_id_token1, _headers = JWT.decode(
+        id_token1, sp_public_key, true, algorithm: 'RS256'
+      ).map(&:with_indifferent_access)
+
+      expect(decoded_id_token1['nonce']).to eq(nonce1)
+
+      state2 = SecureRandom.hex
+      nonce2 = SecureRandom.hex
+      code_verifier2 = SecureRandom.hex
+      code_challenge2 = Digest::SHA256.base64digest(code_verifier2)
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: state2,
+        prompt: 'select_account',
+        nonce: nonce2,
+        code_challenge: code_challenge2,
+        code_challenge_method: 'S256',
+      )
+
+      continue_as(user.email)
+
+      redirect_uri2 = URI(current_url)
+      redirect_params2 = Rack::Utils.parse_query(redirect_uri2.query).with_indifferent_access
+
+      expect(redirect_uri2.to_s).to start_with('gov.gsa.openidconnect.test://result')
+      expect(redirect_params2[:state]).to eq(state2)
+
+      code2 = redirect_params2[:code]
+      expect(code2).to be_present
+
+      page.driver.post api_openid_connect_token_path,
+                       grant_type: 'authorization_code',
+                       code: code2,
+                       code_verifier: code_verifier2
+
+      expect(page.status_code).to eq(200)
+      token_response2 = JSON.parse(page.body).with_indifferent_access
+
+      id_token2 = token_response2[:id_token]
+      expect(id_token2).to be_present
+      decoded_id_token2, _headers = JWT.decode(
+        id_token2, sp_public_key, true, algorithm: 'RS256'
+      ).map(&:with_indifferent_access)
+
+      expect(decoded_id_token2['nonce']).to eq(nonce2)
+    end
+
     it 'continues to the branded authorization page on first-time signup', email: true do
       client_id = 'urn:gov:gsa:openidconnect:test'
       email = 'test@test.com'
