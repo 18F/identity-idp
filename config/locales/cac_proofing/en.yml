@@ -3,11 +3,11 @@ en:
   cac_proofing:
     buttons:
       get_started: Get started
-      use_cac: Use your CAC
+      use_cac: Use your PIV/CAC
       use_doc_auth: Use your state issued ID
     errors:
-      does_not_work: Your CAC could not be processed.  Please try a different CAC
-        or you can verify using your %{link}.
+      does_not_work: Your PIV/CAC could not be processed.  Please try a different
+        PIV/CAC or you can verify using your %{link}.
       first_name_not_in_cn: The first name you entered is not associated with your
         card.
       last_name_not_in_cn: The last name you entered is not associated with your card.
@@ -15,20 +15,20 @@ en:
     headings:
       choose_method: How would you like to verify your identity?
       enter_info: Enter in your information
-      present_cac: Present your CAC card to verify your account
-      success: We've verified your information and CAC card.
+      present_cac: Present your PIV/CAC card to verify your account
+      success: We've verified your information and PIV/CAC card.
       verify: Verify your information
       welcome: We need to verify your identity
     info:
       choose_method: We'll collect information about you by reading from your state-issued
-        ID or CAC.
-      present_cac: After clicking "Present CAC" your browser will prompt you for your
-        CAC PIN and have you select a certificate.
+        ID or PIV/CAC.
+      present_cac: After clicking "Present PIV/CAC" your browser will prompt you for
+        your PIV/CAC PIN and have you select a certificate.
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity also allows you to access services that
         handle Personal Identifiable Information.
     instructions:
-      bullet1: Present your CAC card
+      bullet1: Present your PIV/CAC card
       bullet2: Enter your information
       bullet3: Confirm your address
       bullet4: Secure your account
@@ -39,6 +39,6 @@ en:
       text4: by re-entering your login.gov password
       text5: make sure you always have access
       welcome: 'What you''ll need to do:'
-    step: Verify your identity with CAC card - Step %{step} of 5
+    step: Verify your identity with PIV/CAC card - Step %{step} of 5
     titles:
-      cac_proofing: Verify your identity with a CAC card
+      cac_proofing: Verify your identity with a PIV/CAC card
