@@ -4,6 +4,8 @@ feature 'View personal key' do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  include JavascriptDriverHelper
+
   let(:user) { create(:user, :signed_up, :with_personal_key) }
 
   context 'after sign up' do
@@ -71,7 +73,6 @@ feature 'View personal key' do
     let(:invisible_selector) { generate_class_selector('invisible') }
 
     it 'prompts the user to enter their personal key to confirm they have it' do
-      Capybara.current_session.current_window.resize_to(2560, 1600)
       sign_in_and_2fa_user(user)
       click_button t('account.links.regenerate_personal_key')
 
@@ -97,8 +98,7 @@ feature 'View personal key' do
       expect(current_path).to eq account_path
     end
 
-    it 'confirms personal key on mobile' do
-      Capybara.current_session.current_window.resize_to(414, 736)
+    it 'confirms personal key on mobile', driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
       click_button t('account.links.regenerate_personal_key')
 
