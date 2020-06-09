@@ -8,8 +8,10 @@ fr:
     errors:
       does_not_work: Votre CAC n'a pas pu être traité. Veuillez essayer un autre CAC
         ou vous pouvez vérifier en utilisant votre %{link}.
-      entered_name_not_in_cn: Le nom que vous avez entré n'est pas associé à votre
+      first_name_not_in_cn: Le prénom que vous avez entré n'est pas associé à votre
         carte.
+      last_name_not_in_cn: Le nom de famille que vous avez entré n'est pas associé
+        à votre carte.
       state_id: identifiant émis par l'état
     headings:
       choose_method: Comment aimeriez-vous vérifier votre identité?

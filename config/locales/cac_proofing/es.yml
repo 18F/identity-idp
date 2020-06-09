@@ -8,7 +8,8 @@ es:
     errors:
       does_not_work: Su CAC no pudo ser procesado. Por favor, intente con un CAC diferente
         o puede verificar usando su %{link}.
-      entered_name_not_in_cn: El nombre que ingresó no está asociado con su tarjeta.
+      first_name_not_in_cn: El primer nombre que ingresó no está asociado con su tarjeta.
+      last_name_not_in_cn: El apellido que ingresó no está asociado con su tarjeta.
       state_id: identificación emitida por el estado
     headings:
       choose_method: "¿Cómo le gustaría verificar su identidad?"

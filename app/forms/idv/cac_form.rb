@@ -34,8 +34,8 @@ module Idv
     def full_name_in_cn
       return true if @cn.blank?
       return if PivCac::IsFullNameInCn.call(@cn, @params[:first_name], @params[:last_name])
-      errors.add(:first_name, I18n.t('cac_proofing.errors.entered_name_not_in_cn'))
-      errors.add(:last_name, I18n.t('cac_proofing.errors.entered_name_not_in_cn'))
+      errors.add(:first_name, I18n.t('cac_proofing.errors.first_name_not_in_cn'))
+      errors.add(:last_name, I18n.t('cac_proofing.errors.last_name_not_in_cn'))
     end
 
     def consume_params(params)
