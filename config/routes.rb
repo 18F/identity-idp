@@ -292,7 +292,6 @@ Rails.application.routes.draw do
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/doc_auth' => 'doc_auth#index'
-      get '/doc_auth/scan_id' => 'idv/scan_id#new'
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
@@ -314,31 +313,6 @@ Rails.application.routes.draw do
       get '/cac/pki_redirect' => 'cac#redirect_to_piv_cac_service'
       get '/cac/:step' => 'cac#show', as: :cac_step
       put '/cac/:step' => 'cac#update'
-    end
-    if Figaro.env.enable_mobile_capture == 'true'
-      get '/verify/doc_auth_v2' => 'idv/doc_auth_v2#index'
-      get '/verify/doc_auth_v2/scan_id' => 'idv/scan_id#new'
-      get '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#show', as: :idv_doc_auth_v2_step
-      put '/verify/doc_auth_v2/:step' => 'idv/doc_auth_v2#update'
-      get '/verify/doc_auth_v2/link_sent/poll' => 'idv/doc_auth_v2#doc_capture_poll'
-      get '/verify/doc-auth-v2/:step' => 'idv/doc_auth_v2#show',
-          # sometimes underscores get messed up when linked to via SMS
-          as: :idv_doc_auth_v2_step_dashes
-
-      get '/scan_id' => 'idv/scan_id#new'
-      get '/scan_complete' => 'idv/scan_id#scan_complete'
-      get '/capture/photo' => 'idv/scan_id#new'
-      get '/capture/camera' => 'idv/scan_id#new'
-      get '/photo/confirm' => 'idv/scan_id#new'
-      get '/capture/selfie' => 'idv/scan_id#new'
-      get '/AssureIDService/subscriptions' => 'idv/scan_id_acuant#subscriptions'
-      post '/AssureIDService/Document/Instance' => 'idv/scan_id_acuant#instance'
-      post '/AssureIDService/Document/:instance_id/Image' => 'idv/scan_id_acuant#image'
-      get '/AssureIDService/Document/:instance_id/Classification' => 'idv/scan_id_acuant#classification'
-      get '/AssureIDService/Document/:instance_id' => 'idv/scan_id_acuant#document'
-      get '/AssureIDService/Document/:instance_id/Field/Image' => 'idv/scan_id_acuant#field_image'
-      post '/api/v1/liveness' => 'idv/scan_id_acuant#liveness'
-      post '/api/v1/facematch' => 'idv/scan_id_acuant#facematch'
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account
