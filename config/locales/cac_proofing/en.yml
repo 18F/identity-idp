@@ -8,6 +8,9 @@ en:
     errors:
       does_not_work: Your CAC could not be processed.  Please try a different CAC
         or you can verify using your %{link}.
+      first_name_not_in_cn: The first name you entered is not associated with your
+        card.
+      last_name_not_in_cn: The last name you entered is not associated with your card.
       state_id: state issued ID
     headings:
       choose_method: How would you like to verify your identity?
