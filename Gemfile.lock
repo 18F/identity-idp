@@ -1,12 +1,13 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 727d13fc4ef5d47e80fe2d1c352c39814e6c99bb
-  tag: v3.3.0
+  revision: f88d3cda9646aaae7f21f5bd37621618743dd88e
+  tag: v3.4.0
   specs:
-    aamva (3.3.0)
+    aamva (3.4.0)
       dotenv
       faraday
       hashie
+      retries
       typhoeus
       xmldsig
 
@@ -490,6 +491,7 @@ GEM
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    retries (0.0.5)
     rexml (3.2.4)
     rotp (3.3.1)
     rqrcode (1.1.2)
@@ -660,7 +662,7 @@ GEM
       railties (>= 4.2)
     websocket-driver (0.7.2)
       websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.4)
+    websocket-extensions (0.1.5)
     xmldsig (0.6.6)
       nokogiri (>= 1.6.8, < 2.0.0)
     xmlenc (0.7.1)

@@ -192,6 +192,8 @@ feature 'adding email address' do
 
     fake_email = instance_double(EmailAddress)
     expect(fake_email).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+    expect(fake_email).to receive(:confirmation_token=)
+    expect(fake_email).to receive(:confirmation_sent_at=)
     expect(EmailAddress).to receive(:new).and_return(fake_email)
 
     fill_in 'Email', with: email
