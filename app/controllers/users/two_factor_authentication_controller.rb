@@ -6,7 +6,8 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      aal3_redirect_or_fail || non_phone_redirect || phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
+      aal3_requirement_redirect || non_phone_redirect || phone_redirect || backup_code_redirect ||
+        redirect_on_nothing_enabled
     end
 
     def no_auth_option
@@ -226,10 +227,13 @@ module Users
       redirect_to url if url.present?
     end
 
-    def aal3_redirect_or_fail
+    def aal3_requirement_redirect
       aal3_url = aal3_redirect_url
-      redirect_to aal3_url if aal3_url.present?
-      no_auth_option if AAL3Policy.new(current_user).aal3_required?
+      if aal3_url
+        redirect_to aal3_url
+      elsif AAL3Policy.new(current_user).aal3_required?
+        no_auth_option
+      end
     end
 
     def aal3_redirect_url
