@@ -309,7 +309,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     it 'is parsed into an array of valid ACR values' do
       expect(form.acr_values).to eq(
-        %w[http://idmanagement.gov/ns/assurance/loa/1 http://idmanagement.gov/ns/assurance/aal/3]
+        %w[
+          http://idmanagement.gov/ns/assurance/loa/1
+          http://idmanagement.gov/ns/assurance/aal/3
+        ],
       )
     end
   end

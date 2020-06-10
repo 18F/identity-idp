@@ -185,11 +185,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter {|acr| %r[/ial/].match? acr }
+    acr_values.filter { |acr| %r{/ial/}.match? acr }
   end
 
   def aal_values
-    acr_values.filter {|acr| %r[/aal/].match? acr }
+    acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
   def extra_analytics_attributes
