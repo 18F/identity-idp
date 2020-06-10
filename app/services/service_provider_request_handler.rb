@@ -50,8 +50,8 @@ class ServiceProviderRequestHandler
   def attributes
     {
       issuer: protocol.issuer,
-      loa: protocol.ial,
       ial: protocol.ial,
+      aal: protocol.aal,
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
       url: url,
