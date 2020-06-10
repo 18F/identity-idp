@@ -7,7 +7,7 @@ class ServiceProviderRequestHandler
   end
 
   def call
-    request_id = sp_session[:request_id] if current_sp == sp_stored_in_session
+    self.request_id = sp_session[:request_id] if current_sp == sp_stored_in_session
 
     delete_sp_request_if_session_has_matching_request_id
     ServiceProviderRequestProxy.create!(attributes)
@@ -48,6 +48,10 @@ class ServiceProviderRequestHandler
       uuid: request_id,
       url: url,
     }
+  end
+
+  def request_id=(request_id)
+    @request_id = request_id
   end
 
   def request_id
