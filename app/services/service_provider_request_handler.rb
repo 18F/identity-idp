@@ -7,6 +7,8 @@ class ServiceProviderRequestHandler
   end
 
   def call
+    request_id = sp_session[:request_id] if current_sp == sp_stored_in_session
+
     delete_sp_request_if_session_has_matching_request_id
     ServiceProviderRequestProxy.create!(attributes)
 
@@ -21,6 +23,10 @@ class ServiceProviderRequestHandler
 
   def ial
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(protocol.ial) ? 2 : 1
+  end
+
+  def current_sp
+    protocol.issuer
   end
 
   def sp_stored_in_session
