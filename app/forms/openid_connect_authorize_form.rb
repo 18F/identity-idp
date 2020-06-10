@@ -107,6 +107,14 @@ class OpenidConnectAuthorizeForm
     URIService.add_params(uri, code: code, state: state) if code
   end
 
+  def ial_values
+    acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
+  end
+
+  def aal_values
+    acr_values.filter { |acr| %r{/aal/}.match? acr }
+  end
+
   private
 
   attr_reader :identity, :success
@@ -182,14 +190,6 @@ class OpenidConnectAuthorizeForm
 
   def aal
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max]
-  end
-
-  def ial_values
-    acr_values.filter { |acr| %r{/ial/}.match? acr }
-  end
-
-  def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
   def extra_analytics_attributes

@@ -105,7 +105,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
-          to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
+          to include(t('openid_connect.authorization.errors.no_valid_ial_values'))
       end
     end
 
@@ -121,9 +121,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-      it 'has no errors' do
-        valid?
-        expect(form.errors).to be_blank
+      it 'has errors' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:acr_values]).
+          to include(t('openid_connect.authorization.errors.no_valid_ial_values'))
       end
     end
 
