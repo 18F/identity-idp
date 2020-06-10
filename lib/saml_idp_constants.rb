@@ -4,10 +4,13 @@ module Saml
     module Constants
       LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'.freeze
       LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'.freeze
+
       IAL1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/1'.freeze
       IAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2'.freeze
       IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2?strict=true'.freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/0'.freeze
+
+      AAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/2'.freeze
       AAL3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3'.freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
@@ -16,16 +19,20 @@ module Saml
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
-        LOA1_AUTHN_CONTEXT_CLASSREF => 1,
-        LOA3_AUTHN_CONTEXT_CLASSREF => 2,
-        IAL1_AUTHN_CONTEXT_CLASSREF => 1,
-        IAL2_AUTHN_CONTEXT_CLASSREF => 2,
-        IAL2_STRICT_AUTHN_CONTEXT_CLASSREF => 22,
-        IALMAX_AUTHN_CONTEXT_CLASSREF => 0,
+        LOA1_AUTHN_CONTEXT_CLASSREF => Identity::IAL1,
+        LOA3_AUTHN_CONTEXT_CLASSREF => Identity::IAL2,
+        IAL1_AUTHN_CONTEXT_CLASSREF => Identity::IAL1,
+        IAL2_AUTHN_CONTEXT_CLASSREF => Identity::IAL2,
+        IAL2_STRICT_AUTHN_CONTEXT_CLASSREF => Identity::IAL2_STRICT,
+        IALMAX_AUTHN_CONTEXT_CLASSREF => Identity::IAL_MAX,
       }.freeze
+
       AUTHN_CONTEXT_CLASSREF_TO_AAL = {
-        AAL3_AUTHN_CONTEXT_CLASSREF => 3,
-      }.freeze
+        AAL2_AUTHN_CONTEXT_CLASSREF => Authorization::AAL2,
+        AAL3_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
+      }
+      AUTHN_CONTEXT_CLASSREF_TO_AAL.default = Authorization::AAL2
+      AUTHN_CONTEXT_CLASSREF_TO_AAL.freeze
     end
   end
 end
