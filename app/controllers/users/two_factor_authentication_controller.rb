@@ -10,9 +10,6 @@ module Users
         redirect_on_nothing_enabled
     end
 
-    def no_auth_option
-      render :'two_factor_authentication/options/no_option'
-    end
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
@@ -231,8 +228,8 @@ module Users
       aal3_url = aal3_redirect_url
       if aal3_url
         redirect_to aal3_url
-      elsif AAL3Policy.new(current_user).aal3_required?
-        no_auth_option
+      elsif AAL3Policy.new(current_user, sp_session).aal3_required?
+        redirect_to aal3_required_url
       end
     end
 
