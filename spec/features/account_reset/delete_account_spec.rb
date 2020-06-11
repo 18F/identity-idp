@@ -42,7 +42,7 @@ describe 'Account Reset Request: Delete Account', email: true do
         expect(page).to have_content(
           strip_tags(
             t(
-              'account_reset.confirm_delete_account.info',
+              'account_reset.confirm_delete_account.info_html',
               email: user_email,
               link: t('account_reset.confirm_delete_account.link_text'),
             ),
