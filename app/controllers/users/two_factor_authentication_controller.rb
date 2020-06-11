@@ -10,7 +10,6 @@ module Users
         redirect_on_nothing_enabled
     end
 
-
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
@@ -228,7 +227,7 @@ module Users
       aal3_url = aal3_redirect_url
       if aal3_url
         redirect_to aal3_url
-      elsif AAL3Policy.new(current_user, sp_session).aal3_required?
+      elsif AAL3Policy.new(current_user, sp_session, session).aal3_required?
         redirect_to aal3_required_url
       end
     end

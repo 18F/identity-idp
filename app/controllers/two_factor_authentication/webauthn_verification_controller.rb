@@ -42,6 +42,10 @@ module TwoFactorAuthentication
       save_remember_device_preference
     end
 
+    def two_factor_authentication_method
+      'webauthn'
+    end
+
     def handle_invalid_webauthn
       flash[:error] = t('errors.invalid_authenticity_token')
       redirect_to login_two_factor_webauthn_url

@@ -1,16 +1,16 @@
 class AAL3Policy
-  def initialize(user, session)
+  def initialize(user, sp_session, session)
     @user = MfaContext.new(user)
+    @sp_session = sp_session
     @session = session
   end
 
   def aal3_required?
-    @session[:aal3]
+    @sp_session[:aal3]
   end
 
-  def aal3_requirement_met?
-    # If AAL3 is required, check if the user has it. Otherwise, requirement met
-    !aal3_required? || aal3_methods_enabled?
+  def aal3_used?
+    %w[webauthn piv_cac].include?(@session[:auth_method])
   end
 
   def aal3_methods_enabled?
