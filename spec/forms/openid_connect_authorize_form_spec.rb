@@ -105,7 +105,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
-          to include(t('openid_connect.authorization.errors.no_valid_ial_values'))
+          to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
       end
     end
 
@@ -124,7 +124,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
-          to include(t('openid_connect.authorization.errors.no_valid_ial_values'))
+          to include(t('openid_connect.authorization.errors.missing_ial'))
       end
     end
 
