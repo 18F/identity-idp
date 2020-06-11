@@ -33,7 +33,7 @@ class OpenidConnectAuthorizeForm
   validates :prompt, presence: true, inclusion: { in: %w[login select_account] }
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
-  validate :validate_ial_values
+  validate :validate_acr_values
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
@@ -135,9 +135,12 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
-  def validate_ial_values
-    return if ial_values.present?
-    errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_ial_values'))
+  def validate_acr_values
+    if acr_values.empty?
+      errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'))
+    elsif ial_values.empty?
+      errors.add(:acr_values, t('openid_connect.authorization.errors.missing_ial'))
+    end
   end
 
   def validate_client_id
