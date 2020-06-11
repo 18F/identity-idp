@@ -109,7 +109,7 @@ module Features
     end
 
     def continue_as(email = nil, password = VALID_PASSWORD)
-      return unless %r{#{user_authorization_confirmation_path}}.match?(current_url)
+      return unless current_url.include?(user_authorization_confirmation_path)
 
       if email.nil? || page.has_content?(email)
         click_button t('user_authorization_confirmation.continue')

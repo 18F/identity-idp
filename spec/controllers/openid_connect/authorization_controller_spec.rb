@@ -217,6 +217,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
+          aal3: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,

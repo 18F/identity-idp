@@ -12,6 +12,8 @@ module FederatedProtocols
       request.requested_authn_context || default_authn_context
     end
 
+    def aal; end
+
     def requested_attributes
       @_attributes ||= SamlRequestPresenter.new(
         request: request, service_provider: current_service_provider,

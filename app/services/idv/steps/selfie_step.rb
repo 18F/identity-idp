@@ -3,7 +3,12 @@ module Idv
     class SelfieStep < DocAuthBaseStep
       def call
         success, error_results = ::Acuant::Liveness.new(instance_id).call(image.read)
-        return selfie_failure(error_results) unless success
+        if success
+          return unless user_id_from_token
+          CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
+        else
+          selfie_failure(error_results)
+        end
       end
 
       private
