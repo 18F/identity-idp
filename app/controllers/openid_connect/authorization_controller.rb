@@ -28,7 +28,7 @@ module OpenidConnect
 
     def aal3_requirement
       return unless aal3_policy.aal3_required?
-      aal3_required_url unless aal3_policy.aal3_used?
+      redirect_to aal3_required_url unless aal3_policy.aal3_used?
     end
 
     def aal3_policy

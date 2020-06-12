@@ -13,9 +13,4 @@ class AAL3Policy
     %w[webauthn piv_cac].include?(@session[:auth_method])
   end
 
-  def aal3_methods_enabled?
-    @user.webauthn_configurations.any? || @user.piv_cac_configurations.any?
-  end
-
-
 end
