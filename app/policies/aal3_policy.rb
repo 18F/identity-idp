@@ -12,5 +12,4 @@ class AAL3Policy
   def aal3_used?
     %w[webauthn piv_cac].include?(@session[:auth_method])
   end
-
 end

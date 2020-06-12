@@ -208,7 +208,7 @@ module Users
     end
 
     def redirect_url
-      if TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
+      if TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled? # rubocop:disable Style/GuardClause, Metrics/LineLength
         login_two_factor_authenticator_url
       end
     end
@@ -239,7 +239,6 @@ module Users
         login_two_factor_webauthn_url
       end
     end
-
   end
   # rubocop:enable Metrics/ClassLength
 end

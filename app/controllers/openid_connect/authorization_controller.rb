@@ -42,10 +42,6 @@ module OpenidConnect
       true
     end
 
-    def expire_session?
-      remember_device_expired_for_sp? || !aal3_requirement_met?
-    end
-
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
