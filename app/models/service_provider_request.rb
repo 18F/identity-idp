@@ -1,20 +1,13 @@
 class ServiceProviderRequest
-  attr_accessor :uuid, :issuer, :url, :loa, :requested_attributes
+  attr_accessor :uuid, :issuer, :url, :ial, :aal, :requested_attributes
 
-  def initialize(uuid: nil, issuer: nil, url: nil, loa: nil, requested_attributes: [])
+  def initialize(uuid: nil, issuer: nil, url: nil, ial: nil, aal: nil, requested_attributes: [])
     @uuid = uuid
     @issuer = issuer
     @url = url
-    @loa = loa
+    @ial = ial
+    @aal = aal
     @requested_attributes = requested_attributes&.map(&:to_s)
-  end
-
-  def ial
-    @loa
-  end
-
-  def ial=(val)
-    @loa = val
   end
 
   def ==(other)

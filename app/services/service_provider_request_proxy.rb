@@ -30,19 +30,20 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil,
-                                     requested_attributes: nil)
+    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, ial: nil,
+                                     aal: nil, requested_attributes: nil)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,
            url: spr.url,
-           loa: spr.loa,
+           ial: spr.ial,
+           aal: spr.aal,
            requested_attributes: spr.requested_attributes)
   end
 
   def self.create(hash)
     uuid = hash[:uuid]
-    obj = hash.slice(:issuer, :url, :loa, :requested_attributes)
+    obj = hash.slice(:issuer, :url, :ial, :aal, :requested_attributes)
     write(obj, uuid)
     hash_to_spr(obj, uuid)
   end

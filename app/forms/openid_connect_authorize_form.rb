@@ -73,6 +73,10 @@ class OpenidConnectAuthorizeForm
       (ial == Identity::IAL2 && service_provider.liveness_checking_required)
   end
 
+  def aal3_requested?
+    aal == Authorization::AAL3
+  end
+
   def ialmax_requested?
     ial&.zero?
   end
@@ -103,6 +107,14 @@ class OpenidConnectAuthorizeForm
     URIService.add_params(uri, code: code, state: state) if code
   end
 
+  def ial_values
+    acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
+  end
+
+  def aal_values
+    acr_values.filter { |acr| %r{/aal/}.match? acr }
+  end
+
   private
 
   attr_reader :identity, :success
@@ -124,8 +136,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_acr_values
-    return if acr_values.present?
-    errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'))
+    if acr_values.empty?
+      errors.add(:acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'))
+    elsif ial_values.empty?
+      errors.add(:acr_values, t('openid_connect.authorization.errors.missing_ial'))
+    end
   end
 
   def validate_client_id
@@ -173,7 +188,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[acr_values.sort.max]
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+  end
+
+  def aal
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max]
   end
 
   def extra_analytics_attributes
