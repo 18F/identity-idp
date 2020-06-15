@@ -6,6 +6,8 @@ class ServiceProviderRequestProxy
   REDIS_KEY_PREFIX = 'spr:'.freeze
   DEFAULT_TTL_HOURS = 24
 
+  # This is used to support the .last method. That method is only used in the
+  # test environment
   cattr_accessor :redis_last_uuid
 
   def self.from_uuid(uuid)
