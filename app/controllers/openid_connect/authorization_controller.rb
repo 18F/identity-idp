@@ -32,7 +32,7 @@ module OpenidConnect
     end
 
     def aal3_policy
-      @aal3 ||= AAL3Policy.new(current_user, sp_session, session)
+      @aal3 ||= AAL3Policy.new(session)
     end
 
     def check_sp_handoff_bounced

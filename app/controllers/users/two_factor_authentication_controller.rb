@@ -227,7 +227,7 @@ module Users
       aal3_url = aal3_redirect_url
       if aal3_url
         redirect_to aal3_url
-      elsif AAL3Policy.new(current_user, sp_session, session).aal3_required?
+      elsif AAL3Policy.new(session).aal3_required?
         redirect_to aal3_required_url
       end
     end

@@ -1,12 +1,11 @@
 class AAL3Policy
-  def initialize(user, sp_session, session)
-    @user = MfaContext.new(user)
-    @sp_session = sp_session
+  def initialize(session)
     @session = session
   end
 
   def aal3_required?
-    @sp_session[:aal_level_requested] == 3
+    sp_session = @session[:sp]
+    sp_session && (sp_session[:aal_level_requested] == 3)
   end
 
   def aal3_used?
