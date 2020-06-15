@@ -27,10 +27,10 @@ module Saml
         IALMAX_AUTHN_CONTEXT_CLASSREF => Identity::IAL_MAX,
       }.freeze
 
-      AUTHN_CONTEXT_CLASSREF_TO_AAL = Hash.new(Authorization::AAL2).merge(
+      AUTHN_CONTEXT_CLASSREF_TO_AAL = {
         AAL2_AUTHN_CONTEXT_CLASSREF => Authorization::AAL2,
         AAL3_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
-      ).freeze
+      }.freeze
     end
   end
 end
