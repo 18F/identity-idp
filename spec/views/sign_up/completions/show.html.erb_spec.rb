@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/completions/show.html.slim' do
+describe 'sign_up/completions/show.html.erb' do
   before do
     @user = User.new
     @view_model = SignUpCompletionsShow.new(
