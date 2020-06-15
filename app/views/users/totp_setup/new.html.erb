@@ -39,7 +39,7 @@
         <%= accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),
                       wrapper_css: 'mb2 col-12 fs-16p') do %>
           <div class="center">
-            <%= image_tag @qrcode, skip_pipeline: true %>
+            <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
           </div>
         <% end %>
       </div>
