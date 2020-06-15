@@ -21,10 +21,19 @@ module OpenidConnect
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
-      handle_successful_handoff
+      aal3_requirement || handle_successful_handoff
     end
 
     private
+
+    def aal3_requirement
+      return unless aal3_policy.aal3_required?
+      redirect_to aal3_required_url unless aal3_policy.aal3_used?
+    end
+
+    def aal3_policy
+      @aal3 ||= AAL3Policy.new(session)
+    end
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
