@@ -6,19 +6,21 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
+RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].nil?
+
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true
-  config.formatter = ENV['PARALLEL_PID_FILE'].nil? ? :documentation : :progress
+  config.formatter = RSPEC_RUNNING_IN_PARALLEL ? :documentation : :progress
 
   # allows you to run only the failures from the previous run:
   # rspec --only-failures
   config.example_status_persistence_file_path = './tmp/rspec-examples.txt'
 
   # show the n slowest tests at the end of the test run
-  config.profile_examples = 10
+  config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
 
   # Skip user_flow specs in default tasks
   config.filter_run_excluding user_flow: true
