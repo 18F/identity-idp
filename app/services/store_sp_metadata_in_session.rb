@@ -34,7 +34,7 @@ class StoreSpMetadataInSession
       ial2: ial2_requested?,
       ial2_strict: ial2_strict_requested?,
       ialmax: ialmax_requested?,
-      aal3: aal3_requested?,
+      aal_level_requested: aal_requested,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
@@ -54,8 +54,8 @@ class StoreSpMetadataInSession
       !!(ial2_requested? && service_provider&.liveness_checking_required)
   end
 
-  def aal3_requested?
-    Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF == sp_request.aal
+  def aal_requested
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[sp_request.aal]
   end
 
   def service_provider

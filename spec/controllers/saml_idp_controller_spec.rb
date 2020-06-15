@@ -305,7 +305,7 @@ describe SamlIdpController do
         sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal3: false,
+          aal_level_requested: nil,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -327,7 +327,7 @@ describe SamlIdpController do
 
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal3: false,
+          aal_level_requested: nil,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
