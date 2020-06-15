@@ -6,7 +6,7 @@ class AAL3Policy
   end
 
   def aal3_required?
-    @sp_session[:aal3]
+    @sp_session[:aal_level_requested] == 3
   end
 
   def aal3_used?
