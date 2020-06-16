@@ -1,0 +1,218 @@
+{
+  "Alerts": [
+    {
+      "Actions": "This test may fail if a document cannot be successfully classified as a supported document type.  This may occur if the document is fraudulent as some fraudulent documents differ so much from authentic documents that they will not be recognized as that type of document.  This may also occur if a valid document is significantly worn or damaged or if the document is of a new or different type that is not yet supported by the library.  The document should be examined manually.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the type of document is supported and is able to be fully authenticated.",
+      "Disposition": "The document type could not be determined",
+      "FieldReferences": [],
+      "Id": "555ce005-8bc5-46fa-9a9e-6576a71f484c",
+      "ImageReferences": [],
+      "Information": "Verified that the document is recognized as a supported document type and that the type of document can be fully authenticated.",
+      "Key": "Document Classification",
+      "Name": "Document Classification",
+      "RegionReferences": [],
+      "Result": 2
+    }
+  ],
+  "AuthenticationSensitivity": 0,
+  "Biographic": {
+    "Age": 0,
+    "BirthDate": null,
+    "ExpirationDate": null,
+    "FullName": null,
+    "Gender": 0,
+    "Photo": null
+  },
+  "Classification": {
+    "ClassificationDetails": {
+      "Back": {
+        "Class": 0,
+        "ClassCode": null,
+        "ClassName": "Unknown",
+        "CountryCode": "",
+        "GeographicRegions": null,
+        "Id": "00000000-0000-0000-0000-000000000000",
+        "IsGeneric": true,
+        "Issue": null,
+        "IssueType": null,
+        "IssuerCode": null,
+        "IssuerName": null,
+        "IssuerType": 0,
+        "KeesingCode": null,
+        "Name": "Unknown",
+        "Size": 0,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      },
+      "Front": {
+        "Class": 0,
+        "ClassCode": null,
+        "ClassName": "Unknown",
+        "CountryCode": "",
+        "GeographicRegions": null,
+        "Id": "00000000-0000-0000-0000-000000000000",
+        "IsGeneric": true,
+        "Issue": null,
+        "IssueType": null,
+        "IssuerCode": null,
+        "IssuerName": null,
+        "IssuerType": 0,
+        "KeesingCode": null,
+        "Name": "Unknown",
+        "Size": 0,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      }
+    },
+    "Mode": 0,
+    "OrientationChanged": false,
+    "PresentationChanged": false,
+    "Type": {
+      "Class": 0,
+      "ClassCode": null,
+      "ClassName": "Unknown",
+      "CountryCode": "",
+      "GeographicRegions": null,
+      "Id": "00000000-0000-0000-0000-000000000000",
+      "IsGeneric": true,
+      "Issue": null,
+      "IssueType": null,
+      "IssuerCode": null,
+      "IssuerName": null,
+      "IssuerType": 0,
+      "KeesingCode": null,
+      "Name": "Unknown",
+      "Size": 0,
+      "SupportedImages": [
+        {
+          "Light": 0,
+          "Side": 0
+        },
+        {
+          "Light": 1,
+          "Side": 0
+        },
+        {
+          "Light": 2,
+          "Side": 0
+        },
+        {
+          "Light": 0,
+          "Side": 1
+        },
+        {
+          "Light": 1,
+          "Side": 1
+        },
+        {
+          "Light": 2,
+          "Side": 1
+        }
+      ]
+    }
+  },
+  "DataFields": [],
+  "Device": {
+    "HasContactlessChipReader": false,
+    "HasMagneticStripeReader": false,
+    "SerialNumber": "xxxxx",
+    "Type": {
+      "Manufacturer": "Login.gov",
+      "Model": "Doc Auth 1.0",
+      "SensorType": 3
+    }
+  },
+  "EngineVersion": "2.15.1.171",
+  "Fields": [],
+  "Images": [
+    {
+      "GlareMetric": null,
+      "HorizontalResolution": 96,
+      "Id": "fe7c612a-66bb-46ab-8b06-b28f657b6482",
+      "IsCropped": false,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/jpeg",
+      "SharpnessMetric": null,
+      "Side": 0,
+      "Uri": "https://services.assureid.net/AssureIDService/Document/97b0215a-7858-4104-b1f3-17dbaf609140/Image?side=Front&light=White",
+      "VerticalResolution": 96
+    },
+    {
+      "GlareMetric": null,
+      "HorizontalResolution": 96,
+      "Id": "60359af3-d87e-46da-ab5b-883ebfec923f",
+      "IsCropped": false,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/jpeg",
+      "SharpnessMetric": null,
+      "Side": 1,
+      "Uri": "https://services.assureid.net/AssureIDService/Document/97b0215a-7858-4104-b1f3-17dbaf609140/Image?side=Back&light=White",
+      "VerticalResolution": 96
+    }
+  ],
+  "InstanceId": "97b0215a-7858-4104-b1f3-17dbaf609140",
+  "LibraryVersion": "20.05.07.182",
+  "ProcessMode": 2,
+  "Regions": [],
+  "Result": 0,
+  "Subscription": {
+    "DocumentProcessMode": 2,
+    "Id": "fake-subscription-id",
+    "IsActive": true,
+    "IsDevelopment": true,
+    "IsTrial": false,
+    "Name": "Dev GSA iProov",
+    "StorePII": false
+  }
+}
