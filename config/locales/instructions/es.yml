@@ -20,11 +20,10 @@ es:
       app e inicie una sesión.
     mfa:
       authenticator:
-        accordion_header: Escanear código con su dispositivo móvil
         confirm_code_html: Ingrese el código de su app de autenticación. Si tiene
           varias cuentas configuradas en su app, ingrese el código correspondiente
           a %{email} en %{app}.%{tooltip}
-        or: o
+        manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
         account_not_found:
           paragraph_1_html: "<strong>%{sign_in}</strong> con su dirección de correo

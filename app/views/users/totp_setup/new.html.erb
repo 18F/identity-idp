@@ -28,20 +28,19 @@
         <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
-        <div class="px2 py1 border border-dashed border-navy">
+        <div class="center">
+          <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
+        </div>
+        <div class="center">
+          <%= t('instructions.mfa.authenticator.manual_entry') %>
+        </div>
+        <div class="px2 py1 mt1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
           <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
                   data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
           </button>
         </div>
-        <div class="py2 center bold"><%= t('instructions.mfa.authenticator.or') %></div>
-        <%= accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),
-                      wrapper_css: 'mb2 col-12 fs-16p') do %>
-          <div class="center">
-            <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
-          </div>
-        <% end %>
       </div>
     </li>
     <li class="py2 border-top">
