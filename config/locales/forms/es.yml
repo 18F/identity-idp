@@ -134,8 +134,7 @@ es:
       totp_step_1: Darle un apodo
       totp_step_1a: Si agrega más de una aplicación, sabrá cuáles.
       totp_step_2: Abra su app de autenticación.
-      totp_step_3: Con su aplicación, ingrese esta clave manualmente o escanee el
-        código de barras
+      totp_step_3: Escanee este código de barras QR con su aplicación
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
