@@ -113,19 +113,15 @@ describe Idv::CaptureDocController do
       end
 
       it 'add unsafe-eval to the CSP for capture steps' do
-        mock_next_step(:mobile_front_image)
+        steps = %i[mobile_front_image capture_mobile_back_image selfie]
+        steps.each do |step|
+          mock_next_step(step)
 
-        get :show, params: { step: 'mobile-front-image' }
+          get :show, params: { step: step }
 
-        script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
-        expect(script_src).to include("'unsafe-eval'")
-
-        mock_next_step(:capture_mobile_back_image)
-
-        get :show, params: { step: 'capture-mobile-back-image' }
-
-        script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
-        expect(script_src).to include("'unsafe-eval'")
+          script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+          expect(script_src).to include("'unsafe-eval'")
+        end
       end
 
       it 'does not add unsafe-eval to the CSP for non-capture steps' do

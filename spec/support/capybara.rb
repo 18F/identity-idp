@@ -18,6 +18,19 @@ end
 Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
 
+Capybara.register_driver(:headless_chrome_mobile) do |app|
+  browser_options = Selenium::WebDriver::Chrome::Options.new
+  browser_options.args << '--headless'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-dev-shm-usage'
+  browser_options.args << '--window-size=414,736'
+
+  Capybara::Selenium::Driver.new app,
+                                 browser: :chrome,
+                                 options: browser_options
+end
+
 Capybara.server = :puma, { Silent: true }
 
 Capybara.default_max_wait_time = 0.5

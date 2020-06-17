@@ -1,0 +1,10 @@
+<% title @view_model.title %>
+<div class="clearfix col-10 sm-col-12 mx-auto">
+  <div class="center">
+    <%= image_tag asset_url(@view_model.image_name), width: 140, alt: '', class: 'mb2'  %>
+  </div>
+  <h1 class="h3 mb2 my0 sm-mr1 sm-ml1 center">
+    <%= @view_model.heading %>
+  </h1>
+  <%= render @view_model.service_provider_partial %>
+</div>

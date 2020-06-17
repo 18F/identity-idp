@@ -9,7 +9,11 @@ module FederatedProtocols
     end
 
     def ial
-      request.acr_values.sort.max
+      request.ial_values.sort.max
+    end
+
+    def aal
+      request.aal_values.sort.max
     end
 
     def requested_attributes

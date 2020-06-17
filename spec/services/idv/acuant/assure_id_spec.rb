@@ -140,18 +140,6 @@ describe Idv::Acuant::AssureId do
       expect(result).to eq(bad_acuant_status)
     end
 
-    describe '#subscriptions' do
-      let(:path) { '/AssureIDService/subscriptions' }
-
-      it 'returns a good status' do
-        stub_request(:get, acuant_base_url + path).to_return(status: 200, body: '{}')
-
-        result = subject.subscriptions
-
-        expect(result).to eq([true, '{}'])
-      end
-    end
-
     describe '#document' do
       let(:path) { "/AssureIDService/Document/#{subject.instance_id}" }
 
@@ -159,30 +147,6 @@ describe Idv::Acuant::AssureId do
         stub_request(:get, acuant_base_url + path).to_return(status: 200, body: '{}')
 
         result = subject.document
-
-        expect(result).to eq([true, '{}'])
-      end
-    end
-
-    describe '#classification' do
-      let(:path) { "/AssureIDService/Document/#{subject.instance_id}/Classification" }
-
-      it 'returns a good status' do
-        stub_request(:get, acuant_base_url + path).to_return(status: 200, body: '{}')
-
-        result = subject.classification
-
-        expect(result).to eq([true, '{}'])
-      end
-    end
-
-    describe '#field_image' do
-      let(:path) { "/AssureIDService/Document/#{subject.instance_id}/Field/Image?key=1" }
-
-      it 'returns a good status' do
-        stub_request(:get, acuant_base_url + path).to_return(status: 200, body: '{}')
-
-        result = subject.field_image('1')
 
         expect(result).to eq([true, '{}'])
       end
