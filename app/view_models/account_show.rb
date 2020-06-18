@@ -1,4 +1,5 @@
 class AccountShow # rubocop:disable Metrics/ClassLength
+  include RememberDeviceConcern
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:)
@@ -66,7 +67,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def pii_partial
-    if decrypted_pii.present?
+    if decrypted_pii.present? && !pii_locked_for_session?
       'accounts/pii'
     elsif decorated_user.identity_verified?
       'accounts/pii_locked'

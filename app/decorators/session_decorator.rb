@@ -35,6 +35,10 @@ class SessionDecorator
     Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
   end
 
+  def pii_lock_interval
+    Figaro.env.pii_lock_timeout_in_minutes.to_i.minutes
+  end
+
   def failure_to_proof_url; end
 
   def remember_device_default
