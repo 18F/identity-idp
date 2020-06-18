@@ -1,6 +1,0 @@
-- reset_link = request.path.include?('v2') ? idv_doc_auth_v2_step_path(:reset) : \
-  idv_doc_auth_step_path(:reset)
-br
-= button_to(t('doc_auth.buttons.start_over'), reset_link, method: :put,
-        class: 'btn btn-link', form_class: 'inline-block')
-= render 'shared/cancel', link: idv_cancel_path

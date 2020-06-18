@@ -62,11 +62,11 @@ Metrics/LineLength:
     - 'config/routes.rb'
 
 Metrics/MethodLength:
-  Description: Avoid methods longer than 10 lines of code.
+  Description: Avoid methods longer than 15 lines of code.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
   Enabled: true
   CountComments: false
-  Max: 10
+  Max: 15
   Exclude:
   - 'db/migrate/*'
   - spec/**/*
@@ -157,6 +157,9 @@ Layout/DotPosition:
   SupportedStyles:
   - leading
   - trailing
+
+Style/DoubleNegation:
+  Enabled: false
 
 # Warn on empty else statements
 # empty - warn only on empty else

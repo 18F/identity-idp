@@ -60,6 +60,8 @@ Vagrantfile
 /vendor/bundle
 /postgres-data
 
+package-lock.json
+
 saml_*.txt
 saml_*.shr
 saml_*.key

@@ -8,9 +8,9 @@ fr:
       cancel_button: Annuler supprimer un compte
       title: Annuler supprimer un compte
     confirm_delete_account:
-      cta: Vous pouvez %{link} ou fermer cette fenêtre si vous avez terminé.
-      info: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé
-        un email de confirmation de la suppression du compte.
+      cta_html: Vous pouvez %{link} ou fermer cette fenêtre si vous avez terminé.
+      info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons
+        envoyé un email de confirmation de la suppression du compte.
       link_text: créer un nouveau compte
       title: Vous avez supprimé votre compte
     confirm_request:
@@ -28,6 +28,15 @@ fr:
         liées à ton compte. Une fois votre compte supprimé, vous pouvez en créer un
         nouveau en utilisant la même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours
+    pending:
+      cancel_request: Demande d'annulation
+      cancelled: Nous avons annulé votre demande de suppression de votre compte.
+      confirm: Si vous annulez maintenant, vous devez créer une nouvelle demande et
+        attendre encore 24 heures pour supprimer votre compte.
+      header: Vous avez demandé de supprimer votre compte
+      wait_html: Il y a un délai d'attente de 24 heures pour supprimer votre compte.
+        Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions
+        pour terminer la suppression.
     request:
       access_your_account: accéder à votre compte
       are_you_sure: Êtes-vous sûr de n'avoir accès à aucune de vos méthodes de sécurité?
