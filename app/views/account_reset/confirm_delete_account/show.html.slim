@@ -1,0 +1,9 @@
+- title t('account_reset.confirm_delete_account.title')
+
+.my2.p3.sm-px4.border.border-red.rounded.rounded-xl.relative
+  = image_tag(asset_url('alert/fail-x.svg'), size: '48x48', alt: '',\
+    class: 'absolute top-n24 left-0 right-0 mx-auto')
+  h3 = t('account_reset.confirm_delete_account.title')
+  p == t('account_reset.confirm_delete_account.info', email: email)
+  p == t('account_reset.confirm_delete_account.cta', \
+    link: link_to(t('account_reset.confirm_delete_account.link_text'), sign_up_email_path))

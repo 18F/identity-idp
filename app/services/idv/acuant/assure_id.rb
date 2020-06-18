@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 module Idv
   module Acuant
     class AssureId
@@ -14,6 +15,25 @@ module Idv
         @subscription_id = cfg.fetch(:subscription_id)
         @authentication_params = cfg.slice(:username, :password)
         @instance_id = nil
+      end
+
+      def subscriptions
+        options = default_options.merge(
+          headers: accept_json,
+        )
+
+        url = '/AssureIDService/subscriptions'
+
+        get(url, options)
+      end
+
+      def classification
+        options = default_options.merge(
+          headers: content_type_json.merge(accept_json),
+        )
+
+        url = "/AssureIDService/Document/#{instance_id}/Classification"
+        get(url, options)
       end
 
       def create_document
@@ -61,6 +81,15 @@ module Idv
         )
 
         post(url, options)
+      end
+
+      def field_image(key)
+        options = default_options.merge(
+          headers: content_type_json.merge(accept_json),
+        )
+
+        url = "/AssureIDService/Document/#{instance_id}/Field/Image?key=#{key}"
+        get(url, options)
       end
 
       def document
@@ -114,3 +143,4 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

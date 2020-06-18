@@ -49,10 +49,6 @@ class FeatureManagement
     Figaro.env.use_kms == 'true'
   end
 
-  def self.kms_multi_region_enabled?
-    Figaro.env.aws_kms_multi_region_enabled == 'true'
-  end
-
   def self.use_dashboard_service_providers?
     Figaro.env.use_dashboard_service_providers == 'true'
   end

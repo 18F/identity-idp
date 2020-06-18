@@ -17,14 +17,10 @@ shared_examples 'doc capture mobile back image step' do |simulate|
       expect(page).to have_content(t('doc_auth.headings.take_pic_back'))
     end
 
-    it 'proceeds to the next page with valid info and updates acuant token' do
-      expect(DocCapture.count).to eq(1)
-      expect(DocCapture.first.acuant_token).to_not be_present
-
+    it 'proceeds to the next page with valid info' do
       attach_image
       click_idv_continue
 
-      expect(DocCapture.first.acuant_token).to be_present
       expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
     end
 

@@ -151,8 +151,6 @@ class Analytics
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'.freeze
-  PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'.freeze
-  PENDING_ACCOUNT_RESET_VISITED = 'Pending account reset visited'.freeze
   PERSONAL_KEY_ALERT_ABOUT_SIGN_IN = 'Personal key: Alert user about sign in'.freeze
   PERSONAL_KEY_REACTIVATION = 'Personal key reactivation: Account reactivated with personal key'.freeze
   PERSONAL_KEY_REACTIVATION_SIGN_IN = 'Personal key reactivation: Account reactivated with personal key as MFA'.freeze

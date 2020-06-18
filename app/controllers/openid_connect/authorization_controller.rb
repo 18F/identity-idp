@@ -21,19 +21,10 @@ module OpenidConnect
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
-      aal3_requirement || handle_successful_handoff
+      handle_successful_handoff
     end
 
     private
-
-    def aal3_requirement
-      return unless aal3_policy.aal3_required?
-      redirect_to aal3_required_url unless aal3_policy.aal3_used?
-    end
-
-    def aal3_policy
-      @aal3 ||= AAL3Policy.new(session)
-    end
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
@@ -65,7 +56,7 @@ module OpenidConnect
     end
 
     def profile_or_identity_needs_verification?
-      return false unless @authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?
+      return false unless @authorize_form.ial2_requested?
       profile_needs_verification? || identity_needs_verification?
     end
 
@@ -79,11 +70,9 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
+      @authorize_form.ial2_requested? &&
         (current_user.decorate.identity_not_verified? ||
-        decorated_session.requested_more_recent_verification?)) ||
-        (@authorize_form.ial2_strict_requested? &&
-        !current_user.active_profile&.includes_liveness_check?)
+          decorated_session.requested_more_recent_verification?)
     end
 
     def build_authorize_form_from_params

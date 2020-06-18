@@ -19,10 +19,11 @@ en:
       and sign in.
     mfa:
       authenticator:
+        accordion_header: Scan code with your mobile device
         confirm_code_html: Enter the code from your authenticator app. If you have
           several accounts set up in your app, enter the code corresponding to %{email}
           at %{app}.%{tooltip}
-        manual_entry: Or enter this code manually into your authentication app
+        or: or
       piv_cac:
         account_not_found:
           paragraph_1_html: "<strong>%{sign_in}</strong> with your email address and

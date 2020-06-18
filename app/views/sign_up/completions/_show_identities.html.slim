@@ -1,0 +1,11 @@
+- identities = @view_model.identities
+.mt2.mb3.py2.px3.col-12.center.border-box.border.border-light-blue.rounded-xl
+  p.fs-20p
+    - if identities.length > 1
+      = t('idv.messages.agencies_login')
+    - elsif identities.length == 1
+      = t('idv.messages.agency_login_html', sp: identities.first.display_name)
+  ul.list-reset
+    - identities.each do |identity|
+      li
+        = link_to identity.agency_name, identity.return_to_sp_url

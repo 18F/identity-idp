@@ -1,0 +1,21 @@
+-title t('doc_auth.titles.doc_auth')
+
+h1.h3.my0 = t('doc_auth.headings.verify')
+.mt3.mb2
+  div = "#{t('doc_auth.forms.first_name')}: #{flow_session[:pii_from_doc][:first_name]}"
+  div = "#{t('doc_auth.forms.last_name')}: #{flow_session[:pii_from_doc][:last_name]}"
+  div = "#{t('doc_auth.forms.dob')}: #{flow_session[:pii_from_doc][:dob]}"
+  hr
+  .right = link_to(t('doc_auth.buttons.change_address'), idv_address_url)
+  div = "#{t('doc_auth.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}"
+  div = "#{t('doc_auth.forms.city')}: #{flow_session[:pii_from_doc][:city]}"
+  div = "#{t('doc_auth.forms.state')}: #{flow_session[:pii_from_doc][:state]}"
+  div = "#{t('doc_auth.forms.zip_code')}: #{flow_session[:pii_from_doc][:zipcode]}"
+  hr
+  .right = button_to(t('doc_auth.buttons.change_ssn'), idv_doc_auth_step_path(step: :redo_ssn),
+    method: :put, class: 'btn btn-link')
+  = "#{t('doc_auth.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}"
+  .mt4 = button_to(t('forms.buttons.continue'), url_for, method: :put,
+    class: 'btn btn-primary btn-wide sm-col-6 col-12')
+
+= render 'idv/doc_auth/start_over_or_cancel'

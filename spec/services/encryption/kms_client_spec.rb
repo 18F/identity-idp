@@ -22,7 +22,7 @@ describe Encryption::KmsClient do
         and_return(plaintext)
     end
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
-    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Metrics/LineLength
+
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
   end
 
@@ -37,23 +37,9 @@ describe Encryption::KmsClient do
     )
   end
 
-  let(:kms_regions) { %w[us-west-2 us-east-1] }
-  let(:kms_multi_region_enabled) { true }
-
-  let(:kms_regionalized_ciphertext) do
-    'KMSc' + %w[kms1 kms2 kms3].map do |c|
-      region_hash = {}
-      kms_regions.each do |r|
-        region_hash[r] = Base64.strict_encode64(c)
-      end
-      Base64.strict_encode64({ regions: region_hash }.to_json)
-    end.to_json
-  end
-
-  let(:kms_legacy_ciphertext) do
+  let(:kms_ciphertext) do
     'KMSc' + %w[kms1 kms2 kms3].map { |c| Base64.strict_encode64(c) }.to_json
   end
-
   let(:local_ciphertext) do
     'LOCc' + %w[local1 local2 local3].map { |c| Base64.strict_encode64(c) }.to_json
   end
@@ -62,18 +48,10 @@ describe Encryption::KmsClient do
 
   describe '#encrypt' do
     context 'with KMS enabled' do
-      context 'with multi region enabled' do
-        it 'encrypts with KMS multi region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_regionalized_ciphertext)
-        end
-      end
-      context 'with multi region disabled' do
-        let(:kms_multi_region_enabled) { false }
-        it 'encrypts with KMS legacy single region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_legacy_ciphertext)
-        end
+      it 'encrypts with KMS' do
+        result = subject.encrypt(plaintext, encryption_context)
+
+        expect(result).to eq(kms_ciphertext)
       end
     end
 
@@ -95,10 +73,10 @@ describe Encryption::KmsClient do
   end
 
   describe '#decrypt' do
-    context 'with a ciphertext encrypted with KMS multi region' do
-      let(:kms_multi_region_enabled) { true }
+    context 'with a ciphertext encrypted with KMS' do
       it 'decrypts the ciphertext with KMS' do
-        result = subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+        result = subject.decrypt(kms_ciphertext, encryption_context)
+
         expect(result).to eq(plaintext)
       end
     end
@@ -142,7 +120,8 @@ describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
-      subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+
+      subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
 end

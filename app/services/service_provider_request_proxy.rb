@@ -4,11 +4,8 @@
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
   REDIS_KEY_PREFIX = 'spr:'.freeze
+  REDIS_LAST_UUID_KEY = 'spr_last_uuid'.freeze
   DEFAULT_TTL_HOURS = 24
-
-  # This is used to support the .last method. That method is only used in the
-  # test environment
-  cattr_accessor :redis_last_uuid
 
   def self.from_uuid(uuid)
     find_by(uuid: uuid) || NullServiceProviderRequest.new
@@ -20,7 +17,7 @@ class ServiceProviderRequestProxy
     return unless request_id
     REDIS_POOL.with do |client|
       client.delete(key(request_id))
-      self.redis_last_uuid = nil if Rails.env.test?
+      client.delete(REDIS_LAST_UUID_KEY) if Rails.env.test?
     end
   end
 
@@ -33,20 +30,19 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, ial: nil,
-                                     aal: nil, requested_attributes: nil)
+    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, loa: nil,
+                                     requested_attributes: nil)
     yield(spr)
     create(uuid: uuid,
            issuer: spr.issuer,
            url: spr.url,
-           ial: spr.ial,
-           aal: spr.aal,
+           loa: spr.loa,
            requested_attributes: spr.requested_attributes)
   end
 
   def self.create(hash)
     uuid = hash[:uuid]
-    obj = hash.slice(:issuer, :url, :ial, :aal, :requested_attributes)
+    obj = hash.slice(:issuer, :url, :loa, :requested_attributes)
     write(obj, uuid)
     hash_to_spr(obj, uuid)
   end
@@ -54,7 +50,7 @@ class ServiceProviderRequestProxy
   def self.write(obj, uuid)
     REDIS_POOL.with do |client|
       client.write(key(uuid), obj)
-      self.redis_last_uuid = uuid if Rails.env.test?
+      client.write(REDIS_LAST_UUID_KEY, uuid) if Rails.env.test?
     end
   end
 
@@ -64,7 +60,12 @@ class ServiceProviderRequestProxy
 
   # The .last uuid written is stored only in test mode to support existing specs
   def self.last
-    find_by(uuid: redis_last_uuid)
+    REDIS_POOL.with do |client|
+      uuid = client.read(REDIS_LAST_UUID_KEY)
+      return nil unless uuid
+      obj = client.read(key(uuid))
+      hash_to_spr(obj, uuid)
+    end
   end
 
   def self.key(uuid)

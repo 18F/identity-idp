@@ -51,6 +51,7 @@ feature 'Internationalization' do
     end
 
     it 'allows user to manually toggle language from dropdown menu', js: true do
+      Capybara.current_session.current_window.resize_to(2560, 1600)
       visit root_path
       using_wait_time(5) do
         within(:css, '.i18n-desktop-toggle') do

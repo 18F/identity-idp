@@ -50,7 +50,11 @@ module Encryption
 
     def encrypt_raw_kms(plaintext, encryption_context)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      multi_aws_client.encrypt(Figaro.env.aws_kms_key_id, plaintext, encryption_context)
+      aws_client.encrypt(
+        key_id: Figaro.env.aws_kms_key_id,
+        plaintext: plaintext,
+        encryption_context: encryption_context,
+      ).ciphertext_blob
     end
 
     def decrypt_kms(ciphertext, encryption_context)
@@ -67,7 +71,10 @@ module Encryption
     end
 
     def decrypt_raw_kms(ciphertext, encryption_context)
-      multi_aws_client.decrypt(ciphertext, encryption_context)
+      aws_client.decrypt(
+        ciphertext_blob: ciphertext,
+        encryption_context: encryption_context,
+      ).plaintext
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
@@ -114,12 +121,15 @@ module Encryption
       plaintext.scan(/.{1,#{chunk_size}}/m)
     end
 
-    def encryptor
-      @encryptor ||= Encryptors::AesEncryptor.new
+    def aws_client
+      @aws_client ||= Aws::KMS::Client.new(
+        instance_profile_credentials_timeout: 1, # defaults to 1 second
+        instance_profile_credentials_retries: 5, # defaults to 0 retries
+      )
     end
 
-    def multi_aws_client
-      @multi_aws_client ||= MultiRegionKMSClient.new
+    def encryptor
+      @encryptor ||= Encryptors::AesEncryptor.new
     end
   end
 end

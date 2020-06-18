@@ -132,9 +132,8 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only)
           - TEST SITE
-        read_more_encrypt: Read more about how login.gov protects your personal information
-        review_message: When you re-enter your password, login.gov will protect the
-          information you've given us, so that only you can access it
+        review_message: When you re-enter your password, login.gov will encrypt your
+          data to make sure no one else can access it.
       usps:
         address_on_file: We will mail a letter with a confirmation code to your verified
           address on file.
@@ -168,6 +167,6 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Enter a phone number with your name on the plan
-        review: Re-enter your login.gov password to protect your data
+        review: Re-enter your login.gov password to encrypt your data
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

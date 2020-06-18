@@ -41,7 +41,6 @@ async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
 aws_http_timeout: '5'
 aws_logo_bucket:
-aws_kms_multi_region_enabled: 'false'
 cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
@@ -123,7 +122,7 @@ unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0"]'
 
 development:
   aamva_private_key: 123abc
@@ -146,7 +145,6 @@ development:
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
   aws_logo_bucket:
   aws_region: us-east-1
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user
@@ -167,6 +165,7 @@ development:
   doc_capture_polling_enabled: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
+  enable_mobile_capture: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -255,7 +254,6 @@ production:
   attribute_encryption_key_queue:
   aws_kms_key_id:
   aws_region:
-  aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket:
   backup_codes_as_only_2fa:
   basic_auth_password:
@@ -277,6 +275,7 @@ production:
   doc_capture_polling_enabled: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
+  enable_mobile_capture: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -362,7 +361,6 @@ test:
     }]'
   aws_kms_key_id: alias/login-dot-gov-test-keymaker
   aws_region: us-east-1
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user
@@ -383,6 +381,7 @@ test:
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
+  enable_mobile_capture: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'

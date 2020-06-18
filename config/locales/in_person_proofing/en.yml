@@ -32,11 +32,10 @@ en:
       bullet3: Print or save your enrollment form
       bullet4: Visit the post office to get verified
       bullet5: Come back to login.gov
-      encrypt: When you re-enter your password, login.gov will protect the information
-        you've given us, so that only you can access it
+      encrypt: When you re-enter your password, login.gov will encrypt your information
+        to make sure no one else can access it.
       enrollment_form: 'Bring this code to the following post office along with a
         government-issued ID:'
-      read_more_encrypt: Read more about how login.gov protects your personal information
       text1: by entering your ZIP code
       text2: name, date of birth, address, and social security number
       text3: a bar code that you need to take to the post office with you

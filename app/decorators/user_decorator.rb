@@ -103,7 +103,7 @@ class UserDecorator # rubocop:disable Metrics/ClassLength
     }
     url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)
-    qrcode.as_png(size: 240).to_data_url
+    qrcode.as_png(size: 280).to_data_url
   end
 
   def locked_out?

@@ -75,11 +75,6 @@ class Profile < ApplicationRecord
     Pii::Fingerprinter.fingerprint(values.join(':'))
   end
 
-  def includes_liveness_check?
-    return if proofing_components.blank?
-    JSON.parse(proofing_components)['liveness_check']
-  end
-
   private
 
   def personal_key_generator
