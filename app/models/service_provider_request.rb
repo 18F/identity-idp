@@ -8,6 +8,7 @@ class ServiceProviderRequest
     @ial = ial || loa
     @aal = aal
     @requested_attributes = requested_attributes&.map(&:to_s)
+    Rails.logger.info { 'Note: loa used to initialize ServiceProviderRequest' } if loa
   end
 
   def ==(other)
