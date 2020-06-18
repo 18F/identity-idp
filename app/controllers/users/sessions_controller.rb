@@ -100,7 +100,7 @@ module Users
       create_user_event(:sign_in_before_2fa)
       update_sp_return_logs_with_user(current_user.id)
       update_last_sign_in_at_on_email
-      redirect_to user_two_factor_authentication_url
+      redirect_to_2fa_or_pending_reset
     end
 
     def now
@@ -166,6 +166,20 @@ module Users
 
     def sp_session_ial
       sp_session[:ial2] ? 2 : 1
+    end
+
+    def redirect_to_2fa_or_pending_reset
+      if pending_account_reset_request.present?
+        redirect_to account_reset_pending_url
+      else
+        redirect_to user_two_factor_authentication_url
+      end
+    end
+
+    def pending_account_reset_request
+      AccountReset::FindPendingRequestForUser.new(
+        current_user,
+      ).call
     end
   end
 end

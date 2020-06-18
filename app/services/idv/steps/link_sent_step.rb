@@ -28,7 +28,7 @@ module Idv
 
       def mark_steps_complete
         %i[send_link link_sent email_sent mobile_front_image mobile_back_image front_image
-           back_image scan_id selfie].each do |step|
+           back_image selfie].each do |step|
           mark_step_complete(step)
         end
       end
