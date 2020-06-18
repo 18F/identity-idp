@@ -1,0 +1,7 @@
+<% title t('idv.titles.hardfail', app: APP_NAME) %>
+
+<%= image_tag(asset_url('alert/temp-lock.svg'), width: 54) %>
+
+<h1 class="h3 mb1 mt3 my0"><%= t('idv.titles.hardfail', app: APP_NAME) %></h1>
+
+<p><%= t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours) %></p>

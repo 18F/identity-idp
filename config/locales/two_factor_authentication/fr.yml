@@ -82,7 +82,6 @@ fr:
     max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été temporairement
       bloqué en raison de la saisie de mauvais identifiants PIV/CAC à de trop nombreuses
       reprises.
-    no_auth_option: Aucune option d'authentification n'a été trouvée pour vous connecter
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       phone_unsupported: Nous ne sommes pas en mesure de passer des appels téléphoniques

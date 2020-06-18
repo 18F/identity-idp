@@ -14,7 +14,6 @@ en:
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time security code
     forget_all_browsers: Forget all browsers
-    no_auth_option: No sign-in method found
     passwords:
       change: Change the password for your account
       confirm: Confirm the password for your account

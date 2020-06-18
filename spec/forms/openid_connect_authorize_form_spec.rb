@@ -119,15 +119,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with aal but not ial requested via acr_values' do
-      let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-      it 'has errors' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:acr_values]).
-          to include(t('openid_connect.authorization.errors.missing_ial'))
-      end
-    end
-
     context 'with an unknown client_id' do
       let(:client_id) { 'not_a_real_client_id' }
       it 'has errors' do
@@ -301,20 +292,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
   describe '#acr_values' do
     let(:acr_values) do
-      [
-        'http://idmanagement.gov/ns/assurance/loa/1',
-        'http://idmanagement.gov/ns/assurance/aal/3',
-        'fake_value',
-      ].join(' ')
+      'http://idmanagement.gov/ns/assurance/loa/1 fake_value'
     end
 
     it 'is parsed into an array of valid ACR values' do
-      expect(form.acr_values).to eq(
-        %w[
-          http://idmanagement.gov/ns/assurance/loa/1
-          http://idmanagement.gov/ns/assurance/aal/3
-        ],
-      )
+      expect(form.acr_values).to eq(%w[http://idmanagement.gov/ns/assurance/loa/1])
     end
   end
 
@@ -378,49 +360,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with a malformed ial' do
       let(:acr_values) { 'foobarbaz' }
       it { expect(ial2_requested?).to eq(false) }
-    end
-  end
-
-  describe '#aal3_requested?' do
-    subject(:aal3_requested?) { form.aal3_requested? }
-    context 'with only ial1' do
-      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(false) }
-    end
-
-    context 'with only ial2' do
-      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(false) }
-    end
-
-    context 'with only aal3' do
-      let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with ial1 and aal3' do
-      let(:acr_values) do
-        [
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ].join(' ')
-      end
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with ial2 and aal3' do
-      let(:acr_values) do
-        [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ].join(' ')
-      end
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with a malformed ial' do
-      let(:acr_values) { 'foobarbaz' }
-      it { expect(aal3_requested?).to eq(false) }
     end
   end
 

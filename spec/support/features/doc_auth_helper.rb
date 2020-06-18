@@ -175,10 +175,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_verify_step
     complete_doc_auth_steps_before_ssn_step
-    if page.current_path == idv_doc_auth_selfie_step
-      attach_image
-      click_idv_continue
-    end
     fill_out_ssn_form_ok
     click_idv_continue
   end
@@ -281,5 +277,13 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
     fill_in :doc_auth_phone, with: phone
+  end
+
+  def complete_doc_auth_v2_steps
+    visit idv_doc_auth_v2_step_path(step: :welcome)
+    find('label', text: t('doc_auth.instructions.consent')).click
+    click_on t('doc_auth.buttons.continue')
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    click_on t('doc_auth.buttons.use_phone')
   end
 end

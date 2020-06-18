@@ -83,7 +83,7 @@ class OpenidConnectUserInfoPresenter
 
   def ial2_data
     @ial2_data ||= begin
-      if ial2_session? || ialmax_session? || ial2_strict_session?
+      if ial2_session? || ialmax_session?
         Pii::SessionStore.new(identity.rails_session_id).load
       else
         Pii::Attributes.new_from_hash({})
@@ -92,11 +92,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_session?
-    identity.ial == Identity::IAL2
-  end
-
-  def ial2_strict_session?
-    identity.ial == Identity::IAL2_STRICT
+    identity.ial == 2
   end
 
   def ialmax_session?

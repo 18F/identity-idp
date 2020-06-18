@@ -57,7 +57,7 @@ module SamlIdpAuthConcern
   end
 
   def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(requested_authn_context)
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include? requested_authn_context
   end
 
   def active_identity

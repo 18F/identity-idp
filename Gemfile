@@ -3,17 +3,17 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 5.2.4', '>= 5.2.4.3'
+gem 'rails', '~> 5.2.4'
 
-gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
+gem 'ahoy_matey', '~> 2.0'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'device_detector'
 gem 'devise', '~> 4.7.1'
-gem 'dotiw', '>= 4.0.1'
-gem 'exception_notification', '>= 4.4.0'
+gem 'dotiw'
+gem 'exception_notification'
 gem 'figaro'
 gem 'foundation_emails'
 gem 'gibberish'
@@ -23,15 +23,15 @@ gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', branch: 'master'
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.2'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
-gem 'json-jwt', '>= 1.11.0'
+gem 'json-jwt'
 gem 'local_time'
-gem 'lograge', '>= 0.11.2'
+gem 'lograge'
 gem 'maxminddb'
 gem 'net-sftp'
 gem 'newrelic_rpm'
 gem 'pg'
 gem 'phonelib'
-gem 'premailer-rails', '>= 1.10.3'
+gem 'premailer-rails'
 gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
 gem 'pry-doc'
 gem 'pry-rails'
@@ -42,31 +42,31 @@ gem 'rack-timeout'
 gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
-gem 'redis-session-store', '>= 0.11.1'
+gem 'redis-session-store'
 gem 'rotp', '~> 3.3.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
-gem 'safe_target_blank', '>= 1.0.2'
+gem 'safe_target_blank'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
-gem 'simple_form', '>= 5.0.1'
+gem 'simple_form'
 gem 'sinatra', require: false
-gem 'slim-rails', '>= 3.2.0'
+gem 'slim-rails'
 gem 'stringex', require: false
-gem 'strong_migrations', '>= 0.4.2'
+gem 'strong_migrations'
 gem 'subprocess', require: false
 gem 'twilio-ruby'
-gem 'two_factor_authentication', '>= 2.1.1'
+gem 'two_factor_authentication'
 gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
-gem 'valid_email', '>= 0.1.3'
+gem 'valid_email'
 gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 3.6', '>= 3.6.0'
-gem 'xmlenc', '~> 0.7', '>= 0.7.1'
+gem 'webpacker', '~> 3.4'
+gem 'xmlenc', '~> 0.6'
 gem 'zxcvbn-js'
 
 group :development do
@@ -81,18 +81,18 @@ group :development do
   gem 'octokit'
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
-  gem 'rails-erd', '>= 1.6.0'
+  gem 'rails-erd'
 end
 
 group :development, :test do
-  gem 'bullet', '>= 6.0.2'
-  gem 'i18n-tasks', '>= 0.9.29'
+  gem 'bullet'
+  gem 'i18n-tasks'
   gem 'knapsack'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'psych'
   gem 'puma'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.0'
+  gem 'rspec-rails', '~> 3.7'
   gem 'rubocop', '~> 0.72.0', require: false
   gem 'rubocop-rails', require: false
   gem 'slim_lint'
@@ -105,12 +105,12 @@ group :test do
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_bot_rails', '>= 5.1.1'
+  gem 'factory_bot_rails'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
   gem 'rack-test'
   gem 'rack_session_access'
-  gem 'rails-controller-testing', '>= 1.0.4'
+  gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 3.0'
@@ -119,6 +119,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.3.0'
   gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end

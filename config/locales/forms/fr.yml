@@ -139,7 +139,8 @@ fr:
       totp_step_1: Donnez-lui un surnom
       totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
       totp_step_2: Démarrez votre application d'authentification
-      totp_step_3: Scannez ce code-barres QR avec votre application
+      totp_step_3: Avec votre application, entrez cette clé manuellement ou scannez
+        le code-barres
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité

@@ -166,8 +166,6 @@ describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /' do
-    include AccountResetHelper
-
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
       subject.session['user_return_to'] = 'http://example.com'
@@ -431,19 +429,6 @@ describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email, password: user.password } }
       end
-    end
-
-    it 'redirects to 2FA if there are no pending account reset requests' do
-      user = create(:user, :signed_up)
-      post :create, params: { user: { email: user.email, password: user.password } }
-      expect(response).to redirect_to user_two_factor_authentication_url
-    end
-
-    it 'redirects to the reset pending page if there are pending account reset requests' do
-      user = create(:user, :signed_up)
-      create_account_reset_request_for(user)
-      post :create, params: { user: { email: user.email, password: user.password } }
-      expect(response).to redirect_to account_reset_pending_url
     end
   end
 
