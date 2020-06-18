@@ -76,7 +76,7 @@ class SignUpCompletionsShow
   end
 
   def sorted_attribute_mapping
-    return SORTED_IAL2_ATTRIBUTE_MAPPING if ial2_requested || ialmax_requested
+    return SORTED_IAL2_ATTRIBUTE_MAPPING if user_verified?
     SORTED_IAL1_ATTRIBUTE_MAPPING
   end
 

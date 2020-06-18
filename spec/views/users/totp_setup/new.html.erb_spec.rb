@@ -22,10 +22,13 @@ describe 'users/totp_setup/new.html.erb' do
       expect(rendered).to have_css('#qr-code', text: 'D4C2L47CVZ3JJHD7')
     end
 
-    it 'renders the QR code image' do
+    it 'renders the QR code image with useful alt text' do
       render
 
-      expect(rendered).to have_css('img[src^="/images/qrcode.png"]')
+      page = Capybara.string(rendered)
+      image_tag = page.find_css('img[src^="/images/qrcode.png"]').first
+      expect(image_tag).to be
+      expect(image_tag['alt']).to eq(I18n.t('image_description.totp_qrcode'))
     end
 
     it 'renders a link to cancel and go back to the account page' do
