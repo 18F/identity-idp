@@ -97,4 +97,11 @@ describe NullServiceProvider do
       expect(subject.allow_prompt_login).to eq(false)
     end
   end
+
+  describe '#app_id' do
+    it 'returns nil' do
+      expect(subject.app_id).to be_nil
+    end
+  end
+
 end
