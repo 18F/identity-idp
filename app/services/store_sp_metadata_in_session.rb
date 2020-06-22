@@ -35,26 +35,14 @@ class StoreSpMetadataInSession
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
-      ial2: ial2_requested?,
-      ial2_strict: ial2_strict_requested?,
-      ialmax: ialmax_requested?,
+      ial2: ial_context.ial2_requested?,
+      ial2_strict: ial_context.ial2_strict_requested?,
+      ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
     }
-  end
-
-  def ialmax_requested?
-    ial_context.ialmax_requested?
-  end
-
-  def ial2_requested?
-    ial_context.ial2_requested?
-  end
-
-  def ial2_strict_requested?
-    ial_context.ial2_strict_requested?
   end
 
   def aal_requested

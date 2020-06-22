@@ -45,19 +45,19 @@ module SamlIdpAuthConcern
   end
 
   def link_identity_from_session_data
-    IdentityLinker.new(current_user, current_issuer).link_identity(ial: ial_level)
+    IdentityLinker.new(current_user, current_issuer).
+      link_identity(ial: ial_context.ial_for_identity_record)
   end
 
   def identity_needs_verification?
-    ial2_requested? && current_user.decorate.identity_not_verified?
+    ial_context.ial2_requested? && current_user.decorate.identity_not_verified?
   end
 
-  def ial_level
-    ial2_requested? ? 2 : 1
-  end
-
-  def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(requested_authn_context)
+  def ial_context
+    @ial_context ||= IalContext.new(
+      ial: requested_authn_context,
+      service_provider: current_service_provider
+    )
   end
 
   def active_identity
