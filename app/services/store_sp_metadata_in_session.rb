@@ -16,6 +16,10 @@ class StoreSpMetadataInSession
 
   attr_reader :session, :request_id
 
+  def ial_context
+    @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
+  end
+
   def event_attributes
     {
       event: 'StoreSpMetadataInSession',
@@ -42,16 +46,15 @@ class StoreSpMetadataInSession
   end
 
   def ialmax_requested?
-    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == sp_request.ial
+    ial_context.ialmax_requested?
   end
 
   def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(sp_request.ial)
+    ial_context.ial2_requested?
   end
 
   def ial2_strict_requested?
-    Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF == sp_request.ial ||
-      !!(ial2_requested? && service_provider&.liveness_checking_required)
+    ial_context.ial2_strict_requested?
   end
 
   def aal_requested

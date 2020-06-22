@@ -353,16 +353,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#ial2_requested?' do
-    subject(:ial2_requested?) { form.ial2_requested? }
+  describe '#ial2_or_greater?' do
+    subject(:ial2_or_greater?) { form.ial2_or_greater? }
     context 'with ial1' do
       let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial2_requested?).to eq(false) }
+      it { expect(ial2_or_greater?).to eq(false) }
     end
 
     context 'with ial2' do
       let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial2_requested?).to eq(true) }
+      it { expect(ial2_or_greater?).to eq(true) }
     end
 
     context 'with ial1 and ial2' do
@@ -372,12 +372,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         ].join(' ')
       end
-      it { expect(ial2_requested?).to eq(true) }
+      it { expect(ial2_or_greater?).to eq(true) }
     end
 
     context 'with a malformed ial' do
       let(:acr_values) { 'foobarbaz' }
-      it { expect(ial2_requested?).to eq(false) }
+      it { expect(ial2_or_greater?).to eq(false) }
     end
   end
 

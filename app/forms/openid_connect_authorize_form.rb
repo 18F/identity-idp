@@ -3,6 +3,7 @@ class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
   include RedirectUriValidator
+  extend Forwardable
 
   SIMPLE_ATTRS = %i[
     client_id
@@ -60,25 +61,8 @@ class OpenidConnectAuthorizeForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def ial2_service_provider?
-    service_provider.ial == Identity::IAL2
-  end
-
-  def ial2_requested?
-    ial == Identity::IAL2 && !service_provider.liveness_checking_required
-  end
-
-  def ial2_strict_requested?
-    ial == Identity::IAL2_STRICT ||
-      (ial == Identity::IAL2 && service_provider.liveness_checking_required)
-  end
-
   def aal3_requested?
     aal == Authorization::AAL3
-  end
-
-  def ialmax_requested?
-    ial&.zero?
   end
 
   def verified_at_requested?
@@ -94,7 +78,7 @@ class OpenidConnectAuthorizeForm
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial_for_identity_record,
+      ial: ial_context.ial_for_identity_record,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -115,19 +99,21 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
+  def_delegator :ial_context, :ial2_or_greater?
+
   private
 
   attr_reader :identity, :success
 
+  def ial_context
+    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
+  end
+
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
     return false if ial2_or_greater? || param_value.blank?
-    return true if verified_at_requested? && !ial2_service_provider?
+    return true if verified_at_requested? && !ial_context.ial2_service_provider?
     @scope != param_value.split(' ').compact
-  end
-
-  def ial2_or_greater?
-    ial2_requested? || ial2_strict_requested?
   end
 
   def parse_to_values(param_value, possible_values)
@@ -182,11 +168,6 @@ class OpenidConnectAuthorizeForm
     false
   end
 
-  def ial_for_identity_record
-    return ial unless ial == Identity::IAL2 && service_provider.liveness_checking_required
-    Identity::IAL2_STRICT
-  end
-
   def ial
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
   end
@@ -219,21 +200,21 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if ialmax_requested? || ial2_requested? || ial2_strict_requested?
+    if ial_context.ialmax_requested? || ial2_or_greater?
       return OpenidConnectAttributeScoper::VALID_SCOPES
     end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
-    if (ial2_requested? && !ial2_service_provider?) ||
-       (ialmax_requested? && !ial2_service_provider?)
+    if (ial_context.ial2_requested? && !ial_context.ial2_service_provider?) ||
+       (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
   end
 
   def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return unless ial2_strict_requested? && !FeatureManagement.liveness_checking_enabled?
+    return if !ial_context.ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
     errors.add(:acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'))
   end
 end
