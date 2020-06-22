@@ -5,7 +5,6 @@ module Idv
 
       base_uri Figaro.env.acuant_assure_id_url
 
-      FRONT = 0
       BACK = 1
 
       attr_accessor :instance_id
@@ -14,22 +13,6 @@ module Idv
         @subscription_id = cfg.fetch(:subscription_id)
         @authentication_params = cfg.slice(:username, :password)
         @instance_id = nil
-      end
-
-      def create_document
-        url = '/AssureIDService/Document/Instance'
-
-        options = default_options.merge(
-          headers: content_type_json.merge(accept_json),
-          body: image_params,
-        )
-
-        status, @instance_id = post(url, options) { |body| JSON.parse(body) }
-        [status, @instance_id]
-      end
-
-      def post_front_image(image)
-        post_image(image, FRONT)
       end
 
       def post_back_image(image)

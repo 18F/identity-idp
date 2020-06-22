@@ -220,10 +220,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_assure_id_fail
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:create_document).
-      and_return([false, ''])
-    allow_any_instance_of(Idv::Acuant::FakeAssureId).to receive(:create_document).
-      and_return([false, ''])
+    AcuantMock::AcuantMockClient.mock_response!(
+      method: :create_document,
+      response: Acuant::Response.new(success: false, errors: ['This is a test error']),
+    )
   end
 
   def setup_acuant_simulator(enabled:)

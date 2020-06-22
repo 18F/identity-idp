@@ -12,54 +12,6 @@ describe Idv::Acuant::AssureId do
   let(:acuant_base_url) { 'https://example.com' }
   let(:image_data) { 'abc' }
 
-  describe '#create_document' do
-    let(:path) { '/AssureIDService/Document/Instance' }
-
-    it 'returns a good status with an instance id' do
-      stub_request(:post, acuant_base_url + path).
-        with(headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }).
-        to_return(status: 200, body: instance_id.to_json)
-
-      result = subject.create_document
-
-      expect(result).to eq([true, instance_id])
-      expect(subject.instance_id).to eq(instance_id)
-    end
-
-    it 'returns a bad status' do
-      stub_request(:post, acuant_base_url + path).to_return(bad_http_status)
-
-      result = subject.create_document
-
-      expect(result).to eq(bad_acuant_status)
-    end
-  end
-
-  describe '#post_front_image' do
-    let(:side) { Idv::Acuant::AssureId::FRONT }
-    let(:path) { "/AssureIDService/Document/#{subject.instance_id}/Image?side=#{side}&light=0" }
-
-    before do
-      subject.instance_id = instance_id
-    end
-
-    it 'returns a good status' do
-      stub_request(:post, acuant_base_url + path).to_return(good_http_status)
-
-      result = subject.post_front_image(image_data)
-
-      expect(result).to eq(good_acuant_status)
-    end
-
-    it 'returns a bad status' do
-      stub_request(:post, acuant_base_url + path).to_return(bad_http_status)
-
-      result = subject.post_front_image(image_data)
-
-      expect(result).to eq(bad_acuant_status)
-    end
-  end
-
   describe '#post_back_image' do
     let(:side) { Idv::Acuant::AssureId::BACK }
     let(:path) { "/AssureIDService/Document/#{subject.instance_id}/Image?side=#{side}&light=0" }

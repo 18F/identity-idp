@@ -20,6 +20,18 @@ module Idv
         DataUrlImage.new(flow_params[:image_data_url])
       end
 
+      def acuant_client
+        @acuant_client ||= begin
+          # TODO: Change up this conditional so we are always simming in test env
+          if simulate? || Rails.env.test?
+            ::AcuantMock::AcuantMockClient.new
+          else
+            ::Acuant::AcuantClient.new
+          end
+        end
+      end
+
+      # TODO: Replace this
       def assure_id
         @assure_id ||= new_assure_id
         @assure_id.instance_id = flow_session[:instance_id] if flow_session[:instance_id]
@@ -118,17 +130,14 @@ module Idv
       end
 
       def post_front_image
-        return [true, ''] if test_credentials?
-        throttle_post_front_image
-      end
+        return throttled_response if throttled_else_increment
 
-      def throttle_post_front_image
-        return throttled if throttled_else_increment
-        rescue_network_errors do
-          result = assure_id.post_front_image(image.read)
-          add_cost(:acuant_front_image)
-          result
-        end
+        result = acuant_client.post_front_image(
+          image: image.read,
+          instance_id: flow_session[:instance_id],
+        )
+        add_cost(:acuant_front_image)
+        result
       end
 
       def throttle_post_back_image
@@ -143,6 +152,14 @@ module Idv
       def throttled
         redirect_to throttled_url
         [false, I18n.t('errors.doc_auth.acuant_throttle')]
+      end
+
+      def throttled_response
+        redirect_to throttled_url
+        ::Acuant::Response.new(
+          success: false,
+          errors: [I18n.t('errors.doc_auth.acuant_throttle')],
+        )
       end
 
       def throttled_url
