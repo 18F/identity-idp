@@ -103,5 +103,4 @@ describe NullServiceProvider do
       expect(subject.app_id).to be_nil
     end
   end
-
 end
