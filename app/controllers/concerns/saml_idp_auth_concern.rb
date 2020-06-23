@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/ModuleLength
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
+  extend Forwardable
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -52,6 +53,8 @@ module SamlIdpAuthConcern
   def identity_needs_verification?
     ial_context.ial2_requested? && current_user.decorate.identity_not_verified?
   end
+
+  def_delegators :ial_context, :ial2_requested?
 
   def ial_context
     @ial_context ||= IalContext.new(
