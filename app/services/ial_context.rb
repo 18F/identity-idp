@@ -1,3 +1,4 @@
+# Wraps up logic for querying the IAL level of an authorization request
 class IalContext
   attr_reader :ial, :service_provider
 
