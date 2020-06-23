@@ -131,6 +131,12 @@ RSpec.describe IalContext do
       let(:ial) { Identity::IAL2_STRICT }
       it { expect(ial_context.ial2_requested?).to eq(false) }
     end
+
+    context 'when the SP is nil' do
+      let(:service_provider) { nil }
+      let(:ial) { Identity::IAL2 }
+      it { expect(ial_context.ial2_requested?).to eq(true) }
+    end
   end
 
   describe '#ial2_strict_requested?' do
@@ -148,6 +154,12 @@ RSpec.describe IalContext do
     context 'with ial1 passed in but liveness checking required on the sp' do
       let(:ial) { Identity::IAL1 }
       let(:sp_liveness_checking_required) { true }
+      it { expect(ial_context.ial2_strict_requested?).to eq(false) }
+    end
+
+    context 'when the SP is nil' do
+      let(:service_provider) { nil }
+      let(:ial) { Identity::IAL2 }
       it { expect(ial_context.ial2_strict_requested?).to eq(false) }
     end
   end
@@ -172,6 +184,12 @@ RSpec.describe IalContext do
     context 'with ial 2 strict' do
       let(:ial) { Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF }
       it { expect(ial_context.ial_for_identity_record).to eq(Identity::IAL2_STRICT) }
+    end
+
+    context 'when the SP is nil' do
+      let(:service_provider) { nil }
+      let(:ial) { Identity::IAL2 }
+      it { expect(ial_context.ial_for_identity_record).to eq(Identity::IAL2) }
     end
   end
 end

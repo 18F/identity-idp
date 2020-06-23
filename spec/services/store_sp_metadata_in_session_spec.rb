@@ -26,7 +26,7 @@ describe StoreSpMetadataInSession do
         request_id = SecureRandom.uuid
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
-          sp_request.ial = 'ial1'
+          sp_request.ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
         end
