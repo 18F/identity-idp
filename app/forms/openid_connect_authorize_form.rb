@@ -99,7 +99,10 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
-  def_delegator :ial_contexts, :ial2_or_greater?, :ial2_requested?
+  def_delegators :ial_context,
+                 :ial2_or_greater?,
+                 :ial2_requested?,
+                 :ial2_strict_requested?
 
   private
 
