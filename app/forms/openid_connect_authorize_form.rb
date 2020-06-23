@@ -210,14 +210,14 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_privileges
-    if (ial_context.ial2_requested? && !ial_context.ial2_service_provider?) ||
+    if (ial2_requested? && !ial_context.ial2_service_provider?) ||
        (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
   end
 
   def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return if !ial_context.ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
+    return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
     errors.add(:acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'))
   end
 end

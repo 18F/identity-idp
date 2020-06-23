@@ -51,7 +51,7 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    ial_context.ial2_requested? && current_user.decorate.identity_not_verified?
+    ial2_requested? && current_user.decorate.identity_not_verified?
   end
 
   def_delegators :ial_context, :ial2_requested?
