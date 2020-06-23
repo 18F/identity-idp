@@ -65,7 +65,7 @@ module OpenidConnect
     end
 
     def profile_or_identity_needs_verification?
-      return false unless @authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?
+      return false unless @authorize_form.ial2_or_greater?
       profile_needs_verification? || identity_needs_verification?
     end
 
