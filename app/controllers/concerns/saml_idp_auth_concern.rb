@@ -56,7 +56,7 @@ module SamlIdpAuthConcern
   def ial_context
     @ial_context ||= IalContext.new(
       ial: requested_authn_context,
-      service_provider: current_service_provider
+      service_provider: current_service_provider,
     )
   end
 

@@ -23,6 +23,7 @@ class AttributeAsserter
     self.decrypted_pii = decrypted_pii
   end
 
+  # rubocop:disable Metrics/AbcSize
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
@@ -30,6 +31,7 @@ class AttributeAsserter
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     user.asserted_attributes = attrs
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 

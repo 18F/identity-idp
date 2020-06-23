@@ -32,6 +32,7 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
@@ -44,6 +45,7 @@ class StoreSpMetadataInSession
       requested_attributes: sp_request.requested_attributes,
     }
   end
+  # rubocop:enable Metrics/AbcSize
 
   def aal_requested
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[sp_request.aal]
