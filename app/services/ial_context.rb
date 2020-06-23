@@ -14,7 +14,7 @@ class IalContext
   end
 
   def ialmax_requested?
-    ial.zero?
+    ial&.zero?
   end
 
   def ial2_requested?
