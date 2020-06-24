@@ -303,7 +303,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue' if js
 
-      fill_in 'personal_key', with: code_words.join('-').downcase + extra_characters_get_ignored
+      fill_in 'personal_key', with: code_words.join.downcase + extra_characters_get_ignored
 
       find_all('.personal-key-confirm', text: button_text).first.click
     end

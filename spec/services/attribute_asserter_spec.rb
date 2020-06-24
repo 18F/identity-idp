@@ -18,6 +18,7 @@ describe AttributeAsserter do
       ServiceProvider,
       issuer: 'http://localhost:3000',
       ial: service_provider_ial,
+      liveness_checking_required: false,
       metadata: {},
     )
   end

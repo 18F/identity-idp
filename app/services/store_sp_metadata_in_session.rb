@@ -16,6 +16,10 @@ class StoreSpMetadataInSession
 
   attr_reader :session, :request_id
 
+  def ial_context
+    @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
+  end
+
   def event_attributes
     {
       event: 'StoreSpMetadataInSession',
@@ -28,31 +32,20 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
-      ial2: ial2_requested?,
-      ial2_strict: ial2_strict_requested?,
-      ialmax: ialmax_requested?,
+      ial2: ial_context.ial2_requested?,
+      ial2_strict: ial_context.ial2_strict_requested?,
+      ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
     }
   end
-
-  def ialmax_requested?
-    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == sp_request.ial
-  end
-
-  def ial2_requested?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(sp_request.ial)
-  end
-
-  def ial2_strict_requested?
-    Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF == sp_request.ial ||
-      !!(ial2_requested? && service_provider&.liveness_checking_required)
-  end
+  # rubocop:enable Metrics/AbcSize
 
   def aal_requested
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[sp_request.aal]
