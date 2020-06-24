@@ -1,0 +1,27 @@
+<div class="lead">
+  <%= t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password_html') %>
+</div>
+
+<p>
+  <%= link_to t('user_mailer.email_confirmation_instructions.link_text'),
+              new_user_password_url,
+              target: '_blank',
+              style: "font-weight: bold;
+              display: inline-block;
+              padding: 0.75rem 1.5rem;
+              color: #ffffff;
+              background-color: #0071bb;
+              border-radius: 8px;
+              margin-bottom: 2em" %>
+</p>
+
+<p>
+  <%= t('user_mailer.email_confirmation_instructions.use_this_email') %>
+  <%= link_to t('user_mailer.email_confirmation_instructions.create_new_account'),
+              sign_up_create_email_confirmation_url(_request_id: @request_id,
+                                                    confirmation_token: @token,
+                                                    locale: @locale),
+              target: '_blank' %>
+  <%= t('user_mailer.email_confirmation_instructions.footer',
+        confirmation_period: @confirmation_period) %>
+</p>
