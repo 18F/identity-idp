@@ -2,6 +2,8 @@ module AcuantMock
   class AcuantMockClient
     class << self
       attr_reader :response_mocks
+      attr_accessor :last_uploaded_front_image
+      attr_accessor :last_uploaded_back_image
     end
 
     def self.mock_response!(method:, response:)
@@ -9,8 +11,10 @@ module AcuantMock
       @response_mocks[method.to_sym] = response
     end
 
-    def self.reset_mocked_responses!
+    def self.reset!
       @response_mocks = {}
+      @last_uploaded_front_image = nil
+      @last_uploaded_back_image = nil
     end
 
     def create_document
@@ -24,6 +28,7 @@ module AcuantMock
     def post_front_image(image:, instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
+      self.class.last_uploaded_front_image = image
       Acuant::Response.new(success: true)
     end
     # rubocop:enable Lint/UnusedMethodArgument
@@ -32,7 +37,7 @@ module AcuantMock
     def post_back_image(image:, instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-      self.last_uploaded_back_image = image
+      self.class.last_uploaded_back_image = image
       Acuant::Response.new(success: true)
     end
     # rubocop:enable Lint/UnusedMethodArgument
@@ -41,13 +46,9 @@ module AcuantMock
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-      ResultResponseBuilder.new(last_uploaded_back_image).call
+      ResultResponseBuilder.new(self.class.last_uploaded_back_image).call
     end
     # rubocop:enable Lint/UnusedMethodArgument
-
-    private
-
-    attr_accessor :last_uploaded_back_image
 
     def method_mocked?(method_name)
       mocked_response_for_method(method_name).present?

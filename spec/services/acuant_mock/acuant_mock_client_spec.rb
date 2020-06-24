@@ -98,7 +98,7 @@ describe AcuantMock::AcuantMockClient do
 
     expect(described_class.new.create_document).to eq('Create doc test')
 
-    described_class.reset_mocked_responses!
+    described_class.reset!
 
     expect(described_class.new.create_document).to_not eq('Create doc test')
   end

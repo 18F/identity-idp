@@ -22,16 +22,13 @@ feature 'doc auth mobile back image step' do
   end
 
   it 'allows the use of a base64 encoded data url representation of the image' do
-    acuant_client = AcuantMock::AcuantMockClient.new
-    expect(AcuantMock::AcuantMockClient).to receive(:new).and_return(acuant_client)
-    expect(acuant_client).to receive(:post_back_image).
-      with(hash_including(image: doc_auth_image_data_url_data)).
-      and_return(Acuant::Response.new(success: true))
-
     attach_image_data_url
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(AcuantMock::AcuantMockClient.last_uploaded_back_image).to eq(
+      doc_auth_image_data_url_data,
+    )
   end
 
   it 'proceeds to the next page if the user does not have a phone' do
