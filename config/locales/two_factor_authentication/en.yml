@@ -122,6 +122,10 @@ en:
     two_factor_choice: Authentication method setup
     two_factor_choice_intro: Add a second layer of security so only you can sign in
       to your account.
+    two_factor_aal3_choice: Additional authentication required
+    two_factor_aal3_choice_intro: This app requires a higher level of security.
+      You need to verify your identity using a physical device such as a security key
+      or government employee ID (PIV/CAC) to access your information.
     two_factor_choice_options:
       auth_app: Authentication application
       auth_app_info_html: Get codes from an app on your phone, computer, or tablet.

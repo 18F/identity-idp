@@ -13,6 +13,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   private
 
   def authenticate_user
+    puts "    #{'~'*10} TwoFactorAuthenticatableMethods#authenticate_user"
     authenticate_user!(force: true)
   end
 
@@ -36,6 +37,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def require_current_password
+    puts "    #{'~'*10} TwoFactorAuthenticatableMethods#require_current_password"
     redirect_to user_password_confirm_url
   end
 
@@ -44,14 +46,18 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def check_already_authenticated
+    puts "    #{'~'*10} TwoFactorAuthenticatableMethods#check_already_authenticated"
+    # byebug
     return unless initial_authentication_context?
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
+    return if (aal3_policy.aal3_required? && mfa_policy.aal3_mfa_enabled? && !aal3_policy.aal3_used?)
 
     redirect_to after_otp_verification_confirmation_url
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
+    puts "    #{'~'*10} TwoFactorAuthenticatableMethods#reset_attempt_count_if_user_no_longer_locked_out"
     return unless decorated_user.no_longer_locked_out?
 
     UpdateUser.new(

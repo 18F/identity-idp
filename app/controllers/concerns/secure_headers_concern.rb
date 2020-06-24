@@ -2,6 +2,7 @@ module SecureHeadersConcern
   extend ActiveSupport::Concern
 
   def apply_secure_headers_override
+    puts "#{'~'*10} SecureHeadersConcern#apply_secure_headers_override"
     return if stored_url_for_user.blank?
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
@@ -12,6 +13,7 @@ module SecureHeadersConcern
   end
 
   def override_csp_with_uris
+    puts "#{'~'*10} SecureHeadersConcern#override_csp_with_uris"
     override_content_security_policy_directives(
       form_action: csp_uris,
       preserve_schemes: true,

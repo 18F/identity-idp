@@ -213,6 +213,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     redirect_to two_factor_options_url
   end
 
+  def prompt_to_set_up_aal3_mfa
+    redirect_to aal3_multi_factor_options_url
+  end
+
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
   end
@@ -241,6 +245,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     authenticated_to_sp = user_session[authenticated_to_sp_token]
     return if authenticated_to_sp
     user_session[authenticated_to_sp_token] = true
+  end
+
+  def mfa_policy
+    @mfa_policy ||= MfaPolicy.new(current_user)
+  end
+
+  def aal3_policy
+    @aal3 ||= AAL3Policy.new(session)
   end
 
   def sp_session

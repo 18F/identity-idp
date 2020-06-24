@@ -13,6 +13,7 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
+    before_action :confirm_user_has_aal3_mfa_if_requested, only: [:index]
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :bump_auth_count, only: [:index]
 
@@ -20,19 +21,15 @@ module OpenidConnect
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
+      return redirect_to(aal3_required_url) if aal3_required?
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
-      aal3_requirement || handle_successful_handoff
+      handle_successful_handoff
     end
 
     private
 
-    def aal3_requirement
-      return unless aal3_policy.aal3_required?
-      redirect_to aal3_required_url unless aal3_policy.aal3_used?
-    end
-
-    def aal3_policy
-      @aal3 ||= AAL3Policy.new(session)
+    def aal3_required?
+      aal3_policy.aal3_required? && !aal3_policy.aal3_used?
     end
 
     def check_sp_handoff_bounced
@@ -42,10 +39,25 @@ module OpenidConnect
       true
     end
 
+    def confirm_user_has_aal3_mfa_if_requested
+      puts "#{'~'*10} confirm_user_has_aal3_mfa_if_requested"
+      return unless aal3_policy.aal3_required?
+      return if mfa_policy.aal3_mfa_enabled?
+      # session[:needs_to_setup_piv_cac_after_sign_in] = true
+      redirect_to two_factor_options_url
+    end
+
     def confirm_user_is_authenticated_with_fresh_mfa
+      puts "#{'~'*10} confirm_user_is_authenticated_with_fresh_mfa"
+      # byebug
       bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-      redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+      redirect_to user_two_factor_authentication_url if device_not_remembered?
+    end
+
+    def device_not_remembered?
+      remember_device_expired_for_sp? ||
+        (aal3_policy.aal3_required? && mfa_policy.aal3_mfa_enabled? && !aal3_policy.aal3_used?)
     end
 
     def link_identity_to_service_provider
@@ -87,6 +99,7 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
+      puts "#{'~'*10} build_authorize_form_from_params"
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
     end
 
@@ -95,6 +108,7 @@ module OpenidConnect
     end
 
     def validate_authorize_form
+      puts "#{'~'*10} validate_authorize_form"
       result = @authorize_form.submit
       track_authorize_analytics(result)
 
@@ -108,17 +122,20 @@ module OpenidConnect
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
+      puts "#{'~'*10} sign_out_if_prompt_param_is_login_and_user_is_signed_in"
       return unless user_signed_in? && @authorize_form.prompt == 'login'
       return if check_sp_handoff_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
+      puts "#{'~'*10} prompt_for_password_if_ial2_request_and_pii_locked"
       return unless pii_requested_but_locked?
       redirect_to capture_password_url
     end
 
     def store_request
+      puts "#{'~'*10} store_request"
       ServiceProviderRequestHandler.new(
         url: request.original_url,
         session: session,

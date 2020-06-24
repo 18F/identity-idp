@@ -4,6 +4,7 @@ class AccountsController < ApplicationController
   layout 'card_wide'
 
   def show
+    # byebug
     analytics.track_event(Analytics::ACCOUNT_VISIT)
     cacher = Pii::Cacher.new(current_user, user_session)
 
