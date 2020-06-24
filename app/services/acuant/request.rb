@@ -26,7 +26,6 @@ module Acuant
       }
     end
 
-    # TODO: Set the timeouts on the client
     def fetch
       http_response = send_http_request
       return handle_invalid_response(http_response) unless http_response.success?

@@ -121,15 +121,4 @@ feature 'doc auth back image step' do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
   end
-
-  # TODO: Remove this test
-  xit 'notifies newrelic when acuant goes over the rack timeout' do
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
-      and_raise(Rack::Timeout::RequestTimeoutException.new(nil))
-
-    attach_image
-
-    expect(NewRelic::Agent).to receive(:notice_error) unless simulate
-    click_idv_continue
-  end
 end

@@ -19,7 +19,6 @@ module Idv
 
       def acuant_client
         @acuant_client ||= begin
-          # TODO: Change up this conditional so we are always simming in test env
           if simulate?
             ::AcuantMock::AcuantMockClient.new
           else
