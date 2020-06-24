@@ -77,8 +77,10 @@ describe Acuant::Request do
     end
 
     context 'when the request times out' do
-      it 'returns a response with a timeout message and exception' do
+      it 'returns a response with a timeout message and exception and notifies NewRelicy' do
         stub_request(:get, full_url).to_timeout
+
+        expect(NewRelic::Agent).to receive(:notice_error)
 
         response = subject.fetch
 

@@ -27,7 +27,6 @@ module Acuant
     end
 
     # TODO: Set the timeouts on the client
-    # TODO: New relic alerts for exceptions
     def fetch
       http_response = send_http_request
       return handle_invalid_response(http_response) unless http_response.success?
@@ -59,13 +58,18 @@ module Acuant
     end
 
     def faraday_connection
-      Faraday.new(url: url.to_s, headers: headers) do |conn|
+      Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
         conn.adapter :typhoeus
         conn.basic_auth(
           Figaro.env.acuant_assure_id_username,
           Figaro.env.acuant_assure_id_password,
         )
       end
+    end
+
+    def faraday_request_params
+      timeout = Figaro.env.acuant_timeout&.to_i || 45
+      { open_timeout: timeout, timeout: timeout }
     end
 
     def handle_invalid_response(http_response)
@@ -83,6 +87,7 @@ module Acuant
     end
 
     def handle_connection_error(exception)
+      NewRelic::Agent.notice_error(exception)
       Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
