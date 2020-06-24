@@ -50,6 +50,8 @@ module AcuantMock
     end
     # rubocop:enable Lint/UnusedMethodArgument
 
+    private
+
     def method_mocked?(method_name)
       mocked_response_for_method(method_name).present?
     end
