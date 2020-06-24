@@ -111,12 +111,6 @@ module Idv
         idv_session_errors_recovery_throttled_url
       end
 
-      def test_credentials?
-        return false unless flow_params
-        FeatureManagement.allow_doc_auth_test_credentials? &&
-          ['application/x-yaml', 'text/x-yaml', 'text/plain'].include?(image.content_type)
-      end
-
       def throttled_else_increment
         Throttler::IsThrottledElseIncrement.call(user_id, :idv_acuant)
       end
