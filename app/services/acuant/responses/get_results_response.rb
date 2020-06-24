@@ -39,7 +39,7 @@ module Acuant
 
         raw_alerts.map do |raw_alert|
           # If a friendly message exists for this alert, we want to return that.
-          # If a friendly message does not exist, FriendlyError::Message will return to raw alert
+          # If a friendly message does not exist, FriendlyError::Message will return the raw alert
           # to us. In that case we respond with a general error.
           raw_alert_message = raw_alert['Disposition']
           friendly_message = FriendlyError::Message.call(raw_alert_message, 'doc_auth')
