@@ -36,7 +36,7 @@ module Acuant
     end
 
     def convert_date(date)
-      Date.strptime((date[6..-3].to_f / 1000).to_s, '%s').strftime('%m/%d/%Y')
+      Time.zone.at(date[6..-3].to_f / 1000).utc.strftime('%m/%d/%Y')
     end
   end
 end

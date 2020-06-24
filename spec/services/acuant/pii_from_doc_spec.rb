@@ -16,7 +16,7 @@ describe Acuant::PiiFromDoc do
         city: 'BISMARCK',
         state: 'ND',
         zipcode: '58501',
-        dob: '03/31/1984',
+        dob: '04/01/1984',
         state_id_number: 'DOE-84-1165',
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
