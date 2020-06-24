@@ -11,7 +11,6 @@ feature 'recovery ssn step' do
   before do
     sign_in_before_2fa(user)
     complete_recovery_steps_before_ssn_step(user)
-    mock_assure_id_ok
   end
 
   it 'is on the correct page' do

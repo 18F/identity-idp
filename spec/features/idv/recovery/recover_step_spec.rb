@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-shared_examples 'recover step' do |simulate|
+shared_examples 'recover step' do |_simulate|
   feature 'recover step' do
     include IdvStepHelper
     include DocAuthHelper
@@ -11,10 +11,8 @@ shared_examples 'recover step' do |simulate|
     let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
     before do
-      setup_acuant_simulator(enabled: simulate)
       sign_in_before_2fa(user)
       token = complete_recovery_steps_before_recover_step(user)
-      mock_assure_id_ok
     end
 
     it 'is on the correct page' do

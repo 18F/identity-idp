@@ -44,7 +44,7 @@ feature 'doc auth front image step' do
   end
 
   it 'does not proceed to the next page with invalid info' do
-    mock_assure_id_fail
+    mock_general_doc_auth_client_error(:create_document)
     attach_image
     click_idv_continue
 
@@ -57,7 +57,7 @@ feature 'doc auth front image step' do
     expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
                                   href: idv_in_person_welcome_step)
 
-    mock_assure_id_fail
+    mock_general_doc_auth_client_error(:create_document)
     attach_image
     click_idv_continue
 

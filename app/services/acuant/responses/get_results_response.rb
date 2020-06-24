@@ -15,7 +15,7 @@ module Acuant
       def pii_from_doc
         return {} unless successful_result?
 
-        Idv::Utils::PiiFromDoc.new(parsed_response_body).call(nil)
+        ::Acuant::PiiFromDoc.new(parsed_response_body).call
       end
 
       private
@@ -26,7 +26,13 @@ module Acuant
         return [] if successful_result?
 
         raw_alerts.map do |raw_alert|
-          FriendlyError::Message.call(raw_alert['Disposition'], 'doc_auth')
+          # If a friendly message exists for this alert, we want to return that.
+          # If a friendly message does not exist, FriendlyError::Message will return to raw alert
+          # to us. In that case we respond with a general error.
+          raw_alert_message = raw_alert['Disposition']
+          friendly_message = FriendlyError::Message.call(raw_alert_message, 'doc_auth')
+          next I18n.t('errors.doc_auth.general_error') if friendly_message == raw_alert_message
+          friendly_message
         end
       end
 

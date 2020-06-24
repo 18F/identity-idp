@@ -35,7 +35,7 @@ feature 'doc auth mobile front image step' do
   end
 
   it 'does not proceed to the next page with invalid info' do
-    mock_assure_id_fail
+    mock_general_doc_auth_client_error(:create_document)
     attach_image
     click_idv_continue
 

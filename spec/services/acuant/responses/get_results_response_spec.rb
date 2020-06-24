@@ -31,7 +31,6 @@ describe Acuant::Responses::GetResultsResponse do
         state_id_number: 'DOE-84-1165',
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
-        phone: nil,
       )
     end
   end
@@ -53,6 +52,26 @@ describe Acuant::Responses::GetResultsResponse do
         [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
       )
       expect(response.exception).to be_nil
+    end
+
+    context 'when a friendly error does not exist for the acuant error message' do
+      let(:http_response) do
+        parsed_response_body = JSON.parse(AcuantFixtures.get_results_response_failure)
+        parsed_response_body['Alerts'].first['Disposition'] = 'This message does not have key'
+        instance_double(
+          Faraday::Response,
+          body: parsed_response_body.to_json,
+        )
+      end
+
+      it 'returns the general error' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(
+          # This is the error message for the error in the response fixture
+          [I18n.t('errors.doc_auth.general_error')],
+        )
+        expect(response.exception).to be_nil
+      end
     end
 
     it 'does not parse any PII from the doc' do

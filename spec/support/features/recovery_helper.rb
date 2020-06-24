@@ -23,7 +23,6 @@ module RecoveryHelper
 
   def complete_recovery_steps_before_back_image_step(user = user_with_2fa)
     complete_recovery_steps_before_front_image_step(user)
-    mock_assure_id_ok
     attach_image
     click_idv_continue
   end

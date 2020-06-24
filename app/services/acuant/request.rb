@@ -26,7 +26,8 @@ module Acuant
       }
     end
 
-    # TODO: Send the request in a timeout
+    # TODO: Set the timeouts on the client
+    # TODO: New relic alerts for exceptions
     def fetch
       http_response = send_http_request
       return handle_invalid_response(http_response) unless http_response.success?

@@ -8,7 +8,7 @@ module Idv
           flow_session[:instance_id] = create_document_response.instance_id
           upload_front_image
         else
-          friendly_failure(create_document_response.errors.first, create_document_response.to_h)
+          failure(create_document_response.errors.first, create_document_response.to_h)
         end
       end
 
@@ -20,7 +20,7 @@ module Idv
 
       def upload_front_image
         response = post_front_image
-        friendly_failure(response.errors.first, response.to_h) unless response.success?
+        failure(response.errors.first, response.to_h) unless response.success?
       end
     end
   end

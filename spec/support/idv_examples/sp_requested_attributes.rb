@@ -5,7 +5,12 @@ shared_examples 'sp requesting attributes' do |sp|
   let(:user) { user_with_2fa }
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
-  let(:saved_pii) { DocAuthHelper::ACUANT_RESULTS_TO_PII.merge(ssn: good_ssn) }
+  let(:saved_pii) do
+    AcuantMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+      ssn: good_ssn,
+      phone: '+1 (555) 555-1234',
+    )
+  end
 
   context 'visiting an SP for the first time' do
     it 'requires the user to verify the attributes submitted to the SP' do
@@ -32,7 +37,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to_not have_content t('help_text.requested_attributes.address')
         expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
         expect(page).to have_content t('help_text.requested_attributes.full_name')
-        expect(page).to have_content 'Jane Doe'
+        expect(page).to have_content 'FAKEY MCFAKERSON'
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
@@ -92,9 +97,9 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to_not have_content t('help_text.requested_attributes.address')
         expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
         expect(page).to have_content t('help_text.requested_attributes.full_name')
-        expect(page).to have_content 'Jane Doe'
+        expect(page).to have_content 'FAKEY MCFAKERSON'
         expect(page).to have_content t('help_text.requested_attributes.phone')
-        expect(page).to have_content '456'
+        expect(page).to have_content '+15555551234'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
         expect(page).to have_content '666-66-1234'
       end
