@@ -7,6 +7,7 @@ describe 'Strong IAL2' do
 
   context 'with an sp that requires liveness and a current verified profile with no liveness' do
     before do
+      mock_acuant_selfie_ok
       ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
         liveness_checking_required: true,
       )
@@ -48,6 +49,7 @@ describe 'Strong IAL2' do
 
   context 'with SP that sends an IAL2 strict request and a verified profile with no liveness' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
+      mock_acuant_selfie_ok
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
       user ||= create(:profile, :active, :verified,
@@ -72,6 +74,7 @@ describe 'Strong IAL2' do
     end
 
     it 'returns an error if liveness checking is disabled' do
+      mock_acuant_selfie_ok
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('false')
 
       visit_idp_from_oidc_sp_with_ial2_strict

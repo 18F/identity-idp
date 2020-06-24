@@ -2,11 +2,14 @@ module Idv
   module Steps
     class MobileFrontImageStep < DocAuthBaseStep
       def call
-        success, instance_id_or_message = assure_id.create_document
-        return failure(instance_id_or_message) unless success
+        create_document_response = acuant_client.create_document
 
-        flow_session[:instance_id] = instance_id_or_message
-        upload_front_image
+        if create_document_response.success?
+          flow_session[:instance_id] = create_document_response.instance_id
+          upload_front_image
+        else
+          failure(create_document_response.errors.first, create_document_response.to_h)
+        end
       end
 
       private
@@ -16,8 +19,8 @@ module Idv
       end
 
       def upload_front_image
-        success, message, analytics_hash = post_front_image
-        return failure(message, analytics_hash) unless success
+        response = post_front_image
+        failure(response.errors.first, response.to_h) unless response.success?
       end
     end
   end

@@ -35,7 +35,6 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-allow_doc_auth_test_credentials:
 asset_host:
 async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
@@ -136,7 +135,6 @@ development:
   acuant_passlive_url: ''
   acuant_sdk_document_capture_enabled: 'true'
   acuant_simulator: 'true'
-  allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -353,7 +351,7 @@ test:
   acuant_max_attempts: '4'
   acuant_passlive_url: https://example.com
   acuant_sdk_document_capture_enabled: 'false'
-  acuant_simulator: 'false'
+  acuant_simulator: 'true'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
