@@ -19,7 +19,8 @@ module Acuant
       end
 
       # Explicitly override #to_h here because this method response object contains PII.
-      # #to_h is defined on the super class and should not log any parts of the response that
+      # This method is used to determine what from this response gets written to events.log.
+      # #to_h is defined on the super class and should not include any parts of the response that
       # contain PII. This method is here as a safegaurd in case that changes.
       def to_h
         {
