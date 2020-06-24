@@ -77,4 +77,7 @@ es:
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.
+    re-verify:
+      banner: Tu sesión ha expirado. Hemos ocultado la información de su perfil para proteger su privacidad.
+      footer: Verifique su identidad para ver la información de su perfil.
     welcome: Bienvenido/a

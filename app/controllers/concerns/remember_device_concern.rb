@@ -37,9 +37,8 @@ module RememberDeviceConcern
                           decorated_session.mfa_expiration_interval)
   end
 
-  def pii_locked_for_session?
-    expired_for_interval?(current_user,
-                          decorated_session.pii_lock_interval)
+  def pii_locked_for_session?(user)
+    expired_for_interval?(user, Figaro.env.pii_lock_timeout_in_minutes.to_i.minutes)
   end
 
   def revoke_remember_device(user)
@@ -53,11 +52,12 @@ module RememberDeviceConcern
 
   def expired_for_interval?(user, interval)
     return false unless user_session[:mfa_device_remembered]
-    return true if remember_device_cookie.nil?
+    remember_cookie = remember_device_cookie
+    return true if remember_cookie.nil?
 
-    !remember_device_cookie.valid_for_user?(
+    !remember_cookie.valid_for_user?(
       user: user,
-      expiration_interval: interval
+      expiration_interval: interval,
     )
   end
 

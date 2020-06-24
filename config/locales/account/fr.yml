@@ -78,4 +78,7 @@ fr:
     security:
       link: En apprendre davantage dans le Centre d'aide
       text: L'information de votre profil est verrouillée pour votre sécurité.
+    re-verify:
+      banner: Votre session a expiré. Nous avons masqué les informations de votre profil pour protéger votre vie privée.
+      footer: Veuillez vérifier votre identité pour afficher les informations de votre profil.
     welcome: Bienvenue
