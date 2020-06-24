@@ -18,6 +18,17 @@ module Acuant
         ::Acuant::PiiFromDoc.new(parsed_response_body).call
       end
 
+      # Explicitly override #to_h here because this method response object contains PII.
+      # #to_h is defined on the super class and should not log any parts of the response that
+      # contain PII. This method is here as a safegaurd in case that changes.
+      def to_h
+        {
+          success: success?,
+          erorrs: errors,
+          exception: exception,
+        }
+      end
+
       private
 
       attr_reader :http_response
