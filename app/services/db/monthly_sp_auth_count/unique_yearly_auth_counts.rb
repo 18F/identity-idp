@@ -3,11 +3,14 @@ module Db
     class UniqueYearlyAuthCounts
       def self.call
         sql = <<~SQL
-          SELECT issuer, year, COUNT(*) AS total
+          SELECT issuer, MAX(app_id) AS app_id, year, COUNT(*) AS total
           FROM (
-            SELECT issuer, ial, LEFT(year_month, 4) AS year, user_id, COUNT(*)
-            FROM monthly_sp_auth_counts
-            GROUP BY issuer, ial, year, user_id) AS tbl
+            SELECT monthly_sp_auth_counts.issuer, MAX(app_id) AS app_id, user_id,
+                   monthly_sp_auth_counts.ial, LEFT(year_month, 4) AS year, COUNT(*)
+            FROM monthly_sp_auth_counts, service_providers
+            WHERE monthly_sp_auth_counts.issuer = service_providers.issuer
+            GROUP BY monthly_sp_auth_counts.issuer, monthly_sp_auth_counts.ial,
+                     year, user_id) AS tbl
           GROUP BY issuer, ial, year
         SQL
         ActiveRecord::Base.connection.execute(sql)
