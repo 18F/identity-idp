@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_19_121722) do
+ActiveRecord::Schema.define(version: 2020_06_25_152453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 2020_06_19_121722) do
   create_table "deleted_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
-    t.datetime "user_created_at", null: false
+    t.datetime "created_at", null: false
     t.datetime "deleted_at", null: false
     t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
@@ -456,7 +456,6 @@ ActiveRecord::Schema.define(version: 2020_06_19_121722) do
     t.integer "ial2_quota"
     t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
-    t.string "deal_id"
     t.date "launch_date"
     t.string "iaa"
     t.date "iaa_start_date"
