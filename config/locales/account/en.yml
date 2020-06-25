@@ -66,7 +66,7 @@ en:
         ial2: If you have added your PIV/CAC card to your account, you may use it
           instead of your email. You will need to provide your password to unlock
           your profile.
-    re-verify:
+    re_verify:
       banner: Your session has timed out. We've hidden your profile information to
         protect your privacy.
       footer: Please verify your identity to view your profile information.

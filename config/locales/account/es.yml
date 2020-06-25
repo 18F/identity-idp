@@ -68,7 +68,7 @@ es:
         ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
-    re-verify:
+    re_verify:
       banner: Tu sesión ha expirado. Hemos ocultado la información de su perfil para
         proteger su privacidad.
       footer: Verifique su identidad para ver la información de su perfil.
