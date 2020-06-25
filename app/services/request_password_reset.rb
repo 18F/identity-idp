@@ -20,7 +20,7 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
   end
 
   def instructions
-    I18n.t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password_html')
+    I18n.t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password')
   end
 
   ##

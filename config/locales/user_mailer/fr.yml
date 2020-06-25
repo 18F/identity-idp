@@ -70,14 +70,16 @@ fr:
       create_new_account: créer un nouveau compte.
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
-        forgot_password_html: "<p>Vous avez essayé de réinitialiser le mot de passe
-          de votre compte login.gov, mais nous ne possédons pas de compte associé
-          à cette adresse courriel.</p><p>Vous pouvez demander votre mot de passe
-          en utilisant une adresse e-mail différente qui est connectée à votre compte
-          login.gov.</p>"
+        forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
+          compte login.gov, mais nous ne possédons pas de compte associé à cette adresse
+          courriel.
         unconfirmed: Merci d'avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
+      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
+        le lien complet dans votre navigateur."
       link_text: Essayez une autre adresse e-mail
+      request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
+        une adresse e-mail différente qui est connectée à votre compte %{app_name}.
       subject: Email non trouvé
       use_this_email: Ou utilisez cet e-mail et
     email_deleted:

@@ -41,7 +41,7 @@ describe 'reset password with multiple emails' do
 
     mail = double
     expect(mail).to receive(:deliver_later)
-    expect(UserMailer).to receive(:email_confirmation_instructions).with(
+    expect(UserMailer).to receive(:unconfirmed_email_instructions).with(
       instance_of(User),
       unconfirmed_email_address.email,
       instance_of(String),
