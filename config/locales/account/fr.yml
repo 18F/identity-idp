@@ -69,6 +69,11 @@ fr:
         ial2: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
+    re-verify:
+      banner: Votre session a expiré. Nous avons masqué les informations de votre
+        profil pour protéger votre vie privée.
+      footer: Veuillez vérifier votre identité pour afficher les informations de votre
+        profil.
     revoke_consent:
       link_title: Révoquer le consentement
       longer_description_html: Vos informations ne seront plus partagées avec %{service_provider}.
@@ -78,7 +83,4 @@ fr:
     security:
       link: En apprendre davantage dans le Centre d'aide
       text: L'information de votre profil est verrouillée pour votre sécurité.
-    re-verify:
-      banner: Votre session a expiré. Nous avons masqué les informations de votre profil pour protéger votre vie privée.
-      footer: Veuillez vérifier votre identité pour afficher les informations de votre profil.
     welcome: Bienvenue

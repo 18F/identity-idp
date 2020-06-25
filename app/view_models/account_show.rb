@@ -1,7 +1,7 @@
 class AccountShow # rubocop:disable Metrics/ClassLength
   attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session
 
-  def initialize(decrypted_pii:, personal_key:, decorated_user:, locked_for_session:)
+  def initialize(decrypted_pii:, personal_key:, decorated_user:, locked_for_session: false)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user

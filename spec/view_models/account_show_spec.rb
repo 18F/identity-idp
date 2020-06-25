@@ -99,13 +99,25 @@ describe AccountShow do
 
   describe '#pii_partial' do
     context 'AccountShow instance has decrypted_pii' do
-      it 'returns the accounts/password_reset partial' do
-        user = User.new.decorate
-        profile_index = AccountShow.new(
-          decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
-        )
+      context 'session is not expired' do
+        it 'returns the accounts/password_reset partial' do
+          user = User.new.decorate
+          profile_index = AccountShow.new(
+            decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
+          )
 
-        expect(profile_index.pii_partial).to eq 'accounts/pii'
+          expect(profile_index.pii_partial).to eq 'accounts/pii'
+        end
+      end
+      context 'session is expired' do
+        it 'returns the expired PII partial' do
+          user = User.new.decorate
+          profile_index = AccountShow.new(
+            decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user, locked_for_session: true
+          )
+
+          expect(profile_index.pii_partial).to eq 'accounts/pii_expired'
+        end
       end
     end
 
