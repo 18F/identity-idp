@@ -14,6 +14,7 @@ feature 'sp active users report' do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
 
     results = [{ 'issuer': 'urn:gov:gsa:openidconnect:sp:server',
+                 'app_id': nil,
                  'total_ial1_active': 1,
                  'total_ial2_active': 0 }].to_json
     expect(Db::Identity::SpActiveUserCounts.call('01-01-2019').to_json).to eq(results)
@@ -30,6 +31,7 @@ feature 'sp active users report' do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
 
     results = [{ 'issuer': 'urn:gov:gsa:openidconnect:sp:server',
+                 'app_id': nil,
                  'total_ial1_active': 0,
                  'total_ial2_active': 1 }].to_json
     expect(Db::Identity::SpActiveUserCounts.call('01-01-2019').to_json).to eq(results)
