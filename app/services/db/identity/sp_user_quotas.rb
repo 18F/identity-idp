@@ -6,6 +6,7 @@ module Db
         sql = <<~SQL
           SELECT
             service_providers.issuer,
+            service_providers.app_id,
             ial2_total,
             CAST(
               (CASE WHEN ial2_quota IS NULL
