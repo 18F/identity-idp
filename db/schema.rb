@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_152453) do
   create_table "deleted_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
-    t.datetime "created_at", null: false
+    t.datetime "user_created_at", null: false
     t.datetime "deleted_at", null: false
     t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
