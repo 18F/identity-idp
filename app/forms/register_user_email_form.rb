@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class RegisterUserEmailForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -6,6 +7,7 @@ class RegisterUserEmailForm
   validate :service_provider_request_exists
 
   attr_reader :email_address
+  attr_accessor :for_password_reset
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
@@ -14,6 +16,7 @@ class RegisterUserEmailForm
   def initialize(recaptcha_results = [true, {}])
     @allow, @recaptcha_h = recaptcha_results
     @throttled = false
+    @for_password_reset = false
   end
 
   def user
@@ -43,6 +46,10 @@ class RegisterUserEmailForm
   def email_taken?
     return @email_taken unless @email_taken.nil?
     @email_taken = lookup_email_taken
+  end
+
+  def for_password_reset?
+    @for_password_reset
   end
 
   private
@@ -80,7 +87,9 @@ class RegisterUserEmailForm
     self.success = true
     user.save!
     Funnel::Registration::Create.call(user.id)
-    SendSignUpEmailConfirmation.new(user).call(request_id: request_id, instructions: instructions)
+    SendSignUpEmailConfirmation.new(user).call(request_id: request_id,
+                                               instructions: instructions,
+                                               for_password_reset: for_password_reset?)
   end
 
   def extra_analytics_attributes
@@ -124,3 +133,4 @@ class RegisterUserEmailForm
     @_user ||= User.find_with_email(email) || AnonymousUser.new
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -35,18 +35,20 @@ describe SendSignUpEmailConfirmation do
       subject.call(request_id: request_id, instructions: instructions)
     end
 
-    it 'sends an email with a link to try another email if the current email is unconfirmed' do
-      mail = double
-      expect(mail).to receive(:deliver_later)
-      expect(UserMailer). to receive(:unconfirmed_email_instructions).with(
-        user,
-        email_address.email,
-        confirmation_token,
-        request_id: request_id,
-        instructions: instructions,
-      ).and_return(mail)
+    context 'when resetting a password' do
+      it 'sends an email with a link to try another email if the current email is unconfirmed' do
+        mail = double
+        expect(mail).to receive(:deliver_later)
+        expect(UserMailer). to receive(:unconfirmed_email_instructions).with(
+          user,
+          email_address.email,
+          confirmation_token,
+          request_id: request_id,
+          instructions: instructions,
+        ).and_return(mail)
 
-      subject.call(request_id: request_id, instructions: instructions)
+        subject.call(request_id: request_id, instructions: instructions, for_password_reset: true)
+      end
     end
 
     it 'updates the confirmation values on the email address for the user' do

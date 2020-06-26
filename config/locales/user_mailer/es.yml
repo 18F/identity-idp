@@ -65,6 +65,7 @@ es:
         direcciones de correo electrónico. Le recomendamos que también cambie su contraseña.
       subject: Nueva dirección de correo electrónico añadida
     email_confirmation_instructions:
+      email_not_found: El correo electrónico no encontrado
       first_sentence:
         confirmed: "¿Desea cambiar su email?"
         forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
@@ -76,7 +77,7 @@ es:
       link_text: crea una cuenta nueva.
       request_with_diff_email: Puedes solicitar tu contraseña usando una dirección
         de correo electrónico diferente que está conectada a su cuenta %{app_name}.
-      subject: El correo electrónico no encontrado
+      subject: Confirme su email
       try_diff_email: Pruebe con una dirección de correo electrónico diferente
       use_this_email: O use este correo electrónico y
     email_deleted:

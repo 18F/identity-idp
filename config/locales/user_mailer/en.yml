@@ -63,6 +63,7 @@ en:
         email addresses. We recommend that you also change your password.
       subject: New email address added
     email_confirmation_instructions:
+      email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
         forgot_password: You tried to reset your login.gov password but we don't have
@@ -74,7 +75,7 @@ en:
       link_text: create a new account.
       request_with_diff_email: You can request your password using a different email
         address that is connected to your %{app_name} account.
-      subject: Email not found
+      subject: Confirm your email
       try_diff_email: Try a different email address
       use_this_email: Or use this email address and
     email_deleted:
