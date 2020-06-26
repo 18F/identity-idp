@@ -8,6 +8,7 @@ class SendSignUpEmailConfirmation
   def call(request_id: nil, instructions: nil)
     remove_legacy_confirmation_info_on_user
     update_email_address_record
+
     if user.confirmed?
       send_confirmation_email(request_id, instructions)
     else

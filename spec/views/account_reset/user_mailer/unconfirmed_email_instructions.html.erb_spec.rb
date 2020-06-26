@@ -42,7 +42,7 @@ describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
     render
 
     expect(rendered).to have_link(
-      t('user_mailer.email_confirmation_instructions.create_new_account'),
+      t('user_mailer.email_confirmation_instructions.link_text'),
       href: 'http://test.host/sign_up/email/confirm?confirmation_token=foo',
     )
   end
@@ -56,7 +56,7 @@ describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
       render
 
       expect(rendered).to have_link(
-        t('user_mailer.email_confirmation_instructions.create_new_account'),
+        t('user_mailer.email_confirmation_instructions.link_text'),
         href: 'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo',
       )
     end

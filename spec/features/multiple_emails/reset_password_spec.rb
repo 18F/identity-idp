@@ -30,7 +30,7 @@ describe 'reset password with multiple emails' do
     click_button t('forms.buttons.continue')
   end
 
-  scenario 'it sends a create an account email if the requested email is not confirmed' do
+  scenario 'it sends the unconfirmed address email if the requested email is not confirmed' do
     user = create(:user, :with_multiple_emails)
     unconfirmed_email_address = user.reload.email_addresses.last
     unconfirmed_email_address.update!(confirmed_at: nil)

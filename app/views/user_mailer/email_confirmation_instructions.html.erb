@@ -1,7 +1,6 @@
 <p class="lead">
-  <%= t('user_mailer.email_confirmation_instructions.header',
-        intro: @first_sentence) + ' ' + t('user_mailer.email_confirmation_instructions.footer',
-                                          confirmation_period: @confirmation_period) %>
+  <%= t('user_mailer.email_confirmation_instructions.header', intro: @first_sentence) %>
+  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @confirmation_period) %>
 </p>
 
 <table class="button expanded large radius">

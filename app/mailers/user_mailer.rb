@@ -18,6 +18,7 @@ class UserMailer < ActionMailer::Base
 
   def unconfirmed_email_instructions(user, email, token, request_id:, instructions:)
     presenter = ConfirmationEmailPresenter.new(user, view_context)
+    @first_sentence = instructions || presenter.first_sentence
     @confirmation_period = presenter.confirmation_period
     @request_id = request_id
     @locale = locale_url_param
