@@ -11,21 +11,24 @@ feature 'scheduler runs report' do
   it 'works for ial1 users that land and leave' do
     visit_idp_from_sp_with_ial1(:oidc)
 
-    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, return_rate: 0.0 }]
+    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
+                 return_rate: 0.0 }]
     expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
   end
 
   it 'works for ial2 users that land and leave' do
     visit_idp_from_sp_with_ial2(:oidc)
 
-    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 2, return_rate: 0.0 }]
+    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 2, app_id: nil,
+                 return_rate: 0.0 }]
     expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
   end
 
   it 'works for successful sign in' do
     visit_idp_from_sp_and_back_again
 
-    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, return_rate: 1.0 }]
+    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
+                 return_rate: 1.0 }]
     expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
   end
 
@@ -34,7 +37,8 @@ feature 'scheduler runs report' do
     visit sign_out_url
     visit_idp_from_sp_with_ial1(:oidc)
 
-    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, return_rate: 0.5 }]
+    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
+                 return_rate: 0.5 }]
     expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
   end
 
