@@ -3,8 +3,5 @@ module Users
     def show
       render :'two_factor_authentication/options/no_option'
     end
-
-    def new
-    end
   end
 end
