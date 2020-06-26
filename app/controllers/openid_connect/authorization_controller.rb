@@ -40,7 +40,6 @@ module OpenidConnect
     end
 
     def confirm_user_has_aal3_mfa_if_requested
-      puts "#{'~'*10} confirm_user_has_aal3_mfa_if_requested"
       return unless aal3_policy.aal3_required?
       return if mfa_policy.aal3_mfa_enabled?
       # session[:needs_to_setup_piv_cac_after_sign_in] = true
@@ -48,8 +47,6 @@ module OpenidConnect
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
-      puts "#{'~'*10} confirm_user_is_authenticated_with_fresh_mfa"
-      # byebug
       bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if device_not_remembered?
@@ -99,7 +96,6 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
-      puts "#{'~'*10} build_authorize_form_from_params"
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
     end
 
@@ -108,7 +104,6 @@ module OpenidConnect
     end
 
     def validate_authorize_form
-      puts "#{'~'*10} validate_authorize_form"
       result = @authorize_form.submit
       track_authorize_analytics(result)
 
@@ -122,20 +117,17 @@ module OpenidConnect
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
-      puts "#{'~'*10} sign_out_if_prompt_param_is_login_and_user_is_signed_in"
       return unless user_signed_in? && @authorize_form.prompt == 'login'
       return if check_sp_handoff_bounced
       sign_out unless sp_session[:request_url] == request.original_url
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
-      puts "#{'~'*10} prompt_for_password_if_ial2_request_and_pii_locked"
       return unless pii_requested_but_locked?
       redirect_to capture_password_url
     end
 
     def store_request
-      puts "#{'~'*10} store_request"
       ServiceProviderRequestHandler.new(
         url: request.original_url,
         session: session,

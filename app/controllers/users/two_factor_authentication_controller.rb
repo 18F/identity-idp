@@ -6,7 +6,6 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      puts "#{'~'*10} TwoFactorAuthenticationController#show"
       aal3_requirement_redirect || non_phone_redirect || phone_redirect || backup_code_redirect ||
         redirect_on_nothing_enabled
     end
@@ -25,37 +24,31 @@ module Users
     private
 
     def aal3_requirement_redirect
-      puts "    #{'~'*10} aal3_requirement_redirect"
       aal3_url = aal3_redirect_url
       if aal3_url
         redirect_to aal3_url
       elsif AAL3Policy.new(session).aal3_required? && user_fully_authenticated?
-        puts "        #{'~'*10} redirecting to two_factor_options_url"
         redirect_to two_factor_options_url
       end
     end
 
     def non_phone_redirect
-      puts "    #{'~'*10}  non_phone_redirect"
       url = redirect_url
       redirect_to url if url.present?
     end
 
     def phone_redirect
-      puts "    #{'~'*10} phone_redirect"
       return unless phone_enabled?
       validate_otp_delivery_preference_and_send_code
       true
     end
 
     def backup_code_redirect
-      puts "    #{'~'*10} backup_code_redirect"
       return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
       redirect_to login_two_factor_backup_code_url
     end
 
     def redirect_on_nothing_enabled
-      puts "    #{'~'*10} redirect_on_nothing_enabled"
       redirect_to two_factor_options_url
     end
 
