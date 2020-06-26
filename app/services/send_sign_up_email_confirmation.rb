@@ -8,7 +8,12 @@ class SendSignUpEmailConfirmation
   def call(request_id: nil, instructions: nil)
     remove_legacy_confirmation_info_on_user
     update_email_address_record
-    send_confirmation_email(request_id, instructions)
+
+    if user.confirmed?
+      send_confirmation_email(request_id, instructions)
+    else
+      send_unconfirmed_email(request_id, instructions)
+    end
   end
 
   private
@@ -54,6 +59,16 @@ class SendSignUpEmailConfirmation
 
   def send_confirmation_email(request_id, instructions)
     UserMailer.email_confirmation_instructions(
+      user,
+      email_address.email,
+      confirmation_token,
+      request_id: request_id,
+      instructions: instructions,
+    ).deliver_later
+  end
+
+  def send_unconfirmed_email(request_id, instructions)
+    UserMailer.unconfirmed_email_instructions(
       user,
       email_address.email,
       confirmation_token,

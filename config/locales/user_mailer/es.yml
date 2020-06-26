@@ -68,15 +68,17 @@ es:
       first_sentence:
         confirmed: "¿Desea cambiar su email?"
         forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
-          una cuenta vinculada a esta dirección de correo electrónico. Si desea configurar
-          una nueva cuenta vinculada a este correo electrónico, confirme su dirección
-          de correo electrónico a continuación.
+          una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este enlace expira en %{confirmation_period}.
       header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador."
-      link_text: Confirmar el correo
-      subject: Confirme su email
+      link_text: crea una cuenta nueva.
+      request_with_diff_email: Puedes solicitar tu contraseña usando una dirección
+        de correo electrónico diferente que está conectada a su cuenta %{app_name}.
+      subject: El correo electrónico no encontrado
+      try_diff_email: Pruebe con una dirección de correo electrónico diferente
+      use_this_email: O use este correo electrónico y
     email_deleted:
       header: Se eliminó una dirección de correo electrónico de su perfil de login.gov.
       help_html: Si no desea eliminar esta dirección de correo electrónico, visite
