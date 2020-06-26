@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::Aal3RejectionController do
+describe Users::Aal3Controller do
   describe '#show' do
     it 'renders the AAL3 required page successfully' do
       get :show
