@@ -1,8 +1,7 @@
 RequestPasswordReset = Struct.new(:email, :request_id) do
   def perform
     if user_should_receive_registration_email?
-      form = RegisterUserEmailForm.new
-      form.for_password_reset = true
+      form = RegisterUserEmailForm.new(password_reset_requested: true)
       result = form.submit({ email: email }, instructions)
       [form.user, result]
     else

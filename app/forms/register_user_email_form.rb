@@ -7,16 +7,16 @@ class RegisterUserEmailForm
   validate :service_provider_request_exists
 
   attr_reader :email_address
-  attr_accessor :for_password_reset
+  attr_accessor :password_reset_requested
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(recaptcha_results = [true, {}])
+  def initialize(recaptcha_results: [true, {}], password_reset_requested: false)
     @allow, @recaptcha_h = recaptcha_results
     @throttled = false
-    @for_password_reset = false
+    @password_reset_requested = password_reset_requested
   end
 
   def user
@@ -48,8 +48,8 @@ class RegisterUserEmailForm
     @email_taken = lookup_email_taken
   end
 
-  def for_password_reset?
-    @for_password_reset
+  def password_reset_requested?
+    @password_reset_requested
   end
 
   private
@@ -89,7 +89,7 @@ class RegisterUserEmailForm
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(request_id: request_id,
                                                instructions: instructions,
-                                               for_password_reset: for_password_reset?)
+                                               password_reset_requested: password_reset_requested?)
   end
 
   def extra_analytics_attributes
