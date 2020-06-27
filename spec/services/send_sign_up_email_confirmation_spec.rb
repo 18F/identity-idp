@@ -47,7 +47,11 @@ describe SendSignUpEmailConfirmation do
           instructions: instructions,
         ).and_return(mail)
 
-        subject.call(request_id: request_id, instructions: instructions, password_reset_requested: true)
+        subject.call(
+          request_id: request_id,
+          instructions: instructions,
+          password_reset_requested: true,
+        )
       end
     end
 
