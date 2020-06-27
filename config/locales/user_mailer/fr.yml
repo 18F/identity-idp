@@ -67,6 +67,7 @@ fr:
         votre mot de passe.
       subject: Nouvelle adresse email ajoutée
     email_confirmation_instructions:
+      email_not_found: Email non trouvé
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
         forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
@@ -79,7 +80,7 @@ fr:
       link_text: créer un nouveau compte.
       request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
         une adresse e-mail différente qui est connectée à votre compte %{app_name}.
-      subject: Email non trouvé
+      subject: Confirmez votre adresse courriel
       try_diff_email: Essayez une autre adresse e-mail
       use_this_email: Ou utilisez cet e-mail et
     email_deleted:

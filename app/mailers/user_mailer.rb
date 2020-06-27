@@ -23,7 +23,7 @@ class UserMailer < ActionMailer::Base
     @request_id = request_id
     @locale = locale_url_param
     @token = token
-    mail(to: email, subject: t('user_mailer.email_confirmation_instructions.subject'))
+    mail(to: email, subject: t('user_mailer.email_confirmation_instructions.email_not_found'))
   end
 
   def signup_with_your_email(email)

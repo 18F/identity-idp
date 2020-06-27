@@ -5,14 +5,14 @@ class SendSignUpEmailConfirmation
     @user = user
   end
 
-  def call(request_id: nil, instructions: nil)
+  def call(request_id: nil, instructions: nil, password_reset_requested: false)
     remove_legacy_confirmation_info_on_user
     update_email_address_record
 
-    if user.confirmed?
-      send_confirmation_email(request_id, instructions)
+    if password_reset_requested && !user.confirmed?
+      send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
     else
-      send_unconfirmed_email(request_id, instructions)
+      send_confirmation_email(request_id, instructions)
     end
   end
 
@@ -67,7 +67,7 @@ class SendSignUpEmailConfirmation
     ).deliver_later
   end
 
-  def send_unconfirmed_email(request_id, instructions)
+  def send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
     UserMailer.unconfirmed_email_instructions(
       user,
       email_address.email,
