@@ -347,9 +347,9 @@ test:
   aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: test
   acuant_assure_id_url: https://example.com
-  acuant_facial_match_url: https://example.com
+  acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
-  acuant_passlive_url: https://example.com
+  acuant_passlive_url: https://liveness.example.com
   acuant_sdk_document_capture_enabled: 'false'
   acuant_simulator: 'true'
   async_job_refresh_interval_seconds: '1'

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::Acuant::FacialMatch do
   let(:subject) { Idv::Acuant::FacialMatch.new }
-  let(:acuant_facial_match_url) { 'https://example.com' }
+  let(:acuant_facial_match_url) { 'https://facial_match.example.com' }
 
   describe '#call' do
     let(:path) { '/api/v1/facematch' }

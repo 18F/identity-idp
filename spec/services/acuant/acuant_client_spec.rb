@@ -102,4 +102,88 @@ describe Acuant::AcuantClient do
       )
     end
   end
+
+  describe '#post_selfie' do
+    let(:instance_id) { 'this-is-a-test-instance-id' }
+    let(:get_face_image_url) do
+      URI.join(
+        Figaro.env.acuant_assure_id_url,
+        "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
+      )
+    end
+    let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
+    let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
+
+    context 'when the result is a pass' do
+      it 'sends the requests and returns success' do
+        get_face_stub = stub_request(:get, get_face_image_url).
+                        to_return(body: AcuantFixtures.get_face_image_response)
+        facial_match_stub = stub_request(:post, facial_match_url).
+                            to_return(body: AcuantFixtures.facial_match_response_success)
+        liveness_stub = stub_request(:post, liveness_url).
+                        to_return(body: AcuantFixtures.liveness_response_success)
+
+        result = subject.post_selfie(
+          instance_id: instance_id,
+          image: DocAuthImageFixtures.selfie_image,
+        )
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq([])
+        expect(get_face_stub).to have_been_requested
+        expect(facial_match_stub).to have_been_requested
+        expect(liveness_stub).to have_been_requested
+      end
+    end
+
+    context 'when the get face image request fails' do
+      it 'returns a failure' do
+        stub_request(:get, get_face_image_url).to_return(status: 404)
+
+        result = subject.post_selfie(
+          instance_id: instance_id,
+          image: DocAuthImageFixtures.selfie_image,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+      end
+    end
+
+    context 'when the facial match request fails' do
+      it 'returns a failure' do
+        stub_request(:get, get_face_image_url).
+          to_return(body: AcuantFixtures.get_face_image_response)
+        stub_request(:post, facial_match_url).
+          to_return(body: AcuantFixtures.facial_match_response_failure)
+        stub_request(:post, liveness_url).to_return(body: AcuantFixtures.liveness_response_success)
+
+        result = subject.post_selfie(
+          instance_id: instance_id,
+          image: DocAuthImageFixtures.selfie_image,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+      end
+    end
+
+    context 'when the liveness request fails' do
+      it 'returns a failure' do
+        stub_request(:get, get_face_image_url).
+          to_return(body: AcuantFixtures.get_face_image_response)
+        stub_request(:post, facial_match_url).
+          to_return(body: AcuantFixtures.facial_match_response_success)
+        stub_request(:post, liveness_url).to_return(body: AcuantFixtures.liveness_response_failure)
+
+        result = subject.post_selfie(
+          instance_id: instance_id,
+          image: DocAuthImageFixtures.selfie_image,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+      end
+    end
+  end
 end

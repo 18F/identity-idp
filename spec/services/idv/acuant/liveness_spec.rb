@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::Acuant::Liveness do
   describe '#liveness' do
-    let(:acuant_passlive_url) { 'https://example.com' }
+    let(:acuant_passlive_url) { 'https://liveness.example.com' }
     let(:path) { '/api/v1/liveness' }
     let(:body) { 'body' }
 
