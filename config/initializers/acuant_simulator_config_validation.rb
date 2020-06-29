@@ -27,9 +27,11 @@ if Figaro.env.acuant_simulator == 'true' &&
     'true'. Making this change will change the current behavior.
   HEREDOC
 
+  # rubocop:disable Style/GuardClause
   if FORCE_ACUANT_CONFIG_UPGRADE
     raise error_message
   else
     warn error_message
   end
+  # rubocop:enable Style/GuardClause
 end
