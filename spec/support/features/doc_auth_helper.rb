@@ -169,12 +169,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def mock_acuant_selfie_ok
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:face_image).and_return([true, ''])
-    allow_any_instance_of(Idv::Acuant::FacialMatch).to receive(:call).
-      and_return([true, { 'FacialMatch' => 1 }])
-  end
-
   def mock_general_doc_auth_client_error(method)
     AcuantMock::AcuantMockClient.mock_response!(
       method: method,

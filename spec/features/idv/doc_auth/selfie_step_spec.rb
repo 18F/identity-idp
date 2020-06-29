@@ -5,7 +5,6 @@ feature 'doc auth self image step' do
   include DocAuthHelper
 
   before do
-    mock_acuant_selfie_ok
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
