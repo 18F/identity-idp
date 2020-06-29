@@ -64,6 +64,7 @@ module OidcAuthHelper
   end
 
   def include_aal3(params)
-    params[:acr_values] = "#{params[:acr_values]} #{Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF}"
+    params[:acr_values] = "#{params[:acr_values]} " +
+                          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
   end
 end
