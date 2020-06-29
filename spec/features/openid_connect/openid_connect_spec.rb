@@ -534,6 +534,19 @@ describe 'OpenID Connect' do
     end
   end
 
+  context 'visiting IdP via AAL3 SP' do
+    it 'sends user to set up AAL3 auth' do
+      user = user_with_2fa
+
+      oidc_path = visit_idp_from_ial1_aal3_oidc_sp(prompt: 'select_account')
+      sign_in_live_with_2fa(user)
+
+      expect(current_url).to eq(two_factor_options_url)
+      expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+      expect(page).to have_xpath("//img[@alt='important alert icon']")
+    end
+  end
+
   context 'signing out' do
     it 'redirects back to the client app and destroys the session' do
       id_token = sign_in_get_id_token
