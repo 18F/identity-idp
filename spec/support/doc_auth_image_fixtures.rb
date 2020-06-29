@@ -7,8 +7,12 @@ module DocAuthImageFixtures
     load_image_fixture('id-back.jpg')
   end
 
+  def self.document_face_image
+    load_image_fixture('id-face.jpg')
+  end
+
   def self.selfie_image
-    load_response_fixture('selfie.jpg')
+    load_image_fixture('selfie.jpg')
   end
 
   def self.load_image_fixture(filename)

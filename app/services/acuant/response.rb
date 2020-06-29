@@ -1,11 +1,12 @@
 module Acuant
   class Response
-    attr_reader :errors, :exception
+    attr_reader :errors, :exception, :extra
 
-    def initialize(success:, errors: [], exception: nil)
+    def initialize(success:, errors: [], exception: nil, extra: {})
       @success = success
       @errors = errors
       @exception = exception
+      @extra = extra
     end
 
     def success?
@@ -15,9 +16,9 @@ module Acuant
     def to_h
       {
         success: success?,
-        erorrs: errors,
+        errors: errors,
         exception: exception,
-      }
+      }.merge(extra)
     end
   end
 end

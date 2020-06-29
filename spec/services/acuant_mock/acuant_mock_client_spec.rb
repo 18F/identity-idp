@@ -24,6 +24,11 @@ describe AcuantMock::AcuantMockClient do
     )
     get_results_response = client.get_results(instance_id: instance_id)
 
+    selfie_response = client.post_selfie(
+      instance_id: instance_id,
+      image: DocAuthImageFixtures.selfie_image,
+    )
+
     expect(create_document_response.success?).to eq(true)
     expect(create_document_response.instance_id).to_not be_blank
 
@@ -46,6 +51,8 @@ describe AcuantMock::AcuantMockClient do
       state_id_type: 'drivers_license',
       phone: nil,
     )
+
+    expect(selfie_response.success?).to eq(true)
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do
