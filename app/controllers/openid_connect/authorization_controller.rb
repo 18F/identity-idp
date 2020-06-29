@@ -50,11 +50,11 @@ module OpenidConnect
       bump_auth_count unless user_fully_authenticated?
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if device_not_remembered?
+      redirect_to user_two_factor_authentication_url if aal3_policy.aal3_configured_but_not_used?
     end
 
     def device_not_remembered?
-      remember_device_expired_for_sp? ||
-        (aal3_policy.aal3_required? && mfa_policy.aal3_mfa_enabled? && !aal3_policy.aal3_used?)
+      remember_device_expired_for_sp?
     end
 
     def link_identity_to_service_provider

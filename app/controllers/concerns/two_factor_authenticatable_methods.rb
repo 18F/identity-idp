@@ -47,7 +47,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     return unless initial_authentication_context?
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
-    return if aal3_configured_but_not_used?
+    return if aal3_policy.aal3_configured_but_not_used?
 
     redirect_to after_otp_verification_confirmation_url
   end
@@ -310,11 +310,5 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def masked_number(number)
     return '' if number.blank?
     "***-***-#{number[-4..-1]}"
-  end
-
-  def aal3_configured_but_not_used?
-    aal3_policy.aal3_required? &&
-      mfa_policy.aal3_mfa_enabled? &&
-      !aal3_policy.aal3_used?
   end
 end

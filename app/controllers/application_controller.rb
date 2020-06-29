@@ -252,7 +252,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def aal3_policy
-    @aal3 ||= AAL3Policy.new(session)
+    @aal3 ||= AAL3Policy.new(session: session, user: current_user)
   end
 
   def sp_session

@@ -27,7 +27,7 @@ module Users
       aal3_url = aal3_redirect_url
       if aal3_url
         redirect_to aal3_url
-      elsif AAL3Policy.new(session).aal3_required? && user_fully_authenticated?
+      elsif aal3_policy.aal3_required? && user_fully_authenticated?
         redirect_to two_factor_options_url
       end
     end
