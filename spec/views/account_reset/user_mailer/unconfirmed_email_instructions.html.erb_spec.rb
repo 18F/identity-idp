@@ -36,13 +36,13 @@ describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
     )
   end
 
-  it 'includes a link to confirmation' do
+  it 'includes a link to create another account with the email address' do
     assign(:resource, build_stubbed(:user, confirmed_at: nil))
     assign(:token, 'foo')
     render
 
     expect(rendered).to have_link(
-      t('user_mailer.email_confirmation_instructions.link_text'),
+      t('user_mailer.email_confirmation_instructions.create_new_account'),
       href: 'http://test.host/sign_up/email/confirm?confirmation_token=foo',
     )
   end
@@ -50,13 +50,13 @@ describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
   context 'in a non-default locale' do
     before { assign(:locale, 'fr') }
 
-    it 'puts the locale in the URL' do
+    it 'puts the locale in the account creation URL' do
       assign(:resource, build_stubbed(:user, confirmed_at: nil))
       assign(:token, 'foo')
       render
 
       expect(rendered).to have_link(
-        t('user_mailer.email_confirmation_instructions.link_text'),
+        t('user_mailer.email_confirmation_instructions.create_new_account'),
         href: 'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo',
       )
     end

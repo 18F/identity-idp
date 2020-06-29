@@ -67,6 +67,7 @@ fr:
         votre mot de passe.
       subject: Nouvelle adresse email ajoutée
     email_confirmation_instructions:
+      create_new_account: créer un nouveau compte.
       email_not_found: Email non trouvé
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
@@ -77,7 +78,7 @@ fr:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
         le lien complet dans votre navigateur."
-      link_text: créer un nouveau compte.
+      link_text: Confirmez votre adresse email
       request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
         une adresse e-mail différente qui est connectée à votre compte %{app_name}.
       subject: Confirmez votre adresse courriel
