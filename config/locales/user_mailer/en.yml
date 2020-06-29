@@ -63,6 +63,7 @@ en:
         email addresses. We recommend that you also change your password.
       subject: New email address added
     email_confirmation_instructions:
+      create_new_account: create a new account.
       email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
@@ -72,7 +73,7 @@ en:
       footer: This link will expire in %{confirmation_period}.
       header: "%{intro} Please click the link below or copy and paste the entire link
         into your browser."
-      link_text: create a new account.
+      link_text: Confirm email address
       request_with_diff_email: You can request your password using a different email
         address that is connected to your %{app_name} account.
       subject: Confirm your email

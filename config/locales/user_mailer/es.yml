@@ -65,6 +65,7 @@ es:
         direcciones de correo electrónico. Le recomendamos que también cambie su contraseña.
       subject: Nueva dirección de correo electrónico añadida
     email_confirmation_instructions:
+      create_new_account: crea una cuenta nueva.
       email_not_found: El correo electrónico no encontrado
       first_sentence:
         confirmed: "¿Desea cambiar su email?"
@@ -74,7 +75,7 @@ es:
       footer: Este enlace expira en %{confirmation_period}.
       header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador."
-      link_text: crea una cuenta nueva.
+      link_text: Confirmar el correo
       request_with_diff_email: Puedes solicitar tu contraseña usando una dirección
         de correo electrónico diferente que está conectada a su cuenta %{app_name}.
       subject: Confirme su email
