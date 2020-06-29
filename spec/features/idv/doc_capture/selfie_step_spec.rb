@@ -6,7 +6,6 @@ feature 'doc auth self image step' do
   include DocCaptureHelper
 
   before do
-    mock_acuant_selfie_ok
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
     complete_doc_capture_steps_before_capture_complete_step
@@ -28,7 +27,14 @@ feature 'doc auth self image step' do
   end
 
   it 'restarts doc auth upon failure' do
-    allow_any_instance_of(Acuant::Liveness).to receive(:call).and_return(nil)
+    AcuantMock::AcuantMockClient.mock_response!(
+      method: :post_selfie,
+      response: Acuant::Response.new(
+        success: false,
+        errors: [I18n.t('errors.doc_auth.selfie')],
+      ),
+    )
+
     attach_image
     click_idv_continue
 
