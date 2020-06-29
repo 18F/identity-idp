@@ -2,7 +2,7 @@ module Idv
   module Steps
     class SelfieStep < DocAuthBaseStep
       def call
-        selfie_response = acuant_client.post_selfie(instance_id: instance_id, image: image.read)
+        selfie_response = doc_auth_client.post_selfie(instance_id: instance_id, image: image.read)
         if selfie_response.success?
           return unless user_id_from_token
           CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])

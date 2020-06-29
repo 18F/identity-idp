@@ -15,7 +15,7 @@ module Idv
       private
 
       def fetch_doc_auth_results
-        acuant_client.get_results(
+        doc_auth_client.get_results(
           instance_id: doc_capture_record.acuant_token,
         )
       end

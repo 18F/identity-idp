@@ -1,6 +1,6 @@
 # rubocop:disable Lint/UnusedMethodArgument
-module AcuantMock
-  class AcuantMockClient
+module DocAuthMock
+  class DocAuthMockClient
     class << self
       attr_reader :response_mocks
       attr_accessor :last_uploaded_front_image

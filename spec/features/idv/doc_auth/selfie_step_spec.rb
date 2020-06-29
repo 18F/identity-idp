@@ -22,7 +22,7 @@ feature 'doc auth self image step' do
   end
 
   it 'restarts doc auth upon failure' do
-    AcuantMock::AcuantMockClient.mock_response!(
+    DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_selfie,
       response: Acuant::Response.new(
         success: false,

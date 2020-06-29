@@ -1,4 +1,4 @@
-module AcuantMock
+module DocAuthMock
   module Responses
     class CreateDocumentResponse < Acuant::Response
       attr_reader :instance_id

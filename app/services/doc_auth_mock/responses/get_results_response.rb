@@ -1,4 +1,4 @@
-module AcuantMock
+module DocAuthMock
   module Responses
     class GetResultsResponse < Acuant::Response
       attr_reader :pii_from_doc

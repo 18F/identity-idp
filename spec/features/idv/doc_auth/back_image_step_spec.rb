@@ -38,7 +38,7 @@ feature 'doc auth back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-    expect(AcuantMock::AcuantMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -54,7 +54,7 @@ feature 'doc auth back image step' do
   end
 
   it 'does not proceed to the next page if the image upload fails' do
-    AcuantMock::AcuantMockClient.mock_response!(
+    DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
       response: Acuant::Response.new(
         success: false,
@@ -82,7 +82,7 @@ feature 'doc auth back image step' do
 
   it 'renders a friendly error message if one is present on the response' do
     error_message = I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')
-    AcuantMock::AcuantMockClient.mock_response!(
+    DocAuthMock::DocAuthMockClient.mock_response!(
       method: :get_results,
       response: Acuant::Response.new(
         success: false,

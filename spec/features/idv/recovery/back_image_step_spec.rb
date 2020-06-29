@@ -41,7 +41,7 @@ feature 'recovery back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_recovery_ssn_step)
-    expect(AcuantMock::AcuantMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end

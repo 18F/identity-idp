@@ -13,7 +13,7 @@ module Idv
       private
 
       def fetch_doc_auth_results
-        get_results_response = acuant_client.get_results(instance_id: flow_session[:instance_id])
+        get_results_response = doc_auth_client.get_results(instance_id: flow_session[:instance_id])
         if get_results_response.success?
           mark_selfie_step_complete_unless_liveness_checking_is_enabled
           save_proofing_components
