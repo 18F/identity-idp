@@ -42,7 +42,6 @@ module OpenidConnect
     def confirm_user_has_aal3_mfa_if_requested
       return unless aal3_policy.aal3_required?
       return if mfa_policy.aal3_mfa_enabled?
-      # session[:needs_to_setup_piv_cac_after_sign_in] = true
       redirect_to two_factor_options_url
     end
 
