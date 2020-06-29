@@ -28,7 +28,14 @@ feature 'doc auth self image step' do
   end
 
   it 'restarts doc auth upon failure' do
-    allow_any_instance_of(Acuant::Liveness).to receive(:call).and_return(nil)
+    AcuantMock::AcuantMockClient.mock_response!(
+      method: :post_selfie,
+      response: Acuant::Response.new(
+        success: false,
+        errors: [I18n.t('errors.doc_auth.selfie')],
+      ),
+    )
+
     attach_image
     click_idv_continue
 

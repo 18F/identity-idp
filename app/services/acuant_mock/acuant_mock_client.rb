@@ -46,6 +46,8 @@ module AcuantMock
     end
 
     def post_selfie(instance_id:, image:)
+      return mocked_response_for_method(__method__) if method_mocked?(__method__)
+
       Acuant::Response.new(success: true)
     end
 
