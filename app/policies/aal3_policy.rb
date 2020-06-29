@@ -17,6 +17,10 @@ class AAL3Policy
     %w[webauthn piv_cac].include?(@session[:auth_method])
   end
 
+  def aal3_required_but_not_used?
+    aal3_required? && !aal3_used?
+  end
+
   def aal3_configured_but_not_used?
     aal3_required? &&
       @mfa_policy&.aal3_mfa_enabled? &&

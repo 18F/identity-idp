@@ -21,16 +21,12 @@ module OpenidConnect
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
-      return redirect_to(aal3_required_url) if aal3_required?
+      return redirect_to(aal3_required_url) if aal3_policy.aal3_required_but_not_used?
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
       handle_successful_handoff
     end
 
     private
-
-    def aal3_required?
-      aal3_policy.aal3_required? && !aal3_policy.aal3_used?
-    end
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
