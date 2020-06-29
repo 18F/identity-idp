@@ -1,4 +1,4 @@
-module AcuantMock
+module DocAuthMock
   class ResultResponseBuilder
     DEFAULT_PII_FROM_DOC = {
       first_name: 'FAKEY',
@@ -23,7 +23,7 @@ module AcuantMock
     end
 
     def call
-      AcuantMock::Responses::GetResultsResponse.new(
+      DocAuthMock::Responses::GetResultsResponse.new(
         success: success?,
         errors: errors,
         pii_from_doc: pii_from_doc,

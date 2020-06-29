@@ -35,7 +35,7 @@ feature 'doc auth front image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_back_image_step)
-    expect(AcuantMock::AcuantMockClient.last_uploaded_front_image).to eq(
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_front_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -89,7 +89,7 @@ feature 'doc auth front image step' do
   end
 
   it 'catches network connection errors on post_front_image' do
-    AcuantMock::AcuantMockClient.mock_response!(
+    DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_front_image,
       response: Acuant::Response.new(
         success: false,

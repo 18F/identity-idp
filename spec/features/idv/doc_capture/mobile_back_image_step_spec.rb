@@ -30,7 +30,7 @@ feature 'doc capture mobile back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    expect(AcuantMock::AcuantMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end

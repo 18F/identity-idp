@@ -26,7 +26,7 @@ feature 'doc auth mobile back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-    expect(AcuantMock::AcuantMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -42,7 +42,7 @@ feature 'doc auth mobile back image step' do
   end
 
   it 'does not proceed to the next page if the image upload fails' do
-    AcuantMock::AcuantMockClient.mock_response!(
+    DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
       response: Acuant::Response.new(
         success: false,

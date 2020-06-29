@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AcuantMock::ResultResponseBuilder do
+describe DocAuthMock::ResultResponseBuilder do
   describe '#call' do
     context 'with an image file' do
       it 'returns a successful response with the default PII' do

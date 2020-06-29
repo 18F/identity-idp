@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AcuantMock::AcuantMockClient do
+describe DocAuthMock::DocAuthMockClient do
   subject(:client) { described_class.new }
 
   it 'implements the same public methods as the real Acuant client' do
