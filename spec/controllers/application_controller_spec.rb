@@ -17,21 +17,21 @@ describe ApplicationController do
   end
 
   describe '#cache_issuer_in_cookie' do
-    issuer = 'urn:gov:gsa:openidconnect:sp:test_cookie'
     controller do
       def index
         render plain: 'Hello'
       end
+    end
 
-      def current_sp
-        ServiceProvider.new(issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie')
-      end
+    let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:current_sp).and_return(sp)
     end
 
     it 'sets headers to disable cache' do
       get :index
 
-      expect(cookies[:sp_issuer]).to eq(issuer)
+      expect(cookies[:sp_issuer]).to eq(sp.issuer)
     end
   end
 
