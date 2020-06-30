@@ -69,9 +69,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         context 'user does not have AAL3 enabled' do
-          it 'displays the no authentication option page' do
+          it 'redirects to the two factor options page' do
             action
-            expect(controller).to redirect_to aal3_required_url
+            expect(controller).to redirect_to two_factor_options_url
           end
         end
       end
