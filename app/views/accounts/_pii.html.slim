@@ -41,7 +41,7 @@
       .sm-col.sm-col-8.px1 = pii.phone
 
   .bg-gray-lighter.px2.py1.clearfix.fs-12p
-    - if pii.visible
+    - if !pii.obfuscated
       .col.col-12.sm-col-6
         = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
         = t('account.security.text')

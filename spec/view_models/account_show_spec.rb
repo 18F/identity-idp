@@ -110,8 +110,12 @@ describe AccountShow do
       context 'session is not expired' do
         it 'returns the accounts/password_reset partial' do
           user = User.new.decorate
+          birthday = Date.new(2000, 7, 27)
           profile_index = AccountShow.new(
-            decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
+            decrypted_pii: Pii::Attributes.new_from_hash(foo: 'bar', first_name: 'foo',
+                                                         last_name: 'bar',
+                                                         dob: birthday),
+            personal_key: '', decorated_user: user,
             locked_for_session: false
           )
 
@@ -173,7 +177,10 @@ describe AccountShow do
       it "returns the user's first name" do
         user = User.new
         first_name = 'John'
-        decrypted_pii = Pii::Attributes.new_from_json({ first_name: first_name }.to_json)
+        last_name = 'Doe'
+        birthday = Date.new(2000, 7, 27)
+        decrypted_pii = Pii::Attributes.new_from_hash(first_name: first_name, last_name: last_name,
+                                                      dob: birthday)
         profile_index = AccountShow.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
           locked_for_session: false

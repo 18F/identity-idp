@@ -175,7 +175,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   private
 
-  PiiAccessor = Struct.new(:visible,
+  PiiAccessor = Struct.new(:obfuscated,
                            :full_name,
                            :address1,
                            :address2,
@@ -188,10 +188,12 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def obfuscated_pii_accessor
     PiiAccessor.new(
-      visible: false,
+      obfuscated: false,
       full_name: '***** **********',
       address1: '*************************',
-      address2: '*************, ** *****',
+      address2: '*************',
+      state: '**',
+      zipcode: '*****',
       dob: '******* **, ****',
       phone: '**********',
     )
@@ -199,7 +201,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def decrypted_pii_accessor
     PiiAccessor.new(
-      visible: true,
+      obfuscated: true,
       full_name: "#{@decrypted_pii.first_name} #{@decrypted_pii.last_name}",
       address1: @decrypted_pii.address1,
       address2: @decrypted_pii.address2,
@@ -212,7 +214,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   def determine_pii
-    PiiAccessor.new unless show_pii_partial?
+    return PiiAccessor.new unless show_pii_partial?
     if decrypted_pii.present? && !@locked_for_session
       decrypted_pii_accessor
     else
