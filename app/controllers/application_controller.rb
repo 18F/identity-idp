@@ -30,6 +30,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
   before_action :disable_caching
+  before_action :cache_issuer_in_cookie
 
   skip_before_action :handle_two_factor_authentication
 
@@ -95,6 +96,15 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def disable_caching
     response.headers['Cache-Control'] = 'no-store'
     response.headers['Pragma'] = 'no-cache'
+  end
+
+  def cache_issuer_in_cookie
+    return unless current_sp
+
+    cookies[:sp_issuer] = {
+      value: current_sp.issuer,
+      expires: Figaro.env.issuer_cookie_expiration || 2.hours.from_now,
+    }
   end
 
   def redirect_on_timeout

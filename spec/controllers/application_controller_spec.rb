@@ -16,6 +16,25 @@ describe ApplicationController do
     end
   end
 
+  describe '#cache_issuer_in_cookie' do
+    issuer = 'urn:gov:gsa:openidconnect:sp:test_cookie'
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+
+      def current_sp
+        ServiceProvider.new(issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie')
+      end
+    end
+
+    it 'sets headers to disable cache' do
+      get :index
+
+      expect(cookies[:sp_issuer]).to eq(issuer)
+    end
+  end
+
   #
   # We don't test *every* exception we try to capture since we handle all such exceptions the same
   # way. This test doesn't ensure we have the right set of exceptions caught, but that, if caught,
