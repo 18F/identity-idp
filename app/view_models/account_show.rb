@@ -1,11 +1,12 @@
 class AccountShow # rubocop:disable Metrics/ClassLength
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session
+  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:, locked_for_session:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
     @locked_for_session = locked_for_session
+    @pii = determine_pii
   end
 
   def header_partial
@@ -66,8 +67,12 @@ class AccountShow # rubocop:disable Metrics/ClassLength
     'accounts/actions/delete_action_button'
   end
 
+  def show_pii_partial?
+    decrypted_pii.present? || decorated_user.identity_verified?
+  end
+
   def pii_partial
-    if decrypted_pii.present? || decorated_user.identity_verified?
+    if show_pii_partial?
       'accounts/pii'
     else
       'shared/null'
@@ -167,4 +172,51 @@ class AccountShow # rubocop:disable Metrics/ClassLength
   end
 
   delegate :recent_events, :recent_devices, :connected_apps, to: :decorated_user
+
+  private
+
+  PiiAccessor = Struct.new(:visible,
+                           :full_name,
+                           :address1,
+                           :address2,
+                           :city,
+                           :state,
+                           :zipcode,
+                           :dob,
+                           :phone,
+                           keyword_init: true)
+
+  def obfuscated_pii_accessor
+    PiiAccessor.new(
+      visible: false,
+      full_name: '***** **********',
+      address1: '*************************',
+      address2: '*************, ** *****',
+      dob: '******* **, ****',
+      phone: '**********',
+    )
+  end
+
+  def decrypted_pii_accessor
+    PiiAccessor.new(
+      visible: true,
+      full_name: "#{@decrypted_pii.first_name} #{@decrypted_pii.last_name}",
+      address1: @decrypted_pii.address1,
+      address2: @decrypted_pii.address2,
+      city: @decrypted_pii.city,
+      state: @decrypted_pii.state,
+      zipcode: @decrypted_pii.zipcode,
+      dob: @decrypted_pii.dob.to_date.to_formatted_s(:long),
+      phone: @decrypted_pii.phone,
+    )
+  end
+
+  def determine_pii
+    PiiAccessor.new unless show_pii_partial?
+    if decrypted_pii.present? && !@locked_for_session
+      decrypted_pii_accessor
+    else
+      obfuscated_pii_accessor
+    end
+  end
 end
