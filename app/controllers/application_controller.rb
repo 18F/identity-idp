@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
     cookies[:sp_issuer] = {
       value: current_sp.issuer,
-      expires: Figaro.env.issuer_cookie_expiration || 2.hours.from_now,
+      expires: Figaro.env.issuer_cookie_expiration,
     }
   end
 
