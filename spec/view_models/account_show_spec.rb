@@ -118,17 +118,6 @@ describe AccountShow do
           expect(profile_index.pii_partial).to eq 'accounts/pii'
         end
       end
-      context 'session is expired' do
-        it 'returns the expired PII partial' do
-          user = User.new.decorate
-          profile_index = AccountShow.new(
-            decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
-            locked_for_session: true
-          )
-
-          expect(profile_index.pii_partial).to eq 'accounts/pii_expired'
-        end
-      end
     end
 
     context 'AccountShow instance does not have decrypted_pii' do
