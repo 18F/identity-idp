@@ -31,12 +31,12 @@ gem 'net-sftp'
 gem 'newrelic_rpm'
 gem 'pg'
 gem 'phonelib'
-gem 'premailer-rails', '>= 1.10.3'
+gem 'premailer-rails', '>= 1.11.1'
 gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
 gem 'pry-doc'
 gem 'pry-rails'
-gem 'rack-attack'
-gem 'rack-cors', require: 'rack/cors'
+gem 'rack-attack', '>= 6.2.1'
+gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout'
 gem 'raise-if-root'
@@ -52,8 +52,8 @@ gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
-gem 'simple_form', '>= 5.0.1'
-gem 'sinatra', require: false
+gem 'simple_form', '>= 5.0.2'
+gem 'sinatra', '>= 2.0.7', require: false
 gem 'slim-rails', '>= 3.2.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
@@ -70,46 +70,46 @@ gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
 group :development do
-  gem 'better_errors'
+  gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
   gem 'bummr', require: false
-  gem 'derailed'
+  gem 'derailed', '>= 0.1.0'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
   gem 'overcommit', require: false
-  gem 'rack-mini-profiler', require: false
+  gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end
 
 group :development, :test do
   gem 'bullet', '>= 6.0.2'
-  gem 'i18n-tasks', '>= 0.9.29'
+  gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'psych'
   gem 'puma'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.0'
+  gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
   gem 'rubocop', '~> 0.72.0', require: false
-  gem 'rubocop-rails', require: false
+  gem 'rubocop-rails', '>= 2.3.2', require: false
   gem 'slim_lint'
 end
 
 group :test do
   gem 'axe-matchers', '~> 2.6.0'
-  gem 'capybara-screenshot'
-  gem 'capybara-selenium'
+  gem 'capybara-screenshot', '>= 1.0.23'
+  gem 'capybara-selenium', '>= 0.0.6'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_bot_rails', '>= 5.1.1'
+  gem 'factory_bot_rails', '>= 5.2.0'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
-  gem 'rack-test'
-  gem 'rack_session_access'
+  gem 'rack-test', '>= 1.1.0'
+  gem 'rack_session_access', '>= 0.2.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'

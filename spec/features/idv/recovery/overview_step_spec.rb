@@ -16,7 +16,6 @@ feature 'recovery overview step' do
   context 'button is disabled when JS is enabled', :js do
     before do
       sign_in_before_2fa(user)
-      mock_assure_id_ok
       complete_recovery_steps_before_overview_step(user)
     end
 
@@ -26,7 +25,6 @@ feature 'recovery overview step' do
   context 'button is clickable when JS is disabled' do
     before do
       sign_in_before_2fa(user)
-      mock_assure_id_ok
       complete_recovery_steps_before_overview_step(user)
     end
 

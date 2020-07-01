@@ -6,14 +6,18 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
-RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].nil?
+RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true
-  config.formatter = RSPEC_RUNNING_IN_PARALLEL ? :documentation : :progress
+  config.formatter = if ENV['CI'] || RSPEC_RUNNING_IN_PARALLEL
+                       :progress
+                     else
+                       :documentation
+                     end
 
   # allows you to run only the failures from the previous run:
   # rspec --only-failures

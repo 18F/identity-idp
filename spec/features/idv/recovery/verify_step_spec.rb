@@ -8,12 +8,11 @@ feature 'recovery verify step' do
   let(:user) { create(:user, :signed_up, :with_phone) }
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
-  let(:saved_pii) { DocAuthHelper::ACUANT_RESULTS_TO_PII.merge(ssn: good_ssn) }
+  let(:saved_pii) { DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(ssn: good_ssn) }
   let(:max_attempts) { idv_max_attempts }
   before do
     profile
     sign_in_before_2fa(user)
-    mock_assure_id_ok
   end
 
   it 'is on the correct page' do

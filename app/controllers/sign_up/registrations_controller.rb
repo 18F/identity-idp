@@ -13,7 +13,7 @@ module SignUp
     end
 
     def create
-      @register_user_email_form = RegisterUserEmailForm.new(validate_recaptcha)
+      @register_user_email_form = RegisterUserEmailForm.new(recaptcha_results: validate_recaptcha)
 
       result = @register_user_email_form.submit(permitted_params)
 

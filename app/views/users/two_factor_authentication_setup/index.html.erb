@@ -1,8 +1,12 @@
 <% title t('titles.two_factor_setup') %>
 
-<h1 class="h4 my0"><%= t('two_factor_authentication.two_factor_choice') %></h1>
+<% if @presenter.icon %>
+  <%= image_tag(asset_url(@presenter.icon), class: 'margin-bottom-3', alt: 'important alert icon') %>
+<% end %>
 
-<p class="mt-tiny"><%== t('two_factor_authentication.two_factor_choice_intro') %></p>
+<h1 class="h4 my0"><%= @presenter.heading %></h1>
+
+<p class="mt-tiny"><%== @presenter.intro %></p>
 
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off', role: 'form' },
@@ -21,7 +25,7 @@
             <span class="blue bold fs-20p"><%= option.label %></span>
             <div class="regular gray-dark fs-10p mt0 mb-tiny"><%= option.info %></div>
           </div>
-          <% if option.security_level %>
+          <% if option.security_level && @presenter.show_security_level? %>
             <span class="usa-tag float-right bg-info-dark"><%= option.security_level %></span>
           <% end %>
         <% end %>

@@ -1,7 +1,6 @@
 module Db
   module SpCost
     class SpCostSummary
-      # rubocop:disable Metrics/MethodLength
       def self.call(start, finish)
         params = {
           start: ActiveRecord::Base.connection.quote(start),
@@ -9,14 +8,14 @@ module Db
         }
 
         sql = format(<<~SQL, params)
-          SELECT issuer,ial,cost_type,COUNT(*)
-          FROM sp_costs
-          WHERE %{start} <= created_at and created_at <= %{finish}
-          GROUP BY issuer,ial,cost_type ORDER BY issuer,ial,cost_type
+          SELECT sp_costs.issuer,sp_costs.ial,cost_type,MAX(app_id) AS app_id,COUNT(*)
+          FROM sp_costs, service_providers
+          WHERE %{start} <= sp_costs.created_at and sp_costs.created_at <= %{finish} AND
+            sp_costs.issuer = service_providers.issuer
+          GROUP BY sp_costs.issuer,sp_costs.ial,cost_type ORDER BY issuer,ial,cost_type
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end
