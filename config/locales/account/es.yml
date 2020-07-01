@@ -71,7 +71,7 @@ es:
     re_verify:
       banner: Tu sesión ha expirado. Hemos ocultado la información de su perfil para
         proteger su privacidad.
-      footer: Verifique su identidad para ver la información de su perfil.
+      footer: Autentíquese nuevamente para ver la información de su perfil
     revoke_consent:
       link_title: Revocar consentimiento
       longer_description_html: Su información ya no se compartirá con %{service_provider}.
@@ -81,5 +81,5 @@ es:
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.
-    verify: Verificar
+    verify: Autenticar
     welcome: Bienvenido/a
