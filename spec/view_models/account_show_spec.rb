@@ -6,7 +6,8 @@ describe AccountShow do
       it 'returns the verified header partial' do
         user = User.new
         allow(user).to receive(:identity_verified?).and_return(true)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
+                                        locked_for_session: false)
 
         expect(profile_index.verified_account_badge_partial).to eq 'accounts/verified_account_badge'
       end
@@ -16,7 +17,8 @@ describe AccountShow do
       it 'returns the unverified header partial' do
         user = User.new
         allow(user).to receive(:identity_verified?).and_return(false)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
+                                        locked_for_session: false)
 
         expect(profile_index.verified_account_badge_partial).to eq 'shared/null'
       end
@@ -29,6 +31,7 @@ describe AccountShow do
         user = User.new
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: 'foo', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.personal_key_partial).to eq 'accounts/personal_key'
@@ -40,6 +43,7 @@ describe AccountShow do
         user = User.new
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.personal_key_partial).to eq 'shared/null'
@@ -54,6 +58,7 @@ describe AccountShow do
         allow(user).to receive(:password_reset_profile).and_return('profile')
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: 'foo', decorated_user: user,
+          locked_for_session: false
         )
 
         expect(profile_index.password_reset_partial).to eq 'accounts/password_reset'
@@ -66,6 +71,7 @@ describe AccountShow do
         allow(user).to receive(:password_reset_profile).and_return(nil)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.password_reset_partial).to eq 'shared/null'
@@ -80,6 +86,7 @@ describe AccountShow do
         allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: 'foo', decorated_user: user,
+          locked_for_session: false
         )
 
         expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_usps'
@@ -90,7 +97,8 @@ describe AccountShow do
       it 'returns the shared/null partial' do
         user = User.new.decorate
         allow(user).to receive(:pending_profile_requires_verification?).and_return(false)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
+                                        locked_for_session: false)
 
         expect(profile_index.pending_profile_partial).to eq 'shared/null'
       end
@@ -99,20 +107,28 @@ describe AccountShow do
 
   describe '#pii_partial' do
     context 'AccountShow instance has decrypted_pii' do
-      it 'returns the accounts/password_reset partial' do
-        user = User.new.decorate
-        profile_index = AccountShow.new(
-          decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user,
-        )
+      context 'session is not expired' do
+        it 'returns the accounts/password_reset partial' do
+          user = User.new.decorate
+          birthday = Date.new(2000, 7, 27)
+          profile_index = AccountShow.new(
+            decrypted_pii: Pii::Attributes.new_from_hash(foo: 'bar', first_name: 'foo',
+                                                         last_name: 'bar',
+                                                         dob: birthday),
+            personal_key: '', decorated_user: user,
+            locked_for_session: false
+          )
 
-        expect(profile_index.pii_partial).to eq 'accounts/pii'
+          expect(profile_index.pii_partial).to eq 'accounts/pii'
+        end
       end
     end
 
     context 'AccountShow instance does not have decrypted_pii' do
       it 'returns the shared/null partial' do
         user = User.new.decorate
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
+                                        locked_for_session: false)
 
         expect(profile_index.pii_partial).to eq 'shared/null'
       end
@@ -132,6 +148,7 @@ describe AccountShow do
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/disable_totp'
@@ -147,6 +164,7 @@ describe AccountShow do
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.totp_partial).to eq 'accounts/actions/enable_totp'
@@ -159,9 +177,13 @@ describe AccountShow do
       it "returns the user's first name" do
         user = User.new
         first_name = 'John'
-        decrypted_pii = Pii::Attributes.new_from_json({ first_name: first_name }.to_json)
+        last_name = 'Doe'
+        birthday = Date.new(2000, 7, 27)
+        decrypted_pii = Pii::Attributes.new_from_hash(first_name: first_name, last_name: last_name,
+                                                      dob: birthday)
         profile_index = AccountShow.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -175,6 +197,7 @@ describe AccountShow do
         email_address.update!(last_sign_in_at: 1.minute.from_now)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
+          locked_for_session: false
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
@@ -192,6 +215,7 @@ describe AccountShow do
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          locked_for_session: false
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -204,7 +228,8 @@ describe AccountShow do
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
+                                        locked_for_session: false)
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
       end
@@ -221,6 +246,7 @@ describe AccountShow do
         decrypted_pii: {},
         personal_key: '',
         decorated_user: user.reload.decorate,
+        locked_for_session: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_within(
@@ -237,6 +263,7 @@ describe AccountShow do
         decrypted_pii: {},
         personal_key: '',
         decorated_user: user.reload.decorate,
+        locked_for_session: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_nil

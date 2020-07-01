@@ -81,6 +81,7 @@ mx_timeout: '3'
 otp_valid_for: '10'
 password_max_attempts: '3'
 personal_key_retired: 'true'
+pii_lock_timeout_in_minutes: '30'
 pinpoint_sms_application_id:
 pinpoint_sms_credential_role_arn:
 pinpoint_sms_longcode_pool:

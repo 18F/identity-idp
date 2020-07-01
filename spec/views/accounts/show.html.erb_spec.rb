@@ -9,7 +9,8 @@ describe 'accounts/show.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :view_model,
-      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user),
+      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+                      locked_for_session: false),
     )
   end
 
@@ -42,7 +43,8 @@ describe 'accounts/show.html.erb' do
     before do
       assign(
         :view_model,
-        AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user),
+        AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+                        locked_for_session: false),
       )
     end
 
