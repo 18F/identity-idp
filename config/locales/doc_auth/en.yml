@@ -8,8 +8,6 @@ en:
       start_over: Start over
       take_picture: Take photo
       take_picture_retry: Retake photo
-      upload_picture: Upload photo
-      upload_picture_retry: Re-upload photo
       use_phone: Use your phone
     forms:
       address1: Address

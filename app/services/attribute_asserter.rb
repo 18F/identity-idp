@@ -23,17 +23,23 @@ class AttributeAsserter
     self.decrypted_pii = decrypted_pii
   end
 
+  # rubocop:disable Metrics/AbcSize
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
-    add_bundle(attrs) if user.active_profile.present? && ial2_or_ial2_strict_authn_context?
-    add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
+    add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
+    add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     user.asserted_attributes = attrs
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
   attr_accessor :user, :service_provider, :authn_request, :decrypted_pii
+
+  def ial_context
+    @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)
+  end
 
   def default_attrs
     {
@@ -106,14 +112,5 @@ class AttributeAsserter
 
   def ascii?
     bundle.include?(:ascii)
-  end
-
-  def ial2_service_provider?
-    service_provider.ial.to_i >= 2
-  end
-
-  def ial2_or_ial2_strict_authn_context?
-    ial2_authn_context? ||
-      (authn_context == Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF)
   end
 end

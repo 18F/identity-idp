@@ -36,7 +36,7 @@ shared_examples 'clearing and restarting idv' do
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.decorate.identity_verified?).to eq(false)
     expect(user.decorate.pending_profile?).to eq(true)
-    expect(usps_confirmation.entry[:address1]).to eq('1 Street')
+    expect(usps_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do

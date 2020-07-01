@@ -21,6 +21,7 @@ describe SendSignUpEmailConfirmation do
     subject { described_class.new(user) }
 
     it 'sends the user an email with a confirmation link and the request id' do
+      email_address.update!(confirmed_at: Time.zone.now)
       mail = double
       expect(mail).to receive(:deliver_later)
       expect(UserMailer). to receive(:email_confirmation_instructions).with(
@@ -32,6 +33,26 @@ describe SendSignUpEmailConfirmation do
       ).and_return(mail)
 
       subject.call(request_id: request_id, instructions: instructions)
+    end
+
+    context 'when resetting a password' do
+      it 'sends an email with a link to try another email if the current email is unconfirmed' do
+        mail = double
+        expect(mail).to receive(:deliver_later)
+        expect(UserMailer). to receive(:unconfirmed_email_instructions).with(
+          user,
+          email_address.email,
+          confirmation_token,
+          request_id: request_id,
+          instructions: instructions,
+        ).and_return(mail)
+
+        subject.call(
+          request_id: request_id,
+          instructions: instructions,
+          password_reset_requested: true,
+        )
+      end
     end
 
     it 'updates the confirmation values on the email address for the user' do

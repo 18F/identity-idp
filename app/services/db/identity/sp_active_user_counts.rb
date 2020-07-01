@@ -8,7 +8,8 @@ module Db
         }
         sql = format(<<~SQL, params)
           SELECT
-            issuer,
+            service_providers.issuer,
+            MAX(app_id) AS app_id,
             CAST(SUM(total_ial1_active) AS INTEGER) AS total_ial1_active,
             CAST(SUM(total_ial2_active) AS INTEGER) AS total_ial2_active
           FROM (
@@ -27,8 +28,9 @@ module Db
             FROM identities
             WHERE %{start} <= last_ial2_authenticated_at
             GROUP BY issuer ORDER BY issuer)
-          ) AS union_of_ial1_and_ial2_results
-          GROUP BY ISSUER ORDER BY issuer
+          ) AS union_of_ial1_and_ial2_results, service_providers
+          WHERE union_of_ial1_and_ial2_results.issuer = service_providers.issuer
+          GROUP BY service_providers.issuer ORDER BY service_providers.issuer
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end

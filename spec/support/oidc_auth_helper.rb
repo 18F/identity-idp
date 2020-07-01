@@ -21,6 +21,14 @@ module OidcAuthHelper
     oidc_path
   end
 
+  def visit_idp_from_ial1_aal3_oidc_sp(**args)
+    params = ial1_params args
+    include_aal3(params)
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
+  end
+
   def ial1_params(prompt: nil,
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
@@ -53,5 +61,10 @@ module OidcAuthHelper
     }
     ial2_params[:prompt] = prompt if prompt
     ial2_params
+  end
+
+  def include_aal3(params)
+    params[:acr_values] = "#{params[:acr_values]} " +
+                          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
   end
 end

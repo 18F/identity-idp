@@ -29,9 +29,9 @@ feature 'doc auth verify step' do
     click_link t('doc_auth.buttons.change_address')
 
     expect(page).to have_current_path(idv_address_path)
-    expect(page).to have_selector("input[value='1 Street']")
-    expect(page).to have_selector("input[value='New York']")
-    expect(page).to have_selector("input[value='11364']")
+    expect(page).to have_selector("input[value='1 FAKE RD']")
+    expect(page).to have_selector("input[value='GREAT FALLS']")
+    expect(page).to have_selector("input[value='59010']")
   end
 
   it 'proceeds to the ssn page if the user clicks change ssn' do
@@ -126,7 +126,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS +
-          [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
+          [DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
 
       sign_in_and_2fa_user
@@ -148,7 +148,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS -
-          [DocAuthHelper::ACUANT_RESULTS_TO_PII[:state_id_jurisdiction]],
+          [DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
 
       sign_in_and_2fa_user

@@ -1,71 +1,46 @@
 require 'rails_helper'
 
-shared_examples 'doc capture mobile back image step' do |simulate|
-  feature 'doc capture mobile back image step' do
-    include IdvStepHelper
-    include DocAuthHelper
-    include DocCaptureHelper
+feature 'doc capture mobile back image step' do
+  include IdvStepHelper
+  include DocAuthHelper
+  include DocCaptureHelper
 
-    before do
-      setup_acuant_simulator(enabled: simulate)
-      complete_doc_capture_steps_before_mobile_back_image_step
-      mock_assure_id_ok
-    end
-
-    it 'is on the correct page' do
-      expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
-      expect(page).to have_content(t('doc_auth.headings.take_pic_back'))
-    end
-
-    it 'proceeds to the next page with valid info and updates acuant token' do
-      expect(DocCapture.count).to eq(1)
-      expect(DocCapture.first.acuant_token).to_not be_present
-
-      attach_image
-      click_idv_continue
-
-      expect(DocCapture.first.acuant_token).to be_present
-      expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    end
-
-    it 'allows the use of a base64 encoded data url representation of the image' do
-      unless simulate
-        assure_id = Idv::Acuant::AssureId.new
-        expect(Idv::Acuant::AssureId).to receive(:new).and_return(assure_id)
-        expect(assure_id).to receive(:post_back_image).
-          with(doc_auth_image_data_url_data).
-          and_return([true, ''])
-      end
-
-      attach_image_data_url
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    end
-
-    it 'does not proceed to the next page with invalid info' do
-      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
-        and_return([false, ''])
-      attach_image
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_capture_doc_capture_complete_step) if simulate
-    end
-
-    it 'does not proceed to the next page with result=2' do
-      allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
-        and_return([true, assure_id_results_with_result_2])
-      attach_image
-      click_idv_continue
-
-      unless simulate
-        expect(page).to have_current_path(idv_capture_doc_step_path(step: :mobile_front_image))
-      end
-    end
+  before do
+    complete_doc_capture_steps_before_mobile_back_image_step
   end
-end
 
-feature 'doc capture back image' do
-  it_behaves_like 'doc capture mobile back image step', false
-  it_behaves_like 'doc capture mobile back image step', true
+  it 'is on the correct page' do
+    expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+    expect(page).to have_content(t('doc_auth.headings.take_pic_back'))
+  end
+
+  it 'proceeds to the next page with valid info and updates acuant token' do
+    expect(DocCapture.count).to eq(1)
+    expect(DocCapture.first.acuant_token).to_not be_present
+
+    attach_image
+    click_idv_continue
+
+    expect(DocCapture.first.acuant_token).to be_present
+    expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
+  end
+
+  it 'allows the use of a base64 encoded data url representation of the image' do
+    attach_image_data_url
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
+    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+      doc_auth_image_data_url_data,
+    )
+  end
+
+  it 'does not proceed to the next page with invalid info' do
+    mock_general_doc_auth_client_error(:post_back_image)
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+  end
 end

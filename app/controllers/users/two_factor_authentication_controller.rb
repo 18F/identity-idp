@@ -23,6 +23,43 @@ module Users
 
     private
 
+    def aal3_requirement_redirect
+      aal3_url = aal3_redirect_url
+      if aal3_url
+        redirect_to aal3_url
+      elsif aal3_policy.aal3_required? && user_fully_authenticated?
+        redirect_to two_factor_options_url
+      end
+    end
+
+    def non_phone_redirect
+      url = redirect_url
+      redirect_to url if url.present?
+    end
+
+    def phone_redirect
+      return unless phone_enabled?
+      validate_otp_delivery_preference_and_send_code
+      true
+    end
+
+    def backup_code_redirect
+      return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
+      redirect_to login_two_factor_backup_code_url
+    end
+
+    def redirect_on_nothing_enabled
+      redirect_to two_factor_options_url
+    end
+
+    def aal3_redirect_url
+      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+        login_two_factor_piv_cac_url
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+        login_two_factor_webauthn_url
+      end
+    end
+
     def phone_enabled?
       phone_configuration&.mfa_enabled?
     end
@@ -197,46 +234,9 @@ module Users
                                                 phone_confirmed: authentication_context?)
     end
 
-    def redirect_on_nothing_enabled
-      redirect_to two_factor_options_url
-    end
-
-    def phone_redirect
-      return unless phone_enabled?
-      validate_otp_delivery_preference_and_send_code
-      true
-    end
-
     def redirect_url
       if TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled? # rubocop:disable Style/GuardClause, Metrics/LineLength
         login_two_factor_authenticator_url
-      end
-    end
-
-    def backup_code_redirect
-      return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-      redirect_to login_two_factor_backup_code_url
-    end
-
-    def non_phone_redirect
-      url = redirect_url
-      redirect_to url if url.present?
-    end
-
-    def aal3_requirement_redirect
-      aal3_url = aal3_redirect_url
-      if aal3_url
-        redirect_to aal3_url
-      elsif AAL3Policy.new(session).aal3_required?
-        redirect_to aal3_required_url
-      end
-    end
-
-    def aal3_redirect_url
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
-        login_two_factor_piv_cac_url
-      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url
       end
     end
   end
