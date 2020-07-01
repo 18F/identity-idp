@@ -25,7 +25,7 @@ describe ApplicationController do
 
     let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
     before do
-      allow_any_instance_of(ApplicationController).to receive(:current_sp).and_return(sp)
+      allow(controller).to receive(:current_sp).and_return(sp)
     end
 
     it 'sets headers to disable cache' do
