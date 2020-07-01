@@ -188,7 +188,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def obfuscated_pii_accessor
     PiiAccessor.new(
-      obfuscated: false,
+      obfuscated: true,
       full_name: '***** **********',
       address1: '*************************',
       address2: '*************',
@@ -201,7 +201,7 @@ class AccountShow # rubocop:disable Metrics/ClassLength
 
   def decrypted_pii_accessor
     PiiAccessor.new(
-      obfuscated: true,
+      obfuscated: false,
       full_name: "#{@decrypted_pii.first_name} #{@decrypted_pii.last_name}",
       address1: @decrypted_pii.address1,
       address2: @decrypted_pii.address2,

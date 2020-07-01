@@ -50,9 +50,9 @@
     - elsif locked_for_session
       .col.col-12.sm-col-6
         = t('account.re_verify.footer')
-        .col.mx6
-          .usa-button.usa-button--outline.usa-button--small.col-md.grid-offset-4
-            = link_to t('account.verify'), '/reauthn'
+      .col.mx6
+        .usa-button.usa-button--outline.usa-button--small.col-md.grid-offset-4
+          = link_to t('account.verify'), '/reauthn'
     - else
       .col.col-12.sm-col-6
         = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
