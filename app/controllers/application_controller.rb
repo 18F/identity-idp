@@ -99,12 +99,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def cache_issuer_in_cookie
-    return unless current_sp
-
-    cookies[:sp_issuer] = {
-      value: current_sp.issuer,
-      expires: Figaro.env.issuer_cookie_expiration,
-    }
+    cookies[:sp_issuer] = if current_sp.nil?
+                            nil
+                          else
+                            {
+                              value: current_sp.issuer,
+                              expires: Figaro.env.issuer_cookie_expiration,
+                            }
+                          end
   end
 
   def redirect_on_timeout

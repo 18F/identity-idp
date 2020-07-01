@@ -23,15 +23,29 @@ describe ApplicationController do
       end
     end
 
-    let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
-    before do
-      allow(controller).to receive(:current_sp).and_return(sp)
+    context 'with a current_sp' do
+      let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
+      before do
+        allow(controller).to receive(:current_sp).and_return(sp)
+      end
+
+      it 'sets sets the cookie sp_issuer' do
+        get :index
+
+        expect(cookies[:sp_issuer]).to eq(sp.issuer)
+      end
     end
 
-    it 'sets headers to disable cache' do
-      get :index
+    context 'without a current_sp' do
+      before do
+        cookies[:sp_issuer] = 'urn:gov:gsa:openidconnect:sp:test_cookie'
+      end
 
-      expect(cookies[:sp_issuer]).to eq(sp.issuer)
+      it 'clears the cookie sp_issuer' do
+        get :index
+
+        expect(cookies[:sp_issuer]).to be_nil
+      end
     end
   end
 
