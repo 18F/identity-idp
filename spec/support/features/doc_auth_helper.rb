@@ -1,38 +1,4 @@
 module DocAuthHelper
-  ACUANT_RESULTS = {
-    'Result' => 1,
-    'Fields' => [
-      { 'Name' => 'First Name', 'Value' => 'Jane' },
-      { 'Name' => 'Middle Name', 'Value' => 'Ann' },
-      { 'Name' => 'Surname', 'Value' => 'Doe' },
-      { 'Name' => 'Address Line 1', 'Value' => '1 Street' },
-      { 'Name' => 'Address City', 'Value' => 'New York' },
-      { 'Name' => 'Address State', 'Value' => 'NY' },
-      { 'Name' => 'Address Postal Code', 'Value' => '11364' },
-      { 'Name' => 'Issuing State Code', 'Value' => 'NY' },
-      { 'Name' => 'Document Number', 'Value' => '123ABC' },
-      { 'Name' => 'Birth Date', 'Value' => '/Date(' +
-        (Date.strptime('10-05-1938', '%m-%d-%Y').strftime('%Q').to_i + 43_200_000).to_s + ')/' },
-    ],
-  }.freeze
-
-  ACUANT_RESULTS_TO_PII =
-    {
-      first_name: 'Jane',
-      middle_name: 'Ann',
-      last_name: 'Doe',
-      address1: '1 Street',
-      city: 'New York',
-      state: 'NY',
-      zipcode: '11364',
-      dob: '10/05/1938',
-      ssn: '123',
-      phone: '456',
-      state_id_jurisdiction: 'NY',
-      state_id_number: '123ABC',
-      state_id_type: 'drivers_license',
-    }.freeze
-
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
     Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
@@ -146,14 +112,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_back_image_step
     complete_doc_auth_steps_before_front_image_step
-    mock_assure_id_ok
     attach_image
     click_idv_continue
   end
 
   def complete_doc_auth_steps_before_mobile_back_image_step
     complete_doc_auth_steps_before_mobile_front_image_step
-    mock_assure_id_ok
     attach_image
     click_idv_continue
   end
@@ -205,33 +169,14 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def mock_assure_id_ok
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:create_document).
-      and_return([true, '123'])
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_front_image).
-      and_return([true, ''])
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:post_back_image).
-      and_return([true, ''])
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:results).
-      and_return([true, ACUANT_RESULTS.dup])
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:face_image).and_return([true, ''])
-    allow_any_instance_of(Idv::Acuant::FacialMatch).to receive(:call).
-      and_return([true, { 'FacialMatch' => 1 }])
-  end
-
-  def mock_assure_id_fail
-    allow_any_instance_of(Idv::Acuant::AssureId).to receive(:create_document).
-      and_return([false, ''])
-    allow_any_instance_of(Idv::Acuant::FakeAssureId).to receive(:create_document).
-      and_return([false, ''])
-  end
-
-  def setup_acuant_simulator(enabled:)
-    allow(Figaro.env).to receive(:acuant_simulator).and_return(enabled ? 'true' : 'false')
-  end
-
-  def enable_test_credentials
-    allow(FeatureManagement).to receive(:allow_doc_auth_test_credentials?).and_return(true)
+  def mock_general_doc_auth_client_error(method)
+    DocAuthMock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: Acuant::Response.new(
+        success: false,
+        errors: [I18n.t('errors.doc_auth.general_error')],
+      ),
+    )
   end
 
   def attach_image
@@ -248,14 +193,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def doc_auth_image_data_url_data
     Base64.decode64(doc_auth_image_data_url.split(',').last)
-  end
-
-  def assure_id_results_with_result_2(disposition = '')
-    result = DocAuthHelper::ACUANT_RESULTS.dup
-    result['Result'] = 2
-    result['Alerts'] = [{ 'Actions' => 'Check the document',
-                          'Disposition' => disposition }]
-    result
   end
 
   def fill_out_address_form_ok

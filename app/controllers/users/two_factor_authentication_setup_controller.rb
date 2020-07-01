@@ -34,7 +34,9 @@ module Users
     end
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(user_agent: request.user_agent)
+      TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
+                                    user: current_user,
+                                    session: session)
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -62,8 +64,13 @@ module Users
     end
 
     def confirm_user_needs_2fa_setup
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
+      return unless mfa_policy.two_factor_enabled?
+      return if aal3_mfa_setup_required?
       redirect_to after_mfa_setup_path
+    end
+
+    def aal3_mfa_setup_required?
+      aal3_policy.aal3_required? && !mfa_policy.aal3_mfa_enabled?
     end
 
     def two_factor_options_form_params

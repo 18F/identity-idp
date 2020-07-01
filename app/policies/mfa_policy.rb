@@ -12,6 +12,11 @@ class MfaPolicy
     mfa_user.two_factor_configurations.any?(&:mfa_enabled?)
   end
 
+  def aal3_mfa_enabled?
+    mfa_user.piv_cac_configurations.present? ||
+      mfa_user.webauthn_configurations.present?
+  end
+
   def multiple_factors_enabled?
     mfa_user.enabled_mfa_methods_count > 1
   end

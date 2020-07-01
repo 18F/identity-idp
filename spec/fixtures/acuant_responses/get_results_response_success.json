@@ -1,0 +1,1834 @@
+{
+  "Alerts": [
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was not found",
+      "FieldReferences": [],
+      "Id": "4add9651-27ed-40a2-90eb-7fa46a694156",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "b684bbda-bed3-4ffa-9dd9-99d9711830ea"
+      ],
+      "Result": 2
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was not found",
+      "FieldReferences": [],
+      "Id": "ad33e5c9-fc0c-413f-8c9f-02091f40a4c6",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "44cb9c08-71d1-4ba6-ab11-9707f39da5a2"
+      ],
+      "Result": 2
+    },
+    {
+      "Actions": "Verify that the data extracted from the 2D barcode appears to be correct and matches the data present on the front of the document.",
+      "DataFieldReferences": [],
+      "Description": "Checked the contents of the two-dimensional barcode on the document.",
+      "Disposition": "The 2D barcode is formatted correctly",
+      "FieldReferences": [],
+      "Id": "70f4d854-a948-4a57-8108-54dc8a92efae",
+      "ImageReferences": [],
+      "Information": "This authentication will fail if a 2D barcode is read but cannot be correctly decoded.  This failure could be caused by if the 2D barcode was incorrectly encoded, either inadvertently due to a manufacturing problem or intentionally.",
+      "Key": "2D Barcode Content",
+      "Name": "2D Barcode Content",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The 2D barcode on the could not be read or may be missing.  Confirm that it is present, is not obstructed with any foreign material (e.g., dirt, labels, stickers), and is not excessively cracked or worn.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the two-dimensional barcode on the document was read successfully.",
+      "Disposition": "The 2D barcode was read successfully",
+      "FieldReferences": [],
+      "Id": "bf9cb1c4-1a74-430f-9027-ea1cb1bbeb76",
+      "ImageReferences": [],
+      "Information": "This authentication will fail if a 2D barcode is expected but could not be read successfully.  This could be caused by a 2D barcode that is dirty, in poor condition, or is covered by a foreign material such as a sticker.  It is also possible that the 2D barcode could be invalid or a poor quality replication of an authentic barcode.",
+      "Key": "2D Barcode Read",
+      "Name": "2D Barcode Read",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The birth date field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [
+        "0b7bda63-8cb6-4f7c-bca2-bcee8d90c9ba",
+        "c66ef71d-0eee-456b-a5c4-935a193287f8"
+      ],
+      "Description": "Compare the machine-readable birth date field to the human-readable birth date field.",
+      "Disposition": "The birth dates match",
+      "FieldReferences": [],
+      "Id": "c90a4ad0-73e6-4f78-a4b2-5d19836ec6a6",
+      "ImageReferences": [],
+      "Information": "The birth date is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Birth Date Crosscheck",
+      "Name": "Birth Date Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The birth date on the document may have been misread.  Confirm that it is legible.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the birth date is valid.",
+      "Disposition": "The birth date is valid",
+      "FieldReferences": [
+        "1c36b00c-d0d6-4d70-b5c2-0b1d71b09c30"
+      ],
+      "Id": "5ff20f0e-9640-4928-a5c0-1bb14b2cc8ea",
+      "ImageReferences": [],
+      "Information": "Verified that the birth date is valid, in the expected format, and occurs on or before the current date and not outside a reasonable range.",
+      "Key": "Birth Date Valid",
+      "Name": "Birth Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "This test may fail if a document cannot be successfully classified as a supported document type.  This may occur if the document is fraudulent as some fraudulent documents differ so much from authentic documents that they will not be recognized as that type of document.  This may also occur if a valid document is significantly worn or damaged or if the document is of a new or different type that is not yet supported by the library.  The document should be examined manually.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the type of document is supported and is able to be fully authenticated.",
+      "Disposition": "The document type is supported",
+      "FieldReferences": [],
+      "Id": "5612917d-376c-488b-bfa3-be4d23fb7fa3",
+      "ImageReferences": [],
+      "Information": "Verified that the document is recognized as a supported document type and that the type of document can be fully authenticated.",
+      "Key": "Document Classification",
+      "Name": "Document Classification",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Several crosschecks are failing. Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [],
+      "Description": "Compared the machine-readable fields to the human-readable fields.",
+      "Disposition": "There are not a large number of differences between electronic and human-readable data sources",
+      "FieldReferences": [],
+      "Id": "2dae7070-3301-4d51-b525-bf62ab78fac3",
+      "ImageReferences": [],
+      "Information": "There are multiple sources of data on the document. This test verifies that there are not widespread differences in data between data sources, which can indicate a fake or tampered document.",
+      "Key": "Document Crosscheck Aggregation",
+      "Name": "Document Crosscheck Aggregation",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The expiration date on the document may have been misread.  Confirm that it is legible and occurs on or after the current date.  Also confirm that the current date and time of the host computer is correctly set.",
+      "DataFieldReferences": [],
+      "Description": "Checked if the document is expired.",
+      "Disposition": "The document has not expired",
+      "FieldReferences": [
+        "f2b99962-ba02-47a5-afb1-398b5c413499"
+      ],
+      "Id": "ff9c8131-aa30-48ef-8eb5-a9d0749d82d0",
+      "ImageReferences": [],
+      "Information": "Verified that the document expiration date does not occur before the current date.",
+      "Key": "Document Expired",
+      "Name": "Document Expired",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The document number field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstructions.",
+      "DataFieldReferences": [
+        "4c2fd852-4026-4118-8cda-f581173472bf",
+        "b799881f-7af8-4397-8b5b-953abc9b3677"
+      ],
+      "Description": "Compare the machine-readable document number field to the human-readable document number field.",
+      "Disposition": "The document numbers match",
+      "FieldReferences": [],
+      "Id": "c681ec7a-4f73-40c4-a07d-df3cac8acdaf",
+      "ImageReferences": [],
+      "Information": "The document number is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Document Number Crosscheck",
+      "Name": "Document Number Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The expiration date field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [
+        "ea83593a-a4f3-4f45-8a7f-5284fda1cf00",
+        "fdeb031a-4a54-4261-9784-9de902cea941"
+      ],
+      "Description": "Compare the machine-readable expiration date field to the human-readable expiration date field.",
+      "Disposition": "The expiration dates match",
+      "FieldReferences": [],
+      "Id": "4aa2074e-2970-45ac-ba24-4d3c2081214a",
+      "ImageReferences": [],
+      "Information": "The expiration date is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Expiration Date Crosscheck",
+      "Name": "Expiration Date Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The expiration date on the document may have been misread.  Confirm that it is legible and occurs after the issue and birth dates.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the expiration date is valid.",
+      "Disposition": "The expiration date is valid",
+      "FieldReferences": [
+        "f2b99962-ba02-47a5-afb1-398b5c413499"
+      ],
+      "Id": "e616959e-689d-4d4f-afd4-cf4a72ab5783",
+      "ImageReferences": [],
+      "Information": "Verified that the document expiration date is valid, in the expected format, and occurs after the issue and birth dates.",
+      "Key": "Expiration Date Valid",
+      "Name": "Expiration Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The given name and/or surname fields on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstructions.",
+      "DataFieldReferences": [
+        "536f7296-64b2-48fa-a52b-2a6b01cb6d39",
+        "b57ec4fb-9002-4196-a1f5-82ef1afc4113"
+      ],
+      "Description": "Compare the machine-readable full name field to the human-readable full name field.",
+      "Disposition": "The full names match",
+      "FieldReferences": [],
+      "Id": "923d2ac1-a74a-4ad3-8fd7-346e4f41a3bd",
+      "ImageReferences": [],
+      "Information": "The full name is composed of the given name and the surname.  These items are present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Full Name Crosscheck",
+      "Name": "Full Name Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Examine the data regions of the document for any visible indications that the data has been digitally manipulated. Request a new image, if possible, to repeat the test.",
+      "DataFieldReferences": [],
+      "Description": "Examines a document image for evidence of tampering or digital manipulation.",
+      "Disposition": "No evidence of tampering or digital manipulation was detected.",
+      "FieldReferences": [],
+      "Id": "0324313a-b342-448d-b182-5c1e546d4d16",
+      "ImageReferences": [],
+      "Information": "Tested the document image for evidence of tampering or digital manipulation.",
+      "Key": "Image Tampering Check",
+      "Name": "Image Tampering Check",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The issue date field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [
+        "add7cebc-f175-4494-9dbd-8cd48d908ee5",
+        "a85ab0b5-e33d-4cfc-9084-6513108a1036"
+      ],
+      "Description": "Compare the machine-readable issue date field to the human-readable issue date field.",
+      "Disposition": "The issue dates match",
+      "FieldReferences": [],
+      "Id": "655d9942-5424-4dc4-90b8-3bcebdadba2b",
+      "ImageReferences": [],
+      "Information": "The issue date is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Issue Date Crosscheck",
+      "Name": "Issue Date Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The issue date on the document may have been misread.  Confirm that all of the dates are legible, the issue date occurs on or before the current date, and is before the expiration date.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the issue date is valid.",
+      "Disposition": "The issue date is valid",
+      "FieldReferences": [
+        "cf88e817-c6e9-464f-8d8b-c5bf0e4d742d"
+      ],
+      "Id": "11c61d82-1373-4133-8fe5-dc27f65c4c13",
+      "ImageReferences": [],
+      "Information": "Verified that the document issue date is valid, in the expected format, does not occur in the future, does not occur before the date of birth, and does not occur after the expiration date.",
+      "Key": "Issue Date Valid",
+      "Name": "Issue Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The sex field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [
+        "d1b20071-682b-46fd-9fa3-6d15e1585300",
+        "193695a9-946d-428d-9d1d-82fa2737414f"
+      ],
+      "Description": "Compare the machine-readable sex field to the human-readable sex field.",
+      "Disposition": "The sexes match",
+      "FieldReferences": [],
+      "Id": "685459ce-c0bf-4c5f-a84b-3fcfea703b7b",
+      "ImageReferences": [],
+      "Information": "The sex field is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Sex Crosscheck",
+      "Name": "Sex Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "a7bc6bc6-711d-4668-9bb0-1409bd22dc2d",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "11eeb3c3-8c92-4c91-bdb1-28cf2631f278"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "0ff4615a-37ab-4796-9439-a87972940bb6",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "bdab7938-b938-4248-b881-ff01f4f18f10"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "22f10d02-5910-47ab-aa43-4eae89f3a4ed",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "51bf3805-653c-4445-859f-2b96e28aeb0a"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "48363ef5-dfbf-4062-ad70-a72fa62c0ffb",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "216177ee-7232-49f2-9608-b991f4c1b255"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "fce7eb32-2adb-4f5c-b895-02250cde4802",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "dfeb1e30-d410-402b-b3d7-dbe2d0f70e53"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "61fccc48-c232-49a9-a37b-2826f66b13b0",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "c6a2c733-3ee7-47d9-aff6-6f158731a3a2"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "c680b1b1-7447-43af-b0c4-6011c48d65f9",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "afbf1d5a-b510-4ca3-8f94-9e302d5f9dbc"
+      ],
+      "Result": 1
+    }
+  ],
+  "AuthenticationSensitivity": 0,
+  "Biographic": {
+    "Age": 36,
+    "BirthDate": "/Date(449625600000)/",
+    "ExpirationDate": "/Date(1666569600000)/",
+    "FullName": "JANE DOE",
+    "Gender": 2,
+    "Photo": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Field/Image?key=Photo"
+  },
+  "Classification": {
+    "ClassificationDetails": {
+      "Back": {
+        "Class": 4,
+        "ClassCode": null,
+        "ClassName": "Identification Card",
+        "CountryCode": "USA",
+        "GeographicRegions": [
+          "NorthAmerica"
+        ],
+        "Id": "a77a279a-e1cf-4cb9-acd1-aacf4390db68",
+        "IsGeneric": false,
+        "Issue": "2014",
+        "IssueType": "Back",
+        "IssuerCode": "ND",
+        "IssuerName": "North Dakota",
+        "IssuerType": 2,
+        "KeesingCode": null,
+        "Name": "North Dakota (ND) Back",
+        "Size": 1,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      },
+      "Front": {
+        "Class": 4,
+        "ClassCode": null,
+        "ClassName": "Identification Card",
+        "CountryCode": "USA",
+        "GeographicRegions": [
+          "NorthAmerica"
+        ],
+        "Id": "1db1d91b-4cb1-4d77-958d-1707eb0c7c42",
+        "IsGeneric": false,
+        "Issue": "2014",
+        "IssueType": "Non-Driver Identification Card",
+        "IssuerCode": "ND",
+        "IssuerName": "North Dakota",
+        "IssuerType": 2,
+        "KeesingCode": null,
+        "Name": "North Dakota (ND) Non-Driver Identification Card",
+        "Size": 1,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      }
+    },
+    "Mode": 0,
+    "OrientationChanged": false,
+    "PresentationChanged": false,
+    "Type": {
+      "Class": 4,
+      "ClassCode": null,
+      "ClassName": "Identification Card",
+      "CountryCode": "USA",
+      "GeographicRegions": [
+        "NorthAmerica"
+      ],
+      "Id": "1db1d91b-4cb1-4d77-958d-1707eb0c7c42",
+      "IsGeneric": false,
+      "Issue": "2014",
+      "IssueType": "Non-Driver Identification Card",
+      "IssuerCode": "ND",
+      "IssuerName": "North Dakota",
+      "IssuerType": 2,
+      "KeesingCode": null,
+      "Name": "North Dakota (ND) Non-Driver Identification Card",
+      "Size": 1,
+      "SupportedImages": [
+        {
+          "Light": 0,
+          "Side": 0
+        },
+        {
+          "Light": 1,
+          "Side": 0
+        },
+        {
+          "Light": 2,
+          "Side": 0
+        },
+        {
+          "Light": 0,
+          "Side": 1
+        },
+        {
+          "Light": 1,
+          "Side": 1
+        },
+        {
+          "Light": 2,
+          "Side": 1
+        }
+      ]
+    }
+  },
+  "DataFields": [
+    {
+      "DataSource": 1,
+      "Description": "Raw data extracted from the 1D barcode of the document",
+      "Id": "5bf10958-9025-48f6-9e28-8eb4068ee45c",
+      "IsImage": false,
+      "Key": "1D Barcode",
+      "Name": "1D Barcode",
+      "RegionOfInterest": {
+        "height": 486,
+        "width": 152,
+        "x": 3,
+        "y": 186
+      },
+      "RegionReference": "cc56bfc3-f838-4e90-aba8-61cecc6092e5",
+      "Reliability": 1,
+      "Type": "string",
+      "Value": "0340078165114232"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's legal, residence, or mailing address",
+      "Id": "2116037e-9e9d-4e82-8ad7-d3cedbd63e6e",
+      "IsImage": false,
+      "Key": "2D Address",
+      "Name": "Address",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "1000 E AVENUE EBISMARCK, ND 58501"
+    },
+    {
+      "DataSource": 2,
+      "Description": "City of the person's legal, residence, or mailing address",
+      "Id": "f4beefb6-4355-4658-b9e9-05145af35ab9",
+      "IsImage": false,
+      "Key": "2D Address City",
+      "Name": "Address City",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "BISMARCK"
+    },
+    {
+      "DataSource": 2,
+      "Description": "First address line of the person's legal, residence, or mailing address",
+      "Id": "36a794d9-a6b4-415f-9245-2a669e939a84",
+      "IsImage": false,
+      "Key": "2D Address Line 1",
+      "Name": "Address Line 1",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "1000 E AVENUE E"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Postal code of the person's address",
+      "Id": "208d17a8-6056-4ccf-b89d-b904c27e50c1",
+      "IsImage": false,
+      "Key": "2D Address Postal Code",
+      "Name": "Address Postal Code",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "58501"
+    },
+    {
+      "DataSource": 2,
+      "Description": "State of the person's legal, residence, or mailing address",
+      "Id": "7aea3bca-a2c0-482f-9e1b-5a4037a7e326",
+      "IsImage": false,
+      "Key": "2D Address State",
+      "Name": "Address State",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "ND"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's date of birth",
+      "Id": "0b7bda63-8cb6-4f7c-bca2-bcee8d90c9ba",
+      "IsImage": false,
+      "Key": "2D Birth Date",
+      "Name": "Birth Date",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "datetime",
+      "Value": "/Date(449625600000)/"
+    },
+    {
+      "DataSource": 2,
+      "Description": "A 16-digit document discriminator code that uniquely identifies where and when a U.S. or Canadian ID was issued",
+      "Id": "2151bee6-4688-4b6b-bb83-08cf2ee5be2a",
+      "IsImage": false,
+      "Key": "2D DD Number",
+      "Name": "DD Number",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "8DOE841165DJ52224JE67NYZ"
+    },
+    {
+      "DataSource": 2,
+      "Description": "A number that identifies a document",
+      "Id": "4c2fd852-4026-4118-8cda-f581173472bf",
+      "IsImage": false,
+      "Key": "2D Document Number",
+      "Name": "Document Number",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "DOE-84-1165"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Date that the document will expire",
+      "Id": "ea83593a-a4f3-4f45-8a7f-5284fda1cf00",
+      "IsImage": false,
+      "Key": "2D Expiration Date",
+      "Name": "Expiration Date",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "datetime",
+      "Value": "/Date(1666569600000)/"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's eye color",
+      "Id": "9e68c7b1-b0d9-4e07-9b74-62b7abd52e38",
+      "IsImage": false,
+      "Key": "2D Eye Color",
+      "Name": "Eye Color",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "BROWN"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's first name",
+      "Id": "635d7d60-e7f2-4860-b8f6-1c56ae664a18",
+      "IsImage": false,
+      "Key": "2D First Name",
+      "Name": "First Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "JANE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "536f7296-64b2-48fa-a52b-2a6b01cb6d39",
+      "IsImage": false,
+      "Key": "2D Full Name",
+      "Name": "Full Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "JANE DOE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's given name",
+      "Id": "74962a67-44f9-402b-b750-c984a9b55180",
+      "IsImage": false,
+      "Key": "2D Given Name",
+      "Name": "Given Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "JANE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's height ",
+      "Id": "e3e13977-2d12-4538-9542-5b2f157f3ab3",
+      "IsImage": false,
+      "Key": "2D Height",
+      "Name": "Height",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "5' 7\""
+    },
+    {
+      "DataSource": 2,
+      "Description": "Date that the document was issued",
+      "Id": "add7cebc-f175-4494-9dbd-8cd48d908ee5",
+      "IsImage": false,
+      "Key": "2D Issue Date",
+      "Name": "Issue Date",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "datetime",
+      "Value": "/Date(1414108800000)/"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Abbreviated ID code of the state or country that issued the document",
+      "Id": "0783e234-96cc-46b4-bc82-c2aaa4b9f7d7",
+      "IsImage": false,
+      "Key": "2D Issuing State Code",
+      "Name": "Issuing State Code",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "ND"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Full name of the state or country that issued the document",
+      "Id": "39f0f97c-0dd1-4c22-b0b9-2320f7f76e95",
+      "IsImage": false,
+      "Key": "2D Issuing State Name",
+      "Name": "Issuing State Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "NORTH DAKOTA"
+    },
+    {
+      "DataSource": 2,
+      "Description": "A single character (translated into M/F from other languages) that identifies the person's gender",
+      "Id": "d1b20071-682b-46fd-9fa3-6d15e1585300",
+      "IsImage": false,
+      "Key": "2D Sex",
+      "Name": "Sex",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "F"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's surname or family name",
+      "Id": "5f02ed1f-2768-496c-b39b-7984201c85e4",
+      "IsImage": false,
+      "Key": "2D Surname",
+      "Name": "Surname",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "DOE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Raw data extracted from the 2D barcode of the document",
+      "Id": "dfc52064-ab36-46e1-ba01-32d9d4e53ba4",
+      "IsImage": false,
+      "Key": "Data_2DBarcode",
+      "Name": "2D Barcode Data",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "08940735-c61c-45e3-b0a1-438151b0f9f9",
+      "Reliability": 0.99,
+      "Type": "uri",
+      "Value": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Data?type=Barcode2D"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's legal, residence, or mailing address",
+      "Id": "0e793dce-87d3-41c5-a111-c6c31c403439",
+      "IsImage": false,
+      "Key": "VIZ Address",
+      "Name": "Address",
+      "RegionOfInterest": {
+        "height": 88,
+        "width": 503,
+        "x": 14,
+        "y": 4
+      },
+      "RegionReference": "0b27a062-d7b1-42a6-be51-17c225958efd",
+      "Reliability": 0.4422222375869751,
+      "Type": "string",
+      "Value": "1000 E AVENUESBISMARCK ND 58501"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's date of birth",
+      "Id": "c66ef71d-0eee-456b-a5c4-935a193287f8",
+      "IsImage": false,
+      "Key": "VIZ Birth Date",
+      "Name": "Birth Date",
+      "RegionOfInterest": {
+        "height": 19,
+        "width": 122,
+        "x": 3,
+        "y": 5
+      },
+      "RegionReference": "3b61ac0c-24ad-41fd-bd8d-380f4b803f5e",
+      "Reliability": 0.5327273011207581,
+      "Type": "datetime",
+      "Value": "/Date(449625600000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A number that identifies a document",
+      "Id": "b799881f-7af8-4397-8b5b-953abc9b3677",
+      "IsImage": false,
+      "Key": "VIZ Document Number",
+      "Name": "Document Number",
+      "RegionOfInterest": {
+        "height": 61,
+        "width": 497,
+        "x": 19,
+        "y": 21
+      },
+      "RegionReference": "8b14ac1b-736b-4dd8-a132-f3a61cd526e2",
+      "Reliability": 0.7241666913032532,
+      "Type": "string",
+      "Value": "D0E-84-1165"
+    },
+    {
+      "DataSource": 6,
+      "Description": "Date that the document will expire",
+      "Id": "fdeb031a-4a54-4261-9784-9de902cea941",
+      "IsImage": false,
+      "Key": "VIZ Expiration Date",
+      "Name": "Expiration Date",
+      "RegionOfInterest": {
+        "height": 19,
+        "width": 122,
+        "x": 4,
+        "y": 6
+      },
+      "RegionReference": "f42e724e-a8be-4362-a3a2-ab3be86ec0fd",
+      "Reliability": 0.7127272486686707,
+      "Type": "datetime",
+      "Value": "/Date(1666569600000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's eye color",
+      "Id": "b397bd37-fcb0-4dd6-9a1f-669c8a7f8c86",
+      "IsImage": false,
+      "Key": "VIZ Eye Color",
+      "Name": "Eye Color",
+      "RegionOfInterest": {
+        "height": 42,
+        "width": 122,
+        "x": 14,
+        "y": 18
+      },
+      "RegionReference": "7681e29d-a1cb-491f-9094-2227cef980f1",
+      "Reliability": 0.45499998331069946,
+      "Type": "string",
+      "Value": "BRO"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "b57ec4fb-9002-4196-a1f5-82ef1afc4113",
+      "IsImage": false,
+      "Key": "VIZ Full Name",
+      "Name": "Full Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.45399999618530273,
+      "Type": "string",
+      "Value": "JANE DOE"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's given name",
+      "Id": "545cec08-745b-45b5-9d61-bf4ea81a9c06",
+      "IsImage": false,
+      "Key": "VIZ Given Name",
+      "Name": "Given Name",
+      "RegionOfInterest": {
+        "height": 47,
+        "width": 169,
+        "x": 14,
+        "y": 19
+      },
+      "RegionReference": "6b3fa1cb-cc5a-4472-9e03-ba8a88480b45",
+      "Reliability": 0.45399999618530273,
+      "Type": "string",
+      "Value": "JANE"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's height ",
+      "Id": "40656c40-063d-47ed-845b-6c4b0c4d968a",
+      "IsImage": false,
+      "Key": "VIZ Height",
+      "Name": "Height",
+      "RegionOfInterest": {
+        "height": 44,
+        "width": 155,
+        "x": 34,
+        "y": 23
+      },
+      "RegionReference": "7849bc90-c54d-4db8-bf0b-652e8fa7986c",
+      "Reliability": 0.38499999046325684,
+      "Type": "string",
+      "Value": "5'-07''"
+    },
+    {
+      "DataSource": 6,
+      "Description": "Date that the document was issued",
+      "Id": "a85ab0b5-e33d-4cfc-9084-6513108a1036",
+      "IsImage": false,
+      "Key": "VIZ Issue Date",
+      "Name": "Issue Date",
+      "RegionOfInterest": {
+        "height": 19,
+        "width": 122,
+        "x": 4,
+        "y": 4
+      },
+      "RegionReference": "c3c5ff38-6fb3-45a4-92a0-e122e7651e62",
+      "Reliability": 0.6909090876579285,
+      "Type": "datetime",
+      "Value": "/Date(1414108800000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A person's image",
+      "Id": "79548f2e-f92a-4700-8164-09fb6253ccfd",
+      "IsImage": true,
+      "Key": "VIZ Photo",
+      "Name": "Photo",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "e5d4c929-cb0d-471d-9148-e44b29ba0fd5",
+      "Reliability": 0.9,
+      "Type": "uri",
+      "Value": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Field/Image?key=VIZ%20Photo"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A single character (translated into M/F from other languages) that identifies the person's gender",
+      "Id": "193695a9-946d-428d-9d1d-82fa2737414f",
+      "IsImage": false,
+      "Key": "VIZ Sex",
+      "Name": "Sex",
+      "RegionOfInterest": {
+        "height": 14,
+        "width": 11,
+        "x": 8,
+        "y": 8
+      },
+      "RegionReference": "34023311-b4ac-47dc-8948-0616429bee7d",
+      "Reliability": 0.6700000166893005,
+      "Type": "string",
+      "Value": "F"
+    },
+    {
+      "DataSource": 6,
+      "Description": "An image of the person's signature",
+      "Id": "3663bf8d-c5be-4c69-bb3d-8db799adee06",
+      "IsImage": true,
+      "Key": "VIZ Signature",
+      "Name": "Signature",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "7974e0dd-46cb-47eb-8557-530a235ca1c2",
+      "Reliability": 0.9,
+      "Type": "uri",
+      "Value": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Field/Image?key=VIZ%20Signature"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's surname or family name",
+      "Id": "39fa1c10-7d63-4cb5-a085-bad2f8efb56b",
+      "IsImage": false,
+      "Key": "VIZ Surname",
+      "Name": "Surname",
+      "RegionOfInterest": {
+        "height": 61,
+        "width": 169,
+        "x": 13,
+        "y": 11
+      },
+      "RegionReference": "8a131204-4c8b-4177-a6f0-c69cec29038f",
+      "Reliability": 0.9049999713897705,
+      "Type": "string",
+      "Value": "DOE"
+    }
+  ],
+  "Device": {
+    "HasContactlessChipReader": false,
+    "HasMagneticStripeReader": false,
+    "SerialNumber": "xxxxx",
+    "Type": {
+      "Manufacturer": "Login.gov",
+      "Model": "Doc Auth 1.0",
+      "SensorType": 3
+    }
+  },
+  "EngineVersion": "2.15.1.171",
+  "Fields": [
+    {
+      "DataFieldReferences": [
+        "2116037e-9e9d-4e82-8ad7-d3cedbd63e6e",
+        "0e793dce-87d3-41c5-a111-c6c31c403439"
+      ],
+      "DataSource": 2,
+      "Description": "The person's legal, residence, or mailing address",
+      "Id": "3591a27c-d2d7-4500-804d-03a7269ba56b",
+      "IsImage": false,
+      "Key": "Address",
+      "Name": "Address",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "1000 E AVENUE EBISMARCK, ND 58501"
+    },
+    {
+      "DataFieldReferences": [
+        "f4beefb6-4355-4658-b9e9-05145af35ab9"
+      ],
+      "DataSource": 2,
+      "Description": "City of the person's legal, residence, or mailing address",
+      "Id": "eded49f2-1b8e-48aa-ac2f-a00205f09d5a",
+      "IsImage": false,
+      "Key": "Address City",
+      "Name": "Address City",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "BISMARCK"
+    },
+    {
+      "DataFieldReferences": [
+        "36a794d9-a6b4-415f-9245-2a669e939a84"
+      ],
+      "DataSource": 2,
+      "Description": "First address line of the person's legal, residence, or mailing address",
+      "Id": "c721ba18-8118-414a-8221-940bf60c71e2",
+      "IsImage": false,
+      "Key": "Address Line 1",
+      "Name": "Address Line 1",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "1000 E AVENUE E"
+    },
+    {
+      "DataFieldReferences": [
+        "208d17a8-6056-4ccf-b89d-b904c27e50c1"
+      ],
+      "DataSource": 2,
+      "Description": "Postal code of the person's address",
+      "Id": "d8448c25-89c8-46c0-84b3-a350e8473540",
+      "IsImage": false,
+      "Key": "Address Postal Code",
+      "Name": "Address Postal Code",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "58501"
+    },
+    {
+      "DataFieldReferences": [
+        "7aea3bca-a2c0-482f-9e1b-5a4037a7e326"
+      ],
+      "DataSource": 2,
+      "Description": "State of the person's legal, residence, or mailing address",
+      "Id": "9eb9bcff-a742-4ac8-a5ce-35db18b1df63",
+      "IsImage": false,
+      "Key": "Address State",
+      "Name": "Address State",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "ND"
+    },
+    {
+      "DataFieldReferences": [
+        "0b7bda63-8cb6-4f7c-bca2-bcee8d90c9ba",
+        "c66ef71d-0eee-456b-a5c4-935a193287f8"
+      ],
+      "DataSource": 2,
+      "Description": "The person's date of birth",
+      "Id": "1c36b00c-d0d6-4d70-b5c2-0b1d71b09c30",
+      "IsImage": false,
+      "Key": "Birth Date",
+      "Name": "Birth Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(449625600000)/"
+    },
+    {
+      "DataFieldReferences": [
+        "2151bee6-4688-4b6b-bb83-08cf2ee5be2a"
+      ],
+      "DataSource": 2,
+      "Description": "A 16-digit document discriminator code that uniquely identifies where and when a U.S. or Canadian ID was issued",
+      "Id": "96b2f01b-19df-46e6-8682-268462976c2a",
+      "IsImage": false,
+      "Key": "DD Number",
+      "Name": "DD Number",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "8DOE841165DJ52224JE67NYZ"
+    },
+    {
+      "DataFieldReferences": [],
+      "DataSource": 7,
+      "Description": "The localized version of the document class of the document type",
+      "Id": "8142c01b-cf85-47da-9f3e-dc97c24f1758",
+      "IsImage": false,
+      "Key": "Document Class Name",
+      "Name": "Document Class Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "Identification Card"
+    },
+    {
+      "DataFieldReferences": [
+        "4c2fd852-4026-4118-8cda-f581173472bf",
+        "b799881f-7af8-4397-8b5b-953abc9b3677"
+      ],
+      "DataSource": 2,
+      "Description": "A number that identifies a document",
+      "Id": "ee3140d8-6334-4608-ad17-a7bf42a7ddf5",
+      "IsImage": false,
+      "Key": "Document Number",
+      "Name": "Document Number",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "DOE-84-1165"
+    },
+    {
+      "DataFieldReferences": [
+        "ea83593a-a4f3-4f45-8a7f-5284fda1cf00",
+        "fdeb031a-4a54-4261-9784-9de902cea941"
+      ],
+      "DataSource": 2,
+      "Description": "Date that the document will expire",
+      "Id": "f2b99962-ba02-47a5-afb1-398b5c413499",
+      "IsImage": false,
+      "Key": "Expiration Date",
+      "Name": "Expiration Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(1666569600000)/"
+    },
+    {
+      "DataFieldReferences": [
+        "9e68c7b1-b0d9-4e07-9b74-62b7abd52e38",
+        "b397bd37-fcb0-4dd6-9a1f-669c8a7f8c86"
+      ],
+      "DataSource": 2,
+      "Description": "The person's eye color",
+      "Id": "1b6cc8ec-7754-4fc4-99d3-f0a1d861501c",
+      "IsImage": false,
+      "Key": "Eye Color",
+      "Name": "Eye Color",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "BROWN"
+    },
+    {
+      "DataFieldReferences": [
+        "635d7d60-e7f2-4860-b8f6-1c56ae664a18"
+      ],
+      "DataSource": 2,
+      "Description": "The person's first name",
+      "Id": "0e664710-decb-44d5-a638-0b9396f57bdf",
+      "IsImage": false,
+      "Key": "First Name",
+      "Name": "First Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "JANE"
+    },
+    {
+      "DataFieldReferences": [
+        "536f7296-64b2-48fa-a52b-2a6b01cb6d39",
+        "b57ec4fb-9002-4196-a1f5-82ef1afc4113"
+      ],
+      "DataSource": 2,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "e575acd5-a304-4828-8b6e-38b4f928c1ae",
+      "IsImage": false,
+      "Key": "Full Name",
+      "Name": "Full Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "JANE DOE"
+    },
+    {
+      "DataFieldReferences": [
+        "74962a67-44f9-402b-b750-c984a9b55180",
+        "545cec08-745b-45b5-9d61-bf4ea81a9c06"
+      ],
+      "DataSource": 2,
+      "Description": "The person's given name",
+      "Id": "b0c71cc8-47d8-47f1-bc54-509e558e8b92",
+      "IsImage": false,
+      "Key": "Given Name",
+      "Name": "Given Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "JANE"
+    },
+    {
+      "DataFieldReferences": [
+        "e3e13977-2d12-4538-9542-5b2f157f3ab3",
+        "40656c40-063d-47ed-845b-6c4b0c4d968a"
+      ],
+      "DataSource": 2,
+      "Description": "The person's height ",
+      "Id": "7d25c868-2d67-4148-b193-8c6d312594aa",
+      "IsImage": false,
+      "Key": "Height",
+      "Name": "Height",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "5' 7\""
+    },
+    {
+      "DataFieldReferences": [
+        "add7cebc-f175-4494-9dbd-8cd48d908ee5",
+        "a85ab0b5-e33d-4cfc-9084-6513108a1036"
+      ],
+      "DataSource": 2,
+      "Description": "Date that the document was issued",
+      "Id": "cf88e817-c6e9-464f-8d8b-c5bf0e4d742d",
+      "IsImage": false,
+      "Key": "Issue Date",
+      "Name": "Issue Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(1414108800000)/"
+    },
+    {
+      "DataFieldReferences": [
+        "0783e234-96cc-46b4-bc82-c2aaa4b9f7d7"
+      ],
+      "DataSource": 7,
+      "Description": "Abbreviated ID code of the state or country that issued the document",
+      "Id": "9cb81d4f-1eae-4104-b1e1-43efc6b8d9b9",
+      "IsImage": false,
+      "Key": "Issuing State Code",
+      "Name": "Issuing State Code",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "ND"
+    },
+    {
+      "DataFieldReferences": [
+        "39f0f97c-0dd1-4c22-b0b9-2320f7f76e95"
+      ],
+      "DataSource": 7,
+      "Description": "Full name of the state or country that issued the document",
+      "Id": "c22f6f70-4bec-4b16-a604-d65fc155f845",
+      "IsImage": false,
+      "Key": "Issuing State Name",
+      "Name": "Issuing State Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "North Dakota"
+    },
+    {
+      "DataFieldReferences": [
+        "79548f2e-f92a-4700-8164-09fb6253ccfd"
+      ],
+      "DataSource": 6,
+      "Description": "A person's image",
+      "Id": "bcf8dd88-1859-40e0-977a-567796167ec9",
+      "IsImage": true,
+      "Key": "Photo",
+      "Name": "Photo",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "uri",
+      "Value": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Field/Image?key=Photo"
+    },
+    {
+      "DataFieldReferences": [
+        "d1b20071-682b-46fd-9fa3-6d15e1585300",
+        "193695a9-946d-428d-9d1d-82fa2737414f"
+      ],
+      "DataSource": 2,
+      "Description": "A single character (translated into M/F from other languages) that identifies the person's gender",
+      "Id": "11297afa-e41e-45ae-85af-aef0499be70d",
+      "IsImage": false,
+      "Key": "Sex",
+      "Name": "Sex",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "F"
+    },
+    {
+      "DataFieldReferences": [
+        "3663bf8d-c5be-4c69-bb3d-8db799adee06"
+      ],
+      "DataSource": 6,
+      "Description": "An image of the person's signature",
+      "Id": "4eea0344-2a27-4945-a803-68cb94966dac",
+      "IsImage": true,
+      "Key": "Signature",
+      "Name": "Signature",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "uri",
+      "Value": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Field/Image?key=Signature"
+    },
+    {
+      "DataFieldReferences": [
+        "5f02ed1f-2768-496c-b39b-7984201c85e4",
+        "39fa1c10-7d63-4cb5-a085-bad2f8efb56b"
+      ],
+      "DataSource": 2,
+      "Description": "The person's surname or family name",
+      "Id": "954993cb-49df-4626-a817-bbbc372d36d7",
+      "IsImage": false,
+      "Key": "Surname",
+      "Name": "Surname",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "DOE"
+    }
+  ],
+  "Images": [
+    {
+      "GlareMetric": null,
+      "HorizontalResolution": 600,
+      "Id": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "IsCropped": true,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/vnd.ms-photo",
+      "SharpnessMetric": null,
+      "Side": 0,
+      "Uri": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Image?side=Front&light=White",
+      "VerticalResolution": 600
+    },
+    {
+      "GlareMetric": null,
+      "HorizontalResolution": 600,
+      "Id": "6954e69a-e35f-473f-9579-e1da226a8721",
+      "IsCropped": true,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/vnd.ms-photo",
+      "SharpnessMetric": null,
+      "Side": 1,
+      "Uri": "https://services.assureid.net/AssureIDService/Document/7748c634-a2ab-4f3a-a901-39084ada8093/Image?side=Back&light=White",
+      "VerticalResolution": 600
+    }
+  ],
+  "InstanceId": "7748c634-a2ab-4f3a-a901-39084ada8093",
+  "LibraryVersion": "20.05.07.182",
+  "ProcessMode": 2,
+  "Regions": [
+    {
+      "DocumentElement": 3,
+      "Id": "cc56bfc3-f838-4e90-aba8-61cecc6092e5",
+      "ImageReference": "6954e69a-e35f-473f-9579-e1da226a8721",
+      "Key": "1D Barcode",
+      "Rectangle": {
+        "height": 889,
+        "width": 183,
+        "x": 0,
+        "y": 205
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "08940735-c61c-45e3-b0a1-438151b0f9f9",
+      "ImageReference": "6954e69a-e35f-473f-9579-e1da226a8721",
+      "Key": "2D Barcode",
+      "Rectangle": {
+        "height": 524,
+        "width": 1794,
+        "x": 219,
+        "y": 24
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "0b27a062-d7b1-42a6-be51-17c225958efd",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Address",
+      "Rectangle": {
+        "height": 168,
+        "width": 1260,
+        "x": 732,
+        "y": 580
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "3b61ac0c-24ad-41fd-bd8d-380f4b803f5e",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Birth Date",
+      "Rectangle": {
+        "height": 97,
+        "width": 427,
+        "x": 872,
+        "y": 847
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "dfeb1e30-d410-402b-b3d7-dbe2d0f70e53",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Date Font",
+      "Rectangle": {
+        "height": 285,
+        "width": 449,
+        "x": 846,
+        "y": 840
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "8b14ac1b-736b-4dd8-a132-f3a61cd526e2",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Document Number",
+      "Rectangle": {
+        "height": 114,
+        "width": 719,
+        "x": 872,
+        "y": 736
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "2731d8b0-f42e-43ab-b668-2e784ae6dbf7",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Document Type",
+      "Rectangle": {
+        "height": 183,
+        "width": 675,
+        "x": 1085,
+        "y": 97
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "f42e724e-a8be-4362-a3a2-ab3be86ec0fd",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Expiration Date",
+      "Rectangle": {
+        "height": 93,
+        "width": 433,
+        "x": 870,
+        "y": 1014
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "216177ee-7232-49f2-9608-b991f4c1b255",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Expiration Date Label",
+      "Rectangle": {
+        "height": 134,
+        "width": 223,
+        "x": 689,
+        "y": 997
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "7681e29d-a1cb-491f-9094-2227cef980f1",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Eye Color",
+      "Rectangle": {
+        "height": 71,
+        "width": 179,
+        "x": 1512,
+        "y": 1028
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "b684bbda-bed3-4ffa-9dd9-99d9711830ea",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Eyes Label Pattern",
+      "Rectangle": {
+        "height": 107,
+        "width": 273,
+        "x": 1301,
+        "y": 1009
+      }
+    },
+    {
+      "DocumentElement": 5,
+      "Id": "11eeb3c3-8c92-4c91-bdb1-28cf2631f278",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Flag Pattern",
+      "Rectangle": {
+        "height": 275,
+        "width": 391,
+        "x": 2,
+        "y": 2
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "6b3fa1cb-cc5a-4472-9e03-ba8a88480b45",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Given Name",
+      "Rectangle": {
+        "height": 84,
+        "width": 1258,
+        "x": 732,
+        "y": 502
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "cfc9ae0a-cab8-4d55-a5ac-10f291410152",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Header",
+      "Rectangle": {
+        "height": 292,
+        "width": 871,
+        "x": 278,
+        "y": 8
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "44cb9c08-71d1-4ba6-ab11-9707f39da5a2",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Header Left",
+      "Rectangle": {
+        "height": 332,
+        "width": 324,
+        "x": 280,
+        "y": 2
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "7849bc90-c54d-4db8-bf0b-652e8fa7986c",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Height",
+      "Rectangle": {
+        "height": 78,
+        "width": 219,
+        "x": 1490,
+        "y": 938
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "c6a2c733-3ee7-47d9-aff6-6f158731a3a2",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Height Font",
+      "Rectangle": {
+        "height": 85,
+        "width": 202,
+        "x": 1501,
+        "y": 942
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "51bf3805-653c-4445-859f-2b96e28aeb0a",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Horses",
+      "Rectangle": {
+        "height": 189,
+        "width": 448,
+        "x": 1279,
+        "y": 248
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "c3c5ff38-6fb3-45a4-92a0-e122e7651e62",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Issue Date",
+      "Rectangle": {
+        "height": 82,
+        "width": 433,
+        "x": 870,
+        "y": 936
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "857ba82f-98e7-4465-8999-2502df10c3b9",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Lower Data Labels",
+      "Rectangle": {
+        "height": 538,
+        "width": 240,
+        "x": 646,
+        "y": 732
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "afbf1d5a-b510-4ca3-8f94-9e302d5f9dbc",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Lower Data Labels Right",
+      "Rectangle": {
+        "height": 298,
+        "width": 159,
+        "x": 1282,
+        "y": 844
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "bdab7938-b938-4248-b881-ff01f4f18f10",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Microprint",
+      "Rectangle": {
+        "height": 88,
+        "width": 631,
+        "x": 1199,
+        "y": 57
+      }
+    },
+    {
+      "DocumentElement": 2,
+      "Id": "e5d4c929-cb0d-471d-9148-e44b29ba0fd5",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Photo",
+      "Rectangle": {
+        "height": 822,
+        "width": 614,
+        "x": 78,
+        "y": 246
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "34023311-b4ac-47dc-8948-0616429bee7d",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Sex",
+      "Rectangle": {
+        "height": 86,
+        "width": 81,
+        "x": 1499,
+        "y": 854
+      }
+    },
+    {
+      "DocumentElement": 2,
+      "Id": "7974e0dd-46cb-47eb-8557-530a235ca1c2",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Signature",
+      "Rectangle": {
+        "height": 170,
+        "width": 610,
+        "x": 75,
+        "y": 1056
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "8a131204-4c8b-4177-a6f0-c69cec29038f",
+      "ImageReference": "491cc3c0-a821-46bd-8fb7-2e697fd9fb29",
+      "Key": "Surname",
+      "Rectangle": {
+        "height": 88,
+        "width": 1258,
+        "x": 734,
+        "y": 429
+      }
+    }
+  ],
+  "Result": 1,
+  "Subscription": {
+    "DocumentProcessMode": 2,
+    "Id": "fake-subscription-id",
+    "IsActive": true,
+    "IsDevelopment": true,
+    "IsTrial": false,
+    "Name": "Dev GSA iProov",
+    "StorePII": false
+  }
+}

@@ -9,6 +9,7 @@ class NullServiceProvider
     agency
     agency_id
     allow_prompt_login
+    app_id
     approved
     assertion_consumer_logout_service_url
     attribute_bundle
