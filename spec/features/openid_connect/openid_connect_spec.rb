@@ -5,6 +5,13 @@ describe 'OpenID Connect' do
   include OidcAuthHelper
   include DocAuthHelper
 
+  it 'it sets the sp_issuer cookie' do
+    visit_idp_from_ial1_oidc_sp
+
+    cookie = cookies.filter { |c| c.name == 'sp_issuer' }.first.value
+    expect(cookie).to eq(OidcAuthHelper::OIDC_ISSUER)
+  end
+
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
       oidc_end_client_secret_jwt(prompt: 'select_account')
