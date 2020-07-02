@@ -7,7 +7,7 @@ describe 'totp management' do
     it 'allows the user to disable their totp app' do
       sign_in_and_2fa_user(user)
 
-      expect(page).to have_content(t('account.index.authentication_app'))
+      expect(page).to have_content(t('two_factor_authentication.devices.auth_app'))
       expect(page.find('.remove-auth-app')).to_not be_nil
       page.find('.remove-auth-app').click
 
@@ -24,7 +24,7 @@ describe 'totp management' do
     it 'does not show the user the option to disable their totp app' do
       sign_in_and_2fa_user(user)
 
-      expect(page).to have_content(t('account.index.authentication_app'))
+      expect(page).to have_content(t('two_factor_authentication.devices.auth_app'))
       form = find_form(page, action: disable_totp_url)
       expect(form).to be_nil
     end

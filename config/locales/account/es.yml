@@ -16,7 +16,6 @@ es:
       address: Dirección actual
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
-      authentication_app: App de autenticación
       backup_code_confirm_delete: Sí, borrar códigos
       backup_code_confirm_regenerate: Sí, regenerar códigos.
       backup_codes_exist: generado

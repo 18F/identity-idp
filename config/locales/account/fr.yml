@@ -16,7 +16,6 @@ fr:
       address: Adresse actuelle
       auth_app_disabled: non activée
       auth_app_enabled: activée
-      authentication_app: Application d'authentification
       backup_code_confirm_delete: Oui, supprimer les codes
       backup_code_confirm_regenerate: Oui, régénérer les codes
       backup_codes_exist: généré
