@@ -1,0 +1,36 @@
+<% title t('doc_auth.titles.doc_auth') %>
+
+<h1 class='h3 my0'>
+  <%= t('doc_auth.headings.ssn') %>
+</h1>
+
+<%= simple_form_for(
+  :doc_auth,
+  url: url_for,
+  method: :put,
+  html: { autocomplete: 'off', role: 'form', class: 'mt2' }
+) do |f| %>
+  <div class='clearfix mxn1'>
+    <div class='sm-col sm-col-6 px1 mt2'>
+      <!-- using :tel for mobile numeric keypad -->
+      <!-- maxlength set and includes '-' delimiters to work around cleave bug -->
+      <%= f.input(
+        :ssn,
+        as: :tel,
+        label: t('idv.form.ssn_label_html'), required: true,
+        pattern: '^\d{3}-?\d{2}-?\d{4}$',
+        maxlength: 11,
+        input_html: { class: 'ssn', value: '' }
+      ) %>
+    </div>
+  </div>
+
+  <p><%= flow_session[:error_message] %></p>
+
+  <div class='mt0'>
+    <button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'>
+      <%= t('forms.buttons.continue') %>
+    </button>
+  </div>
+<% end %>
+<%= render 'idv/doc_auth/start_over_or_cancel' %>
