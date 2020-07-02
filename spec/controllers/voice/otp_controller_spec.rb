@@ -148,6 +148,17 @@ RSpec.describe Voice::OtpController do
         action
         expect(response.body).to include('4 minutes')
       end
+
+      let(:expected_xml) do
+        <<~XML
+<?xml version="1.0" encoding="utf-8" ?><Response><Say language="en">Hello! Your login.gov one time passcode is, 1, 2, 3, 4, again, your passcode is, 1, 2, 3, 4. This code expires in 10 minutes.</Say><Gather action="http://user:secret@www.example.com/api/voice/otp?encrypted_code=%7B%22v%22%3A1%2C%22adata%22%3A%22%22%2C%22ks%22%3A256%2C%22ct%22%3A%22a31jflU1SEV9nuRkwTQ1oQ%3D%3D%22%2C%22ts%22%3A96%2C%22mode%22%3A%22gcm%22%2C%22cipher%22%3A%22aes%22%2C%22iter%22%3A100000%2C%22iv%22%3A%22DF9MmigoP%2Bc5wctv%22%2C%22salt%22%3A%22rqj10u4Smb4%3D%22%7D&amp;repeat_count=4" numDigits="1"><Say language="en">Press 1 to repeat this message.</Say></Gather><Hangup /></Response>
+        XML
+      end
+
+      it 'outputs the same XML as the slim file' do
+        action
+        expect(response.body).to eq(Nokogiri::XML(expected_xml).to_xml)
+      end
     end
   end
 end
