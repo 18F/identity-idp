@@ -15,6 +15,7 @@ en:
       address: Current address
       auth_app_disabled: not enabled
       auth_app_enabled: enabled
+      authentication_app: Authentication app
       backup_code_confirm_delete: Yes, delete codes
       backup_code_confirm_regenerate: Yes, regenerate codes
       backup_codes_exist: generated
