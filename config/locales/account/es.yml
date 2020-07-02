@@ -69,8 +69,7 @@ es:
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
     re_verify:
-      banner: Tu sesión ha expirado. Hemos ocultado la información de su perfil para
-        proteger su privacidad.
+      banner: Hemos ocultado la información de su perfil para proteger su privacidad.
       footer: Autentíquese nuevamente para ver la información de su perfil
     revoke_consent:
       link_title: Revocar consentimiento
