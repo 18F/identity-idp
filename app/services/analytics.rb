@@ -12,8 +12,19 @@ class Analytics
       event_properties: attributes.except(:user_id),
       user_id: attributes[:user_id] || user.uuid,
     }
-    ahoy.track(event, analytics_hash.merge!(request_attributes))
+    analytics_hash.merge!(request_attributes)
+
+    ahoy.track(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
+
+    # Tag NewRelic APM trace with a handful of useful metadata
+    # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
+    ::NewRelic::Agent.add_custom_attributes(
+        user_id: analytics_hash[:user_id],
+        user_ip: request.remote_ip,
+        service_provider: sp,
+        event: event
+    )
   end
 
   def register_doc_auth_step_from_analytics_event(event, attributes)
