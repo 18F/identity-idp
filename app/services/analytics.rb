@@ -23,7 +23,7 @@ class Analytics
         user_id: analytics_hash[:user_id],
         user_ip: request.remote_ip,
         service_provider: sp,
-        event: event
+        event_name: event
     )
   end
 
