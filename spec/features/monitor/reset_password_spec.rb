@@ -1,4 +1,6 @@
 RSpec.describe 'smoke test: password reset' do
+  include MonitorIdpSteps
+
   let(:monitor) { MonitorHelper.new(self) }
 
   before { monitor.setup }

@@ -45,10 +45,6 @@ class MonitorHelper
     defined?(Rails) && Rails.env.test?
   end
 
-  def remote?
-    !local?
-  end
-
   # Capybara.reset_session! deletes the cookies for the current site. As such
   # we need to visit each site individually and reset there.
   def reset_sessions
@@ -72,7 +68,7 @@ class MonitorHelper
   def check_for_password_reset_link
     scan_emails_and_extract(
       subject: 'Reset your password',
-      regex: /(?<link>https?:.+reset_password_token=[\w\-]+)/
+      regex: /(?<link>https?:.+reset_password_token=[\w\-]+)/,
     )
   end
 
@@ -82,7 +78,7 @@ class MonitorHelper
         'Confirm your email',
         'Email not found',
       ],
-      regex: /(?<link>https?:.+confirmation_token=[\w\-]+)/
+      regex: /(?<link>https?:.+confirmation_token=[\w\-]+)/,
     )
   end
 
@@ -93,9 +89,7 @@ class MonitorHelper
       match_data = Telephony::Test::Message.messages.last.body.match(otp_regex)
       return match_data[:code] if match_data
     else
-      scan_emails_and_extract(
-        regex: otp_regex
-      )
+      scan_emails_and_extract(regex: otp_regex)
     end
   end
 
@@ -132,65 +126,5 @@ class MonitorHelper
       sleep sleep_duration
     end
     nil
-  end
-
-  def random_email_address
-    random_str = SecureRandom.hex(12)
-    email_address.dup.gsub(/@/, "+#{random_str}@")
-  end
-
-  def submit_password
-    context.click_on 'Continue'
-  end
-
-  def click_send_otp
-    context.click_on 'Send code'
-  end
-
-  def setup_backup_codes
-    context.find("label[for='two_factor_options_form_selection_backup_code']").click
-    context.click_on 'Continue'
-    context.click_on 'Continue'
-    context.click_on 'Continue'
-  end
-
-  # @return [String] email address for the account
-  def create_new_account_up_until_password(email_address = random_email_address)
-    context.fill_in 'user_email', with: email_address
-    context.click_on 'Submit'
-    confirmation_link = check_for_confirmation_link
-    context.visit confirmation_link
-    context.fill_in 'password_form_password', with: password
-    submit_password
-
-    email_address
-  end
-
-  # @return [String] email address for the account
-  def create_new_account_with_sms
-    email_address = create_new_account_up_until_password
-    context.find("label[for='two_factor_options_form_selection_phone']").click
-    context.click_on 'Continue'
-    context.fill_in 'new_phone_form_phone', with: google_voice_phone
-    click_send_otp
-    otp = check_for_otp
-    context.fill_in 'code', with: otp
-    context.uncheck 'Remember this browser'
-    context.click_on 'Submit'
-    if context.current_path.match(/two_factor_options_success/)
-      context.click_on 'Continue'
-      setup_backup_codes
-    end
-
-    email_address
-  end
-
-  def sign_in_and_2fa(email)
-    context.fill_in 'user_email', with: email
-    context.fill_in 'user_password', with: password
-    context.click_on 'Sign in'
-    context.fill_in 'code', with: check_for_otp
-    context.uncheck 'Remember this browser'
-    context.click_on 'Submit'
   end
 end
