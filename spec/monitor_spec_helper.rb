@@ -3,6 +3,7 @@
 
 require 'capybara/rspec'
 require 'webdrivers/chromedriver'
+require 'active_support/all'
 
 Capybara.register_driver :chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
@@ -33,9 +34,4 @@ RSpec.configure do |config|
   end
 
   config.example_status_persistence_file_path = './tmp/rspec-examples.txt'
-
-  # config.include GmailHelpers
-  # config.include IdpHelpers
-  # config.include IdvHelpers
-  # config.include SpHelpers
 end

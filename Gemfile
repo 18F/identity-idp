@@ -104,12 +104,12 @@ group :test do
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
-  gem 'gmail'
   gem 'dotenv', require: false
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
+  gem 'gmail'
   gem 'rack-test', '>= 1.1.0'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rails-controller-testing', '>= 1.0.4'

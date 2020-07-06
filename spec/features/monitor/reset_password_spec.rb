@@ -11,7 +11,7 @@ RSpec.describe 'password reset' do
     expect(page).to have_content('Check your email')
 
     reset_link = monitor.check_for_password_reset_link
-    expect(reset_link).to_not be_empty
+    expect(reset_link).to be_present
     visit reset_link
     fill_in 'reset_password_form_password', with: monitor.password
     click_on 'Change password'

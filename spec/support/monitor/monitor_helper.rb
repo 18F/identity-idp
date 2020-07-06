@@ -109,12 +109,12 @@ class MonitorHelper
   end
 
   def sleep_and_check(count: 5, sleep_duration: 3)
-    count.times do |time|
-      if (result = yield) && !result.empty?
-        return result
-      else
-        sleep sleep_duration
-      end
+    count.times do
+      result = yield
+
+      return result if result.present?
+
+      sleep sleep_duration
     end
     nil
   end

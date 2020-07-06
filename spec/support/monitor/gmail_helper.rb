@@ -12,9 +12,7 @@ class GmailHelper
   end
 
   def inbox_clear
-    inbox_unread.each do |email|
-      email.read!
-    end
+    inbox_unread.each(&:read!)
     gmail.inbox.emails(:read).each(&:delete!)
   end
 end
