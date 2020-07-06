@@ -303,7 +303,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue' if js
 
-      fill_in 'personal_key', with: code_words.join('-').downcase + extra_characters_get_ignored
+      fill_in 'personal_key', with: code_words.join.downcase + extra_characters_get_ignored
 
       find_all('.personal-key-confirm', text: button_text).first.click
     end
@@ -386,7 +386,7 @@ module Features
       submit_form_with_valid_email(email)
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
-      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+      expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
       expect(page).to have_css('img[src*=sp-logos]')
 
       click_link_to_resend_the_email
@@ -400,7 +400,7 @@ module Features
 
       submit_resend_email_confirmation_form_with_correct_email(email)
 
-      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+      expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
     end
 
     def confirm_email_in_a_different_browser(email)

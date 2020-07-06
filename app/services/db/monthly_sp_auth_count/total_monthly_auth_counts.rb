@@ -3,9 +3,12 @@ module Db
     class TotalMonthlyAuthCounts
       def self.call
         sql = <<~SQL
-          SELECT issuer,ial,year_month,SUM(auth_count) AS total
-          FROM monthly_sp_auth_counts
-          GROUP BY issuer, ial, year_month ORDER BY issuer, ial, year_month
+          SELECT monthly_sp_auth_counts.issuer,monthly_sp_auth_counts.ial,year_month,
+                 SUM(auth_count) AS total, MAX(app_id) AS app_id
+          FROM monthly_sp_auth_counts, service_providers
+          WHERE monthly_sp_auth_counts.issuer = service_providers.issuer
+          GROUP BY monthly_sp_auth_counts.issuer, monthly_sp_auth_counts.ial, year_month
+          ORDER BY issuer, ial, year_month
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end

@@ -35,7 +35,6 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-allow_doc_auth_test_credentials:
 asset_host:
 async_job_refresh_max_wait_seconds: '15'
 available_locales: en es fr
@@ -135,8 +134,6 @@ development:
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
   acuant_sdk_document_capture_enabled: 'true'
-  acuant_simulator: 'true'
-  allow_doc_auth_test_credentials: 'true'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -164,6 +161,7 @@ development:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
+  doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'true'
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
@@ -248,7 +246,6 @@ production:
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
   acuant_sdk_document_capture_enabled: 'false'
-  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
@@ -274,6 +271,7 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
+  doc_auth_vendor: 'acuant'
   doc_capture_polling_enabled: 'true'
   domain_name: login.gov
   email_deletion_enabled: 'false'
@@ -349,11 +347,10 @@ test:
   aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: test
   acuant_assure_id_url: https://example.com
-  acuant_facial_match_url: https://example.com
+  acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
-  acuant_passlive_url: https://example.com
+  acuant_passlive_url: https://liveness.example.com
   acuant_sdk_document_capture_enabled: 'false'
-  acuant_simulator: 'false'
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -380,6 +377,7 @@ test:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
+  doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'

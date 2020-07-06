@@ -13,11 +13,11 @@ feature 'idv review step' do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
-    expect(page).to have_content('Jane')
-    expect(page).to have_content('Doe')
-    expect(page).to have_content('1 Street')
-    expect(page).to have_content('New York, NY 11364')
-    expect(page).to have_content('October 05, 1938')
+    expect(page).to have_content('FAKEY')
+    expect(page).to have_content('MCFAKERSON')
+    expect(page).to have_content('1 FAKE RD')
+    expect(page).to have_content('GREAT FALLS, MT 59010')
+    expect(page).to have_content('October 06, 1938')
     expect(page).to have_content('666-66-1234')
     expect(page).to have_content('+1 202-555-1212')
 

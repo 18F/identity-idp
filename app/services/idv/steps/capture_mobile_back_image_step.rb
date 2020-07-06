@@ -2,19 +2,22 @@ module Idv
   module Steps
     class CaptureMobileBackImageStep < DocAuthBaseStep
       def call
-        good, data, analytics_hash = post_back_image
-        return failure(data, analytics_hash) unless good
+        back_image_response = post_back_image
+        if back_image_response.success?
+          handle_back_image_success
+        else
+          failure(back_image_response.errors.first, back_image_response.to_h)
+        end
+      end
 
-        failure_data, _data = verify_back_image(reset_step: :mobile_front_image)
-        return failure_data if failure_data
+      private
 
+      def handle_back_image_success
         return if liveness_checking_enabled?
 
         mark_step_complete(:selfie)
         CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
       end
-
-      private
 
       def form_submit
         Idv::ImageUploadForm.new.submit(permit(:image, :image_data_url))

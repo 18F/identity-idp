@@ -127,6 +127,10 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
+    two_factor_aal3_choice: Additional authentication required
+    two_factor_aal3_choice_intro: This app requires a higher level of security. You
+      need to verify your identity using a physical device such as a security key
+      or government employee ID (PIV/CAC) to access your information.
     two_factor_choice: Configuration de la méthode d'authentification
     two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
       puissiez vous connecter à votre compte.

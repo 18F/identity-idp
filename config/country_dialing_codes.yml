@@ -433,7 +433,7 @@ JE:
 JO:
   name: Jordan
   country_code: '962'
-  sms_only: true
+  sms_only: false
 KZ:
   name: Kazakhstan
   country_code: '7'

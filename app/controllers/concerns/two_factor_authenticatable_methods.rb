@@ -47,6 +47,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     return unless initial_authentication_context?
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
+    return if aal3_policy.aal3_configured_but_not_used?
 
     redirect_to after_otp_verification_confirmation_url
   end

@@ -99,7 +99,7 @@ describe RegisterUserEmailForm do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
         captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        form = RegisterUserEmailForm.new(captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
@@ -120,7 +120,7 @@ describe RegisterUserEmailForm do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
         captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        form = RegisterUserEmailForm.new(captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,

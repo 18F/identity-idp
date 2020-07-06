@@ -85,6 +85,10 @@ RSpec.configure do |config|
     Capybara.use_default_driver
   end
 
+  config.before(:each) do
+    DocAuthMock::DocAuthMockClient.reset!
+  end
+
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
     example.run
