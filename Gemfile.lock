@@ -717,7 +717,6 @@ DEPENDENCIES
   derailed (>= 0.1.0)
   device_detector
   devise (~> 4.7.1)
-  dotenv
   dotiw (>= 4.0.1)
   email_spec
   exception_notification (>= 4.4.0)
