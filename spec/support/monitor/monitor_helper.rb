@@ -70,15 +70,6 @@ class MonitorHelper
     Capybara.reset_session!
   end
 
-  # local tests use "example.com" as the domain in emails but they actually
-  # render on localhost, so we need to patch them to be relative
-  def to_local_url(url)
-    URI(url).tap do |uri|
-      uri.scheme = nil
-      uri.host = nil
-    end.to_s
-  end
-
   def check_for_password_reset_link
     email.scan_emails_and_extract(
       subject: 'Reset your password',

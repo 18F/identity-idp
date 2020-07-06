@@ -47,6 +47,15 @@ class MonitorEmailHelper
     raise "failed to find email that matched #{regex}"
   end
 
+  # local tests use "example.com" as the domain in emails but they actually
+  # render on localhost, so we need to patch them to be relative
+  def to_local_url(url)
+    URI(url).tap do |uri|
+      uri.scheme = nil
+      uri.host = nil
+    end.to_s
+  end
+
   def check_and_sleep(count: 5, sleep_duration: 3)
     count.times do
       result = yield
