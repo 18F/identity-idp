@@ -180,8 +180,6 @@ class MonitorHelper
     context.fill_in 'user_email', with: email_address
     context.click_on 'Submit'
     confirmation_link = check_for_confirmation_link
-    context.expect(confirmation_link).to context.be_present
-    # puts "Visiting #{confirmation_link}"
     context.visit confirmation_link
     context.fill_in 'password_form_password', with: password
     submit_password
@@ -205,7 +203,6 @@ class MonitorHelper
       setup_backup_codes
     end
 
-    # puts "created account for #{email_address}"
     email_address
   end
 
