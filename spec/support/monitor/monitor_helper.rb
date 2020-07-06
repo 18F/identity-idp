@@ -12,8 +12,8 @@ class MonitorHelper
     @context = context
   end
 
-  def gmail
-    @gmail ||= GmailHelper.new(email_address, password)
+  def email
+    @email ||= MonitorEmailHelper.new(email: email_address, password: password, local: local?)
   end
 
   def setup
@@ -22,7 +22,7 @@ class MonitorHelper
     else
       check_env_variables!
       reset_sessions
-      gmail.inbox_clear
+      email.inbox_clear
     end
   end
 
@@ -80,15 +80,15 @@ class MonitorHelper
   end
 
   def check_for_password_reset_link
-    scan_emails_and_extract(
+    email.scan_emails_and_extract(
       subject: 'Reset your password',
       regex: /(?<link>https?:.+reset_password_token=[\w\-]+)/,
     )
   end
 
   def check_for_confirmation_link
-    scan_emails_and_extract(
-      subjects: [
+    email.scan_emails_and_extract(
+      subject: [
         'Confirm your email',
         'Email not found',
       ],
@@ -103,43 +103,7 @@ class MonitorHelper
       match_data = Telephony::Test::Message.messages.last.body.match(otp_regex)
       return match_data[:code] if match_data
     else
-      scan_emails_and_extract(regex: otp_regex)
-    end
-  end
-
-  def scan_emails_and_extract(regex:, subject: nil, subjects: nil)
-    all_subjects = [*subject, *subjects]
-
-    if local?
-      body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
-      if (match_data = body.match(regex))
-        return to_local_url(match_data[1])
-      end
-    else
-      check_and_sleep do
-        gmail.inbox_unread.each do |email|
-          if all_subjects.any?
-            next unless all_subjects.include?(email.subject)
-          end
-          body = email.message.parts.first.body
-          if (match_data = body.match(regex))
-            email.read!
-            return match_data[1]
-          end
-        end
-      end
-    end
-
-    raise "failed to find email that matched #{regex}"
-  end
-
-  def check_and_sleep(count: 5, sleep_duration: 3)
-    count.times do
-      result = yield
-
-      return result if result.present?
-
-      sleep sleep_duration
+      email.scan_emails_and_extract(regex: otp_regex)
     end
   end
 end
