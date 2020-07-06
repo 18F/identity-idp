@@ -102,7 +102,7 @@ class MonitorHelper
         return to_local_url(match_data[1])
       end
     else
-      sleep_and_check do
+      check_and_sleep do
         gmail.inbox_unread.each do |email|
           if all_subjects.any?
             next unless all_subjects.include?(email.subject)
@@ -119,7 +119,7 @@ class MonitorHelper
     raise "failed to find email that matched #{regex}"
   end
 
-  def sleep_and_check(count: 5, sleep_duration: 3)
+  def check_and_sleep(count: 5, sleep_duration: 3)
     count.times do
       result = yield
 
