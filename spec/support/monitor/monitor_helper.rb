@@ -20,9 +20,23 @@ class MonitorHelper
     if local?
       context.create(:user, email: sms_sign_in_email, password: password)
     else
+      check_env_variables!
       reset_sessions
       gmail.inbox_clear
     end
+  end
+
+  def check_env_variables!
+    expected_env_vars = %w[EMAIL EMAIL_PASSWORD GOOGLE_VOICE_PHONE SMS_SIGN_IN_EMAIL LOWER_ENV]
+    missing_env_vars = expected_env_vars - ENV.keys
+
+    message = <<~MESSAGE
+      make sure environment variables (#{missing_env_vars.join(', ')})
+      are in the CircleCI config, or have been exported properly if running
+      locally
+    MESSAGE
+
+    context.expect(missing_env_vars). to context.be_empty, message
   end
 
   def google_voice_phone
