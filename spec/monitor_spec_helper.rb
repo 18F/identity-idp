@@ -19,7 +19,7 @@ end
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = 5
 
-Dir['spec/support/monitor/**/*.rb'].sort.each { |file| require file }
+Dir['spec/support/monitor/**/*.rb'].sort.each { |file| require File.expand_path(file) }
 
 RSpec.configure do |config|
   config.color = true
@@ -38,8 +38,4 @@ RSpec.configure do |config|
   # config.include IdpHelpers
   # config.include IdvHelpers
   # config.include SpHelpers
-
-  config.before(:each) do
-    reset_sessions
-  end
 end
