@@ -102,7 +102,7 @@ class MonitorHelper
     else
       subjects = [
         'Confirm your email',
-        'Email not found'
+        'Email not found',
       ]
 
       sleep_and_check do
@@ -169,7 +169,6 @@ class MonitorHelper
     context.click_on 'Continue'
     context.click_on 'Continue'
   end
-
 
   # @return [String] email address for the account
   def create_new_account_up_until_password(email_address = random_email_address)
