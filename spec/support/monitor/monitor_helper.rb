@@ -1,7 +1,11 @@
+require 'support/monitor/monitor_url_helper'
+
 # For the "monitor" aka smoke tests
 # This class and its method allow us to run the tests against local code so we
 # can test in CI as well as against deployed environments
 class MonitorHelper
+  include MonitorUrlHelper
+
   attr_reader :context
 
   def initialize(context)
@@ -35,26 +39,6 @@ class MonitorHelper
 
   def password
     ENV['EMAIL_PASSWORD'] || 'salty pickles'
-  end
-
-  def oidc_sp_url
-    ENV["#{lower_env}_OIDC_SP_URL"]
-  end
-
-  def saml_sp_url
-    ENV["#{lower_env}_SAML_SP_URL"]
-  end
-
-  def idp_signin_url
-    ENV["#{lower_env}_IDP_URL"]
-  end
-
-  def idp_reset_password_url
-    idp_signin_url.to_s + '/users/password/new'
-  end
-
-  def lower_env
-    ENV['LOWER_ENV']
   end
 
   def local?
