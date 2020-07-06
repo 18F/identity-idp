@@ -6,6 +6,7 @@ module OpenidConnect
     include VerifyProfileConcern
     include SecureHeadersConcern
     include AuthorizationCountConcern
+    include Aal3Concern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -33,12 +34,6 @@ module OpenidConnect
       analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
       redirect_to bounced_url
       true
-    end
-
-    def confirm_user_has_aal3_mfa_if_requested
-      return unless aal3_policy.aal3_required?
-      return if mfa_policy.aal3_mfa_enabled?
-      redirect_to two_factor_options_url
     end
 
     def confirm_user_is_authenticated_with_fresh_mfa
