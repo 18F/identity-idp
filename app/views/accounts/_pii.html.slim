@@ -5,7 +5,7 @@
         .usa-alert__text
           = t('account.re_verify.banner')
           '
-          = link_to(t('account.re_verify.footer'), '/reauthn')
+          = link_to(t('account.re_verify.footer'), user_password_confirm_path)
 
 .mb3.profile-info-box
   .bg-lightest-blue.py1.px2.h6.caps.clearfix
@@ -44,7 +44,7 @@
       .sm-col.sm-col-4.px1.bold = t('account.index.phone')
       .sm-col.sm-col-8.px1 = pii.phone
 
-  - if !locked_for_session
+  - unless locked_for_session
     .bg-gray-lighter.px2.py1.clearfix.fs-12p
       - if !pii.obfuscated
         .col.col-12.sm-col-6
