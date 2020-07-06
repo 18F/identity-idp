@@ -20,10 +20,6 @@ class MonitorHelper
     if local?
       context.create(:user, email: sms_sign_in_email, password: password)
     else
-      # local testing of remote things
-      require 'dotenv'
-      Dotenv.load
-
       reset_sessions
       gmail.inbox_clear
     end

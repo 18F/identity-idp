@@ -104,7 +104,6 @@ group :test do
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
-  gem 'dotenv', require: false
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'fakefs', require: 'fakefs/safe'
