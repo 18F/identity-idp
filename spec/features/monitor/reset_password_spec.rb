@@ -8,6 +8,8 @@ class IdentityMonitor
   def setup
     if local?
       context.create(:user, email: sms_sign_in_email, password: password)
+    else
+      inbox_clear
     end
   end
 
@@ -23,11 +25,10 @@ class IdentityMonitor
   end
 
   def idp_reset_password_url
-    if local?
-      context.new_user_password_url
-    else
-      ENV["#{lower_env}_IDP_URL"] + '/users/password/new'
-    end
+    ENV["#{lower_env}_IDP_URL"].to_s + '/users/password/new'
+  end
+
+  def lower_env
   end
 
   def local?
@@ -38,12 +39,24 @@ class IdentityMonitor
     !local?
   end
 
+  # local tests use "example.com" as the domain in emails but they actually
+  # render on localhost, so we need to patch them to be relative
+  def to_local_url(url)
+    URI(url).tap do |uri|
+      uri.scheme = nil
+      uri.host = nil
+    end.to_s
+  end
+
   # GmailHelper
   def check_for_password_reset_link
+    password_reset_link_regex = /(?<link>https?:.+reset_password_token=[\w\-]+)/
+
     if local?
-      body = ActionMailer::Base.deliveries.last.body
-      match = body.match(/(https?:.+reset_password_token=[\w\-]+)/)
-      match[1] if match
+      body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
+      if (match = body.match(password_reset_link_regex))
+        to_local_url(match[:link])
+      end
     end
   end
 end
