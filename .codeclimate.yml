@@ -11,6 +11,8 @@ checks:
   method-complexity:
     config:
       threshold: 15
+    exclude_patterns:
+      - 'spec/support/monitor/monitor_email_helper.rb'
   method-count:
     enabled: false
   method-lines:
