@@ -99,7 +99,7 @@ class MonitorHelper
     if local?
       body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
       if (match_data = body.match(regex))
-        to_local_url(match_data[1])
+        return to_local_url(match_data[1])
       end
     else
       sleep_and_check do
@@ -110,11 +110,13 @@ class MonitorHelper
           body = email.message.parts.first.body
           if (match_data = body.match(regex))
             email.read!
-            break match_data[1]
+            return match_data[1]
           end
         end
       end
     end
+
+    raise "failed to find email that matched #{regex}"
   end
 
   def sleep_and_check(count: 5, sleep_duration: 3)
@@ -125,6 +127,5 @@ class MonitorHelper
 
       sleep sleep_duration
     end
-    nil
   end
 end
