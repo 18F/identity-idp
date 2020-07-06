@@ -70,52 +70,20 @@ class MonitorHelper
   end
 
   def check_for_password_reset_link
-    password_reset_link_regex = /(?<link>https?:.+reset_password_token=[\w\-]+)/
-
-    if local?
-      body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
-      if (match_data = body.match(password_reset_link_regex))
-        to_local_url(match_data[:link])
-      end
-    else
-      sleep_and_check do
-        gmail.inbox_unread.each do |email|
-          next unless email.subject == 'Reset your password'
-          body = email.message.parts.first.body
-          if (match_data = body.match(password_reset_link_regex))
-            email.read!
-            break match_data[:link]
-          end
-        end
-      end
-    end
+    scan_emails_and_extract(
+      subject: 'Reset your password',
+      regex: /(?<link>https?:.+reset_password_token=[\w\-]+)/
+    )
   end
 
   def check_for_confirmation_link
-    confirmation_link_regex = /(?<link>https?:.+confirmation_token=[\w\-]+)/
-
-    if local?
-      body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
-      if (match_data = body.match(confirmation_link_regex))
-        to_local_url(match_data[:link])
-      end
-    else
-      subjects = [
+    scan_emails_and_extract(
+      subjects: [
         'Confirm your email',
         'Email not found',
-      ]
-
-      sleep_and_check do
-        gmail.inbox_unread.each do |email|
-          next unless subjects.include?(email.subject)
-          body = email.message.parts.first.body
-          if (match_data = body.match(confirmation_link_regex))
-            email.read!
-            break match_data[:link]
-          end
-        end
-      end
-    end
+      ],
+      regex: /(?<link>https?:.+confirmation_token=[\w\-]+)/
+    )
   end
 
   def check_for_otp
@@ -125,15 +93,31 @@ class MonitorHelper
       match_data = Telephony::Test::Message.messages.last.body.match(otp_regex)
       return match_data[:code] if match_data
     else
+      scan_emails_and_extract(
+        regex: otp_regex
+      )
+    end
+  end
+
+  def scan_emails_and_extract(regex:, subject: nil, subjects: nil)
+    all_subjects = [*subject, *subjects]
+
+    if local?
+      body = ActionMailer::Base.deliveries.last.body.parts.first.to_s
+      if (match_data = body.match(regex))
+        to_local_url(match_data[1])
+      end
+    else
       sleep_and_check do
         gmail.inbox_unread.each do |email|
+          if all_subjects.any?
+            next unless all_subjects.include?(email.subject)
+          end
           body = email.message.parts.first.body
-          match_data = body.match(otp_regex)
-
-          next unless match_data
-
-          email.read!
-          break match_data[:code]
+          if (match_data = body.match(regex))
+            email.read!
+            break match_data[1]
+          end
         end
       end
     end
