@@ -16,6 +16,10 @@ module MonitorUrlHelper
   end
 
   def idp_reset_password_url
-    idp_signin_url.to_s + '/users/password/new'
+    "#{idp_signin_url}/users/password/new"
+  end
+
+  def idp_signup_url
+    "#{idp_signin_url}/sign_up/enter_email"
   end
 end
