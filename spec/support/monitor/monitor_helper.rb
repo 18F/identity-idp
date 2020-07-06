@@ -85,7 +85,6 @@ class MonitorHelper
     end.to_s
   end
 
-  # GmailHelper
   def check_for_password_reset_link
     password_reset_link_regex = /(?<link>https?:.+reset_password_token=[\w\-]+)/
 
