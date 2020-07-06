@@ -1,9 +1,13 @@
-.mb3.profile-info-box
-  - if locked_for_session
+- if locked_for_session
+  .mb2
     .usa-alert.usa-alert--warning
       .usa-alert__body
         .usa-alert__text
           = t('account.re_verify.banner')
+          '
+          = link_to(t('account.re_verify.footer'), user_password_confirm_path)
+
+.mb3.profile-info-box
   .bg-lightest-blue.py1.px2.h6.caps.clearfix
     .col.col-11
       = t('headings.account.profile_info')
@@ -40,21 +44,16 @@
       .sm-col.sm-col-4.px1.bold = t('account.index.phone')
       .sm-col.sm-col-8.px1 = pii.phone
 
-  .bg-gray-lighter.px2.py1.clearfix.fs-12p
-    - if !pii.obfuscated
-      .col.col-12.sm-col-6
-        = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
-        = t('account.security.text')
-      = link_to t('account.security.link'), MarketingSite.help_url
-
-    - elsif locked_for_session
-      .col.col-12.sm-col-6
-        = t('account.re_verify.footer')
-      .col.mx6
-        .usa-button.usa-button--outline.usa-button--small.col-md.grid-offset-4
-          = link_to t('account.verify'), '/reauthn'
-    - else
-      .col.col-12.sm-col-6
-        = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
-        = t('account.security.text')
+  - unless locked_for_session
+    .bg-gray-lighter.px2.py1.clearfix.fs-12p
+      - if !pii.obfuscated
+        .col.col-12.sm-col-6
+          = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
+          = t('account.security.text')
         = link_to t('account.security.link'), MarketingSite.help_url
+
+      - else
+        .col.col-12.sm-col-6
+          = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
+          = t('account.security.text')
+          = link_to t('account.security.link'), MarketingSite.help_url
