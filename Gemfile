@@ -108,6 +108,7 @@ group :test do
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
+  gem 'gmail'
   gem 'rack-test', '>= 1.1.0'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rails-controller-testing', '>= 1.0.4'
