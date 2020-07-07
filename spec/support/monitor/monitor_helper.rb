@@ -12,47 +12,22 @@ class MonitorHelper
     @context = context
   end
 
+  def config
+    @config ||= MonitorConfig.new
+  end
+
   def email
-    @email ||= MonitorEmailHelper.new(email: email_address, password: password, local: local?)
+    @email ||= MonitorEmailHelper.new(email: config.email_address, password: config.password, local: local?)
   end
 
   def setup
     if local?
-      context.create(:user, email: sms_sign_in_email, password: password)
+      context.create(:user, email: config.sms_sign_in_email, password: config.password)
     else
-      check_env_variables!
+      config.check_env_variables!
       reset_sessions
       email.inbox_clear
     end
-  end
-
-  def check_env_variables!
-    expected_env_vars = %w[EMAIL EMAIL_PASSWORD GOOGLE_VOICE_PHONE SMS_SIGN_IN_EMAIL LOWER_ENV]
-    missing_env_vars = expected_env_vars - ENV.keys
-
-    message = <<~MESSAGE
-      make sure environment variables (#{missing_env_vars.join(', ')})
-      are in the CircleCI config, or have been exported properly if running
-      locally
-    MESSAGE
-
-    context.expect(missing_env_vars). to context.be_empty, message
-  end
-
-  def google_voice_phone
-    ENV['GOOGLE_VOICE_PHONE'] || '18888675309'
-  end
-
-  def email_address
-    ENV['EMAIL'] || 'test@example.com'
-  end
-
-  def sms_sign_in_email
-    ENV['SMS_SIGN_IN_EMAIL'] || 'test+sms@example.com'
-  end
-
-  def password
-    ENV['EMAIL_PASSWORD'] || 'salty pickles'
   end
 
   def local?
@@ -62,11 +37,11 @@ class MonitorHelper
   # Capybara.reset_session! deletes the cookies for the current site. As such
   # we need to visit each site individually and reset there.
   def reset_sessions
-    context.visit idp_signin_url
+    context.visit config.idp_signin_url
     Capybara.reset_session!
-    context.visit oidc_sp_url if oidc_sp_url
+    context.visit config.oidc_sp_url if config.oidc_sp_url
     Capybara.reset_session!
-    context.visit saml_sp_url if saml_sp_url
+    context.visit config.saml_sp_url if config.saml_sp_url
     Capybara.reset_session!
   end
 

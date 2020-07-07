@@ -1,7 +1,7 @@
 module MonitorIdpSteps
   def random_email_address
     random_str = SecureRandom.hex(12)
-    monitor.email_address.dup.gsub(/@/, "+#{random_str}@")
+    monitor.config.email_address.dup.gsub(/@/, "+#{random_str}@")
   end
 
   def submit_password
@@ -25,7 +25,7 @@ module MonitorIdpSteps
     click_on 'Submit'
     confirmation_link = monitor.check_for_confirmation_link
     visit confirmation_link
-    fill_in 'password_form_password', with: monitor.password
+    fill_in 'password_form_password', with: monitor.config.password
     submit_password
 
     email_address
@@ -36,7 +36,7 @@ module MonitorIdpSteps
     email_address = create_new_account_up_until_password
     find("label[for='two_factor_options_form_selection_phone']").click
     click_on 'Continue'
-    fill_in 'new_phone_form_phone', with: monitor.google_voice_phone
+    fill_in 'new_phone_form_phone', with: monitor.config.google_voice_phone
     click_send_otp
     otp = monitor.check_for_otp
     fill_in 'code', with: otp
@@ -52,7 +52,7 @@ module MonitorIdpSteps
 
   def sign_in_and_2fa(email)
     fill_in 'user_email', with: email
-    fill_in 'user_password', with: monitor.password
+    fill_in 'user_password', with: monitor.config.password
     click_on 'Sign in'
     fill_in 'code', with: monitor.check_for_otp
     uncheck 'Remember this browser'
