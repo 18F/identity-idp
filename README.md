@@ -230,7 +230,7 @@ The smoke tests are a series of RSpec tests designed to run against deployed env
 To run the smoke tests against a deployed server, make sure you set up a `.env` file with the right configuration values, see [monitor_config.rb](spec/support/monitor/monitor_config.rb) for the full list of environment variables used. The script below will `source` that file and add the variables to the environment.
 
 ```bash
-LOWER_ENV=INT ./bin/smoke_test --remote
+MONITOR_ENV=INT ./bin/smoke_test --remote
 ```
 
 #### Speeding up local development and testing
