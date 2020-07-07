@@ -31,16 +31,16 @@ RSpec.describe MarketingSite do
 
   describe '.messaging_practices_url' do
     it 'points to messaging practices section of the privacy page' do
-      expect(MarketingSite.messaging_practices_url).to \
-        eq('https://www.login.gov/policy/#our-messaging-practices')
+      expect(MarketingSite.messaging_practices_url).
+        to eq('https://www.login.gov/policy/#our-messaging-practices')
     end
 
     context 'when the user has set their locale to :es' do
       before { I18n.locale = :es }
 
       it 'points to the privacy page section with the locale appended' do
-        expect(MarketingSite.messaging_practices_url).to \
-          eq('https://www.login.gov/es/policy/#our-messaging-practices')
+        expect(MarketingSite.messaging_practices_url).
+          to eq('https://www.login.gov/es/policy/#our-messaging-practices')
       end
     end
   end
