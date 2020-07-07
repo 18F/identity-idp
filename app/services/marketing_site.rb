@@ -15,7 +15,7 @@ class MarketingSite
   end
 
   def self.messaging_practices_url
-    "#{self.privacy_url}/#our-messaging-practices"
+    "#{privacy_url}/#our-messaging-practices"
   end
 
   def self.contact_url
