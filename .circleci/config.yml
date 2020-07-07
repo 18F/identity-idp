@@ -3,16 +3,15 @@
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 #
 version: 2
-jobs:
-  build:
-    parallelism: 4
+
+executors:
+  # Common container definition used by all jobs
+  ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
       - image: circleci/ruby:2.6.5-node-browsers
         environment:
           RAILS_ENV: test
-          CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
-          COVERAGE: true
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -23,10 +22,9 @@ jobs:
 
       - image: redis:4.0.1
 
-    working_directory: ~/identity-idp
-
+commands:
+  bundle-yarn-install:
     steps:
-      - checkout
       - restore-cache:
           keys:
             - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
@@ -49,6 +47,20 @@ jobs:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+
+jobs:
+  build:
+    environment:
+      CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
+      COVERAGE: true
+
+    parallelism: 4
+
+    working_directory: ~/identity-idp
+
+    steps:
+      - checkout
+      - bundle-yarn-install
       - run:
           name: Install AWS CLI
           command: |
@@ -137,9 +149,20 @@ jobs:
           docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
+  smoketest-staging:
+    environment:
+      MONITOR_ENV: STAGING
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: "bin/smoke_test --remote --no-source-env"
+
 workflows:
   version: 2
   release:
+    executor: ruby_browsers
     jobs:
       - build
       - build-latest-dev-container:
@@ -154,3 +177,18 @@ workflows:
           filters:
             tags:
               only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
+
+  # STAGING
+  smoketest-staging-workflow:
+    triggers:
+      - schedule:
+          # This test is run on the 10th minute of the hour, staggered separately from the
+          # smoke tests in the identity-monitor repo
+          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
+          cron: "10 * * * *"
+          filters:
+            branches:
+              only:
+                - stages/staging
+    jobs:
+      - smoketest-staging
