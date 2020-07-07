@@ -17,7 +17,11 @@ class MonitorHelper
   end
 
   def email
-    @email ||= MonitorEmailHelper.new(email: config.email_address, password: config.password, local: local?)
+    @email ||= MonitorEmailHelper.new(
+      email: config.email_address,
+      password: config.password,
+      local: local?,
+    )
   end
 
   def setup
