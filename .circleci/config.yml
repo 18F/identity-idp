@@ -50,6 +50,8 @@ commands:
 
 jobs:
   build:
+    executor: ruby_browsers
+
     environment:
       CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
       COVERAGE: true
@@ -150,6 +152,7 @@ jobs:
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
   smoketest-staging:
+    executor: ruby_browsers
     environment:
       MONITOR_ENV: STAGING
     steps:
@@ -162,7 +165,6 @@ jobs:
 workflows:
   version: 2
   release:
-    executor: ruby_browsers
     jobs:
       - build
       - build-latest-dev-container:
