@@ -43,12 +43,12 @@ class MonitorConfig
 
   # Looks up the OIDC service provider for that environment, example key: MONITOR_INT_OIDC_SP_URL
   def oidc_sp_url
-    ENV["MONITOR_#{monitor_env}_OIDC_SP_URL"]
+    ENV["MONITOR_#{monitor_env}_OIDC_SP_URL"] || '/test/oidc'
   end
 
   # Looks up the SML service provider for that environment, example key: MONITOR_INT_SAML_SP_URL
   def saml_sp_url
-    ENV["MONITOR_#{monitor_env}_SAML_SP_URL"]
+    ENV["MONITOR_#{monitor_env}_SAML_SP_URL"] || '/test/saml/login'
   end
 
   # Looks up the IDP for that environment, example key: MONITOR_IDP_URL

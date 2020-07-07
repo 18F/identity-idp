@@ -38,6 +38,26 @@ class MonitorHelper
     defined?(Rails) && Rails.env.test?
   end
 
+  def remote?
+    !local?
+  end
+
+  def filter_if(env_name)
+    return if local? # always run all tests on local
+
+    if env_name != config.monitor_env
+      context.skip "skipping test only meant for #{env_name}"
+    end
+  end
+
+  def filter_unless(env_name)
+    return if local? # always run all tests on local
+
+    if env_name == config.monitor_env
+      context.skip "skipping test not meant for #{env_name}"
+    end
+  end
+
   # Capybara.reset_session! deletes the cookies for the current site. As such
   # we need to visit each site individually and reset there.
   def reset_sessions

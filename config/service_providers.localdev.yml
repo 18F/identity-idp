@@ -168,6 +168,7 @@ test:
     redirect_uris:
       - 'http://localhost:7654/auth/result'
       - 'https://example.com'
+      - 'http://www.example.com/test/oidc'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
