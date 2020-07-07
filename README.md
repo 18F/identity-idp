@@ -219,6 +219,20 @@ To run a subset of tests excluding slow tests (such as accessibility specs):
 $ make fast_test
 ```
 
+#### Smoke Tests
+
+The smoke tests are a series of RSpec tests designed to run against deployed environments. To run them against the local Rails server:
+
+```bash
+./bin/smoke_test --local
+```
+
+To run the smoke tests against a deployed server, make sure you set up a `.env` file with the right configuration values, see [monitor_config.rb](spec/support/monitor/monitor_config.rb) for the full list of environment variables used. The script below will `source` that file and add the variables to the environment.
+
+```bash
+LOWER_ENV=INT ./bin/smoke_test --remote
+```
+
 #### Speeding up local development and testing
 To automatically run the test that corresponds to the file you are editing,
 run `bundle exec guard` with the env var `GUARD_RSPEC_CMD` set to your preferred
