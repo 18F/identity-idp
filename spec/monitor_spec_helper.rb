@@ -1,6 +1,5 @@
-# This file is a version of spec_helper that does't load Rails, we use it
-# when running monitor specs against deployed apps where we don't have access to the internals
-
+# This file is a version of spec_helper that doesn't load Rails, we use it when running
+# monitor (smoke test) specs against deployed apps where we don't have access to the internals
 require 'capybara/rspec'
 require 'webdrivers/chromedriver'
 require 'active_support/all'
