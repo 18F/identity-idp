@@ -78,15 +78,17 @@ commands:
               export HOME=$(getent passwd $(id -un) | cut -d: -f6)
             fi
 
+            EXPANDED_CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
+
             git config --global gc.auto 0 || true
 
-            if [ -e "$CIRCLE_WORKING_DIRECTORY/.git" ]
+            if [ -e "$EXPANDED_CIRCLE_WORKING_DIRECTORY/.git" ]
             then
-              cd "$CIRCLE_WORKING_DIRECTORY"
+              cd "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
               git remote set-url origin "$CIRCLE_REPOSITORY_URL_AS_HTTPS" || true
             else
-              mkdir -p "$CIRCLE_WORKING_DIRECTORY"
-              cd "$CIRCLE_WORKING_DIRECTORY"
+              mkdir -p "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
+              cd "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
               git clone "$CIRCLE_REPOSITORY_URL_AS_HTTPS" .
             fi
 
