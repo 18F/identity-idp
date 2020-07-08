@@ -4,6 +4,8 @@
 #
 version: 2.1
 
+orbs:
+  jq: circleci/jq@2.2.0
 executors:
   # Common container definition used by all jobs
   ruby_browsers:
@@ -48,6 +50,45 @@ commands:
           paths:
             - ~/.cache/yarn
 
+  # Custom version of "checkout" that checks out a SHA deployed to DEPLOY_URL env
+  checkout-deployed-sha:
+    parameters:
+      sha_url:
+        type: string
+    steps:
+      - run:
+          name: Custom Checkout of Deployed SHA
+          command: |
+            DEPLOYED_SHA=$(curl --silent << parameters.sha_url >> | jq -r '.git_sha')
+
+            # Workaround old docker images with incorrect $HOME
+            # check https://github.com/docker/docker/issues/2968 for details
+            if [ "${HOME}" = "/" ]
+            then
+              export HOME=$(getent passwd $(id -un) | cut -d: -f6)
+            fi
+
+            # Use HTTPS to check out, since we don't need to authenticate
+            git config --global url."https://github.com".insteadOf "ssh://git@github.com" || true
+            git config --global gc.auto 0 || true
+
+            if [ -e /home/circleci/project/.git ]
+            then
+              cd /home/circleci/project
+              git remote set-url origin "$CIRCLE_REPOSITORY_URL" || true
+            else
+              mkdir -p /home/circleci/project
+              cd /home/circleci/project
+              git clone "$CIRCLE_REPOSITORY_URL" .
+            fi
+
+            if [ -n "$CIRCLE_TAG" ]
+            then
+              git fetch --force origin "refs/tags/${CIRCLE_TAG}"
+            else
+              git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
+            fi
+            git reset --hard "$DEPLOYED_SHA"
 jobs:
   build:
     executor: ruby_browsers
@@ -151,6 +192,18 @@ jobs:
           docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
+  smoketest-int:
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: INT
+    steps:
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: "bin/smoke_test --remote --no-source-env"
   smoketest-staging:
     executor: ruby_browsers
     environment:
@@ -180,14 +233,29 @@ workflows:
             tags:
               only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
 
-  # STAGING
-  smoketest-staging-workflow:
+  # INT
+  smoketest-int-workflow:
     triggers:
       - schedule:
           # This test is run on the 10th minute of the hour, staggered separately from the
           # smoke tests in the identity-monitor repo
           # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
           cron: "10 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - smoketest-int
+
+  # STAGING
+  smoketest-staging-workflow:
+    triggers:
+      - schedule:
+          # This test is run on the 20th minute of the hour, staggered separately from the
+          # smoke tests in the identity-monitor repo
+          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
+          cron: "20 * * * *"
           filters:
             branches:
               only:
