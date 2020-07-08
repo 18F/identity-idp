@@ -215,8 +215,7 @@ jobs:
       - run:
           name: "Smoke tests"
           command: |
-            ls -al bin
-            ls -al bin/smoke_test
+            head -n 3 bin/smoke_test
             bin/smoke_test --remote --no-source-env
   smoketest-staging:
     working_directory: ~/identity-idp
