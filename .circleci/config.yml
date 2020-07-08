@@ -50,7 +50,7 @@ commands:
           paths:
             - ~/.cache/yarn
 
-  # Custom version of "checkout" that checks out a SHA deployed to DEPLOY_URL env
+  # Custom version of "checkout" that checks out a SHA deployed to sha_url param
   # Adapter from https://gist.github.com/drazisil/e97dc21454120251472154de1c1b1c7b
   checkout-deployed-sha:
     parameters:
