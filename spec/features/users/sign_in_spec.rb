@@ -95,11 +95,11 @@ feature 'Sign in' do
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
-    expected_form_action = %w[
+    expected_form_action = <<-STR.squish
       form-action https://*.pivcac.test.example.com 'self'
       http://localhost:7654/auth/result https://example.com
       http://www.example.com/test/oidc;
-    ].join(' ')
+    STR
 
     expect(page.response_headers['Content-Security-Policy']).
       to(include(expected_form_action))
