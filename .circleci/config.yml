@@ -211,7 +211,7 @@ jobs:
       - run:
           name: "Smoke tests"
           command: |
-            ./bin/smoke_test --remote --no-source-env
+            bin/smoke_test --remote --no-source-env
   smoketest-staging:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -223,7 +223,7 @@ jobs:
       - run:
           name: "Smoke tests"
           command: |
-            ./bin/smoke_test --remote --no-source-env
+            bin/smoke_test --remote --no-source-env
 
 workflows:
   version: 2
