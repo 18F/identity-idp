@@ -1,6 +1,6 @@
 # Manages all the environment variables used in smoke tests
 class MonitorConfig
-  def initialize(local: local)
+  def initialize(local:)
     @local = local
   end
 
