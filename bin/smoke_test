@@ -1,4 +1,4 @@
-#!/bin/bash -euo pipefail
+#!/bin/bash -eo pipefail
 
 params=""
 spec_helper="rails_helper"
