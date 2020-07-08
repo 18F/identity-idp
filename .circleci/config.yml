@@ -78,13 +78,13 @@ commands:
 
             git config --global gc.auto 0 || true
 
-            if [ -e /home/circleci/project/.git ]
+            if [ -e "$CIRCLE_WORKING_DIRECTORY/.git" ]
             then
-              cd /home/circleci/project
+              cd "$CIRCLE_WORKING_DIRECTORY"
               git remote set-url origin "$CIRCLE_REPOSITORY_URL_AS_HTTPS" || true
             else
-              mkdir -p /home/circleci/project
-              cd /home/circleci/project
+              mkdir -p "$CIRCLE_WORKING_DIRECTORY"
+              cd "$CIRCLE_WORKING_DIRECTORY"
               git clone "$CIRCLE_REPOSITORY_URL_AS_HTTPS" .
             fi
 
@@ -95,10 +95,6 @@ commands:
               git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
             fi
             git reset --hard "$DEPLOYED_SHA"
-
-            echo "checking if this is here"
-            ls -al bin/smoke_test
-            echo "$(ls -al bin/smoke_test)"
 jobs:
   build:
     executor: ruby_browsers
