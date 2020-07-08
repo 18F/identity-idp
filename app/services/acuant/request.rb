@@ -58,7 +58,7 @@ module Acuant
 
     def faraday_connection
       Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
-        conn.adapter :typhoeus
+        conn.adapter :net_http
         conn.basic_auth(
           Figaro.env.acuant_assure_id_username,
           Figaro.env.acuant_assure_id_password,
