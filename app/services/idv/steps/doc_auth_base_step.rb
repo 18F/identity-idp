@@ -146,6 +146,17 @@ module Idv
         mark_step_complete(:selfie) unless liveness_checking_enabled?
       end
 
+      def mark_document_capture_or_image_upload_steps_complete
+        if Figaro.env.document_capture_step_enabled == 'true'
+          mark_step_complete(:front_image)
+          mark_step_complete(:back_image)
+          mark_step_complete(:mobile_front_image)
+          mark_step_complete(:mobile_back_image)
+        else
+          mark_step_complete(:document_capture)
+        end
+      end
+
       def liveness_checking_enabled?
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end

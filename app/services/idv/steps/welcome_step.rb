@@ -1,7 +1,9 @@
 module Idv
   module Steps
     class WelcomeStep < DocAuthBaseStep
-      def call; end
+      def call
+        mark_document_capture_or_image_upload_steps_complete
+      end
 
       def form_submit
         Idv::ConsentForm.new.submit(consent_form_params)

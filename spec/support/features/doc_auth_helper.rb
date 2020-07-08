@@ -38,6 +38,10 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :ssn)
   end
 
+  def idv_doc_auth_document_capture_step
+    idv_doc_auth_step_path(step: :document_capture)
+  end
+
   def idv_doc_auth_front_image_step
     idv_doc_auth_step_path(step: :front_image)
   end
@@ -86,6 +90,11 @@ module DocAuthHelper
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
+  end
+
+  def complete_doc_auth_steps_before_document_capture_step
+    complete_doc_auth_steps_before_upload_step
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_doc_auth_steps_before_front_image_step
