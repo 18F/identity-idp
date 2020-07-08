@@ -65,6 +65,8 @@ commands:
             echo "URL: << parameters.sha_url >>"
             echo "SHA: $DEPLOYED_SHA"
 
+            pwd
+
             # Use HTTPS to check out, since we don't need to authenticate
             CIRCLE_REPOSITORY_URL_AS_HTTPS=$(echo $CIRCLE_REPOSITORY_URL | sed 's/git@github.com:/https:\/\/github.com\//g')
             echo "REPO: $CIRCLE_REPOSITORY_URL_AS_HTTPS"
@@ -96,6 +98,7 @@ commands:
             fi
             git reset --hard "$DEPLOYED_SHA"
 
+            pwd
             ls -al
 jobs:
   build:
