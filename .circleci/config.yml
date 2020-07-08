@@ -51,6 +51,7 @@ commands:
             - ~/.cache/yarn
 
   # Custom version of "checkout" that checks out a SHA deployed to DEPLOY_URL env
+  # Adapter from https://gist.github.com/drazisil/e97dc21454120251472154de1c1b1c7b
   checkout-deployed-sha:
     parameters:
       sha_url:
@@ -61,9 +62,14 @@ commands:
           command: |
             DEPLOYED_SHA=$(curl --silent << parameters.sha_url >> | jq -r '.git_sha')
 
+            echo "URL: << parameters.sha_url >>"
             echo "SHA: $DEPLOYED_SHA"
 
             echo "CIRCLE_REPOSITORY_URL: $CIRCLE_REPOSITORY_URL"
+
+            # Use HTTPS to check out, since we don't need to authenticate
+            CIRCLE_REPOSITORY_URL_AS_HTTPS=$(echo $CIRCLE_REPOSITORY_URL | sed 's/git@github.com:/https:\/\/github.com\//g')
+            echo "REPO: $CIRCLE_REPOSITORY_URL_AS_HTTPS"
 
             # Workaround old docker images with incorrect $HOME
             # check https://github.com/docker/docker/issues/2968 for details
@@ -72,18 +78,16 @@ commands:
               export HOME=$(getent passwd $(id -un) | cut -d: -f6)
             fi
 
-            # Use HTTPS to check out, since we don't need to authenticate
-            git config --global url."https://github.com".insteadOf "ssh://git@github.com" || true
             git config --global gc.auto 0 || true
 
             if [ -e /home/circleci/project/.git ]
             then
               cd /home/circleci/project
-              git remote set-url origin "$CIRCLE_REPOSITORY_URL" || true
+              git remote set-url origin "$CIRCLE_REPOSITORY_URL_AS_HTTPS" || true
             else
               mkdir -p /home/circleci/project
               cd /home/circleci/project
-              git clone "$CIRCLE_REPOSITORY_URL" .
+              git clone "$CIRCLE_REPOSITORY_URL_AS_HTTPS" .
             fi
 
             if [ -n "$CIRCLE_TAG" ]
