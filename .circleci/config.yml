@@ -95,6 +95,8 @@ commands:
               git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
             fi
             git reset --hard "$DEPLOYED_SHA"
+
+            ls -al
 jobs:
   build:
     executor: ruby_browsers
