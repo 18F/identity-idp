@@ -1,6 +1,7 @@
 RSpec.describe 'smoke test: create account' do
   include MonitorIdpSteps
   include MonitorSpSteps
+  include MonitorIdvSteps
 
   let(:monitor) { MonitorHelper.new(self) }
 
