@@ -5,8 +5,10 @@ import ReactDOM from 'react-dom';
 import Test from '../app/acuant/document_capture_new';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const reactContainer = document.getElementById('react');
-  ReactDOM.render(createElement(Test), reactContainer);
+  const reactContainer = document.getElementById('document-capture-form');
+  if (reactContainer) {
+    ReactDOM.render(createElement(Test), reactContainer);
+  }
   loadAndInitializeAcuantSdk();
   setDocumentCaptureFallbackTimeout();
 });
