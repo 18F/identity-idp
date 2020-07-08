@@ -7,7 +7,6 @@ module MonitorIdvSteps
     create_new_account_with_sms
     expect(page).to have_current_path('/verify/doc_auth/welcome')
 
-    # page.execute_script("document.getElementById('ial2_consent_given').click()")
     check 'ial2_consent_given', visible: :all, allow_label_click: true
     expect(page).to have_button('Continue', disabled: :all)
 
