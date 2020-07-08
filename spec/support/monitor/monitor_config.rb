@@ -1,5 +1,13 @@
 # Manages all the environment variables used in smoke tests
 class MonitorConfig
+  def initialize(local: local)
+    @local = local
+  end
+
+  def local?
+    @local
+  end
+
   def check_env_variables!
     expected_env_vars = %w[
       MONITOR_EMAIL
@@ -43,12 +51,12 @@ class MonitorConfig
 
   # Looks up the OIDC service provider for that environment, example key: MONITOR_INT_OIDC_SP_URL
   def oidc_sp_url
-    ENV["MONITOR_#{monitor_env}_OIDC_SP_URL"] || '/test/oidc'
+    ENV["MONITOR_#{monitor_env}_OIDC_SP_URL"] || (local? && '/test/oidc')
   end
 
   # Looks up the SML service provider for that environment, example key: MONITOR_INT_SAML_SP_URL
   def saml_sp_url
-    ENV["MONITOR_#{monitor_env}_SAML_SP_URL"] || '/test/saml/login'
+    ENV["MONITOR_#{monitor_env}_SAML_SP_URL"] || (local? && '/test/saml/login')
   end
 
   # Looks up the IDP for that environment, example key: MONITOR_IDP_URL

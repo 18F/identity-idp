@@ -13,7 +13,7 @@ class MonitorHelper
   end
 
   def config
-    @config ||= MonitorConfig.new
+    @config ||= MonitorConfig.new(local: local?)
   end
 
   def email
