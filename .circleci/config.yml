@@ -236,7 +236,7 @@ workflows:
   # temporary to test the custom checkout code
   custom_int_build:
     jobs:
-      smoketest-int
+      - smoketest-int
 
   # INT
   smoketest-int-workflow:
