@@ -29,7 +29,7 @@ module MonitorIdvSteps
     click_on 'Continue'
     expect(page).to have_current_path('/verify/doc_auth/ssn')
 
-    fill_in 'doc_auth_ssn', with: format("%09d", SecureRandom.random_number(1e9))
+    fill_in 'doc_auth_ssn', with: format('%09d', SecureRandom.random_number(1e9))
     click_on 'Continue'
     expect(page).to have_current_path('/verify/doc_auth/verify')
 
@@ -53,21 +53,23 @@ module MonitorIdvSteps
     end
     click_on 'Continue', class: 'personal-key-continue'
 
-    # TODO: figure out what feature flag enables this for local development
-    if monitor.remote?
-      fill_in 'personal_key', with: (code_words.join('-').downcase + extra_characters_get_ignored), disabled: :all
-      click_on 'Continue', class: 'personal-key-confirm'
+    # TODO: figure out what feature flag enables the rest of the branch for local development
+    return unless monitor.remote?
 
-      # HTML fallback for failed personal key
-      fill_in 'personal_key', with: (code_words.join('-').downcase), disabled: :all
-      click_on 'Continue', class: 'personal-key-confirm'
-    end
+    personal_key = code_words.join('-').downcase
+
+    fill_in 'personal_key', with: (personal_key + extra_characters_get_ignored), disabled: :all
+    click_on 'Continue', class: 'personal-key-confirm'
+
+    # HTML fallback for failed personal key
+    fill_in 'personal_key', with: personal_key, disabled: :all
+    click_on 'Continue', class: 'personal-key-confirm'
   end
 
   def click_doc_auth_fallback_link
-    if !page.has_css?('#doc_auth_image', visible: true)
-      fallback_link = page.find('#acuant-fallback-link', wait: 7)
-      fallback_link.click if fallback_link
-    end
+    return if page.has_css?('#doc_auth_image', visible: true)
+
+    fallback_link = page.find('#acuant-fallback-link', wait: 7)
+    fallback_link&.click
   end
 end

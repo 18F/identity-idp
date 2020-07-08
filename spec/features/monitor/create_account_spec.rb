@@ -15,7 +15,7 @@ RSpec.describe 'smoke test: create account' do
         visit_idp_from_oidc_sp
 
         click_on 'Create an account'
-        email_address = create_new_account_with_sms
+        create_new_account_with_sms
 
         expect_user_is_redirected_to_oidc_sp
 
@@ -25,7 +25,7 @@ RSpec.describe 'smoke test: create account' do
       it 'creates new account with TOTP for 2FA' do
         visit_idp_from_oidc_sp
         click_on 'Create an account'
-        email_address = create_new_account_with_totp
+        create_new_account_with_totp
 
         expect_user_is_redirected_to_oidc_sp
 
