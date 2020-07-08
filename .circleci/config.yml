@@ -65,8 +65,6 @@ commands:
             echo "URL: << parameters.sha_url >>"
             echo "SHA: $DEPLOYED_SHA"
 
-            echo "CIRCLE_REPOSITORY_URL: $CIRCLE_REPOSITORY_URL"
-
             # Use HTTPS to check out, since we don't need to authenticate
             CIRCLE_REPOSITORY_URL_AS_HTTPS=$(echo $CIRCLE_REPOSITORY_URL | sed 's/git@github.com:/https:\/\/github.com\//g')
             echo "REPO: $CIRCLE_REPOSITORY_URL_AS_HTTPS"
@@ -211,7 +209,7 @@ jobs:
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
-          command: "bin/smoke_test --remote --no-source-env"
+          command: "./bin/smoke_test --remote --no-source-env"
   smoketest-staging:
     executor: ruby_browsers
     environment:
@@ -221,7 +219,7 @@ jobs:
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
-          command: "bin/smoke_test --remote --no-source-env"
+          command: "./bin/smoke_test --remote --no-source-env"
 
 workflows:
   version: 2
