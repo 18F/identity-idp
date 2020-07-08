@@ -95,6 +95,10 @@ commands:
               git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
             fi
             git reset --hard "$DEPLOYED_SHA"
+
+            echo "checking if this is here"
+            ls -al bin/smoke_test
+            echo "$(ls -al bin/smoke_test)"
 jobs:
   build:
     executor: ruby_browsers
@@ -199,6 +203,7 @@ jobs:
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
   smoketest-int:
+    working_directory: ~/identity-idp
     executor: ruby_browsers
     environment:
       MONITOR_ENV: INT
@@ -212,6 +217,7 @@ jobs:
           command: |
             ./bin/smoke_test --remote --no-source-env
   smoketest-staging:
+    working_directory: ~/identity-idp
     executor: ruby_browsers
     environment:
       MONITOR_ENV: STAGING
