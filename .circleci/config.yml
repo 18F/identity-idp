@@ -209,7 +209,8 @@ jobs:
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
-          command: "./bin/smoke_test --remote --no-source-env"
+          command: |
+            ./bin/smoke_test --remote --no-source-env
   smoketest-staging:
     executor: ruby_browsers
     environment:
@@ -219,7 +220,8 @@ jobs:
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
-          command: "./bin/smoke_test --remote --no-source-env"
+          command: |
+            ./bin/smoke_test --remote --no-source-env
 
 workflows:
   version: 2
