@@ -66,9 +66,8 @@ en:
           instead of your email. You will need to provide your password to unlock
           your profile.
     re_verify:
-      banner: Your session has timed out. We've hidden your profile information to
-        protect your privacy.
-      footer: Please re-authenticate to view your profile information.
+      banner: We've hidden your profile information to protect your privacy.
+      footer: Authenticate to view your information.
     revoke_consent:
       link_title: Revoke Consent
       longer_description_html: Your information will no longer be shared with %{service_provider}.
@@ -78,5 +77,4 @@ en:
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.
-    verify: Re-Authenticate
     welcome: Welcome

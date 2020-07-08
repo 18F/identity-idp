@@ -46,6 +46,7 @@ database_statement_timeout: '2500'
 disallow_ial2_recovery:
 doc_capture_request_valid_for_minutes: '15'
 doc_auth_extend_timeout_by_minutes: '40'
+document_capture_step_enabled: 'false'
 email_from: no-reply@login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'

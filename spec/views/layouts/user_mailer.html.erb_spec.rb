@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'layouts/user_mailer.html.slim' do
+describe 'layouts/user_mailer.html.erb' do
   before do
     @mail = UserMailer.email_added('foo@example.com')
     allow(view).to receive(:message).and_return(@mail)
