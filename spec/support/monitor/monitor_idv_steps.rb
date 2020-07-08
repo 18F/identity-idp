@@ -52,7 +52,7 @@ module MonitorIdvSteps
     end
     click_on 'Continue', class: 'personal-key-continue'
 
-    # TODO: figure out what feature flag enables the rest of the branch for local development
+    # Need to figure out what feature flag enables the personal key code locally
     return unless monitor.remote?
 
     personal_key = code_words.join('-').downcase
