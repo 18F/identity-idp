@@ -41,6 +41,7 @@ class MonitorEmailHelper
             return match_data[1]
           end
         end
+        nil
       end
     end
 

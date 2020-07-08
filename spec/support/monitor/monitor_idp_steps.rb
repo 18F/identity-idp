@@ -27,7 +27,7 @@ module MonitorIdpSteps
     click_on 'Submit'
     confirmation_link = monitor.check_for_confirmation_link
     visit confirmation_link
-    fill_in 'password_form_password', with: monitor.config.password
+    fill_in 'password_form_password', with: monitor.config.login_gov_sign_in_password
     submit_password
 
     email_address
@@ -54,7 +54,7 @@ module MonitorIdpSteps
 
   def sign_in_and_2fa(email)
     fill_in 'user_email', with: email
-    fill_in 'user_password', with: monitor.config.password
+    fill_in 'user_password', with: monitor.config.login_gov_sign_in_password
     click_on 'Sign in'
     fill_in 'code', with: monitor.check_for_otp
     uncheck 'Remember this browser'

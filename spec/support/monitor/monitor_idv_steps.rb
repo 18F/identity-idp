@@ -42,7 +42,7 @@ module MonitorIdvSteps
     click_on 'Continue'
     expect(page).to have_current_path('/verify/review')
 
-    fill_in 'Password', with: monitor.config.password
+    fill_in 'Password', with: monitor.config.login_gov_sign_in_password
     click_on 'Continue'
     expect(page).to have_current_path('/verify/confirmations')
 

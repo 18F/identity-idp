@@ -19,14 +19,18 @@ class MonitorHelper
   def email
     @email ||= MonitorEmailHelper.new(
       email: config.email_address,
-      password: config.password,
+      password: config.email_password,
       local: local?,
     )
   end
 
   def setup
     if local?
-      context.create(:user, email: config.sms_sign_in_email, password: config.password)
+      context.create(:user,
+        :with_phone,
+        email: config.login_gov_sign_in_email,
+        password: config.login_gov_sign_in_password,
+      )
     else
       config.check_env_variables!
       reset_sessions
