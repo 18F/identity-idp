@@ -4,6 +4,8 @@ require 'capybara/rspec'
 require 'webdrivers/chromedriver'
 require 'active_support/all'
 
+Time.zone ||= ActiveSupport::TimeZone['UTC']
+
 Capybara.register_driver :chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--no-sandbox'

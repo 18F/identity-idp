@@ -13,20 +13,23 @@ class MonitorHelper
   end
 
   def config
-    @config ||= MonitorConfig.new
+    @config ||= MonitorConfig.new(local: local?)
   end
 
   def email
     @email ||= MonitorEmailHelper.new(
       email: config.email_address,
-      password: config.password,
+      password: config.email_password,
       local: local?,
     )
   end
 
   def setup
     if local?
-      context.create(:user, email: config.sms_sign_in_email, password: config.password)
+      context.create(:user,
+                     :with_phone,
+                     email: config.login_gov_sign_in_email,
+                     password: config.login_gov_sign_in_password)
     else
       config.check_env_variables!
       reset_sessions
@@ -36,6 +39,24 @@ class MonitorHelper
 
   def local?
     defined?(Rails) && Rails.env.test?
+  end
+
+  def remote?
+    !local?
+  end
+
+  def filter_if(env_name)
+    return if local? # always run all tests on local
+
+    return if env_name == config.monitor_env
+    context.skip "skipping test only meant for #{env_name}"
+  end
+
+  def filter_unless(env_name)
+    return if local? # always run all tests on local
+
+    return if env_name != config.monitor_env
+    context.skip "skipping test not meant for #{env_name}"
   end
 
   # Capybara.reset_session! deletes the cookies for the current site. As such
