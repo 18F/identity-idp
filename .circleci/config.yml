@@ -120,7 +120,7 @@ jobs:
     steps:
       - checkout
       # Temporary failure to test slack notification
-      - run: exit 0
+      - run: exit 1
       - notify-slack-smoke-test-status
       - bundle-yarn-install
       - run:
