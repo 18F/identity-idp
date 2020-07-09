@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   jq: circleci/jq@2.2.0
+  slack: circleci/slack@3.4.2
 executors:
   # Common container definition used by all jobs
   ruby_browsers:
@@ -97,6 +98,13 @@ commands:
               git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
             fi
             git reset --hard "$DEPLOYED_SHA"
+
+  notify-slack-smoke-test-status:
+    steps:
+      - slack/status:
+          fail_only: true
+          failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
+
 jobs:
   build:
     executor: ruby_browsers
@@ -214,6 +222,7 @@ jobs:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
   smoketest-int:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -228,6 +237,7 @@ jobs:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
   smoketest-staging:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -240,6 +250,7 @@ jobs:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
 
 workflows:
   version: 2
