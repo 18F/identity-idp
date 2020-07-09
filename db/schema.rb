@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_25_152453) do
+ActiveRecord::Schema.define(version: 2020_06_19_121722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_152453) do
     t.integer "ial2_quota"
     t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
+    t.string "deal_id"
     t.date "launch_date"
     t.string "iaa"
     t.date "iaa_start_date"
