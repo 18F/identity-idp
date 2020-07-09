@@ -104,6 +104,7 @@ commands:
       - slack/status:
           fail_only: true
           failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
+          include_project_field: false
 
 jobs:
   build:
