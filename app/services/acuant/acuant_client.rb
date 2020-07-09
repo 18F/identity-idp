@@ -20,6 +20,26 @@ module Acuant
       ).fetch
     end
 
+    def post_images(front_image:, back_image:, instance_id:)
+      byebug
+      front_response = Requests::UploadImageRequest.new(
+        instance_id: instance_id,
+        image_data: front_image,
+        side: :back,
+      ).fetch
+      back_response = Requests::UploadImageRequest.new(
+        instance_id: instance_id,
+        image_data: back_image,
+        side: :back,
+      ).fetch
+      Acuant::Response.new(
+        success: front_response.success? && back_response.success?,
+        errors: (front_response.errors || []) + (back_response.errors || []),
+        exception: front_response.exception || back_response.exception,
+        extra: { front_response: front_response, back_response: back_response },
+      )
+    end
+
     def get_results(instance_id:)
       Requests::GetResultsRequest.new(instance_id: instance_id).fetch
     end
