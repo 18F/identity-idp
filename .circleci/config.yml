@@ -266,7 +266,7 @@ workflows:
           # This test is run on the 0th minute of the hour, staggered separately from the
           # smoke tests in the identity-monitor repo
           # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
-          cron: "10 * * * *"
+          cron: "0 * * * *"
           filters:
             branches:
               only:
