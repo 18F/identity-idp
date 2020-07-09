@@ -200,6 +200,20 @@ jobs:
           docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
+  smoketest-dev:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: DEV
+    steps:
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
   smoketest-int:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -244,6 +258,21 @@ workflows:
           filters:
             tags:
               only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
+
+  # DEV
+  smoketest-dev-workflow:
+    triggers:
+      - schedule:
+          # This test is run on the 0th minute of the hour, staggered separately from the
+          # smoke tests in the identity-monitor repo
+          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
+          cron: "10 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - smoketest-dev
 
   # INT
   smoketest-int-workflow:
