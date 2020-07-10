@@ -1,18 +1,25 @@
 module Db
   module DocAuthLog
-    class DropOffRates
+    module DropOffRatesHelper
       STEPS = %w[welcome upload_option front_image back_image ssn verify_info doc_success phone
                  encrypt personal_key verified].freeze
 
-      def call(start, finish)
+      private
+
+      attr_reader :start, :finish, :results
+
+      def drop_off_rates_by_sp(issuer, start, finish)
+        @issuer = issuer
         @start = start
         @finish = finish
         generate_report
       end
 
-      private
-
-      attr_reader :start, :finish, :results
+      def drop_off_rates_all_sps(start, finish)
+        @start = start
+        @finish = finish
+        generate_report
+      end
 
       def generate_report
         @results = ["#{start} <= date user starts doc auth < #{finish}\n\n"]
@@ -23,19 +30,18 @@ module Db
         print_report(rates)
       end
 
+      def verified_profiles_in_range
+        ActiveRecord::Base.connection.execute(verified_user_counts_query)
+      end
+
       def drop_offs_in_range
         rates = ActiveRecord::Base.connection.execute(drop_offs_query)
         rates[0]
       end
 
-      def verified_profiles_in_range
+      def verified_profiles_count_for_issuer
         query = <<~SQL
-          select count(*) from
-            (select distinct user_id
-             from profiles
-             where verified_at is not null and user_id in
-               (select user_id from doc_auth_logs
-                where '#{start}' <= created_at and created_at < '#{finish}')) as tbl
+          select count(*) from identities where service_provider = '#{@issuer}'
         SQL
         ActiveRecord::Base.connection.execute(query)
       end
@@ -51,7 +57,7 @@ module Db
           count(verify_phone_view_at) as phone,
           count(encrypt_view_at) as encrypt,
           count(verified_view_at) as personal_key
-          from doc_auth_logs where '#{start}' <= created_at and created_at < '#{finish}'
+          from doc_auth_logs where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}' and issuer='#{@issuer}')
         SQL
       end
 

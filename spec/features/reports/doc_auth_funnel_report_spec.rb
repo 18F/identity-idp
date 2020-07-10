@@ -112,14 +112,14 @@ feature 'Doc Auth Funnel report' do
   end
 
   it 'does not create a doc_auth_log entry without a welcome first' do
-    Funnel::DocAuth::RegisterStep.call(user.id, 'upload', :view, true)
+    Funnel::DocAuth::RegisterStep.new(user.id, issuer).call('upload', :view, true)
 
     expect(DocAuthLog.count).to eq(0)
   end
 
   it 'does create a doc_auth_log entry when a welcome is first' do
-    Funnel::DocAuth::RegisterStep.call(user.id, 'welcome', :view, true)
-    Funnel::DocAuth::RegisterStep.call(user.id, 'upload', :view, true)
+    Funnel::DocAuth::RegisterStep.new(user.id, issuer).call('welcome', :view, true)
+    Funnel::DocAuth::RegisterStep.new(user.id, issuer).call('upload', :view, true)
 
     expect(DocAuthLog.count).to eq(1)
   end

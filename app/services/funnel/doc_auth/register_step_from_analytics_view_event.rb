@@ -8,9 +8,9 @@ module Funnel
         Analytics::IDV_USPS_ADDRESS_VISITED => :usps_address,
       }.freeze
 
-      def self.call(user_id, event, result)
+      def self.call(user_id, issuer, event, result)
         token = ANALYTICS_EVENT_TO_DOC_AUTH_LOG_TOKEN[event]
-        Funnel::DocAuth::RegisterStep.call(user_id, token, :view, result) if token
+        Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(token, :view, result) if token
       end
     end
   end

@@ -19,7 +19,7 @@ class Analytics
   def register_doc_auth_step_from_analytics_event(event, attributes)
     return unless user && user.class != AnonymousUser
     success = attributes.blank? || attributes[:success] == 'success'
-    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, event, success)
+    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, sp, event, success)
   end
 
   def track_mfa_submit_event(attributes, ga_client_id)
