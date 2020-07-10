@@ -132,14 +132,6 @@ module SamlIdp
       service_provider && service_provider.valid?
     end
 
-    def requested_name_id_format
-      if authn_request? && name_id_format_node
-        name_id_format_node.content
-      else
-        nil
-      end
-    end
-
     def service_provider
       return unless issuer.present?
       @_service_provider ||= ServiceProvider.new((service_provider_finder[issuer] || {}).merge(identifier: issuer))
@@ -154,17 +146,13 @@ module SamlIdp
       @_name_id ||= xpath("//saml:NameID", saml: assertion).first.try(:content)
     end
 
-    def name_id_format_node
-      @_name_id_format_node ||= xpath("//samlp:AuthnRequest/samlp:NameIDPolicy/@Format",
-        samlp: samlp,
-        saml: assertion).first
-    end
-    private :name_id_format_node
-
     def name_id_format
-      @_name_id_format ||= xpath("//samlp:NameIDPolicy", samlp: samlp).first.attributes['Format'].value
+      if authn_request? && name_id_format_node
+        name_id_format_node.content
+      else
+        nil
+      end
     end
-    private :name_id_format
 
     def session_index
       @_session_index ||= xpath("//samlp:SessionIndex", samlp: samlp).first.try(:content)
@@ -174,6 +162,13 @@ module SamlIdp
       @_document ||= Saml::XML::Document.parse(raw_xml)
     end
     private :document
+
+    def name_id_format_node
+      @_name_id_format_node ||= xpath("//samlp:AuthnRequest/samlp:NameIDPolicy/@Format",
+        samlp: samlp,
+        saml: assertion).first
+    end
+    private :name_id_format_node
 
     def authn_context_node
       @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
