@@ -1,0 +1,39 @@
+<%= content_for(:meta_refresh) { '5' } %>
+
+<div class='grid-row grid-gap'>
+  <div class='desktop:grid-col-6'>
+    <h1>Messages</h1>
+
+    <% @messages.each do |message| %>
+      <div class='lg-card margin-bottom-4'>
+        <p class='margin-y-05'>
+          <strong>To:</strong> <%= message.to %>
+        </p>
+        <p class='margin-y-05'>
+          <strong>Body:</strong> <%= message.body %>
+        </p>
+        <p class='margin-y-05'>
+          <strong>Sent at:</strong> <%= message.sent_at.strftime(t('time.formats.event_timestamp')) %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class='desktop:grid-col-6'>
+    <h1>Calls</h1>
+
+    <% @calls.each do |call| %>
+      <div class='lg-card margin-bottom-4'>
+        <p class='margin-y-05'>
+          <strong>To:</strong> <%= call.to %>
+        </p>
+        <p class='margin-y-05'>
+          <strong>Body:</strong> <%= call.body %>
+        </p>
+        <p class='margin-y-05'>
+          <strong>Sent at:</strong> <%= call.sent_at.strftime(t('time.formats.event_timestamp')) %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
