@@ -252,6 +252,19 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+  smoketest-prod:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: PROD
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
 
 workflows:
   version: 2
@@ -290,9 +303,6 @@ workflows:
   smoketest-int-workflow:
     triggers:
       - schedule:
-          # This test is run on the 10th minute of the hour, staggered separately from the
-          # smoke tests in the identity-monitor repo
-          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
           cron: "10 * * * *"
           filters:
             branches:
@@ -305,13 +315,22 @@ workflows:
   smoketest-staging-workflow:
     triggers:
       - schedule:
-          # This test is run on the 20th minute of the hour, staggered separately from the
-          # smoke tests in the identity-monitor repo
-          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
-          cron: "20 * * * *"
+          cron: "40 * * * *"
           filters:
             branches:
               only:
                 - stages/staging
     jobs:
       - smoketest-staging
+
+  # PROD
+  smoketest-prod-workflow:
+    triggers:
+      - schedule:
+          cron: "50 * * * *"
+          filters:
+            branches:
+              only:
+                - stages/prod
+    jobs:
+      - smoketest-prod
