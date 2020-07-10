@@ -10,26 +10,21 @@ module Acuant
         image_data: image,
         side: :front,
       ).fetch
-      puts "\n\nFront image result: #{result.inspect}\n"
       result
     end
 
     def post_back_image(image:, instance_id:)
-      result = Requests::UploadImageRequest.new(
+      Requests::UploadImageRequest.new(
         instance_id: instance_id,
         image_data: image,
         side: :back,
       ).fetch
-      puts "\n\nBack image result: #{result.inspect}\n"
-      result
     end
 
     def post_images(front_image:, back_image:, instance_id:)
       front_response = post_front_image(image: front_image, instance_id: instance_id)
-      puts "\n\nFront image result: #{front_response.inspect}\n"
       back_response = post_back_image(image: back_image, instance_id: instance_id)
-      puts "\n\nBack image result: #{back_response.inspect}\n"
- 
+
       Acuant::Response.new(
         success: front_response.success? && back_response.success?,
         errors: (front_response.errors || []) + (back_response.errors || []),
