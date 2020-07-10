@@ -118,7 +118,6 @@ test:
     sp_initiated_login_url: 'http://test.host/test/saml'
     friendly_name: 'Test SP'
     allow_prompt_login: true
-    deal_id: 'ABC123'
     launch_date: '2020-03-01'
     iaa: 'ABC123-2020'
     iaa_start_date: '2020-01-01'
