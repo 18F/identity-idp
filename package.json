@@ -7,11 +7,12 @@
     "npm": "6.x.x"
   },
   "scripts": {
-    "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**_spec.js'",
+    "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --extension 'js,jsx' --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**spec.js?(x)'",
     "build": "true"
   },
   "dependencies": {
     "@rails/webpacker": "^4.1.0",
+    "@testing-library/react": "^10.4.5",
     "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
