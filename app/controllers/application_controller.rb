@@ -316,4 +316,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     client = DeviceDetector.new(request.user_agent)
     client.device_type != 'desktop'
   end
+
+  def x509_presented?
+    current_sp&.attribute_bundle&.include?('x509_presented')
+  end
+
+  def force_piv_cac_setup?
+    Figaro.env.force_piv_cac_setup && aal3_policy.aal3_required? && x509_presented?
+  end
 end

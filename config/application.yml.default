@@ -50,6 +50,7 @@ document_capture_step_enabled: 'false'
 email_from: no-reply@login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
+force_piv_cac_setup:
 google_analytics_key:
 google_analytics_timeout: '5'
 ial2_recovery_request_valid_for_minutes: '15'
@@ -172,6 +173,7 @@ development:
   enable_usps_verification: 'true'
   exception_recipients: test1@test.com
   expired_letters_auth_token: abc123
+  force_piv_cac_setup: 'true'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   issuers_with_email_nameid_format: ''

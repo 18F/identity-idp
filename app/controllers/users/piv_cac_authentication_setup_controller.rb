@@ -14,13 +14,13 @@ module Users
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
 
     def new
-      if params.key?(:token)
-        process_piv_cac_setup
-      elsif flash[:error_type].present?
-        render_error
-      else
-        render_prompt
-      end
+      @add_prompt = t('headings.piv_cac_login.add')
+      handle_new
+    end
+
+    def new_required
+      @add_prompt = t('headings.piv_cac_login.add_required')
+      handle_new
     end
 
     def delete
@@ -44,6 +44,16 @@ module Users
     end
 
     private
+
+    def handle_new
+      if params.key?(:token)
+        process_piv_cac_setup
+      elsif flash[:error_type].present?
+        render_error
+      else
+        render_prompt
+      end
+    end
 
     def remove_piv_cac
       revoke_remember_device(current_user)
