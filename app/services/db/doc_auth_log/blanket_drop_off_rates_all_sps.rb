@@ -11,10 +11,10 @@ module Db
 
       def verified_user_counts_query
         <<~SQL
-           select count(*)
-           from profiles
-           where verified_at is not null and active=true and 
-             user_id in (select user_id from doc_auth_logs where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}')
+          select count(*)
+          from profiles
+          where verified_at is not null and active=true and
+            user_id in (select user_id from doc_auth_logs where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}')
         SQL
       end
 
