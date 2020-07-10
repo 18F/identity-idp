@@ -144,6 +144,7 @@ Rails.application.routes.draw do
         get '/oidc' => 'oidc_test#index'
 
         get '/telephony' => 'telephony#index'
+        delete '/telephony' => 'telephony#destroy'
       end
     end
 

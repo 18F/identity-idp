@@ -33,4 +33,27 @@ describe Test::TelephonyController do
       expect(response.status).to eq(404)
     end
   end
+
+  describe '#destroy' do
+    it 'clears messages and calls and redirects to index' do
+      Telephony.send_authentication_otp(
+        to: '(555) 555-5000',
+        otp: '123456',
+        expiration: 10,
+        channel: :sms,
+      )
+      Telephony.send_authentication_otp(
+        to: '(555) 555-5000',
+        otp: '654321',
+        expiration: 10,
+        channel: :voice,
+      )
+
+      delete :destroy
+
+      expect(Telephony::Test::Message.messages.length).to eq(0)
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(response).to redirect_to(test_telephony_url)
+    end
+  end
 end

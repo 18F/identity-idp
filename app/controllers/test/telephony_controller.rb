@@ -9,6 +9,12 @@ module Test
       @calls = Telephony::Test::Call.calls.reverse
     end
 
+    def destroy
+      Telephony::Test::Message.clear_messages
+      Telephony::Test::Call.clear_calls
+      redirect_to test_telephony_url
+    end
+
     private
 
     def render_not_found_in_production
