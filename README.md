@@ -206,6 +206,8 @@ If you would like to see the Spanish translations on a particular page, add
 Currently, you'll need to add `?locale=es` to each URL manually. We are working
 on a more robust and user-friendly way to switch between locales.
 
+To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
+
 ### Running Tests
 
 To run all the tests:
