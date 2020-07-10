@@ -172,7 +172,6 @@ module Idv
       end
 
       def mark_document_capture_or_image_upload_steps_complete
-        puts "Figaro.env.document_capture_step_enabled == #{Figaro.env.document_capture_step_enabled}"
         if Figaro.env.document_capture_step_enabled == 'true'
           mark_step_complete(:front_image)
           mark_step_complete(:back_image)

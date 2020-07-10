@@ -42,9 +42,14 @@ module DocAuthMock
     def post_images(front_image:, back_image:, instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-      self.class.last_uploaded_front_image = front_image
-      self.class.last_uploaded_back_image = back_image
-      Acuant::Response.new(success: true)
+      front_response = post_front_image(image: front_image, instance_id: instance_id)
+      back_response = post_back_image(image: back_image, instance_id: instance_id)
+      Acuant::Response.new(
+        success: front_response.success? && back_response.success?,
+        errors: (front_response.errors || []) + (back_response.errors || []),
+        exception: front_response.exception || back_response.exception,
+        extra: { front_response: front_response, back_response: back_response },
+      )
     end
 
     def get_results(instance_id:)
