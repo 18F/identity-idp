@@ -24,5 +24,13 @@ describe Test::TelephonyController do
       expect(assigns(:calls).length).to eq(1)
       expect(assigns(:calls).first.body).to include('6, 5, 4, 3, 2, 1')
     end
+
+    it '404s in production' do
+      allow(Rails.env).to receive(:production?).and_return(true)
+
+      get :index
+
+      expect(response.status).to eq(404)
+    end
   end
 end
