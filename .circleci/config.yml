@@ -284,13 +284,13 @@ workflows:
             tags:
               only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
 
+  # Theses are staggered separately from the smoke tests in the identity-monitor repo
+  # because they share credentials and would mess each other up if run concurrently
+  # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
   # DEV
   smoketest-dev-workflow:
     triggers:
       - schedule:
-          # This test is run on the 0th minute of the hour, staggered separately from the
-          # smoke tests in the identity-monitor repo
-          # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
           cron: "0 * * * *"
           filters:
             branches:
@@ -315,7 +315,7 @@ workflows:
   smoketest-staging-workflow:
     triggers:
       - schedule:
-          cron: "40 * * * *"
+          cron: "20 * * * *"
           filters:
             branches:
               only:
@@ -327,7 +327,7 @@ workflows:
   smoketest-prod-workflow:
     triggers:
       - schedule:
-          cron: "50 * * * *"
+          cron: "30 * * * *"
           filters:
             branches:
               only:
