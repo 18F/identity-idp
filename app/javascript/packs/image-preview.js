@@ -28,9 +28,9 @@ function imagePreview() {
 
 function frontImagePreview() {
   $('#take_picture').on('click', function() {
-    document.getElementById('doc_auth_image').click();
+    document.getElementById('doc_auth_front_image').click();
   });
-  $('#doc_auth_image').on('change', function(event) {
+  $('#doc_auth_front_image').on('change', function(event) {
     $('.simple_form .alert-error').hide();
     $('.simple_form .alert-notice').hide();
     const files = event.target.files;
@@ -54,9 +54,9 @@ function frontImagePreview() {
 
 function backImagePreview() {
   $('#take_picture').on('click', function() {
-    document.getElementById('doc_auth_image').click();
+    document.getElementById('doc_auth_back_image').click();
   });
-  $('#doc_auth_image').on('change', function(event) {
+  $('#doc_auth_back_image').on('change', function(event) {
     $('.simple_form .alert-error').hide();
     $('.simple_form .alert-notice').hide();
     const files = event.target.files;
@@ -79,3 +79,5 @@ function backImagePreview() {
 }
 
 document.addEventListener('DOMContentLoaded', imagePreview);
+document.addEventListener('DOMContentLoaded', frontImagePreview);
+document.addEventListener('DOMContentLoaded', backImagePreview);
