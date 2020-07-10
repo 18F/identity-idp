@@ -7,6 +7,7 @@ feature 'Doc Auth Funnel report' do
   let(:subject) { Db::DocAuthLog::DocAuthFunnelSummaryStats }
   let(:user) { create(:user, :signed_up) }
   let(:user2) { create(:user, :signed_up) }
+  let(:issuer) { 'foo' }
   let(:summary1) do
     {
       'total_verified_users_count' => 0,
