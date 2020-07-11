@@ -150,6 +150,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
+  def service_provider_request_from_session
+    @sp_request_from_session ||= ServiceProviderRequestProxy.from_uuid(sp_session[:request_id])
+  end
+
   def add_piv_cac_setup_url
     session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
   end
@@ -318,7 +322,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def x509_presented?
-    current_sp&.attribute_bundle&.include?('x509_presented')
+    service_provider_request_from_session&.requested_attributes&.include?('x509_presented')
   end
 
   def force_piv_cac_setup?

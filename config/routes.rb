@@ -169,7 +169,6 @@ Rails.application.routes.draw do
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
-    get '/piv_cac_required' => 'users/piv_cac_authentication_setup#new_required'
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
 
