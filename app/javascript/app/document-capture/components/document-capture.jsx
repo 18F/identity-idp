@@ -1,5 +1,6 @@
 import React from 'react';
 import useI18n from '../hooks/use-i18n';
+import 'sinon';
 import { useImage } from '../hooks/use-assets';
 
 function DocumentCapture() {
