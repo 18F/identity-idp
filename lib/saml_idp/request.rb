@@ -161,6 +161,7 @@ module SamlIdp
     private :document
 
     def name_id_format_node
+      return @_name_id_format_node if defined?(@_name_id_format_node)
       @_name_id_format_node ||= xpath('//samlp:AuthnRequest/samlp:NameIDPolicy/@Format',
                                       samlp: samlp,
                                       saml: assertion).first
