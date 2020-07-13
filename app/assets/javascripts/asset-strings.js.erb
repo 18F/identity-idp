@@ -1,5 +1,4 @@
 window.LoginGov = window.LoginGov || {}
-
 <% image_keys = [
     'idv/phone.png'
 ] %>
@@ -9,5 +8,5 @@ window.LoginGov.AssetStrings = {
 }
 
 <% image_keys.each do |key| %>
-  window.LoginGov.AssetStrings.images['<%=key %>'] = <%= image_tag asset_url(key) %>
+  window.LoginGov.AssetStrings.images['<%=key %>'] = '<%= ActionController::Base.helpers.image_path(key) %>';
 <% end %>

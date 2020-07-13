@@ -3,6 +3,7 @@
 //= link application.css
 
 //= link i18n-strings.js
+//= link asset-strings.js
 //= link email.css
 //= link es5-shim.min.js
 //= link html5shiv.js
