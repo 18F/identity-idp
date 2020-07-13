@@ -6,11 +6,7 @@ function useImage() {
   const imageStrings = strings.images;
   const imageTag = (key) => {
     const resolvedImage = imageStrings[key];
-    if (resolvedImage) {
-      return resolvedImage;
-    }
-    console.error(`Image for ${key} not found`);
-    return key;
+    return resolvedImage !== undefined ? resolvedImage : key;
   };
   return imageTag;
 }
