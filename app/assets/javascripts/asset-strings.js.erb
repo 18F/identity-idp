@@ -1,0 +1,13 @@
+window.LoginGov = window.LoginGov || {}
+
+<% image_keys = [
+    'idv/phone.png'
+] %>
+
+window.LoginGov.AssetStrings = {
+  images: {}
+}
+
+<% image_keys.each do |key| %>
+  window.LoginGov.AssetStrings.images['<%=key %>'] = <%= image_tag asset_url(key) %>
+<% end %>
