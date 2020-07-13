@@ -9,7 +9,7 @@ describe('document-capture/components/document-capture', () => {
   it('renders', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const button = getByText('Document Capture');
+    const button = getByText('doc_auth.headings.welcome');
 
     expect(button).to.be.ok();
   });
