@@ -5,8 +5,6 @@ class SamlRequestValidator
   validate :authorized_authn_context
   validate :authorized_email_nameid_format
 
-  ISSUERS_WITH_EMAIL_NAMEID_FORMAT = Figaro.env.issuers_with_email_nameid_format.split(',').freeze
-
   def call(service_provider:, authn_context:, nameid_format:)
     self.service_provider = service_provider
     self.authn_context = authn_context
@@ -52,6 +50,6 @@ class SamlRequestValidator
   end
 
   def service_provider_allowed_to_use_email_nameid_format?
-    ISSUERS_WITH_EMAIL_NAMEID_FORMAT.include?(service_provider.issuer)
+    Saml::Idp::Constants::ISSUERS_WITH_EMAIL_NAMEID_FORMAT.include?(service_provider.issuer)
   end
 end
