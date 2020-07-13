@@ -147,7 +147,8 @@ module SamlIdp
     end
 
     def name_id_format
-      @_name_id_format ||= xpath("//samlp:NameIDPolicy", samlp: samlp).first.attributes['Format'].value
+      return name_id_format_node.content if authn_request? && name_id_format_node
+      nil
     end
 
     def session_index
@@ -158,6 +159,14 @@ module SamlIdp
       @_document ||= Saml::XML::Document.parse(raw_xml)
     end
     private :document
+
+    def name_id_format_node
+      return @_name_id_format_node if defined?(@_name_id_format_node)
+      @_name_id_format_node ||= xpath('//samlp:AuthnRequest/samlp:NameIDPolicy/@Format',
+                                      samlp: samlp,
+                                      saml: assertion).first
+    end
+    private :name_id_format_node
 
     def authn_context_node
       @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
