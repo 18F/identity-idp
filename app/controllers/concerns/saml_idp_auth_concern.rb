@@ -33,8 +33,8 @@ module SamlIdpAuthConcern
   end
 
   def default_name_id_format
-    return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL_CLASSREF if sp_uses_email_nameid_format?
-    Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT_CLASSREF
+    return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL if sp_uses_email_nameid_format?
+    Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
   end
 
   def sp_uses_email_nameid_format?
