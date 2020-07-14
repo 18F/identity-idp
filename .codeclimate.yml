@@ -58,6 +58,10 @@ plugins:
     - 'lib/rspec/formatters/user_flow_formatter.rb'
   eslint:
     enabled: true
+    config:
+      extensions:
+        - .js
+        - .jsx
   fixme:
     enabled: true
     exclude_patterns:
