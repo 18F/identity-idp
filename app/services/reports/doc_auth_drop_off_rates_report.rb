@@ -23,17 +23,13 @@ module Reports
 
     def generate_blanket_reports_per_sp(ret)
       ServiceProvider.where(ial: 2).each do |sp|
-        transaction_with_timeout do
-          generate_blanket_report_per_sp(sp, ret)
-        end
+        generate_blanket_report_per_sp(sp, ret)
       end
     end
 
     def generate_overall_reports_per_sp(ret)
       ServiceProvider.where(ial: 2).each do |sp|
-        transaction_with_timeout do
-          generate_overall_report_per_sp(sp, ret)
-        end
+        generate_overall_report_per_sp(sp, ret)
       end
     end
 
@@ -50,19 +46,15 @@ module Reports
     end
 
     def generate_blanket_report_all_sps(ret)
-      transaction_with_timeout do
-        blanket_drop_off_rates_all_sps_all_time(ret)
-        blanket_drop_off_rates_all_sps_last_30_days(ret)
-        blanket_drop_off_rates_all_sps_last_24_hours(ret)
-      end
+      transaction_with_timeout { blanket_drop_off_rates_all_sps_all_time(ret) }
+      transaction_with_timeout { blanket_drop_off_rates_all_sps_last_30_days(ret) }
+      transaction_with_timeout { blanket_drop_off_rates_all_sps_last_24_hours(ret) }
     end
 
     def generate_overall_report_all_sps(ret)
-      transaction_with_timeout do
-        overall_drop_off_rates_all_sps_all_time(ret)
-        overall_drop_off_rates_all_sps_last_30_days(ret)
-        overall_drop_off_rates_all_sps_last_24_hours(ret)
-      end
+      transaction_with_timeout { overall_drop_off_rates_all_sps_all_time(ret) }
+      transaction_with_timeout { overall_drop_off_rates_all_sps_last_30_days(ret) }
+      transaction_with_timeout { overall_drop_off_rates_all_sps_last_24_hours(ret) }
     end
 
     def overall_drop_off_rates_all_sps_all_time(ret)
