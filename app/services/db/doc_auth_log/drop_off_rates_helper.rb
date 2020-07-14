@@ -40,23 +40,28 @@ module Db
       end
 
       def at_least_one_image_submitted
-        <<~SQL
-          (front_image_submit_count>0 or back_image_submit_count>0 or mobile_front_image_submit_count>0 or  mobile_back_image_submit_count>0 or  capture_mobile_back_image_submit_count>0)
-        SQL
+        predicates = [
+          'front_image_submit_count>0',
+          'back_image_submit_count>0',
+          'mobile_back_image_submit_count>0',
+          'capture_mobile_back_image_submit_count>0',
+        ].join(' or ')
+
+        "(#{predicates})"
       end
 
       def oldest_ial2_date
         '01/01/2019'
       end
 
-      def initiate_results
+      def initialize_results
         @results = []
         @results << @title + (issuer ? ", issuer: #{issuer}" : '') + "\n"
         @results << "#{start} <= date user starts doc auth < #{finish}\n\n" if start || finish
       end
 
       def generate_report
-        initiate_results
+        initialize_results
         rates = drop_offs_in_range
         verified_profiles = verified_profiles_in_range
         rates['verified'] = verified_profiles[0]['count']
