@@ -58,7 +58,7 @@ plugins:
     - 'lib/rspec/formatters/user_flow_formatter.rb'
   eslint:
     enabled: true
-    channel: "eslint-6"
+    channel: eslint-6
     config:
       extensions:
         - .js
