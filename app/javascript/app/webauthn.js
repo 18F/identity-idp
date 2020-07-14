@@ -1,15 +1,15 @@
 const base64ToArrayBuffer = (base64) => {
-  const bytes = Uint8Array.from(window.atob(base64).split('').map(char => char.charCodeAt(0)));
+  const bytes = Uint8Array.from(window.atob(base64).split('').map((char) => char.charCodeAt(0)));
   return bytes.buffer;
 };
 
 const arrayBufferToBase64 = (arrayBuffer) => {
   const buffer = new Uint8Array(arrayBuffer);
-  const binaryString = Array.from(buffer).map(byte => String.fromCharCode(byte)).join('');
+  const binaryString = Array.from(buffer).map((byte) => String.fromCharCode(byte)).join('');
   return window.btoa(binaryString);
 };
 
-const longToByteArray = long => new Uint8Array(8).map(() => {
+const longToByteArray = (long) => new Uint8Array(8).map(() => {
   const byte = long & 0xff; // eslint-disable-line no-bitwise
   long = (long - byte) / 256;
   return byte;
@@ -19,7 +19,7 @@ const extractCredentials = (credentials) => {
   if (!credentials) { // empty string check
     return [];
   }
-  return credentials.split(',').map(credential => ({
+  return credentials.split(',').map((credential) => ({
     type: 'public-key',
     id: base64ToArrayBuffer(credential),
   }));
@@ -32,7 +32,9 @@ const isWebAuthnEnabled = () => {
   return false;
 };
 
-const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredentials }) => {
+const enrollWebauthnDevice = ({
+  userId, userEmail, userChallenge, excludeCredentials,
+}) => {
   const createOptions = {
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
@@ -85,7 +87,7 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
     },
   };
 
-  return navigator.credentials.create(createOptions).then(newCred => ({
+  return navigator.credentials.create(createOptions).then((newCred) => ({
     webauthnId: arrayBufferToBase64(newCred.rawId),
     webauthnPublicKey: newCred.id,
     attestationObject: arrayBufferToBase64(newCred.response.attestationObject),
@@ -103,7 +105,7 @@ const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
     },
   };
 
-  return navigator.credentials.get(getOptions).then(newCred => ({
+  return navigator.credentials.get(getOptions).then((newCred) => ({
     credentialId: arrayBufferToBase64(newCred.rawId),
     authenticatorData: arrayBufferToBase64(newCred.response.authenticatorData),
     clientDataJSON: arrayBufferToBase64(newCred.response.clientDataJSON),

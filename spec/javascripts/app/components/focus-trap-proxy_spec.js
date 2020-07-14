@@ -1,7 +1,7 @@
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const stub = sinon.stub;
+const { stub } = sinon;
 
 describe('focusTrap', () => {
   let proxy;

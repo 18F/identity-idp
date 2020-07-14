@@ -7,7 +7,7 @@ function imagePreview() {
   $('#doc_auth_image').on('change', function(event) {
     $('.simple_form .alert-error').hide();
     $('.simple_form .alert-notice').hide();
-    const files = event.target.files;
+    const { files } = event.target;
     const image = files[0];
     const reader = new FileReader();
     reader.onload = function(file) {

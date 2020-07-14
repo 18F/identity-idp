@@ -13,7 +13,7 @@ function FocusTrapProxy() {
 
     return {
       activate() {
-        focusables.forEach(trap => trap.deactivate());
+        focusables.forEach((trap) => trap.deactivate());
 
         activated.push(ownTrap);
 
@@ -32,7 +32,7 @@ function FocusTrapProxy() {
           return false;
         }
 
-        activated = activated.filter(activatedTrap => activatedTrap !== ownTrap);
+        activated = activated.filter((activatedTrap) => activatedTrap !== ownTrap);
 
         if (activated.length) {
           activated[activated.length - 1].activate();

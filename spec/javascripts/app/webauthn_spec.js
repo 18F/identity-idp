@@ -178,7 +178,6 @@ describe('WebAuthn', () => {
         return Promise.resolve(getReturnValue);
       };
 
-
       WebAuthn.verifyWebauthnDevice({
         userChallenge, credentialIds,
       }).then((result) => {
