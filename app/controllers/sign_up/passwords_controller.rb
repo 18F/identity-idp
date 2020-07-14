@@ -75,6 +75,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      redirect_to setup_piv_cac_url and return if force_piv_cac_setup?
       redirect_to two_factor_options_url
     end
   end

@@ -49,6 +49,7 @@ module Users
     end
 
     def redirect_on_nothing_enabled
+      redirect_to setup_piv_cac_url and return if force_piv_cac_setup?
       redirect_to two_factor_options_url
     end
 

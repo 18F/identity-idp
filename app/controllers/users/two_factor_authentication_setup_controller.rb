@@ -9,8 +9,6 @@ module Users
     before_action :handle_empty_selection, only: :create
 
     def index
-      redirect_to setup_piv_cac_url and return if force_piv_cac_setup?
-
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)

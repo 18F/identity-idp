@@ -326,6 +326,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def force_piv_cac_setup?
-    Figaro.env.force_piv_cac_setup && aal3_policy.aal3_required? && x509_presented?
+    Figaro.env.force_piv_cac_setup == 'true' && aal3_policy.aal3_required? && x509_presented?
   end
 end

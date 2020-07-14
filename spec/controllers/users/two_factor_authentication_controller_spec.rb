@@ -139,6 +139,16 @@ describe Users::TwoFactorAuthenticationController do
         expect(response).to redirect_to two_factor_options_url
       end
     end
+
+    context 'when the user has not already set up 2FA and the SP has requested PIV/CAC' do
+      it 'redirects to set up 2FA' do
+        stub_sign_in_before_2fa(build(:user))
+        allow(subject).to receive(:force_piv_cac_setup?).and_return(true)
+        get :show
+
+        expect(response).to redirect_to setup_piv_cac_url
+      end
+    end
   end
 
   describe '#send_code' do
