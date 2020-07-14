@@ -36,9 +36,7 @@ RSpec.describe 'smoke test: SP initiated sign in' do
       visit_idp_from_saml_sp
       sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
 
-      if on_consent_screen?
-        click_on 'Agree and continue'
-      end
+      click_on 'Agree and continue' if on_consent_screen?
 
       if monitor.remote?
         expect(page).to have_content('SAML Sinatra Example')
