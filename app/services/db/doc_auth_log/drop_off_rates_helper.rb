@@ -11,8 +11,8 @@ module Db
       def drop_off_rates(title:, issuer: nil, start: nil, finish: nil)
         @title = title
         @issuer = issuer
-        @start = start
-        @finish = finish
+        @start = ActiveRecord::Base.connection.quote(start) if start
+        @finish = ActiveRecord::Base.connection.quote(finish) if finish
         generate_report
       end
 
@@ -88,7 +88,7 @@ module Db
       def drop_offs_query
         <<~SQL
           #{select_counts_from_doc_auth_logs}
-          where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}' and issuer='#{issuer}'
+          where #{start} <= welcome_view_at and welcome_view_at < #{finish} and issuer='#{issuer}'
         SQL
       end
 

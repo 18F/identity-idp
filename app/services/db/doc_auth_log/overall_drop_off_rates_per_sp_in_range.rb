@@ -13,14 +13,14 @@ module Db
         <<~SQL
           select count(*) from identities
           where service_provider='#{issuer}' and ial=2
-          and user_id in (select user_id from doc_auth_logs where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}' and #{at_least_one_image_submitted})
+          and user_id in (select user_id from doc_auth_logs where #{start} <= welcome_view_at and welcome_view_at < #{finish} and #{at_least_one_image_submitted})
         SQL
       end
 
       def drop_offs_query
         <<~SQL
           #{select_counts_from_doc_auth_logs}
-          where issuer='#{issuer}' and '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}'
+          where issuer='#{issuer}' and #{start} <= welcome_view_at and welcome_view_at < #{finish}
           and #{at_least_one_image_submitted}
         SQL
       end
