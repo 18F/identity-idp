@@ -1,4 +1,6 @@
-import { acuantSdkPreviewImage, imageDataUrlInput, imageFileInput, showAcuantSdkContainer }
+import {
+  acuantSdkPreviewImage, imageDataUrlInput, imageFileInput, showAcuantSdkContainer,
+}
   from './document_capture_dom';
 
 const {

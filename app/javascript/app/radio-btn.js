@@ -36,5 +36,4 @@ function highlightRadioBtn() {
   }
 }
 
-
 document.addEventListener('DOMContentLoaded', highlightRadioBtn);

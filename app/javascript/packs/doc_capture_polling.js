@@ -2,11 +2,9 @@ const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 const DOC_CAPTURE_POLL_INTERVAL = 5000;
 const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL);
 
-const docCaptureContinueButtonForm = () =>
-  document.querySelector('.doc_capture_continue_button_form');
+const docCaptureContinueButtonForm = () => document.querySelector('.doc_capture_continue_button_form');
 
-const docCaptureContinueInstructions = () =>
-  document.querySelector('#doc_capture_continue_instructions');
+const docCaptureContinueInstructions = () => document.querySelector('#doc_capture_continue_instructions');
 
 const handleMaxPollAttempts = () => {
   // Unhide the continue buttons so the user can continue manually

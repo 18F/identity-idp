@@ -16,5 +16,4 @@ function verifyModal() {
   }
 }
 
-
 document.addEventListener('DOMContentLoaded', verifyModal);

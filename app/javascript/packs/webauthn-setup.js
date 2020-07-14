@@ -1,7 +1,7 @@
 const WebAuthn = require('../app/webauthn');
 
 function webauthn() {
-  if (location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {
+  if (window.location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {
     window.location.href = '/webauthn_setup?error=NotSupportedError';
   }
   const continueButton = document.getElementById('continue-button');

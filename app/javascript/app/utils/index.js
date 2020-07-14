@@ -4,8 +4,8 @@ import msFormatter from './ms-formatter';
 import enableBannerToggling from './toggle-banner';
 
 window.LoginGov = (window.LoginGov || {});
-const LoginGov = window.LoginGov;
-const documentElement = window.document.documentElement;
+const { LoginGov } = window;
+const { documentElement } = window.document;
 
 documentElement.className = documentElement.className.replace(/no-js/, '');
 

@@ -41,7 +41,7 @@
     "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^7.4.0",
+    "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
