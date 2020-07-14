@@ -1,10 +1,7 @@
 module Acuant
   class AcuantClient
     def create_document
-      document = Requests::CreateDocumentRequest.new.fetch
-      return failure(document.errors.first, document.to_h) unless document.success?
-
-      document
+      Requests::CreateDocumentRequest.new.fetch
     end
 
     def post_front_image(image:, instance_id:)
@@ -25,7 +22,7 @@ module Acuant
 
     def post_images(front_image:, back_image:)
       document = create_document
-      return document unless document.success?
+      return failure(document.errors.first, document.to_h) unless document.success?
 
       instance_id = document.instance_id
       front_response = post_front_image(image: front_image, instance_id: instance_id)
@@ -76,11 +73,9 @@ module Acuant
     end
 
     def check_results(post_response, instance_id)
-      if post_response.success?
-        fetch_doc_auth_results(instance_id)
-      else
-        failure(post_response.errors.first, post_response.to_h)
-      end
+      return post_response unless post_response.success?
+
+      fetch_doc_auth_results(instance_id)
     end
 
     def fetch_doc_auth_results(instance_id)
@@ -91,7 +86,6 @@ module Acuant
     end
 
     def handle_document_verification_failure(get_results_response)
-      mark_step_incomplete(:document_capture)
       extra = get_results_response.to_h.merge(
         notice: I18n.t('errors.doc_auth.general_info'),
       )

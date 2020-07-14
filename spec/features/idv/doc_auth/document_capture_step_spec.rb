@@ -123,6 +123,6 @@ feature 'document capture step' do
   end
 
   def next_step
-    idv_doc_auth_ssn_step
+    idv_doc_auth_selfie_step
   end
 end

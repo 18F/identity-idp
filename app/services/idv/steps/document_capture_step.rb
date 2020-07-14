@@ -4,7 +4,6 @@ module Idv
       def call
         response = post_images
         if response.success?
-          mark_selfie_step_complete_unless_liveness_checking_is_enabled
           save_proofing_components
           extract_pii_from_doc(response)
         else
