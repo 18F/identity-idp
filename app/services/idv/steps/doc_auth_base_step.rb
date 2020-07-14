@@ -79,10 +79,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, 'acuant')
+        Db::ProofingComponent::Add.call(user_id, :document_check, doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, 'acuant')
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
@@ -124,7 +124,6 @@ module Idv
         result = doc_auth_client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
-          instance_id: flow_session[:instance_id],
         )
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
