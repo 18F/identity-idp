@@ -3,15 +3,16 @@ module Db
     class OverallDropOffRatesPerSpAllTime
       include DropOffRatesHelper
 
-      def call(title, issuer, start, finish)
-        drop_off_rates(title: title, issuer: issuer, start: start, finish: finish)
+      def call(title, issuer)
+        drop_off_rates(title: title, issuer: issuer)
       end
 
       private
 
       def verified_user_counts_query
         <<~SQL
-          select count(*) from identities where issuer='#{issuer}'
+          select count(*) from identities
+          where service_provider='#{issuer}' and ial=2
         SQL
       end
 

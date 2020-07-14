@@ -1,6 +1,6 @@
 module Db
   module DocAuthLog
-    class OverallDropOffRatesAllSpsAllTime
+    class OverallDropOffRatesAllSpsInRange
       include DropOffRatesHelper
 
       def call(title, start, finish)

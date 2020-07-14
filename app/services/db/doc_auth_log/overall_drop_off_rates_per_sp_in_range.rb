@@ -12,7 +12,8 @@ module Db
       def verified_user_counts_query
         <<~SQL
           select count(*) from identities
-          where issuer='#{issuer}' and '#{start}' <= created_at and created_at < '#{finish}'
+          where service_provider='#{issuer}' and ial=2
+          and '#{start}' <= created_at and created_at < '#{finish}'
         SQL
       end
 

@@ -3,8 +3,8 @@ module Db
     class OverallDropOffRatesAllSpsAllTime
       include DropOffRatesHelper
 
-      def call(title, start, finish)
-        drop_off_rates(title: title, start: start, finish: finish)
+      def call(title)
+        drop_off_rates(title: title)
       end
 
       private
