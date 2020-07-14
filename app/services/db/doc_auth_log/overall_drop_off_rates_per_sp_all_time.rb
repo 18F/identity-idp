@@ -11,14 +11,14 @@ module Db
 
       def verified_user_counts_query
         <<~SQL
-           select count(*) from identities where issuer='#{issuer}'
+          select count(*) from identities where issuer='#{issuer}'
         SQL
       end
 
       def drop_offs_query
         <<~SQL
           #{select_counts_from_doc_auth_logs}
-          where issuer='#{issuer}' and (front_image_submit_count>0 or back_image_submit_count>0 or mobile_front_image_submit_count>0 or  mobile_back_image_submit_count>0 or  capture_mobile_back_image_submit_count>0)
+          where issuer='#{issuer}' and #{at_least_one_image_submitted}
         SQL
       end
     end

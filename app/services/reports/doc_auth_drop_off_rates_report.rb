@@ -6,7 +6,6 @@ module Reports
 
     def call
       ret = generate_report
-      puts ret.join
       save_report(REPORT_NAME, ret.join)
     end
 
@@ -20,11 +19,11 @@ module Reports
     end
 
     def per_sp_report(ret)
-      ServiceProvider.where(ial:2).each do |sp|
+      ServiceProvider.where(ial: 2).each do |sp|
         transaction_with_timeout do
           ret << Db::DocAuthLog::BlanketDropOffRatesPerSpAllTime.new.call('Drop off rates per SP all time', sp.issuer)
           ret << Db::DocAuthLog::BlanketDropOffRatesPerSpInRange.new.call('Drop off rates last 24 hours', sp.issuer, Date.yesterday, today)
-          ret << Db::DocAuthLog::BlanketDropOffRatesPerSpInRange.new.call('Drop off rates last 30 days',sp.issuer, today - 30.days, today)
+          ret << Db::DocAuthLog::BlanketDropOffRatesPerSpInRange.new.call('Drop off rates last 30 days', sp.issuer, today - 30.days, today)
         end
       end
     end

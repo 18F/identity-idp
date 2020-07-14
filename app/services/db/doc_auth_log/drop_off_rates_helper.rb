@@ -39,6 +39,12 @@ module Db
         SQL
       end
 
+      def at_least_one_image_submitted
+        <<~SQL
+          (front_image_submit_count>0 or back_image_submit_count>0 or mobile_front_image_submit_count>0 or  mobile_back_image_submit_count>0 or  capture_mobile_back_image_submit_count>0)
+        SQL
+      end
+
       def oldest_ial2_date
         '01/01/2019'
       end

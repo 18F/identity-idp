@@ -140,8 +140,8 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Doc auth drop off rates report
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-    name: 'Doc auth drop off rates report',
-    interval: 24 * 60 * 60, # 24 hours
-    timeout: 300,
-    callback: -> { Reports::DocAuthDropOffRatesReport.new.call },
-    )
+  name: 'Doc auth drop off rates report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::DocAuthDropOffRatesReport.new.call },
+)
