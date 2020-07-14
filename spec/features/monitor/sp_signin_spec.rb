@@ -13,7 +13,9 @@ RSpec.describe 'smoke test: SP initiated sign in' do
       visit_idp_from_oidc_sp
       sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
 
-      click_on 'Agree and continue' if on_consent_screen?
+      if page.has_content?('You are now signing in for the first time')
+        click_on 'Agree and continue'
+      end
 
       if oidc_sp_is_usajobs?
         expect(page).to have_content('Welcome ')
@@ -36,7 +38,9 @@ RSpec.describe 'smoke test: SP initiated sign in' do
       visit_idp_from_saml_sp
       sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
 
-      click_on 'Agree and continue' if on_consent_screen?
+      if page.has_content?('You are now signing in for the first time')
+        click_on 'Agree and continue'
+      end
 
       if monitor.remote?
         expect(page).to have_content('SAML Sinatra Example')
@@ -49,10 +53,5 @@ RSpec.describe 'smoke test: SP initiated sign in' do
 
       log_out_from_saml_sp
     end
-  end
-
-  def on_consent_screen?
-    page.has_content?("It's been a year since you gave us consent") ||
-      page.has_content?('You are now signing in for the first time')
   end
 end
