@@ -104,17 +104,17 @@ module Reports
 
     def overall_drop_off_rates_per_sp_all_time(ret, sp)
       ret << Db::DocAuthLog::OverallDropOffRatesPerSpAllTime.new.
-             call('Blanket drop off rates per SP all time', sp.issuer)
+             call('Overall drop off rates per SP all time', sp.issuer)
     end
 
     def overall_drop_off_rates_per_sp_last_24_hours(ret, sp)
       ret << Db::DocAuthLog::OverallDropOffRatesPerSpInRange.new.
-             call('Blanket drop off rates last 24 hours', sp.issuer, Date.yesterday, today)
+             call('Overall drop off rates last 24 hours', sp.issuer, Date.yesterday, today)
     end
 
     def overall_drop_off_rates_per_sp_last_30_days(ret, sp)
       ret << Db::DocAuthLog::OverallDropOffRatesPerSpInRange.new.
-             call('Blanket drop off rates last 30 days', sp.issuer, today - 30.days, today)
+             call('Overall drop off rates last 30 days', sp.issuer, today - 30.days, today)
     end
 
     def today
