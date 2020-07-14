@@ -20,11 +20,11 @@ module Acuant
       ).fetch
     end
 
-    def post_images(front_image:, back_image:)
+    def post_images(front_image:, back_image:, instance_id: nil)
       document = create_document
       return failure(document.errors.first, document.to_h) unless document.success?
 
-      instance_id = document.instance_id
+      instance_id ||= document.instance_id
       front_response = post_front_image(image: front_image, instance_id: instance_id)
       back_response = post_back_image(image: back_image, instance_id: instance_id)
       response = merge_post_responses(front_response, back_response)
