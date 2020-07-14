@@ -13,7 +13,7 @@ module Db
         <<~SQL
           select count(*) from identities
           where service_provider='#{issuer}' and ial=2
-          and '#{start}' <= created_at and created_at < '#{finish}'
+          and user_id in (select user_id from doc_auth_logs where '#{start}' <= welcome_view_at and welcome_view_at < '#{finish}' and #{at_least_one_image_submitted})
         SQL
       end
 
