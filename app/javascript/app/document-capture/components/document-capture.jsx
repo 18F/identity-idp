@@ -1,5 +1,5 @@
 function DocumentCapture() {
-  return 'todo: document capture';
+  return 'Document Capture';
 }
 
 export default DocumentCapture;
