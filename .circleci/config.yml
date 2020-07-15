@@ -155,6 +155,7 @@ jobs:
 
             bundle exec rake knapsack:rspec
             yarn test
+            yarn run lint
             bundle exec slim-lint app/views
       - run:
           name: Code Climate Test Coverage
