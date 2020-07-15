@@ -8,6 +8,12 @@ feature 'saml api' do
 
   let(:user) { create(:user, :signed_up) }
 
+  it 'it sets the sp_issuer cookie' do
+    visit authnrequest_get
+
+    expect(cookies.find { |c| c.name == 'sp_issuer' }.value).to eq('http://localhost:3000')
+  end
+
   context 'SAML Assertions' do
     context 'before fully signing in' do
       it 'directs users to the start page' do

@@ -28,7 +28,7 @@ lint:
 	@echo "--- fasterer ---"
 	bundle exec fasterer
 	@echo "--- eslint ---"
-	node_modules/.bin/eslint app spec
+	yarn run lint
 
 lintfix:
 	@echo "--- rubocop fix ---"
@@ -45,9 +45,6 @@ fast_test:
 
 run:
 	foreman start -p $(PORT)
-
-load_test: $(CONFIG)
-	bin/load_test $(type)
 
 .PHONY: setup all lint run test check brakeman
 

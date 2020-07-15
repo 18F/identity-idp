@@ -20,6 +20,18 @@ module Acuant
       ).fetch
     end
 
+    def post_images(front_image:, back_image:, instance_id: nil)
+      document = create_document
+      return failure(document.errors.first, document.to_h) unless document.success?
+
+      instance_id ||= document.instance_id
+      front_response = post_front_image(image: front_image, instance_id: instance_id)
+      back_response = post_back_image(image: back_image, instance_id: instance_id)
+      response = merge_post_responses(front_response, back_response)
+
+      check_results(response, instance_id)
+    end
+
     def get_results(instance_id:)
       Requests::GetResultsRequest.new(instance_id: instance_id).fetch
     end
@@ -39,6 +51,15 @@ module Acuant
 
     private
 
+    def merge_post_responses(front_response, back_response)
+      Acuant::Response.new(
+        success: front_response.success? && back_response.success?,
+        errors: (front_response.errors || []) + (back_response.errors || []),
+        exception: front_response.exception || back_response.exception,
+        extra: { front_response: front_response, back_response: back_response },
+      )
+    end
+
     def merge_facial_match_and_liveness_response(facial_match_response, liveness_response)
       Acuant::Response.new(
         success: facial_match_response.success? && liveness_response.success?,
@@ -49,6 +70,34 @@ module Acuant
           liveness_response: liveness_response.to_h,
         },
       )
+    end
+
+    def check_results(post_response, instance_id)
+      return post_response unless post_response.success?
+
+      fetch_doc_auth_results(instance_id)
+    end
+
+    def fetch_doc_auth_results(instance_id)
+      results_response = get_results(instance_id: instance_id)
+      handle_document_verification_failure(results_response) unless results_response.success?
+
+      results_response
+    end
+
+    def handle_document_verification_failure(get_results_response)
+      extra = get_results_response.to_h.merge(
+        notice: I18n.t('errors.doc_auth.general_info'),
+      )
+      failure(get_results_response.errors.first, extra)
+    end
+
+    def failure(message, extra = nil)
+      form_response_params = { success: false, errors: { message: message } }
+      if extra.present?
+        form_response_params[:extra] = extra unless extra.nil?
+      end
+      FormResponse.new(form_response_params)
     end
   end
 end

@@ -45,6 +45,7 @@ describe AccountsController do
           decrypted_pii: nil,
           personal_key: nil,
           decorated_user: user.decorate,
+          locked_for_session: false,
         )
         allow(subject).to receive(:view_model).and_return(view_model)
 
@@ -69,6 +70,7 @@ describe AccountsController do
             decrypted_pii: nil,
             personal_key: nil,
             decorated_user: user.decorate,
+            locked_for_session: false,
           )
           allow(subject).to receive(:view_model).and_return(view_model)
 

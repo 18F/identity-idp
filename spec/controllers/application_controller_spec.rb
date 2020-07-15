@@ -16,6 +16,39 @@ describe ApplicationController do
     end
   end
 
+  describe '#cache_issuer_in_cookie' do
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    context 'with a current_sp' do
+      let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
+      before do
+        allow(controller).to receive(:current_sp).and_return(sp)
+      end
+
+      it 'sets sets the cookie sp_issuer' do
+        get :index
+
+        expect(cookies[:sp_issuer]).to eq(sp.issuer)
+      end
+    end
+
+    context 'without a current_sp' do
+      before do
+        cookies[:sp_issuer] = 'urn:gov:gsa:openidconnect:sp:test_cookie'
+      end
+
+      it 'clears the cookie sp_issuer' do
+        get :index
+
+        expect(cookies[:sp_issuer]).to be_nil
+      end
+    end
+  end
+
   #
   # We don't test *every* exception we try to capture since we handle all such exceptions the same
   # way. This test doesn't ensure we have the right set of exceptions caught, but that, if caught,

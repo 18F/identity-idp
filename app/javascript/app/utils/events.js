@@ -10,7 +10,7 @@ class Events {
 
     const handlersForEvent = this.handlers[eventName] || [];
 
-    if (!handlersForEvent.filter(obj => obj.handler === handler).length) {
+    if (!handlersForEvent.filter((obj) => obj.handler === handler).length) {
       handlersForEvent.push({ handler, context });
     }
 
@@ -26,7 +26,7 @@ class Events {
       this.handlers[eventName].length = 0;
     } else {
       const handlers = this.handlers[eventName] || [];
-      this.handlers[eventName] = handlers.filter(obj => obj.handler !== handler);
+      this.handlers[eventName] = handlers.filter((obj) => obj.handler !== handler);
     }
   }
 

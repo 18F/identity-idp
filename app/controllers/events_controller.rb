@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+  include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
   layout 'card_wide'
 
@@ -10,6 +11,7 @@ class EventsController < ApplicationController
       decrypted_pii: nil,
       personal_key: nil,
       decorated_user: current_user.decorate,
+      locked_for_session: pii_locked_for_session?(current_user),
     )
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
