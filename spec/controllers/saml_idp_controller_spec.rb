@@ -428,33 +428,58 @@ describe SamlIdpController do
       end
     end
 
-    # context 'nameid_format is missing' do
-    #   it 'defaults to persistant' do
-    #     stub_analytics
-    #     allow(@analytics).to receive(:track_event)
-    #
-    #     user = create(:user, :signed_up)
-    #     auth_settings = missing_nameid_format_saml_settings
-    #     IdentityLinker.new(user, auth_settings.issuer).link_identity
-    #     user.identities.last.update!(verified_attributes: ['email'])
-    #     generate_saml_response(user, auth_settings)
-    #
-    #     expect(response.status).to eq(200)
-    #
-    #     analytics_hash = {
-    #       success: true,
-    #       errors: {},
-    #       nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-    #       authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-    #       service_provider: 'http://localhost:3000',
-    #       idv: false,
-    #       finish_profile: false,
-    #     }
-    #
-    #     expect(@analytics).to have_received(:track_event).
-    #       with(Analytics::SAML_AUTH, analytics_hash)
-    #   end
-    # end
+    context 'nameid_format is missing' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'defaults to persistant' do
+        auth_settings = missing_nameid_format_saml_settings
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+
+      it 'defaults to email when added to issuers_with_email_nameid_format' do
+        auth_settings = missing_nameid_format_saml_settings_for_allowed_email_issuer
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
 
     context 'service provider uses email NameID format but is not allowed to use email' do
       it 'returns an error' do
