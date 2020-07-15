@@ -44,6 +44,7 @@ module SamlIdp
       expiry = opts[:expiry] || 60*60
       encryption_opts = opts[:encryption] || nil
       signature_opts = opts[:signature] || {}
+      response_name_id_format = opts[:name_id_format] || saml_request.name_id_format
 
       response = SamlResponse.new(
         reference_id,
@@ -55,7 +56,7 @@ module SamlIdp
         saml_acs_url,
         (opts[:algorithm] || algorithm || default_algorithm),
         my_authn_context_classref,
-        saml_request.name_id_format,
+        response_name_id_format,
         signature_opts[:x509_certificate],
         signature_opts[:secret_key],
         signature_opts[:cloudhsm_key_label],
