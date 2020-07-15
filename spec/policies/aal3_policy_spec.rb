@@ -35,7 +35,7 @@ describe AAL3Policy do
     end
   end
 
-  describe '#aal_used?' do
+  describe '#aal3_used?' do
     it 'returns true if the user used PIV/CAC for MFA' do
       session[:auth_method] = 'piv_cac'
       aal3_policy = AAL3Policy.new(session: session, user: user)
