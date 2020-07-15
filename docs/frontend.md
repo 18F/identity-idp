@@ -34,6 +34,8 @@
 
 #### Mocha
 
+[Mocha](https://mochajs.org/) is used as a test runner for JavaScript code.
+
 To run all test specs:
 
 ```
@@ -52,6 +54,22 @@ For example, to watch a file and rerun tests after any change:
 
 ```
 npx mocha spec/javascripts/app/utils/ms-formatter_spec.js --watch
+```
+
+#### ESLint
+
+[ESLint](https://eslint.org/) is used to ensure code quality and enforce styling conventions.
+
+To analyze all JavaScript files:
+
+```
+yarn run lint
+```
+
+Many issues can be fixed automatically by appending a `--fix` flag to the command:
+
+```
+yarn run lint --fix
 ```
 
 ## Devices
