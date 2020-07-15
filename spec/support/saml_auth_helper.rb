@@ -126,6 +126,19 @@ module SamlAuthHelper
     settings
   end
 
+  def missing_nameid_format_saml_settings_for_allowed_email_issuer
+    settings = saml_settings.dup
+    settings.name_identifier_format = nil
+    settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
+    settings
+  end
+
+  def missing_nameid_format_saml_settings
+    settings = saml_settings.dup
+    settings.name_identifier_format = nil
+    settings
+  end
+
   def email_nameid_saml_settings_for_disallowed_issuer
     settings = saml_settings.dup
     settings.name_identifier_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'

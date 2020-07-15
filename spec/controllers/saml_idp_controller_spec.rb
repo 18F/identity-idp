@@ -201,6 +201,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
           service_provider: 'http://localhost:3000',
         }
@@ -226,6 +227,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
@@ -253,6 +255,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'invalid_provider',
         }
@@ -282,6 +285,7 @@ describe SamlIdpController do
             service_provider: [t('errors.messages.unauthorized_service_provider')],
             authn_context: [t('errors.messages.unauthorized_authn_context')],
           },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
           service_provider: 'invalid_provider',
         }
@@ -414,7 +418,7 @@ describe SamlIdpController do
 
           it 'has a format attribute defining the NameID to be email' do
             expect(name_id.attributes['Format'].value).
-              to eq('urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress')
+              to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress')
           end
 
           it 'has NameID value of the email address of the user making the AuthN Request' do
@@ -423,6 +427,34 @@ describe SamlIdpController do
         end
       end
     end
+
+    # context 'nameid_format is missing' do
+    #   it 'defaults to persistant' do
+    #     stub_analytics
+    #     allow(@analytics).to receive(:track_event)
+    #
+    #     user = create(:user, :signed_up)
+    #     auth_settings = missing_nameid_format_saml_settings
+    #     IdentityLinker.new(user, auth_settings.issuer).link_identity
+    #     user.identities.last.update!(verified_attributes: ['email'])
+    #     generate_saml_response(user, auth_settings)
+    #
+    #     expect(response.status).to eq(200)
+    #
+    #     analytics_hash = {
+    #       success: true,
+    #       errors: {},
+    #       nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+    #       authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    #       service_provider: 'http://localhost:3000',
+    #       idv: false,
+    #       finish_profile: false,
+    #     }
+    #
+    #     expect(@analytics).to have_received(:track_event).
+    #       with(Analytics::SAML_AUTH, analytics_hash)
+    #   end
+    # end
 
     context 'service provider uses email NameID format but is not allowed to use email' do
       it 'returns an error' do
@@ -438,6 +470,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: 'http://idmanagement.gov/ns/assurance/ial/1',
           service_provider: 'http://localhost:3000',
         }
@@ -892,6 +925,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: true,
@@ -926,6 +960,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
@@ -950,6 +985,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,

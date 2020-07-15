@@ -16,9 +16,10 @@ class AttributeAsserter
     phone
   ].freeze
 
-  def initialize(user:, service_provider:, authn_request:, decrypted_pii:)
+  def initialize(user:, service_provider:, name_id_format:, authn_request:, decrypted_pii:)
     self.user = user
     self.service_provider = service_provider
+    self.name_id_format = name_id_format
     self.authn_request = authn_request
     self.decrypted_pii = decrypted_pii
   end
@@ -35,7 +36,7 @@ class AttributeAsserter
 
   private
 
-  attr_accessor :user, :service_provider, :authn_request, :decrypted_pii
+  attr_accessor :user, :service_provider, :name_id_format, :authn_request, :decrypted_pii
 
   def ial_context
     @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)

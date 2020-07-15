@@ -89,6 +89,7 @@ module SamlIdpAuthConcern
     AttributeAsserter.new(
       user: principal,
       service_provider: current_service_provider,
+      name_id_format: name_id_format,
       authn_request: saml_request,
       decrypted_pii: decrypted_pii,
     )
@@ -107,6 +108,7 @@ module SamlIdpAuthConcern
   def saml_response
     encode_response(
       current_user,
+      name_id_format: name_id_format,
       authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
