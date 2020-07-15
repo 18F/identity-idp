@@ -31,21 +31,29 @@ module Funnel
         view: RegisterViewStep,
       }.freeze
 
-      def self.call(user_id, token, step_type, success)
+      def initialize(user_id, issuer)
+        @user_id = user_id
+        @issuer = issuer
+      end
+
+      def call(token, step_type, success)
         return unless user_id && TOKEN_WHITELIST.index(token.to_sym)
         doc_auth_log = find_or_create_doc_auth_log(user_id, token)
         return unless doc_auth_log
         klass = STEP_TYPE_TO_CLASS[step_type]
-        klass.call(doc_auth_log, token, success)
+        klass.call(doc_auth_log, issuer, token, success)
       end
 
-      def self.find_or_create_doc_auth_log(user_id, token)
+      private
+
+      attr_reader :user_id, :issuer
+
+      def find_or_create_doc_auth_log(user_id, token)
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)
         return doc_auth_log if doc_auth_log
         return unless token == 'welcome'
         DocAuthLog.create(user_id: user_id)
       end
-      private_class_method :find_or_create_doc_auth_log
     end
   end
 end

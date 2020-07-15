@@ -1,6 +1,6 @@
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
-const I18n = window.LoginGov.I18n;
+const { I18n } = window.LoginGov;
 
 const selectedInternationCodeOption = () => {
   const dropdown = document.querySelector('[data-international-phone-form] .international-code');

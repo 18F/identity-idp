@@ -15,7 +15,6 @@ en:
       address: Current address
       auth_app_disabled: not enabled
       auth_app_enabled: enabled
-      authentication_app: Authentication app
       backup_code_confirm_delete: Yes, delete codes
       backup_code_confirm_regenerate: Yes, regenerate codes
       backup_codes_exist: generated
@@ -66,6 +65,9 @@ en:
         ial2: If you have added your PIV/CAC card to your account, you may use it
           instead of your email. You will need to provide your password to unlock
           your profile.
+    re_verify:
+      banner: We've hidden your profile information to protect your privacy.
+      footer: Authenticate to view your information.
     revoke_consent:
       link_title: Revoke Consent
       longer_description_html: Your information will no longer be shared with %{service_provider}.

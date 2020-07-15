@@ -16,7 +16,7 @@ module Flow
     def show
       step = current_step
       analytics.track_event(analytics_visited, step: step) if @analytics_id
-      Funnel::DocAuth::RegisterStep.call(user_id, step, :view, true)
+      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step, :view, true)
       register_campaign
       render_step(step, flow.flow_session)
     end
@@ -49,7 +49,11 @@ module Flow
     end
 
     def register_update_step(step, result)
-      Funnel::DocAuth::RegisterStep.call(user_id, step, :update, result.success?)
+      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step, :update, result.success?)
+    end
+
+    def issuer
+      sp_session[:issuer]
     end
 
     def fsm_initialize

@@ -10,6 +10,7 @@
 
 <%= render @view_model.header_partial, view_model: @view_model %>
 
+
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue py1 px2 h6 caps">
     <%= t('account.index.login') %>
@@ -46,7 +47,8 @@
   <% end %>
   <%= render 'backup_codes' %>
 </div>
-<%= render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii %>
+<%= render @view_model.pii_partial, pii: @view_model.pii,
+           locked_for_session: @view_model.locked_for_session %>
 <div class="mb3 profile-info-box">
   <div class="bg-lightest-blue pb1 pt1 px2 h6 caps clearfix">
     <%= t('headings.account.connected_apps') %>

@@ -16,7 +16,6 @@ fr:
       address: Adresse actuelle
       auth_app_disabled: non activée
       auth_app_enabled: activée
-      authentication_app: Application d'authentification
       backup_code_confirm_delete: Oui, supprimer les codes
       backup_code_confirm_regenerate: Oui, régénérer les codes
       backup_codes_exist: généré
@@ -69,6 +68,11 @@ fr:
         ial2: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
+    re_verify:
+      banner: Nous avons masqué les informations de votre profil pour protéger votre
+        vie privée.
+      footer: Veuillez vous authentifier à nouveau pour afficher les informations
+        de votre profil
     revoke_consent:
       link_title: Révoquer le consentement
       longer_description_html: Vos informations ne seront plus partagées avec %{service_provider}.

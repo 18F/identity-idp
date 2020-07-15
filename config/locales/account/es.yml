@@ -16,7 +16,6 @@ es:
       address: Dirección actual
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
-      authentication_app: App de autenticación
       backup_code_confirm_delete: Sí, borrar códigos
       backup_code_confirm_regenerate: Sí, regenerar códigos.
       backup_codes_exist: generado
@@ -68,6 +67,9 @@ es:
         ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
+    re_verify:
+      banner: Hemos ocultado la información de su perfil para proteger su privacidad.
+      footer: Autentíquese nuevamente para ver la información de su perfil
     revoke_consent:
       link_title: Revocar consentimiento
       longer_description_html: Su información ya no se compartirá con %{service_provider}.

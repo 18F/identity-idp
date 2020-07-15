@@ -40,6 +40,29 @@ test:
       - zipcode
     allow_prompt_login: true
 
+  'https://aal3.serviceprovider.com/auth/saml/metadata':
+    agency_id: 2
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    failure_to_proof_url: 'https://example.com/'
+    redirect_uris:
+      - 'http://example.com/'
+      - 'http://example.com/auth/result'
+      - 'http://example.com/logout'
+    friendly_name: 'Test SP'
+    cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    ial: 2
+    aal: 3
+    attribute_bundle:
+      - first_name
+      - last_name
+      - ssn
+      - zipcode
+    allow_prompt_login: true
+
   'test_saml_sp_not_requesting_signed_response_message':
     agency_id: 2
     acs_url: 'http://example.com/test/saml/decode_assertion'
@@ -95,7 +118,6 @@ test:
     sp_initiated_login_url: 'http://test.host/test/saml'
     friendly_name: 'Test SP'
     allow_prompt_login: true
-    deal_id: 'ABC123'
     launch_date: '2020-03-01'
     iaa: 'ABC123-2020'
     iaa_start_date: '2020-01-01'
@@ -145,10 +167,23 @@ test:
     redirect_uris:
       - 'http://localhost:7654/auth/result'
       - 'https://example.com'
+      - 'http://www.example.com/test/oidc'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
     ial: 2
+    allow_prompt_login: true
+
+  'urn:gov:gsa:openidconnect:sp:server_requiring_aal3':
+    agency_id: 2
+    redirect_uris:
+      - 'http://localhost:7654/auth/result'
+      - 'https://example.com'
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
+    assertion_consumer_logout_service_url: ''
+    ial: 2
+    aal: 3
     allow_prompt_login: true
 
   'test_sp_with_default_help_text':

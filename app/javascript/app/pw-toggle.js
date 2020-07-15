@@ -1,4 +1,4 @@
-const I18n = window.LoginGov.I18n;
+const { I18n } = window.LoginGov;
 
 function togglePw() {
   const inputs = document.querySelectorAll('input[type="password"]');
@@ -26,6 +26,5 @@ function togglePw() {
     });
   }
 }
-
 
 document.addEventListener('DOMContentLoaded', togglePw);

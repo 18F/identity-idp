@@ -1,0 +1,11 @@
+<% title t('doc_auth.titles.doc_auth') %>
+
+<%= image_tag(asset_url('check-email.svg'), alt: '', width: 48) %>
+
+<h1 class='h3 mb2 mt3 my0'>
+  <%= t('recover.request.email_check') %>
+</h1>
+
+<p class='mt-tiny mb0'>
+  <%= t('recover.request.email_sent', email: current_user.email) %>
+</p>
