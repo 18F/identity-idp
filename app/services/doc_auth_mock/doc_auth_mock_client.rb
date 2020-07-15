@@ -39,29 +39,34 @@ module DocAuthMock
       Acuant::Response.new(success: true)
     end
 
-    def post_images(front_image:, back_image:)
+    def post_selfie(image:, instance_id:)
+      return mocked_response_for_method(__method__) if method_mocked?(__method__)
+
+      Acuant::Response.new(success: true)
+    end
+
+    def post_images(front_image:, back_image:, selfie_image:, instance_id: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       document = create_document
       return document unless document.success?
 
-      instance_id = create_document.instance_id
+      instance_id ||= create_document.instance_id
       front_response = post_front_image(image: front_image, instance_id: instance_id)
       back_response = post_back_image(image: back_image, instance_id: instance_id)
       response = merge_post_responses(front_response, back_response)
-      check_results(response, instance_id)
+      results = check_results(response, instance_id)
+      if results.success?
+        post_images(sefie_image, instance_id)
+      else
+        results
+      end
     end
 
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       ResultResponseBuilder.new(self.class.last_uploaded_back_image).call
-    end
-
-    def post_selfie(instance_id:, image:)
-      return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
-      Acuant::Response.new(success: true)
     end
 
     private

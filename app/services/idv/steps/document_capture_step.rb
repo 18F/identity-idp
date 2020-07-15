@@ -22,8 +22,9 @@ module Idv
       end
 
       def form_submit
-        Idv::DocumentCaptureForm.new.submit(permit(:front_image, :front_image_data_url,
-                                                   :back_image, :back_image_data_url))
+        Idv::DocumentCaptureForm.new.submit(permit(:front_image,  :front_image_data_url,
+                                                   :back_image,   :back_image_data_url,
+                                                   :selfie_image, :selfie_image_data_url))
       end
     end
   end

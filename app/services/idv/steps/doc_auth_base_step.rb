@@ -29,6 +29,12 @@ module Idv
         DataUrlImage.new(flow_params[:back_image_data_url])
       end
 
+      def selfie_image
+        uploaded_image = flow_params[:selfie_image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:selfie_image_data_url])
+      end
+
       def doc_auth_client
         @doc_auth_client ||= begin
           case doc_auth_vendor
@@ -124,9 +130,12 @@ module Idv
         result = doc_auth_client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
+          selfie_image: selfie_image.read,
         )
+        # TODO: should these cost recordings happen in the doc_auth_client?
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
+        add_cost(:acuant_selfie)
         result
       end
 

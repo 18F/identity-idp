@@ -16,6 +16,7 @@
 <% title t('doc_auth.titles.doc_auth') %>
 
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
+<%= render 'idv/doc_auth/notices', flow_session: flow_session %>
 
 <%= simple_form_for(
   :doc_auth,
@@ -24,6 +25,7 @@
   html: { autocomplete: 'off', role: 'form', class: 'mt2' }
 ) do |f| %>
   <%# ---- Front Image ----- %>
+
   <%= render 'idv/doc_auth/front_of_state_id_image' %>
 
   <h1 class='h3 my0'>
@@ -39,12 +41,11 @@
   <% end %>
 
   <%= f.input :front_image_data_url, as: :hidden %>
-  <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
   <%= f.input :front_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
   <div class='my2' id='front_target'></div>
 
-
   <%# ---- Back Image ----- %>
+
   <%= render 'idv/doc_auth/back_of_state_id_image' %>
 
   <h1 class='h3 my0'>
@@ -60,14 +61,20 @@
   <% end %>
 
   <%= f.input :back_image_data_url, as: :hidden %>
-  <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
   <%= f.input :back_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
   <div class='my2' id='back_target'></div>
 
   <%# ---- Selfie ----- %>
 
+  <h1 class='h3 my0'>
+    <%= t('doc_auth.headings.selfie') %>
+  </h1>
 
-  <%# ---- Selfie ----- %>
+  <%= f.input :selfie_image_data_url, as: :hidden %>
+  <%= f.input :selfie_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+  <div class='my2' id='selfie_target'></div>
+
+  <%# ---- Submit ----- %>
 
   <div class='mt3'>
     <%= render 'idv/doc_auth/submit_with_spinner' %>
