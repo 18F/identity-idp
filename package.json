@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint app spec --ext .js,.jsx",
-    "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --extension 'js,jsx' --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**spec.js?(x)'",
+    "test": "mocha 'spec/javascripts/**/**spec.js?(x)'",
     "build": "true"
   },
   "dependencies": {
