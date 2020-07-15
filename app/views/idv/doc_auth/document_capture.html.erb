@@ -1,6 +1,17 @@
-<div id='document-capture-form'>
-</div>
-
+<% if Figaro.env.acuant_sdk_document_capture_enabled == 'true' %>
+  <% content_for :meta_tags do %>
+    <meta
+      name="acuant-sdk-initialization-endpoint"
+      content="<%= Figaro.env.acuant_sdk_initialization_endpoint %>"
+    >
+    <meta
+      name="acuant-sdk-initialization-creds"
+      content="<%= Figaro.env.acuant_sdk_initialization_creds %>"
+    >
+  <% end %>
+  <div id="document-capture-form"></div>
+  <%= javascript_pack_tag 'document-capture' %>
+<% end %>
 <div>
 <% title t('doc_auth.titles.doc_auth') %>
 
@@ -68,4 +79,3 @@
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= javascript_pack_tag 'image-preview' %>
 </div>
-<%= javascript_pack_tag 'document-capture' %>
