@@ -381,49 +381,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#aal3_requested?' do
-    subject(:aal3_requested?) { form.aal3_requested? }
-    context 'with only ial1' do
-      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(false) }
-    end
-
-    context 'with only ial2' do
-      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(false) }
-    end
-
-    context 'with only aal3' do
-      let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with ial1 and aal3' do
-      let(:acr_values) do
-        [
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ].join(' ')
-      end
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with ial2 and aal3' do
-      let(:acr_values) do
-        [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ].join(' ')
-      end
-      it { expect(aal3_requested?).to eq(true) }
-    end
-
-    context 'with a malformed ial' do
-      let(:acr_values) { 'foobarbaz' }
-      it { expect(aal3_requested?).to eq(false) }
-    end
-  end
-
   describe '#client_id' do
     it 'returns the form client_id' do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')

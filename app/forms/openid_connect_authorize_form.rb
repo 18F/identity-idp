@@ -61,10 +61,6 @@ class OpenidConnectAuthorizeForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
-  def aal3_requested?
-    aal == Authorization::AAL3
-  end
-
   def verified_at_requested?
     scope.include?('profile:verified_at')
   end
