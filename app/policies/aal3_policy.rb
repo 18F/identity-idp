@@ -24,6 +24,8 @@ class AAL3Policy
       !aal3_used?
   end
 
+  private
+
   def aal3_requested?
     return false unless @session
 
