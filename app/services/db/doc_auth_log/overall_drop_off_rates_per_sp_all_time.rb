@@ -12,7 +12,7 @@ module Db
       def verified_user_counts_query
         <<~SQL
           select count(*) from identities
-          where service_provider='#{issuer}' and ial=2
+          where service_provider='#{issuer}' and ial>=2
           and user_id in (select user_id from doc_auth_logs where #{at_least_one_image_submitted})
         SQL
       end
