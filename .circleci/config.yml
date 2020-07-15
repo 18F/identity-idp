@@ -155,7 +155,6 @@ jobs:
 
             bundle exec rake knapsack:rspec
             yarn test
-            bundle exec slim-lint app/views
       - run:
           name: Code Climate Test Coverage
           command: |
@@ -171,6 +170,17 @@ jobs:
           command: |
             aws s3 sync "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM" coverage/
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  lints:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: Run Lints
+          command: |
+            yarn run lint
+            bundle exec slim-lint app/views
   build-latest-container:
     working_directory: ~/identity-idp
     docker:
@@ -271,6 +281,7 @@ workflows:
   release:
     jobs:
       - build
+      - lints
       - build-latest-dev-container:
           requires:
             - build
