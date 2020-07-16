@@ -1,6 +1,5 @@
 {
-  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
-  "plugins": ["prettier"],
+  "extends": "airbnb",
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -18,7 +17,6 @@
     "fixture": true
   },
   "rules": {
-    "prettier/prettier": "off",
     "jsx-a11y/img-has-alt": "off",
     "func-names": 0,
     "space-before-function-paren": 0,
@@ -48,6 +46,8 @@
   "overrides": [
     {
       "files": ["app/javascript/app/document-capture/**/*"],
+      "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
+      "plugins": ["prettier"],
       "rules": {
         "prettier/prettier": "error"
       }
