@@ -72,10 +72,22 @@ describe SamlIdp::Controller do
     it "should create a SAML Response" do
       saml_response = encode_response(principal)
       response = OneLogin::RubySaml::Response.new(saml_response)
+      name_id_format_email = Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+      expect(response.name_id_format).to eq(name_id_format_email)
       expect(response.name_id).to eq("foo@example.com")
       expect(response.issuers.first).to eq("http://example.com")
       response.settings = saml_settings
       expect(response.is_valid?).to be_truthy
+    end
+
+    it "should create a SAML Response with specified name id format" do
+      name_id_format_persistent = Saml::XML::Namespaces::Formats::NameId::PERSISTENT
+      opts = {name_id_format: name_id_format_persistent}
+      expect(principal).to receive(:id).twice
+      saml_response = encode_response(principal, opts)
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.name_id_format).to eq(name_id_format_persistent)
+      expect(response.issuers.first).to eq("http://example.com")
     end
 
     it "should sign a SAML Response if requested" do
