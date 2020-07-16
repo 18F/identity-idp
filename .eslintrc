@@ -48,7 +48,6 @@
   "overrides": [
     {
       "files": ["app/javascript/app/document-capture/**/*"],
-      "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
       "plugins": ["prettier"],
       "rules": {
         "prettier/prettier": "error"
