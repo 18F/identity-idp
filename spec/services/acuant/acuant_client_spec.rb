@@ -48,25 +48,50 @@ describe Acuant::AcuantClient do
   end
 
   describe '#post_images' do
-    it 'sends an upload image request for the front image' do
-      instance_id = 'this-is-a-test-instance-id'
-      url = URI.join(
+    let(:instance_id) { 'this-is-a-test-instance-id' }
+    let(:image_upload_url) do
+      URI.join(
         Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}/Image"
       )
-      stub_request(:post, url).with(query: { side: 0, light: 0 }).to_return(body: '', status: 201)
-      stub_request(:post, url).with(query: { side: 1, light: 0 }).to_return(body: '', status: 201)
-      results_url = URI.join(
+    end
+    let(:front_image_query) { { query: { side: 0, light: 0 } } }
+    let(:back_image_query)  { { query: { side: 1, light: 0 } } }
+    let(:results_url) do
+      URI.join(
         Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}"
       )
+    end
+    let(:get_face_image_url) do
+      URI.join(
+        Figaro.env.acuant_assure_id_url,
+        "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
+      )
+    end
+    let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
+    let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
+
+    it 'sends an upload image request for the front, back, and selfie images' do
+      # DL image upload stubs
+      stub_request(:post, image_upload_url).with(front_image_query).to_return(body: '', status: 201)
+      stub_request(:post, image_upload_url).with(back_image_query).to_return(body: '', status: 201)
       stub_request(:get, results_url).to_return(body: AcuantFixtures.get_results_response_success)
+
+      # Selfie stubs
+      stub_request(:get, get_face_image_url).
+        to_return(body: AcuantFixtures.get_face_image_response)
+      stub_request(:post, facial_match_url).
+        to_return(body: AcuantFixtures.facial_match_response_success)
+      stub_request(:post, liveness_url).
+        to_return(body: AcuantFixtures.liveness_response_success)
 
       allow(subject).to receive(:create_document).and_return(
         OpenStruct.new('success?' => true, instance_id: instance_id),
       )
 
-      result = subject.post_images(
+      result, _pii = subject.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
+        selfie_image: DocAuthImageFixtures.selfie_image,
         instance_id: instance_id,
       )
 

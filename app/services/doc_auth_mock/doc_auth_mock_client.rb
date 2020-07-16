@@ -5,6 +5,7 @@ module DocAuthMock
       attr_reader :response_mocks
       attr_accessor :last_uploaded_front_image
       attr_accessor :last_uploaded_back_image
+      attr_accessor :last_uploaded_selfie_image
     end
 
     def self.mock_response!(method:, response:)
@@ -16,6 +17,7 @@ module DocAuthMock
       @response_mocks = {}
       @last_uploaded_front_image = nil
       @last_uploaded_back_image = nil
+      @last_uploaded_selfie_image = nil
     end
 
     def create_document
@@ -42,9 +44,11 @@ module DocAuthMock
     def post_selfie(image:, instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
+      self.class.last_uploaded_selfie_image = image
       Acuant::Response.new(success: true)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def post_images(front_image:, back_image:, selfie_image:, instance_id: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -57,11 +61,14 @@ module DocAuthMock
       response = merge_post_responses(front_response, back_response)
       results = check_results(response, instance_id)
       if results.success?
-        post_images(sefie_image, instance_id)
+        pii = results.pii_from_doc
+        selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
+        [selfie_response, pii]
       else
         results
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)

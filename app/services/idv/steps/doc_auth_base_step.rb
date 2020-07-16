@@ -98,6 +98,14 @@ module Idv
         )
       end
 
+      # making a new method to avoid breaking the existing flow
+      def save_pii_in_session(pii)
+        flow_session[:pii_from_doc] = pii.merge(
+          uuid: current_user.uuid,
+          phone: current_user.phone_configurations.take&.phone,
+        )
+      end
+
       def user_id_from_token
         flow_session[:doc_capture_user_id]
       end
@@ -132,7 +140,7 @@ module Idv
           back_image: back_image.read,
           selfie_image: selfie_image.read,
         )
-        # TODO: should these cost recordings happen in the doc_auth_client?
+        # DP: should these cost recordings happen in the doc_auth_client?
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
         add_cost(:acuant_selfie)
@@ -183,6 +191,7 @@ module Idv
         if Figaro.env.document_capture_step_enabled == 'true'
           mark_step_complete(:front_image)
           mark_step_complete(:back_image)
+          mark_step_complete(:selfie)
           mark_step_complete(:mobile_front_image)
           mark_step_complete(:mobile_back_image)
         else

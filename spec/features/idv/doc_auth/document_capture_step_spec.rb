@@ -29,6 +29,7 @@ feature 'document capture step' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.upload_front'))
       expect(page).to have_content(t('doc_auth.headings.upload_back'))
+      expect(page).to have_content(t('doc_auth.headings.selfie'))
     end
 
     it 'displays tips and sample images' do
@@ -46,6 +47,7 @@ feature 'document capture step' do
     it 'allows the use of a base64 encoded data url representation of the image' do
       attach_front_image_data_url
       attach_back_image_data_url
+      attach_selfie_image_data_url
       click_idv_continue
 
       expect(page).to have_current_path(next_step)
@@ -54,6 +56,9 @@ feature 'document capture step' do
       )
       expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
         doc_auth_back_image_data_url_data,
+      )
+      expect(DocAuthMock::DocAuthMockClient.last_uploaded_selfie_image).to eq(
+        doc_auth_selfie_image_data_url_data,
       )
     end
 
@@ -123,6 +128,6 @@ feature 'document capture step' do
   end
 
   def next_step
-    idv_doc_auth_selfie_step
+    idv_doc_auth_ssn_step
   end
 end

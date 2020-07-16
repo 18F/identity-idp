@@ -33,6 +33,7 @@ module Acuant
       merge_facial_match_and_liveness_response(facial_match_response, liveness_response)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def post_images(front_image:, back_image:, selfie_image:, instance_id: nil)
       document = create_document
       return failure(document.errors.first, document.to_h) unless document.success?
@@ -42,10 +43,17 @@ module Acuant
       back_response = post_back_image(image: back_image, instance_id: instance_id)
       response = merge_post_responses(front_response, back_response)
 
-      check_results(response, instance_id)
+      results = check_results(response, instance_id)
 
-      selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
+      if results.success?
+        pii = results.pii_from_doc
+        selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
+        [selfie_response, pii]
+      else
+        results
+      end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def get_results(instance_id:)
       Requests::GetResultsRequest.new(instance_id: instance_id).fetch
