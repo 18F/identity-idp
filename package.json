@@ -38,7 +38,7 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/register": "^7.4.4",
     "atob": "^2.1.2",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^10.1.0",
     "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
