@@ -23,7 +23,9 @@
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
-    "no-param-reassign": ["off", "never"]
+    "no-param-reassign": ["off", "never"],
+    "no-confusing-arrow": "off",
+    "implicit-arrow-linebreak": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,
@@ -42,5 +44,14 @@
       "app/phone-internationalization",
       "app/i18n-dropdown"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["app/javascript/app/document-capture/**/*"],
+      "plugins": ["prettier"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    }
+  ]
 }
