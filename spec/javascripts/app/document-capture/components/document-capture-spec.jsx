@@ -6,11 +6,11 @@ import { useDOM } from '../../../support/dom';
 describe('document-capture/components/document-capture', () => {
   useDOM();
 
-  it('renders', () => {
+  it('renders a heading', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const button = getByText('doc_auth.headings.welcome');
+    const heading = getByText('doc_auth.headings.welcome');
 
-    expect(button).to.be.ok();
+    expect(heading).to.be.ok();
   });
 });

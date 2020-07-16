@@ -25,7 +25,8 @@
     "import/extensions": ["off", "never"],
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
-    "implicit-arrow-linebreak": "off"
+    "implicit-arrow-linebreak": "off",
+    "object-curly-newline": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,
