@@ -39,6 +39,17 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
+      document_capture_info_html: |-
+        <div class="bold">Please check that:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow or reflection is present</li>
+        <li>Your ID does not have any damaged barcodes</li>
+        <li>Your ID represents 80% of the overall image</li>
+        <li>Your ID is against a solid, dark background</li>
+        <li>Your selfie is taken in a well-lit area with a plain background</li>
+        <li>You are not wearing a hat or glasses, and your head is fully visible</li>
+        </ul>
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       quota_reached: Sorry your service provider has reached its identity verification

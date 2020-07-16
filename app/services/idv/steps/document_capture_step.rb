@@ -16,7 +16,7 @@ module Idv
       def handle_document_verification_failure(response)
         mark_step_incomplete(:document_capture)
         extra = response.to_h.merge(
-          notice: I18n.t('errors.doc_auth.general_info'),
+          notice: I18n.t('errors.doc_auth.document_capture_info_html'),
         )
         failure(response.errors.first, extra)
       end
