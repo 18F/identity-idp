@@ -34,6 +34,11 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
+  if Figaro.env.log_to_stdout?
+    Rails.logger = Logger.new(STDOUT)
+    config.logger = ActiveSupport::Logger.new(STDOUT)
+    config.logger.formatter = Ruby::JSONFormatter::Base.new
+  end
   config.log_level = :info
   config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']

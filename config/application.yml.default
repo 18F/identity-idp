@@ -67,6 +67,7 @@ lexisnexis_password: test_password
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
 lexisnexis_request_mode: testing
 lexisnexis_username: test_username
+log_to_stdout: 'false'
 logins_per_email_and_ip_bantime: '60'
 logins_per_email_and_ip_period: '60'
 logins_per_ip_period: '60'

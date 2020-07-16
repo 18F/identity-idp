@@ -11,7 +11,12 @@ module Encryption
     end
 
     def self.logger
-      @logger ||= Logger.new('log/kms.log')
+      if Figaro.env.log_to_stdout?
+        @logger ||= Logger.new(STDOUT)
+        @logger.formatter = Ruby::JSONFormatter::Base.new
+      else
+        @logger ||= Logger.new('log/kms.log')
+      end
     end
   end
 end

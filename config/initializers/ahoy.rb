@@ -42,11 +42,19 @@ module Ahoy
     end
 
     def visit_logger
-      @visit_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
+      if Figaro.env.log_to_stdout?
+        @visit_logger ||= ActiveSupport::Logger.new(STDOUT)
+      else
+        @visit_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
+      end
     end
 
     def event_logger
-      @event_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
+      if Figaro.env.log_to_stdout?
+        @event_logger ||= ActiveSupport::Logger.new(STDOUT)
+      else
+        @event_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
+      end
     end
 
     def invalid_uuid?(token)
