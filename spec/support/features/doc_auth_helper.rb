@@ -38,6 +38,10 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :ssn)
   end
 
+  def idv_doc_auth_document_capture_step
+    idv_doc_auth_step_path(step: :document_capture)
+  end
+
   def idv_doc_auth_front_image_step
     idv_doc_auth_step_path(step: :front_image)
   end
@@ -86,6 +90,11 @@ module DocAuthHelper
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
+  end
+
+  def complete_doc_auth_steps_before_document_capture_step
+    complete_doc_auth_steps_before_upload_step
+    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_doc_auth_steps_before_front_image_step
@@ -177,6 +186,35 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         errors: [I18n.t('errors.doc_auth.general_error')],
       ),
     )
+  end
+
+  def attach_images
+    attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
+    attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+  end
+
+  def attach_front_image_data_url
+    page.find('#doc_auth_front_image_data_url', visible: false).set(doc_auth_front_image_data_url)
+  end
+
+  def doc_auth_front_image_data_url
+    File.read('spec/support/fixtures/doc_auth_front_image_data_url.data')
+  end
+
+  def doc_auth_front_image_data_url_data
+    Base64.decode64(doc_auth_front_image_data_url.split(',').last)
+  end
+
+  def attach_back_image_data_url
+    page.find('#doc_auth_back_image_data_url', visible: false).set(doc_auth_back_image_data_url)
+  end
+
+  def doc_auth_back_image_data_url
+    File.read('spec/support/fixtures/doc_auth_back_image_data_url.data')
+  end
+
+  def doc_auth_back_image_data_url_data
+    Base64.decode64(doc_auth_front_image_data_url.split(',').last)
   end
 
   def attach_image

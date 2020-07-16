@@ -45,7 +45,7 @@ en:
     present_webauthn: Present your hardware security key
     reactivate_account: Reactivate your account
     registrations:
-      new: Sign up for a account
+      new: Sign up for an account
     remembered_browsers: Remembered browsers
     revoke_consent: Revoke Consent
     sign_up:

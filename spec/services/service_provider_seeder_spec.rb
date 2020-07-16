@@ -25,7 +25,6 @@ RSpec.describe ServiceProviderSeeder do
         expect(config_sp.active).to eq(true)
         expect(config_sp.native).to eq(true)
 
-        expect(config_sp.deal_id).to eq('ABC123')
         expect(config_sp.launch_date).to eq(Date.new(2020, 3, 1))
         expect(config_sp.iaa).to eq('ABC123-2020')
         expect(config_sp.iaa_start_date).to eq(Date.new(2020, 1, 1))

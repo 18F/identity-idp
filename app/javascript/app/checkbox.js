@@ -22,5 +22,4 @@ function checkbox() {
   }
 }
 
-
 document.addEventListener('DOMContentLoaded', checkbox);

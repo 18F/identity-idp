@@ -86,7 +86,7 @@ describe Acuant::Request do
 
         expect(response.success?).to eq(false)
         expect(response.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
-        expect(response.exception).to be_a(Faraday::TimeoutError)
+        expect(response.exception).to be_a(Faraday::ConnectionFailed)
       end
     end
   end

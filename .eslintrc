@@ -1,46 +1,58 @@
 {
-  'extends': 'airbnb-base',
-  'parser': 'babel-eslint',
-  'env': {
-    'browser': true,
-    'commonjs': true,
-    'es6': true,
-    'mocha': true
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "mocha": true
   },
-  'globals': {
-    '$': true,
-    '__DEV__': true,
-    'assert': true,
-    'chai': true,
-    'sinon': true,
-    'expect': true,
-    'fixture': true
+  "globals": {
+    "$": true,
+    "__DEV__": true,
+    "assert": true,
+    "chai": true,
+    "sinon": true,
+    "expect": true,
+    "fixture": true
   },
-  'rules': {
-    'jsx-a11y/img-has-alt': 'off',
-    'func-names': 0,
-    'space-before-function-paren': 0,
-    'prefer-arrow-callback': 0,
-    'import/prefer-default-export': 'off',
-    'import/extensions': ['off', 'never'],
-    'no-param-reassign': ['off', 'never'],
+  "rules": {
+    "jsx-a11y/img-has-alt": "off",
+    "func-names": 0,
+    "space-before-function-paren": 0,
+    "prefer-arrow-callback": 0,
+    "import/prefer-default-export": "off",
+    "import/extensions": ["off", "never"],
+    "no-param-reassign": ["off", "never"],
+    "no-confusing-arrow": "off",
+    "implicit-arrow-linebreak": "off",
+    "object-curly-newline": "off"
   },
-  'parserOptions': {
-    'ecmaVersion': 6,
-    'sourceType': 'module'
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
   },
-  'settings': {
-    'import/core-modules': [
-      'app/components/index',
-      'app/utils/index',
-      'app/pw-toggle',
-      'app/form-validation',
-      'app/form-field-format',
-      'app/radio-btn',
-      'app/print-personal-key',
-      'app/utils/ms-formatter',
-      'app/phone-internationalization',
-      'app/i18n-dropdown',
-    ],
-  }
+  "settings": {
+    "import/core-modules": [
+      "app/components/index",
+      "app/utils/index",
+      "app/pw-toggle",
+      "app/form-validation",
+      "app/form-field-format",
+      "app/radio-btn",
+      "app/print-personal-key",
+      "app/utils/ms-formatter",
+      "app/phone-internationalization",
+      "app/i18n-dropdown"
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["app/javascript/app/document-capture/**/*"],
+      "plugins": ["prettier"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    }
+  ]
 }

@@ -41,10 +41,7 @@ module AccountReset
     def notify_user_by_sms_if_applicable
       phone = MfaContext.new(user).phone_configurations.take&.phone
       return unless phone
-      cancel_link = Rails.application.routes.url_helpers.account_reset_cancel_url(
-        token: user.account_reset_request.request_token,
-      )
-      @telephony_response = Telephony.send_account_reset_notice(to: phone, cancel_link: cancel_link)
+      @telephony_response = Telephony.send_account_reset_notice(to: phone)
     end
 
     def extra_analytics_attributes

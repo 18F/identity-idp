@@ -56,8 +56,6 @@ plugins:
     - 'app/forms/password_form.rb'
     - 'lib/user_flow_exporter.rb'
     - 'lib/rspec/formatters/user_flow_formatter.rb'
-  eslint:
-    enabled: true
   fixme:
     enabled: true
     exclude_patterns:
@@ -93,3 +91,4 @@ exclude_patterns:
   - 'scripts/load_testing/'
   - 'tmp/'
   - 'config/initializers/jwt.rb'
+  - 'spec/support/monitor/monitor_email_helper.rb'

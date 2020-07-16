@@ -1,8 +1,5 @@
 p.lead == t('.intro', app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
-p.lead == t('.more_info')
-p.lead == t('.cancel', \
-            cancel_account_reset: link_to(t('user_mailer.account_reset_granted.cancel_link_text'), \
-            account_reset_cancel_url(token: @token), class: 'blue'))
+p.lead == t('.cancel')
 
 table.spacer
   tbody

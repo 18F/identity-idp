@@ -1,15 +1,16 @@
 module Funnel
   module DocAuth
     class RegisterSubmitStep
-      def self.call(doc_auth_log, token, success)
-        update_submit_count(doc_auth_log, token)
+      def self.call(doc_auth_log, issuer, token, success)
+        update_submit_count(doc_auth_log, issuer, token)
         update_error_count(doc_auth_log, token, success)
       end
 
-      def self.update_submit_count(doc_auth_log, token)
+      def self.update_submit_count(doc_auth_log, issuer, token)
         method = "#{token}_submit_count".to_sym
         return unless doc_auth_log.respond_to?(method)
         doc_auth_log[method] += 1
+        doc_auth_log.issuer = issuer
         doc_auth_log.save
       end
       private_class_method :update_submit_count

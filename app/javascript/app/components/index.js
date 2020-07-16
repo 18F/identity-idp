@@ -3,7 +3,7 @@ import modal from './modal';
 import Accordion from './accordion';
 
 window.LoginGov = (window.LoginGov || {});
-const LoginGov = window.LoginGov;
+const { LoginGov } = window;
 const trapModal = modal(focusTrapProxy);
 
 LoginGov.Modal = trapModal;

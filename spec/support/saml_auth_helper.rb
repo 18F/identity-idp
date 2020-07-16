@@ -60,13 +60,13 @@ module SamlAuthHelper
     @auth_request ||= OneLogin::RubySaml::Authrequest.new
   end
 
-  def authnrequest_get
-    auth_request.create(saml_spec_settings)
+  def authnrequest_get(issuer: nil)
+    auth_request.create(saml_spec_settings(issuer: issuer))
   end
 
-  def saml_spec_settings
+  def saml_spec_settings(issuer: nil)
     settings = saml_settings.dup
-    settings.issuer = 'http://localhost:3000'
+    settings.issuer = issuer || 'http://localhost:3000'
     settings
   end
 
@@ -92,6 +92,12 @@ module SamlAuthHelper
   def sp1_saml_settings
     settings = saml_settings.dup
     settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
+    settings
+  end
+
+  def aal3_sp1_saml_settings
+    settings = saml_settings.dup
+    settings.issuer = 'https://aal3.serviceprovider.com/auth/saml/metadata'
     settings
   end
 
@@ -203,6 +209,10 @@ module SamlAuthHelper
 
   def ial2_authnrequest
     auth_request.create(ial2_saml_settings)
+  end
+
+  def aal3_sp1_authnrequest
+    auth_request.create(aal3_sp1_saml_settings)
   end
 
   def missing_authn_context_saml_settings

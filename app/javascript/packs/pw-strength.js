@@ -1,6 +1,6 @@
 import zxcvbn from 'zxcvbn';
 
-const I18n = window.LoginGov.I18n;
+const { I18n } = window.LoginGov;
 
 // zxcvbn returns a strength score from 0 to 4
 // we map those scores to:
@@ -46,7 +46,7 @@ function getFeedback(z) {
   if (!warning && !suggestions.length) return '&nbsp;';
   if (warning) return lookup(warning);
 
-  return `${suggestions.map(s => lookup(s)).join('')}`;
+  return `${suggestions.map((s) => lookup(s)).join('')}`;
 }
 
 function disableSubmit(submitEl, length = 0, score = 0) {
@@ -60,7 +60,7 @@ function disableSubmit(submitEl, length = 0, score = 0) {
 }
 
 function analyzePw() {
-  const userAgent = window.navigator.userAgent;
+  const { userAgent } = window.navigator;
   const input = document.querySelector(
     '#password_form_password, #reset_password_form_password, #update_user_password_form_password',
   );
@@ -69,7 +69,7 @@ function analyzePw() {
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const submit = document.querySelector('input[type="submit"]');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden-passwords]');
-  const forbiddenPasswords = forbiddenPasswordsElement.dataset.forbiddenPasswords;
+  const { forbiddenPasswords } = forbiddenPasswordsElement.dataset;
 
   disableSubmit(submit);
 

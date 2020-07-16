@@ -68,7 +68,7 @@ describe('acuant/document_capture_fallback', () => {
 
       expect(window.setTimeout.calledOnce).to.eq(true);
 
-      const args = window.setTimeout.lastCall.args;
+      const { args } = window.setTimeout.lastCall;
       const callback = args[0];
       const timeout = args[1];
 

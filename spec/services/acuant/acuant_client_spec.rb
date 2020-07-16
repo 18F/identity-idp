@@ -47,6 +47,33 @@ describe Acuant::AcuantClient do
     end
   end
 
+  describe '#post_images' do
+    it 'sends an upload image request for the front image' do
+      instance_id = 'this-is-a-test-instance-id'
+      url = URI.join(
+        Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}/Image"
+      )
+      stub_request(:post, url).with(query: { side: 0, light: 0 }).to_return(body: '', status: 201)
+      stub_request(:post, url).with(query: { side: 1, light: 0 }).to_return(body: '', status: 201)
+      results_url = URI.join(
+        Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}"
+      )
+      stub_request(:get, results_url).to_return(body: AcuantFixtures.get_results_response_success)
+
+      allow(subject).to receive(:create_document).and_return(
+        OpenStruct.new('success?' => true, instance_id: instance_id),
+      )
+
+      result = subject.post_images(
+        front_image: DocAuthImageFixtures.document_front_image,
+        back_image: DocAuthImageFixtures.document_back_image,
+        instance_id: instance_id,
+      )
+
+      expect(result.success?).to eq(true)
+    end
+  end
+
   describe '#get_results' do
     context 'when the result is a pass' do
       it 'sends a request to get the results and returns success' do

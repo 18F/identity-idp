@@ -2,17 +2,19 @@
 #
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 #
-version: 2
-jobs:
-  build:
-    parallelism: 4
+version: 2.1
+
+orbs:
+  jq: circleci/jq@2.2.0
+  slack: circleci/slack@3.4.2
+executors:
+  # Common container definition used by all jobs
+  ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
       - image: circleci/ruby:2.6.5-node-browsers
         environment:
           RAILS_ENV: test
-          CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
-          COVERAGE: true
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -23,32 +25,102 @@ jobs:
 
       - image: redis:4.0.1
 
-    working_directory: ~/identity-idp
-
+commands:
+  bundle-yarn-install:
     steps:
-      - checkout
-      - restore-cache:
+      - restore_cache:
           keys:
             - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
-      - save-cache:
+      - save_cache:
           key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-      - restore-cache:
+      - restore_cache:
           keys:
             - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
             - v1-identity-idp-yarn-
       - run:
           name: Install Yarn
           command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
-      - save-cache:
+      - save_cache:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+
+  # Custom version of "checkout" that checks out a SHA deployed to sha_url param
+  # Adapter from https://gist.github.com/drazisil/e97dc21454120251472154de1c1b1c7b
+  checkout-deployed-sha:
+    parameters:
+      sha_url:
+        type: string
+    steps:
+      - run:
+          name: Custom Checkout of Deployed SHA
+          command: |
+            DEPLOYED_SHA=$(curl --silent << parameters.sha_url >> | jq -r '.git_sha')
+
+            echo "URL: << parameters.sha_url >>"
+            echo "SHA: $DEPLOYED_SHA"
+
+            # Use HTTPS to check out, since we don't need to authenticate
+            CIRCLE_REPOSITORY_URL_AS_HTTPS=$(echo $CIRCLE_REPOSITORY_URL | sed 's/git@github.com:/https:\/\/github.com\//g')
+            echo "REPO: $CIRCLE_REPOSITORY_URL_AS_HTTPS"
+
+            # Workaround old docker images with incorrect $HOME
+            # check https://github.com/docker/docker/issues/2968 for details
+            if [ "${HOME}" = "/" ]
+            then
+              export HOME=$(getent passwd $(id -un) | cut -d: -f6)
+            fi
+
+            EXPANDED_CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
+
+            git config --global gc.auto 0 || true
+
+            if [ -e "$EXPANDED_CIRCLE_WORKING_DIRECTORY/.git" ]
+            then
+              cd "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
+              git remote set-url origin "$CIRCLE_REPOSITORY_URL_AS_HTTPS" || true
+            else
+              mkdir -p "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
+              cd "$EXPANDED_CIRCLE_WORKING_DIRECTORY"
+              git clone "$CIRCLE_REPOSITORY_URL_AS_HTTPS" .
+            fi
+
+            if [ -n "$CIRCLE_TAG" ]
+            then
+              git fetch --force origin "refs/tags/${CIRCLE_TAG}"
+            else
+              git fetch --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
+            fi
+            git reset --hard "$DEPLOYED_SHA"
+
+  notify-slack-smoke-test-status:
+    steps:
+      - slack/status:
+          fail_only: true
+          failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
+          include_project_field: false
+
+jobs:
+  build:
+    executor: ruby_browsers
+
+    environment:
+      CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
+      COVERAGE: true
+
+    parallelism: 4
+
+    working_directory: ~/identity-idp
+
+    steps:
+      - checkout
+      - bundle-yarn-install
       - run:
           name: Install AWS CLI
           command: |
@@ -83,7 +155,6 @@ jobs:
 
             bundle exec rake knapsack:rspec
             yarn test
-            bundle exec slim-lint app/views
       - run:
           name: Code Climate Test Coverage
           command: |
@@ -99,6 +170,17 @@ jobs:
           command: |
             aws s3 sync "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM" coverage/
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  lints:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: Run Lints
+          command: |
+            yarn run lint
+            bundle exec slim-lint app/views
   build-latest-container:
     working_directory: ~/identity-idp
     docker:
@@ -137,11 +219,69 @@ jobs:
           docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push logindotgov/idp:$CIRCLE_TAG
+  smoketest-dev:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: DEV
+    steps:
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
+  smoketest-int:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: INT
+    steps:
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
+  smoketest-staging:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: STAGING
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
+  smoketest-prod:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: PROD
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - notify-slack-smoke-test-status
+
 workflows:
   version: 2
   release:
     jobs:
       - build
+      - lints
       - build-latest-dev-container:
           requires:
             - build
@@ -154,3 +294,54 @@ workflows:
           filters:
             tags:
               only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
+
+  # Theses are staggered separately from the smoke tests in the identity-monitor repo
+  # because they share credentials and would mess each other up if run concurrently
+  # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
+  # DEV
+  smoketest-dev-workflow:
+    triggers:
+      - schedule:
+          cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - smoketest-dev
+
+  # INT
+  smoketest-int-workflow:
+    triggers:
+      - schedule:
+          cron: "10 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - smoketest-int
+
+  # STAGING
+  smoketest-staging-workflow:
+    triggers:
+      - schedule:
+          cron: "20 * * * *"
+          filters:
+            branches:
+              only:
+                - stages/staging
+    jobs:
+      - smoketest-staging
+
+  # PROD
+  smoketest-prod-workflow:
+    triggers:
+      - schedule:
+          cron: "30 * * * *"
+          filters:
+            branches:
+              only:
+                - stages/prod
+    jobs:
+      - smoketest-prod

@@ -1,5 +1,6 @@
 module OidcAuthHelper
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
+  OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
 
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp
@@ -21,9 +22,17 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def visit_idp_from_ial1_aal3_oidc_sp(**args)
+  def visit_idp_from_ial1_oidc_sp_requesting_aal3(**args)
     params = ial1_params args
     include_aal3(params)
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
+  end
+
+  def visit_idp_from_ial1_oidc_sp_requiring_aal3(**args)
+    args[:client_id] ||= OIDC_AAL3_ISSUER
+    params = ial1_params args
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path

@@ -15,6 +15,7 @@ module Rack
       '/verify/recovery/mobile_front_image',
       '/verify/recovery/mobile_back_image',
       '/verify/recovery/verify',
+      '/verify/doc_auth/link_sent',
     ]
 
     class << self

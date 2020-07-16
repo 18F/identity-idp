@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const desktopDropdown = document.querySelector('.i18n-desktop-dropdown');
 
   function addListenerMulti(el, s, fn) {
-    s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+    s.split(' ').forEach((e) => el.addEventListener(e, fn, false));
   }
 
   function toggleAriaExpanded(element) {

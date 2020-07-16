@@ -30,13 +30,13 @@ fr:
         adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre compte?
       subject: Supprimer votre compte
     account_reset_request:
-      cancel: Si vous ne voulez pas pour supprimer votre compte, <u>%{cancel_account_reset}</u>.
-      header: Attendez 24 heures pour supprimer votre compte
+      cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
+        login.gov pour annuler.
+      header: Votre compte sera supprimé dans 24 heures
       help: ''
-      intro: Vous avez demandé à supprimer votre compte login.gov. Pour des raisons
-        de sécurité, vous devez attendre 24 heures.
-      more_info: "<strong>Dans les 24 heures, vous recevrez un email avec un lien
-        pour confirmer et compléter la suppression de votre compte.</strong>"
+      intro: Pour garantir la qualité et la sécurité, le processus de suppression
+        de compte prend 24 heures. Vous recevrez un e-mail de confirmation une fois
+        ce processus terminé.
       subject: Supprimer votre compte
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.

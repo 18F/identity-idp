@@ -1,12 +1,12 @@
 import 'classlist.js';
 
-const I18n = window.LoginGov.I18n;
+const { I18n } = window.LoginGov;
 
 document.addEventListener('DOMContentLoaded', () => {
   const forms = document.querySelectorAll('form');
 
   function addListenerMulti(el, events, fn) {
-    events.split(' ').forEach(e => el.addEventListener(e, fn, false));
+    events.split(' ').forEach((e) => el.addEventListener(e, fn, false));
   }
 
   if (forms.length !== 0) {

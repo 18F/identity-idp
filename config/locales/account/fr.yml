@@ -69,8 +69,8 @@ fr:
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
     re_verify:
-      banner: Votre session a expiré. Nous avons masqué les informations de votre
-        profil pour protéger votre vie privée.
+      banner: Nous avons masqué les informations de votre profil pour protéger votre
+        vie privée.
       footer: Veuillez vous authentifier à nouveau pour afficher les informations
         de votre profil
     revoke_consent:
@@ -82,5 +82,4 @@ fr:
     security:
       link: En apprendre davantage dans le Centre d'aide
       text: L'information de votre profil est verrouillée pour votre sécurité.
-    verify: Authentifier
     welcome: Bienvenue

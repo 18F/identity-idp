@@ -133,12 +133,18 @@ Rails.application.routes.draw do
     if Figaro.env.enable_test_routes == 'true'
       namespace :test do
         # Assertion granting test start + return.
+        get '/saml/login' => 'saml_test#index'
         get '/saml' => 'saml_test#start'
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
+
+        get '/oidc' => 'oidc_test#index'
+
+        get '/telephony' => 'telephony#index'
+        delete '/telephony' => 'telephony#destroy'
       end
     end
 

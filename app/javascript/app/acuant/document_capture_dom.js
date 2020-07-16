@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { documentCaptureFallbackModeEnabled } from './document_capture_fallback';
 
 // Fallback form elements
@@ -16,11 +17,9 @@ export const acuantSdkPreviewImage = () => document.querySelector('#acuant-sdk-p
 export const acuantSdkFallbackText = () => document.querySelector('#acuant-fallback-text');
 export const acuantSdkFallbackLink = () => document.querySelector('#acuant-fallback-link');
 
-export const fetchSdkInitializationCredentials = () =>
-  document.querySelector('meta[name="acuant-sdk-initialization-creds"]').content;
+export const fetchSdkInitializationCredentials = () => document.querySelector('meta[name="acuant-sdk-initialization-creds"]').content;
 
-export const fetchSdkInitializationEndpoint = () =>
-  document.querySelector('meta[name="acuant-sdk-initialization-endpoint"]').content;
+export const fetchSdkInitializationEndpoint = () => document.querySelector('meta[name="acuant-sdk-initialization-endpoint"]').content;
 
 const hideAcuantSdkContainers = () => {
   acuantSdkUploadForm().classList.add('hidden');

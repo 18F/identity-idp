@@ -2,7 +2,7 @@ require 'login_gov/hostdata'
 
 module Reports
   class DocAuthDropOffRatesPerSprintReport < BaseReport
-    REPORT_NAME = 'doc-auth-drop-offs-report'.freeze
+    REPORT_NAME = 'doc-auth-drop-offs-per-sprint-report'.freeze
     FIRST_SPRINT_DATE = '10-10-2019'.freeze
 
     def call
@@ -25,7 +25,8 @@ module Reports
         transaction_with_timeout do
           start = date
           finish = date.next_day(14)
-          ret << Db::DocAuthLog::DropOffRates.new.call(fmt(start), fmt(finish))
+          ret << Db::DocAuthLog::BlanketDropOffRatesAllSpsInRange.new.
+                 call('Sprint', fmt(start), fmt(finish))
           date = finish
         end
       end

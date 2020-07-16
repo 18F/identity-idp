@@ -7,6 +7,7 @@ module Idv
         send_link: Idv::Steps::SendLinkStep,
         link_sent: Idv::Steps::LinkSentStep,
         email_sent: Idv::Steps::EmailSentStep,
+        document_capture: Idv::Steps::DocumentCaptureStep,
         front_image: Idv::Steps::FrontImageStep,
         back_image: Idv::Steps::BackImageStep,
         mobile_front_image: Idv::Steps::MobileFrontImageStep,

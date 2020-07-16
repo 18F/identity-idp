@@ -17,6 +17,18 @@ module Idv
         DataUrlImage.new(flow_params[:image_data_url])
       end
 
+      def front_image
+        uploaded_image = flow_params[:front_image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:front_image_data_url])
+      end
+
+      def back_image
+        uploaded_image = flow_params[:back_image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:back_image_data_url])
+      end
+
       def doc_auth_client
         @doc_auth_client ||= begin
           case doc_auth_vendor
@@ -67,10 +79,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, 'acuant')
+        Db::ProofingComponent::Add.call(user_id, :document_check, doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, 'acuant')
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
@@ -102,6 +114,18 @@ module Idv
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
+        add_cost(:acuant_back_image)
+        result
+      end
+
+      def post_images
+        return throttled_response if throttled_else_increment
+
+        result = doc_auth_client.post_images(
+          front_image: front_image.read,
+          back_image: back_image.read,
+        )
+        add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
         result
       end
@@ -144,6 +168,17 @@ module Idv
 
       def mark_selfie_step_complete_unless_liveness_checking_is_enabled
         mark_step_complete(:selfie) unless liveness_checking_enabled?
+      end
+
+      def mark_document_capture_or_image_upload_steps_complete
+        if Figaro.env.document_capture_step_enabled == 'true'
+          mark_step_complete(:front_image)
+          mark_step_complete(:back_image)
+          mark_step_complete(:mobile_front_image)
+          mark_step_complete(:mobile_back_image)
+        else
+          mark_step_complete(:document_capture)
+        end
       end
 
       def liveness_checking_enabled?

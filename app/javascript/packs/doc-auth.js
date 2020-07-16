@@ -20,7 +20,7 @@ function docAuth() {
     player.style.display = 'none';
     canvas.style.display = 'inline-block';
     captureButton.innerHTML = 'X';
-    player.srcObject.getVideoTracks().forEach(track => track.stop());
+    player.srcObject.getVideoTracks().forEach((track) => track.stop());
     player.srcObject = null;
   }
 

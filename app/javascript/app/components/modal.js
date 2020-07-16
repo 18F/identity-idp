@@ -45,5 +45,4 @@ function modal(focusTrap) {
   };
 }
 
-
 export default modal;

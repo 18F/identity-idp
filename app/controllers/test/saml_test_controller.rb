@@ -8,6 +8,10 @@ module Test
 
     skip_before_action :verify_authenticity_token, only: %i[decode_response decode_slo_request]
 
+    def index
+      @start_url = test_saml_url
+    end
+
     def start
       request = OneLogin::RubySaml::Authrequest.new
       redirect_to(request.create(test_saml_settings, {}))

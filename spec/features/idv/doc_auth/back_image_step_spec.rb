@@ -29,7 +29,7 @@ feature 'doc auth back image step' do
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     user = User.first
-    expect(user.proofing_component.document_check).to eq('acuant')
+    expect(user.proofing_component.document_check).to eq('mock')
     expect(user.proofing_component.document_type).to eq('state_id')
   end
 

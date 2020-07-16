@@ -210,6 +210,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_with_aal3_2fa
+      create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
+    end
+
     def user_with_piv_cac
       create(:user, :signed_up, :with_piv_or_cac,
              with: { phone: '+1 (703) 555-0000' },
@@ -234,6 +238,17 @@ module Features
 
     def sign_in_live_with_2fa(user = user_with_2fa)
       sign_in_user(user)
+      uncheck(t('forms.messages.remember_device'))
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      user
+    end
+
+    def sign_in_live_with_aal2_2fa_only(user = user_with_aal3_2fa)
+      sign_in_user(user)
+      click_link('Choose another authentication method')
+      choose('two_factor_options_form_selection_sms')
+      click_button('Continue')
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
