@@ -92,9 +92,9 @@ en:
         information.
       text7: Use a high-resolution camera. A good mobile phone or tablet camera will
         work.
-      title: "Don't take the photo on a white surface!"
-      title_more: "See more tips…"
+      title: Don't take the photo on a white surface!
       title_html: "<b>Don't take the photo on a white surface!</b> &nbsp;&nbsp; See
         more tips..."
+      title_more: See more tips…
     titles:
       doc_auth: Document Authentication
