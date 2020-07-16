@@ -11,6 +11,9 @@ module MonitorSpSteps
       find(:css, '.sign-in-bttn').click
     end
 
+    expect(page).to have_content(
+      'is using login.gov to allow you to sign in to your account safely and securely.',
+    )
     expect(current_url).to match(%r{https://(idp|secure)\..*\.gov}) if monitor.remote?
   end
 
@@ -18,6 +21,9 @@ module MonitorSpSteps
     visit monitor.config.oidc_sp_url + '?ial=2'
     find(:css, '.sign-in-bttn').click
 
+    expect(page).to have_content(
+      'is using login.gov to allow you to sign in to your account safely and securely.',
+    )
     expect(current_url).to match(%r{https://(idp|secure)\..*\.gov}) if monitor.remote?
   end
 
@@ -25,6 +31,9 @@ module MonitorSpSteps
     visit monitor.config.saml_sp_url
     first(:css, '.sign-in-bttn').click
 
+    expect(page).to have_content(
+      'is using login.gov to allow you to sign in to your account safely and securely.',
+    )
     expect(current_url).to match(%r{https://(idp|secure)\..*\.gov}) if monitor.remote?
   end
 
