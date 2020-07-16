@@ -9,9 +9,9 @@ class AssetChecker
 
   def self.check_file(file)
     data = File.open(file).read
-    missing_translations = find_missing(data,/\Wt\(['"](.*)['"]\)/, @translation_strings)
+    missing_translations = find_missing(data, /\Wt\(['"](.*)['"]\)/, @translation_strings)
     missing_assets = find_missing(data, /\WassetPath=["'](.*)['"]/, @asset_strings)
-    if missing_translations.any? || missing_assets.any?
+    if missing_translations.any? || missing_assets.any? # rubocop:disable Style/GuardClause
       warn file
       missing_translations.each do |t|
         warn "Missing translation, #{t}"
