@@ -41,14 +41,16 @@
     "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^6.1.0",
+    "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.6",
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
+    "prettier": "^2.0.5",
     "proxyquire": "^1.8.0"
   }
 }
