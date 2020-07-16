@@ -107,6 +107,8 @@ fr:
         de lire toutes les informations.
       text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile
         ou d'une tablette fonctionnera.
+      title: "Ne prenez pas la photo sur une surface blanche!"
+      title_more: "Voir plus…"
       title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."
     titles:
       doc_auth: Authentification de document
