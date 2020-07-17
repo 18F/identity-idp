@@ -3,11 +3,8 @@ import { render } from '@testing-library/react';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '../../../../../app/javascript/app/document-capture/context/acuant';
-import { useDOM } from '../../../support/dom';
 
 describe('document-capture/context/acuant', () => {
-  useDOM();
-
   afterEach(() => {
     delete window.AcuantJavascriptWebSdk;
   });
