@@ -103,8 +103,6 @@ en:
       jurisdiction:
         no_id: I don't have a state-issued ID
         no_id_failure: We're working hard to add more ways to verify your identity.
-        unsupported_jurisdiction_failure: We're working hard to add more states and
-          hope to support %{state} soon.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We'll send a code to <strong>%{phone}</strong>
@@ -170,4 +168,3 @@ en:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to protect your data
       sessions: Information about you
-      unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.
