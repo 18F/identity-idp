@@ -30,7 +30,8 @@ const hideAcuantSdkContainers = () => {
 };
 
 export const acuantImageCaptureEnded = () => {
-  showAcuantSdkContainer('upload-form');
+  acuantSdkCaptureView().classList.add('hidden');
+  acuantSdkUploadForm().classList.remove('hidden');
   window.AcuantCameraUI.end();
 };
 

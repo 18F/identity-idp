@@ -27,16 +27,16 @@
 
 //css for alternative fallback flow, that should hopefully be quickly retired
 .full-screen-fallback {
-  background-color: white;
+  background-color: #ffffff;
   height: 100%;
   width: 100%;
 }
 
 .full-screen-close-button-fallback {
   height: 2rem;
+  margin: 1rem;
   width: 2rem;
   z-index: 1;
-  margin: 1rem;
 }
 
 .full-screen-close-icon-fallback {
