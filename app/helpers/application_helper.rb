@@ -57,6 +57,11 @@ module ApplicationHelper
     sp_session && sp_session[:ial2] && multiple_factors_enabled?
   end
 
+  def liveness_checking_enabled?
+    FeatureManagement.liveness_checking_enabled? &&
+    (sp_session[:issuer].blank? || sp_session[:ial2_strict])
+  end
+
   def sign_up_or_idv_no_js_link
     if user_signing_up?
       destroy_user_path

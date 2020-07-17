@@ -30,6 +30,7 @@ module Idv
       end
 
       def selfie_image
+        return nil unless liveness_checking_enabled?
         uploaded_image = flow_params[:selfie_image]
         return uploaded_image if uploaded_image.present?
         DataUrlImage.new(flow_params[:selfie_image_data_url])
@@ -138,13 +139,13 @@ module Idv
         result = doc_auth_client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
-          selfie_image: selfie_image.read,
+          selfie_image: selfie_image&.read,
           liveness_checking_enabled: liveness_checking_enabled?,
         )
         # DP: should these cost recordings happen in the doc_auth_client?
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
-        add_cost(:acuant_selfie)
+        add_cost(:acuant_selfie) if liveness_checking_enabled?
         result
       end
 

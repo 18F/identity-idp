@@ -11,8 +11,6 @@ module Acuant
         @pii = pii
       end
 
-      private
-
       def pii_from_doc
         @pii
       end

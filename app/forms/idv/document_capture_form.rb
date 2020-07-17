@@ -37,6 +37,7 @@ module Idv
     end
 
     def selfie_image_or_image_data_url_presence
+      return unless FeatureManagement.liveness_checking_enabled?
       return if selfie_image.present? || selfie_image_data_url.present?
       errors.add(:selfie_image, :blank)
     end

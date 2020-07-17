@@ -18,7 +18,11 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <h1>
-  <%= t('doc_auth.headings.document_capture_html') %>
+  <% if liveness_checking_enabled? %>
+    <%= t('doc_auth.headings.document_capture_with_selfie_html') %>
+  <% else %>
+    <%= t('doc_auth.headings.document_capture_html') %>
+  <% end %>
 </h1>
 
 <%= render 'idv/doc_auth/document_capture_notices', flow_session: flow_session %>
@@ -72,22 +76,23 @@
   </div>
 
   <%# ---- Selfie ----- %>
+  <% if liveness_checking_enabled? %>
+    <hr class="mt3 mb3"/>
+    <div class="selfie">
+      <h2>
+        <%= t('doc_auth.headings.selfie') %>
+      </h2>
 
-  <hr class="mt3 mb3"/>
-  <div class="selfie">
-    <h2>
-      <%= t('doc_auth.headings.selfie') %>
-    </h2>
-
-    <%= f.input :selfie_image_data_url, as: :hidden %>
-    <%= f.input :selfie_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
-    <div class='my2' id='selfie_target'></div>
-
-    <%# ---- Submit ----- %>
-
-    <div class='mt3'>
-      <%= render 'idv/doc_auth/submit_with_spinner' %>
+      <%= f.input :selfie_image_data_url, as: :hidden %>
+      <%= f.input :selfie_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+      <div class='my2' id='selfie_target'>
     </div>
+  <% end %>
+
+  <%# ---- Submit ----- %>
+
+  <div class='mt3'>
+    <%= render 'idv/doc_auth/submit_with_spinner' %>
   </div>
 <% end %>
 
@@ -96,3 +101,5 @@
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= javascript_pack_tag 'image-preview' %>
 </div>
+=======
+<%= javascript_pack_tag 'document-capture' %>
