@@ -14,9 +14,11 @@ import {
   acuantSdkUploadForm,
   acuantSdkSpinner,
   acuantSdkCaptureView,
+  acuantSdkCaptureViewCloseButton,
   acuantSdkContinueForm,
   acuantSdkCaptureButton,
   acuantSdkPreviewImage,
+  hideAcuantSdkCaptureView,
 } from '../../../../app/javascript/app/acuant/document_capture_dom';
 
 import {
@@ -25,7 +27,7 @@ import {
   loadAndInitializeAcuantSdk,
 } from '../../../../app/javascript/app/acuant/document_capture';
 
-describe('acuant/document_catpure', () => {
+describe('acuant/document_capture', () => {
   beforeEach(() => {
     setupDocumentCaptureTestDOM();
   });
@@ -191,6 +193,12 @@ describe('acuant/document_catpure', () => {
       expect(imageFileInput().required).to.eq(true);
       expect(imageDataUrlInput().value).to.eq('');
       expect(acuantSdkPreviewImage().src).to.eq('');
+    });
+
+    it('adds an event listener to the close capture view button when initialized', () => {
+      imageCaptureButtonClicked(event);
+
+      expect(acuantSdkCaptureViewCloseButton().onclick).to.eq(hideAcuantSdkCaptureView);
     });
   });
 });

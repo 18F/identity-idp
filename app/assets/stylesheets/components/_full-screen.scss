@@ -1,0 +1,52 @@
+.full-screen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.full-screen-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(color('base-darkest'), 0.7);
+  border-radius: 0;
+
+  &:hover,
+  &:focus {
+    background-color: color('base-darker');
+  }
+}
+
+.full-screen-close-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+//css for alternative fallback flow, that should hopefully be quickly retired
+.full-screen-fallback {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+.full-screen-close-button-fallback {
+  width: 2rem;
+  height: 2rem;
+  z-index: 1;
+  margin: 1rem;
+}
+
+.full-screen-close-icon-fallback {
+  width: 1rem;
+  height: 1rem;
+  margin: .5rem;
+}
+
+.full-screen-canvas-fallback {
+  width: 100%;
+  z-index: 0;
+  position: relative;
+}

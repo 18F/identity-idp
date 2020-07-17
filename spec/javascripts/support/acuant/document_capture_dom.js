@@ -22,6 +22,7 @@ const INITIAL_HTML = `
 
 <video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
 <div id='acuant-sdk-capture-view' class='hidden'>
+    <div id='acuant-sdk-capture-view-close'></div>
   <canvas id="acuant-video-canvas" style='width: 100%;'></canvas>
 </div>
 
