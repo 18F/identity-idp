@@ -18,7 +18,7 @@ import {
   acuantSdkContinueForm,
   acuantSdkCaptureButton,
   acuantSdkPreviewImage,
-  hideAcuantSdkCaptureView,
+  acuantImageCaptureEnded,
 } from '../../../../app/javascript/app/acuant/document_capture_dom';
 
 import {
@@ -198,7 +198,7 @@ describe('acuant/document_capture', () => {
     it('adds an event listener to the close capture view button when initialized', () => {
       imageCaptureButtonClicked(event);
 
-      expect(acuantSdkCaptureViewCloseButton().onclick).to.eq(hideAcuantSdkCaptureView);
+      expect(acuantSdkCaptureViewCloseButton().onclick).to.eq(acuantImageCaptureEnded);
     });
   });
 });

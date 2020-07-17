@@ -29,9 +29,8 @@ const hideAcuantSdkContainers = () => {
   acuantSdkContinueForm().classList.add('hidden');
 };
 
-export const hideAcuantSdkCaptureView = () => {
-  acuantSdkCaptureView().classList.add('hidden');
-  acuantSdkUploadForm().classList.remove('hidden');
+export const acuantImageCaptureEnded = () => {
+  showAcuantSdkContainer('upload-form');
   window.AcuantCameraUI.end();
 };
 
@@ -56,7 +55,7 @@ export const showAcuantSdkContainer = (container) => {
       acuantSdkSpinner().classList.remove('hidden');
       break;
     case 'capture-view':
-      addClickEventListenerToAcuantCaptureViewCloseButton(hideAcuantSdkCaptureView);
+      addClickEventListenerToAcuantCaptureViewCloseButton(acuantImageCaptureEnded);
       acuantSdkCaptureView().classList.remove('hidden');
       break;
     case 'continue-form':
