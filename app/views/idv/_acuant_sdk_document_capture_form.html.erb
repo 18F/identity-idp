@@ -27,10 +27,18 @@
   </div>
 
   <!-- This view is never displayed, but it needs to be present in the DOM for
-  the SDK to capture the feed from the camer -->
+  the SDK to capture the feed from the camera -->
   <video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
-  <div id='acuant-sdk-capture-view' class='hidden'>
-    <canvas id="acuant-video-canvas" style='width: 100%;'></canvas>
+  <div id='acuant-sdk-capture-view' class='hidden full-screen full-screen-fallback' >
+    <div id='acuant-sdk-capture-view-close' class="full-screen-close-button full-screen-close-button-fallback" >
+      <%= image_tag(
+              asset_url('close-white-alt.svg'),
+              srcset: asset_url('close-white-alt.svg'),
+              class: 'full-screen-close-icon full-screen-close-icon-fallback',
+              alt: t('image_description.close')
+          ) %>
+    </div>
+    <canvas id="acuant-video-canvas" class="full-screen-canvas-fallback"></canvas>
   </div>
 
   <div id='acuant-sdk-continue-form' class='hidden'>
