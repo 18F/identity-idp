@@ -34,7 +34,8 @@ module Acuant
     end
 
     # rubocop:disable Metrics/AbcSize
-    def post_images(front_image:, back_image:, selfie_image:, instance_id: nil)
+    def post_images(front_image:, back_image:, selfie_image:,
+                    liveness_checking_enabled: nil, instance_id: nil)
       document = create_document
       return failure(document.errors.first, document.to_h) unless document.success?
 
@@ -45,10 +46,10 @@ module Acuant
 
       results = check_results(response, instance_id)
 
-      if results.success?
+      if results.success? # && liveness_checking_enabled
         pii = results.pii_from_doc
         selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
-        [selfie_response, pii]
+        Acuant::Responses::ResponseWithPii.new(selfie_response, pii)
       else
         results
       end

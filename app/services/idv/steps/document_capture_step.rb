@@ -2,10 +2,10 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       def call
-        response, pii = post_images
+        response = post_images
         if response.success?
           save_proofing_components
-          save_pii_in_session(pii)
+          extract_pii_from_doc(response)
         else
           handle_document_verification_failure(response)
         end

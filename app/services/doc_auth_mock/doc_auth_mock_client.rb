@@ -49,7 +49,8 @@ module DocAuthMock
     end
 
     # rubocop:disable Metrics/AbcSize
-    def post_images(front_image:, back_image:, selfie_image:, instance_id: nil)
+    def post_images(front_image:, back_image:, selfie_image:,
+                    liveness_checking_enabled: nil, instance_id: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       document = create_document
@@ -60,10 +61,10 @@ module DocAuthMock
       back_response = post_back_image(image: back_image, instance_id: instance_id)
       response = merge_post_responses(front_response, back_response)
       results = check_results(response, instance_id)
-      if results.success?
+      if results.success? && liveness_checking_enabled
         pii = results.pii_from_doc
         selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
-        [selfie_response, pii]
+        Acuant::Responses::ResponseWithPii(selfie_response, pii)
       else
         results
       end

@@ -139,6 +139,7 @@ module Idv
           front_image: front_image.read,
           back_image: back_image.read,
           selfie_image: selfie_image.read,
+          liveness_checking_enabled: liveness_checking_enabled?,
         )
         # DP: should these cost recordings happen in the doc_auth_client?
         add_cost(:acuant_front_image)
@@ -188,7 +189,7 @@ module Idv
       end
 
       def mark_document_capture_or_image_upload_steps_complete
-        if Figaro.env.document_capture_step_enabled == 'true'
+        if FeatureManagement.document_capture_step_enabled?
           mark_step_complete(:front_image)
           mark_step_complete(:back_image)
           mark_step_complete(:selfie)
