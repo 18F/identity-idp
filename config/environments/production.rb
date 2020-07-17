@@ -37,7 +37,6 @@ Rails.application.configure do
   if Figaro.env.log_to_stdout?
     Rails.logger = Logger.new(STDOUT)
     config.logger = ActiveSupport::Logger.new(STDOUT)
-    config.logger.formatter = Ruby::JSONFormatter::Base.new
   end
   config.log_level = :info
   config.lograge.enabled = true
