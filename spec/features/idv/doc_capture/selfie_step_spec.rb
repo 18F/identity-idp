@@ -26,7 +26,17 @@ feature 'doc auth self image step' do
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
   end
 
-  it 'restarts doc auth upon failure' do
+  it 'restarts doc auth if the document cannot be authenticated' do
+    mock_general_doc_auth_client_error(:get_results)
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
+    expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
+  end
+
+  it 'restarts doc auth if the selfie cannot be matched' do
     DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_selfie,
       response: Acuant::Response.new(

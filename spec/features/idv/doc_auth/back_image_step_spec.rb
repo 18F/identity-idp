@@ -80,6 +80,20 @@ feature 'doc auth back image step' do
     expect(page).to have_content(strip_tags(I18n.t('errors.doc_auth.general_info'))[0..32])
   end
 
+  it 'does not attempt to verify the document if selfie checking is enabled' do
+    allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+
+    mock_client = DocAuthMock::DocAuthMockClient.new
+    allow(DocAuthMock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+
+    expect(mock_client).to_not receive(:get_results)
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_selfie_step)
+  end
+
   it 'renders a friendly error message if one is present on the response' do
     error_message = I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')
     DocAuthMock::DocAuthMockClient.mock_response!(
