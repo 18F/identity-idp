@@ -39,7 +39,6 @@ module Users
                                     aal3_required: aal3_policy.aal3_required?)
     end
 
-    # rubocop:disable Metrics/MethodLength
     def process_valid_form
       case @two_factor_options_form.selection
       when 'voice', 'sms', 'phone'
@@ -54,7 +53,6 @@ module Users
         redirect_to backup_code_setup_url
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def handle_empty_selection
       return if params[:two_factor_options_form].present?
@@ -64,6 +62,7 @@ module Users
     end
 
     def confirm_user_needs_2fa_setup
+      return if piv_cac_policy.required?(session) && !piv_cac_policy.enabled?
       return unless mfa_policy.two_factor_enabled?
       return if aal3_mfa_setup_required?
       redirect_to after_mfa_setup_path

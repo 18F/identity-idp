@@ -7,8 +7,8 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      aal3_requirement_redirect || non_phone_redirect || phone_redirect || backup_code_redirect ||
-        redirect_on_nothing_enabled
+      piv_cac_requirement_redirect || aal3_requirement_redirect || non_phone_redirect ||
+        phone_redirect || backup_code_redirect || redirect_on_nothing_enabled
     end
 
     def send_code
@@ -23,6 +23,14 @@ module Users
     end
 
     private
+
+    def piv_cac_requirement_redirect
+      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+        redirect_to login_two_factor_piv_cac_url
+      elsif piv_cac_policy.required?(session) && user_fully_authenticated?
+        redirect_to two_factor_options_url
+      end
+    end
 
     def aal3_requirement_redirect
       aal3_url = aal3_redirect_url(current_user)

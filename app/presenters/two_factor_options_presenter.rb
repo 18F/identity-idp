@@ -16,7 +16,7 @@ class TwoFactorOptionsPresenter
   end
 
   def heading
-    if aal3_only? && mfa_policy.two_factor_enabled?
+    if (aal3_only? || piv_cac_required?) && mfa_policy.two_factor_enabled?
       t('two_factor_authentication.two_factor_aal3_choice')
     else
       t('two_factor_authentication.two_factor_choice')
@@ -24,7 +24,7 @@ class TwoFactorOptionsPresenter
   end
 
   def intro
-    if aal3_only?
+    if aal3_only? || piv_cac_required?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
     else
       t('two_factor_authentication.two_factor_choice_intro')
@@ -43,26 +43,31 @@ class TwoFactorOptionsPresenter
   end
 
   def webauthn_option
+    return [] if piv_cac_required?
     [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
   end
 
   def phone_options
-    return [] if aal3_only? || FeatureManagement.hide_phone_mfa_signup?
+    return [] if piv_cac_required? || aal3_only? || FeatureManagement.hide_phone_mfa_signup?
     [TwoFactorAuthentication::PhoneSelectionPresenter.new]
   end
 
   def totp_option
-    return [] if aal3_only?
+    return [] if piv_cac_required? || aal3_only?
     [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
   end
 
   def backup_code_option
-    return [] if aal3_only?
+    return [] if piv_cac_required? || aal3_only?
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
   end
 
   def current_device_is_desktop?
     DeviceDetector.new(@user_agent)&.device_type == 'desktop'
+  end
+
+  def piv_cac_required?
+    piv_cac_policy.required?(@session)
   end
 
   def aal3_only?
@@ -71,5 +76,9 @@ class TwoFactorOptionsPresenter
 
   def mfa_policy
     @mfa_policy ||= MfaPolicy.new(@user)
+  end
+
+  def piv_cac_policy
+    @piv_cac_policy ||= TwoFactorAuthentication::PivCacPolicy.new(@user)
   end
 end

@@ -154,8 +154,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
   end
 
+  def piv_cac_required_setup_url
+    piv_cac_policy.setup_required?(session) ? two_factor_options_url : nil
+  end
+
   def after_sign_in_path_for(_user)
-    add_piv_cac_setup_url || user_session.delete(:stored_location) ||
+    piv_cac_required_setup_url || add_piv_cac_setup_url || user_session.delete(:stored_location) ||
       sp_session_request_url_without_prompt_login || signed_in_url
   end
 
@@ -234,7 +238,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def two_factor_enabled?
-    MfaPolicy.new(current_user).two_factor_enabled?
+    MfaPolicy.new(current_user, session).two_factor_enabled?
   end
 
   def skip_session_expiration
@@ -270,6 +274,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
     )
+  end
+
+  def piv_cac_policy
+    @piv_cac_policy ||= TwoFactorAuthentication::PivCacPolicy.new(current_user)
   end
 
   def sp_session
