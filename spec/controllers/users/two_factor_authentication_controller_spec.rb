@@ -140,17 +140,18 @@ describe Users::TwoFactorAuthenticationController do
       end
     end
 
-
     context 'when SP requires PIV/CAC' do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:required?).and_return(true)
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:required?).
+          and_return(true)
       end
 
       it 'redirects to PIV/CAC setup if no PIV/CAC is enabled and user is signed in' do
         stub_sign_in(user)
-        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).and_return(false)
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(false)
         get :show
 
         expect(response).to redirect_to(two_factor_options_url)
