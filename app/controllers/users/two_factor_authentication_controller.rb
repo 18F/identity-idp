@@ -25,11 +25,8 @@ module Users
     private
 
     def piv_cac_requirement_redirect
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
-        redirect_to login_two_factor_piv_cac_url
-      elsif piv_cac_policy.required?(session) && user_fully_authenticated?
-        redirect_to two_factor_options_url
-      end
+      return if mobile? || !TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
+      redirect_to login_two_factor_piv_cac_url
     end
 
     def aal3_requirement_redirect
