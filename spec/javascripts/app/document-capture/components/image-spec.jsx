@@ -9,7 +9,7 @@ describe('document-capture/components/image', () => {
 
     const img = getByAltText('unknown');
 
-    expect(img.src).to.equal('unknown.png');
+    expect(img.getAttribute('src')).to.equal('unknown.png');
   });
 
   it('renders an img at mapped src if known by context', () => {
@@ -21,7 +21,7 @@ describe('document-capture/components/image', () => {
 
     const img = getByAltText('icon');
 
-    expect(img.src).to.equal('icon-12345.png');
+    expect(img.getAttribute('src')).to.equal('icon-12345.png');
   });
 
   it('renders with given props', () => {
