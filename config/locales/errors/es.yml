@@ -18,6 +18,26 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
+      document_capture_info_html: |-
+        <div class="bold">Please check that:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow or reflection is present</li>
+        <li>Your ID does not have any damaged barcodes</li>
+        <li>Your ID represents 80% of the overall image</li>
+        <li>Your ID is against a solid, dark background</li>
+        </ul>
+      document_capture_info_with_selfie_html: |-
+        <div class="bold">Please check that:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow or reflection is present</li>
+        <li>Your ID does not have any damaged barcodes</li>
+        <li>Your ID represents 80% of the overall image</li>
+        <li>Your ID is against a solid, dark background</li>
+        <li>Your selfie is taken in a well-lit area with a plain background</li>
+        <li>You are not wearing a hat or glasses, and your head is fully visible</li>
+        </ul>
       acuant_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
         Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: Para evitar abusos, limitamos el número de veces que puede

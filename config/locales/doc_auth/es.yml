@@ -21,6 +21,11 @@ es:
       state: Estado
       zip_code: Código postal
     headings:
+      document_capture_html: Upload your state&#8209;issued&nbsp;ID
+      document_capture_with_selfie_html: Upload your state&#8209;issued&nbsp;ID and
+        a photo of you
+      upload_back_html: Upload an image of the back of your state&#8209;issued&nbsp;ID
+      upload_front_html: Upload an image of the front of your state&#8209;issued&nbsp;ID
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
       selfie: Toma una selfie.

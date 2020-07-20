@@ -18,6 +18,26 @@ fr:
       token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     doc_auth:
+      document_capture_info_html: |-
+        <div class="bold">Please check that:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow or reflection is present</li>
+        <li>Your ID does not have any damaged barcodes</li>
+        <li>Your ID represents 80% of the overall image</li>
+        <li>Your ID is against a solid, dark background</li>
+        </ul>
+      document_capture_info_with_selfie_html: |-
+        <div class="bold">Please check that:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>No glare, shadow or reflection is present</li>
+        <li>Your ID does not have any damaged barcodes</li>
+        <li>Your ID represents 80% of the overall image</li>
+        <li>Your ID is against a solid, dark background</li>
+        <li>Your selfie is taken in a well-lit area with a plain background</li>
+        <li>You are not wearing a hat or glasses, and your head is fully visible</li>
+        </ul>
       acuant_network_error: Désolé, nous rencontrons des difficultés techniques. Veuillez
         réessayer plus tard.
       acuant_throttle: Pour éviter les abus, nous limitons le nombre de fois où vous
