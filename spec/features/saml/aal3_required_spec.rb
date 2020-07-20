@@ -31,11 +31,9 @@ describe 'AAL3 authentication required in an SAML context' do
 
     context 'user has aal3 auth configured' do
       it 'sends user to authenticate with AAL3 auth' do
-        user = user_with_aal3_2fa
-
+        sign_in_before_2fa(user_with_aal3_2fa)
         visit aal3_sp1_authnrequest
-        visit login_two_factor_path
-
+        visit login_two_factor_path, constraints: sms
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
     end
