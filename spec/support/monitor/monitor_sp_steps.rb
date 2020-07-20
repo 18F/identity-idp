@@ -6,7 +6,7 @@ module MonitorSpSteps
   def visit_idp_from_oidc_sp
     visit monitor.config.oidc_sp_url
     if oidc_sp_is_usajobs?
-      click_on 'Sign In'
+      click_link 'Sign In', href: '/Applicant/Profile/Dashboard'
     else
       find(:css, '.sign-in-bttn').click
     end
