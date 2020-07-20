@@ -904,6 +904,31 @@ feature 'Sign in' do
     end
   end
 
+  context 'when piv/cac is required' do
+    before do
+      visit_idp_from_oidc_sp_with_ial1_and_require_piv_cac
+    end
+
+    it 'forces user to add a piv/cac if they do not have one' do
+      user = create(:user, :signed_up)
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq two_factor_options_path
+      select_2fa_option('piv_cac')
+
+      expect(page).to have_current_path setup_piv_cac_path
+    end
+
+    it 'uses the piv cac if they have one' do
+      user = create(:user, :with_phone, :with_piv_or_cac)
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(current_path).to eq login_two_factor_piv_cac_path
+    end
+  end
+
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
     user = create(:user, :signed_up, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
