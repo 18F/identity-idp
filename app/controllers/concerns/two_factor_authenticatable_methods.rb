@@ -48,6 +48,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     return unless initial_authentication_context?
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
+    return if aal3_policy.aal3_configured_but_not_used?
 
     redirect_to after_otp_verification_confirmation_url
   end
@@ -55,7 +56,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def check_aal3_bypass
     return unless aal3_policy.aal3_required?
     method = two_factor_authentication_method
-    redirect_to aal3_redirect_url(current_user) unless AAL3Policy::AAL3_METHODS.include? method
+    return if AAL3Policy::AAL3_METHODS.include? method
+    aal3_redirect = aal3_redirect_url(current_user)
+    redirect_to aal3_redirect || aal3_required_url
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out

@@ -12,8 +12,6 @@ module Aal3Concern
       login_two_factor_piv_cac_url
     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
       login_two_factor_webauthn_url
-    else
-      aal3_required_url
     end
   end
 end

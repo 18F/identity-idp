@@ -90,6 +90,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def aal3_policy
-    @aal3_policy ||= AAL3Policy.new(session: @session, user: @current_user)
+    @aal3 ||= AAL3Policy.new(session: @session, user: @current_user)
   end
 end

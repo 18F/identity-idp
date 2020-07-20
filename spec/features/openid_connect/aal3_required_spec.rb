@@ -22,7 +22,7 @@ describe 'AAL3 authentication required in an OIDC context' do
         user = user_with_aal3_2fa
 
         visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-        sign_in_live_with_aal2_2fa_only(user)
+        visit login_two_factor_path
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
@@ -45,10 +45,8 @@ describe 'AAL3 authentication required in an OIDC context' do
 
     context 'user has aal3 auth configured' do
       it 'sends user to authenticate with AAL3 auth' do
-        user = user_with_aal3_2fa
-
         visit_idp_from_ial1_oidc_sp_requiring_aal3(prompt: 'select_account')
-        sign_in_live_with_aal2_2fa_only(user)
+        visit login_two_factor_path
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end

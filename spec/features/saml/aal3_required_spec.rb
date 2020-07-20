@@ -34,7 +34,7 @@ describe 'AAL3 authentication required in an SAML context' do
         user = user_with_aal3_2fa
 
         visit aal3_sp1_authnrequest
-        sign_in_live_with_aal2_2fa_only(user)
+        visit login_two_factor_path
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end

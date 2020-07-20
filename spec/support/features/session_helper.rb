@@ -244,17 +244,6 @@ module Features
       user
     end
 
-    def sign_in_live_with_aal2_2fa_only(user = user_with_aal3_2fa)
-      sign_in_user(user)
-      click_link('Choose another authentication method')
-      choose('two_factor_options_form_selection_sms')
-      click_button('Continue')
-      uncheck(t('forms.messages.remember_device'))
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      user
-    end
-
     def sign_in_live_with_piv_cac(user = user_with_piv_cac)
       sign_in_user(user)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(true)
