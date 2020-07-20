@@ -5,7 +5,7 @@ module Features
     end
 
     def strip_nbsp(text)
-      nbsp = Nokogiri::HTML.parse("&nbsp;").text
+      nbsp = Nokogiri::HTML.parse('&nbsp;').text
       text.gsub(/&nbsp;/, ' ').gsub(/#{nbsp}/, ' ')
     end
   end

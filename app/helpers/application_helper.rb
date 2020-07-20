@@ -59,7 +59,7 @@ module ApplicationHelper
 
   def liveness_checking_enabled?
     FeatureManagement.liveness_checking_enabled? &&
-    (sp_session[:issuer].blank? || sp_session[:ial2_strict])
+      (sp_session[:issuer].blank? || sp_session[:ial2_strict])
   end
 
   def sign_up_or_idv_no_js_link

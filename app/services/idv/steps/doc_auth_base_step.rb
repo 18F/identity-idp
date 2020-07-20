@@ -143,9 +143,7 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
         # DP: should these cost recordings happen in the doc_auth_client?
-        add_cost(:acuant_front_image)
-        add_cost(:acuant_back_image)
-        add_cost(:acuant_selfie) if liveness_checking_enabled?
+        add_costs
         result
       end
 
@@ -179,6 +177,12 @@ module Idv
         issuer = sp_session[:issuer].to_s
         Db::SpCost::AddSpCost.call(issuer, 2, token)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
+      end
+
+      def add_costs
+        add_cost(:acuant_front_image)
+        add_cost(:acuant_back_image)
+        add_cost(:acuant_selfie) if liveness_checking_enabled?
       end
 
       def sp_session

@@ -16,10 +16,10 @@ module Idv
       def handle_document_verification_failure(response)
         mark_step_incomplete(:document_capture)
         notice = if liveness_checking_enabled?
-          { notice: I18n.t('errors.doc_auth.document_capture_info_with_selfie_html') }
-        else
-          { notice: I18n.t('errors.doc_auth.document_capture_info_html') }
-        end
+                   { notice: I18n.t('errors.doc_auth.document_capture_info_with_selfie_html') }
+                 else
+                   { notice: I18n.t('errors.doc_auth.document_capture_info_html') }
+                 end
         extra = response.to_h.merge(notice)
         failure(response.errors.first, extra)
       end

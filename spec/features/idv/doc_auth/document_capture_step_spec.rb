@@ -138,8 +138,8 @@ feature 'document capture step' do
     idv_doc_auth_ssn_step
   end
 
-  def render_html_string(text)
-    rendered = Nokogiri::HTML.parse(text).text
+  def render_html_string(html_string)
+    rendered = Nokogiri::HTML.parse(html_string).text
     strip_nbsp(rendered)
   end
 end
