@@ -124,7 +124,7 @@ class FeatureManagement
     Figaro.env.logo_upload_enabled == 'true'
   end
 
-  def log_to_stdout?
+  def self.log_to_stdout?
     !Rails.env.test? && Figaro.env.log_to_stdout?
   end
 end
