@@ -1,7 +1,7 @@
 import autoLogout from './auto-logout';
 import countdownTimer from './countdown-timer';
 import msFormatter from './ms-formatter';
-import enableBannerToggling from './toggle-banner';
+import './uswds';
 
 window.LoginGov = window.LoginGov || {};
 const { LoginGov } = window;
@@ -12,5 +12,3 @@ documentElement.className = documentElement.className.replace(/no-js/, '');
 LoginGov.autoLogout = autoLogout;
 LoginGov.countdownTimer = countdownTimer;
 LoginGov.msFormatter = msFormatter;
-
-enableBannerToggling();
