@@ -21,7 +21,7 @@ module TwoFactorAuthentication
     end
 
     def required?(session)
-      return false if session.nil? || Figaro.env.allow_piv_cac_required != 'true'
+      return if session.blank? || Figaro.env.allow_piv_cac_required != 'true'
       sp_session = session.fetch(:sp, {})
       sp_session[:requested_attributes]&.include?('x509_presented')
     end
