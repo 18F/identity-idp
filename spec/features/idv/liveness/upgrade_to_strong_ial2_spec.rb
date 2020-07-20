@@ -16,7 +16,7 @@ describe 'Strong IAL2' do
       allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
       visit_idp_from_sp_with_ial2(:saml)
-      user = sign_up_and_2fa_ial1_user
+      sign_up_and_2fa_ial1_user
 
       click_agree_and_continue_optional
 
