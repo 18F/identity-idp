@@ -93,6 +93,7 @@ export const acuantImageCaptureSuccess = (response) => {
   acuantSdkPreviewImage().src = response.image.data;
   imageDataUrlInput().value = response.image.data;
   imageFileInput().required = false;
+  window.AcuantCameraUI.end();
   showAcuantSdkContainer('continue-form');
 };
 
