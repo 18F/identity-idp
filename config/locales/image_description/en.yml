@@ -7,3 +7,4 @@ en:
     spinner: Loading spinner
     totp_qrcode: QR code for authenticator app
     us_flag: US flag
+    close: Close button

@@ -7,3 +7,4 @@ es:
     spinner: Indicador de carga
     totp_qrcode: Código QR para la aplicación de autenticación
     us_flag: Bandera de estados unidos
+    close: Botón de cierre
