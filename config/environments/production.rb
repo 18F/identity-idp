@@ -34,7 +34,7 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
-  if Figaro.env.log_to_stdout?
+  if FeatureManagement.log_to_stdout?
     Rails.logger = Logger.new(STDOUT)
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end

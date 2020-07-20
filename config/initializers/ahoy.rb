@@ -42,7 +42,7 @@ module Ahoy
     end
 
     def visit_logger
-      if Figaro.env.log_to_stdout?
+      if FeatureManagement.log_to_stdout?
         @visit_logger ||= ActiveSupport::Logger.new(STDOUT)
       else
         @visit_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
@@ -50,7 +50,7 @@ module Ahoy
     end
 
     def event_logger
-      if Figaro.env.log_to_stdout?
+      if FeatureManagement.log_to_stdout?
         @event_logger ||= ActiveSupport::Logger.new(STDOUT)
       else
         @event_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))

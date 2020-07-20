@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
   c.adapter = Figaro.env.telephony_adapter.to_sym || :test
-  if Figaro.env.log_to_stdout?
+  if FeatureManagement.log_to_stdout?
     c.logger = Logger.new(STDOUT, level: :info)
   else
     c.logger = Logger.new('log/telephony.log', level: :info)
