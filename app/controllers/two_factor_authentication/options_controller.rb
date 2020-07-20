@@ -41,7 +41,6 @@ module TwoFactorAuthentication
       end
     end
 
-
     private
 
     def two_factor_options_presenter
