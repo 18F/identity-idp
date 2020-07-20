@@ -42,19 +42,19 @@ module Ahoy
     end
 
     def visit_logger
-      if FeatureManagement.log_to_stdout?
-        @visit_logger ||= ActiveSupport::Logger.new(STDOUT)
-      else
-        @visit_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
-      end
+      @visit_logger ||= if FeatureManagement.log_to_stdout?
+                          ActiveSupport::Logger.new(STDOUT)
+                        else
+                          ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
+                        end
     end
 
     def event_logger
-      if FeatureManagement.log_to_stdout?
-        @event_logger ||= ActiveSupport::Logger.new(STDOUT)
-      else
-        @event_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
-      end
+      @event_logger ||= if FeatureManagement.log_to_stdout?
+                          ActiveSupport::Logger.new(STDOUT)
+                        else
+                          ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
+                        end
     end
 
     def invalid_uuid?(token)

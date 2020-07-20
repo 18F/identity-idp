@@ -1,11 +1,11 @@
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
   c.adapter = Figaro.env.telephony_adapter.to_sym || :test
-  if FeatureManagement.log_to_stdout?
-    c.logger = Logger.new(STDOUT, level: :info)
-  else
-    c.logger = Logger.new('log/telephony.log', level: :info)
-  end
+  c.logger = if FeatureManagement.log_to_stdout?
+               Logger.new(STDOUT, level: :info)
+             else
+               Logger.new('log/telephony.log', level: :info)
+             end
 
   c.twilio.numbers = JSON.parse(Figaro.env.twilio_numbers || '[]')
   c.twilio.sid = Figaro.env.twilio_sid
