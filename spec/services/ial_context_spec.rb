@@ -124,7 +124,7 @@ RSpec.describe IalContext do
     context 'when ial 2 is requested and the sp requires liveness checking' do
       let(:ial) { Identity::IAL2 }
       let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial2_requested?).to eq(false) }
+      it { expect(ial_context.ial2_requested?).to eq(true) }
     end
 
     context 'when ial 2 strict is requested' do
