@@ -54,7 +54,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def check_aal3_bypass
-    return unless aal3_policy.aal3_required?
+    return unless aal3_policy.aal3_configured_and_required?
     method = two_factor_authentication_method
     return if AAL3Policy::AAL3_METHODS.include? method
     aal3_redirect = aal3_redirect_url(current_user)

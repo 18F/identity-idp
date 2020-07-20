@@ -21,9 +21,12 @@ class AAL3Policy
   end
 
   def aal3_configured_but_not_used?
-    aal3_required? &&
-      @mfa_policy&.aal3_mfa_enabled? &&
+    aal3_configured_and_required? &&
       !aal3_used?
+  end
+
+  def aal3_configured_and_required?
+    aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
   private
