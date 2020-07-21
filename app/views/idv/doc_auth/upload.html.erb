@@ -4,7 +4,7 @@
 <%= t('doc_auth.info.upload') %>
 
 <div class='mt2 mb3'>
-  <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_failure_path(reason: :no_id) %>
+  <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_errors_no_id_path %>
 </div>
 
 <% if Figaro.env.cac_proofing_enabled == 'true' && desktop_device? %>

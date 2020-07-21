@@ -103,8 +103,6 @@ en:
       jurisdiction:
         no_id: I don't have a state-issued ID
         no_id_failure: We're working hard to add more ways to verify your identity.
-        unsupported_jurisdiction_failure: We're working hard to add more states and
-          hope to support %{state} soon.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We'll send a code to <strong>%{phone}</strong>
@@ -151,13 +149,7 @@ en:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
       come_back_later: Come back soon.
-      complete: Identity verification complete
-      dupe: 'Error: An account may already exist'
-      expectations: Next, help us identify you
-      fail: We were unable to verify your identity
       hardfail: We weren't able to verify your identity with %{app}
-      intro: Help us identify you
-      jurisdiction: Choose your state
       mail:
         resend: Want another letter?
         verify: Want a letter?
@@ -165,9 +157,6 @@ en:
       otp_delivery_method: How would you like to receive a code?
       phone: Phone number of record
       review: Review and submit
-      select_verification: Choose how to confirm your address
       session:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to protect your data
-      sessions: Information about you
-      unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.
