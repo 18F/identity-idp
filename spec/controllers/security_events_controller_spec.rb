@@ -29,16 +29,11 @@ RSpec.describe SecurityEventsController do
    .
 EOS
 
-  CREDENTIAL_CHANGE_REQUIRED = 'https://schemas.openid.net/secevent/risc/event-type/account-credential-change-required'.freeze
-
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
       File.read(Rails.root.join('keys', 'saml_test_sp.key')),
     )
   end
-
-  let(:jwt) {  }
-
 
   # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#rfc.section.5.2
   describe '#create' do
@@ -49,7 +44,7 @@ EOS
         iat: Time.zone.now.to_i,
         aud: api_security_events_url,
         events: {
-          CREDENTIAL_CHANGE_REQUIRED => {
+          SecurityEvent::CREDENTIAL_CHANGE_REQUIRED => {
             subject: {
               subject_type: 'iss-sub',
               iss: root_url,
@@ -61,10 +56,11 @@ EOS
 
       jwt = JWT.encode(jwt_payload, rp_private_key, 'RS256')
 
-      post :create, jwt
+      expect { post :create, body: jwt, as: :secevent_jwt }.
+        to change { SecurityEvent.count }.from(0).to(1)
 
-      expect(response).to be_accepted
       expect(response.body).to be_empty
+      expect(response.code.to_i).to eq(202) # Accepted
     end
   end
 end
