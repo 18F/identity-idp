@@ -83,6 +83,6 @@ class TwoFactorOptionsPresenter
   end
 
   def hspd12_policy
-    @hspd12_policy ||= Hspd12PivCacPolicy.new(session: @session, user: @user)
+    @hspd12_policy ||= Hspd12Policy.new(session: @session, user: @user)
   end
 end
