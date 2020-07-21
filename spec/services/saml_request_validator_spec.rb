@@ -201,7 +201,7 @@ describe SamlRequestValidator do
     end
 
     context 'valid authn context and sp and unauthorized nameID format' do
-      it 'returns FormResponse with success: true' do
+      it 'returns FormResponse with success: false with unauthorized nameid format' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
