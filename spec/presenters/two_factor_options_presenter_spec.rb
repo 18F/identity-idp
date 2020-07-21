@@ -13,7 +13,6 @@ describe TwoFactorOptionsPresenter do
     described_class.new(user_agent: user_agent)
   end
 
-
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
