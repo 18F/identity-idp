@@ -56,7 +56,6 @@ search:
   #   - app/mailers
   #   - app/presenters
 
-
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
   ##   %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less *.yml *.json)
   exclude:
@@ -68,10 +67,8 @@ search:
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:
   ## If specified, this settings takes priority over `exclude`, but `exclude` still applies.
   # only: ["*.rb", "*.html.slim"]
-
   ## If `strict` is `false`, guess usages such as t("categories.#{category}.title"). The default is `true`.
   # strict: true
-
   ## Multiple scanners can be used. Their results are merged.
   ## The options specified above are passed down to each scanner. Per-scanner options can be specified as well.
   ## See this example of a custom scanner: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example
@@ -104,7 +101,6 @@ ignore_unused:
   - 'forms.two_factor_recovery_choice.legend'
   - 'headings.piv_cac_setup.*'
   - 'idv.errors.pattern_mismatch.*'
-  - 'idv.messages.jurisdiction.{no_id,unsupported_jurisdiction}_failure'
   - 'jobs.sms_otp_sender_job.login_message'
   - 'jobs.sms_otp_sender_job.verify_message'
   - 'service_providers.*'
