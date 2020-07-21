@@ -61,41 +61,66 @@ describe Acuant::AcuantClient do
         Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}"
       )
     end
-    let(:get_face_image_url) do
-      URI.join(
-        Figaro.env.acuant_assure_id_url,
-        "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
-      )
-    end
-    let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
-    let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
 
-    it 'sends an upload image request for the front, back, and selfie images' do
+    before do
       # DL image upload stubs
       stub_request(:post, image_upload_url).with(front_image_query).to_return(body: '', status: 201)
       stub_request(:post, image_upload_url).with(back_image_query).to_return(body: '', status: 201)
       stub_request(:get, results_url).to_return(body: AcuantFixtures.get_results_response_success)
 
-      # Selfie stubs
-      stub_request(:get, get_face_image_url).
-        to_return(body: AcuantFixtures.get_face_image_response)
-      stub_request(:post, facial_match_url).
-        to_return(body: AcuantFixtures.facial_match_response_success)
-      stub_request(:post, liveness_url).
-        to_return(body: AcuantFixtures.liveness_response_success)
-
       allow(subject).to receive(:create_document).and_return(
         OpenStruct.new('success?' => true, instance_id: instance_id),
       )
+    end
 
-      result, _pii = subject.post_images(
-        front_image: DocAuthImageFixtures.document_front_image,
-        back_image: DocAuthImageFixtures.document_back_image,
-        selfie_image: DocAuthImageFixtures.selfie_image,
-        instance_id: instance_id,
-      )
+    context 'with liveness checking enabled' do
+      let(:get_face_image_url) do
+        URI.join(
+          Figaro.env.acuant_assure_id_url,
+          "/AssureIDService/Document/#{instance_id}/Field/Image?key=Photo",
+        )
+      end
+      let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
+      let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
+      let(:liveness_enabled) { true }
 
-      expect(result.success?).to eq(true)
+      it 'sends an upload image request for the front, back, and selfie images' do
+        # Selfie stubs
+        stub_request(:get, get_face_image_url).
+          to_return(body: AcuantFixtures.get_face_image_response)
+        stub_request(:post, facial_match_url).
+          to_return(body: AcuantFixtures.facial_match_response_success)
+        stub_request(:post, liveness_url).
+          to_return(body: AcuantFixtures.liveness_response_success)
+
+        result = subject.post_images(
+          front_image: DocAuthImageFixtures.document_front_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          selfie_image: DocAuthImageFixtures.selfie_image,
+          liveness_checking_enabled: liveness_enabled,
+          instance_id: instance_id,
+        )
+
+        expect(result.success?).to eq(true)
+        expect(result.class).to eq(Acuant::Responses::ResponseWithPii)
+      end
+    end
+
+    context 'with liveness checking disabled' do
+      let(:liveness_enabled) { false }
+
+      it 'sends an upload image request for the front and back DL images' do
+        result = subject.post_images(
+          front_image: DocAuthImageFixtures.document_front_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          selfie_image: DocAuthImageFixtures.selfie_image,
+          liveness_checking_enabled: liveness_enabled,
+          instance_id: instance_id,
+        )
+
+        expect(result.success?).to eq(true)
+        expect(result.class).to eq(Acuant::Responses::GetResultsResponse)
+      end
     end
   end
 
@@ -166,6 +191,10 @@ describe Acuant::AcuantClient do
     let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
     let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
 
+    # before do
+    #   allow(subject).to receive(:get_results).and_return()
+    # end
+
     context 'when the result is a pass' do
       it 'sends the requests and returns success' do
         get_face_stub = stub_request(:get, get_face_image_url).
@@ -182,6 +211,7 @@ describe Acuant::AcuantClient do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq([])
+        expect(result.class).to eq(Acuant::Response)
         expect(get_face_stub).to have_been_requested
         expect(facial_match_stub).to have_been_requested
         expect(liveness_stub).to have_been_requested

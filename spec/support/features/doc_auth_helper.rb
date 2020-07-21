@@ -188,10 +188,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
-  def attach_images
+  def attach_images(liveness_enabled: true)
     attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
     attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
-    attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png'
+    attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
   end
 
   def attach_front_image_data_url

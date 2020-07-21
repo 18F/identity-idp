@@ -132,6 +132,81 @@ feature 'document capture step' do
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
+
+    context 'when liveness checking is not enabled' do
+      let(:liveness_enabled) { 'false' }
+
+      it 'is on the correct_page, but does not show the selfie upload option' do
+        expect(current_path).to eq(idv_doc_auth_document_capture_step)
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_front_html')))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_back_html')))
+        expect(page).not_to have_content(t('doc_auth.headings.selfie'))
+      end
+
+      it 'proceeds to the next page with valid info' do
+        attach_images(liveness_enabled: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(next_step)
+      end
+
+      it 'allows the use of a base64 encoded data url representation of the image' do
+        attach_front_image_data_url
+        attach_back_image_data_url
+        click_idv_continue
+
+        expect(page).to have_current_path(next_step)
+        expect(DocAuthMock::DocAuthMockClient.last_uploaded_front_image).to eq(
+          doc_auth_front_image_data_url_data,
+        )
+        expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+          doc_auth_back_image_data_url_data,
+        )
+        expect(DocAuthMock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
+      end
+
+      it 'throttles calls to acuant and allows retry after the attempt window' do
+        allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+        max_attempts.times do
+          attach_images(liveness_enabled: false)
+          click_idv_continue
+
+          expect(page).to have_current_path(next_step)
+          click_on t('doc_auth.buttons.start_over')
+          complete_doc_auth_steps_before_document_capture_step
+        end
+
+        attach_images(liveness_enabled: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_session_errors_throttled_path)
+
+        Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_document_capture_step
+          attach_images(liveness_enabled: false)
+          click_idv_continue
+
+          expect(page).to have_current_path(next_step)
+        end
+      end
+
+      it 'catches network connection errors on post_front_image' do
+        DocAuthMock::DocAuthMockClient.mock_response!(
+          method: :post_front_image,
+          response: Acuant::Response.new(
+            success: false,
+            errors: [I18n.t('errors.doc_auth.acuant_network_error')],
+          ),
+        )
+
+        attach_images(liveness_enabled: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+    end
   end
 
   def next_step

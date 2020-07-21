@@ -10,9 +10,16 @@ module Idv
                   :back_image, :back_image_data_url,
                   :selfie_image, :selfie_image_data_url
 
+    attr_reader :liveness_checking_enabled
+
     validate :front_image_or_image_data_url_presence
     validate :back_image_or_image_data_url_presence
     validate :selfie_image_or_image_data_url_presence
+
+    def initialize(**args)
+      @liveness_checking_enabled = args.delete(:liveness_checking_enabled)
+      super
+    end
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Image')
@@ -37,7 +44,7 @@ module Idv
     end
 
     def selfie_image_or_image_data_url_presence
-      return unless FeatureManagement.liveness_checking_enabled?
+      return unless liveness_checking_enabled
       return if selfie_image.present? || selfie_image_data_url.present?
       errors.add(:selfie_image, :blank)
     end
