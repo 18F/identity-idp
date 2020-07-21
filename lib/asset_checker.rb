@@ -1,20 +1,18 @@
 class AssetChecker
-  def self.run(argv)
+  def self.check_files_for_missing(argv)
     assets_file = 'app/assets/javascripts/assets.js.erb'
     translations_file = 'app/assets/javascripts/i18n-strings.js.erb'
     @asset_strings = load_included_strings(assets_file)
     @translation_strings = load_included_strings(translations_file)
-    exit_code = (argv.map { |f| check_file(f) }).any? ? 1 : 0
-    exit exit_code # rubocop:disable Rails/Exit
+    argv.any? { |f| missing_strings?(f) } ? 1 : 0
   end
 
-  def self.check_file(file)
+  def self.missing_strings?(file)
     data = File.open(file).read
-    missing_found = false
     missing_translations = find_missing(data, /\Wt\s?\(['"]([^'^"]*)['"]\)/, @translation_strings)
     missing_assets = find_missing(data, /\WassetPath=["'](.*)['"]/, @asset_strings)
-    if missing_translations.any? || missing_assets.any?
-      missing_found = true
+    has_missing = (missing_translations.any? || missing_assets.any?)
+    if has_missing
       warn file
       missing_translations.each do |t|
         warn "Missing translation, #{t}"
@@ -23,7 +21,7 @@ class AssetChecker
         warn "Missing asset, #{a}"
       end
     end
-    missing_found
+    has_missing
   end
 
   def self.find_missing(file_data, pattern, source)
