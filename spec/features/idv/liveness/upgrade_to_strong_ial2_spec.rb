@@ -3,7 +3,26 @@ require 'rails_helper'
 describe 'Strong IAL2' do
   include IdvHelper
   include OidcAuthHelper
+  include SamlAuthHelper
   include DocAuthHelper
+
+  context 'with an sp that requires livess and a new account' do
+    before do
+      ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata').
+        update!(liveness_checking_required: true)
+    end
+
+    it 'starts the proofing process if liveness is enabled' do
+      allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+
+      visit_idp_from_sp_with_ial2(:saml)
+      sign_up_and_2fa_ial1_user
+
+      click_agree_and_continue_optional
+
+      expect(page.current_path).to eq(idv_doc_auth_welcome_step)
+    end
+  end
 
   context 'with an sp that requires liveness and a current verified profile with no liveness' do
     before do
