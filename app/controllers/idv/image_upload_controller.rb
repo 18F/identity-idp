@@ -2,7 +2,7 @@ module Idv
   class ImageUploadController < ApplicationController
     include IdvSession
 
-    before_action :confirm_two_factor_authenticated
+    skip_before_action :verify_authenticity_token
 
 
     def upload
@@ -27,24 +27,26 @@ module Idv
         err = method(step).call(request)
         return error_json(err) if err
       end
+      nil
     end
 
     def check_content_type(request)
       "Invalid content type #{request.content_type}" if request.content_type != 'application/json'
     end
 
-    def check_image_fields
-      @front_image = request.body['front']
-      @back_image = request.body['back']
-      @selfie_image = request.body['selfie']
+    def check_image_fields(request)
+      data = request.body.read
+      @front_image = data['front']
+      @back_image = data['back']
+      @selfie_image = data['selfie']
       'Missing image keys' unless [@front_image, @back_image, @selfie_image].all?
     end
 
     def error_json(reason)
-      JSON.dump(
+      {
         status: 'error',
         message: reason,
-      )
+      }
     end
 
   end

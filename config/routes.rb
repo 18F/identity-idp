@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   post '/api/sms/receive' => 'sms#receive'
 
   # Image upload API for doc auth
-  post '/api/verify/upload' => 'image_upload_controller#upload'
+  post '/api/verify/upload' => 'idv/image_upload#upload'
 
   post '/api/service_provider' => 'service_provider#update'
   match '/api/voice/otp' => 'voice/otp#show',
