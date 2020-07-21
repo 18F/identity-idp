@@ -67,7 +67,7 @@ class TwoFactorOptionsPresenter
   end
 
   def piv_cac_required?
-    piv_cac_policy.required?(@session)
+    hspd12_policy.piv_cac_required?
   end
 
   def aal3_only?
@@ -80,5 +80,9 @@ class TwoFactorOptionsPresenter
 
   def piv_cac_policy
     @piv_cac_policy ||= TwoFactorAuthentication::PivCacPolicy.new(@user)
+  end
+
+  def hspd12_policy
+    @hspd12_policy ||= Hspd12PivCacPolicy.new(session: @session, user: @user)
   end
 end

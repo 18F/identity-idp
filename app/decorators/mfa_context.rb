@@ -97,7 +97,7 @@ class MfaContext
   private
 
   def piv_cac_required?
-    TwoFactorAuthentication::PivCacPolicy.new(user).required?(@session)
+    Hspd12Policy.new(session: @session, user: user).piv_cac_required?
   end
 
   def personal_key_method_count
