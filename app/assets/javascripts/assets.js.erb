@@ -1,0 +1,13 @@
+window.LoginGov = window.LoginGov || {};
+window.LoginGov.assets = {};
+
+<% keys = [
+  'state-id-sample-front.jpg',
+  'plus.svg',
+  'minus.svg',
+  'up-carat-thin.svg'
+] %>
+
+<% keys.each do |key| %>
+  window.LoginGov.assets['<%= ActionController::Base.helpers.j key %>'] = '<%= ActionController::Base.helpers.j ActionController::Base.helpers.asset_path key %>';
+<% end %>
