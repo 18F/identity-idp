@@ -18,4 +18,3 @@ beforeEach(() => {
     document.body.removeChild(document.body.firstChild);
   }
 });
-
