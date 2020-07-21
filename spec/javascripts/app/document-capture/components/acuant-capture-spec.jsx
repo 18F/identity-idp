@@ -3,11 +3,8 @@ import { render, fireEvent, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
 import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
-import { useDOM } from '../../../support/dom';
 
 describe('document-capture/components/acuant-capture', () => {
-  useDOM();
-
   afterEach(() => {
     // While RTL will perform this automatically, it must to occur prior to
     // resetting the global variables, since otherwise the component's effect

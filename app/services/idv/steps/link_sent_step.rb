@@ -4,6 +4,8 @@ module Idv
       def call
         return render_step_incomplete_error unless take_photo_with_phone_successful?
 
+        # The doc capture flow will have fetched the results already. We need
+        # to fetch them again here to add the PII to this session
         get_results_response = fetch_doc_auth_results
         if get_results_response.success?
           handle_document_verification_success(get_results_response)

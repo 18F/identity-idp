@@ -1,14 +1,21 @@
 const chai = require('chai');
 const dirtyChai = require('dirty-chai');
+const { JSDOM } = require('jsdom');
 
 chai.use(dirtyChai);
 global.expect = chai.expect;
 
-// classList.js will throw an error when loaded into the test environment, since
-// it assumes the presence of a `self` global. This shim is enough only to skip
-// the polyfill. It's expected where a DOM is used that JSDOM will provide the
-// Element#classList implementation.
-//
-// See: https://github.com/eligrey/classList.js/issues/48
-// See: https://github.com/eligrey/classList.js/blob/ecb3305/classList.js#L14
-global.self = global;
+// Emulate a DOM, since many modules will assume the presence of these globals
+// exist as a side effect of their import (focus-trap, classList.js, etc).
+const dom = new JSDOM();
+global.window = dom.window;
+global.navigator = window.navigator;
+global.document = window.document;
+global.self = window;
+
+beforeEach(() => {
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
+});
+

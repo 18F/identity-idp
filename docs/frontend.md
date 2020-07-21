@@ -14,11 +14,31 @@
 
 ## JavaScript
 
+### At a Glance
+
 - site should work if JS is off (and have enhanced features if JS is on)
-- uses AirBnB's ESLint config
+- uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/)
 - JS modules are installed & managed via `yarn` (see `package.json`)
 - JS is transpiled, bundled, and minified via `webpacker` (using
   `rails-webpacker` gem to utilize Rails asset pipeline)
+
+### Prettier
+
+[Prettier](https://prettier.io/) is an opinionated code formatter which
+simplifies adherence to JavaScript style standards, both for the developer and
+for the reviewer. As a developer, it can eliminate the effort involved with
+applying correct formatting. As a reviewer, it avoids most debates over code
+style, since there is a consistent style being enforced through the adopted
+tooling.
+
+Prettier works reasonably well in combination with Airbnb's JavaScript
+standards. In the few cases where conflicts occur, formatting rules may be
+disabled to err toward Prettier conventions when an option is not configurable.
+
+Prettier is integrated with [the project's linting setup](#eslint). Most issues
+can be resolved automatically by running `yarn run lint --fix`. You may also
+consider one of the [avaialable editor integrations](https://prettier.io/docs/en/editors.html),
+which can simplify your workflow to apply formatting automatically on save.
 
 ## Testing
 

@@ -293,7 +293,7 @@ Rails.application.routes.draw do
       get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+      get '/jurisdiction/errors/no_id' => 'jurisdiction_errors#no_id'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'

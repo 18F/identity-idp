@@ -1,12 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Image from '../../../../../app/javascript/app/document-capture/components/image';
-import { useDOM } from '../../../support/dom';
 import AssetContext from '../../../../../app/javascript/app/document-capture/context/asset';
 
 describe('document-capture/components/image', () => {
-  useDOM();
-
   it('renders the given assetPath as src if the asset is not known', () => {
     const { getByAltText } = render(
       <Image assetPath="unknown.png" alt="unknown" />,

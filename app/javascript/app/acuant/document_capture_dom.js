@@ -9,6 +9,7 @@ export const imageDataUrlInput = () => document.querySelector('#doc_auth_image_d
 export const acuantSdkUploadForm = () => document.querySelector('#acuant-sdk-upload-form');
 export const acuantSdkSpinner = () => document.querySelector('#acuant-sdk-spinner');
 export const acuantSdkCaptureView = () => document.querySelector('#acuant-sdk-capture-view');
+export const acuantSdkCaptureViewCloseButton = () => document.querySelector('#acuant-sdk-capture-view-close');
 export const acuantSdkContinueForm = () => document.querySelector('#acuant-sdk-continue-form');
 // Acuant UI elements
 export const acuantSdkCaptureButton = () => document.querySelector('#acuant-sdk-capture');
@@ -28,6 +29,16 @@ const hideAcuantSdkContainers = () => {
   acuantSdkContinueForm().classList.add('hidden');
 };
 
+export const acuantImageCaptureEnded = () => {
+  acuantSdkCaptureView().classList.add('hidden');
+  acuantSdkUploadForm().classList.remove('hidden');
+  window.AcuantCameraUI.end();
+};
+
+export const addClickEventListenerToAcuantCaptureViewCloseButton = (clickCallback) => {
+  acuantSdkCaptureViewCloseButton().onclick = clickCallback;
+};
+
 const showFallbackForm = () => {
   fallbackImageForm().classList.remove('hidden');
 };
@@ -45,6 +56,7 @@ export const showAcuantSdkContainer = (container) => {
       acuantSdkSpinner().classList.remove('hidden');
       break;
     case 'capture-view':
+      addClickEventListenerToAcuantCaptureViewCloseButton(acuantImageCaptureEnded);
       acuantSdkCaptureView().classList.remove('hidden');
       break;
     case 'continue-form':
@@ -81,6 +93,7 @@ export const acuantImageCaptureSuccess = (response) => {
   acuantSdkPreviewImage().src = response.image.data;
   imageDataUrlInput().value = response.image.data;
   imageFileInput().required = false;
+  window.AcuantCameraUI.end();
   showAcuantSdkContainer('continue-form');
 };
 

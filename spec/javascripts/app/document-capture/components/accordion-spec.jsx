@@ -1,11 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Accordion from '../../../../../app/javascript/app/document-capture/components/accordion';
-import { useDOM } from '../../../support/dom';
 
 describe('document-capture/components/accordion', () => {
-  useDOM();
-
   it('renders with a unique ID', () => {
     const { container } = render(
       <>
