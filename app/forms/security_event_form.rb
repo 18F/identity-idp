@@ -5,7 +5,7 @@ class SecurityEventForm
   attr_reader :err
 
   validates :service_provider, presence: true
-  validates :user, presence: true, if: :jwt_payload
+  validates :user, presence: true
 
   validates_inclusion_of :subject_type, in: %w[iss_sub]
   validates_inclusion_of :aud, in: :root_url
@@ -29,6 +29,8 @@ class SecurityEventForm
         jti: jwt_payload['jti'],
         issuer: service_provider.issuer,
       )
+    elsif !@err
+      @err = 'setData'
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -39,14 +41,22 @@ class SecurityEventForm
   attr_reader :body
 
   def jwt_payload
+    return @jwt_payload if defined?(@jwt_payload)
+
     payload, _headers = JWT.decode(body, nil, false, algorithm: 'RS256')
-    payload
+    @jwt_payload = payload
+  rescue JWT::DecodeError => err
+    @err = 'jwtParse'
+    errors.add(:jwt, err.message)
+    @jwt_payload = {}
   end
 
   def validate_jwt_with_signature
     JWT.decode(body, service_provider.ssl_cert.public_key, true, algorithm: 'RS256')
-  # rescue JWT::DecodeError => err
-  #   errors.add(:payload, err.message)
+  rescue JWT::DecodeError => err
+    @err = 'jws'
+    errors.add(:jwt, err.message)
+    false
   end
 
   def aud
@@ -58,12 +68,13 @@ class SecurityEventForm
     @service_provider = ServiceProvider.find_by(issuer: jwt_payload['iss'])
   end
 
-  # TODO: how do we want to handle multiple events?
   def event
-    jwt_payload['events'][event_type]
+    jwt_payload.dig('events', event_type) || {}
   end
 
   def event_type
+    return nil if jwt_payload['events'].blank?
+
     if jwt_payload['events'].key?(SecurityEvent::CREDENTIAL_CHANGE_REQUIRED)
       SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
     else
@@ -72,12 +83,13 @@ class SecurityEventForm
   end
 
   def subject_type
-    event['subject']['subject_type']
+    event.dig('subject', 'subject_type')
   end
 
   def identity
+    return if event.blank?
     return @identity if defined?(@identity)
-    @identity = Identity.find_by(uuid: event['subject']['sub'])
+    @identity = Identity.find_by(uuid: event.dig('subject', 'sub'))
   end
 
   def user

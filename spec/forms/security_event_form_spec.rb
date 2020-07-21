@@ -109,7 +109,7 @@ RSpec.describe SecurityEventForm do
       end
 
       context 'with an additional event type' do
-        before { jwt_payload[:events].first[:subject][:subject_type] = 'email' }
+        before { jwt_payload[:events] }
 
         it 'is invalid' do
           expect(valid?).to eq(false)
@@ -120,7 +120,10 @@ RSpec.describe SecurityEventForm do
 
     context 'subject_type' do
       context 'with a bad subject type' do
-        before { jwt_payload[:events].first[:subject][:subject_type] = 'email' }
+        before do
+          event_name, event = jwt_payload[:events].first
+          event[:subject][:subject_type] = 'email'
+        end
 
         it 'is invalid' do
           expect(valid?).to eq(false)
