@@ -48,7 +48,12 @@
   },
   "overrides": [
     {
-      "files": ["app/javascript/app/document-capture/**/*"],
+      "files": [
+        "app/javascript/app/document-capture/**/*",
+        "spec/javascripts/app/document-capture/**/*",
+        "spec/javascripts/support/**/*",
+        "spec/javascripts/spec_helper.js"
+      ],
       "plugins": ["prettier"],
       "rules": {
         "prettier/prettier": "error"
