@@ -123,6 +123,7 @@ describe SamlIdpController do
           user: user,
           service_provider: ServiceProvider.from_issuer(ial2_saml_settings.issuer),
           authn_request: this_authn_request,
+          name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
         )
       end
@@ -418,7 +419,7 @@ describe SamlIdpController do
 
           it 'has a format attribute defining the NameID to be email' do
             expect(name_id.attributes['Format'].value).
-              to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress')
+              to eq('urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress')
           end
 
           it 'has NameID value of the email address of the user making the AuthN Request' do

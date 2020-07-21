@@ -11,6 +11,7 @@ module SamlAuthHelper
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
     settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
 
     # SP + IdP Settings
     settings.issuer = 'http://localhost:3000'
@@ -19,7 +20,6 @@ module SamlAuthHelper
     settings.security[:embed_sign] = true
     settings.security[:digest_method] = 'http://www.w3.org/2001/04/xmlenc#sha256'
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
-    settings.name_identifier_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
     settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth2019"
@@ -121,7 +121,7 @@ module SamlAuthHelper
 
   def email_nameid_saml_settings_for_allowed_issuer
     settings = saml_settings.dup
-    settings.name_identifier_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
     settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
     settings
   end
@@ -141,12 +141,13 @@ module SamlAuthHelper
 
   def email_nameid_saml_settings_for_disallowed_issuer
     settings = saml_settings.dup
-    settings.name_identifier_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
     settings
   end
 
   def ial2_saml_settings
     settings = sp1_saml_settings.dup
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
     settings.authn_context = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     settings
   end
