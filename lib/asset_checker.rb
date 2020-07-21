@@ -1,13 +1,13 @@
 class AssetChecker
-  def self.check_files_for_missing(argv)
+  def self.check_files(argv)
     assets_file = 'app/assets/javascripts/assets.js.erb'
     translations_file = 'app/assets/javascripts/i18n-strings.js.erb'
     @asset_strings = load_included_strings(assets_file)
     @translation_strings = load_included_strings(translations_file)
-    argv.any? { |f| missing_strings?(f) } ? 1 : 0
+    argv.any? { |f| file_has_missing?(f) }
   end
 
-  def self.missing_strings?(file)
+  def self.file_has_missing?(file)
     data = File.open(file).read
     missing_translations = find_missing(data, /\Wt\s?\(['"]([^'^"]*)['"]\)/, @translation_strings)
     missing_assets = find_missing(data, /\WassetPath=["'](.*)['"]/, @asset_strings)
