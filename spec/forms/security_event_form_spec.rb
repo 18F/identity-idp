@@ -50,7 +50,8 @@ RSpec.describe SecurityEventForm do
         let(:jwt) { 'bbb.bbb.bbb' }
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('jwtParse')
+          expect(form.errors[:jwt]).to include('Invalid segment encoding')
+          # expect(form.err).to eq('jwtParse')
         end
       end
 
@@ -63,7 +64,7 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('jws')
+          expect(form.errors[:jwt]).to include('Signature verification raised')
         end
       end
     end
@@ -73,6 +74,8 @@ RSpec.describe SecurityEventForm do
         before { jwt_payload[:aud] = 'https://bad.example' }
         it 'is invalid' do
           expect(valid?).to eq(false)
+          expect(form.errors[:aud]).
+            to include("invalid aud claim, expected #{api_security_events_url}")
         end
       end
     end
@@ -82,6 +85,7 @@ RSpec.describe SecurityEventForm do
         before { jwt_payload[:iss] = 'not.valid.issuer' }
         it 'is invalid' do
           expect(valid?).to eq(false)
+          expect(form.errors[:iss]).to include('invalid issuer')
         end
       end
     end
@@ -92,7 +96,8 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('setData')
+          expect(form.errors[:event_type]).to include('missing event')
+          # expect(form.err).to eq('setData')
         end
       end
 
@@ -104,16 +109,17 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('setType')
+          expect(form.errors[:event_type]).to include('unsupported event type wrong-event-type')
+          # expect(form.err).to eq('setType')
         end
       end
 
       context 'with an additional event type' do
-        before { jwt_payload[:events] }
+        before { jwt_payload[:events]['extra-event'] = { subject: 'blah' } }
 
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.err).to eq('setType')
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.err).to be_nil
         end
       end
     end
@@ -127,7 +133,7 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('setData')
+          expect(form.errors[:subject_type]).to include('unsupported subject_type')
         end
       end
     end
@@ -137,7 +143,8 @@ RSpec.describe SecurityEventForm do
         let(:subject_sub) { 'aaa' }
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('setData')
+          # expect(form.err).to eq('setData')
+          expect(form.errors[:sub]).to include('invalid sub claim')
         end
       end
 
@@ -145,7 +152,8 @@ RSpec.describe SecurityEventForm do
         let(:subject_sub) { create(:identity).uuid }
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.err).to eq('setData')
+          # expect(form.err).to eq('setData')
+          expect(form.errors[:sub]).to include('invalid sub claim')
         end
       end
     end

@@ -4,16 +4,12 @@ class SecurityEventForm
 
   attr_reader :err
 
-  validates :service_provider, presence: true
-  validates :user, presence: true
-
-  validates_inclusion_of :subject_type, in: %w[iss_sub]
-  validates_inclusion_of :aud, in: :root_url
-  validates_inclusion_of :event_type, in: [
-    SecurityEvent::CREDENTIAL_CHANGE_REQUIRED,
-  ]
-
-  validate :validate_jwt_with_signature, if: :service_provider
+  validate :validate_iss
+  validate :validate_aud
+  validate :validate_event_type
+  validate :validate_subject_type
+  validate :validate_sub
+  validate :validate_jwt_signature
 
   def initialize(body:)
     @body = body
@@ -29,8 +25,9 @@ class SecurityEventForm
         jti: jwt_payload['jti'],
         issuer: service_provider.issuer,
       )
-    elsif !@err
-      @err = 'setData'
+    else
+      # TODO: calculate err code
+      # @err = 'setData'
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -42,7 +39,6 @@ class SecurityEventForm
 
   def jwt_payload
     return @jwt_payload if defined?(@jwt_payload)
-
     payload, _headers = JWT.decode(body, nil, false, algorithm: 'RS256')
     @jwt_payload = payload
   rescue JWT::DecodeError => err
@@ -51,7 +47,8 @@ class SecurityEventForm
     @jwt_payload = {}
   end
 
-  def validate_jwt_with_signature
+  def validate_jwt_signature
+    return false if !service_provider
     JWT.decode(body, service_provider.ssl_cert.public_key, true, algorithm: 'RS256')
   rescue JWT::DecodeError => err
     @err = 'jws'
@@ -59,9 +56,38 @@ class SecurityEventForm
     false
   end
 
-  def aud
-    jwt_payload['aud']
+  def validate_iss
+    if !service_provider.present?
+      errors.add(:iss, 'invalid issuer')
+    end
   end
+
+  def validate_aud
+    if jwt_payload['aud'] != api_security_events_url
+      errors.add(:aud, "invalid aud claim, expected #{api_security_events_url}")
+    end
+  end
+
+  def validate_event_type
+    if event_type.blank?
+      errors.add(:event_type, 'missing event')
+    elsif event_type != SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
+      errors.add(:event_type, "unsupported event type #{event_type}")
+    end
+  end
+
+  def validate_subject_type
+    if subject_type != 'iss_sub'
+      errors.add(:subject_type, 'subject_type must be iss_sub')
+    end
+  end
+
+  def validate_sub
+    if user.blank?
+      errors.add(:sub, 'invalid sub claim')
+    end
+  end
+
 
   def service_provider
     return @service_provider if defined?(@service_provider)
@@ -87,9 +113,12 @@ class SecurityEventForm
   end
 
   def identity
-    return if event.blank?
+    return if event.blank? || !service_provider
     return @identity if defined?(@identity)
-    @identity = Identity.find_by(uuid: event.dig('subject', 'sub'))
+    @identity = Identity.find_by(
+      uuid: event.dig('subject', 'sub'),
+      service_provider: service_provider.issuer,
+    )
   end
 
   def user

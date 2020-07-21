@@ -3,8 +3,16 @@ class SecurityEventsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    response = SecurityEventForm.new(body: request.body)
+    form = SecurityEventForm.new(body: request.body)
+    response = form.submit
 
-    head :accepted
+    if response.success?
+      head :accepted
+    else
+      render json: {
+        err: form.err,
+        description: form.description,
+      }
+    end
   end
 end
