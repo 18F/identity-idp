@@ -47,7 +47,10 @@ class SamlRequestValidator
   end
 
   def email_nameid_format?
-    nameid_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress'
+    [
+      'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+      'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
+    ].include?(nameid_format)
   end
 
   def service_provider_allowed_to_use_email_nameid_format?
