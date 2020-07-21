@@ -13,6 +13,11 @@ module Saml
       AAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/2'.freeze
       AAL3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3'.freeze
 
+      ISSUERS_WITH_EMAIL_NAMEID_FORMAT = Figaro.env.issuers_with_email_nameid_format.split(',').
+                                         freeze
+      NAME_ID_FORMAT_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'.freeze
+      NAME_ID_FORMAT_EMAIL = 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress'.freeze
+
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 
       VALID_AUTHN_CONTEXTS = JSON.parse(Figaro.env.valid_authn_contexts).freeze
