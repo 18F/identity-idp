@@ -5,6 +5,7 @@ module DocAuthMock
       attr_reader :response_mocks
       attr_accessor :last_uploaded_front_image
       attr_accessor :last_uploaded_back_image
+      attr_accessor :last_uploaded_selfie_image
     end
 
     def self.mock_response!(method:, response:)
@@ -16,6 +17,7 @@ module DocAuthMock
       @response_mocks = {}
       @last_uploaded_front_image = nil
       @last_uploaded_back_image = nil
+      @last_uploaded_selfie_image = nil
     end
 
     def create_document
@@ -39,29 +41,40 @@ module DocAuthMock
       Acuant::Response.new(success: true)
     end
 
-    def post_images(front_image:, back_image:)
+    def post_selfie(image:, instance_id:)
+      return mocked_response_for_method(__method__) if method_mocked?(__method__)
+
+      self.class.last_uploaded_selfie_image = image
+      Acuant::Response.new(success: true)
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def post_images(front_image:, back_image:, selfie_image:,
+                    liveness_checking_enabled: nil, instance_id: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       document = create_document
       return document unless document.success?
 
-      instance_id = create_document.instance_id
+      instance_id ||= create_document.instance_id
       front_response = post_front_image(image: front_image, instance_id: instance_id)
       back_response = post_back_image(image: back_image, instance_id: instance_id)
       response = merge_post_responses(front_response, back_response)
-      check_results(response, instance_id)
+      results = check_results(response, instance_id)
+      if results.success? && liveness_checking_enabled
+        pii = results.pii_from_doc
+        selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
+        Acuant::Responses::ResponseWithPii.new(selfie_response, pii)
+      else
+        results
+      end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       ResultResponseBuilder.new(self.class.last_uploaded_back_image).call
-    end
-
-    def post_selfie(instance_id:, image:)
-      return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
-      Acuant::Response.new(success: true)
     end
 
     private
@@ -86,13 +99,12 @@ module DocAuthMock
 
     def fetch_doc_auth_results(instance_id)
       results_response = get_results(instance_id: instance_id)
-      handle_document_verification_failure(results_response) unless results_response.success?
+      return handle_document_verification_failure(results_response) unless results_response.success?
 
       results_response
     end
 
     def handle_document_verification_failure(get_results_response)
-      mark_step_incomplete(:front_image)
       extra = get_results_response.to_h.merge(
         notice: I18n.t('errors.doc_auth.general_info'),
       )

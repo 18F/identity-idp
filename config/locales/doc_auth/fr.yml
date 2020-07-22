@@ -23,6 +23,9 @@ fr:
     headings:
       address: Adresse mail
       capture_complete: Nous avons vérifié votre ID émis par l'état
+      document_capture_html: Téléchargez votre pièce d'identité délivrée par l'État
+      document_capture_with_selfie_html: Téléchargez votre pièce d'identité officielle
+        et une photo de vous
       selfie: Prendre un selfie.
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
@@ -32,10 +35,14 @@ fr:
       upload: Comment voudriez-vous télécharger votre ID émis par l'état?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
+      upload_back_html: S'il vous plaît télécharger une photo du dos de votre ID émis
+        par l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
+      upload_front_html: Veuillez télécharger une photo du recto de votre identifiant
+        émis par l'État.
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
@@ -107,6 +114,8 @@ fr:
         de lire toutes les informations.
       text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile
         ou d'une tablette fonctionnera.
+      title: Ne prenez pas la photo sur une surface blanche!
       title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."
+      title_more: Voir plus…
     titles:
       doc_auth: Authentification de document

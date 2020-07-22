@@ -12,6 +12,7 @@ describe AttributeAsserter do
       session_uuid: SecureRandom.uuid,
     )
   end
+  let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
   let(:service_provider_ial) { 2 }
   let(:service_provider) do
     instance_double(
@@ -37,6 +38,7 @@ describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: user,
+          name_id_format: name_id_format,
           service_provider: service_provider,
           authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
@@ -141,6 +143,7 @@ describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: user,
+          name_id_format: name_id_format,
           service_provider: service_provider,
           authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
@@ -279,6 +282,7 @@ describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: ial1_user,
+          name_id_format: name_id_format,
           service_provider: service_provider,
           authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
@@ -292,6 +296,7 @@ describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: ial1_user,
+          name_id_format: name_id_format,
           service_provider: service_provider,
           authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,

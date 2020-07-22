@@ -120,7 +120,10 @@ describe('acuant/document_capture', () => {
     const event = { preventDefault: () => {} };
 
     beforeEach(() => {
-      window.AcuantCameraUI = { start: sinon.spy() };
+      window.AcuantCameraUI = {
+        start: sinon.spy(),
+        end: sinon.spy(),
+      };
 
       fallbackImageForm().classList.add('hidden');
       acuantSdkUploadForm().classList.remove('hidden');
@@ -149,8 +152,12 @@ describe('acuant/document_capture', () => {
 
       imageCaptureButtonClicked(event);
 
+      expect(window.AcuantCameraUI.end.calledOnce).to.eq(false);
+
       const successCallback = window.AcuantCameraUI.start.lastCall.args[0];
       successCallback(response);
+
+      expect(window.AcuantCameraUI.end.calledOnce).to.eq(true);
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(true);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);
@@ -169,8 +176,12 @@ describe('acuant/document_capture', () => {
       imageCaptureButtonClicked(event);
       documentCaptureFallbackLinkClicked(event);
 
+      expect(window.AcuantCameraUI.end.calledOnce).to.eq(false);
+
       const successCallback = window.AcuantCameraUI.start.lastCall.args[0];
       successCallback(response);
+
+      expect(window.AcuantCameraUI.end.calledOnce).to.eq(true);
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(false);
       expect(acuantSdkUploadForm().classList.contains('hidden')).to.eq(true);

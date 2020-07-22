@@ -17,6 +17,16 @@
 
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
+<h1>
+  <% if liveness_checking_enabled? %>
+    <%= t('doc_auth.headings.document_capture_with_selfie_html') %>
+  <% else %>
+    <%= t('doc_auth.headings.document_capture_html') %>
+  <% end %>
+</h1>
+
+<%= render 'idv/doc_auth/document_capture_notices', flow_session: flow_session %>
+
 <%= simple_form_for(
   :doc_auth,
   url: url_for,
@@ -24,50 +34,62 @@
   html: { autocomplete: 'off', role: 'form', class: 'mt2' }
 ) do |f| %>
   <%# ---- Front Image ----- %>
-  <%= render 'idv/doc_auth/front_of_state_id_image' %>
 
-  <h1 class='h3 my0'>
-    <%= t('doc_auth.headings.upload_front') %>
-  </h1>
+  <hr class="mt3 mb3"/>
+  <div class="front-image">
+    <h2>
+      <%= t('doc_auth.headings.upload_front_html') %>
+    </h2>
 
-  <%= accordion('totp-info', t('doc_auth.tips.title_html'),
-    wrapper_css: 'my2 col-12 fs-16p') do %>
-    <%= render 'idv/doc_auth/tips_and_sample' %>
-    <div class='center'>
-      <%= image_tag(asset_url('state-id-sample-front.jpg'), height: 338, width: 450) %>
-    </div>
-  <% end %>
+    <%= accordion('totp-info', t('doc_auth.tips.title_html'),
+      wrapper_css: 'my2 col-12 fs-16p') do %>
+      <%= render 'idv/doc_auth/tips_and_sample' %>
+      <div class='center'>
+        <%= image_tag(asset_url('state-id-sample-front.jpg'), height: 338, width: 450) %>
+      </div>
+    <% end %>
 
-  <%= f.input :front_image_data_url, as: :hidden %>
-  <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
-  <%= f.input :front_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
-  <div class='my2' id='front_target'></div>
-
+    <%= f.input :front_image_data_url, as: :hidden %>
+    <%= f.input :front_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+    <div class='my2' id='front_target'></div>
+  </div>
 
   <%# ---- Back Image ----- %>
-  <%= render 'idv/doc_auth/back_of_state_id_image' %>
 
-  <h1 class='h3 my0'>
-    <%= t('doc_auth.headings.upload_back') %>
-  </h1>
+  <hr class="mt3 mb3"/>
+  <div class="back-image">
+    <h2>
+      <%= t('doc_auth.headings.upload_back_html') %>
+    </h2>
 
-  <%= accordion('totp-info', t('doc_auth.tips.title_html'),
-    wrapper_css: 'my2 col-12 fs-16p') do %>
-    <%= render 'idv/doc_auth/tips_and_sample' %>
-    <div class='center'>
-      <%= image_tag(asset_url('state-id-sample-back.jpg'), height: 338, width: 450) %>
+    <%= accordion('totp-info', t('doc_auth.tips.title_html'),
+      wrapper_css: 'my2 col-12 fs-16p') do %>
+      <%= render 'idv/doc_auth/tips_and_sample' %>
+      <div class='center'>
+        <%= image_tag(asset_url('state-id-sample-back.jpg'), height: 338, width: 450) %>
+      </div>
+    <% end %>
+
+    <%= f.input :back_image_data_url, as: :hidden %>
+    <%= f.input :back_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+    <div class='my2' id='back_target'></div>
+  </div>
+
+  <%# ---- Selfie ----- %>
+  <% if liveness_checking_enabled? %>
+    <hr class="mt3 mb3"/>
+    <div class="selfie">
+      <h2>
+        <%= t('doc_auth.headings.selfie') %>
+      </h2>
+
+      <%= f.input :selfie_image_data_url, as: :hidden %>
+      <%= f.input :selfie_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+      <div class='my2' id='selfie_target'>
     </div>
   <% end %>
 
-  <%= f.input :back_image_data_url, as: :hidden %>
-  <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
-  <%= f.input :back_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
-  <div class='my2' id='back_target'></div>
-
-  <%# ---- Selfie ----- %>
-
-
-  <%# ---- Selfie ----- %>
+  <%# ---- Submit ----- %>
 
   <div class='mt3'>
     <%= render 'idv/doc_auth/submit_with_spinner' %>
@@ -79,3 +101,4 @@
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= javascript_pack_tag 'image-preview' %>
 </div>
+<%= javascript_pack_tag 'document-capture' %>

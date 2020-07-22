@@ -23,6 +23,9 @@ es:
     headings:
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
+      document_capture_html: Cargue su identificación emitida por el estado
+      document_capture_with_selfie_html: Cargue su identificación emitida por el estado
+        y una foto suya
       selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
@@ -31,9 +34,13 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
+      upload_back_html: Cargue una foto del dorso de su identificación emitida por
+        el estado.
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
+      upload_front_html: Cargue una foto del frente de su identificación emitida por
+        el
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:
@@ -99,6 +106,8 @@ es:
         la información.
       text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono
         móvil o tableta funcionará.
+      title: "¡No tome la foto en una superficie blanca!"
       title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."
+      title_more: Ver más…
     titles:
       doc_auth: Autenticación de documentos
