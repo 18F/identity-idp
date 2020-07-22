@@ -12,7 +12,8 @@ class TwoFactorOptionsPresenter
   end
 
   def icon
-    return 'icon-lock-alert-important.svg' if aal3_only? && mfa_policy.two_factor_enabled?
+    return 'icon-lock-alert-important.svg' if piv_cac_required? ||
+                                              (aal3_only? && mfa_policy.two_factor_enabled?)
   end
 
   def heading
@@ -32,7 +33,7 @@ class TwoFactorOptionsPresenter
   end
 
   def show_security_level?
-    !(aal3_only? && mfa_policy.two_factor_enabled?)
+    !(piv_cac_required? || (aal3_only? && mfa_policy.two_factor_enabled?))
   end
 
   private
