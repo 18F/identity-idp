@@ -1,7 +1,7 @@
 require 'asset_checker'
 
 def get_js_with_strings(asset = 'first_asset.png', translation = 'first_translation')
-  """
+  "
   import React from 'react';
   import AcuantCapture from './acuant-capture';
   import DocumentTips from './document-tips';
@@ -30,19 +30,16 @@ def get_js_with_strings(asset = 'first_asset.png', translation = 'first_translat
   }
 
   export default DocumentCapture;
-  """
+  "
 end
 
 RSpec.describe AssetChecker do
   describe '.check_files' do
 
-
-
     let(:translation_strings) { %w[first_translation second_translation] }
     let(:asset_strings) { %w[first_asset.png second_asset.gif] }
 
     context 'with matching assets' do
-
       let(:tempfile) { Tempfile.new }
 
       before do
@@ -62,7 +59,6 @@ RSpec.describe AssetChecker do
     end
 
     context 'with an asset mismatch' do
-
       let(:tempfile) { Tempfile.new }
 
       before do
@@ -82,10 +78,5 @@ RSpec.describe AssetChecker do
         expect(AssetChecker.check_files([tempfile.path])).to eq(true)
       end
     end
-
-  end
-
-  describe '.load_included_strings' do
-
   end
 end
