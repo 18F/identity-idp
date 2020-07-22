@@ -9,7 +9,7 @@ RSpec.describe SecurityEventForm do
   let(:service_provider) { create(:service_provider) }
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
-      File.read(Rails.root.join('keys/saml_test_sp.key')),
+      File.read(Rails.root.join('keys', 'saml_test_sp.key')),
     )
   end
   let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
@@ -105,7 +105,7 @@ RSpec.describe SecurityEventForm do
       context 'when signed with a different key than registered to the SP' do
         let(:rp_private_key) do
           OpenSSL::PKey::RSA.new(
-            File.read(Rails.root.join('keys/oidc.key')),
+            File.read(Rails.root.join('keys', 'oidc.key')),
           )
         end
 
