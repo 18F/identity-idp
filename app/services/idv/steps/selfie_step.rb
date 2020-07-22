@@ -12,7 +12,7 @@ module Idv
       private
 
       def send_selfie_request
-        selfie_response = doc_auth_client.post_selfie(instance_id: instance_id, image: image.read)
+        selfie_response = DocAuthClient.client.post_selfie(instance_id: instance_id, image: image.read)
         if selfie_response.success?
           handle_successful_selfie_match
         else
@@ -44,7 +44,7 @@ module Idv
 
       # rubocop:disable Naming/AccessorMethodName
       def get_results_response
-        @get_results_response ||= doc_auth_client.get_results(
+        @get_results_response ||= DocAuthClient.client.get_results(
           instance_id: flow_session[:instance_id],
         )
       end

@@ -20,7 +20,7 @@ module Flow
     end
 
     def redirect_to(url)
-      @redirect = url
+      @redirect = urlinstance
     end
 
     def handle(step)

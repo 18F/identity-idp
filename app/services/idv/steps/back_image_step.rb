@@ -18,7 +18,7 @@ module Idv
         # validate them here before continuing.
         return if liveness_checking_enabled?
 
-        get_results_response = doc_auth_client.get_results(instance_id: flow_session[:instance_id])
+        get_results_response = DocAuthClient.client.get_results(instance_id: flow_session[:instance_id])
         if get_results_response.success?
           mark_step_complete(:selfie)
           save_proofing_components

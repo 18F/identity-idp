@@ -14,11 +14,39 @@ module Idv
     private
 
     def handle_images
-      puts("Got images")
+      @client = DocAuthClient.client
+      create_document_response = @client.create_document
+      if create_document_response.success?
+        @instance_id = create_document_response.instance_id
+        upload_and_check_images
+      else
+        error_json create_document_response.errors.first
+      end
+    end
+
+    def upload_and_check_images
+      image_mappings = {
+        post_front_image: @front_image,
+        post_back_image: @back_image,
+      }
+      if FeatureManagement.liveness_checking_enabled?
+        image_mappings[:post_selfie] = @selfie_image
+      end
+      image_mappings.each do |method_name, image|
+        error_response = post_image_step(method_name, image)
+        return error_response if error_response
+      end
       {
         status: 'success',
-        message: 'hello'
+        message: 'Uploaded images',
       }
+    end
+
+    def post_image_step(image_step, image)
+      post_response = @client.send(image_step,
+                                   image: image,
+                                   instance_id: @instance_id)
+      error_json(post_response.errors.first) unless post_response.success?
     end
 
     def validate_request(request)
@@ -48,6 +76,5 @@ module Idv
         message: reason,
       }
     end
-
   end
 end

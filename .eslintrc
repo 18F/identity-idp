@@ -25,6 +25,7 @@
     "import/extensions": ["off", "never"],
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
+    "operator-linebreak": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off"
   },
