@@ -21,13 +21,11 @@ fr:
       state: Etat
       zip_code: Code postal
     headings:
-      document_capture_html: Upload your state&#8209;issued&nbsp;ID
-      document_capture_with_selfie_html: Upload your state&#8209;issued&nbsp;ID and
-        a photo of you
-      upload_back_html: Upload an image of the back of your state&#8209;issued&nbsp;ID
-      upload_front_html: Upload an image of the front of your state&#8209;issued&nbsp;ID
       address: Adresse mail
       capture_complete: Nous avons vérifié votre ID émis par l'état
+      document_capture_html: Téléchargez votre pièce d'identité délivrée par l'État
+      document_capture_with_selfie_html: Téléchargez votre pièce d'identité officielle
+        et une photo de vous
       selfie: Prendre un selfie.
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
@@ -37,10 +35,14 @@ fr:
       upload: Comment voudriez-vous télécharger votre ID émis par l'état?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
+      upload_back_html: S'il vous plaît télécharger une photo du dos de votre ID émis
+        par l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
+      upload_front_html: Veuillez télécharger une photo du recto de votre identifiant
+        émis par l'État.
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
