@@ -22,6 +22,9 @@ en:
     headings:
       address: Mailing Address
       capture_complete: We have verified your state issued ID
+      document_capture_html: Upload your state&#8209;issued&nbsp;ID
+      document_capture_with_selfie_html: Upload your state&#8209;issued&nbsp;ID and
+        a photo of you
       selfie: Take a selfie.
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
@@ -30,8 +33,10 @@ en:
       text_message: We sent a message to your phone
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
+      upload_back_html: Upload an image of the back of your state&#8209;issued&nbsp;ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_front: Upload an image of the front of your state issued ID
+      upload_front_html: Upload an image of the front of your state&#8209;issued&nbsp;ID
       verify: Please verify your information
       welcome: We need to verify your identity
     info:

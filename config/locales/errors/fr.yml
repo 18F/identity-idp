@@ -24,6 +24,26 @@ fr:
         pouvez essayer de valider un document. Veuillez réessayer plus tard.
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      document_capture_info_html: |-
+        <div class="bold">Veuillez vérifier que:</div>
+        <ul>
+        <li>Les images sont claires (non floues) et nettes</li>
+        <li>Aucun éblouissement, ombre ou reflet n'est présent</li>
+        <li>Votre identifiant n'a pas de code à barres endommagé</li>
+        <li>Votre pièce d'identité représente 80% de l'image globale</li>
+        <li>Votre pièce d'identité est sur un fond sombre et uni</li>
+        </ul>
+      document_capture_info_with_selfie_html: |-
+        <div class="bold">Veuillez vérifier que:</div>
+        <ul>
+        <li>Images are clear (not blurry) and in focus</li>
+        <li>Aucun éblouissement, ombre ou reflet n'est présent</li>
+        <li>Votre identifiant n'a pas de code à barres endommagé</li>
+        <li>Votre pièce d'identité représente 80% de l'image globale</li>
+        <li>Votre pièce d'identité est sur un fond sombre et uni</li>
+        <li>Votre selfie est pris dans une zone bien éclairée avec un arrière-plan uni</li>
+        <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
+        </ul>
       general_error: Nous n'avons pas pu lire ni vérifier votre identité. Essayez
         de prendre et de télécharger de nouvelles images des deux côtés de votre ID.
         Assurez-vous que tout peut être facilement lu, y compris le code à barres.

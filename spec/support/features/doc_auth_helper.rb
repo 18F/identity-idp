@@ -188,9 +188,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
-  def attach_images
+  def attach_images(liveness_enabled: true)
     attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
     attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+    attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
   end
 
   def attach_front_image_data_url
@@ -214,7 +215,19 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def doc_auth_back_image_data_url_data
-    Base64.decode64(doc_auth_front_image_data_url.split(',').last)
+    Base64.decode64(doc_auth_back_image_data_url.split(',').last)
+  end
+
+  def attach_selfie_image_data_url
+    page.find('#doc_auth_selfie_image_data_url', visible: false).set(doc_auth_selfie_image_data_url)
+  end
+
+  def doc_auth_selfie_image_data_url
+    File.read('spec/support/fixtures/doc_auth_selfie_image_data_url.data')
+  end
+
+  def doc_auth_selfie_image_data_url_data
+    Base64.decode64(doc_auth_selfie_image_data_url.split(',').last)
   end
 
   def attach_image
