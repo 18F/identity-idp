@@ -79,7 +79,7 @@ class SecurityEventForm
   def check_public_key_error(public_key)
     return false if public_key.present?
 
-    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'))
+    errors.add(:jwt, t('risc.security_event.errors.no_public_key'))
     @error_code = ErrorCodes::JWS
     true
   end
@@ -133,7 +133,7 @@ class SecurityEventForm
 
   def validate_sub
     if jwt_payload['sub'].present?
-      errors.add(:sub, t('risc.security_event.errors.event_type_unsupported'))
+      errors.add(:sub, t('risc.security_event.errors.sub_unsupported'))
     end
     errors.add(:sub, t('risc.security_event.errors.sub_not_found')) if user.blank?
   end
