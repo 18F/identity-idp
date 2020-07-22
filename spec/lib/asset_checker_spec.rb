@@ -1,6 +1,6 @@
 require 'asset_checker'
 
-def get_js_with_strings(asset = 'first_asset.png', translation = 'first_translation')
+def get_js_with_strings(asset = 'first_asset.png', translation = 'first_translation') # rubocop:disable Metrics/LineLength Lint/UselessAssignment
   "
   import React from 'react';
   import AcuantCapture from './acuant-capture';
@@ -35,7 +35,6 @@ end
 
 RSpec.describe AssetChecker do
   describe '.check_files' do
-
     let(:translation_strings) { %w[first_translation second_translation] }
     let(:asset_strings) { %w[first_asset.png second_asset.gif] }
 
