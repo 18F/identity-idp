@@ -48,6 +48,7 @@ describe Acuant::AcuantClient do
   end
 
   describe '#post_images' do
+    let(:liveness_enabled) { false }
     let(:instance_id) { 'this-is-a-test-instance-id' }
     let(:image_upload_url) do
       URI.join(
@@ -107,8 +108,6 @@ describe Acuant::AcuantClient do
     end
 
     context 'with liveness checking disabled' do
-      let(:liveness_enabled) { false }
-
       it 'sends an upload image request for the front and back DL images' do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
@@ -120,6 +119,24 @@ describe Acuant::AcuantClient do
 
         expect(result.success?).to eq(true)
         expect(result.class).to eq(Acuant::Responses::GetResultsResponse)
+      end
+    end
+
+    context 'when the results return failure' do
+      it 'returns a FormResponse with failure' do
+        url = URI.join(Figaro.env.acuant_assure_id_url, "/AssureIDService/Document/#{instance_id}")
+        stub_request(:get, url).to_return(body: AcuantFixtures.get_results_response_failure)
+
+        result = subject.post_images(
+          front_image: DocAuthImageFixtures.document_front_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          selfie_image: DocAuthImageFixtures.selfie_image,
+          liveness_checking_enabled: liveness_enabled,
+          instance_id: instance_id,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result).to be_kind_of(FormResponse)
       end
     end
   end
@@ -190,10 +207,6 @@ describe Acuant::AcuantClient do
     end
     let(:facial_match_url) { URI.join(Figaro.env.acuant_facial_match_url, '/api/v1/facematch') }
     let(:liveness_url) { URI.join(Figaro.env.acuant_passlive_url, '/api/v1/liveness') }
-
-    # before do
-    #   allow(subject).to receive(:get_results).and_return()
-    # end
 
     context 'when the result is a pass' do
       it 'sends the requests and returns success' do

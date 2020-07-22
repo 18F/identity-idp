@@ -91,7 +91,7 @@ module Acuant
 
     def fetch_doc_auth_results(instance_id)
       results_response = get_results(instance_id: instance_id)
-      handle_document_verification_failure(results_response) unless results_response.success?
+      return handle_document_verification_failure(results_response) unless results_response.success?
 
       results_response
     end
