@@ -1,1 +1,1 @@
-Mime::Type.register "application/secevent+jwt", :secevent_jwt
+Mime::Type.register 'application/secevent+jwt', :secevent_jwt

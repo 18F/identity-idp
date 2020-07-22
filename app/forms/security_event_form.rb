@@ -1,7 +1,9 @@
+# rubocop:disable Metrics/ClassLength
 class SecurityEventForm
   include Rails.application.routes.url_helpers
   include ActiveModel::Model
 
+  # From https://tools.ietf.org/html/draft-ietf-secevent-http-push-00#section-2.3
   module ErrorCodes
     JWS = 'jws'.freeze
     JWT_AUD = 'jwtAud'.freeze
@@ -28,7 +30,7 @@ class SecurityEventForm
       SecurityEvent.create(
         user: user,
         event_type: event_type,
-        jti: jwt_payload['jti'],
+        jti: jti,
         issuer: service_provider.issuer,
       )
     end
@@ -37,18 +39,24 @@ class SecurityEventForm
   end
 
   def error_code
-    if !valid?
-      @error_code ||= ErrorCodes::SET_DATA
-    end
+    return if valid?
+
+    @error_code ||= ErrorCodes::SET_DATA
+  end
+
+  def description
+    return if valid?
+
+    errors.full_messages.join(', ')
   end
 
   private
 
   attr_reader :body
 
-
   def jwt_payload
     return @jwt_payload if defined?(@jwt_payload)
+
     payload, _headers = JWT.decode(body, nil, false, algorithm: 'RS256')
     @jwt_payload = payload
   rescue JWT::DecodeError => err
@@ -58,7 +66,7 @@ class SecurityEventForm
   end
 
   def validate_jwt_signature
-    return false if !service_provider
+    return false unless service_provider
     JWT.decode(body, service_provider.ssl_cert.public_key, true, algorithm: 'RS256')
   rescue JWT::DecodeError => err
     @error_code = ErrorCodes::JWS
@@ -67,18 +75,15 @@ class SecurityEventForm
   end
 
   def validate_iss
-    if !service_provider.present?
-      errors.add(:iss, 'invalid issuer')
-    end
+    errors.add(:iss, 'invalid issuer') if service_provider.blank?
   end
 
   def validate_aud
     return if jwt_payload.blank?
+    return if jwt_payload['aud'] == api_security_events_url
 
-    if jwt_payload['aud'] != api_security_events_url
-      errors.add(:aud, "invalid aud claim, expected #{api_security_events_url}")
-      @error_code = ErrorCodes::JWT_AUD
-    end
+    errors.add(:aud, "invalid aud claim, expected #{api_security_events_url}")
+    @error_code = ErrorCodes::JWT_AUD
   end
 
   def validate_event_type
@@ -91,21 +96,27 @@ class SecurityEventForm
   end
 
   def validate_subject_type
-    if subject_type != 'iss_sub'
-      errors.add(:subject_type, 'subject_type must be iss_sub')
-    end
+    return if subject_type == 'iss_sub'
+
+    errors.add(:subject_type, 'subject_type must be iss_sub')
   end
 
   def validate_sub
-    if user.blank?
-      errors.add(:sub, 'invalid sub claim')
-    end
+    errors.add(:sub, 'invalid sub claim') if user.blank?
   end
 
+  def client_id
+    jwt_payload['iss']
+  end
+
+  def jti
+    jwt_payload['jti']
+  end
 
   def service_provider
     return @service_provider if defined?(@service_provider)
-    @service_provider = ServiceProvider.find_by(issuer: jwt_payload['iss'])
+
+    @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
   def event
@@ -129,6 +140,7 @@ class SecurityEventForm
   def identity
     return if event.blank? || !service_provider
     return @identity if defined?(@identity)
+
     @identity = Identity.find_by(
       uuid: event.dig('subject', 'sub'),
       service_provider: service_provider.issuer,
@@ -139,25 +151,13 @@ class SecurityEventForm
     identity&.user
   end
 
-  # TODO
   def extra_analytics_attributes
-    {}
+    {
+      client_id: client_id,
+      error_code: error_code,
+      jti: jti,
+      user_id: user&.uuid,
+    }
   end
 end
-
-<<-EOS
-  json      | Invalid JSON object.                                  |
-  jwtParse  | Invalid or unparsable JWT or JSON structure.          |
-  jwtHdr    | In invalid JWT header was detected.                   |
-  jwtCrypto | Unable to parse due to unsupported algorithm.         |
-  jws       | Signature was not validated.                          |
-  jwe       | Unable to decrypt JWE encoded data.                   |
-  jwtAud    | Invalid audience value.                               |
-  jwtIss    | Issuer not recognized.                                |
-  setType   | An unexpected Event type was received.                |
-  setParse  | Invalid structure was encountered such as an          |
-            | inability to parse or an incomplete set of Event      |
-            | claims.                                               |
-  setData   | SET event claims incomplete or invalid.               |
-  dup       | A duplicate SET was received and has been ignored.    |
-EOS
+# rubocop:enable Metrics/ClassLength

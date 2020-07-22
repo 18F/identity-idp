@@ -3,42 +3,19 @@ require 'rails_helper'
 RSpec.describe SecurityEventsController do
   include Rails.application.routes.url_helpers
 
-  let(:identity) { build(:identity) }
-  let(:user) { create(:user, identities: [ identity ]) }
-
-<<-EOS
-   POST /Events  HTTP/1.1
-
-   Host: notify.examplerp.com
-   Accept: application/json
-   Authorization: Bearer h480djs93hd8
-   Content-Type: application/secevent+jwt
-   eyJhbGciOiJub25lIn0
-   .
-   eyJwdWJsaXNoZXJVcmkiOiJodHRwczovL3NjaW0uZXhhbXBsZS5jb20iLCJmZWV
-   kVXJpcyI6WyJodHRwczovL2podWIuZXhhbXBsZS5jb20vRmVlZHMvOThkNTI0Nj
-   FmYTViYmM4Nzk1OTNiNzc1NCIsImh0dHBzOi8vamh1Yi5leGFtcGxlLmNvbS9GZ
-   WVkcy81ZDc2MDQ1MTZiMWQwODY0MWQ3Njc2ZWU3Il0sInJlc291cmNlVXJpcyI6
-   WyJodHRwczovL3NjaW0uZXhhbXBsZS5jb20vVXNlcnMvNDRmNjE0MmRmOTZiZDZ
-   hYjYxZTc1MjFkOSJdLCJldmVudFR5cGVzIjpbIkNSRUFURSJdLCJhdHRyaWJ1dG
-   VzIjpbImlkIiwibmFtZSIsInVzZXJOYW1lIiwicGFzc3dvcmQiLCJlbWFpbHMiX
-   SwidmFsdWVzIjp7ImVtYWlscyI6W3sidHlwZSI6IndvcmsiLCJ2YWx1ZSI6Impk
-   b2VAZXhhbXBsZS5jb20ifV0sInBhc3N3b3JkIjoibm90NHUybm8iLCJ1c2VyTmF
-   tZSI6Impkb2UiLCJpZCI6IjQ0ZjYxNDJkZjk2YmQ2YWI2MWU3NTIxZDkiLCJuYW
-   1lIjp7ImdpdmVuTmFtZSI6IkpvaG4iLCJmYW1pbHlOYW1lIjoiRG9lIn19fQ
-   .
-EOS
+  let(:user) { create(:user) }
+  let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
+  let(:service_provider) { create(:service_provider) }
 
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
-      File.read(Rails.root.join('keys', 'saml_test_sp.key')),
+      File.read(Rails.root.join('keys/saml_test_sp.key')),
     )
   end
 
-  # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#rfc.section.5.2
   describe '#create' do
-    it 'posts stuff' do
-      jwt_payload = {
+    let(:jwt_payload) do
+      {
         iss: identity.service_provider,
         jti: SecureRandom.urlsafe_base64,
         iat: Time.zone.now.to_i,
@@ -46,21 +23,39 @@ EOS
         events: {
           SecurityEvent::CREDENTIAL_CHANGE_REQUIRED => {
             subject: {
-              subject_type: 'iss-sub',
+              subject_type: 'iss_sub',
               iss: root_url,
               sub: identity.uuid,
-            }
-          }
-        }
+            },
+          },
+        },
       }
+    end
 
-      jwt = JWT.encode(jwt_payload, rp_private_key, 'RS256')
+    let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256') }
 
+    it 'creates a security event record' do
       expect { post :create, body: jwt, as: :secevent_jwt }.
-        to change { SecurityEvent.count }.from(0).to(1)
+        to(change { SecurityEvent.count }).by(1)
 
       expect(response.body).to be_empty
       expect(response.code.to_i).to eq(202) # Accepted
+    end
+
+    context 'with a bad request' do
+      before { jwt_payload[:aud] = 'http://bad.example' }
+
+      it 'renders an error response and does not create a security event record' do
+        expect { post :create, body: jwt, as: :secevent_jwt }.
+          to_not(change { SecurityEvent.count })
+
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+
+        expect(json[:err]).to eq(SecurityEventForm::ErrorCodes::JWT_AUD)
+        expect(json[:description]).to include("expected #{api_security_events_url}")
+      end
     end
   end
 end

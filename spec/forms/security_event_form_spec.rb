@@ -9,7 +9,7 @@ RSpec.describe SecurityEventForm do
   let(:service_provider) { create(:service_provider) }
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
-      File.read(Rails.root.join('keys', 'saml_test_sp.key')),
+      File.read(Rails.root.join('keys/saml_test_sp.key')),
     )
   end
   let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
@@ -26,9 +26,9 @@ RSpec.describe SecurityEventForm do
             subject_type: 'iss_sub',
             iss: root_url,
             sub: subject_sub,
-          }
-        }
-      }
+          },
+        },
+      },
     }
   end
 
@@ -36,6 +36,49 @@ RSpec.describe SecurityEventForm do
   let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256') }
 
   describe '#submit' do
+    subject(:submit) { form.submit }
+
+    it 'creates a SecurityEvent record' do
+      expect { submit }.to(change { SecurityEvent.count }).by(1)
+
+      security_event = SecurityEvent.last
+      aggregate_failures do
+        expect(security_event.jti).to eq(jwt_payload[:jti])
+        expect(security_event.event_type).to eq(SecurityEvent::CREDENTIAL_CHANGE_REQUIRED)
+        expect(security_event.issuer).to eq(service_provider.issuer)
+        expect(security_event.user).to eq(user)
+      end
+    end
+
+    context 'when request is invalid' do
+      let(:jwt) { 'bbb.bbb.bbb' }
+
+      it 'does not create a SecurityEvent record' do
+        expect { submit }.to_not(change { SecurityEvent.count })
+      end
+    end
+
+    context 'analytics attributes' do
+      it 'contains the SP, user ID, error code' do
+        response = submit
+
+        expect(response.to_h).to include(
+          user_id: user.uuid,
+          client_id: service_provider.issuer,
+          error_code: nil,
+        )
+      end
+
+      context 'with an invalid request' do
+        before { jwt_payload[:aud] = 'https://bad.example' }
+
+        it 'contains the error code' do
+          response = submit
+
+          expect(response.to_h).to include(error_code: 'jwtAud')
+        end
+      end
+    end
   end
 
   describe '#valid?' do
@@ -61,7 +104,7 @@ RSpec.describe SecurityEventForm do
       context 'when signed with a different key than registered to the SP' do
         let(:rp_private_key) do
           OpenSSL::PKey::RSA.new(
-            File.read(Rails.root.join('keys', 'oidc.key')),
+            File.read(Rails.root.join('keys/oidc.key')),
           )
         end
 
@@ -131,7 +174,7 @@ RSpec.describe SecurityEventForm do
     context 'subject_type' do
       context 'with a bad subject type' do
         before do
-          event_name, event = jwt_payload[:events].first
+          _event_name, event = jwt_payload[:events].first
           event[:subject][:subject_type] = 'email'
         end
 
