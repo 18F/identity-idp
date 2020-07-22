@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SecurityEventsController do
+RSpec.describe Risc::SecurityEventsController do
   include Rails.application.routes.url_helpers
 
   let(:user) { create(:user) }
@@ -36,7 +36,7 @@ RSpec.describe SecurityEventsController do
 
     it 'creates a security event record' do
       expect { post :create, body: jwt, as: :secevent_jwt }.
-        to(change { SecurityEvent.count }).by(1)
+        to(change { SecurityEvent.count }.by(1))
 
       expect(response.body).to be_empty
       expect(response.code.to_i).to eq(202) # Accepted

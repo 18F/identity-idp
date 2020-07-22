@@ -39,7 +39,7 @@ RSpec.describe SecurityEventForm do
     subject(:submit) { form.submit }
 
     it 'creates a SecurityEvent record' do
-      expect { submit }.to(change { SecurityEvent.count }).by(1)
+      expect { submit }.to(change { SecurityEvent.count }.by(1))
 
       security_event = SecurityEvent.last
       aggregate_failures do

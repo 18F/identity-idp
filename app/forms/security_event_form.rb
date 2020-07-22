@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/ClassLength
+# Handles SET events (Security Event Tokens)
 class SecurityEventForm
   include Rails.application.routes.url_helpers
   include ActiveModel::Model
