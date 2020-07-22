@@ -1,8 +1,9 @@
-# rubocop:disable Metrics/ClassLength
 # Handles SET events (Security Event Tokens)
+# rubocop:disable Metrics/ClassLength
 class SecurityEventForm
-  include Rails.application.routes.url_helpers
+  include ActionView::Helpers::TranslationHelper
   include ActiveModel::Model
+  include Rails.application.routes.url_helpers
 
   # From https://tools.ietf.org/html/draft-ietf-secevent-http-push-00#section-2.3
   module ErrorCodes
@@ -71,14 +72,14 @@ class SecurityEventForm
   def check_jwt_parse_error
     return false if @error_code != ErrorCodes::JWT_PARSE
 
-    errors.add(:jwt, 'could not parse JWT')
+    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'))
     true
   end
 
   def check_public_key_error(public_key)
     return false if public_key.present?
 
-    errors.add(:jwt, 'could not load public key for issuer')
+    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'))
     @error_code = ErrorCodes::JWS
     true
   end
@@ -91,7 +92,7 @@ class SecurityEventForm
     JWT.decode(body, public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
   rescue JWT::IncorrectAlgorithm
     @error_code = ErrorCodes::JWT_CRYPTO
-    errors.add(:jwt, 'unsupported algorithm, must be signed with RS256')
+    errors.add(:jwt, t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256'))
   rescue JWT::VerificationError => err
     @error_code = ErrorCodes::JWS
     errors.add(:jwt, err.message)
@@ -105,15 +106,18 @@ class SecurityEventForm
     return if jwt_payload.blank?
     return if jwt_payload['aud'] == api_security_events_url
 
-    errors.add(:aud, "invalid aud claim, expected #{api_security_events_url}")
+    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_security_events_url))
     @error_code = ErrorCodes::JWT_AUD
   end
 
   def validate_event_type
     if event_type.blank?
-      errors.add(:event_type, 'missing event')
+      errors.add(:event_type, t('risc.security_event.errors.event_type_missing'))
     elsif event_type != SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
-      errors.add(:event_type, "unsupported event type #{event_type}")
+      errors.add(
+        :event_type,
+        t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
+      )
       @error_code = ErrorCodes::SET_TYPE
     end
   end
@@ -121,26 +125,31 @@ class SecurityEventForm
   def validate_subject_type
     return if subject_type == 'iss_sub'
 
-    errors.add(:subject_type, 'subject_type must be iss_sub')
+    errors.add(
+      :subject_type,
+      t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss_sub'),
+    )
   end
 
   def validate_sub
-    errors.add(:sub, 'top-level sub claim is not accepted') if jwt_payload['sub'].present?
-    errors.add(:sub, 'invalid event.subject.sub claim') if user.blank?
+    if jwt_payload['sub'].present?
+      errors.add(:sub, t('risc.security_event.errors.event_type_unsupported'))
+    end
+    errors.add(:sub, t('risc.security_event.errors.sub_not_found')) if user.blank?
   end
 
   def validate_typ
     return if jwt_headers.blank?
     return if jwt_headers['typ'] == 'secevent+jwt'
 
-    errors.add(:typ, 'typ header must be secevent+jwt')
+    errors.add(:typ, t('risc.security_event.errors.typ_error', expected_typ: 'secevent+jwt'))
     @error_code = ErrorCodes::JWT_HDR
   end
 
   def validate_exp
     return if jwt_payload['exp'].blank?
 
-    errors.add(:exp, 'SET events must not have an exp claim')
+    errors.add(:exp, t('risc.security_event.errors.exp_present'))
   end
 
   def client_id
