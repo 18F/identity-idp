@@ -2,7 +2,13 @@ class SecurityEventForm
   include Rails.application.routes.url_helpers
   include ActiveModel::Model
 
-  attr_reader :err
+  module ErrorCodes
+    JWS = 'jws'.freeze
+    JWT_AUD = 'jwtAud'.freeze
+    JWT_PARSE = 'jwtParse'.freeze
+    SET_DATA = 'setData'.freeze
+    SET_TYPE = 'setType'.freeze
+  end
 
   validate :validate_iss
   validate :validate_aud
@@ -25,24 +31,28 @@ class SecurityEventForm
         jti: jwt_payload['jti'],
         issuer: service_provider.issuer,
       )
-    else
-      # TODO: calculate err code
-      # @err = 'setData'
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+  end
+
+  def error_code
+    if !valid?
+      @error_code ||= ErrorCodes::SET_DATA
+    end
   end
 
   private
 
   attr_reader :body
 
+
   def jwt_payload
     return @jwt_payload if defined?(@jwt_payload)
     payload, _headers = JWT.decode(body, nil, false, algorithm: 'RS256')
     @jwt_payload = payload
   rescue JWT::DecodeError => err
-    @err = 'jwtParse'
+    @error_code = ErrorCodes::JWT_PARSE
     errors.add(:jwt, err.message)
     @jwt_payload = {}
   end
@@ -51,7 +61,7 @@ class SecurityEventForm
     return false if !service_provider
     JWT.decode(body, service_provider.ssl_cert.public_key, true, algorithm: 'RS256')
   rescue JWT::DecodeError => err
-    @err = 'jws'
+    @error_code = ErrorCodes::JWS
     errors.add(:jwt, err.message)
     false
   end
@@ -63,8 +73,11 @@ class SecurityEventForm
   end
 
   def validate_aud
+    return if jwt_payload.blank?
+
     if jwt_payload['aud'] != api_security_events_url
       errors.add(:aud, "invalid aud claim, expected #{api_security_events_url}")
+      @error_code = ErrorCodes::JWT_AUD
     end
   end
 
@@ -73,6 +86,7 @@ class SecurityEventForm
       errors.add(:event_type, 'missing event')
     elsif event_type != SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
       errors.add(:event_type, "unsupported event type #{event_type}")
+      @error_code = ErrorCodes::SET_TYPE
     end
   end
 
