@@ -19,11 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function languagePicker(trigger, dropdown) {
-    addListenerMulti(trigger, 'click keypress', function(event) {
+    addListenerMulti(trigger, 'click keypress', function (event) {
       const eventType = event.type;
 
       event.preventDefault();
-      if (eventType === 'click' || (eventType === 'keypress' && event.which === 13)) {
+      if (
+        eventType === 'click' ||
+        (eventType === 'keypress' && event.which === 13)
+      ) {
         this.parentNode.classList.toggle('focused');
         dropdown.classList.toggle('display-none');
         toggleAriaExpanded(this);

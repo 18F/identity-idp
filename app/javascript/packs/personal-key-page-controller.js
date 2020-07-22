@@ -4,11 +4,15 @@ const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
 
 const personalKeyContainer = document.getElementById('personal-key');
-const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
+const personalKeyWords = [].slice.call(
+  document.querySelectorAll('[data-personal-key]'),
+);
 const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
-const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
+const modalDismiss = document.querySelector(
+  '[data-dismiss="personal-key-confirm"]',
+);
 
 let isInvalidForm = false;
 
@@ -29,7 +33,9 @@ const personalKey = scrapePersonalKey();
 function setInvalidHTML() {
   if (isInvalidForm) return;
 
-  document.getElementById('personal-key-alert').classList.remove('display-none');
+  document
+    .getElementById('personal-key-alert')
+    .classList.remove('display-none');
 
   isInvalidForm = true;
 }
@@ -84,7 +90,7 @@ function handleSubmit(event) {
 function show(event) {
   event.preventDefault();
 
-  modal.on('show', function() {
+  modal.on('show', function () {
     input.focus();
     personalKeyContainer.classList.add('invisible');
   });
@@ -93,7 +99,7 @@ function show(event) {
 }
 
 function hide() {
-  modal.on('hide', function() {
+  modal.on('hide', function () {
     resetForm();
     personalKeyContainer.classList.remove('invisible');
   });

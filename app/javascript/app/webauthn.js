@@ -1,22 +1,31 @@
 const base64ToArrayBuffer = (base64) => {
-  const bytes = Uint8Array.from(window.atob(base64).split('').map((char) => char.charCodeAt(0)));
+  const bytes = Uint8Array.from(
+    window
+      .atob(base64)
+      .split('')
+      .map((char) => char.charCodeAt(0)),
+  );
   return bytes.buffer;
 };
 
 const arrayBufferToBase64 = (arrayBuffer) => {
   const buffer = new Uint8Array(arrayBuffer);
-  const binaryString = Array.from(buffer).map((byte) => String.fromCharCode(byte)).join('');
+  const binaryString = Array.from(buffer)
+    .map((byte) => String.fromCharCode(byte))
+    .join('');
   return window.btoa(binaryString);
 };
 
-const longToByteArray = (long) => new Uint8Array(8).map(() => {
-  const byte = long & 0xff; // eslint-disable-line no-bitwise
-  long = (long - byte) / 256;
-  return byte;
-});
+const longToByteArray = (long) =>
+  new Uint8Array(8).map(() => {
+    const byte = long & 0xff; // eslint-disable-line no-bitwise
+    long = (long - byte) / 256;
+    return byte;
+  });
 
 const extractCredentials = (credentials) => {
-  if (!credentials) { // empty string check
+  if (!credentials) {
+    // empty string check
     return [];
   }
   return credentials.split(',').map((credential) => ({
@@ -33,7 +42,10 @@ const isWebAuthnEnabled = () => {
 };
 
 const enrollWebauthnDevice = ({
-  userId, userEmail, userChallenge, excludeCredentials,
+  userId,
+  userEmail,
+  userChallenge,
+  excludeCredentials,
 }) => {
   const createOptions = {
     publicKey: {

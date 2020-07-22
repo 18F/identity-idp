@@ -1,6 +1,7 @@
 {
   "extends": "airbnb",
   "parser": "babel-eslint",
+  "plugins": ["prettier"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -17,16 +18,16 @@
     "fixture": true
   },
   "rules": {
-    "jsx-a11y/img-has-alt": "off",
+    "prettier/prettier": "error",
     "func-names": 0,
-    "space-before-function-paren": 0,
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
     "implicit-arrow-linebreak": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "operator-linebreak": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,
@@ -45,19 +46,5 @@
       "app/phone-internationalization",
       "app/i18n-dropdown"
     ]
-  },
-  "overrides": [
-    {
-      "files": [
-        "app/javascript/app/document-capture/**/*",
-        "spec/javascripts/app/document-capture/**/*",
-        "spec/javascripts/support/**/*",
-        "spec/javascripts/spec_helper.js"
-      ],
-      "plugins": ["prettier"],
-      "rules": {
-        "prettier/prettier": "error"
-      }
-    }
-  ]
+  }
 }

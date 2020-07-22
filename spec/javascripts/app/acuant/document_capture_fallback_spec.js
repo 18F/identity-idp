@@ -60,7 +60,9 @@ describe('acuant/document_capture_fallback', () => {
     it('adds a click listener to the fallback link', () => {
       setDocumentCaptureFallbackTimeout();
 
-      expect(acuantSdkFallbackLink().onclick).to.eq(documentCaptureFallbackLinkClicked);
+      expect(acuantSdkFallbackLink().onclick).to.eq(
+        documentCaptureFallbackLinkClicked,
+      );
     });
 
     it('shows the fallback help test after 5 seconds', () => {

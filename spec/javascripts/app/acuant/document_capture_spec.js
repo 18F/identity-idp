@@ -75,7 +75,8 @@ describe('acuant/document_capture', () => {
 
     it('shows the acuant upload form when successful', () => {
       initializeAcuantSdk('test creds', 'test endpoint');
-      const successCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
+      const successCallback =
+        window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
       successCallback();
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(true);
@@ -86,7 +87,8 @@ describe('acuant/document_capture', () => {
 
     it('adds an event listener to the capture button when successful', () => {
       initializeAcuantSdk('test creds', 'test endpoint');
-      const successCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
+      const successCallback =
+        window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
       successCallback();
 
       expect(acuantSdkCaptureButton().onclick).to.eq(imageCaptureButtonClicked);
@@ -97,7 +99,8 @@ describe('acuant/document_capture', () => {
 
       documentCaptureFallbackLinkClicked({ preventDefault: () => {} });
 
-      const successCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
+      const successCallback =
+        window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onSuccess;
       successCallback();
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(false);
@@ -106,7 +109,8 @@ describe('acuant/document_capture', () => {
 
     it('shows the fallback form when failed', () => {
       initializeAcuantSdk('test creds', 'test endpoint');
-      const failCallback = window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onFail;
+      const failCallback =
+        window.AcuantJavascriptWebSdk.initialize.lastCall.args[2].onFail;
       failCallback();
 
       expect(fallbackImageForm().classList.contains('hidden')).to.eq(false);
@@ -209,7 +213,9 @@ describe('acuant/document_capture', () => {
     it('adds an event listener to the close capture view button when initialized', () => {
       imageCaptureButtonClicked(event);
 
-      expect(acuantSdkCaptureViewCloseButton().onclick).to.eq(acuantImageCaptureEnded);
+      expect(acuantSdkCaptureViewCloseButton().onclick).to.eq(
+        acuantImageCaptureEnded,
+      );
     });
   });
 });

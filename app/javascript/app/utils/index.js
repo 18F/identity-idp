@@ -3,7 +3,7 @@ import countdownTimer from './countdown-timer';
 import msFormatter from './ms-formatter';
 import enableBannerToggling from './toggle-banner';
 
-window.LoginGov = (window.LoginGov || {});
+window.LoginGov = window.LoginGov || {};
 const { LoginGov } = window;
 const { documentElement } = window.document;
 

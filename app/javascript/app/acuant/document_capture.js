@@ -22,17 +22,13 @@ export const imageCaptureButtonClicked = (event) => {
 export const initializeAcuantSdk = (credentials = null, endpoint = null) => {
   credentials = credentials || fetchSdkInitializationCredentials();
   endpoint = endpoint || fetchSdkInitializationEndpoint();
-  window.AcuantJavascriptWebSdk.initialize(
-    credentials,
-    endpoint,
-    {
-      onSuccess: () => {
-        addClickEventListenerToAcuantCaptureButton(imageCaptureButtonClicked);
-        acuantSdkInitializeSuccess();
-      },
-      onFail: acuantSdkInitializeFailed,
+  window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
+    onSuccess: () => {
+      addClickEventListenerToAcuantCaptureButton(imageCaptureButtonClicked);
+      acuantSdkInitializeSuccess();
     },
-  );
+    onFail: acuantSdkInitializeFailed,
+  });
 };
 
 export const loadAndInitializeAcuantSdk = () => {

@@ -32,7 +32,9 @@ function FocusTrapProxy() {
           return false;
         }
 
-        activated = activated.filter((activatedTrap) => activatedTrap !== ownTrap);
+        activated = activated.filter(
+          (activatedTrap) => activatedTrap !== ownTrap,
+        );
 
         if (activated.length) {
           activated[activated.length - 1].activate();
