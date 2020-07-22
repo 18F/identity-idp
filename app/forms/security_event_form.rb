@@ -33,7 +33,7 @@ class SecurityEventForm
     success = valid?
 
     if success
-      SecurityEvent.create(
+      SecurityEvent.create!(
         user: user,
         event_type: event_type,
         jti: jti,
