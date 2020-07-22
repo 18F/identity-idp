@@ -18,10 +18,8 @@ describe 'AAL3 authentication required in an SAML context' do
   describe 'SAML ServiceProvider configured to require AAL3 authentication' do
     context 'user does not have aal3 auth configured' do
       it 'sends user to set up AAL3 auth' do
-        user = user_with_2fa
-
+        sign_in_and_2fa_user(user_with_2fa)
         visit aal3_sp1_authnrequest
-        sign_in_live_with_2fa(user)
 
         expect(current_url).to eq(two_factor_options_url)
         expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
@@ -31,11 +29,9 @@ describe 'AAL3 authentication required in an SAML context' do
 
     context 'user has aal3 auth configured' do
       it 'sends user to authenticate with AAL3 auth' do
-        user = user_with_aal3_2fa
-
+        sign_in_before_2fa(user_with_aal3_2fa)
         visit aal3_sp1_authnrequest
-        sign_in_live_with_aal2_2fa_only(user)
-
+        visit login_two_factor_path(otp_delivery_preference: 'sms')
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
     end

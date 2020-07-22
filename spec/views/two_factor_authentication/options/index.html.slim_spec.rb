@@ -5,7 +5,7 @@ describe 'two_factor_authentication/options/index.html.slim' do
   before do
     allow(view).to receive(:user_session).and_return({})
     allow(view).to receive(:current_user).and_return(User.new)
-    @presenter = TwoFactorLoginOptionsPresenter.new(user, view, nil)
+    @presenter = TwoFactorLoginOptionsPresenter.new(user, view, nil, nil)
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
 
