@@ -32,7 +32,7 @@ RSpec.describe Risc::SecurityEventsController do
       }
     end
 
-    let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256') }
+    let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', typ: 'secevent+jwt') }
 
     it 'creates a security event record' do
       expect { post :create, body: jwt, as: :secevent_jwt }.

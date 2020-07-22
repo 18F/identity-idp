@@ -8,6 +8,8 @@ class SecurityEventForm
   module ErrorCodes
     JWS = 'jws'.freeze
     JWT_AUD = 'jwtAud'.freeze
+    JWT_CRYPTO = 'jwtCrypto'.freeze
+    JWT_HDR = 'jwtHdr'.freeze
     JWT_PARSE = 'jwtParse'.freeze
     SET_DATA = 'setData'.freeze
     SET_TYPE = 'setType'.freeze
@@ -18,10 +20,13 @@ class SecurityEventForm
   validate :validate_event_type
   validate :validate_subject_type
   validate :validate_sub
-  validate :validate_jwt_signature
+  validate :validate_typ
+  validate :validate_exp
+  validate :validate_jwt
 
   def initialize(body:)
     @body = body
+    @jwt_payload, @jwt_headers = parse_jwt
   end
 
   def submit
@@ -53,26 +58,43 @@ class SecurityEventForm
 
   private
 
-  attr_reader :body
+  attr_reader :body, :jwt_payload, :jwt_headers
 
-  def jwt_payload
-    return @jwt_payload if defined?(@jwt_payload)
-
-    payload, _headers = JWT.decode(body, nil, false, algorithm: 'RS256')
-    @jwt_payload = payload
-  rescue JWT::DecodeError => err
+  # @return [Array(Hash, Hash)] parses JWT into [payload, headers]
+  def parse_jwt
+    JWT.decode(body, nil, false, algorithm: 'RS256', leeway: Float::INFINITY)
+  rescue JWT::DecodeError
     @error_code = ErrorCodes::JWT_PARSE
-    errors.add(:jwt, err.message)
-    @jwt_payload = {}
+    [{}, {}]
   end
 
-  def validate_jwt_signature
-    return false unless service_provider
-    JWT.decode(body, service_provider.ssl_cert.public_key, true, algorithm: 'RS256')
-  rescue JWT::DecodeError => err
+  def check_jwt_parse_error
+    return false if @error_code != ErrorCodes::JWT_PARSE
+
+    errors.add(:jwt, 'could not parse JWT')
+    true
+  end
+
+  def check_public_key_error(public_key)
+    return false if public_key.present?
+
+    errors.add(:jwt, 'could not load public key for issuer')
+    @error_code = ErrorCodes::JWS
+    true
+  end
+
+  def validate_jwt
+    public_key = service_provider&.ssl_cert&.public_key
+    return if check_jwt_parse_error
+    return if check_public_key_error(public_key)
+
+    JWT.decode(body, public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
+  rescue JWT::IncorrectAlgorithm
+    @error_code = ErrorCodes::JWT_CRYPTO
+    errors.add(:jwt, 'unsupported algorithm, must be signed with RS256')
+  rescue JWT::VerificationError => err
     @error_code = ErrorCodes::JWS
     errors.add(:jwt, err.message)
-    false
   end
 
   def validate_iss
@@ -103,7 +125,22 @@ class SecurityEventForm
   end
 
   def validate_sub
-    errors.add(:sub, 'invalid sub claim') if user.blank?
+    errors.add(:sub, 'top-level sub claim is not accepted') if jwt_payload['sub'].present?
+    errors.add(:sub, 'invalid event.subject.sub claim') if user.blank?
+  end
+
+  def validate_typ
+    return if jwt_headers.blank?
+    return if jwt_headers['typ'] == 'secevent+jwt'
+
+    errors.add(:typ, 'typ header must be secevent+jwt')
+    @error_code = ErrorCodes::JWT_HDR
+  end
+
+  def validate_exp
+    return if jwt_payload['exp'].blank?
+
+    errors.add(:exp, 'SET events must not have an exp claim')
   end
 
   def client_id

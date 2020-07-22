@@ -33,7 +33,8 @@ RSpec.describe SecurityEventForm do
   end
 
   let(:subject_sub) { identity.uuid }
-  let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256') }
+  let(:jwt_headers) { { typ: 'secevent+jwt' } }
+  let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', jwt_headers) }
 
   describe '#submit' do
     subject(:submit) { form.submit }
@@ -96,7 +97,7 @@ RSpec.describe SecurityEventForm do
         let(:jwt) { 'bbb.bbb.bbb' }
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:jwt]).to include('Invalid segment encoding')
+          expect(form.errors[:jwt]).to include('could not parse JWT')
           expect(form.error_code).to eq('jwtParse')
         end
       end
@@ -111,6 +112,25 @@ RSpec.describe SecurityEventForm do
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.errors[:jwt]).to include('Signature verification raised')
+        end
+      end
+
+      context 'when the issuer does not have a public key registered' do
+        before { service_provider.update(cert: nil) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:jwt]).to include('could not load public key for issuer')
+        end
+      end
+
+      context 'when signed with an unsupported algorithm' do
+        let(:jwt) { JWT.encode(jwt_payload, SecureRandom.hex, 'HS256', jwt_headers) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:jwt]).to include('unsupported algorithm, must be signed with RS256')
+          expect(form.error_code).to eq('jwtCrypto')
         end
       end
     end
@@ -185,13 +205,13 @@ RSpec.describe SecurityEventForm do
       end
     end
 
-    context 'sub' do
+    context 'event.subject.sub' do
       context 'with a bad uuid' do
         let(:subject_sub) { 'aaa' }
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('setData')
-          expect(form.errors[:sub]).to include('invalid sub claim')
+          expect(form.errors[:sub]).to include('invalid event.subject.sub claim')
         end
       end
 
@@ -200,8 +220,41 @@ RSpec.describe SecurityEventForm do
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('setData')
-          expect(form.errors[:sub]).to include('invalid sub claim')
+          expect(form.errors[:sub]).to include('invalid event.subject.sub claim')
         end
+      end
+    end
+
+    context 'with a top-level sub claim' do
+      before { jwt_payload[:sub] = identity.uuid }
+
+      # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#event-subjects
+      it 'is invalid' do
+        expect(valid?).to eq(false)
+        expect(form.error_code).to eq('setData')
+        expect(form.errors[:sub]).to include('top-level sub claim is not accepted')
+      end
+    end
+
+    context 'with a JWT header typ other than secevent+jwt' do
+      before { jwt_headers[:typ] = 'foobar' }
+
+      # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#explicit-typing
+      it 'is invalid' do
+        expect(valid?).to eq(false)
+        expect(form.error_code).to eq('jwtHdr')
+        expect(form.errors[:typ]).to include('typ header must be secevent+jwt')
+      end
+    end
+
+    context 'exp claim' do
+      before { jwt_payload[:exp] = 3.days.ago.to_i }
+
+      # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#exp-claim
+      it 'is invalid with an exp claim' do
+        expect(valid?).to eq(false)
+        expect(form.error_code).to eq('setData')
+        expect(form.errors[:exp]).to include('SET events must not have an exp claim')
       end
     end
   end
