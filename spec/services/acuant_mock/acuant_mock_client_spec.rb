@@ -109,4 +109,32 @@ describe DocAuthMock::DocAuthMockClient do
 
     expect(described_class.new.create_document).to_not eq('Create doc test')
   end
+
+  context 'when checking results gives a failure' do
+    let(:instance_id) { '1234567890' }
+    before do
+      DocAuthMock::DocAuthMockClient.mock_response!(
+        method: :get_results,
+        response: OpenStruct.new(
+          'success?' => false,
+          instance_id: instance_id,
+          errors: [
+            { back_image: 'blurry' },
+          ],
+        ),
+      )
+    end
+
+    it 'returns a failure response if the results failed' do
+      post_images_response = client.post_images(
+        instance_id: instance_id,
+        front_image: DocAuthImageFixtures.document_front_image,
+        back_image: DocAuthImageFixtures.document_back_image,
+        selfie_image: nil,
+      )
+
+      expect(post_images_response.success?).to eq(false)
+      expect(post_images_response).to be_kind_of(FormResponse)
+    end
+  end
 end
