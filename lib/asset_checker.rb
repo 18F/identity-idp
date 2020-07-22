@@ -25,13 +25,13 @@ class AssetChecker
   end
 
   def self.find_missing(file_data, pattern, source)
-    strings = file_data.scan pattern
+    strings = (file_data.scan pattern).flatten
     strings.reject { |s| source.include? s }
   end
 
   def self.load_included_strings(file)
     data = File.open(file).read
     key_data = data.split('<% keys = [')[1].split('] %>')[0]
-    key_data.scan(/['"](.*)['"]/)
+    key_data.scan(/['"](.*)['"]/).flatten
   end
 end
