@@ -14,10 +14,12 @@ RSpec.describe Risc::SecurityEventsController do
   end
 
   describe '#create' do
+    let(:action) { post :create, body: jwt, as: :secevent_jwt }
+    let(:jti) { SecureRandom.urlsafe_base64 }
     let(:jwt_payload) do
       {
         iss: identity.service_provider,
-        jti: SecureRandom.urlsafe_base64,
+        jti: jti,
         iat: Time.zone.now.to_i,
         aud: api_security_events_url,
         events: {
@@ -35,18 +37,32 @@ RSpec.describe Risc::SecurityEventsController do
     let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', typ: 'secevent+jwt') }
 
     it 'creates a security event record' do
-      expect { post :create, body: jwt, as: :secevent_jwt }.
+      expect { action }.
         to(change { SecurityEvent.count }.by(1))
 
       expect(response.body).to be_empty
       expect(response.code.to_i).to eq(202) # Accepted
     end
 
+    it 'tracks an successful in analytics' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::SECURITY_EVENT_RECEIVED,
+             client_id: service_provider.issuer,
+             error_code: nil,
+             errors: {},
+             jti: jti,
+             success: true,
+             user_id: user.uuid)
+
+      action
+    end
+
     context 'with a bad request' do
       before { jwt_payload[:aud] = 'http://bad.example' }
 
       it 'renders an error response and does not create a security event record' do
-        expect { post :create, body: jwt, as: :secevent_jwt }.
+        expect { action }.
           to_not(change { SecurityEvent.count })
 
         expect(response).to be_bad_request
@@ -55,6 +71,20 @@ RSpec.describe Risc::SecurityEventsController do
 
         expect(json[:err]).to eq(SecurityEventForm::ErrorCodes::JWT_AUD)
         expect(json[:description]).to include("expected #{api_security_events_url}")
+      end
+
+      it 'tracks an error event in analytics' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SECURITY_EVENT_RECEIVED,
+               client_id: service_provider.issuer,
+               error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
+               errors: kind_of(Hash),
+               jti: jti,
+               success: false,
+               user_id: user.uuid)
+
+        action
       end
     end
   end
