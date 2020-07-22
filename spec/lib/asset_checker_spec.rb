@@ -1,6 +1,6 @@
 require 'asset_checker'
 
-def get_js_with_strings(asset = 'first_asset.png', translation = 'first_translation') # rubocop:disable Metrics/LineLength Lint/UselessAssignment
+def get_js_with_strings(asset, translation)
   "
   import React from 'react';
   import AcuantCapture from './acuant-capture';
@@ -43,7 +43,7 @@ RSpec.describe AssetChecker do
 
       before do
         File.open(tempfile.path, 'w') do |f|
-          f.puts(get_js_with_strings)
+          f.puts(get_js_with_strings('first_asset.png', 'first_translation'))
         end
       end
 
@@ -62,7 +62,7 @@ RSpec.describe AssetChecker do
 
       before do
         File.open(tempfile.path, 'w') do |f|
-          f.puts(get_js_with_strings(asset = 'wont_find.svg', translation = 'not-found'))
+          f.puts(get_js_with_strings('wont_find.svg', 'not-found'))
         end
       end
 
