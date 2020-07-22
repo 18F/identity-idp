@@ -78,10 +78,6 @@ class TwoFactorOptionsPresenter
     @mfa_policy ||= MfaPolicy.new(@user)
   end
 
-  def piv_cac_policy
-    @piv_cac_policy ||= TwoFactorAuthentication::PivCacPolicy.new(@user)
-  end
-
   def hspd12_policy
     @hspd12_policy ||= Hspd12Policy.new(session: @session, user: @user)
   end
