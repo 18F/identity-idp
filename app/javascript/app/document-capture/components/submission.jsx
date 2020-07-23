@@ -11,10 +11,7 @@ function Submission({ payload }) {
   const resource = useAsync(upload, payload);
 
   return (
-    <SuspenseErrorBoundary
-      fallback={<SubmissionPending onComplete={() => {}} />}
-      errorFallback="Error"
-    >
+    <SuspenseErrorBoundary fallback={<SubmissionPending />} errorFallback="Error">
       <SubmissionComplete resource={resource} />
     </SuspenseErrorBoundary>
   );

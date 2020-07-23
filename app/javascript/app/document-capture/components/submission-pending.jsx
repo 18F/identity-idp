@@ -1,13 +1,7 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Image from './image';
 
-function SubmissionPending({ onComplete }) {
-  useEffect(() => {
-    const timeoutId = setTimeout(onComplete, 2000);
-    return () => clearTimeout(timeoutId);
-  }, []);
-
+function SubmissionPending() {
   return (
     <div>
       <Image assetPath="clock.svg" alt="" width="50" height="50" />
@@ -17,9 +11,5 @@ function SubmissionPending({ onComplete }) {
     </div>
   );
 }
-
-SubmissionPending.propTypes = {
-  onComplete: PropTypes.func.isRequired,
-};
 
 export default SubmissionPending;
