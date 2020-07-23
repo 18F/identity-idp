@@ -119,6 +119,7 @@ es:
     phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada vez
       que inicies sesión</strong>.
     phone_voice_label: Número de teléfono
+    piv_cac_webauthn_available: Usa tu clave de seguridad
     piv_cac_fallback:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
@@ -167,6 +168,7 @@ es:
     webauthn_fallback:
       question: "¿No tienes tu llave de seguridad disponible?"
     webauthn_header_text: Presenta tu llave de seguridad
+    webauthn_piv_available: Use su identificación de empleado del gobierno
     webauthn_verified:
       header: Llave de seguridad verificada
       info: Hemos verificado su llave de seguridad. Haga clic en continuar para iniciar

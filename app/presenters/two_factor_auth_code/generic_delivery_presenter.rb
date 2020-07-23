@@ -22,6 +22,14 @@ module TwoFactorAuthCode
       raise NotImplementedError
     end
 
+    def link_text
+      t('two_factor_authentication.login_options_link_text')
+    end
+
+    def link_path
+      login_two_factor_options_path
+    end
+
     def fallback_links
       raise NotImplementedError
     end
@@ -40,6 +48,10 @@ module TwoFactorAuthCode
     end
 
     private
+
+    def aal3_policy
+      @aal3 ||= AAL3Policy.new(session: @view.session, user: @view.current_user)
+    end
 
     def no_factors_enabled?
       MfaPolicy.new(@view.current_user).no_factors_enabled?

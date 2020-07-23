@@ -110,6 +110,7 @@ en:
     phone_voice_info_html: We'll call you with a security code <strong>each time you
       sign in</strong>.
     phone_voice_label: Phone number
+    piv_cac_webauthn_available: Use your security key
     piv_cac_fallback:
       question: Don't have your piv/cac card available?
     piv_cac_header_text: Present your PIV/CAC
@@ -157,6 +158,7 @@ en:
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
+    webauthn_piv_available: Use your government employee ID
     webauthn_verified:
       header: Security key verified
       info: We have verified your security key. Click continue to sign in.

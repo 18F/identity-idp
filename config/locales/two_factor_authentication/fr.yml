@@ -118,6 +118,7 @@ fr:
     phone_voice_info_html: Nous vous appellerons avec un code de sécurité <strong>chaque
       fois que vous vous connectez</strong>.
     phone_voice_label: Numéro de téléphone
+    piv_cac_webauthn_available: Utilisez votre clé de sécurité
     piv_cac_fallback:
       question: Vous n'avez pas accès à votre carte PIV/CAC?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
@@ -165,6 +166,7 @@ fr:
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité
+    webauthn_piv_available: Utilisez votre identifiant d'employé du gouvernement
     webauthn_verified:
       header: Clé de sécurité vérifiée
       info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous

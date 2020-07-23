@@ -29,6 +29,10 @@ class AAL3Policy
     aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
+  def multiple_aal3_configurations?
+    @mfa_policy.aal3_configurations.count > 1
+  end
+
   private
 
   def aal3_requested?
