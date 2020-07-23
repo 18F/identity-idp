@@ -17,7 +17,9 @@ class TwoFactorOptionsPresenter
   end
 
   def heading
-    if (aal3_only? || piv_cac_required?) && mfa_policy.two_factor_enabled?
+    if piv_cac_required?
+      t('two_factor_authentication.two_factor_hspd12_choice')
+    elsif aal3_only? && mfa_policy.two_factor_enabled?
       t('two_factor_authentication.two_factor_aal3_choice')
     else
       t('two_factor_authentication.two_factor_choice')
@@ -25,7 +27,9 @@ class TwoFactorOptionsPresenter
   end
 
   def intro
-    if aal3_only? || piv_cac_required?
+    if piv_cac_required?
+      t('two_factor_authentication.two_factor_hspd12_choice_intro')
+    elsif aal3_only?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
     else
       t('two_factor_authentication.two_factor_choice_intro')
