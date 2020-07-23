@@ -9,8 +9,8 @@ describe('focusTrap', () => {
   beforeEach(() => {
     proxy = proxyquire('../../../../app/javascript/app/components/focus-trap-proxy', {
       // Mock external focus-trap library
-      'focus-trap': function() {
-        const thisTrap = sinon.createStubInstance(function() {});
+      'focus-trap': function () {
+        const thisTrap = sinon.createStubInstance(function () {});
         thisTrap.deactivate = stub();
         thisTrap.activate = stub();
         return thisTrap;

@@ -11,7 +11,9 @@ export default function toggleBanner() {
       if (howYouKnowSection) howYouKnowSection.classList.toggle('hide');
     };
 
-    if (bannerButton) bannerButton.addEventListener('click', toggleBannerSection);
+    if (bannerButton) {
+      bannerButton.addEventListener('click', toggleBannerSection);
+    }
   };
 
   window.onload = enableBannerToggling;

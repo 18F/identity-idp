@@ -3,7 +3,7 @@ function checkbox() {
   if (styledCheckbox) {
     [].slice.call(styledCheckbox).forEach((input) => {
       // display checkbox with checkmark in high contrast mode
-      input.addEventListener('change', function() {
+      input.addEventListener('change', function () {
         const indicator = input.parentNode.querySelector('.indicator');
         if (indicator) {
           if (this.checked) {

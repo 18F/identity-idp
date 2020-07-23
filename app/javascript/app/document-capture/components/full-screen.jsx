@@ -31,11 +31,7 @@ function FullScreen({ onRequestClose, children }) {
         onClick={() => trapRef.current.deactivate()}
         className="full-screen-close-button usa-button padding-2 margin-2"
       >
-        <Image
-          alt=""
-          assetPath="close-white-alt.svg"
-          className="full-screen-close-icon"
-        />
+        <Image alt="" assetPath="close-white-alt.svg" className="full-screen-close-icon" />
       </button>
       {children}
     </div>

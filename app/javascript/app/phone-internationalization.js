@@ -10,14 +10,21 @@ const selectedInternationCodeOption = () => {
 const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
   const selectedOption = selectedInternationCodeOption();
   if (selectedOption.dataset.smsOnly === 'true') {
-    const messageTemplate = I18n.t('two_factor_authentication.otp_delivery_preference.phone_unsupported');
+    const messageTemplate = I18n.t(
+      'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+    );
     return messageTemplate.replace('%{location}', selectedOption.dataset.countryName);
   }
   return null;
 };
 
-const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
-  warningMessage) => {
+const disablePhoneState = (
+  phoneRadio,
+  phoneLabel,
+  smsRadio,
+  deliveryMethodHint,
+  warningMessage,
+) => {
   phoneRadio.disabled = true;
   phoneLabel.classList.add('btn-disabled');
   smsRadio.click();
@@ -27,12 +34,18 @@ const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
 const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint) => {
   phoneRadio.disabled = false;
   phoneLabel.classList.remove('btn-disabled');
-  deliveryMethodHint.innerText = I18n.t('two_factor_authentication.otp_delivery_preference.instruction');
+  deliveryMethodHint.innerText = I18n.t(
+    'two_factor_authentication.otp_delivery_preference.instruction',
+  );
 };
 
 const updateOTPDeliveryMethods = () => {
-  const phoneRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_voice');
-  const smsRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_sms');
+  const phoneRadio = document.querySelector(
+    '[data-international-phone-form] .otp_delivery_preference_voice',
+  );
+  const smsRadio = document.querySelector(
+    '[data-international-phone-form] .otp_delivery_preference_sms',
+  );
 
   if (!(phoneRadio && smsRadio)) {
     return;
@@ -43,8 +56,7 @@ const updateOTPDeliveryMethods = () => {
 
   const warningMessage = unsupportedInternationalPhoneOTPDeliveryWarningMessage();
   if (warningMessage) {
-    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint,
-      warningMessage);
+    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, warningMessage);
   } else {
     enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint);
   }

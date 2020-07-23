@@ -5,9 +5,7 @@ import AssetContext from '../../../../../app/javascript/app/document-capture/con
 
 describe('document-capture/components/image', () => {
   it('renders the given assetPath as src if the asset is not known', () => {
-    const { getByAltText } = render(
-      <Image assetPath="unknown.png" alt="unknown" />,
-    );
+    const { getByAltText } = render(<Image assetPath="unknown.png" alt="unknown" />);
 
     const img = getByAltText('unknown');
 
@@ -27,9 +25,7 @@ describe('document-capture/components/image', () => {
   });
 
   it('renders with given props', () => {
-    const { getByAltText } = render(
-      <Image assetPath="icon.png" alt="icon" width={50} />,
-    );
+    const { getByAltText } = render(<Image assetPath="icon.png" alt="icon" width={50} />);
 
     const img = getByAltText('icon');
 
