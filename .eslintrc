@@ -46,5 +46,13 @@
       "app/phone-internationalization",
       "app/i18n-dropdown"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["spec/javascripts/**/*"],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ]
 }

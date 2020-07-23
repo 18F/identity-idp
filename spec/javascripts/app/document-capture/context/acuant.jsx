@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '../../../../../app/javascript/app/document-capture/context/acuant';
