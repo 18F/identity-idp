@@ -1,13 +1,11 @@
-/* eslint-disable */
-import FocusTrap from 'focus-trap';
-/* eslint-enable */
+import createFocusTrap from 'focus-trap';
 
 function FocusTrapProxy() {
   const focusables = [];
   let activated = [];
 
   return function makeTrap(el, options = {}) {
-    const ownTrap = new FocusTrap(el, options);
+    const ownTrap = createFocusTrap(el, options);
 
     focusables.push(ownTrap);
 

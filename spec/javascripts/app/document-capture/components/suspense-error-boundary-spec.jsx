@@ -32,7 +32,7 @@ describe('document-capture/components/suspense-error-boundary', () => {
       throw new Error();
     };
 
-    sinon.stub(console, 'error', () => {});
+    sinon.stub(console, 'error').callsFake(() => {});
 
     const { findByText } = render(
       <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">

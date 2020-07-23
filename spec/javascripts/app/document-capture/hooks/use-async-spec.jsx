@@ -52,7 +52,7 @@ describe('document-capture/hooks/use-async', () => {
 
     expect(container.textContent).to.equal('Loading');
 
-    sinon.stub(console, 'error', () => {});
+    sinon.stub(console, 'error').callsFake(() => {});
     reject();
 
     expect(await findByText('Error')).to.be.ok();

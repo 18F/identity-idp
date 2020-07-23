@@ -4,13 +4,14 @@ import useAsync from '../hooks/use-async';
 import UploadContext from '../context/upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionComplete from './submission-complete';
+import SubmissionPending from './submission-pending';
 
 function Submission({ payload }) {
   const upload = useContext(UploadContext);
   const resource = useAsync(upload, payload);
 
   return (
-    <SuspenseErrorBoundary fallback="Loading..." errorFallback="Error">
+    <SuspenseErrorBoundary fallback={<SubmissionPending />} errorFallback="Error">
       <SubmissionComplete resource={resource} />
     </SuspenseErrorBoundary>
   );
