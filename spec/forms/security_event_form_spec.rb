@@ -13,11 +13,12 @@ RSpec.describe SecurityEventForm do
     )
   end
   let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
+  let(:jti) { SecureRandom.urlsafe_base64 }
 
   let(:jwt_payload) do
     {
       iss: identity.service_provider,
-      jti: SecureRandom.urlsafe_base64,
+      jti: jti,
       iat: Time.zone.now.to_i,
       aud: api_risc_security_events_url,
       events: {
@@ -77,6 +78,54 @@ RSpec.describe SecurityEventForm do
           response = submit
 
           expect(response.to_h).to include(error_code: 'jwtAud')
+        end
+      end
+    end
+
+    context 'jti uniqueness' do
+      context 'with a jti that has already been recorded for that same user and issuer' do
+        before do
+          SecurityEvent.create!(
+            user: user,
+            jti: jti,
+            event_type: SecurityEvent::CREDENTIAL_CHANGE_REQUIRED,
+            issuer: service_provider.issuer,
+          )
+        end
+
+        it 'does not create a new record' do
+          expect { submit }.to_not(change { SecurityEvent.count })
+        end
+
+        it 'reports an error as a duplicate' do
+          response = submit
+
+          expect(response.success?).to eq(false)
+          expect(form.error_code).to eq('dup')
+          expect(form.description).to include('jti was not unique')
+        end
+      end
+
+      context 'with a jti that has already been recorded for that same user, different issuer' do
+        before do
+          SecurityEvent.create!(
+            user: user,
+            jti: jti,
+            event_type: SecurityEvent::CREDENTIAL_CHANGE_REQUIRED,
+            issuer: 'issuer2',
+          )
+        end
+
+        it 'creates a record' do
+          expect { submit }.to(change { SecurityEvent.count }.by(1))
+        end
+
+        it 'reports a success' do
+          response = submit
+
+          expect(response.success?).to eq(true)
+          expect(form.error_code).to be_nil
+          expect(form.description).to be_nil
         end
       end
     end
@@ -247,7 +296,7 @@ RSpec.describe SecurityEventForm do
       end
     end
 
-    context 'exp claim' do
+    context 'exp' do
       before { jwt_payload[:exp] = 3.days.ago.to_i }
 
       # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#exp-claim
@@ -255,6 +304,18 @@ RSpec.describe SecurityEventForm do
         expect(valid?).to eq(false)
         expect(form.error_code).to eq('setData')
         expect(form.errors[:exp]).to include('SET events must not have an exp claim')
+      end
+    end
+
+    context 'jti' do
+      context 'without a jti' do
+        before { jwt_payload.delete(:jti) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.error_code).to eq('setData')
+          expect(form.errors[:jti]).to include('jti claim is required')
+        end
       end
     end
   end

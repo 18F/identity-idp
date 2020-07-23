@@ -8,6 +8,8 @@ en:
         event_type_missing: missing event
         event_type_unsupported: unsupported event type %{event_type}
         exp_present: SET events must not have an exp claim
+        jti_required: jti claim is required
+        jti_not_unique: jti was not unique
         jwt_could_not_parse: could not parse JWT
         no_public_key: could not load public key for issuer
         sub_not_found: invalid event.subject.sub claim

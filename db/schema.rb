@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_220357) do
+ActiveRecord::Schema.define(version: 2020_07_23_214611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -420,7 +420,7 @@ ActiveRecord::Schema.define(version: 2020_07_21_220357) do
     t.string "issuer"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["jti"], name: "index_security_events_on_jti"
+    t.index ["jti", "user_id", "issuer"], name: "index_security_events_on_user_id_jti_and_issuer", unique: true
     t.index ["user_id"], name: "index_security_events_on_user_id"
   end
 
