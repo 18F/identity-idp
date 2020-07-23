@@ -413,6 +413,17 @@ ActiveRecord::Schema.define(version: 2020_07_21_220357) do
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
+  create_table "security_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "event_type", null: false
+    t.string "jti"
+    t.string "issuer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti"], name: "index_security_events_on_jti"
+    t.index ["user_id"], name: "index_security_events_on_user_id"
+  end
+
   create_table "service_provider_quota_limits", force: :cascade do |t|
     t.string "issuer", null: false
     t.integer "ial", limit: 2, null: false
