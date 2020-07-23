@@ -1,35 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 function AcuantCaptureCanvas({ onImageCaptureSuccess, onImageCaptureFailure }) {
-  const isCapturing = useRef(false);
-
   useEffect(() => {
-    /**
-     * Creates a new callback function which also sets the internal component
-     * state to mark capture as completed.
-     *
-     * @param {Function} callback Original callback.
-     *
-     * @return {Function} Enhanced callback.
-     */
-    const createOnComplete = (callback) => (result) => {
-      isCapturing.current = false;
-      callback(result);
-    };
-
-    isCapturing.current = true;
-
-    window.AcuantCameraUI.start(
-      createOnComplete(onImageCaptureSuccess),
-      createOnComplete(onImageCaptureFailure),
-    );
+    window.AcuantCameraUI.start(onImageCaptureSuccess, onImageCaptureFailure);
 
     return () => {
-      // If capturing while component unmounts, end the capture.
-      if (isCapturing.current) {
-        window.AcuantCameraUI.end();
-      }
+      window.AcuantCameraUI.end();
     };
   }, []);
 
