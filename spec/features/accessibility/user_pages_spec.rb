@@ -7,7 +7,7 @@ feature 'Accessibility on pages that require authentication', :js do
     sign_up_with(email)
 
     expect(current_path).to eq(sign_up_verify_email_path)
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   describe 'user confirmation page' do
@@ -16,14 +16,14 @@ feature 'Accessibility on pages that require authentication', :js do
       confirm_last_user
 
       expect(current_path).to eq(sign_up_enter_password_path)
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'invalid confirmation token' do
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
       expect(current_path).to eq(sign_up_email_resend_path)
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
   end
 
@@ -32,7 +32,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_up_and_set_password
 
       expect(current_path).to eq(two_factor_options_path)
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'phone setup page' do
@@ -41,7 +41,7 @@ feature 'Accessibility on pages that require authentication', :js do
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'two factor auth page' do
@@ -49,7 +49,7 @@ feature 'Accessibility on pages that require authentication', :js do
       sign_in_before_2fa(user)
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     describe 'SMS' do
@@ -59,7 +59,7 @@ feature 'Accessibility on pages that require authentication', :js do
         visit login_two_factor_path(otp_delivery_preference: 'sms')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(page).to be_accessible
+        expect(page).to be_accessible.according_to :section508, :"best-practice"
       end
     end
 
@@ -70,7 +70,7 @@ feature 'Accessibility on pages that require authentication', :js do
         visit login_two_factor_path(otp_delivery_preference: 'voice')
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
-        expect(page).to be_accessible
+        expect(page).to be_accessible.according_to :section508, :"best-practice"
       end
     end
   end
@@ -79,7 +79,7 @@ feature 'Accessibility on pages that require authentication', :js do
     sign_in_and_2fa_user
     visit manage_personal_key_path
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'profile page' do
@@ -87,7 +87,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit account_path
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'edit email page' do
@@ -96,7 +96,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit delete_email_path(id: user.email_addresses.take.id)
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'edit password page' do
@@ -104,7 +104,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_password_path
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'add phone page' do
@@ -112,7 +112,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit add_phone_path
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'edit phone page' do
@@ -120,7 +120,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_phone_path(id: user.phone_configurations.first.id)
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'generate new personal key page' do
@@ -128,7 +128,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit manage_personal_key_path
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 
   scenario 'set up authenticator app page' do
@@ -136,6 +136,6 @@ feature 'Accessibility on pages that require authentication', :js do
 
     visit '/authenticator_setup'
 
-    expect(page).to be_accessible
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
 end
