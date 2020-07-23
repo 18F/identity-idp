@@ -8,6 +8,8 @@ fr:
         event_type_missing: event manquant
         event_type_unsupported: type d'événement non pris en charge %{event_type}
         exp_present: Les événements SET ne doivent pas avoir de réclamation exp
+        jti_not_unique: jti n'était pas unique
+        jti_required: La revendication jti est requise
         jwt_could_not_parse: impossible d'analyser JWT
         no_public_key: impossible de charger la clé publique de l'émetteur
         sub_not_found: revendication event.subject.sub non valide
