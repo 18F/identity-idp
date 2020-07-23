@@ -132,9 +132,7 @@ class SecurityEventForm
   end
 
   def validate_sub
-    if jwt_payload['sub'].present?
-      errors.add(:sub, t('risc.security_event.errors.sub_unsupported'))
-    end
+    errors.add(:sub, t('risc.security_event.errors.sub_unsupported')) if jwt_payload['sub'].present?
     errors.add(:sub, t('risc.security_event.errors.sub_not_found')) if user.blank?
   end
 
