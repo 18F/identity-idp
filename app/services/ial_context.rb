@@ -19,7 +19,7 @@ class IalContext
   end
 
   def ial2_requested?
-    ial == Identity::IAL2 && !service_provider_requires_liveness?
+    ial == Identity::IAL2
   end
 
   def ial2_or_greater?
