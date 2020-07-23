@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_204303) do
+ActiveRecord::Schema.define(version: 2020_07_21_220357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,7 +220,6 @@ ActiveRecord::Schema.define(version: 2020_07_21_204303) do
     t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
     t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
-    t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|

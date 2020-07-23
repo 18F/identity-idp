@@ -113,7 +113,7 @@ describe('document-capture/components/acuant-capture', () => {
     );
     expect(image.width).to.equal(10);
     expect(image.height).to.equal(20);
-    expect(window.AcuantCameraUI.end.called).to.be.false();
+    expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
   });
 
   it('renders the button when the capture failed', () => {
@@ -139,7 +139,7 @@ describe('document-capture/components/acuant-capture', () => {
     button = getByText('doc_auth.buttons.take_picture');
 
     expect(button).to.be.ok();
-    expect(window.AcuantCameraUI.end.called).to.be.false();
+    expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
   });
 
   it('ends the capture when the component unmounts', () => {

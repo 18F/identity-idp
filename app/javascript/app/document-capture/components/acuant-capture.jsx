@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
+import FullScreen from './full-screen';
 import useI18n from '../hooks/use-i18n';
 
 function AcuantCapture() {
@@ -24,18 +25,23 @@ function AcuantCapture() {
     );
   }
 
-  return isCapturing ? (
-    <AcuantCaptureCanvas
-      onImageCaptureSuccess={(nextCapture) => {
-        setCapture(nextCapture);
-        setIsCapturing(false);
-      }}
-      onImageCaptureFailure={() => setIsCapturing(false)}
-    />
-  ) : (
-    <button type="button" onClick={() => setIsCapturing(true)}>
-      {t('doc_auth.buttons.take_picture')}
-    </button>
+  return (
+    <>
+      {isCapturing && (
+        <FullScreen onRequestClose={() => setIsCapturing(false)}>
+          <AcuantCaptureCanvas
+            onImageCaptureSuccess={(nextCapture) => {
+              setCapture(nextCapture);
+              setIsCapturing(false);
+            }}
+            onImageCaptureFailure={() => setIsCapturing(false)}
+          />
+        </FullScreen>
+      )}
+      <button type="button" onClick={() => setIsCapturing(true)}>
+        {t('doc_auth.buttons.take_picture')}
+      </button>
+    </>
   );
 }
 
