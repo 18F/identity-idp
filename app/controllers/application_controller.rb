@@ -276,10 +276,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     )
   end
 
-  def piv_cac_policy
-    @piv_cac_policy ||= TwoFactorAuthentication::PivCacPolicy.new(current_user)
-  end
-
   def hspd12_policy
     @hspd12_policy ||= Hspd12Policy.new(session: session, user: current_user)
   end
