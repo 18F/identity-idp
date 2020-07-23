@@ -29,6 +29,40 @@ module Idv
         DataUrlImage.new(flow_params[:back_image_data_url])
       end
 
+      def selfie_image
+        return nil unless liveness_checking_enabled?
+        uploaded_image = flow_params[:selfie_image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:selfie_image_data_url])
+      end
+
+      def doc_auth_client
+        @doc_auth_client ||= begin
+          case doc_auth_vendor
+          when 'acuant'
+            ::Acuant::AcuantClient.new
+          when 'mock'
+            ::DocAuthMock::DocAuthMockClient.new
+          else
+            raise "#{doc_auth_vendor} is not a valid doc auth vendor"
+          end
+        end
+      end
+
+      ##
+      # The `acuant_simulator` config is deprecated. The logic to switch vendors
+      # based on its value can be removed once FORCE_ACUANT_CONFIG_UPGRADE in
+      # acuant_simulator_config_validation.rb has been set to true for at least
+      # a deploy cycle.
+      #
+      def doc_auth_vendor
+        vendor_from_config = Figaro.env.doc_auth_vendor
+        if vendor_from_config.blank?
+          return Figaro.env.acuant_simulator == 'true' ? 'mock' : 'acuant'
+        end
+        vendor_from_config
+      end
+
       def idv_throttle_params
         [current_user.id, :idv_resolution]
       end
@@ -91,18 +125,18 @@ module Idv
         result
       end
 
-      def post_images(front, back)
+      def post_images(front, back, selfie)
         return throttled_response if throttled_else_increment
 
-        DocAuthClient.client.post_images(
+        result = DocAuthClient.client.post_images(
           front_image: front,
           back_image: back,
+          selfie_image: selfie,
+          liveness_checking_enabled: liveness_checking_enabled?,
         )
-      end
-
-      def add_image_costs
-        add_cost(:acuant_front_image)
-        add_cost(:acuant_back_image)
+        # DP: should these cost recordings happen in the doc_auth_client?
+        add_costs
+        result
       end
 
       def handle_api_upload
@@ -114,7 +148,6 @@ module Idv
         api_results = api_upload['results_response']
         return unless api_selfie && api_results
         extract_pii_from_doc(api_results)
-
       end
 
       def throttled
@@ -149,6 +182,12 @@ module Idv
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
+      def add_costs
+        add_cost(:acuant_front_image)
+        add_cost(:acuant_back_image)
+        add_cost(:acuant_selfie) if liveness_checking_enabled?
+      end
+
       def sp_session
         session.fetch(:sp, {})
       end
@@ -158,9 +197,10 @@ module Idv
       end
 
       def mark_document_capture_or_image_upload_steps_complete
-        if Figaro.env.document_capture_step_enabled == 'true'
+        if FeatureManagement.document_capture_step_enabled?
           mark_step_complete(:front_image)
           mark_step_complete(:back_image)
+          mark_step_complete(:selfie)
           mark_step_complete(:mobile_front_image)
           mark_step_complete(:mobile_back_image)
         else

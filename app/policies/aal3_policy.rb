@@ -1,4 +1,6 @@
 class AAL3Policy
+  AAL3_METHODS = %w[webauthn piv_cac].freeze
+
   def initialize(session:, user: nil)
     @session = session
     @mfa_policy = MfaPolicy.new(user) if user
@@ -11,7 +13,7 @@ class AAL3Policy
   def aal3_used?
     return false unless @session
 
-    %w[webauthn piv_cac].include?(@session[:auth_method])
+    AAL3_METHODS.include?(@session[:auth_method])
   end
 
   def aal3_required_but_not_used?
@@ -19,9 +21,12 @@ class AAL3Policy
   end
 
   def aal3_configured_but_not_used?
-    aal3_required? &&
-      @mfa_policy&.aal3_mfa_enabled? &&
+    aal3_configured_and_required? &&
       !aal3_used?
+  end
+
+  def aal3_configured_and_required?
+    aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
   private

@@ -54,6 +54,10 @@ class MfaContext
     PersonalKeyConfiguration.new(user)
   end
 
+  def aal3_configurations
+    webauthn_configurations + piv_cac_configurations
+  end
+
   def two_factor_configurations
     phone_configurations + webauthn_configurations + backup_code_configurations +
       piv_cac_configurations + auth_app_configurations

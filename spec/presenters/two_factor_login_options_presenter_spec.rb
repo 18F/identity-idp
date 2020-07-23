@@ -6,7 +6,7 @@ describe TwoFactorLoginOptionsPresenter do
   let(:user) { User.new }
   let(:view) { ActionController::Base.new.view_context }
   let(:presenter) do
-    TwoFactorLoginOptionsPresenter.new(user, view, nil)
+    TwoFactorLoginOptionsPresenter.new(user, view, nil, nil)
   end
 
   it 'supplies a title' do
