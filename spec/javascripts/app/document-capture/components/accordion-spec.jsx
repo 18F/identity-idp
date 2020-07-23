@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import Accordion from '../../../../../app/javascript/app/document-capture/components/accordion';
 
 describe('document-capture/components/accordion', () => {

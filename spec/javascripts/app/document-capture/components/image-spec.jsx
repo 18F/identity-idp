@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import Image from '../../../../../app/javascript/app/document-capture/components/image';
 import AssetContext from '../../../../../app/javascript/app/document-capture/context/asset';
 

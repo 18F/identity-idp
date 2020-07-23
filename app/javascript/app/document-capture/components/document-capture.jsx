@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AcuantCapture from './acuant-capture';
 import DocumentTips from './document-tips';
 import Image from './image';
 import useI18n from '../hooks/use-i18n';
+import Submission from './submission';
 
 function DocumentCapture() {
   const t = useI18n();
+  const [formValues] = useState({ example: true });
 
   const sample = (
     <Image
@@ -21,6 +23,7 @@ function DocumentCapture() {
       <h2>{t('doc_auth.headings.welcome')}</h2>
       <DocumentTips sample={sample} />
       <AcuantCapture />
+      {formValues && <Submission payload={formValues} />}
     </>
   );
 }

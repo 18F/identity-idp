@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { fireEvent, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
+import render from '../../../support/render';
 import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
 

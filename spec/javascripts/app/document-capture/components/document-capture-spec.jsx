@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import DocumentCapture from '../../../../../app/javascript/app/document-capture/components/document-capture';
 
 describe('document-capture/components/document-capture', () => {
