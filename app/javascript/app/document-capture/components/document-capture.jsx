@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import AcuantCapture from './acuant-capture';
 import DocumentTips from './document-tips';
 import Image from './image';
-import useI18n from '../hooks/use-i18n';
+import FormSteps from './form-steps';
 import Submission from './submission';
 
 function DocumentCapture() {
-  const t = useI18n();
-  const [formValues] = useState({ example: true });
+  const [formValues, setFormValues] = useState(null);
 
   const sample = (
     <Image
@@ -18,12 +17,36 @@ function DocumentCapture() {
     />
   );
 
-  return (
+  return formValues ? (
+    <Submission payload={formValues} />
+  ) : (
     <>
-      <h2>{t('doc_auth.headings.welcome')}</h2>
-      <DocumentTips sample={sample} />
       <AcuantCapture />
-      {formValues && <Submission payload={formValues} />}
+      <DocumentTips sample={sample} />
+      <FormSteps
+        steps={[
+          {
+            name: 'front',
+            // Disable reason: This is intended as throwaway code.
+            // eslint-disable-next-line react/prop-types
+            component: ({ value, onChange }) => (
+              // eslint-disable-next-line jsx-a11y/label-has-associated-control
+              <label>
+                Front
+                <input
+                  type="text"
+                  value={value ?? ''}
+                  onChange={(event) => onChange(event.target.value)}
+                />
+              </label>
+            ),
+          },
+          { name: 'back', component: () => 'Back' },
+          { name: 'selfie', component: () => 'Selfie' },
+          { name: 'confirm', component: () => 'Confirm?' },
+        ]}
+        onComplete={setFormValues}
+      />
     </>
   );
 }

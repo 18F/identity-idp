@@ -14,7 +14,9 @@ import UploadContext from '../../../app/javascript/app/document-capture/context/
  */
 function renderWithDefaultContext(element) {
   return render(
-    <UploadContext.Provider value={() => Promise.resolve()}>{element}</UploadContext.Provider>,
+    <UploadContext.Provider value={(payload) => Promise.resolve(payload)}>
+      {element}
+    </UploadContext.Provider>,
   );
 }
 

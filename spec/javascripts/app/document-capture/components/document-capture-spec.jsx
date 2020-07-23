@@ -1,13 +1,28 @@
 import React from 'react';
+import userEvent from '@testing-library/user-event';
 import render from '../../../support/render';
 import DocumentCapture from '../../../../../app/javascript/app/document-capture/components/document-capture';
 
 describe('document-capture/components/document-capture', () => {
-  it('renders a heading', () => {
+  it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const heading = getByText('doc_auth.headings.welcome');
+    const step = getByText('Front');
 
-    expect(heading).to.be.ok();
+    expect(step).to.be.ok();
+  });
+
+  it('progresses through steps to completion', async () => {
+    const { getByText, findByText, getByRole } = render(<DocumentCapture />);
+
+    userEvent.type(getByRole('textbox'), 'abc');
+    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('Submit'));
+
+    const confirmation = await findByText('Finished sending: {"front":"abc"}');
+
+    expect(confirmation).to.be.ok();
   });
 });
