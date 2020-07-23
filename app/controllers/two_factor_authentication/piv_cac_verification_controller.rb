@@ -69,6 +69,7 @@ module TwoFactorAuthentication
     def piv_cac_view_data
       {
         two_factor_authentication_method: two_factor_authentication_method,
+        hide_fallback_question: hspd12_policy.piv_cac_required?,
         user_email: current_user.email_addresses.take.email,
       }.merge(generic_data)
     end
