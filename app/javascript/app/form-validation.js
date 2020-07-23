@@ -33,10 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
           input.addEventListener('input', function () {
             if (buttons.length !== 0 && input.checkValidity()) {
               [].forEach.call(buttons, function (button) {
-                if (
-                  button.disabled &&
-                  !button.classList.contains('no-auto-enable')
-                ) {
+                if (button.disabled && !button.classList.contains('no-auto-enable')) {
                   button.disabled = false;
                 }
               });
@@ -45,9 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const conditionalRequiredInputs = form.querySelectorAll(
-        'input[data-required-if-checked]',
-      );
+      const conditionalRequiredInputs = form.querySelectorAll('input[data-required-if-checked]');
 
       if (conditionalRequiredInputs.length !== 0) {
         [].forEach.call(conditionalRequiredInputs, function (drivenInput) {
@@ -55,9 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const drivingElement = form.querySelector(selector);
 
           if (drivingElement) {
-            const otherInputs = form.querySelectorAll(
-              `input[name="${drivingElement.name}"]`,
-            );
+            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
             const handler = function () {
               drivenInput.required = this === drivingElement;
               return true;
@@ -75,9 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const conditionalVisibleInputs = form.querySelectorAll(
-        'input[data-visible-if-checked]',
-      );
+      const conditionalVisibleInputs = form.querySelectorAll('input[data-visible-if-checked]');
 
       if (conditionalVisibleInputs.length !== 0) {
         [].forEach.call(conditionalVisibleInputs, function (drivenInput) {
@@ -85,19 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
           const drivingElement = form.querySelector(selector);
 
           if (drivingElement) {
-            const otherInputs = form.querySelectorAll(
-              `input[name="${drivingElement.name}"]`,
-            );
+            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
 
             const handler = function () {
               const visible = this === drivingElement;
               if (drivenInput.classList) {
                 drivenInput.classList.toggle('hidden', !visible);
               } else if (visible) {
-                drivenInput.className = drivenInput.className.replace(
-                  /\bhidden\b/g,
-                  '',
-                );
+                drivenInput.className = drivenInput.className.replace(/\bhidden\b/g, '');
               } else {
                 drivenInput.className = `${drivenInput.className} hidden`;
               }
@@ -119,13 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (inputs.length !== 0) {
         [].forEach.call(inputs, function (input) {
-          const types = [
-            'dob',
-            'personal-key',
-            'ssn',
-            'state_id_number',
-            'zipcode',
-          ];
+          const types = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode'];
 
           addListenerMulti(input, 'input invalid', (e) => {
             e.target.setCustomValidity('');

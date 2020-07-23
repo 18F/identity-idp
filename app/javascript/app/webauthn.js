@@ -41,12 +41,7 @@ const isWebAuthnEnabled = () => {
   return false;
 };
 
-const enrollWebauthnDevice = ({
-  userId,
-  userEmail,
-  userChallenge,
-  excludeCredentials,
-}) => {
+const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredentials }) => {
   const createOptions = {
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
@@ -125,9 +120,4 @@ const verifyWebauthnDevice = ({ userChallenge, credentialIds }) => {
   }));
 };
 
-export {
-  extractCredentials,
-  isWebAuthnEnabled,
-  enrollWebauthnDevice,
-  verifyWebauthnDevice,
-};
+export { extractCredentials, isWebAuthnEnabled, enrollWebauthnDevice, verifyWebauthnDevice };

@@ -9,9 +9,7 @@ function validateStateSelection() {
    * The check happens onchange. If the value is acceptable, any existing
    * error message is removed.
    ********************************************************* */
-  const stateFields = document.querySelectorAll(
-    '[data-supported-jurisdictions]',
-  );
+  const stateFields = document.querySelectorAll('[data-supported-jurisdictions]');
 
   if (stateFields) {
     [].slice.call(stateFields).forEach((input) => {
@@ -29,10 +27,7 @@ function validateStateSelection() {
 
       input.addEventListener('change', function () {
         if (this.dataset.supportedJurisdictions.indexOf(input.value) === -1) {
-          errorDiv.innerHTML = [
-            this.dataset.errorMessage,
-            this.dataset.errorMessageSp,
-          ].join(' ');
+          errorDiv.innerHTML = [this.dataset.errorMessage, this.dataset.errorMessageSp].join(' ');
         } else {
           errorDiv.innerHTML = '';
         }

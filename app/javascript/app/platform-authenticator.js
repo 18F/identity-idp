@@ -10,11 +10,11 @@ function platformAuthenticator() {
       postPlatformAuthenticator(false);
       return;
     }
-    window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(
-      function (userIntent) {
-        postPlatformAuthenticator(userIntent);
-      },
-    );
+    window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function (
+      userIntent,
+    ) {
+      postPlatformAuthenticator(userIntent);
+    });
   }
 }
 document.addEventListener('DOMContentLoaded', platformAuthenticator);

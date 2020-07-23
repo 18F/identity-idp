@@ -12,9 +12,7 @@ intlTelInput(telInput, {
 
 // OnChange event
 telInput.addEventListener('countrychange', function () {
-  const selected = document.querySelector(
-    ".iti__country[aria-selected='true']",
-  );
+  const selected = document.querySelector(".iti__country[aria-selected='true']");
   const country = selected.getAttribute('data-country-code').toUpperCase();
   // update international_code dropdown
   for (let i = 0; i < intlCode.options.length; i += 1) {
@@ -28,15 +26,11 @@ telInput.addEventListener('countrychange', function () {
 
 function intlTelInputNormalize() {
   // remove duplacte items in the country list
-  const dupUsOption = document.querySelectorAll(
-    '#country-listbox #iti-item-us',
-  )[1];
+  const dupUsOption = document.querySelectorAll('#country-listbox #iti-item-us')[1];
   if (dupUsOption) {
     dupUsOption.parentNode.removeChild(dupUsOption);
   }
-  const dupCanOption = document.querySelectorAll(
-    '#country-listbox #iti-item-ca',
-  )[1];
+  const dupCanOption = document.querySelectorAll('#country-listbox #iti-item-ca')[1];
   if (dupCanOption) {
     dupCanOption.parentNode.removeChild(dupCanOption);
   }
@@ -48,9 +42,7 @@ function intlTelInputNormalize() {
     });
   }
   // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
-  const selectedFlag = document.querySelectorAll(
-    '.iti__flag-container .iti__selected-flag',
-  );
+  const selectedFlag = document.querySelectorAll('.iti__flag-container .iti__selected-flag');
   if (selectedFlag) {
     [].slice.call(selectedFlag).forEach((element) => {
       element.setAttribute('aria-haspopup', 'true');

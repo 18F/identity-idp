@@ -16,13 +16,7 @@ function AcuantCaptureCanvas({ onImageCaptureSuccess, onImageCaptureFailure }) {
   return (
     <>
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <video
-        id="acuant-player"
-        controls
-        autoPlay
-        playsInline
-        style={{ display: 'none' }}
-      />
+      <video id="acuant-player" controls autoPlay playsInline style={{ display: 'none' }} />
       <div id="acuant-sdk-capture-view">
         <canvas id="acuant-video-canvas" width="100%" height="auto" />
       </div>

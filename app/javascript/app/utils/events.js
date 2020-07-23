@@ -26,9 +26,7 @@ class Events {
       this.handlers[eventName].length = 0;
     } else {
       const handlers = this.handlers[eventName] || [];
-      this.handlers[eventName] = handlers.filter(
-        (obj) => obj.handler !== handler,
-      );
+      this.handlers[eventName] = handlers.filter((obj) => obj.handler !== handler);
     }
   }
 

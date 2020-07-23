@@ -13,10 +13,7 @@ const {
 export const imageCaptureButtonClicked = (event) => {
   event.preventDefault();
   acuantImageCaptureStarted();
-  window.AcuantCameraUI.start(
-    acuantImageCaptureSuccess,
-    acuantImageCaptureFailed,
-  );
+  window.AcuantCameraUI.start(acuantImageCaptureSuccess, acuantImageCaptureFailed);
 };
 
 export const initializeAcuantSdk = (credentials = null, endpoint = null) => {

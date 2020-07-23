@@ -46,9 +46,7 @@ describe('Events', () => {
 
       events.on(myEvent, dummyHandler, fake);
 
-      expect(
-        events.handlers[myEvent][0].context instanceof FakeClass,
-      ).to.be.true();
+      expect(events.handlers[myEvent][0].context instanceof FakeClass).to.be.true();
     });
   });
 

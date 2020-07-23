@@ -53,18 +53,9 @@ function imagePreviewFunction(imageId, imageTarget) {
   };
 }
 
-const frontImagePreview = imagePreviewFunction(
-  '#doc_auth_front_image',
-  '#front_target',
-);
-const backImagePreview = imagePreviewFunction(
-  '#doc_auth_back_image',
-  '#back_target',
-);
-const selfieImagePreview = imagePreviewFunction(
-  '#doc_auth_selfie_image',
-  '#selfie_target',
-);
+const frontImagePreview = imagePreviewFunction('#doc_auth_front_image', '#front_target');
+const backImagePreview = imagePreviewFunction('#doc_auth_back_image', '#back_target');
+const selfieImagePreview = imagePreviewFunction('#doc_auth_selfie_image', '#selfie_target');
 
 document.addEventListener('DOMContentLoaded', frontImagePreview);
 document.addEventListener('DOMContentLoaded', backImagePreview);

@@ -72,14 +72,12 @@ describe('WebAuthn', () => {
           excludeCredentials: [
             {
               // encodes to 'credential123'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118])
-                .buffer,
+              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118]).buffer,
               type: 'public-key',
             },
             {
               // encodes to 'credential456'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57])
-                .buffer,
+              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57]).buffer,
               type: 'public-key',
             },
           ],
@@ -155,14 +153,12 @@ describe('WebAuthn', () => {
           allowCredentials: [
             {
               // encodes to 'credential123'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118])
-                .buffer,
+              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118]).buffer,
               type: 'public-key',
             },
             {
               // encodes to 'credential456'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57])
-                .buffer,
+              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57]).buffer,
               type: 'public-key',
             },
           ],

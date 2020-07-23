@@ -1,10 +1,7 @@
 const WebAuthn = require('../app/webauthn');
 
 function webauthn() {
-  if (
-    window.location.href.indexOf('?error=') === -1 &&
-    !WebAuthn.isWebAuthnEnabled()
-  ) {
+  if (window.location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {
     window.location.href = '/webauthn_setup?error=NotSupportedError';
   }
   const continueButton = document.getElementById('continue-button');
@@ -20,12 +17,9 @@ function webauthn() {
     })
       .then((result) => {
         document.getElementById('webauthn_id').value = result.webauthnId;
-        document.getElementById('webauthn_public_key').value =
-          result.webauthnPublicKey;
-        document.getElementById('attestation_object').value =
-          result.attestationObject;
-        document.getElementById('client_data_json').value =
-          result.clientDataJSON;
+        document.getElementById('webauthn_public_key').value = result.webauthnPublicKey;
+        document.getElementById('attestation_object').value = result.attestationObject;
+        document.getElementById('client_data_json').value = result.clientDataJSON;
         document.getElementById('webauthn_form').submit();
       })
       .catch(function (err) {

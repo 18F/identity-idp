@@ -48,9 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const intlPhoneInput =
     document.querySelector('[data-international-phone-form] .phone') ||
     document.querySelector('[data-international-phone-form] .new-phone');
-  const codeInput = document.querySelector(
-    '[data-international-phone-form] .international-code',
-  );
+  const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (intlPhoneInput) {
     intlPhoneInput.addEventListener('keyup', checkPhoneValidity);
     intlPhoneInput.addEventListener('focus', checkPhoneValidity);

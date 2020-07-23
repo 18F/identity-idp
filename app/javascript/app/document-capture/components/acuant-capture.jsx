@@ -20,9 +20,7 @@ function AcuantCapture() {
 
   if (capture) {
     const { data, width, height } = capture.image;
-    return (
-      <img alt="Captured result" src={data} width={width} height={height} />
-    );
+    return <img alt="Captured result" src={data} width={width} height={height} />;
   }
 
   return (

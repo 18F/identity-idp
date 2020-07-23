@@ -5,9 +5,7 @@ export default function toggleBanner() {
     const toggleBannerSection = (evt) => {
       evt.currentTarget.setAttribute(
         'aria-expanded',
-        evt.currentTarget.getAttribute('aria-expanded') === 'true'
-          ? 'false'
-          : 'true',
+        evt.currentTarget.getAttribute('aria-expanded') === 'true' ? 'false' : 'true',
       );
       const howYouKnowSection = document.querySelector('#gov-banner');
       if (howYouKnowSection) howYouKnowSection.classList.toggle('hide');
