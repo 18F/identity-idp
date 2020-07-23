@@ -94,13 +94,27 @@ module Idv
       def post_images(front, back)
         return throttled_response if throttled_else_increment
 
-        result = DocAuthClient.client.post_images(
+        DocAuthClient.client.post_images(
           front_image: front,
           back_image: back,
         )
+      end
+
+      def add_image_costs
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
-        result
+      end
+
+      def handle_api_upload
+        # Check to see if the API upload also contains the selfie
+        # key, and skip most of the selfie step if it does
+        api_upload = user_session['idv/doc_auth']['api_upload']
+        return unless api_upload
+        api_selfie = api_upload['selfie']
+        api_results = api_upload['results_response']
+        return unless api_selfie && api_results
+        extract_pii_from_doc(api_results)
+
       end
 
       def throttled

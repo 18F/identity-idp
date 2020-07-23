@@ -1,16 +1,16 @@
 import useCSRF from './hooks/use-csrf';
+
 const imageUploadURI = '/api/verify/upload';
 
 function uploadImages(frontImage, backImage, selfieImage) {
-  const [csrfParam, csrfToken] = useCSRF();
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  headers[csrfParam] = csrfToken;
+  const csrfToken = useCSRF();
   return new Promise((resolve, reject) => {
     fetch(imageUploadURI, {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
       body: JSON.stringify({
         front: frontImage,
         back: backImage,

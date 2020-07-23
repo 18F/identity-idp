@@ -2,9 +2,6 @@ module Idv
   class ImageUploadController < ApplicationController
     include IdvSession
 
-    skip_before_action :verify_authenticity_token
-
-
     def upload
       validation_error = validate_request(request)
       response = validation_error || handle_images
@@ -25,28 +22,22 @@ module Idv
     end
 
     def upload_and_check_images
-      image_mappings = {
-        post_front_image: @front_image,
-        post_back_image: @back_image,
+      doc_response = @client.post_images(@front_image, @back_image, instance_id: @instance_id)
+      return error_json(doc_response.errors.first) unless doc_response.success?
+      results_response = @client.get_results(instance_id: @instance_id)
+      return error_json(results_response.errors.first) unless results_response.success?
+      upload_info = {
+        documents: doc_response,
+        instance_id: @instance_id,
+        results_response: results_response,
       }
       if FeatureManagement.liveness_checking_enabled?
-        image_mappings[:post_selfie] = @selfie_image
+        selfie_response = @client.post_selfie(image: @selfie_image, instance_id: @instance_id)
+        return error_json(selfie_response.errors.first) unless selfie_response.success?
+        upload_info[:selfie] = selfie_response
       end
-      image_mappings.each do |method_name, image|
-        error_response = post_image_step(method_name, image)
-        return error_response if error_response
-      end
-      {
-        status: 'success',
-        message: 'Uploaded images',
-      }
-    end
-
-    def post_image_step(image_step, image)
-      post_response = @client.send(image_step,
-                                   image: image,
-                                   instance_id: @instance_id)
-      error_json(post_response.errors.first) unless post_response.success?
+      user_session['api_upload'] = upload_info
+      success_json('Uploaded images')
     end
 
     def validate_request(request)
@@ -74,6 +65,13 @@ module Idv
       {
         status: 'error',
         message: reason,
+      }
+    end
+
+    def success_json(reason)
+      {
+          status: 'success',
+          message: reason
       }
     end
   end
