@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import useI18n from '../hooks/use-i18n';
 
 function FormSteps({ steps, onComplete }) {
   const [values, setValues] = useState({});
   const [stepIndex, setStepIndex] = useState(0);
+  const t = useI18n();
 
   function setStepValue(name, nextStepValue) {
     setValues({ ...values, [name]: nextStepValue });
@@ -67,7 +69,7 @@ function FormSteps({ steps, onComplete }) {
         onChange={(nextStepValue) => setStepValue(name, nextStepValue)}
       />
       <button type="button" onClick={toNextStep}>
-        {isLastStep ? 'Submit' : 'Continue'}
+        {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </button>
     </>
   );

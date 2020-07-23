@@ -34,13 +34,13 @@ describe('document-capture/components/form-steps', () => {
   it('renders continue button at first step', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    expect(getByText('Continue')).to.be.ok();
+    expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
   it('renders the active step', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('Second')).to.be.ok();
   });
@@ -48,28 +48,28 @@ describe('document-capture/components/form-steps', () => {
   it('renders continue button until at last step', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(getByText('Continue')).to.be.ok();
+    expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
   it('renders submit button at last step', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(getByText('Submit')).to.be.ok();
+    expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
 
   it('submits with form values', () => {
     const onComplete = sinon.spy();
     const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
     userEvent.type(getByRole('textbox'), 'val');
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Submit'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.submit.default'));
 
     expect(onComplete.getCall(0).args[0]).to.eql({
       second: 'val',
@@ -79,7 +79,7 @@ describe('document-capture/components/form-steps', () => {
   it('pushes step to URL', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.search).to.equal('?step=second');
   });
@@ -87,7 +87,7 @@ describe('document-capture/components/form-steps', () => {
   it('syncs step by history events', async () => {
     const { getByText, findByText, getByRole } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
     userEvent.type(getByRole('textbox'), 'val');
 
     window.history.back();
@@ -110,16 +110,16 @@ describe('document-capture/components/form-steps', () => {
     });
     const { getByText } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
 
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Submit'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.submit.default'));
   });
 
   it('maintains focus after step change', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('Continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(document.activeElement).to.equal(getByText('Continue'));
+    expect(document.activeElement).to.equal(getByText('forms.buttons.continue'));
   });
 });

@@ -16,10 +16,10 @@ describe('document-capture/components/document-capture', () => {
     const { getByText, findByText, getByRole } = render(<DocumentCapture />);
 
     userEvent.type(getByRole('textbox'), 'abc');
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Continue'));
-    userEvent.click(getByText('Submit'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.submit.default'));
 
     const confirmation = await findByText('Finished sending: {"front":"abc"}');
 
