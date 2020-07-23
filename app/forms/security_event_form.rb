@@ -108,7 +108,7 @@ class SecurityEventForm
 
     return if !user || !service_provider
 
-    return if !record_already_exists?
+    return unless record_already_exists?
 
     errors.add(:jti, t('risc.security_event.errors.jti_not_unique'))
     @error_code = ErrorCodes::DUP
