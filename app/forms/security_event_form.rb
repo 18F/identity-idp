@@ -104,9 +104,9 @@ class SecurityEventForm
 
   def validate_aud
     return if jwt_payload.blank?
-    return if jwt_payload['aud'] == api_security_events_url
+    return if jwt_payload['aud'] == api_risc_security_events_url
 
-    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_security_events_url))
+    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_risc_security_events_url))
     @error_code = ErrorCodes::JWT_AUD
   end
 

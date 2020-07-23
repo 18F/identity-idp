@@ -19,7 +19,7 @@ RSpec.describe SecurityEventForm do
       iss: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       iat: Time.zone.now.to_i,
-      aud: api_security_events_url,
+      aud: api_risc_security_events_url,
       events: {
         SecurityEvent::CREDENTIAL_CHANGE_REQUIRED => {
           subject: {
@@ -142,7 +142,7 @@ RSpec.describe SecurityEventForm do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('jwtAud')
           expect(form.errors[:aud]).
-            to include("invalid aud claim, expected #{api_security_events_url}")
+            to include("invalid aud claim, expected #{api_risc_security_events_url}")
         end
       end
     end

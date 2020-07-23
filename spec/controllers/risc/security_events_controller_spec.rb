@@ -21,7 +21,7 @@ RSpec.describe Risc::SecurityEventsController do
         iss: identity.service_provider,
         jti: jti,
         iat: Time.zone.now.to_i,
-        aud: api_security_events_url,
+        aud: api_risc_security_events_url,
         events: {
           SecurityEvent::CREDENTIAL_CHANGE_REQUIRED => {
             subject: {
@@ -70,7 +70,7 @@ RSpec.describe Risc::SecurityEventsController do
         json = JSON.parse(response.body).with_indifferent_access
 
         expect(json[:err]).to eq(SecurityEventForm::ErrorCodes::JWT_AUD)
-        expect(json[:description]).to include("expected #{api_security_events_url}")
+        expect(json[:description]).to include("expected #{api_risc_security_events_url}")
       end
 
       it 'tracks an error event in analytics' do
