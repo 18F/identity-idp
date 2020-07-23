@@ -1,10 +1,3 @@
-# redis-session-store uses #exists which is changing behavior in redis,
-# this silences the corresponding deprecation warning.
-# If this PR is merged and accepted, we can remove this option when we upgrade
-# the redis-sessions-store gem:
-# https://github.com/roidrage/redis-session-store/pull/119
-Redis.exists_returns_integer = true
-
 require 'session_encryptor'
 
 options = {
