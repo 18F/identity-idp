@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth document capture step' do
+feature 'doc auth mobile document capture step' do
   include IdvStepHelper
   include DocAuthHelper
   include InPersonHelper
@@ -13,16 +13,15 @@ feature 'doc auth document capture step' do
       and_return(document_capture_step_enabled)
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
     sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_document_capture_step
+    complete_doc_auth_steps_before_mobile_document_capture_step
   end
 
   context 'when the step is disabled' do
     let(:document_capture_step_enabled) { 'false' }
 
-    it 'takes the user to the front image step' do
-      expect(current_path).to eq(idv_doc_auth_front_image_step)
+    it 'takes the user to the mobile front image step' do
+      expect(current_path).to eq(idv_doc_auth_mobile_front_image_step)
     end
   end
 
@@ -33,9 +32,9 @@ feature 'doc auth document capture step' do
       let(:liveness_enabled) { 'true' }
 
       it 'is on the correct_page' do
-        expect(current_path).to eq(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_front_html')))
-        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_back_html')))
+        expect(current_path).to eq(idv_doc_auth_mobile_document_capture_step)
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.take_pic_front')))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.take_pic_back')))
         expect(page).to have_content(t('doc_auth.headings.selfie'))
       end
 
@@ -74,7 +73,7 @@ feature 'doc auth document capture step' do
         attach_images
         click_idv_continue
 
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_current_path(idv_doc_auth_mobile_document_capture_step)
       end
 
       it 'offers in person option on failure' do
@@ -129,7 +128,7 @@ feature 'doc auth document capture step' do
         attach_images
         click_idv_continue
 
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_current_path(idv_doc_auth_mobile_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
@@ -138,7 +137,7 @@ feature 'doc auth document capture step' do
       let(:liveness_enabled) { 'false' }
 
       it 'is on the correct_page, but does not show the selfie upload option' do
-        expect(current_path).to eq(idv_doc_auth_document_capture_step)
+        expect(current_path).to eq(idv_doc_auth_mobile_document_capture_step)
         expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_front_html')))
         expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_back_html')))
         expect(page).not_to have_content(t('doc_auth.headings.selfie'))
@@ -204,7 +203,7 @@ feature 'doc auth document capture step' do
         attach_images(liveness_enabled: false)
         click_idv_continue
 
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_current_path(idv_doc_auth_mobile_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
