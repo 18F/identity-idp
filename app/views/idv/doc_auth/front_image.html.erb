@@ -8,8 +8,7 @@
   <%= t('doc_auth.headings.upload_front') %>
 </h1>
 
-<%= accordion('totp-info', t('doc_auth.tips.title_html'),
-  wrapper_css: 'my2 col-12 fs-16p') do %>
+<%= accordion('totp-info', t('doc_auth.tips.title_html')) do %>
   <%= render 'idv/doc_auth/tips_and_sample' %>
   <div class='center'>
     <%= image_tag(asset_url('state-id-sample-front.jpg'), height: 338, width: 450) %>
