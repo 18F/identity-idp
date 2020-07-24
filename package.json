@@ -20,7 +20,6 @@
     "cleave.js": "^1.5.3",
     "clipboard": "^1.6.1",
     "coffeescript": "1.12.7",
-    "domready": "^1.0.8",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.5",
@@ -31,7 +30,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "uswds": "^2.0.3",
     "webpack-dev-server": "^3.11.0",
     "zxcvbn": "^4.4.2"
   },
