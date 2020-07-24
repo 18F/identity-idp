@@ -19,6 +19,16 @@ describe('document-capture/components/form-steps', () => {
     { name: 'last', component: () => <span>Last</span> },
   ];
 
+  let originalHash;
+
+  beforeEach(() => {
+    originalHash = window.location.hash;
+  });
+
+  afterEach(() => {
+    window.location.hash = originalHash;
+  });
+
   it('renders nothing if given empty steps array', () => {
     const { container } = render(<FormSteps steps={[]} />);
 
@@ -81,7 +91,7 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(window.location.search).to.equal('?step=second');
+    expect(window.location.hash).to.equal('#step=second');
   });
 
   it('syncs step by history events', async () => {
@@ -93,18 +103,18 @@ describe('document-capture/components/form-steps', () => {
     window.history.back();
 
     expect(await findByText('First')).to.be.ok();
-    expect(window.location.search).to.equal('');
+    expect(window.location.hash).to.equal('');
 
     window.history.forward();
 
     expect(await findByText('Second')).to.be.ok();
     expect(getByRole('textbox').value).to.equal('val');
-    expect(window.location.search).to.equal('?step=second');
+    expect(window.location.hash).to.equal('#step=second');
   });
 
   it('clear URL parameter after submission', (done) => {
     const onComplete = sinon.spy(() => {
-      expect(window.location.search).to.equal('');
+      expect(window.location.hash).to.equal('');
 
       done();
     });
