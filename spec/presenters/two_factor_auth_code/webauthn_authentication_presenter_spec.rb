@@ -18,6 +18,9 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
   describe '#fallback_question' do
     it 'supplies a fallback_question' do
+      aal3_policy = instance_double('AAL3Policy')
+      allow(aal3_policy).to receive(:aal3_required?).and_return false
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
       expect(presenter.fallback_question).to \
         eq(t('two_factor_authentication.webauthn_fallback.question'))
     end
