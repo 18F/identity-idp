@@ -6,7 +6,19 @@ module TwoFactorAuthCode
 
     attr_reader :credential_ids, :user_opted_remember_device_cookie
 
+    def webauthn_help
+      if aal3_policy.aal3_required? && !aal3_policy.multiple_aal3_configurations?
+        t('instructions.mfa.webauthn.confirm_only_webauthn_html')
+      else
+        t('instructions.mfa.webauthn.confirm_webauthn_html')
+      end
+    end
+
     def help_text
+      ''
+    end
+
+    def header
       ''
     end
 

@@ -110,10 +110,10 @@ en:
     phone_voice_info_html: We'll call you with a security code <strong>each time you
       sign in</strong>.
     phone_voice_label: Phone number
-    piv_cac_webauthn_available: Use your security key
     piv_cac_fallback:
       question: Don't have your piv/cac card available?
     piv_cac_header_text: Present your PIV/CAC
+    piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: read about two-factor authentication

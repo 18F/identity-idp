@@ -119,10 +119,10 @@ es:
     phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada vez
       que inicies sesión</strong>.
     phone_voice_label: Número de teléfono
-    piv_cac_webauthn_available: Usa tu clave de seguridad
     piv_cac_fallback:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
+    piv_cac_webauthn_available: Usa tu clave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores

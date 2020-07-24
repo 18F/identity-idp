@@ -35,6 +35,9 @@ es:
           ingrese su PIN </strong> (su PIN se creó cuando configuró su PIV / CAC )'
         back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
+        confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad utilizando una identificación de empleado del
+          gobierno que configuró previamente para acceder a su información
         did_not_work: Puede haber un problema con su PIV / CAC o PIN. Si cree que
           esto es un error, %{try_again}.  Si este problema continúa, comuníquese
           con el administrador de su agencia.
@@ -60,6 +63,9 @@ es:
         number_message_html: Acabamos de llamarte en %{number}.
       webauthn:
         confirm_webauthn_html: Presente la clave de seguridad que asoció con su cuenta.
+        conrim_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad utilizando una clave de seguridad que configuró
+          previamente para acceder a su información.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:
       forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."

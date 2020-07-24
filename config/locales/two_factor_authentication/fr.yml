@@ -118,10 +118,10 @@ fr:
     phone_voice_info_html: Nous vous appellerons avec un code de sécurité <strong>chaque
       fois que vous vous connectez</strong>.
     phone_voice_label: Numéro de téléphone
-    piv_cac_webauthn_available: Utilisez votre clé de sécurité
     piv_cac_fallback:
       question: Vous n'avez pas accès à votre carte PIV/CAC?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
+    piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: lire sur l'authentification à deux facteurs

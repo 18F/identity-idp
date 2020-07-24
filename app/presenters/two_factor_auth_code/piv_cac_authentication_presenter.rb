@@ -8,7 +8,11 @@ module TwoFactorAuthCode
     end
 
     def help_text
-      t('instructions.mfa.piv_cac.confirm_piv_cac_html')
+      if aal3_policy.aal3_required? && !aal3_policy.multiple_aal3_configurations?
+        t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
+      else
+        t('instructions.mfa.piv_cac.confirm_piv_cac_html')
+      end
     end
 
     def piv_cac_capture_text
