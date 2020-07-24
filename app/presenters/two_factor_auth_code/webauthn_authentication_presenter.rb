@@ -8,7 +8,7 @@ module TwoFactorAuthCode
 
     def webauthn_help
       if aal3_policy.aal3_required? && !aal3_policy.multiple_aal3_configurations?
-        t('instructions.mfa.webauthn.confirm_only_webauthn_html')
+        t('instructions.mfa.webauthn.confirm_webauthn_only_html')
       else
         t('instructions.mfa.webauthn.confirm_webauthn_html')
       end

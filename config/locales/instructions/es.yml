@@ -63,7 +63,7 @@ es:
         number_message_html: Acabamos de llamarte en %{number}.
       webauthn:
         confirm_webauthn_html: Presente la clave de seguridad que asoció con su cuenta.
-        conrim_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+        confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
           Debe verificar su identidad utilizando una clave de seguridad que configuró
           previamente para acceder a su información.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
