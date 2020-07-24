@@ -4,6 +4,7 @@ set -euo pipefail
 params=""
 spec_helper="rails_helper"
 should_source_env=1
+retry_count=3
 
 function help() {
   cat <<EOS
@@ -12,6 +13,7 @@ Usage: $0 [--local|--remote] [FILES...]
    --remote         Run the tests against remote servers
    --no-source-env  Do not source .env file for environment variables (this is used in CI)
    --help           Print this help message
+   --retry-count    Number of times to retry failures (default: $retry_count)
 EOS
 }
 
@@ -29,6 +31,10 @@ while (( "$#" )); do
       should_source_env=0
       shift
       ;;
+    --retry-count)
+      retry_count="$2"
+      shift 2
+      ;;
     --help|-h)
       help
       exit 0
@@ -43,6 +49,7 @@ while (( "$#" )); do
       ;;
   esac
 done
+
 # set positional arguments in their proper place
 eval set -- "${params// }"
 
@@ -53,6 +60,23 @@ if [[ "$spec_helper" == "monitor_spec_helper" && "$should_source_env" -eq 1 ]]; 
   set +o allexport
 fi
 
-cmd="bundle exec rspec --require ${spec_helper} ${params:-"spec/features/monitor/"}"
-echo "$cmd" >&2
-$cmd
+function print_then_run() {
+  cmd="$1"
+  echo "$cmd" >&2
+  $cmd
+}
+
+set +e
+rspec="bundle exec rspec --require ${spec_helper} ${params:-"spec/features/monitor/"}"
+print_then_run "$rspec"
+test_status=$?
+
+while [[ "$test_status" -ne 0 && "$retry_count" -gt 0 ]]; do
+  echo "retrying... ($retry_count left)"
+  let retry_count-=1
+  print_then_run "$rspec --only-failure"
+  test_status=$?
+done
+set -e
+
+exit "$test_status"
