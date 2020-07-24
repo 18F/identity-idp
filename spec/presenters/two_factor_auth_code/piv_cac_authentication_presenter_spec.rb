@@ -25,7 +25,12 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         app: content_tag(:strong, APP_NAME))
     end
 
-    it { expect(presenter.help_text).to eq expected_help_text }
+    it 'finds the help text' do
+      aal3_policy = instance_double('AAL3Policy')
+      allow(aal3_policy).to receive(:aal3_required?).and_return false
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+      expect(presenter.help_text).to eq expected_help_text
+    end
   end
 
   describe '#piv_cac_capture_text' do
