@@ -17,7 +17,7 @@ RSpec.describe RiscConfigurationPresenter do
 
         expect(configuration[:delivery].first).to eq(
           delivery_method: RiscConfigurationPresenter::DELIVERY_METHOD_PUSH,
-          url: api_security_events_url,
+          url: api_risc_security_events_url,
         )
       end
     end

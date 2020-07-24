@@ -14,7 +14,7 @@ class RiscConfigurationPresenter
       delivery: [
         {
           delivery_method: DELIVERY_METHOD_PUSH,
-          url: api_security_events_url,
+          url: api_risc_security_events_url,
         },
       ],
     }

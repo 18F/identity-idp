@@ -8,6 +8,8 @@ es:
         event_type_missing: event perdido
         event_type_unsupported: tipo de evento no admitido %{event_type}
         exp_present: Los eventos SET no deben tener un reclamo de exp
+        jti_not_unique: jti ya existe
+        jti_required: se requiere reclamo jti
         jwt_could_not_parse: no se pudo analizar JWT
         no_public_key: no se pudo cargar la clave pública para el emisor
         sub_not_found: reclamo de event.subject.sub no válido

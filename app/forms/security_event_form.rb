@@ -7,6 +7,7 @@ class SecurityEventForm
 
   # From https://tools.ietf.org/html/draft-ietf-secevent-http-push-00#section-2.3
   module ErrorCodes
+    DUP = 'dup'.freeze
     JWS = 'jws'.freeze
     JWT_AUD = 'jwtAud'.freeze
     JWT_CRYPTO = 'jwtCrypto'.freeze
@@ -23,6 +24,7 @@ class SecurityEventForm
   validate :validate_sub
   validate :validate_typ
   validate :validate_exp
+  validate :validate_jti
   validate :validate_jwt
 
   def initialize(body:)
@@ -35,10 +37,10 @@ class SecurityEventForm
 
     if success
       SecurityEvent.create!(
-        user: user,
         event_type: event_type,
-        jti: jti,
         issuer: service_provider.issuer,
+        jti: jti,
+        user: user,
       )
     end
 
@@ -98,15 +100,40 @@ class SecurityEventForm
     errors.add(:jwt, err.message)
   end
 
+  def validate_jti
+    if jti.blank?
+      errors.add(:jti, t('risc.security_event.errors.jti_required'))
+      return
+    end
+
+    return if !user || !service_provider
+
+    return unless record_already_exists?
+
+    errors.add(:jti, t('risc.security_event.errors.jti_not_unique'))
+    @error_code = ErrorCodes::DUP
+  end
+
+  # Memoize this because validations get reset every time valid? is called
+  def record_already_exists?
+    return @record_already_exists if defined?(@record_already_exists)
+
+    @record_already_exists = SecurityEvent.where(
+      issuer: service_provider.issuer,
+      jti: jti,
+      user_id: user.id,
+    ).exists?
+  end
+
   def validate_iss
     errors.add(:iss, 'invalid issuer') if service_provider.blank?
   end
 
   def validate_aud
     return if jwt_payload.blank?
-    return if jwt_payload['aud'] == api_security_events_url
+    return if jwt_payload['aud'] == api_risc_security_events_url
 
-    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_security_events_url))
+    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_risc_security_events_url))
     @error_code = ErrorCodes::JWT_AUD
   end
 

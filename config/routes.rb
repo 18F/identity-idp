@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
-  post '/api/security_events' => 'risc/security_events#create'
+  post '/api/risc/security_events' => 'risc/security_events#create'
   post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
