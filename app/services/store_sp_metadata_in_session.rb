@@ -40,6 +40,7 @@ class StoreSpMetadataInSession
       ial2_strict: ial_context.ial2_strict_requested?,
       ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
+      hspd12_piv_cac_requested: hspd12_requested,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
@@ -49,6 +50,10 @@ class StoreSpMetadataInSession
 
   def aal_requested
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[sp_request.aal]
+  end
+
+  def hspd12_requested
+    sp_request.aal == Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF
   end
 
   def service_provider

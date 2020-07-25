@@ -16,6 +16,7 @@ class AAL3Policy
   end
 
   def aal3_required?
+    return false if @hspd12_requested
     aal3_requested? || aal3_configured?
   end
 
@@ -24,6 +25,7 @@ class AAL3Policy
   end
 
   def aal3_required_but_not_used?
+    return false if @hspd12_requested
     aal3_required? && !aal3_used?
   end
 

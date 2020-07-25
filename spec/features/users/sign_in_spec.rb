@@ -906,7 +906,7 @@ feature 'Sign in' do
 
   context 'when piv/cac is required' do
     before do
-      visit_idp_from_oidc_sp_with_ial1_and_require_piv_cac
+      visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
     end
 
     it 'forces user to add a piv/cac if they do not have one' do

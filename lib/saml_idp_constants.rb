@@ -12,6 +12,7 @@ module Saml
 
       AAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/2'.freeze
       AAL3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3'.freeze
+      AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3?hspd12=true'.freeze
 
       ISSUERS_WITH_EMAIL_NAMEID_FORMAT = Figaro.env.issuers_with_email_nameid_format.split(',').
                                          freeze
@@ -35,6 +36,7 @@ module Saml
       AUTHN_CONTEXT_CLASSREF_TO_AAL = {
         AAL2_AUTHN_CONTEXT_CLASSREF => Authorization::AAL2,
         AAL3_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
+        AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
       }.freeze
     end
   end
