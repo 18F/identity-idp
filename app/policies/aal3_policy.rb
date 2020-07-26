@@ -1,9 +1,18 @@
 class AAL3Policy
   AAL3_METHODS = %w[webauthn piv_cac].freeze
 
-  def initialize(session:, user: nil)
-    @session = session
-    @mfa_policy = MfaPolicy.new(user) if user
+  attr_reader :mfa_policy, :auth_method, :service_provider, :aal_level_requested
+
+  def initialize(
+    user:,
+    service_provider:,
+    auth_method:,
+    aal_level_requested:
+  )
+    @mfa_policy = MfaPolicy.new(user)
+    @auth_method = auth_method
+    @service_provider = service_provider
+    @aal_level_requested = aal_level_requested
   end
 
   def aal3_required?
@@ -11,9 +20,7 @@ class AAL3Policy
   end
 
   def aal3_used?
-    return false unless @session
-
-    AAL3_METHODS.include?(@session[:auth_method])
+    AAL3_METHODS.include?(auth_method)
   end
 
   def aal3_required_but_not_used?
@@ -32,26 +39,12 @@ class AAL3Policy
   private
 
   def aal3_requested?
-    return false unless @session
-
-    sp_session = @session[:sp]
-    sp_session && (sp_session[:aal_level_requested] == 3)
+    aal_level_requested == 3
   end
 
   def aal3_configured?
-    sp = sp_from_sp_session
-    return false unless sp
+    return false if service_provider.blank?
 
-    sp.aal == 3
-  end
-
-  def sp_from_sp_session
-    return unless @session
-
-    sp_session = @session[:sp]
-    return unless sp_session
-
-    sp = ServiceProvider.from_issuer(sp_session[:issuer])
-    sp if sp.is_a? ServiceProvider
+    service_provider.aal == 3
   end
 end

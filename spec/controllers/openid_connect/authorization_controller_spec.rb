@@ -53,7 +53,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               credential_id: credential_id,
               credential_public_key: credential_public_key,
             )
-            controller.session[:auth_method] = 'webauthn'
+            controller.user_session[:auth_method] = 'webauthn'
           end
 
           it 'redirects to the SP with params' do

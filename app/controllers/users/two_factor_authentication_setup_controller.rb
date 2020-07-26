@@ -36,7 +36,7 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
                                     user: current_user,
-                                    session: session)
+                                    aal3_required: aal3_policy.aal3_required?)
     end
 
     # rubocop:disable Metrics/MethodLength

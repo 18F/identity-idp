@@ -138,7 +138,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_authentication_context
-    session[:auth_method] = two_factor_authentication_method.to_s
+    user_session[:auth_method] = two_factor_authentication_method.to_s
     mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)

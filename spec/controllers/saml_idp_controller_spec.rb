@@ -935,6 +935,7 @@ describe SamlIdpController do
       allow(controller).to receive(:user_fully_authenticated?).and_return(true)
       allow(controller).to receive(:link_identity_from_session_data).and_return(true)
       allow(controller).to receive(:current_user).and_return(build(:user))
+      allow(controller).to receive(:user_session).and_return({})
     end
 
     context 'user requires ID verification' do

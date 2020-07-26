@@ -25,12 +25,8 @@ describe TwoFactorOptionsPresenter do
     end
 
     context 'when an AAL3 only SP is being used' do
-      let(:service_provider) { create(:service_provider, aal: 3) }
-      let(:sp_session) { { issuer: service_provider.issuer, aal_level_requested: 3 } }
-      let(:session) { { auth_method: 'phone', sp: sp_session } }
-
       let(:presenter) do
-        described_class.new(user_agent: user_agent, user: user_with_2fa, session: session)
+        described_class.new(user_agent: user_agent, user: user_with_2fa, aal3_required: true)
       end
 
       it 'only displays AAL3 MFA methods' do
