@@ -16,10 +16,6 @@ function FormSteps({ steps, onComplete }) {
     return null;
   }
 
-  function setStepValue(name, nextStepValue) {
-    setValues({ ...values, [name]: nextStepValue });
-  }
-
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
@@ -38,16 +34,26 @@ function FormSteps({ steps, onComplete }) {
   }
 
   const { component: Component, name } = step;
+  const { isValid = () => true } = Component;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
     <>
       <Component
         key={name}
-        value={values[name]}
-        onChange={(nextStepValue) => setStepValue(name, nextStepValue)}
+        value={values}
+        onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <button type="button" onClick={toNextStep}>
+      <button
+        type="button"
+        onClick={toNextStep}
+        disabled={!isValid(values)}
+        /*
+         * TODO: Either use standard design system classes, or abstract to Button component to hide
+         * as implementation detail.
+         */
+        className="btn btn-primary btn-wide"
+      >
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </button>
     </>
@@ -57,8 +63,9 @@ function FormSteps({ steps, onComplete }) {
 FormSteps.propTypes = {
   steps: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string,
-      component: PropTypes.elementType,
+      name: PropTypes.string.isRequired,
+      component: PropTypes.elementType.isRequired,
+      isValid: PropTypes.func,
     }),
   ),
   onComplete: PropTypes.func,

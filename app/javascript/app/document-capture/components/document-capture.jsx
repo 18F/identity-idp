@@ -3,6 +3,7 @@ import AcuantCapture from './acuant-capture';
 import DocumentTips from './document-tips';
 import Image from './image';
 import FormSteps from './form-steps';
+import DocumentsStep from './documents-step';
 import Submission from './submission';
 
 function DocumentCapture() {
@@ -26,22 +27,9 @@ function DocumentCapture() {
       <FormSteps
         steps={[
           {
-            name: 'front',
-            // Disable reason: This is intended as throwaway code.
-            // eslint-disable-next-line react/prop-types
-            component: ({ value, onChange }) => (
-              // eslint-disable-next-line jsx-a11y/label-has-associated-control
-              <label>
-                Front
-                <input
-                  type="text"
-                  value={value ?? ''}
-                  onChange={(event) => onChange(event.target.value)}
-                />
-              </label>
-            ),
+            name: 'documents',
+            component: DocumentsStep,
           },
-          { name: 'back', component: () => 'Back' },
           { name: 'selfie', component: () => 'Selfie' },
           { name: 'confirm', component: () => 'Confirm?' },
         ]}

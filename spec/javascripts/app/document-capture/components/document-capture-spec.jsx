@@ -7,21 +7,27 @@ describe('document-capture/components/document-capture', () => {
   it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const step = getByText('Front');
+    const step = getByText('doc_auth.headings.upload_front');
 
     expect(step).to.be.ok();
   });
 
   it('progresses through steps to completion', async () => {
-    const { getByText, findByText, getByRole } = render(<DocumentCapture />);
+    const { getByLabelText, getByText, findByText } = render(<DocumentCapture />);
 
-    userEvent.type(getByRole('textbox'), 'abc');
-    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.upload_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.upload_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
 
-    const confirmation = await findByText('Finished sending: {"front":"abc"}');
+    const confirmation = await findByText('Finished sending: {"front_image":{},"back_image":{}}');
 
     expect(confirmation).to.be.ok();
   });

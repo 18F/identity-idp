@@ -9,10 +9,13 @@ describe('document-capture/components/form-steps', () => {
     { name: 'first', component: () => <span>First</span> },
     {
       name: 'second',
-      component: ({ value = '', onChange }) => (
+      component: ({ value = {}, onChange }) => (
         <>
           <span>Second</span>
-          <input value={value} onChange={(event) => onChange(event.target.value)} />
+          <input
+            value={value.second || ''}
+            onChange={(event) => onChange({ second: event.target.value })}
+          />
         </>
       ),
     },
