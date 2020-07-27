@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
@@ -44,18 +45,9 @@ function FormSteps({ steps, onComplete }) {
         value={values}
         onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <button
-        type="button"
-        onClick={toNextStep}
-        disabled={!isValid(values)}
-        /*
-         * TODO: Either use standard design system classes, or abstract to Button component to hide
-         * as implementation detail.
-         */
-        className="btn btn-primary btn-wide"
-      >
+      <Button isPrimary onClick={toNextStep} isDisabled={!isValid(values)}>
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
-      </button>
+      </Button>
     </>
   );
 }
