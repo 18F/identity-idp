@@ -4,13 +4,6 @@ import FileInput from './file-input';
 import useI18n from '../hooks/use-i18n';
 
 /**
- * List of supported mime types for document file upload.
- *
- * @type {string[]}
- */
-const SUPPORTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/bmp', 'image/png', 'image/tiff'];
-
-/**
  * Sides of document to present as file input.
  *
  * @type {string[]}
@@ -30,7 +23,7 @@ function DocumentsStep({ value, onChange }) {
           <FileInput
             key={side}
             label={label}
-            accept={SUPPORTED_IMAGE_MIME_TYPES}
+            accept={['image/*']}
             value={value[inputKey]}
             onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
           />
