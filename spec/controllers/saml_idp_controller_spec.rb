@@ -311,6 +311,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          hspd12_piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -333,6 +334,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          hspd12_piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
