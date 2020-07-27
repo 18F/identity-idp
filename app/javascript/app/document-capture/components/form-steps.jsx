@@ -35,6 +35,7 @@ function FormSteps({ steps, onComplete }) {
   }
 
   const { component: Component, name } = step;
+  /** @type {{isValid:(values:object)=>boolean}} */
   const { isValid = () => true } = Component;
   const isLastStep = stepIndex + 1 === steps.length;
 
