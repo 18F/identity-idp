@@ -25,23 +25,29 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         app: content_tag(:strong, APP_NAME))
     end
 
+    let(:multiple_configurations) { false }
+    let(:aal_required) { true }
+    let(:aal3_policy) do
+      instance_double('AAL3Policy',
+                      aal3_required?: aal_required,
+                      multiple_aal3_configurations?: multiple_configurations)
+    end
+
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+    end
+
     context 'with AAL3 required, and only one method enabled' do
       let(:expected_help_text) do
         t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
       end
       it 'finds the PIV/CAC only help text' do
-        aal3_policy = instance_double('AAL3Policy')
-        allow(aal3_policy).to receive(:aal3_required?).and_return true
-        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return false
-        allow(presenter).to receive(:aal3_policy).and_return aal3_policy
         expect(presenter.help_text).to eq expected_help_text
       end
     end
     context 'without AAL3 required' do
+      let(:aal_required) { false }
       it 'finds the help text' do
-        aal3_policy = instance_double('AAL3Policy')
-        allow(aal3_policy).to receive(:aal3_required?).and_return false
-        allow(presenter).to receive(:aal3_policy).and_return aal3_policy
         expect(presenter.help_text).to eq expected_help_text
       end
     end
