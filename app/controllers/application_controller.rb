@@ -264,7 +264,12 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def aal3_policy
-    @aal3 ||= AAL3Policy.new(session: session, user: current_user)
+    @aal3 ||= AAL3Policy.new(
+      user: current_user,
+      service_provider: sp_from_sp_session,
+      auth_method: user_session[:auth_method],
+      aal_level_requested: sp_session[:aal_level_requested],
+    )
   end
 
   def sp_session

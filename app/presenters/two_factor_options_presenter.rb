@@ -1,10 +1,10 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(user_agent:, user: nil, session: nil)
+  def initialize(user_agent:, user: nil, aal3_required: false)
     @user_agent = user_agent
     @user = user
-    @session = session
+    @aal3_required = aal3_required
   end
 
   def options
@@ -66,11 +66,7 @@ class TwoFactorOptionsPresenter
   end
 
   def aal3_only?
-    aal3_policy.aal3_required? && !mfa_policy.aal3_mfa_enabled?
-  end
-
-  def aal3_policy
-    @aal3_policy ||= AAL3Policy.new(session: @session, user: @user)
+    @aal3_required && !mfa_policy.aal3_mfa_enabled?
   end
 
   def mfa_policy

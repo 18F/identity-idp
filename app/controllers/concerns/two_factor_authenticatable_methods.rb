@@ -76,6 +76,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_valid_otp(next_url = nil)
     handle_valid_otp_for_context
     handle_remember_device
+    # After RC 116 this line can be removed
     user_session.delete(:mfa_device_remembered)
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -138,7 +139,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_authentication_context
-    session[:auth_method] = two_factor_authentication_method.to_s
+    user_session[:auth_method] = two_factor_authentication_method.to_s
     mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
