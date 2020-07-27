@@ -62,7 +62,7 @@ module Users
     end
 
     def confirm_user_needs_2fa_setup
-      return if hspd12_policy.piv_cac_setup_required?
+      return if aal3_policy.piv_cac_only_setup_required?
       return unless mfa_policy.two_factor_enabled?
       return if aal3_mfa_setup_required?
       redirect_to after_mfa_setup_path

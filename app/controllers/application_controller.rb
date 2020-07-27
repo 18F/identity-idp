@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def piv_cac_required_setup_url
-    hspd12_policy.piv_cac_setup_required? ? two_factor_options_url : nil
+    aal3_policy.piv_cac_only_setup_required? ? two_factor_options_url : nil
   end
 
   def after_sign_in_path_for(_user)
@@ -274,10 +274,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
     )
-  end
-
-  def hspd12_policy
-    @hspd12_policy ||= Hspd12Policy.new(session: session, user: current_user)
   end
 
   def sp_session

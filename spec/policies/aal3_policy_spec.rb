@@ -172,6 +172,128 @@ describe AAL3Policy do
     end
   end
 
+  describe '#piv_cac_only_required?' do
+    context 'when allow_piv_cac_required is true' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('true')
+      end
+
+      it 'returns false if the session is nil' do
+        session = nil
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if the session has no sp session' do
+        session = {}
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if the session has an empty sp session' do
+        session = { sp: {} }
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if Hsdpd12 PIV/CAC is not requested' do
+        session = { sp: { hspd12_piv_cac_requested: false } }
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns true if Hsdpd12 PIV/CAC is requested' do
+        session = { sp: { hspd12_piv_cac_requested: true } }
+
+        expect_piv_cac_required_to(be_truthy, session)
+      end
+    end
+
+    context 'when allow_piv_cac_required is false' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('false')
+      end
+
+      it 'returns false if the session is nil' do
+        session = nil
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if the session has no sp session' do
+        session = {}
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if the session has an empty sp session' do
+        session = { sp: {} }
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if Hsdpd12 PIV/CAC is not requested' do
+        session = { sp: { hspd12_piv_cac_requested: false } }
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+
+      it 'returns false if Hsdpd12 PIV/CAC is requested' do
+        session = { sp: { hspd12_piv_cac_requested: true } }
+
+        expect_piv_cac_required_to(be_falsey, session)
+      end
+    end
+  end
+
+  describe '#piv_cac_only_setup_required?' do
+    context 'when the user already has a piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(true)
+      end
+
+      it 'returns false if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_only_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_only_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+
+    context 'when the user has no piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(false)
+      end
+
+      it 'returns true if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_only_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_truthy
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_only_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+  end
+
+  def expect_piv_cac_required_to(value, session)
+    expect(AAL3Policy.new(user: user, session: session).piv_cac_only_required?).to(value)
+  end
+
+  def expect_piv_cac_setup_required_to(value)
+    expect(AAL3Policy.new(user: user, session: :foo).piv_cac_only_setup_required?).to(value)
+  end
+
   def configure_aal3_for_user(user)
     user.webauthn_configurations << create(:webauthn_configuration)
     user.save!

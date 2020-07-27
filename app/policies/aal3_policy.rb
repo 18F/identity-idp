@@ -16,7 +16,7 @@ class AAL3Policy
   end
 
   def aal3_required?
-    return false if @hspd12_requested
+    return false if piv_cac_only_required?
     aal3_requested? || aal3_configured?
   end
 
@@ -25,7 +25,7 @@ class AAL3Policy
   end
 
   def aal3_required_but_not_used?
-    return false if @hspd12_requested
+    return false if piv_cac_only_required?
     aal3_required? && !aal3_used?
   end
 
@@ -38,7 +38,24 @@ class AAL3Policy
     aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
+  def piv_cac_only_setup_required?
+    piv_cac_only_required? && !piv_cac_enabled?
+  end
+
+  def piv_cac_only_required?
+    return if session.blank? || Figaro.env.allow_piv_cac_required != 'true'
+    sp_session = session.fetch(:sp, {})
+    return if sp_session.blank?
+    sp_session[:hspd12_piv_cac_requested]
+  end
+
   private
+
+  attr_reader :session, :user
+
+  def piv_cac_enabled?
+    TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
+  end
 
   def aal3_requested?
     aal_level_requested == 3
@@ -46,7 +63,6 @@ class AAL3Policy
 
   def aal3_configured?
     return false if service_provider.blank?
-
     service_provider.aal == 3
   end
 end
