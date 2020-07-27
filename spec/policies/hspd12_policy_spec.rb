@@ -28,14 +28,14 @@ describe Hspd12Policy do
         expect_piv_cac_required_to(be_falsey, session)
       end
 
-      it 'returns false if x509_presented is not a requested attribute' do
-        session = { sp: { requested_attributes: ['foo'] } }
+      it 'returns false if Hsdpd12 PIV/CAC is not requested' do
+        session = { sp: { hspd12_piv_cac_requested: false } }
 
         expect_piv_cac_required_to(be_falsey, session)
       end
 
-      it 'returns true if x509_presented is a requested attribute' do
-        session = { sp: { requested_attributes: ['x509_presented'] } }
+      it 'returns true if Hsdpd12 PIV/CAC is requested' do
+        session = { sp: { hspd12_piv_cac_requested: true } }
 
         expect_piv_cac_required_to(be_truthy, session)
       end
@@ -64,14 +64,14 @@ describe Hspd12Policy do
         expect_piv_cac_required_to(be_falsey, session)
       end
 
-      it 'returns false if x509_presented is not a requested attribute' do
-        session = { sp: { requested_attributes: ['foo'] } }
+      it 'returns false if Hsdpd12 PIV/CAC is not requested' do
+        session = { sp: { hspd12_piv_cac_requested: false } }
 
         expect_piv_cac_required_to(be_falsey, session)
       end
 
-      it 'returns false if x509_presented is a requested attribute' do
-        session = { sp: { requested_attributes: ['x509_presented'] } }
+      it 'returns false if Hsdpd12 PIV/CAC is requested' do
+        session = { sp: { hspd12_piv_cac_requested: true } }
 
         expect_piv_cac_required_to(be_falsey, session)
       end

@@ -12,7 +12,7 @@ class Hspd12Policy
     return if session.blank? || Figaro.env.allow_piv_cac_required != 'true'
     sp_session = session.fetch(:sp, {})
     return if sp_session.blank?
-    sp_session[:requested_attributes]&.include?('x509_presented')
+    sp_session[:hspd12_piv_cac_requested]
   end
 
   private
