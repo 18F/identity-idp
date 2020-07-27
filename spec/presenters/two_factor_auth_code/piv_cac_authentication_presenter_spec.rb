@@ -47,6 +47,26 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     end
   end
 
+  describe '#link_text' do
+    let(:aal3_policy) { instance_double('AAL3Policy') }
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+      allow(aal3_policy).to receive(:aal3_required?).and_return true
+    end
+    context 'with multiple AAL3 methods' do
+      it 'supplies link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return true
+        expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
+      end
+    end
+    context 'with only one AAL3 method do' do
+      it ' supplies no link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return false
+        expect(presenter.link_text).to eq('')
+      end
+    end
+  end
+
   describe '#piv_cac_capture_text' do
     let(:expected_text) { t('forms.piv_cac_mfa.submit') }
 
