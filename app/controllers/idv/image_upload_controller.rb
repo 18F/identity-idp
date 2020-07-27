@@ -14,7 +14,6 @@ module Idv
       @client = DocAuthClient.client
       create_document_response = @client.create_document
       if create_document_response.success?
-        @instance_id = create_document_response.instance_id
         upload_and_check_images
       else
         error_json create_document_response.errors.first
@@ -22,20 +21,16 @@ module Idv
     end
 
     def upload_and_check_images
-      doc_response = @client.post_images(@front_image, @back_image, instance_id: @instance_id)
+      doc_response = @client.post_images(front_image: @front_image,
+                                         back_image: @back_image,
+                                         selfie_image: @selfie_image,
+                                         liveness_checking_enabled: liveness_checking_enabled?)
       return error_json(doc_response.errors.first) unless doc_response.success?
-      results_response = @client.get_results(instance_id: @instance_id)
-      return error_json(results_response.errors.first) unless results_response.success?
       upload_info = {
         documents: doc_response,
         instance_id: @instance_id,
-        results_response: results_response,
+        results_response: doc_response,
       }
-      if FeatureManagement.liveness_checking_enabled?
-        selfie_response = @client.post_selfie(image: @selfie_image, instance_id: @instance_id)
-        return error_json(selfie_response.errors.first) unless selfie_response.success?
-        upload_info[:selfie] = selfie_response
-      end
       user_session['api_upload'] = upload_info
       success_json('Uploaded images')
     end
@@ -70,8 +65,8 @@ module Idv
 
     def success_json(reason)
       {
-          status: 'success',
-          message: reason
+        status: 'success',
+        message: reason,
       }
     end
   end
