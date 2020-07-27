@@ -51,9 +51,7 @@ module RememberDeviceConcern
   private
 
   def expired_for_interval?(user, interval)
-    # After RC 115 this should become:
-    # `return false unless user_session[:auth_method] == 'remember_device'`
-    return false unless user_session[:mfa_device_remembered]
+    return false unless user_session[:auth_method] == 'remember_device'
     remember_cookie = remember_device_cookie
     return true if remember_cookie.nil?
 
