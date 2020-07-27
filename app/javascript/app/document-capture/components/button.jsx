@@ -8,7 +8,7 @@ function Button({ type, onClick, children, isPrimary, isDisabled, className }) {
 
   return (
     // eslint-disable-next-line react/button-has-type
-    <button type={type} onClick={onClick} disabled={isDisabled} className={classes}>
+    <button type={type} onClick={() => onClick()} disabled={isDisabled} className={classes}>
       {children}
     </button>
   );
@@ -25,7 +25,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   type: 'button',
-  onClick: undefined,
+  onClick: () => {},
   children: null,
   isPrimary: false,
   isDisabled: false,
