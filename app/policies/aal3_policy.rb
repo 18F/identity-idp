@@ -51,10 +51,8 @@ class AAL3Policy
 
   private
 
-  def aal3_requested?
-    return false unless @session
-  end
-  
+  attr_reader :session, :user
+
   def piv_cac_setup_required?
     piv_cac_required? && !piv_cac_enabled?
   end
@@ -62,10 +60,6 @@ class AAL3Policy
   def piv_cac_required?
     Figaro.env.allow_piv_cac_required == 'true' && piv_cac_requested
   end
-
-  private
-
-  attr_reader :session, :user
 
   def piv_cac_enabled?
     TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
