@@ -49,10 +49,6 @@ class AAL3Policy
     @mfa_policy.aal3_configurations.count > 1
   end
 
-  private
-
-  attr_reader :session, :user
-
   def piv_cac_setup_required?
     piv_cac_required? && !piv_cac_enabled?
   end
@@ -64,6 +60,10 @@ class AAL3Policy
   def piv_cac_enabled?
     TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end
+
+  private
+
+  attr_reader :session, :user
 
   def aal3_requested?
     aal_level_requested == 3
