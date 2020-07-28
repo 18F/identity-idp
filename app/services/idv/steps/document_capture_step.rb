@@ -2,13 +2,17 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       def call
-        api_upload = idv_session['api_upload']
-        response = api_upload['documents'] || post_images(front_image.read, back_image.read,
-                                                          (selfie_image ? selfie_image.read : nil))
+        api_upload = session['api_upload']
+        response = (api_upload && api_upload['documents']) || post_form_images
         handle_response(response)
       end
 
       private
+
+      def post_form_images
+        selfie = selfie_image ? selfie_image.read : nil
+        post_images(front_image.read, back_image.read, selfie)
+      end
 
       def handle_response(response)
         if response.success?

@@ -20,7 +20,7 @@ module Idv
         documents: doc_response,
         results_response: doc_response,
       }
-      idv_session['api_upload'] = upload_info
+      user_session['api_upload'] = upload_info
       success_json('Uploaded images')
     end
 
