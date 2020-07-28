@@ -5,7 +5,7 @@ function toggleButton() {
   continueButton.disabled = true;
   continueButton.classList.add('btn-disabled');
 
-  checkbox.addEventListener('click', function() {
+  checkbox.addEventListener('click', function () {
     if (continueButton.disabled) {
       continueButton.classList.remove('btn-disabled');
     } else {

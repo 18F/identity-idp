@@ -40,9 +40,7 @@ function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
     };
   }, []);
 
-  return (
-    <AcuantContext.Provider value={value}>{children}</AcuantContext.Provider>
-  );
+  return <AcuantContext.Provider value={value}>{children}</AcuantContext.Provider>;
 }
 
 AcuantContextProvider.propTypes = {

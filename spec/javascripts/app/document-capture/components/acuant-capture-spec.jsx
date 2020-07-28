@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { fireEvent, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
+import render from '../../../support/render';
 import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
 
@@ -91,8 +92,7 @@ describe('document-capture/components/acuant-capture', () => {
       start(onImageCaptureSuccess) {
         const capture = {
           image: {
-            data:
-              'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
             width: 10,
             height: 20,
           },
@@ -108,9 +108,7 @@ describe('document-capture/components/acuant-capture', () => {
     const image = getByAltText('Captured result');
 
     expect(image).to.be.ok();
-    expect(image.src).to.equal(
-      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-    );
+    expect(image.src).to.equal('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E');
     expect(image.width).to.equal(10);
     expect(image.height).to.equal(20);
     expect(window.AcuantCameraUI.end.calledOnce).to.be.true();

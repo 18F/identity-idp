@@ -11,7 +11,7 @@ intlTelInput(telInput, {
 });
 
 // OnChange event
-telInput.addEventListener('countrychange', function() {
+telInput.addEventListener('countrychange', function () {
   const selected = document.querySelector(".iti__country[aria-selected='true']");
   const country = selected.getAttribute('data-country-code').toUpperCase();
   // update international_code dropdown

@@ -39,13 +39,10 @@ const INITIAL_HTML = `
 </p>
 `;
 
-let originalWindow;
-let originalDocument;
+const originalWindow = global.window;
+const originalDocument = global.document;
 
 export const setupDocumentCaptureTestDOM = () => {
-  originalWindow = global.window;
-  originalDocument = global.document;
-
   // While there's already DOM globals, the current implementation assumes a
   // cleanly initialized DOM in every test case. Ideally all event handlers
   // attached to the DOM in the course of a test case would be cleaned up, and

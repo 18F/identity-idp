@@ -285,4 +285,20 @@ feature 'Sign Up' do
     click_send_security_code
     expect(page).to_not have_checked_field t('forms.messages.remember_device')
   end
+
+  it 'forces user to setup a PIV/CAC and offers no other option or fallback question' do
+    allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('true')
+
+    visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
+    sign_up_and_set_password
+
+    expect(page).to_not have_selector('#two_factor_options_form_selection_phone', count: 1)
+    expect(page).to_not have_selector('#two_factor_options_form_selection_webauthn', count: 1)
+    expect(page).to_not have_selector('#two_factor_options_form_selection_auth_app', count: 1)
+    expect(page).to_not have_selector('#two_factor_options_form_selection_backup_code', count: 1)
+    expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 1)
+
+    select_2fa_option('piv_cac')
+    expect(page).to_not have_content(t('two_factor_authentication.piv_cac_fallback.question'))
+  end
 end

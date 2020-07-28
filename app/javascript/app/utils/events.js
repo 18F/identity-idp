@@ -1,4 +1,4 @@
-const noOp = function() {};
+const noOp = function () {};
 
 class Events {
   constructor() {

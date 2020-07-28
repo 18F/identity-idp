@@ -129,6 +129,6 @@ class FeatureManagement
   end
 
   def self.log_to_stdout?
-    !Rails.env.test? && Figaro.env.log_to_stdout?
+    !Rails.env.test? && Figaro.env.log_to_stdout == 'true'
   end
 end

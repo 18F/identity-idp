@@ -26,10 +26,9 @@ function docAuth() {
 
   function startVideo() {
     // Attach the video stream to the video element and autoplay.
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then((stream) => {
-        player.srcObject = stream;
-      });
+    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+      player.srcObject = stream;
+    });
   }
 
   function resetImage() {

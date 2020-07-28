@@ -492,8 +492,8 @@ GEM
     recaptcha (5.2.1)
       json
     redis (4.2.1)
-    redis-session-store (0.11.1)
-      actionpack (>= 3)
+    redis-session-store (0.11.3)
+      actionpack (>= 3, < 7)
       redis (>= 3, < 5)
     referer-parser (0.3.0)
     regexp_parser (1.7.1)
@@ -770,7 +770,7 @@ DEPENDENCIES
   raise-if-root
   readthis
   recaptcha
-  redis-session-store (>= 0.11.1)
+  redis-session-store (>= 0.11.3)
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)

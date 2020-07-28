@@ -165,6 +165,10 @@ es:
       webauthn_info_html: Use una llave de seguridad que tenga. Es un dispositivo
         físico que se conecta o que está integrado en su computadora o teléfono (a
         menudo parece una unidad flash USB).
+    two_factor_hspd12_choice: Se requiere autenticación adicional
+    two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
+      Debe verificar su identidad utilizando una identificación de empleado del gobierno
+      (PIV / CAC) para acceder a su información.
     webauthn_fallback:
       question: "¿No tienes tu llave de seguridad disponible?"
     webauthn_header_text: Presenta tu llave de seguridad

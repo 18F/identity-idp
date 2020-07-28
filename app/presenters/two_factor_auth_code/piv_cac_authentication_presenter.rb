@@ -57,6 +57,7 @@ module TwoFactorAuthCode
     end
 
     def fallback_question
+      return if @hide_fallback_question
       if aal3_policy.aal3_required? && !aal3_policy.multiple_aal3_configurations?
         ''
       else
