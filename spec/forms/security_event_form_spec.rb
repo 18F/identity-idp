@@ -33,7 +33,7 @@ RSpec.describe SecurityEventForm do
     }
   end
 
-  let(:subject_sub) { identity.uuid }
+  let(:subject_sub) { AgencyIdentityLinker.new(identity).link_identity.uuid }
   let(:jwt_headers) { { typ: 'secevent+jwt' } }
   let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', jwt_headers) }
 
