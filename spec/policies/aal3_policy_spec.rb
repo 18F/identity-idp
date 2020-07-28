@@ -5,6 +5,7 @@ describe AAL3Policy do
   let(:service_provider) { create(:service_provider, aal: 1) }
   let(:auth_method) { 'phone' }
   let(:aal_level_requested) { 1 }
+  let(:piv_cac_requested) { false }
 
   describe '#aal3_required?' do
     it 'is false if the SP did not request and does not require AAL3' do
@@ -13,6 +14,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required?).to eq(false)
@@ -24,6 +26,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required?).to eq(true)
@@ -36,6 +39,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required?).to eq(true)
@@ -47,6 +51,7 @@ describe AAL3Policy do
         service_provider: nil,
         auth_method: auth_method,
         aal_level_requested: nil,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required?).to eq(false)
@@ -60,6 +65,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: 'piv_cac',
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_used?).to eq(true)
@@ -71,6 +77,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: 'webauthn',
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_used?).to eq(true)
@@ -82,6 +89,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: 'phone',
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_used?).to eq(false)
@@ -95,6 +103,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required_but_not_used?).to eq(false)
@@ -106,6 +115,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required_but_not_used?).to eq(true)
@@ -117,6 +127,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: 'webauthn',
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_required_but_not_used?).to eq(false)
@@ -131,6 +142,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: aal_level_requested,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_configured_but_not_used?).to eq(false)
@@ -142,6 +154,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_configured_but_not_used?).to eq(false)
@@ -154,6 +167,7 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: auth_method,
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_configured_but_not_used?).to eq(true)
@@ -166,10 +180,113 @@ describe AAL3Policy do
         service_provider: service_provider,
         auth_method: 'webauthn',
         aal_level_requested: 3,
+        piv_cac_requested: piv_cac_requested,
       )
 
       expect(aal3_policy.aal3_configured_but_not_used?).to eq(false)
     end
+  end
+
+  describe '#piv_cac_required?' do
+    context 'when allow_piv_cac_required is true' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('true')
+      end
+
+      it 'returns false if piv cac is not requested' do
+        piv_cac_requested = false
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+
+      it 'returns true if piv cac is requested' do
+        piv_cac_requested = true
+
+        expect_piv_cac_required_to(be_truthy, piv_cac_requested)
+      end
+    end
+
+    context 'when allow_piv_cac_required is false' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('false')
+      end
+
+      it 'returns false if piv cac is not requested' do
+        piv_cac_requested = false
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+
+      it 'returns false if piv cac is requested' do
+        piv_cac_requested = true
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+    end
+  end
+
+  describe '#piv_cac_setup_required?' do
+    context 'when the user already has a piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(true)
+      end
+
+      it 'returns false if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+
+    context 'when the user has no piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(false)
+      end
+
+      it 'returns true if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_truthy
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+  end
+
+  def expect_piv_cac_required_to(value, piv_cac_requested)
+    aal3_policy = AAL3Policy.new(
+      user: user,
+      service_provider: service_provider,
+      auth_method: auth_method,
+      aal_level_requested: aal_level_requested,
+      piv_cac_requested: piv_cac_requested,
+    )
+
+    expect(aal3_policy.piv_cac_required?).to(value)
+  end
+
+  def expect_piv_cac_setup_required_to(value)
+    aal3_policy = AAL3Policy.new(
+      user: user,
+      service_provider: service_provider,
+      auth_method: auth_method,
+      aal_level_requested: aal_level_requested,
+      piv_cac_requested: piv_cac_requested,
+    )
+
+    expect(aal3_policy.piv_cac_setup_required?).to(value)
   end
 
   def configure_aal3_for_user(user)

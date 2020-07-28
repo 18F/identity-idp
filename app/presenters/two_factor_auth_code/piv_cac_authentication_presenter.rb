@@ -29,6 +29,7 @@ module TwoFactorAuthCode
     end
 
     def fallback_question
+      return if @hide_fallback_question
       t('two_factor_authentication.piv_cac_fallback.question')
     end
 

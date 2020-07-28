@@ -44,9 +44,10 @@ module TwoFactorAuthentication
     private
 
     def two_factor_options_presenter
-      TwoFactorLoginOptionsPresenter.new(
-        current_user, view_context, current_sp, aal3_policy.aal3_required?
-      )
+      TwoFactorLoginOptionsPresenter.new(current_user,
+                                         view_context,
+                                         current_sp,
+                                         aal3_policy)
     end
 
     def process_valid_form
