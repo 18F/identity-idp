@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
@@ -14,10 +15,6 @@ function FormSteps({ steps, onComplete }) {
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!step) {
     return null;
-  }
-
-  function setStepValue(name, nextStepValue) {
-    setValues({ ...values, [name]: nextStepValue });
   }
 
   /**
@@ -38,18 +35,20 @@ function FormSteps({ steps, onComplete }) {
   }
 
   const { component: Component, name } = step;
+  /** @type {{isValid:(values:object)=>boolean}} */
+  const { isValid = () => true } = Component;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
     <>
       <Component
         key={name}
-        value={values[name]}
-        onChange={(nextStepValue) => setStepValue(name, nextStepValue)}
+        value={values}
+        onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <button type="button" onClick={toNextStep}>
+      <Button isPrimary onClick={toNextStep} isDisabled={!isValid(values)}>
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
-      </button>
+      </Button>
     </>
   );
 }
@@ -57,8 +56,9 @@ function FormSteps({ steps, onComplete }) {
 FormSteps.propTypes = {
   steps: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string,
-      component: PropTypes.elementType,
+      name: PropTypes.string.isRequired,
+      component: PropTypes.elementType.isRequired,
+      isValid: PropTypes.func,
     }),
   ),
   onComplete: PropTypes.func,
