@@ -4,34 +4,23 @@ module Idv
 
     def upload
       validation_error = validate_request(request)
-      response = validation_error || handle_images
+      response = validation_error || upload_and_check_images
       render json: response
     end
 
     private
 
-    def handle_images
-      @client = DocAuthClient.client
-      create_document_response = @client.create_document
-      if create_document_response.success?
-        upload_and_check_images
-      else
-        error_json create_document_response.errors.first
-      end
-    end
-
     def upload_and_check_images
-      doc_response = @client.post_images(front_image: @front_image,
-                                         back_image: @back_image,
-                                         selfie_image: @selfie_image,
-                                         liveness_checking_enabled: liveness_checking_enabled?)
+      doc_response = client.post_images(front_image: @front_image,
+                                        back_image: @back_image,
+                                        selfie_image: @selfie_image,
+                                        liveness_checking_enabled: liveness_checking_enabled?)
       return error_json(doc_response.errors.first) unless doc_response.success?
       upload_info = {
         documents: doc_response,
-        instance_id: @instance_id,
         results_response: doc_response,
       }
-      user_session['api_upload'] = upload_info
+      idv_session['api_upload'] = upload_info
       success_json('Uploaded images')
     end
 
@@ -68,6 +57,10 @@ module Idv
         status: 'success',
         message: reason,
       }
+    end
+
+    def client
+      @client ||= DocAuthClient.client
     end
   end
 end

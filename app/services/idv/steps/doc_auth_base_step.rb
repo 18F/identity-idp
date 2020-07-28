@@ -2,6 +2,7 @@
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
+      include IdvSession
       GOOD_RESULT = 1
       FYI_RESULT = 2
 
@@ -197,9 +198,6 @@ module Idv
         end
       end
 
-      def liveness_checking_enabled?
-        FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
-      end
 
       def no_sp?
         sp_session[:issuer].blank?

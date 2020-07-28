@@ -24,6 +24,10 @@ module IdvSession
     sp_session[:ial2_strict] && !current_user.active_profile&.includes_liveness_check?
   end
 
+  def liveness_checking_enabled?
+    FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
+  end
+
   def confirm_idv_vendor_session_started
     return if flash[:allow_confirmations_continue]
     redirect_to idv_doc_auth_url unless idv_session.proofing_started?
