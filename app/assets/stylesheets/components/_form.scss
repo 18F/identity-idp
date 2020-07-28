@@ -106,8 +106,8 @@ input::-webkit-inner-spin-button {
   z-index: inherit;
 }
 
-// scss-lint:disable VendorPrefix
 .indicator {
+  // scss-lint:disable VendorPrefix
   background-position: center center;
   background-repeat: no-repeat;
   background-size: .5rem .5rem;
