@@ -214,16 +214,24 @@ class SecurityEventForm
     return @identity if defined?(@identity)
 
     @identity = if service_provider.agency_id
-                  AgencyIdentity.find_by(
-                    uuid: event.dig('subject', 'sub'),
-                    agency_id: service_provider.agency_id,
-                  )
+                  identity_from_agency_identity
                 else
-                  Identity.find_by(
-                    uuid: event.dig('subject', 'sub'),
-                    service_provider: service_provider.issuer,
-                  )
+                  identity_from_identity
                 end
+  end
+
+  def identity_from_agency_identity
+    AgencyIdentity.find_by(
+      uuid: event.dig('subject', 'sub'),
+      agency_id: service_provider.agency_id,
+    )
+  end
+
+  def identity_from_identity
+    Identity.find_by(
+      uuid: event.dig('subject', 'sub'),
+      service_provider: service_provider.issuer,
+    )
   end
 
   def user
