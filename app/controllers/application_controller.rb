@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def piv_cac_required_setup_url
-    aal3_policy.piv_cac_only_setup_required? ? two_factor_options_url : nil
+    aal3_policy.piv_cac_setup_required? ? two_factor_options_url : nil
   end
 
   def after_sign_in_path_for(_user)

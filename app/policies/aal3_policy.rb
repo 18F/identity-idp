@@ -44,7 +44,7 @@ class AAL3Policy
     aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
-  def piv_cac_only_setup_required?
+  def piv_cac_setup_required?
     piv_cac_required? && !piv_cac_enabled?
   end
 
