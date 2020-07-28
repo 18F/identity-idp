@@ -11,6 +11,7 @@ class AAL3Policy
     aal_level_requested:,
     piv_cac_requested:
   )
+    @user = user
     @mfa_policy = MfaPolicy.new(user)
     @auth_method = auth_method
     @service_provider = service_provider
