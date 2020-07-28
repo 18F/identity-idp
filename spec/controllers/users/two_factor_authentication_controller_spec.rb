@@ -144,7 +144,7 @@ describe Users::TwoFactorAuthenticationController do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_only_required?).
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).
           and_return(true)
       end
 

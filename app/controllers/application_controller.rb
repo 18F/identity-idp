@@ -273,7 +273,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       service_provider: sp_from_sp_session,
       auth_method: user_session[:auth_method],
       aal_level_requested: sp_session[:aal_level_requested],
-      hspd12_piv_cac_requested: sp_session[:hspd12_piv_cac_requested],
+      piv_cac_requested: sp_session[:piv_cac_requested],
     )
   end
 

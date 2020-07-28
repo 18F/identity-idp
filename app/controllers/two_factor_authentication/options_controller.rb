@@ -47,8 +47,7 @@ module TwoFactorAuthentication
       TwoFactorLoginOptionsPresenter.new(current_user,
                                          view_context,
                                          current_sp,
-                                         aal3_policy.aal3_required?,
-                                         aal3_policy.piv_cac_only_required?)
+                                         aal3_policy)
     end
 
     def process_valid_form

@@ -41,7 +41,7 @@ describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: nil,
-          hspd12_piv_cac_requested: false,
+          piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -80,7 +80,7 @@ describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 3,
-          hspd12_piv_cac_requested: false,
+          piv_cac_requested: false,
           ial2: true,
           ial2_strict: false,
           ialmax: false,

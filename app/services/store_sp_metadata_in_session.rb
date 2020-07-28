@@ -40,7 +40,7 @@ class StoreSpMetadataInSession
       ial2_strict: ial_context.ial2_strict_requested?,
       ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
-      hspd12_piv_cac_requested: hspd12_requested,
+      piv_cac_requested: hspd12_requested,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
