@@ -1,10 +1,11 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(user_agent:, user: nil, aal3_required: false)
+  def initialize(user_agent:, user: nil, aal3_required: false, piv_cac_only_required: false)
     @user_agent = user_agent
     @user = user
     @aal3_required = aal3_required
+    @piv_cac_only_required = piv_cac_only_required
   end
 
   def options
@@ -72,7 +73,7 @@ class TwoFactorOptionsPresenter
   end
 
   def piv_cac_only_required?
-    aal3_policy.piv_cac_only_required?
+    @piv_cac_only_required
   end
 
   def aal3_only?

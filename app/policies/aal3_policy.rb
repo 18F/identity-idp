@@ -1,18 +1,21 @@
 class AAL3Policy
   AAL3_METHODS = %w[webauthn piv_cac].freeze
 
-  attr_reader :mfa_policy, :auth_method, :service_provider, :aal_level_requested
+  attr_reader :mfa_policy, :auth_method, :service_provider, :aal_level_requested,
+              :hspd12_piv_cac_requested
 
   def initialize(
     user:,
     service_provider:,
     auth_method:,
-    aal_level_requested:
+    aal_level_requested:,
+    hspd12_piv_cac_requested:
   )
     @mfa_policy = MfaPolicy.new(user)
     @auth_method = auth_method
     @service_provider = service_provider
     @aal_level_requested = aal_level_requested
+    @hspd12_piv_cac_requested = hspd12_piv_cac_requested
   end
 
   def aal3_required?
@@ -21,6 +24,7 @@ class AAL3Policy
   end
 
   def aal3_used?
+    return false if piv_cac_only_required?
     AAL3_METHODS.include?(auth_method)
   end
 
@@ -30,11 +34,13 @@ class AAL3Policy
   end
 
   def aal3_configured_but_not_used?
+    return false if piv_cac_only_required?
     aal3_configured_and_required? &&
       !aal3_used?
   end
 
   def aal3_configured_and_required?
+    return false if piv_cac_only_required?
     aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
@@ -43,10 +49,7 @@ class AAL3Policy
   end
 
   def piv_cac_only_required?
-    return if session.blank? || Figaro.env.allow_piv_cac_required != 'true'
-    sp_session = session.fetch(:sp, {})
-    return if sp_session.blank?
-    sp_session[:hspd12_piv_cac_requested]
+    Figaro.env.allow_piv_cac_required != 'true' && hspd12_piv_cac_requested
   end
 
   private

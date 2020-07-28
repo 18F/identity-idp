@@ -3,11 +3,12 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   attr_reader :current_user
 
-  def initialize(current_user, view, service_provider, aal3_required)
+  def initialize(current_user, view, service_provider, aal3_required, piv_cac_only_required)
     @current_user = current_user
     @view = view
     @service_provider = service_provider
     @aal3_required = aal3_required
+    @piv_cac_only_required = piv_cac_only_required
   end
 
   def title
@@ -30,6 +31,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     mfa = MfaContext.new(current_user)
     if @aal3_required
       configurations = mfa.aal3_configurations
+    elsif @piv_cac_only_required
+      configurations = mfa.piv_cac_configurations
     else
       configurations = mfa.two_factor_configurations
       # for now, we include the personal key since that's our current behavior,

@@ -1,7 +1,7 @@
 class MfaPolicy
-  def initialize(user, session = nil)
+  def initialize(user)
     @user = user
-    @mfa_user = MfaContext.new(user, session)
+    @mfa_user = MfaContext.new(user)
   end
 
   def no_factors_enabled?

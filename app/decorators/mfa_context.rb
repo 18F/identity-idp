@@ -1,9 +1,8 @@
 class MfaContext
-  attr_reader :user, :session
+  attr_reader :user
 
-  def initialize(user, session = nil)
+  def initialize(user)
     @user = user
-    @session = session
   end
 
   def phone_configurations
@@ -60,7 +59,6 @@ class MfaContext
   end
 
   def two_factor_configurations
-    return piv_cac_configurations if piv_cac_only_required?
     phone_configurations + webauthn_configurations + backup_code_configurations +
       piv_cac_configurations + auth_app_configurations
   end
@@ -95,10 +93,6 @@ class MfaContext
   end
 
   private
-
-  def piv_cac_only_required?
-    AAL3Policy.new(session: @session, user: user).piv_cac_only_required?
-  end
 
   def personal_key_method_count
     return 0 if Figaro.env.personal_key_retired == 'true'

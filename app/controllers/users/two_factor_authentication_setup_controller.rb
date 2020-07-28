@@ -36,7 +36,8 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
                                     user: current_user,
-                                    aal3_required: aal3_policy.aal3_required?)
+                                    aal3_required: aal3_policy.aal3_required?,
+                                    piv_cac_only_required: aal3_policy.piv_cac_only_required?)
     end
 
     def process_valid_form
