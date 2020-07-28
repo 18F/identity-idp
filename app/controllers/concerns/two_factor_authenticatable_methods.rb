@@ -97,7 +97,11 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def two_factor_authentication_method
-    params[:otp_delivery_preference] || request.path.split('/').last
+    auth_method = params[:otp_delivery_preference] || request.path.split('/').last
+    # the above check gets a wrong value for piv_cac when there is no OTP screen
+    # so we patch it to fix LG-3228
+    auth_method = 'piv_cac' if auth_method == 'present_piv_cac'
+    auth_method
   end
 
   # Method will be renamed in the next refactor.
