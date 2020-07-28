@@ -34,17 +34,18 @@ module UserFlowExporter
 
     output_dir = "public#{FEDERALIST_PATH}"
 
-    # -r = recursively mirrors site
-    # -H = span hosts (e.g. include assets from other domains)
-    # -p = download all assets associated with the page
-    # --no-host-directories = removes domain prefix from output path
-    # -P = output prefix (a.k.a the directory to dump the assets)
-    # --domains = whitelist of domains to include when following links
-    scrape_cmd = "wget -r -H -p --no-host-directories " \
-                "-P '#{output_dir}' " \
-                "--domains 'localhost' " \
-                "'#{url}'"
-    system(scrape_cmd)
+    scrape_cmd = [
+      'wget',
+      '-r', # -r = recursively mirrors site
+      '-H', # -H = span hosts (e.g. include assets from other domains)
+      '-p', # -p = download all assets associated with the page
+      '--no-host-directories', # --no-host-directories = removes domain prefix from output path
+      '-P', output_dir, # -P = output prefix (a.k.a the directory to dump the assets)
+      '--domains', 'localhost', # --domains = whitelist of domains to include when following links
+      url
+    ]
+
+    system(*scrape_cmd)
 
     massage_html(output_dir)
     massage_assets(output_dir)
