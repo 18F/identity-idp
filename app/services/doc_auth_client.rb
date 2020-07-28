@@ -12,8 +12,6 @@ class DocAuthClient
                          end
   end
 
-  private
-
   ##
   # The `acuant_simulator` config is deprecated. The logic to switch vendors
   # based on its value can be removed once FORCE_ACUANT_CONFIG_UPGRADE in

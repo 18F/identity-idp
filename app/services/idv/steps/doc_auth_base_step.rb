@@ -198,7 +198,6 @@ module Idv
         end
       end
 
-
       def no_sp?
         sp_session[:issuer].blank?
       end

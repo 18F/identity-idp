@@ -50,8 +50,8 @@ describe Idv::ImageUploadController do
       it 'returns an error response and does not modify the session' do
         post :upload, params: {
           'front': 'front_image',
-            'back': 'back_image',
-            'selfie': 'selfie_image',
+          'back': 'back_image',
+          'selfie': 'selfie_image',
         }, format: :json
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('error')
