@@ -11,11 +11,14 @@ en:
       use_phone: Use your phone
     forms:
       address1: Address
+      change_file: Change file
+      choose_file: Drag file here or choose from folder
       city: City
       dob: Date of Birth
       doc_success: We've verified your social security number and state-issued ID.
       first_name: First Name
       last_name: Last Name
+      selected_file: Selected file
       ssn: Social Security Number
       state: State
       zip_code: Zip Code

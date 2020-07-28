@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FileImage from './file-image';
 import useInstanceId from '../hooks/use-instance-id';
+import useI18n from '../hooks/use-i18n';
 
 /**
  * Returns true if the given file object is an image, or false otherwise.
@@ -15,6 +16,7 @@ export function isImageFile(file) {
 }
 
 function FileInput({ label, hint, accept, value, onChange }) {
+  const t = useI18n();
   const instanceId = useInstanceId();
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
@@ -44,7 +46,8 @@ function FileInput({ label, hint, accept, value, onChange }) {
         <div className="usa-file-input__target">
           {value && (
             <div className="usa-file-input__preview-heading">
-              Selected file <span className="usa-file-input__choose">Change file</span>
+              {t('doc_auth.forms.selected_file')}{' '}
+              <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
           {value && isImageFile(value) && (
@@ -54,8 +57,7 @@ function FileInput({ label, hint, accept, value, onChange }) {
           )}
           {!value && (
             <div className="usa-file-input__instructions" aria-hidden="true">
-              <span className="usa-file-input__drag-text">Drag file here or </span>
-              <span className="usa-file-input__choose">choose from folder</span>
+              <span className="usa-file-input__drag-text">{t('doc_auth.forms.choose_file')}</span>
             </div>
           )}
           <div className="usa-file-input__box" />

@@ -11,12 +11,15 @@ fr:
       use_phone: Utilisez votre téléphone
     forms:
       address1: Adresse
+      change_file: Changer de fichier
+      choose_file: Faites glisser le fichier ici ou choisissez dans un dossier
       city: Ville
       dob: Date de naissance
       doc_success: Nous avons vérifié votre numéro de sécurité sociale et votre identifiant
         délivré par l'État.
       first_name: Prénom
       last_name: Nom de famille
+      selected_file: Fichier sélectionné
       ssn: Numéro de sécurité sociale
       state: Etat
       zip_code: Code postal
