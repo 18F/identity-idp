@@ -49,7 +49,7 @@ class AAL3Policy
   end
 
   def piv_cac_required?
-    Figaro.env.allow_piv_cac_required != 'true' && piv_cac_requested
+    Figaro.env.allow_piv_cac_required == 'true' && piv_cac_requested
   end
 
   private

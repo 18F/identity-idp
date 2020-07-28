@@ -187,6 +187,108 @@ describe AAL3Policy do
     end
   end
 
+  describe '#piv_cac_required?' do
+    context 'when allow_piv_cac_required is true' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('true')
+      end
+
+      it 'returns false if piv cac is not requested' do
+        piv_cac_requested = false
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+
+      it 'returns true if piv cac is requested' do
+        piv_cac_requested = true
+
+        expect_piv_cac_required_to(be_truthy, piv_cac_requested)
+      end
+    end
+
+    context 'when allow_piv_cac_required is false' do
+      before(:each) do
+        allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('false')
+      end
+
+      it 'returns false if piv cac is not requested' do
+        piv_cac_requested = false
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+
+      it 'returns false if piv cac is requested' do
+        piv_cac_requested = true
+
+        expect_piv_cac_required_to(be_falsey, piv_cac_requested)
+      end
+    end
+  end
+
+  describe '#piv_cac_setup_required?' do
+    context 'when the user already has a piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(true)
+      end
+
+      it 'returns false if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+
+    context 'when the user has no piv/cac configured' do
+      before(:each) do
+        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
+          and_return(false)
+      end
+
+      it 'returns true if piv/cac is required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(true)
+
+        expect_piv_cac_setup_required_to be_truthy
+      end
+
+      it 'returns false if piv/cac is not required' do
+        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).and_return(false)
+
+        expect_piv_cac_setup_required_to be_falsey
+      end
+    end
+  end
+
+  def expect_piv_cac_required_to(value, piv_cac_requested)
+    aal3_policy = AAL3Policy.new(
+      user: user,
+      service_provider: service_provider,
+      auth_method: auth_method,
+      aal_level_requested: aal_level_requested,
+      piv_cac_requested: piv_cac_requested,
+    )
+
+    expect(aal3_policy.piv_cac_required?).to(value)
+  end
+
+  def expect_piv_cac_setup_required_to(value)
+    aal3_policy = AAL3Policy.new(
+      user: user,
+      service_provider: service_provider,
+      auth_method: auth_method,
+      aal_level_requested: aal_level_requested,
+      piv_cac_requested: piv_cac_requested,
+    )
+
+    expect(aal3_policy.piv_cac_setup_required?).to(value)
+  end
+
   def configure_aal3_for_user(user)
     user.webauthn_configurations << create(:webauthn_configuration)
     user.save!
