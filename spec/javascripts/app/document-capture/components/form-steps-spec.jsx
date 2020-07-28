@@ -2,7 +2,9 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import render from '../../../support/render';
-import FormSteps from '../../../../../app/javascript/app/document-capture/components/form-steps';
+import FormSteps, {
+  isStepValid,
+} from '../../../../../app/javascript/app/document-capture/components/form-steps';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
@@ -18,6 +20,7 @@ describe('document-capture/components/form-steps', () => {
           />
         </>
       ),
+      isValid: (value) => Boolean(value.second),
     },
     { name: 'last', component: () => <span>Last</span> },
   ];
@@ -30,6 +33,24 @@ describe('document-capture/components/form-steps', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
+  });
+
+  describe('isStepValid', () => {
+    it('defaults to true if there is no specified validity function', () => {
+      const step = { name: 'example' };
+
+      const result = isStepValid(step, {});
+
+      expect(result).to.be.true();
+    });
+
+    it('returns the result of the validity function given form values', () => {
+      const step = { name: 'example', isValid: (value) => value.ok };
+
+      const result = isStepValid(step, { ok: false });
+
+      expect(result).to.be.false();
+    });
   });
 
   it('renders nothing if given empty steps array', () => {
@@ -67,9 +88,10 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('renders submit button at last step', () => {
-    const { getByText } = render(<FormSteps steps={STEPS} />);
+    const { getByText, getByRole } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.type(getByRole('textbox'), 'val');
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('forms.buttons.submit.default')).to.be.ok();
@@ -121,9 +143,10 @@ describe('document-capture/components/form-steps', () => {
 
       done();
     });
-    const { getByText } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
+    const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.type(getByRole('textbox'), 'val');
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
   });
@@ -134,5 +157,13 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(document.activeElement).to.equal(getByText('forms.buttons.continue'));
+  });
+
+  it('validates step completion', () => {
+    window.location.hash = '#step=last';
+
+    render(<FormSteps steps={STEPS} />);
+
+    expect(window.location.hash).to.equal('#step=second');
   });
 });
