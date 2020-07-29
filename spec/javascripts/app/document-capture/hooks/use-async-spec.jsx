@@ -54,6 +54,6 @@ describe('document-capture/hooks/use-async', () => {
     reject();
 
     expect(await findByText('Error')).to.be.ok();
-    expect(console).to.have.logged();
+    expect(console).to.have.loggedError();
   });
 });

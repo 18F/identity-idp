@@ -38,6 +38,6 @@ describe('document-capture/components/suspense-error-boundary', () => {
     );
 
     expect(await findByText('Error')).to.be.ok();
-    expect(console).to.have.logged();
+    expect(console).to.have.loggedError();
   });
 });

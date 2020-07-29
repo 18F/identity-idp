@@ -33,7 +33,7 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     expect(await findByText('Error!')).to.be.ok();
-    expect(console).to.have.logged(/^Error: Could not load script:/);
+    expect(console).to.have.loggedError(/^Error: Could not load script:/);
   });
 
   it('renders an error indicator if acuant fails to initialize', () => {

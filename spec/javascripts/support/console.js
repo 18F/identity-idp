@@ -15,7 +15,7 @@ import sinon from 'sinon';
 export function chaiConsoleSpy(chai, utils) {
   utils.addChainableMethod(
     chai.Assertion.prototype,
-    'logged',
+    'loggedError',
     (message) => {
       if (message) {
         const index = console.unverifiedCalls.findIndex((calledMessage) =>
