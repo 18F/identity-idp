@@ -94,8 +94,8 @@
 
     <p class='mt3 mb0'><%= t('doc_auth.info.upload_image') %></p>
 
-    <%= render 'idv/doc_auth/start_over_or_cancel' %>
     <%= javascript_pack_tag 'image-preview' %>
   </div>
+  <%= render 'idv/doc_auth/start_over_or_cancel' %>
   <%= javascript_pack_tag 'document-capture' %>
 <% end %>
