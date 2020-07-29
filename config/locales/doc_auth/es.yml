@@ -32,6 +32,7 @@ es:
       selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
+      take_pic_docs: Agregue su identificación emitida por el estado
       take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
@@ -90,6 +91,7 @@ es:
       take_pic2: Toma la foto sobre una superficie plana
       take_pic3: No uses el flash en tu cámara
       take_pic4: Usa la orientación del paisaje
+      take_pic5: El tamaño del archivo debe ser de al menos 2 MB
       text1: junto con su número de seguro social
       text2: usando un número de teléfono o dirección de correo
       text3: volviendo a ingresar su contraseña de login.gov

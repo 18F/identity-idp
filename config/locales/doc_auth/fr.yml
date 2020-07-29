@@ -32,6 +32,7 @@ fr:
       selfie: Prendre un selfie.
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
+      take_pic_docs: Ajoutez votre pièce d'identité émise par l'État
       take_pic_front: Prenez une photo du recto de votre identifiant
       take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
@@ -97,6 +98,7 @@ fr:
       take_pic2: Prenez la photo sur une surface plane
       take_pic3: Ne pas utiliser le flash sur votre appareil photo
       take_pic4: Utilisez l'orientation paysage
+      take_pic5: La taille du fichier doit être d'au moins 2 Mo
       text1: avec votre numéro de sécurité sociale
       text2: en utilisant un numéro de téléphone ou une adresse postale
       text3: en ressaisissant votre mot de passe login.gov

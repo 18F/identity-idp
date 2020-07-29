@@ -3,6 +3,8 @@ import { createContext } from 'react';
 /**
  * @typedef VideoDeviceSupport
  *
+ * @see https://www.w3.org/TR/mediacapture-streams/#dom-videofacingmodeenum
+ *
  * @prop {Record<VideoFacingModeEnum,boolean>} facingMode Camera facing mode.
  */
 

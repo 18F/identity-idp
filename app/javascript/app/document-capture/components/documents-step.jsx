@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FileInput from './file-input';
 import useI18n from '../hooks/use-i18n';
+import useDeviceHasVideoFacingMode from '../hooks/use-device-has-video-facing-mode';
+import DocumentsIntro from './documents-intro';
 
 /**
  * Sides of document to present as file input.
@@ -12,9 +14,11 @@ const DOCUMENT_SIDES = ['front', 'back'];
 
 function DocumentsStep({ value, onChange }) {
   const t = useI18n();
+  const isEnvironmentCaptureDevice = useDeviceHasVideoFacingMode('environment');
 
   return (
     <>
+      {!isEnvironmentCaptureDevice && <DocumentsIntro />}
       {DOCUMENT_SIDES.map((side) => {
         const label = t(`doc_auth.headings.upload_${side}`);
         const inputKey = `${side}_image`;
