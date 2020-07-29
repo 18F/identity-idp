@@ -19,11 +19,7 @@ function uploadImages(frontImage, backImage, selfieImage) {
     })
       .then((response) => response.json())
       .then((result) => {
-        if (
-          result.status &&
-          result.message &&
-          ['success', 'error'].includes(result.status)
-        ) {
+        if (result.status && result.message && ['success', 'error'].includes(result.status)) {
           resolve(result);
         } else {
           reject(Error('Malformed response'));

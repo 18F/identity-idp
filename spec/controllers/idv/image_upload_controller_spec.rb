@@ -9,9 +9,15 @@ describe Idv::ImageUploadController do
       request.content_type = content_type
       response_mock = instance_double(Acuant::Responses::ResponseWithPii,
                                       success?: upload_errors.empty?,
-                                      errors: upload_errors)
+                                      errors: upload_errors,
+                                      to_h: {
+                                        success: upload_errors.empty?,
+                                        errors: upload_errors,
+                                      },
+                                      pii_from_doc: {})
       client_mock = instance_double(Acuant::AcuantClient, post_images: response_mock)
       allow(subject).to receive(:client).and_return client_mock
+      subject.user_session['idv/doc_auth'] = {} unless subject.user_session['idv/doc_auth']
     end
     context 'with an invalid content type' do
       let(:content_type) { 'text/plain' }
@@ -42,7 +48,7 @@ describe Idv::ImageUploadController do
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('success')
         expect(response_json['message']).to eq('Uploaded images')
-        expect(subject.user_session).to include('api_upload')
+        expect(subject.user_session['idv/doc_auth']).to include('api_upload')
       end
     end
     context 'when image upload fails' do
@@ -56,7 +62,7 @@ describe Idv::ImageUploadController do
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('error')
         expect(response_json['message']).to eq('Too blurry')
-        expect(subject.user_session).not_to include('api_upload')
+        expect(subject.user_session['idv/doc_auth']).not_to include('api_upload')
       end
     end
   end
