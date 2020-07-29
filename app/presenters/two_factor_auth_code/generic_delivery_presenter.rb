@@ -50,7 +50,13 @@ module TwoFactorAuthCode
     private
 
     def aal3_policy
-      @aal3 ||= AAL3Policy.new(session: @view.session, user: @view.current_user)
+      @aal3 ||= AAL3Policy.new(user: @view.current_user,
+                               service_provider: ServiceProvider.from_issuer(
+                                 @view.sp_session[:issuer],
+                               ),
+                               auth_method: @view.user_session[:auth_method],
+                               aal_level_requested: @view.sp_session[:aal_level_requested],
+                               piv_cac_requested: @view.sp_session[:piv_cac_requested])
     end
 
     def no_factors_enabled?
