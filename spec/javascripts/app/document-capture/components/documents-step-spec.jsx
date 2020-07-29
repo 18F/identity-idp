@@ -2,6 +2,7 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import render from '../../../support/render';
+import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
 import DocumentsStep from '../../../../../app/javascript/app/document-capture/components/documents-step';
 
 describe('document-capture/components/documents-step', () => {
@@ -38,5 +39,21 @@ describe('document-capture/components/documents-step', () => {
     //
     // See: https://github.com/testing-library/user-event/issues/421
     expect(input.getAttribute('accept')).to.equal('image/*');
+  });
+
+  it('renders device-specific instructions', () => {
+    let { getByText } = render(
+      <DeviceContext.Provider
+        value={{ supports: { video: { facingMode: { environment: true } } } }}
+      >
+        <DocumentsStep />
+      </DeviceContext.Provider>,
+    );
+
+    expect(() => getByText('doc_auth.instructions.take_pic5')).to.throw();
+
+    getByText = render(<DocumentsStep />).getByText;
+
+    expect(() => getByText('doc_auth.instructions.take_pic5')).not.to.throw();
   });
 });
