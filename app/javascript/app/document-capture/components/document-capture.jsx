@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import AcuantCapture from './acuant-capture';
-import DocumentTips from './document-tips';
-import Image from './image';
 import FormSteps from './form-steps';
 import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
 import Submission from './submission';
@@ -9,34 +7,24 @@ import Submission from './submission';
 function DocumentCapture() {
   const [formValues, setFormValues] = useState(null);
 
-  const sample = (
-    <Image
-      assetPath="state-id-sample-front.jpg"
-      alt="Sample front of state issued ID"
-      width={450}
-      height={338}
-    />
-  );
-
   return formValues ? (
     <Submission payload={formValues} />
   ) : (
-    <>
-      <AcuantCapture />
-      <DocumentTips sample={sample} />
-      <FormSteps
-        steps={[
-          {
-            name: 'documents',
-            component: DocumentsStep,
-            isValid: isDocumentsStepValid,
-          },
-          { name: 'selfie', component: () => 'Selfie' },
-          { name: 'confirm', component: () => 'Confirm?' },
-        ]}
-        onComplete={setFormValues}
-      />
-    </>
+    <FormSteps
+      steps={[
+        {
+          name: 'documents',
+          component: DocumentsStep,
+          isValid: isDocumentsStepValid,
+        },
+        {
+          name: 'selfie',
+          component: AcuantCapture,
+        },
+        { name: 'confirm', component: () => 'Confirm?' },
+      ]}
+      onComplete={setFormValues}
+    />
   );
 }
 
