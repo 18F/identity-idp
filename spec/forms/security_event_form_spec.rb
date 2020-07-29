@@ -6,7 +6,8 @@ RSpec.describe SecurityEventForm do
   subject(:form) { SecurityEventForm.new(body: jwt) }
 
   let(:user) { create(:user) }
-  let(:service_provider) { create(:service_provider, agency_id: Agency.last.id) }
+  let(:agency) { Agency.last || Agency.create(name: 'Test Agency') }
+  let(:service_provider) { create(:service_provider, agency_id: agency.id) }
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
       File.read(Rails.root.join('keys', 'saml_test_sp.key')),
