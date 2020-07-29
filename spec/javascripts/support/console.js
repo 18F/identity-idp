@@ -27,6 +27,9 @@ export function chaiConsoleSpy(chai, utils) {
         expect(index).to.not.equal(-1, error);
 
         console.unverifiedCalls.splice(index, 1);
+        if (console.unverifiedCalls.length === 0) {
+          delete console.unverifiedCalls;
+        }
       } else {
         delete console.unverifiedCalls;
       }
