@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import I18nContext from '../../../../../app/javascript/app/document-capture/context/i18n';
 import useI18n from '../../../../../app/javascript/app/document-capture/hooks/use-i18n';
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_220357) do
+ActiveRecord::Schema.define(version: 2020_07_23_214611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -411,6 +411,17 @@ ActiveRecord::Schema.define(version: 2020_07_21_220357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
+  end
+
+  create_table "security_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "event_type", null: false
+    t.string "jti"
+    t.string "issuer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti", "user_id", "issuer"], name: "index_security_events_on_jti_and_user_id_and_issuer", unique: true
+    t.index ["user_id"], name: "index_security_events_on_user_id"
   end
 
   create_table "service_provider_quota_limits", force: :cascade do |t|

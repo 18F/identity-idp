@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AcuantCapture from './acuant-capture';
 import DocumentTips from './document-tips';
 import Image from './image';
-import useI18n from '../hooks/use-i18n';
+import FormSteps from './form-steps';
+import DocumentsStep from './documents-step';
+import Submission from './submission';
 
 function DocumentCapture() {
-  const t = useI18n();
+  const [formValues, setFormValues] = useState(null);
 
   const sample = (
     <Image
@@ -16,11 +18,23 @@ function DocumentCapture() {
     />
   );
 
-  return (
+  return formValues ? (
+    <Submission payload={formValues} />
+  ) : (
     <>
-      <h2>{t('doc_auth.headings.welcome')}</h2>
-      <DocumentTips sample={sample} />
       <AcuantCapture />
+      <DocumentTips sample={sample} />
+      <FormSteps
+        steps={[
+          {
+            name: 'documents',
+            component: DocumentsStep,
+          },
+          { name: 'selfie', component: () => 'Selfie' },
+          { name: 'confirm', component: () => 'Confirm?' },
+        ]}
+        onComplete={setFormValues}
+      />
     </>
   );
 }

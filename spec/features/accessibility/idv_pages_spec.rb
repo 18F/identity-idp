@@ -10,7 +10,7 @@ feature 'Accessibility on IDV pages', :js do
 
       visit idv_path
 
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'cancel idv' do
@@ -19,7 +19,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_cancel_path
 
       expect(current_path).to eq idv_cancel_path
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'phone info' do
@@ -28,7 +28,7 @@ feature 'Accessibility on IDV pages', :js do
       complete_all_doc_auth_steps
 
       expect(current_path).to eq idv_phone_path
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'review page' do
@@ -38,7 +38,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_review_path
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
 
     scenario 'personal key / confirmation page' do
@@ -51,7 +51,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_confirmations_path
-      expect(page).to be_accessible
+      expect(page).to be_accessible.according_to :section508, :"best-practice"
     end
   end
 end

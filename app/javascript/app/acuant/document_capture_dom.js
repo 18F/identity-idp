@@ -9,7 +9,8 @@ export const imageDataUrlInput = () => document.querySelector('#doc_auth_image_d
 export const acuantSdkUploadForm = () => document.querySelector('#acuant-sdk-upload-form');
 export const acuantSdkSpinner = () => document.querySelector('#acuant-sdk-spinner');
 export const acuantSdkCaptureView = () => document.querySelector('#acuant-sdk-capture-view');
-export const acuantSdkCaptureViewCloseButton = () => document.querySelector('#acuant-sdk-capture-view-close');
+export const acuantSdkCaptureViewCloseButton = () =>
+  document.querySelector('#acuant-sdk-capture-view-close');
 export const acuantSdkContinueForm = () => document.querySelector('#acuant-sdk-continue-form');
 // Acuant UI elements
 export const acuantSdkCaptureButton = () => document.querySelector('#acuant-sdk-capture');
@@ -18,9 +19,11 @@ export const acuantSdkPreviewImage = () => document.querySelector('#acuant-sdk-p
 export const acuantSdkFallbackText = () => document.querySelector('#acuant-fallback-text');
 export const acuantSdkFallbackLink = () => document.querySelector('#acuant-fallback-link');
 
-export const fetchSdkInitializationCredentials = () => document.querySelector('meta[name="acuant-sdk-initialization-creds"]').content;
+export const fetchSdkInitializationCredentials = () =>
+  document.querySelector('meta[name="acuant-sdk-initialization-creds"]').content;
 
-export const fetchSdkInitializationEndpoint = () => document.querySelector('meta[name="acuant-sdk-initialization-endpoint"]').content;
+export const fetchSdkInitializationEndpoint = () =>
+  document.querySelector('meta[name="acuant-sdk-initialization-endpoint"]').content;
 
 const hideAcuantSdkContainers = () => {
   acuantSdkUploadForm().classList.add('hidden');

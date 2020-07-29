@@ -311,6 +311,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -333,6 +334,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -935,6 +937,7 @@ describe SamlIdpController do
       allow(controller).to receive(:user_fully_authenticated?).and_return(true)
       allow(controller).to receive(:link_identity_from_session_data).and_return(true)
       allow(controller).to receive(:current_user).and_return(build(:user))
+      allow(controller).to receive(:user_session).and_return({})
     end
 
     context 'user requires ID verification' do

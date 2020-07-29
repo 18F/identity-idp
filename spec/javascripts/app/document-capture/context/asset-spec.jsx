@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { render } from '@testing-library/react';
+import render from '../../../support/render';
 import AssetContext from '../../../../../app/javascript/app/document-capture/context/asset';
 
 describe('document-capture/context/asset', () => {

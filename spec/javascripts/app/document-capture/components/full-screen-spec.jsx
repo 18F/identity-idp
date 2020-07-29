@@ -43,9 +43,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('traps focus', (done) => {
-    const { container, getByLabelText } = render(
-      <FullScreen>Content</FullScreen>,
-    );
+    const { container, getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -68,9 +66,7 @@ describe('document-capture/components/full-screen', () => {
 
   it('closes on escape press', () => {
     const onRequestClose = sinon.spy();
-    const { getByLabelText, rerender } = render(
-      <FullScreen>Content</FullScreen>,
-    );
+    const { getByLabelText, rerender } = render(<FullScreen>Content</FullScreen>);
     rerender(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');

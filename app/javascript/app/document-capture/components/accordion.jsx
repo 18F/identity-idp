@@ -49,19 +49,9 @@ function Accordion({ title, children }) {
         aria-hidden="true"
       >
         <div className="px2">{children}</div>
-        <div
-          className="py1 accordion-footer"
-          aria-controls={contentId}
-          role="button"
-          tabIndex={0}
-        >
+        <div className="py1 accordion-footer" aria-controls={contentId} role="button" tabIndex={0}>
           <div className="pb-tiny pt-tiny">
-            <Image
-              assetPath="up-carat-thin.svg"
-              alt=""
-              width={14}
-              className="mr1"
-            />
+            <Image assetPath="up-carat-thin.svg" alt="" width={14} className="mr1" />
             {t('users.personal_key.close')}
           </div>
         </div>

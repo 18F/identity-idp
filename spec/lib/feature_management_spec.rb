@@ -358,4 +358,32 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe 'log_to_stdout?' do
+    context 'outside the test environment' do
+      before { allow(Rails.env).to receive(:test?).and_return(false) }
+
+      it 'returns true when enabled' do
+        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+
+        expect(FeatureManagement.log_to_stdout?).to eq(true)
+      end
+
+      it 'returns false when disabled' do
+        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+
+        expect(FeatureManagement.log_to_stdout?).to eq(true)
+      end
+    end
+
+    context 'in the test environment' do
+      it 'always returns true' do
+        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+        expect(FeatureManagement.log_to_stdout?).to eq(false)
+
+        allow(Figaro.env).to receive(:log_to_stdout).and_return('false')
+        expect(FeatureManagement.log_to_stdout?).to eq(false)
+      end
+    end
+  end
 end
