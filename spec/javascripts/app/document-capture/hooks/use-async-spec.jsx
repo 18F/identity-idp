@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import render from '../../../support/render';
 import useAsync from '../../../../../app/javascript/app/document-capture/hooks/use-async';
 import SuspenseErrorBoundary from '../../../../../app/javascript/app/document-capture/components/suspense-error-boundary';
@@ -52,11 +51,9 @@ describe('document-capture/hooks/use-async', () => {
 
     expect(container.textContent).to.equal('Loading');
 
-    sinon.stub(console, 'error').callsFake(() => {});
     reject();
 
     expect(await findByText('Error')).to.be.ok();
-    // eslint-disable-next-line no-console
-    console.error.restore();
+    expect(console).to.have.logged();
   });
 });

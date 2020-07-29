@@ -1,8 +1,9 @@
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
-const { JSDOM } = require('jsdom');
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 
 chai.use(dirtyChai);
+chai.use(chaiConsoleSpy);
 global.expect = chai.expect;
 
 // Emulate a DOM, since many modules will assume the presence of these globals exist as a side
@@ -19,3 +20,4 @@ beforeEach(() => {
     document.body.removeChild(document.body.firstChild);
   }
 });
+useConsoleLogSpy();
