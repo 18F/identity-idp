@@ -17,11 +17,18 @@ module Idv
                                         liveness_checking_enabled: liveness_checking_enabled?)
       return error_json(doc_response.errors.first) unless doc_response.success?
       upload_info = {
-        documents: doc_response,
-        results_response: doc_response,
+        documents: doc_response.to_h,
       }
-      user_session['api_upload'] = upload_info
+      store_pii(doc_response)
+      user_session['idv/doc_auth']['api_upload'] = upload_info
       success_json('Uploaded images')
+    end
+
+    def store_pii(doc_response)
+      user_session['idv/doc_auth'][:pii_from_doc] = doc_response.pii_from_doc.merge(
+        uuid: current_user.uuid,
+        phone: current_user.phone_configurations.take&.phone,
+      )
     end
 
     def validate_request(request)

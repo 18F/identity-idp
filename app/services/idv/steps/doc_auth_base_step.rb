@@ -198,10 +198,6 @@ module Idv
         end
       end
 
-      def no_sp?
-        sp_session[:issuer].blank?
-      end
-
       def mobile?
         client = DeviceDetector.new(request.user_agent)
         client.device_type != 'desktop'

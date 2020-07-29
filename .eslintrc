@@ -28,7 +28,6 @@
     "operator-linebreak": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
-    "operator-linebreak": "off",
     "react/jsx-one-expression-per-line": "off"
   },
   "parserOptions": {

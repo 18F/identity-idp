@@ -2,7 +2,7 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       def call
-        api_upload = session['api_upload']
+        api_upload = flow_session['api_upload']
         response = (api_upload && api_upload['documents']) || post_form_images
         handle_response(response)
       end
@@ -15,9 +15,9 @@ module Idv
       end
 
       def handle_response(response)
-        if response.success?
+        if response.to_h['success']
           save_proofing_components
-          extract_pii_from_doc(response)
+          extract_pii_from_doc(response) unless flow_session[:pii_from_doc]
         else
           handle_document_verification_failure(response)
         end
