@@ -26,33 +26,31 @@ export function isStepValid(step, values) {
 }
 
 /**
- * Hook which ensures that given the current set of steps and form values, the current step state is
- * valid per the requirements of the step. At mount, if any step is not satisfied by the current
- * form values, the current step will be set to that step.
+ * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
+ * no step found by that name.
  *
- * @param {FormStep[]}              steps       Form steps.
- * @param {object}                  values      Form values.
- * @param {FormStep|undefined}      currentStep Current step, if known.
- * @param {(nextStep:string)=>void} setStepName Step setter.
+ * @param {FormStep[]} steps Form steps.
+ * @param {string}     name  Step to search.
+ *
+ * @return {number} Step index.
  */
-function useVerifiedCompletion(steps, values, currentStep, setStepName) {
-  useEffect(() => {
-    if (!currentStep) {
-      return;
-    }
+export function getStepIndexByName(steps, name) {
+  return steps.findIndex((step) => step.name === name);
+}
 
-    for (let i = 0; i < steps.length; i += 1) {
-      const step = steps[i];
-      if (step.name === currentStep.name) {
-        break;
-      }
-
-      if (!isStepValid(step, values)) {
-        setStepName(step.name);
-        break;
-      }
-    }
-  }, []);
+/**
+ * Returns the index of the last step in the array where the values satisfy the requirements of the
+ * step. If all steps are valid, returns the index of the last member. Returns `-1` if all steps are
+ * invalid, or if the array is empty.
+ *
+ * @param {FormStep[]} steps  Form steps.
+ * @param {object}     values Current form values.
+ *
+ * @return {number} Step index.
+ */
+export function getLastValidStepIndex(steps, values) {
+  const index = steps.findIndex((step) => !isStepValid(step, values));
+  return index === -1 ? steps.length - 1 : index - 1;
 }
 
 function FormSteps({ steps, onComplete }) {
@@ -60,12 +58,24 @@ function FormSteps({ steps, onComplete }) {
   const [stepName, setStepName] = useHistoryParam('step');
   const t = useI18n();
 
-  const stepIndex = stepName ? steps.findIndex((_step) => _step.name === stepName) : 0;
-  const step = steps[stepIndex];
-  useVerifiedCompletion(steps, values, step, setStepName);
+  // An "effective" step is computed in consideration of the facts that (1) there may be no history
+  // parameter present, in which case the first step should be used, and (2) the values may not be
+  // valid for previous steps, in which case the furthest valid step should be set.
+  const effectiveStepIndex = Math.max(
+    Math.min(getStepIndexByName(steps, stepName), getLastValidStepIndex(steps, values) + 1),
+    0,
+  );
+  const effectiveStep = steps[effectiveStepIndex];
+  useEffect(() => {
+    // The effective step is used in the initial render, but since it may be out of sync with the
+    // history parameter, it is synced after mount.
+    if (effectiveStep && stepName && effectiveStep.name !== stepName) {
+      setStepName(effectiveStep.name);
+    }
+  }, []);
 
   // An empty steps array is allowed, in which case there is nothing to render.
-  if (!step) {
+  if (!effectiveStep) {
     return null;
   }
 
@@ -74,7 +84,7 @@ function FormSteps({ steps, onComplete }) {
    * step.
    */
   function toNextStep() {
-    const nextStepIndex = stepIndex + 1;
+    const nextStepIndex = effectiveStepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
       // Clear step parameter from URL.
@@ -86,8 +96,8 @@ function FormSteps({ steps, onComplete }) {
     }
   }
 
-  const { component: Component, name } = step;
-  const isLastStep = stepIndex + 1 === steps.length;
+  const { component: Component, name } = effectiveStep;
+  const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
     <>
@@ -96,7 +106,7 @@ function FormSteps({ steps, onComplete }) {
         value={values}
         onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <Button isPrimary onClick={toNextStep} isDisabled={!isStepValid(step, values)}>
+      <Button isPrimary onClick={toNextStep} isDisabled={!isStepValid(effectiveStep, values)}>
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
     </>

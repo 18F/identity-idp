@@ -4,6 +4,8 @@ import sinon from 'sinon';
 import render from '../../../support/render';
 import FormSteps, {
   isStepValid,
+  getStepIndexByName,
+  getLastValidStepIndex,
 } from '../../../../../app/javascript/app/document-capture/components/form-steps';
 
 describe('document-capture/components/form-steps', () => {
@@ -50,6 +52,41 @@ describe('document-capture/components/form-steps', () => {
       const result = isStepValid(step, { ok: false });
 
       expect(result).to.be.false();
+    });
+  });
+
+  describe('getStepIndexByName', () => {
+    it('returns -1 if no step by name', () => {
+      const result = getStepIndexByName(STEPS, 'third');
+
+      expect(result).to.be.equal(-1);
+    });
+
+    it('returns index of step by name', () => {
+      const result = getStepIndexByName(STEPS, 'second');
+
+      expect(result).to.be.equal(1);
+    });
+  });
+
+  describe('getLastValidStepIndex', () => {
+    it('returns -1 if array is empty', () => {
+      const result = getLastValidStepIndex([], {});
+
+      expect(result).to.be.equal(-1);
+    });
+
+    it('returns -1 if all steps are invalid', () => {
+      const steps = [...STEPS].map((step) => ({ ...step, isValid: () => false }));
+      const result = getLastValidStepIndex(steps, {});
+
+      expect(result).to.be.equal(-1);
+    });
+
+    it('returns index of the last valid step', () => {
+      const result = getLastValidStepIndex(STEPS, { second: 'valid' });
+
+      expect(result).to.be.equal(2);
     });
   });
 
@@ -113,6 +150,8 @@ describe('document-capture/components/form-steps', () => {
 
   it('pushes step to URL', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
+
+    expect(window.location.hash).to.equal('');
 
     userEvent.click(getByText('forms.buttons.continue'));
 
