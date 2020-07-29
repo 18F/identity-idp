@@ -15,7 +15,7 @@ module Idv
       end
 
       def handle_response(response)
-        if response.to_h['success']
+        if response.to_h[:success]
           save_proofing_components
           extract_pii_from_doc(response) unless flow_session[:pii_from_doc]
         else
