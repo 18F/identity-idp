@@ -1,4 +1,5 @@
 import React from 'react';
+import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import useDeviceHasVideoFacingMode from '../hooks/use-device-has-video-facing-mode';
 
@@ -8,8 +9,8 @@ function DocumentsIntro() {
 
   return (
     <>
-      <h1>{t('doc_auth.headings.take_pic_docs')}</h1>
-      <p>{t('doc_auth.instructions.take_pic')}</p>
+      <PageHeading>{t('doc_auth.headings.take_pic_docs')}</PageHeading>
+      <p className="margin-bottom-0">{t('doc_auth.instructions.take_pic')}</p>
       <ul>
         <li>{t('doc_auth.instructions.take_pic1')}</li>
         <li>{t('doc_auth.instructions.take_pic2')}</li>
