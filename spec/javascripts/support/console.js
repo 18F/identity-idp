@@ -21,7 +21,7 @@ export function chaiConsoleSpy(chai, utils) {
         const index = console.unverifiedCalls.findIndex((calledMessage) =>
           message instanceof RegExp ? message.test(calledMessage) : message === calledMessage,
         );
-        let error = `Expected console to have logged": ${message}. `;
+        let error = `Expected console to have logged: ${message}. `;
         error += console.unverifiedCalls
           ? `Console logged with: ${console.unverifiedCalls.join(', ')}`
           : 'Console did not log.';
