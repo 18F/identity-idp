@@ -53,6 +53,6 @@ DocumentsStep.defaultProps = {
  *
  * @return {boolean} Whether step is valid.
  */
-DocumentsStep.isValid = (value) => Boolean(value.front_image && value.back_image);
+export const isValid = (value) => Boolean(value.front_image && value.back_image);
 
 export default DocumentsStep;

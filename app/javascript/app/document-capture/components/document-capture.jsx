@@ -3,7 +3,7 @@ import AcuantCapture from './acuant-capture';
 import DocumentTips from './document-tips';
 import Image from './image';
 import FormSteps from './form-steps';
-import DocumentsStep from './documents-step';
+import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
 import Submission from './submission';
 
 function DocumentCapture() {
@@ -29,6 +29,7 @@ function DocumentCapture() {
           {
             name: 'documents',
             component: DocumentsStep,
+            isValid: isDocumentsStepValid,
           },
           { name: 'selfie', component: () => 'Selfie' },
           { name: 'confirm', component: () => 'Confirm?' },
