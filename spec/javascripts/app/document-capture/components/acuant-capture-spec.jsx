@@ -25,7 +25,18 @@ describe('document-capture/components/acuant-capture', () => {
     expect(container.textContent).to.equal('Loading…');
   });
 
-  it('renders an error indicator if acuant fails to load', () => {
+  it('renders an error indicator if acuant script fails to load', async () => {
+    const { findByText } = render(
+      <AcuantContextProvider sdkSrc="/gone.js">
+        <AcuantCapture />
+      </AcuantContextProvider>,
+    );
+
+    expect(await findByText('Error!')).to.be.ok();
+    expect(console).to.have.logged();
+  });
+
+  it('renders an error indicator if acuant fails to initialize', () => {
     const { container } = render(
       <AcuantContextProvider sdkSrc="about:blank">
         <AcuantCapture />

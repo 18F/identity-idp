@@ -8,6 +8,15 @@ import { JSDOM, ResourceLoader } from 'jsdom';
 export function createDOM() {
   return new JSDOM('', {
     url: 'http://example.test',
+    resources: new (class extends ResourceLoader {
+      // eslint-disable-next-line class-methods-use-this
+      fetch(url) {
+        return url === 'about:blank'
+          ? Promise.resolve(Buffer.from(''))
+          : Promise.reject(new Error('Failed to load'));
+      }
+    })(),
+    runScripts: 'dangerously',
   });
 }
 
