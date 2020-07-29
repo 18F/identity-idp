@@ -113,6 +113,7 @@ en:
     piv_cac_fallback:
       question: Don't have your piv/cac card available?
     piv_cac_header_text: Present your PIV/CAC
+    piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: read about two-factor authentication
@@ -161,6 +162,7 @@ en:
     webauthn_fallback:
       question: Don't have your security key available?
     webauthn_header_text: Present your security key
+    webauthn_piv_available: Use your government employee ID
     webauthn_verified:
       header: Security key verified
       info: We have verified your security key. Click continue to sign in.

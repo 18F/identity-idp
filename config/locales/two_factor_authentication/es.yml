@@ -122,6 +122,7 @@ es:
     piv_cac_fallback:
       question: "¿No tiene su tarjeta PIV/CAC disponible?"
     piv_cac_header_text: Presenta tu PIV/CAC
+    piv_cac_webauthn_available: Usa tu clave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: leer acerca de la autenticación de dos factores
@@ -171,6 +172,7 @@ es:
     webauthn_fallback:
       question: "¿No tienes tu llave de seguridad disponible?"
     webauthn_header_text: Presenta tu llave de seguridad
+    webauthn_piv_available: Use su identificación de empleado del gobierno
     webauthn_verified:
       header: Llave de seguridad verificada
       info: Hemos verificado su llave de seguridad. Haga clic en continuar para iniciar

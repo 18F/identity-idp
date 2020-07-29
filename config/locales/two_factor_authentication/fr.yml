@@ -121,6 +121,7 @@ fr:
     piv_cac_fallback:
       question: Vous n'avez pas accès à votre carte PIV/CAC?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
+    piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
     read_about_two_factor_authentication:
       link: lire sur l'authentification à deux facteurs
@@ -169,6 +170,7 @@ fr:
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité
+    webauthn_piv_available: Utilisez votre identifiant d'employé du gouvernement
     webauthn_verified:
       header: Clé de sécurité vérifiée
       info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous
