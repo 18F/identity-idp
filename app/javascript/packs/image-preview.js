@@ -29,10 +29,10 @@ function imagePreview() {
 document.addEventListener('DOMContentLoaded', imagePreview);
 
 function imagePreviewFunction(imageType) {
-  imageId = 'doc_auth_' + imageType + '_image';
-  imageIdSelector = '#' + imageId;
-  takeImageSelector = '#take_' + imageType + '_picture';
-  targetIdSelector = '#' + imageType + '_target';
+  const imageId = 'doc_auth_' + imageType + '_image';
+  const imageIdSelector = '#' + imageId;
+  const takeImageSelector = '#take_' + imageType + '_picture';
+  const targetIdSelector = '#' + imageType + '_target';
 
   return function() {
     $(takeImageSelector).on('click', function() {

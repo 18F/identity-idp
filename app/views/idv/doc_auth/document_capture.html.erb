@@ -15,13 +15,11 @@
 
     <h1>
       <% if liveness_checking_enabled? %>
-        <%= t('doc_auth.headings.document_capture_with_selfie_html') %>
+        <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
       <% else %>
-        <%= t('doc_auth.headings.document_capture_html') %>
+        <%= t('doc_auth.headings.document_capture_heading_html') %>
       <% end %>
     </h1>
-
-    <%= render 'idv/doc_auth/document_capture_notices', flow_session: flow_session %>
 
     <%= simple_form_for(
       :doc_auth,
@@ -31,41 +29,33 @@
     ) do |f| %>
       <%# ---- Front Image ----- %>
 
-      <hr class="mt3 mb3"/>
-      <div class="front-image">
-        <h2>
-          <%= t('doc_auth.headings.upload_front_html') %>
-        </h2>
+      <%= t('doc_auth.instructions.document_capture_id_best_results_html') %>
 
-        <%= accordion('totp-info-front', t('doc_auth.tips.title_html')) do %>
-          <%= render 'idv/doc_auth/tips_and_sample' %>
-          <div class='center'>
-            <%= image_tag(asset_url('state-id-sample-front.jpg'), height: 338, width: 450) %>
-          </div>
-        <% end %>
+      <div class="front-image mt2">
+        <p>
+          <span class='bold'>
+            <%= t('doc_auth.headings.document_capture_front') %><br/>
+          </span>
+          <%= t('doc_auth.instructions.document_capture_hint') %>
+        </p>
 
         <%= f.input :front_image_data_url, as: :hidden %>
-        <%= f.input :front_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+        <%= f.input :front_image, label: false, as: :file, required: true %>
         <div class='my2' id='front_target'></div>
       </div>
 
       <%# ---- Back Image ----- %>
 
-      <hr class="mt3 mb3"/>
-      <div class="back-image">
-        <h2>
-          <%= t('doc_auth.headings.upload_back_html') %>
-        </h2>
-
-        <%= accordion('totp-info-back', t('doc_auth.tips.title_html')) do %>
-          <%= render 'idv/doc_auth/tips_and_sample' %>
-          <div class='center'>
-            <%= image_tag(asset_url('state-id-sample-back.jpg'), height: 338, width: 450) %>
-          </div>
-        <% end %>
+      <div class="back-image mt3">
+        <p>
+          <span class='bold'>
+            <%= t('doc_auth.headings.document_capture_back') %><br/>
+          </span>
+          <%= t('doc_auth.instructions.document_capture_hint') %>
+        </p>
 
         <%= f.input :back_image_data_url, as: :hidden %>
-        <%= f.input :back_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
+        <%= f.input :back_image, label: false, as: :file, required: true %>
         <div class='my2' id='back_target'></div>
       </div>
 
@@ -73,9 +63,15 @@
       <% if liveness_checking_enabled? %>
         <hr class="mt3 mb3"/>
         <div class="selfie">
-          <h2>
-            <%= t('doc_auth.headings.selfie') %>
-          </h2>
+          <p><%= t('doc_auth.instructions.document_capture_selfie_instructions') %></p>
+          <%= t('doc_auth.instructions.document_capture_selfie_best_results_html') %>
+
+          <p class='mt3'>
+            <span class='bold'>
+              <%= t('doc_auth.headings.document_capture_selfie') %><br/>
+            </span>
+            <%= t('doc_auth.instructions.document_capture_hint') %>
+          </p>
 
           <%= f.input :selfie_image_data_url, as: :hidden %>
           <%= f.input :selfie_image, label: false, as: :file, required: true, wrapper_class: 'mt3 sm-col-8' %>
@@ -85,15 +81,17 @@
 
       <%# ---- Submit ----- %>
 
-      <div class='mt3'>
+      <div class='mt4 mb4'>
         <%= render 'idv/doc_auth/submit_with_spinner' %>
       </div>
-    <% end %>
+    <% end %> <%# end simple_form_for %>
 
-    <p class='mt3 mb0'><%= t('doc_auth.info.upload_image') %></p>
+    <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 
     <%= javascript_pack_tag 'image-preview' %>
   </div>
   <%= render 'idv/doc_auth/start_over_or_cancel' %>
-  <%= javascript_pack_tag 'document-capture' %>
+  <% unless Figaro.env.document_capture_react_enabled == 'false' %>
+    <%= javascript_pack_tag 'document-capture' %>
+  <% end %>
 <% end %>
