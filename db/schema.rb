@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_29_132954) do
+ActiveRecord::Schema.define(version: 2020_07_23_214611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,7 +220,6 @@ ActiveRecord::Schema.define(version: 2020_06_29_132954) do
     t.index ["email_fingerprint"], name: "index_email_addresses_on_all_email_fingerprints"
     t.index ["email_fingerprint"], name: "index_email_addresses_on_email_fingerprint", unique: true, where: "(confirmed_at IS NOT NULL)"
     t.index ["user_id", "last_sign_in_at"], name: "index_email_addresses_on_user_id_and_last_sign_in_at", order: { last_sign_in_at: :desc }
-    t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -412,6 +411,17 @@ ActiveRecord::Schema.define(version: 2020_06_29_132954) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_remote_settings_on_name", unique: true
+  end
+
+  create_table "security_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "event_type", null: false
+    t.string "jti"
+    t.string "issuer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti", "user_id", "issuer"], name: "index_security_events_on_jti_and_user_id_and_issuer", unique: true
+    t.index ["user_id"], name: "index_security_events_on_user_id"
   end
 
   create_table "service_provider_quota_limits", force: :cascade do |t|

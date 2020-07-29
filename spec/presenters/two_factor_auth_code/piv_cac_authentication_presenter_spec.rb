@@ -25,7 +25,52 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         app: content_tag(:strong, APP_NAME))
     end
 
-    it { expect(presenter.help_text).to eq expected_help_text }
+    let(:multiple_configurations) { false }
+    let(:aal_required) { true }
+    let(:aal3_policy) do
+      instance_double('AAL3Policy',
+                      aal3_required?: aal_required,
+                      multiple_aal3_configurations?: multiple_configurations)
+    end
+
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+    end
+
+    context 'with AAL3 required, and only one method enabled' do
+      let(:expected_help_text) do
+        t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
+      end
+      it 'finds the PIV/CAC only help text' do
+        expect(presenter.help_text).to eq expected_help_text
+      end
+    end
+    context 'without AAL3 required' do
+      let(:aal_required) { false }
+      it 'finds the help text' do
+        expect(presenter.help_text).to eq expected_help_text
+      end
+    end
+  end
+
+  describe '#link_text' do
+    let(:aal3_policy) { instance_double('AAL3Policy') }
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+      allow(aal3_policy).to receive(:aal3_required?).and_return true
+    end
+    context 'with multiple AAL3 methods' do
+      it 'supplies link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return true
+        expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
+      end
+    end
+    context 'with only one AAL3 method do' do
+      it ' supplies no link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return false
+        expect(presenter.link_text).to eq('')
+      end
+    end
   end
 
   describe '#piv_cac_capture_text' do

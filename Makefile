@@ -52,5 +52,8 @@ normalize_yaml:
 	i18n-tasks normalize
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml
 
+check_asset_strings:
+	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
+
 generate_deploy_checklist:
 	ruby lib/release_management/generate_deploy_checklist.rb

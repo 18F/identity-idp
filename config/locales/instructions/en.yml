@@ -34,6 +34,9 @@ en:
           (your PIN was created when you set up your PIV/CAC).
         back_to_sign_in: Go back to sign in
         confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
+        confirm_piv_cac_only_html: This app requires a higher level of security. You
+          need to verify your identity using a government employee ID that you previously
+          set up to access your information
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
           this is an error, %{try_again}.  If this problem continues, contact your
           agency administrator.
@@ -58,6 +61,9 @@ en:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         number_message_html: We just called you at %{number}.
       webauthn:
+        confirm_webauthn_only_html: This app requires a higher level of security.
+          You need to verify your identity using a security key that you previously
+          set up to access your information.
         confirm_webauthn_html: Present the security key that you associated with your
           account.
       wrong_number_html: Entered the wrong phone number? %{link}

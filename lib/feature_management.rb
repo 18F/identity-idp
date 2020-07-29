@@ -112,6 +112,10 @@ class FeatureManagement
     Figaro.env.doc_capture_polling_enabled == 'true'
   end
 
+  def self.document_capture_step_enabled?
+    Figaro.env.document_capture_step_enabled == 'true'
+  end
+
   def self.hide_phone_mfa_signup?
     Figaro.env.hide_phone_mfa_signup == 'true'
   end
@@ -122,5 +126,9 @@ class FeatureManagement
 
   def self.logo_upload_enabled?
     Figaro.env.logo_upload_enabled == 'true'
+  end
+
+  def self.log_to_stdout?
+    !Rails.env.test? && Figaro.env.log_to_stdout == 'true'
   end
 end

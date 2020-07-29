@@ -34,9 +34,8 @@ describe Encryption::KmsLogger do
   end
 
   describe '.logger' do
-    it 'is a logger that write to log/kms.log' do
+    it 'is a logger' do
       expect(described_class.logger).to be_a(Logger)
-      expect(described_class.logger.instance_variable_get(:@logdev).filename).to eq('log/kms.log')
     end
   end
 end

@@ -19,13 +19,26 @@ module SamlIdpAuthConcern
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
       authn_context: requested_authn_context,
-      nameid_format: saml_request.name_id_format,
+      nameid_format: name_id_format,
     )
 
     return if @result.success?
 
     analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
     render 'saml_idp/auth/error', status: :bad_request
+  end
+
+  def name_id_format
+    @name_id_format ||= saml_request.name_id_format || default_name_id_format
+  end
+
+  def default_name_id_format
+    return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL if sp_uses_email_nameid_format?
+    Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+  end
+
+  def sp_uses_email_nameid_format?
+    Saml::Idp::Constants::ISSUERS_WITH_EMAIL_NAMEID_FORMAT.include?(current_service_provider.issuer)
   end
 
   def store_saml_request
@@ -76,6 +89,7 @@ module SamlIdpAuthConcern
     AttributeAsserter.new(
       user: principal,
       service_provider: current_service_provider,
+      name_id_format: name_id_format,
       authn_request: saml_request,
       decrypted_pii: decrypted_pii,
     )
@@ -94,6 +108,7 @@ module SamlIdpAuthConcern
   def saml_response
     encode_response(
       current_user,
+      name_id_format: name_id_format,
       authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,

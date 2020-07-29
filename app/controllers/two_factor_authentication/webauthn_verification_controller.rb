@@ -34,6 +34,7 @@ module TwoFactorAuthentication
       handle_remember_device
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
+      # This next line can be removed after RC 116
       user_session.delete(:mfa_device_remembered)
     end
 

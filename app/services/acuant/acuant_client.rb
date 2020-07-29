@@ -20,23 +20,7 @@ module Acuant
       ).fetch
     end
 
-    def post_images(front_image:, back_image:, instance_id: nil)
-      document = create_document
-      return failure(document.errors.first, document.to_h) unless document.success?
-
-      instance_id ||= document.instance_id
-      front_response = post_front_image(image: front_image, instance_id: instance_id)
-      back_response = post_back_image(image: back_image, instance_id: instance_id)
-      response = merge_post_responses(front_response, back_response)
-
-      check_results(response, instance_id)
-    end
-
-    def get_results(instance_id:)
-      Requests::GetResultsRequest.new(instance_id: instance_id).fetch
-    end
-
-    def post_selfie(instance_id:, image:)
+    def post_selfie(image:, instance_id:)
       get_face_image_response = Requests::GetFaceImageRequest.new(instance_id: instance_id).fetch
       return get_face_image_response unless get_face_image_response.success?
 
@@ -47,6 +31,33 @@ module Acuant
       liveness_response = Requests::LivenessRequest.new(image: image).fetch
 
       merge_facial_match_and_liveness_response(facial_match_response, liveness_response)
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def post_images(front_image:, back_image:, selfie_image:,
+                    liveness_checking_enabled: nil, instance_id: nil)
+      document = create_document
+      return failure(document.errors.first, document.to_h) unless document.success?
+
+      instance_id ||= document.instance_id
+      front_response = post_front_image(image: front_image, instance_id: instance_id)
+      back_response = post_back_image(image: back_image, instance_id: instance_id)
+      response = merge_post_responses(front_response, back_response)
+
+      results = check_results(response, instance_id)
+
+      if results.success? && liveness_checking_enabled
+        pii = results.pii_from_doc
+        selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
+        Acuant::Responses::ResponseWithPii.new(selfie_response, pii)
+      else
+        results
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
+
+    def get_results(instance_id:)
+      Requests::GetResultsRequest.new(instance_id: instance_id).fetch
     end
 
     private
@@ -80,7 +91,7 @@ module Acuant
 
     def fetch_doc_auth_results(instance_id)
       results_response = get_results(instance_id: instance_id)
-      handle_document_verification_failure(results_response) unless results_response.success?
+      return handle_document_verification_failure(results_response) unless results_response.success?
 
       results_response
     end

@@ -56,13 +56,6 @@ plugins:
     - 'app/forms/password_form.rb'
     - 'lib/user_flow_exporter.rb'
     - 'lib/rspec/formatters/user_flow_formatter.rb'
-  eslint:
-    enabled: true
-    channel: eslint-6
-    config:
-      extensions:
-        - .js
-        - .jsx
   fixme:
     enabled: true
     exclude_patterns:

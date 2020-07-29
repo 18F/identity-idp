@@ -39,13 +39,20 @@ const INITIAL_HTML = `
 </p>
 `;
 
+const originalWindow = global.window;
+const originalDocument = global.document;
+
 export const setupDocumentCaptureTestDOM = () => {
+  // While there's already DOM globals, the current implementation assumes a
+  // cleanly initialized DOM in every test case. Ideally all event handlers
+  // attached to the DOM in the course of a test case would be cleaned up, and
+  // the same DOM could be reused for every test.
   const dom = new JSDOM(INITIAL_HTML);
   global.window = dom.window;
   global.document = global.window.document;
 };
 
 export const teardownDocumentCaptureTestDOM = () => {
-  global.window = undefined;
-  global.document = undefined;
+  global.window = originalWindow;
+  global.document = originalDocument;
 };

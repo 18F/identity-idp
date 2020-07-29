@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint app spec --ext .js,.jsx",
-    "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --extension 'js,jsx' --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**spec.js?(x)'",
+    "test": "mocha 'spec/javascripts/**/**spec.js?(x)'",
     "build": "true"
   },
   "dependencies": {
@@ -27,28 +27,33 @@
     "jquery": "^3.5.0",
     "libphonenumber-js": "^1.7.26",
     "normalize.css": "^4.2.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "sinon": "^1.17.7",
+    "uswds": "^2.8.0",
     "webpack-dev-server": "^3.11.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.4",
     "@babel/register": "^7.4.4",
+    "@testing-library/user-event": "^12.0.11",
     "atob": "^2.1.2",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^10.1.0",
     "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^6.1.0",
+    "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.6",
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
-    "proxyquire": "^1.8.0"
+    "prettier": "^2.0.5",
+    "proxyquire": "^1.8.0",
+    "sinon": "^9.0.2"
   }
 }

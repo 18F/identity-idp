@@ -40,6 +40,9 @@ fr:
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
           à votre compte.
+        confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad utilizando una identificación de empleado del
+          gobierno que configuró previamente para acceder a su información
         did_not_work: Il peut y avoir un problème avec votre PIV / CAC ou votre code
           PIN. Si vous pensez que c'est une erreur, %{try_again}.  Si le problème
           persiste, contactez l'administrateur de votre agence.
@@ -67,6 +70,9 @@ fr:
         number_message_html: Nous venons de vous appeler à %{number}.
       webauthn:
         confirm_webauthn_html: Présentez la clé de sécurité associée à votre compte.
+        confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad utilizando una clave de seguridad que configuró
+          previamente para acceder a su información.
       wrong_number_html: Vous avez entré un mauvais numéro de téléphone? %{link}
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir

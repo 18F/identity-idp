@@ -11,7 +11,11 @@ module Encryption
     end
 
     def self.logger
-      @logger ||= Logger.new('log/kms.log')
+      @logger ||= if FeatureManagement.log_to_stdout?
+                    Logger.new(STDOUT)
+                  else
+                    Logger.new('log/kms.log')
+                  end
     end
   end
 end

@@ -36,7 +36,11 @@ describe('Events', () => {
     });
 
     it('stores the context of the handler when supplied', () => {
-      class FakeClass { contructor() { this.thing = 'fake'; } }
+      class FakeClass {
+        contructor() {
+          this.thing = 'fake';
+        }
+      }
 
       const fake = new FakeClass();
 
@@ -58,7 +62,7 @@ describe('Events', () => {
       const otherEvent = 'other.event';
 
       events.on(myEvent, dummyHandler);
-      events.on(otherEvent, function() {});
+      events.on(otherEvent, function () {});
 
       events.off(myEvent);
 

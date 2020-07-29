@@ -2,6 +2,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
+  include Aal3Concern
 
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
@@ -52,6 +53,14 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     redirect_to after_otp_verification_confirmation_url
   end
 
+  def check_aal3_bypass
+    return unless aal3_policy.aal3_configured_and_required?
+    method = two_factor_authentication_method
+    return if AAL3Policy::AAL3_METHODS.include? method
+    aal3_redirect = aal3_redirect_url(current_user)
+    redirect_to aal3_redirect || aal3_required_url
+  end
+
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless decorated_user.no_longer_locked_out?
 
@@ -67,6 +76,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_valid_otp(next_url = nil)
     handle_valid_otp_for_context
     handle_remember_device
+    # After RC 116 this line can be removed
     user_session.delete(:mfa_device_remembered)
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -87,7 +97,11 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def two_factor_authentication_method
-    params[:otp_delivery_preference] || request.path.split('/').last
+    auth_method = params[:otp_delivery_preference] || request.path.split('/').last
+    # the above check gets a wrong value for piv_cac when there is no OTP screen
+    # so we patch it to fix LG-3228
+    auth_method = 'piv_cac' if auth_method == 'present_piv_cac'
+    auth_method
   end
 
   # Method will be renamed in the next refactor.
@@ -129,7 +143,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def handle_valid_otp_for_authentication_context
-    session[:auth_method] = two_factor_authentication_method.to_s
+    user_session[:auth_method] = two_factor_authentication_method.to_s
     mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)

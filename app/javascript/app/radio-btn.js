@@ -18,18 +18,20 @@ function highlightRadioBtn() {
 
       if (radio.checked) label.classList.add('bg-lightest-blue');
 
-      radio.addEventListener('change', function() {
+      radio.addEventListener('change', function () {
         clearHighlight(name);
         if (radio.checked) label.classList.add('bg-lightest-blue');
       });
 
-      radio.addEventListener('focus', function() {
+      radio.addEventListener('focus', function () {
         const autofocusedInput = label.querySelector('input.auto-focus');
         label.classList.add('is-focused');
-        if (autofocusedInput) { autofocusedInput.focus(); }
+        if (autofocusedInput) {
+          autofocusedInput.focus();
+        }
       });
 
-      radio.addEventListener('blur', function() {
+      radio.addEventListener('blur', function () {
         label.classList.remove('is-focused');
       });
     });

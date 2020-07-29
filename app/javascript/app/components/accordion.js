@@ -17,8 +17,10 @@ class Accordion extends Events {
   }
 
   setup() {
-    this.bindEvents();
-    this.onInitialize();
+    if (!this.isInitialized()) {
+      this.bindEvents();
+      this.onInitialize();
+    }
   }
 
   bindEvents() {
@@ -41,6 +43,11 @@ class Accordion extends Events {
   onInitialize() {
     this.setExpanded(false);
     this.collapsedIcon.classList.remove('display-none');
+    this.el.setAttribute('data-initialized', '');
+  }
+
+  isInitialized() {
+    return this.el.hasAttribute('data-initialized');
   }
 
   handleClick() {
