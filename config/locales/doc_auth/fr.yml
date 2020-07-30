@@ -12,7 +12,7 @@ fr:
     forms:
       address1: Adresse
       change_file: Changer de fichier
-      choose_file: Faites glisser le fichier ici ou choisissez dans un dossier
+      choose_file_html: Faites glisser le fichier ici ou <u>choisissez dans un dossier</u>
       city: Ville
       dob: Date de naissance
       doc_success: Nous avons vérifié votre numéro de sécurité sociale et votre identifiant
