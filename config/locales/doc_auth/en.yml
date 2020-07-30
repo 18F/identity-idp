@@ -34,6 +34,10 @@ en:
         selfie
       document_capture_front: Front of your ID
       document_capture_back: Back of your ID
+      document_capture_front: Front of your ID
+      document_capture_heading_html: Add your state&#8209;issued&nbsp;ID
+      document_capture_heading_with_selfie_html: Add your state&#8209;issued&nbsp;ID
+        and selfie
       document_capture_selfie: Your photo
       selfie: Take a selfie.
       ssn: Please enter your social security number.
@@ -43,20 +47,18 @@ en:
       text_message: We sent a message to your phone
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
-      upload_back_html: Upload an image of the back of your state&#8209;issued&nbsp;ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_front: Upload an image of the front of your state issued ID
-      upload_front_html: Upload an image of the front of your state&#8209;issued&nbsp;ID
       verify: Please verify your information
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
+      document_capture_upload_image: We only use your ID to verify your identity,
+        and we will not save any images.
       link_sent:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
-      document_capture_upload_image: We only use your ID to verify your identity, and we will not save
-        any images.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -95,7 +97,8 @@ en:
         <li>Do not use the flash on your camera</li>
         <li>File size should be at least 2 MB</li>
         </ul>
-      document_capture_selfie_instructions: Now take a picture of yourself. We'll compare it to the image on the front of your ID.
+      document_capture_selfie_instructions: Now take a picture of yourself. We'll
+        compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more.
@@ -113,13 +116,14 @@ en:
       text4: make sure you always have access
       welcome: 'What you''ll need to do:'
     tips:
-      document_capture_hint: Must be a JPG, BMP, PNG, or TIFF
       document_capture_header_text: 'For best results:'
+      document_capture_hint: Must be a JPG, BMP, PNG, or TIFF
       document_capture_id_text1: Use a dark background
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
-      document_capture_selfie_text1: Face the camera and ensure your entire head is in the photo
+      document_capture_selfie_text1: Face the camera and ensure your entire head is
+        in the photo
       document_capture_selfie_text2: Take a photo against a plain background
       document_capture_selfie_text3: Do not wear a hat or sunglasses
       header_text: Guidelines for taking a photo of your ID
