@@ -18,13 +18,17 @@ function DocumentsStep({ value, onChange }) {
 
   return (
     <>
-      <PageHeading>{t('doc_auth.headings.take_pic_docs')}</PageHeading>
-      <p className="margin-top-2 margin-bottom-0">{t('doc_auth.instructions.take_pic')}</p>
+      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
+      <p className="margin-top-2 margin-bottom-0">
+        {t('doc_auth.instructions.document_capture_header_text')}
+      </p>
       <ul>
-        <li>{t('doc_auth.instructions.take_pic1')}</li>
-        <li>{t('doc_auth.instructions.take_pic2')}</li>
-        <li>{t('doc_auth.instructions.take_pic3')}</li>
-        {!isEnvironmentCaptureDevice && <li>{t('doc_auth.instructions.take_pic5')}</li>}
+        <li>{t('doc_auth.instructions.document_capture_id_text1')}</li>
+        <li>{t('doc_auth.instructions.document_capture_id_text2')}</li>
+        <li>{t('doc_auth.instructions.document_capture_id_text3')}</li>
+        {!isEnvironmentCaptureDevice && (
+          <li>{t('doc_auth.instructions.document_capture_id_text4')}</li>
+        )}
       </ul>
       {DOCUMENT_SIDES.map((side) => {
         const label = t(`doc_auth.headings.upload_${side}`);

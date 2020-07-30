@@ -25,13 +25,13 @@ en:
     headings:
       address: Mailing Address
       capture_complete: We have verified your state issued ID
+      document_capture: Add your state-issued ID
       document_capture_html: Upload your state&#8209;issued&nbsp;ID
       document_capture_with_selfie_html: Upload your state&#8209;issued&nbsp;ID and
         a photo of you
       selfie: Take a selfie.
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
-      take_pic_docs: Add your state-issued ID
       take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
@@ -73,6 +73,11 @@ en:
         and share your personal information. We will only use it to verify your identity.
       document_capture_fallback_html: Having trouble? %{link}
       document_capture_fallback_link: Click here to upload an image
+      document_capture_header_text: 'For best results:'
+      document_capture_id_text1: Use a dark background
+      document_capture_id_text2: Take the photo on a flat surface
+      document_capture_id_text3: Do not use the flash on your camera
+      document_capture_id_text4: File size should be at least 2 MB
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more.
@@ -84,7 +89,6 @@ en:
       take_pic2: Take the photo on a flat surface
       take_pic3: Do not use the flash on your camera
       take_pic4: Use the landscape orientation
-      take_pic5: File size should be at least 2 MB
       text1: along with your Social Security Number
       text2: using a phone number or mailing address
       text3: by re-entering your login.gov password

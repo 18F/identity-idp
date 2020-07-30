@@ -26,13 +26,13 @@ es:
     headings:
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
+      document_capture: Agregue su identificación emitida por el estado
       document_capture_html: Cargue su identificación emitida por el estado
       document_capture_with_selfie_html: Cargue su identificación emitida por el estado
         y una foto suya
       selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
-      take_pic_docs: Agregue su identificación emitida por el estado
       take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
@@ -79,6 +79,11 @@ es:
         su identidad.
       document_capture_fallback_html: "¿Teniendo problemas? %{link}"
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
+      document_capture_header_text: 'Para mejores resultados:'
+      document_capture_id_text1: Usa un fondo oscuro
+      document_capture_id_text2: Toma la foto sobre una superficie plana
+      document_capture_id_text3: No uses el flash en tu cámara
+      document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Aprende más.
@@ -91,7 +96,6 @@ es:
       take_pic2: Toma la foto sobre una superficie plana
       take_pic3: No uses el flash en tu cámara
       take_pic4: Usa la orientación del paisaje
-      take_pic5: El tamaño del archivo debe ser de al menos 2 MB
       text1: junto con su número de seguro social
       text2: usando un número de teléfono o dirección de correo
       text3: volviendo a ingresar su contraseña de login.gov

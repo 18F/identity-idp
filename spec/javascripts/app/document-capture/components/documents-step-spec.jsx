@@ -50,10 +50,10 @@ describe('document-capture/components/documents-step', () => {
       </DeviceContext.Provider>,
     );
 
-    expect(() => getByText('doc_auth.instructions.take_pic5')).to.throw();
+    expect(() => getByText('doc_auth.instructions.document_capture_id_text4')).to.throw();
 
     getByText = render(<DocumentsStep />).getByText;
 
-    expect(() => getByText('doc_auth.instructions.take_pic5')).not.to.throw();
+    expect(() => getByText('doc_auth.instructions.document_capture_id_text4')).not.to.throw();
   });
 });
