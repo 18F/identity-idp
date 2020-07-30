@@ -20,7 +20,7 @@ function togglePw() {
       input.insertAdjacentHTML('afterend', el);
 
       const toggle = document.getElementById(`pw-toggle-${i}`);
-      toggle.addEventListener('change', function() {
+      toggle.addEventListener('change', function () {
         input.type = toggle.checked ? 'text' : 'password';
       });
     });

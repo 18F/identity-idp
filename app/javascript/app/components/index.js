@@ -2,7 +2,7 @@ import focusTrapProxy from './focus-trap-proxy';
 import modal from './modal';
 import Accordion from './accordion';
 
-window.LoginGov = (window.LoginGov || {});
+window.LoginGov = window.LoginGov || {};
 const { LoginGov } = window;
 const trapModal = modal(focusTrapProxy);
 
@@ -19,6 +19,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export {
-  trapModal as Modal,
-};
+export { trapModal as Modal };

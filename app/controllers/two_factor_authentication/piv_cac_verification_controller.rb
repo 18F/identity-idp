@@ -48,6 +48,7 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
+      # This next line can be removed after RC 116
       user_session.delete(:mfa_device_remembered)
     end
 
@@ -68,6 +69,7 @@ module TwoFactorAuthentication
     def piv_cac_view_data
       {
         two_factor_authentication_method: two_factor_authentication_method,
+        hide_fallback_question: aal3_policy.piv_cac_required?,
         user_email: current_user.email_addresses.take.email,
       }.merge(generic_data)
     end

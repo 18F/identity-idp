@@ -24,6 +24,26 @@ es:
         intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
+      document_capture_info_html: |-
+        <div class="bold">Por favor verifique que:</div>
+        <ul>
+        <li>Las imágenes son claras (no borrosas) y enfocadas</li>
+        <li>No hay reflejos, sombras o reflejos</li>
+        <li>Su identificación no tiene ningún código de barras dañado</li>
+        <li>Su identificación representa el 80% de la imagen general</li>
+        <li>Su identificación está contra un fondo sólido y oscuro</li>
+        </ul>
+      document_capture_info_with_selfie_html: |-
+        <div class="bold">Por favor verifique que:</div>
+        <ul>
+        <li>Las imágenes son claras (no borrosas) y enfocadas</li>
+        <li>No hay reflejos, sombras o reflejos</li>
+        <li>Su identificación no tiene ningún código de barras dañado</li>
+        <li>Su identificación representa el 80% de la imagen general</li>
+        <li>Su identificación está contra un fondo sólido y oscuro</li>
+        <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
+        <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
+        </ul>
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.

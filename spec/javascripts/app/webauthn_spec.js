@@ -110,11 +110,17 @@ describe('WebAuthn', () => {
       };
 
       WebAuthn.enrollWebauthnDevice({
-        userId, userEmail, userChallenge, excludeCredentials,
-      }).then((result) => {
-        expect(createCalled).to.eq(true);
-        expect(result).to.deep.equal(expectedReturnValue);
-      }).then(() => done()).catch(done);
+        userId,
+        userEmail,
+        userChallenge,
+        excludeCredentials,
+      })
+        .then((result) => {
+          expect(createCalled).to.eq(true);
+          expect(result).to.deep.equal(expectedReturnValue);
+        })
+        .then(() => done())
+        .catch(done);
     });
 
     it('forwards errors from the webauthn api', (done) => {
@@ -122,11 +128,16 @@ describe('WebAuthn', () => {
       navigator.credentials.create = () => Promise.reject(dummyError);
 
       WebAuthn.enrollWebauthnDevice({
-        userId, userEmail, userChallenge, excludeCredentials,
-      }).catch((error) => {
-        expect(error).to.equal(dummyError);
-        done();
-      }).catch(done);
+        userId,
+        userEmail,
+        userChallenge,
+        excludeCredentials,
+      })
+        .catch((error) => {
+          expect(error).to.equal(dummyError);
+          done();
+        })
+        .catch(done);
     });
   });
 
@@ -179,11 +190,15 @@ describe('WebAuthn', () => {
       };
 
       WebAuthn.verifyWebauthnDevice({
-        userChallenge, credentialIds,
-      }).then((result) => {
-        expect(getCalled).to.eq(true);
-        expect(result).to.deep.equal(expectedReturnValue);
-      }).then(() => done()).catch(done);
+        userChallenge,
+        credentialIds,
+      })
+        .then((result) => {
+          expect(getCalled).to.eq(true);
+          expect(result).to.deep.equal(expectedReturnValue);
+        })
+        .then(() => done())
+        .catch(done);
     });
 
     it('forwards errors from the webauthn api', (done) => {
@@ -191,11 +206,14 @@ describe('WebAuthn', () => {
       navigator.credentials.get = () => Promise.reject(dummyError);
 
       WebAuthn.verifyWebauthnDevice({
-        userChallenge, credentialIds,
-      }).catch((error) => {
-        expect(error).to.equal(dummyError);
-        done();
-      }).catch(done);
+        userChallenge,
+        credentialIds,
+      })
+        .catch((error) => {
+          expect(error).to.equal(dummyError);
+          done();
+        })
+        .catch(done);
     });
   });
 });

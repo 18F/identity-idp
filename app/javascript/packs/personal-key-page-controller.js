@@ -84,7 +84,7 @@ function handleSubmit(event) {
 function show(event) {
   event.preventDefault();
 
-  modal.on('show', function() {
+  modal.on('show', function () {
     input.focus();
     personalKeyContainer.classList.add('invisible');
   });
@@ -93,7 +93,7 @@ function show(event) {
 }
 
 function hide() {
-  modal.on('hide', function() {
+  modal.on('hide', function () {
     resetForm();
     personalKeyContainer.classList.remove('invisible');
   });

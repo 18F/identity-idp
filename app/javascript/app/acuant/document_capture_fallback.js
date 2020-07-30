@@ -10,9 +10,8 @@ export const enableDocumentCaptureFallbackMode = () => {
   acauntDocumentCaptureFallbackEnabled();
 };
 
-export const documentCaptureFallbackModeEnabled = () => (
-  window.isDocumentCaptureFallbackModeEnabled === true
-);
+export const documentCaptureFallbackModeEnabled = () =>
+  window.isDocumentCaptureFallbackModeEnabled === true;
 
 export const documentCaptureFallbackLinkClicked = (event) => {
   event.preventDefault();

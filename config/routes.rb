@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
+  post '/api/risc/security_events' => 'risc/security_events#create'
   post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
@@ -151,6 +152,8 @@ Rails.application.routes.draw do
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
         as: :openid_connect_configuration
+    get '/.well-known/risc-configuration' => 'risc/configuration#index',
+        as: :risc_configuration
 
     get '/account' => 'accounts#show'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
@@ -293,7 +296,7 @@ Rails.application.routes.draw do
       get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction/failure/:reason' => 'jurisdiction#failure', as: :jurisdiction_failure
+      get '/jurisdiction/errors/no_id' => 'jurisdiction_errors#no_id'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'

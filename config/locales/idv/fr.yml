@@ -114,8 +114,6 @@ fr:
         no_id: Je n'ai pas de carte d'identité officielle
         no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
           votre identité.
-        unsupported_jurisdiction_failure: Nous travaillons dur pour ajouter plus d'états
-          et espérons pouvoir bientôt prendre en charge %{state}.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
         phone_number_html: Nous enverrons un code au <strong>%{phone}</strong>
@@ -168,13 +166,7 @@ fr:
       activated: Votre identité a déjà été vérifiée
       cancel: Nous ne pouvons pas vérifier votre identité
       come_back_later: Revenez vite.
-      complete: Vérification de votre identité complétée
-      dupe: 'Erreur: un compte existe déjà'
-      expectations: Ensuite, aidez-vous à vous identifier
-      fail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment
       hardfail: Nous sommes dans l'incapacité de vérifier votre identité avec %{app}
-      intro: Aidez-nous à vous identifier
-      jurisdiction: Choisissez votre état
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
@@ -183,10 +175,6 @@ fr:
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
       phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
-      select_verification: Activer votre compte
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
         review: Entrez à nouveau votre mot de passe login.gov pour crypter vos données
-      sessions: Informations sur vous
-      unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités
-        à l'aide d'identifiants provenant de %{state}

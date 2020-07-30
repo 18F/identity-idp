@@ -26,7 +26,7 @@ describe('#countdownTimer', () => {
 
     afterEach(() => {
       clock.restore();
-      spy.reset();
+      spy.resetHistory();
     });
 
     it('with the default interval runs exactly once when given an HTMLElement', () => {

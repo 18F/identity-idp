@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function languagePicker(trigger, dropdown) {
-    addListenerMulti(trigger, 'click keypress', function(event) {
+    addListenerMulti(trigger, 'click keypress', function (event) {
       const eventType = event.type;
 
       event.preventDefault();

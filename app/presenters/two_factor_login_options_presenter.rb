@@ -3,10 +3,13 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   attr_reader :current_user
 
-  def initialize(current_user, view, service_provider)
+  def initialize(current_user, view, service_provider, aal3_policy)
     @current_user = current_user
     @view = view
     @service_provider = service_provider
+    return unless aal3_policy
+    @aal3_required = aal3_policy.aal3_required?
+    @piv_cac_required = aal3_policy.piv_cac_required?
   end
 
   def title
@@ -27,13 +30,19 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def options
     mfa = MfaContext.new(current_user)
-    # for now, we include the personal key since that's our current behavior,
-    # but there are designs to remove personal key from the option list and
-    # make it a link with some additional text to call it out as a special
-    # case.
-    configurations = mfa.two_factor_configurations
-    if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
-      configurations << mfa.personal_key_configuration
+    if @aal3_required
+      configurations = mfa.aal3_configurations
+    elsif @piv_cac_required
+      configurations = mfa.piv_cac_configurations
+    else
+      configurations = mfa.two_factor_configurations
+      # for now, we include the personal key since that's our current behavior,
+      # but there are designs to remove personal key from the option list and
+      # make it a link with some additional text to call it out as a special
+      # case.
+      if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+        configurations << mfa.personal_key_configuration
+      end
     end
     # A user can have multiples of certain types of MFA methods, such as
     # webauthn keys and phones. However, we only want to show one of each option

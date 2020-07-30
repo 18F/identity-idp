@@ -44,7 +44,7 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 8d0bedcd71b025617c0ab094bbc6a7982d9df1cd
+  revision: d36270634b8157e6cd73f0c0eefe25a052f24c75
   branch: master
   specs:
     saml_idp (0.9.0.pre.18f)
@@ -380,7 +380,7 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (5.2.0)
-    newrelic_rpm (6.7.0.359)
+    newrelic_rpm (6.12.0.367)
     nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
@@ -492,8 +492,8 @@ GEM
     recaptcha (5.2.1)
       json
     redis (4.2.1)
-    redis-session-store (0.11.1)
-      actionpack (>= 3)
+    redis-session-store (0.11.3)
+      actionpack (>= 3, < 7)
       redis (>= 3, < 5)
     referer-parser (0.3.0)
     regexp_parser (1.7.1)
@@ -770,7 +770,7 @@ DEPENDENCIES
   raise-if-root
   readthis
   recaptcha
-  redis-session-store (>= 0.11.1)
+  redis-session-store (>= 0.11.3)
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)

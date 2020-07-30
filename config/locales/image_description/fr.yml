@@ -4,6 +4,7 @@ fr:
     accordian_minus_buttom: Bouton moins
     accordian_plus_buttom: Bouton Plus
     camera_mobile_phone: Appareil photo clignotant sur un téléphone mobile
+    close: Bouton de fermeture
     spinner: Indicateur de chargement
     totp_qrcode: Code QR pour l'application d'authentification
     us_flag: Drapeau américain

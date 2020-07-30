@@ -29,6 +29,13 @@ module Idv
         DataUrlImage.new(flow_params[:back_image_data_url])
       end
 
+      def selfie_image
+        return nil unless liveness_checking_enabled?
+        uploaded_image = flow_params[:selfie_image]
+        return uploaded_image if uploaded_image.present?
+        DataUrlImage.new(flow_params[:selfie_image_data_url])
+      end
+
       def doc_auth_client
         @doc_auth_client ||= begin
           case doc_auth_vendor
@@ -124,9 +131,11 @@ module Idv
         result = doc_auth_client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
+          selfie_image: selfie_image&.read,
+          liveness_checking_enabled: liveness_checking_enabled?,
         )
-        add_cost(:acuant_front_image)
-        add_cost(:acuant_back_image)
+        # DP: should these cost recordings happen in the doc_auth_client?
+        add_costs
         result
       end
 
@@ -162,6 +171,12 @@ module Idv
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
+      def add_costs
+        add_cost(:acuant_front_image)
+        add_cost(:acuant_back_image)
+        add_cost(:acuant_selfie) if liveness_checking_enabled?
+      end
+
       def sp_session
         session.fetch(:sp, {})
       end
@@ -171,9 +186,10 @@ module Idv
       end
 
       def mark_document_capture_or_image_upload_steps_complete
-        if Figaro.env.document_capture_step_enabled == 'true'
+        if FeatureManagement.document_capture_step_enabled?
           mark_step_complete(:front_image)
           mark_step_complete(:back_image)
+          mark_step_complete(:selfie)
           mark_step_complete(:mobile_front_image)
           mark_step_complete(:mobile_back_image)
         else
