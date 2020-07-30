@@ -14,15 +14,9 @@ function getMetaContent(name) {
 
 /** @type {import('../app/document-capture/context/device').DeviceContext} */
 const device = {
-  supports: {
-    video: {
-      facingMode: {
-        environment:
-          'mediaDevices' in window.navigator &&
-          /ip(hone|ad|od)|android/i.test(window.navigator.userAgent),
-      },
-    },
-  },
+  isMobile:
+    'mediaDevices' in window.navigator &&
+    /ip(hone|ad|od)|android/i.test(window.navigator.userAgent),
 };
 
 const appRoot = document.getElementById('document-capture-form');

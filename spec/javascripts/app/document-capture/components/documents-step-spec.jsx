@@ -43,9 +43,7 @@ describe('document-capture/components/documents-step', () => {
 
   it('renders device-specific instructions', () => {
     let { getByText } = render(
-      <DeviceContext.Provider
-        value={{ supports: { video: { facingMode: { environment: true } } } }}
-      >
+      <DeviceContext.Provider value={{ isMobile: true }}>
         <DocumentsStep />
       </DeviceContext.Provider>,
     );

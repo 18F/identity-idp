@@ -8,6 +8,6 @@ describe('document-capture/context/device', () => {
   it('defaults to an object shape of device supports', () => {
     const { container } = render(<ContextValue />);
 
-    expect(container.textContent).to.equal('{"supports":{"video":{"facingMode":{}}}}');
+    expect(container.textContent).to.equal('{"isMobile":false}');
   });
 });

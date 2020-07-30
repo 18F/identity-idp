@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import FileInput from './file-input';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
-import useDeviceHasVideoFacingMode from '../hooks/use-device-has-video-facing-mode';
+import DeviceContext from '../context/device';
 
 /**
  * Sides of document to present as file input.
@@ -14,7 +14,7 @@ const DOCUMENT_SIDES = ['front', 'back'];
 
 function DocumentsStep({ value, onChange }) {
   const t = useI18n();
-  const isEnvironmentCaptureDevice = useDeviceHasVideoFacingMode('environment');
+  const { isMobile } = useContext(DeviceContext);
 
   return (
     <>
@@ -26,9 +26,7 @@ function DocumentsStep({ value, onChange }) {
         <li>{t('doc_auth.instructions.document_capture_id_text1')}</li>
         <li>{t('doc_auth.instructions.document_capture_id_text2')}</li>
         <li>{t('doc_auth.instructions.document_capture_id_text3')}</li>
-        {!isEnvironmentCaptureDevice && (
-          <li>{t('doc_auth.instructions.document_capture_id_text4')}</li>
-        )}
+        {!isMobile && <li>{t('doc_auth.instructions.document_capture_id_text4')}</li>}
       </ul>
       {DOCUMENT_SIDES.map((side) => {
         const label = t(`doc_auth.headings.upload_${side}`);
