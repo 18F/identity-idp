@@ -16,7 +16,7 @@ export function isImageFile(file) {
 }
 
 function FileInput({ label, hint, accept, value, onChange }) {
-  const t = useI18n();
+  const { t } = useI18n();
   const instanceId = useInstanceId();
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;

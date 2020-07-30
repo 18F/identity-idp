@@ -56,7 +56,7 @@ export function getLastValidStepIndex(steps, values) {
 function FormSteps({ steps, onComplete }) {
   const [values, setValues] = useState({});
   const [stepName, setStepName] = useHistoryParam('step');
-  const t = useI18n();
+  const { t } = useI18n();
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
   // parameter present, in which case the first step should be used, and (2) the values may not be
