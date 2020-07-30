@@ -6,7 +6,7 @@ class GoogleAnalyticsMeasurement
 
   cattr_accessor :adapter do
     Faraday.new(url: GA_URL, request: { open_timeout: TIMEOUT, timeout: TIMEOUT }) do |faraday|
-      faraday.adapter :typhoeus
+      faraday.adapter :net_http
     end
   end
 
