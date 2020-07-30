@@ -29,16 +29,16 @@ function imagePreview() {
 document.addEventListener('DOMContentLoaded', imagePreview);
 
 function imagePreviewFunction(imageType) {
-  const imageId = 'doc_auth_' + imageType + '_image';
-  const imageIdSelector = '#' + imageId;
-  const takeImageSelector = '#take_' + imageType + '_picture';
-  const targetIdSelector = '#' + imageType + '_target';
+  const imageId = `doc_auth_${imageType}_image`;
+  const imageIdSelector = `#${imageId}`;
+  const takeImageSelector = `#take_${imageType}_picture`;
+  const targetIdSelector = `#${imageType}_target`;
 
-  return function() {
-    $(takeImageSelector).on('click', function() {
+  return function () {
+    $(takeImageSelector).on('click', function () {
       document.getElementById(imageId).click();
     });
-    $(imageIdSelector).on('change', function(event) {
+    $(imageIdSelector).on('change', function (event) {
       $('.simple_form .alert-error').hide();
       $('.simple_form .alert-notice').hide();
       const { files } = event.target;
