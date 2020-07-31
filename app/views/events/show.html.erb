@@ -1,0 +1,19 @@
+<% content_for(:nav) do %>
+  <%= render 'accounts/nav_auth', greeting: @view_model.header_personalization %>
+<% end %>
+
+<% title t('titles.account') %>
+
+<div class='mb3 profile-info-box'>
+  <div class='bg-lightest-blue pb1 pt1 px2 h6 caps clearfix'>
+    <%= t('headings.account.account_history') %>
+    <%= image_tag asset_url('history.svg'), alt: '', width: 12, class: 'ml1' %>
+    </br>
+    <%= @device.device_name %>
+  </div>
+  <% @events.each do |event| %>
+    <%= render event.event_partial, event: event %>
+  <% end %>
+</div>
+
+<%= link_to cancel_link_text, account_path, class: 'h5' %>
