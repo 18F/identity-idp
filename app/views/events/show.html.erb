@@ -4,12 +4,13 @@
 
 <% title t('titles.account') %>
 
+<h1 class='h3 center sm-left-align'>
+  <%= t('headings.account.account_history') %>
+</h1>
 <div class='mb3 profile-info-box'>
   <div class='bg-lightest-blue pb1 pt1 px2 h6 caps clearfix'>
-    <%= t('headings.account.account_history') %>
-    <%= image_tag asset_url('history.svg'), alt: '', width: 12, class: 'ml1' %>
-    </br>
     <%= @device.device_name %>
+    <%= image_tag asset_url('history.svg'), alt: '', width: 12, class: 'ml1' %>
   </div>
   <% @events.each do |event| %>
     <%= render event.event_partial, event: event %>
