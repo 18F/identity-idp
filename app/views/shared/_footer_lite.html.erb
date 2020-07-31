@@ -1,5 +1,7 @@
-<% show_language_dropdown = I18n.available_locales.count > 1
-sanitized_requested_url = request.query_parameters.slice(:request_id) %>
+<%
+  show_language_dropdown = I18n.available_locales.count > 1
+  sanitized_requested_url = request.query_parameters.slice(:request_id)
+%>
 
 <footer class='footer bg-light-blue sm-bg-navy'>
   <% if show_language_dropdown %>
