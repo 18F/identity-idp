@@ -4,13 +4,15 @@ import I18nContext from '../context/i18n';
 /** @typedef {import('react').FC|import('react').ComponentClass} Component */
 
 /**
- * Given an HTML string and an object of tag names to React component, returns a new of React node
+ * Given an HTML string and an object of tag names to React component, returns a new React node
  * where the mapped tag names are replaced by the resulting element of the rendered component.
  *
  * Note that this is a very simplistic interpolation of HTML. It only supports well-balanced, non-
- * nested tag names, where there are no attributes or excess whitespace within the tag names. While
- * the subject markup itself cannot contain attributes, the return value of the component can be any
- * valid React element, with or without additional attributes.
+ * nested tag names, where there are no attributes or excess whitespace within the tag names. The
+ * tag name cannot contain regular expression special characters.
+ *
+ * While the subject markup itself cannot contain attributes, the return value of the component can
+ * be any valid React element, with or without additional attributes.
  *
  * @example
  * ```
