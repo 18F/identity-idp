@@ -1,10 +1,12 @@
 import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
+import { expect } from 'chai';
 import render from '../../../support/render';
 import FileInput, {
   isImageFile,
 } from '../../../../../app/javascript/app/document-capture/components/file-input';
+import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
 
 describe('document-capture/components/file-input', () => {
   describe('isImageFile', () => {
@@ -17,6 +19,12 @@ describe('document-capture/components/file-input', () => {
     });
   });
 
+  it('renders with custom className', () => {
+    const { container } = render(<FileInput label="File" className="my-custom-class" />);
+
+    expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
+  });
+
   it('renders file input with label', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 
@@ -24,6 +32,14 @@ describe('document-capture/components/file-input', () => {
 
     expect(input.nodeName).to.equal('INPUT');
     expect(input.type).to.equal('file');
+  });
+
+  it('renders decorative banner text', () => {
+    const { getByText } = render(
+      <FileInput label="File" bannerText="File Goes Here" className="my-custom-class" />,
+    );
+
+    expect(getByText('File Goes Here', { hidden: true })).to.be.ok();
   });
 
   it('renders an optional hint', () => {
@@ -36,7 +52,7 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('renders a value preview', async () => {
-    const { findByRole, getByLabelText } = render(
+    const { container, findByRole, getByLabelText } = render(
       <FileInput label="File" value={new window.File([''], 'demo', { type: 'image/png' })} />,
     );
 
@@ -45,6 +61,9 @@ describe('document-capture/components/file-input', () => {
 
     expect(input).to.be.ok();
     expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
+    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+      'doc_auth.forms.selected_file: demo doc_auth.forms.change_file',
+    );
   });
 
   it('does not render preview if value is not image', async () => {
@@ -86,6 +105,38 @@ describe('document-capture/components/file-input', () => {
 
     expect(onChange.getCall(0).args[0]).to.equal(file1);
     expect(onChange.getCall(1).args[0]).to.equal(file2);
+  });
+
+  it('omits desktop-relevant details in mobile context', async () => {
+    const { container, getByText, findByRole, rerender } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <FileInput label="File" />
+      </DeviceContext.Provider>,
+    );
+
+    expect(getByText('doc_auth.forms.choose_file_html', { hidden: true })).to.be.ok();
+
+    rerender(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <FileInput label="File" bannerText="File goes here" />
+      </DeviceContext.Provider>,
+    );
+
+    expect(() => getByText('doc_auth.forms.choose_file_html', { hidden: true })).to.throw();
+    expect(getByText('File goes here', { hidden: true })).to.be.ok();
+
+    rerender(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <FileInput
+          label="File"
+          bannerText="File goes here"
+          value={new window.File([''], 'demo', { type: 'image/png' })}
+        />
+      </DeviceContext.Provider>,
+    );
+
+    await findByRole('img', { hidden: true });
+    expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
   });
 
   it.skip('supports change by drag and drop', () => {});

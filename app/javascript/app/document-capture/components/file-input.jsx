@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import FileImage from './file-image';
+import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import useI18n from '../hooks/use-i18n';
 
@@ -15,14 +16,15 @@ export function isImageFile(file) {
   return /^image\//.test(file.type);
 }
 
-function FileInput({ label, hint, accept, value, onChange }) {
+function FileInput({ label, hint, bannerText, accept, value, onChange, className }) {
   const { t, formatHTML } = useI18n();
   const instanceId = useInstanceId();
+  const { isMobile } = useContext(DeviceContext);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
 
   return (
-    <>
+    <div className={className}>
       {/*
        * Disable reason: The Airbnb configuration of the `jsx-a11y` rule is strict in that it
        * requires _both_ the `for` attribute and nesting, to maximize support for assistive
@@ -42,11 +44,19 @@ function FileInput({ label, hint, accept, value, onChange }) {
           {hint}
         </span>
       )}
-      <div className="usa-file-input">
+      <div
+        className={[
+          'usa-file-input usa-file-input--single-value',
+          value && 'usa-file-input--has-value',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <div className="usa-file-input__target">
-          {value && (
+          {value && !isMobile && (
             <div className="usa-file-input__preview-heading">
-              {t('doc_auth.forms.selected_file')}{' '}
+              <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
+              {value.name}{' '}
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
@@ -57,14 +67,17 @@ function FileInput({ label, hint, accept, value, onChange }) {
           )}
           {!value && (
             <div className="usa-file-input__instructions" aria-hidden="true">
-              <span className="usa-file-input__drag-text">
-                {formatHTML(t('doc_auth.forms.choose_file_html'), {
-                  // eslint-disable-next-line react/prop-types
-                  'lg-underline': ({ children }) => (
-                    <span className="usa-file-input__choose">{children}</span>
-                  ),
-                })}
-              </span>
+              {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
+              {isMobile && bannerText ? null : (
+                <span className="usa-file-input__drag-text">
+                  {formatHTML(t('doc_auth.forms.choose_file_html'), {
+                    // eslint-disable-next-line react/prop-types
+                    'lg-underline': ({ children }) => (
+                      <span className="usa-file-input__choose">{children}</span>
+                    ),
+                  })}
+                </span>
+              )}
             </div>
           )}
           <div className="usa-file-input__box" />
@@ -80,23 +93,27 @@ function FileInput({ label, hint, accept, value, onChange }) {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
 FileInput.propTypes = {
   label: PropTypes.string.isRequired,
   hint: PropTypes.string,
+  bannerText: PropTypes.string,
   accept: PropTypes.arrayOf(PropTypes.string),
   value: PropTypes.instanceOf(window.File),
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };
 
 FileInput.defaultProps = {
-  accept: [],
   hint: null,
+  bannerText: null,
+  accept: [],
   value: undefined,
   onChange: () => {},
+  className: null,
 };
 
 export default FileInput;
