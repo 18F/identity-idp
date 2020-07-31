@@ -7,19 +7,19 @@
     content: '';
     display: block;
     // 2.125" x 3.375" are common standard ID dimensions
-    padding-bottom: ( ( 2.125 / 3.375 ) * 100 ) + unquote('%');
+    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
   }
 
   .usa-file-input__target {
-    position: absolute;
-    top: 0;
-    right: 0;
     bottom: 0;
-    left: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
+    left: 0;
     margin-top: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 
   &:not(.usa-file-input--has-value) .usa-file-input__target {
@@ -44,9 +44,9 @@
 .usa-file-input__banner-text {
   @include u-font('sans', 'xl');
   @include u-margin-bottom(1);
+  color: color('primary');
   display: block;
   text-transform: uppercase;
-  color: color('primary');
 }
 
 .usa-file-input.usa-file-input--single-value.usa-file-input--has-value {
@@ -58,19 +58,19 @@
   .usa-file-input__preview-heading {
     flex: 0 0 auto;
   }
-  
+
   .usa-file-input__preview {
-    min-height: 0;
-    flex: 0 1 100%;
-    padding: 0;
-    margin: 0;
     background: #112e51;
+    flex: 0 1 100%;
+    margin: 0;
+    min-height: 0;
+    padding: 0;
   }
-  
+
   .usa-file-input__preview__image {
     height: 100%;
-    width: auto;
     margin-left: auto;
     margin-right: auto;
+    width: auto;
   }
 }
