@@ -26,7 +26,7 @@ module Acuant
       ATTENTION,
     ].freeze
 
-    BY_CODE = ALL.map { |r| [ r.code, r ] }.to_h.freeze
+    BY_CODE = ALL.map { |r| [r.code, r] }.to_h.freeze
 
     # @return [ResultCode]
     def self.from_int(code)
@@ -34,4 +34,3 @@ module Acuant
     end
   end
 end
-
