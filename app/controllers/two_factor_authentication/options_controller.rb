@@ -47,7 +47,7 @@ module TwoFactorAuthentication
       TwoFactorLoginOptionsPresenter.new(current_user,
                                          view_context,
                                          current_sp,
-                                         aal3_policy)
+                                         service_provider_mfa_policy)
     end
 
     def process_valid_form

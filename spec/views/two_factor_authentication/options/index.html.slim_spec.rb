@@ -5,7 +5,12 @@ describe 'two_factor_authentication/options/index.html.slim' do
   before do
     allow(view).to receive(:user_session).and_return({})
     allow(view).to receive(:current_user).and_return(User.new)
-    @presenter = TwoFactorLoginOptionsPresenter.new(user, view, nil, nil)
+    service_provider_mfa_policy = instance_double(
+      ServiceProviderMfaPolicy,
+      aal3_required?: false,
+      piv_cac_required?: false,
+    )
+    @presenter = TwoFactorLoginOptionsPresenter.new(user, view, nil, service_provider_mfa_policy)
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
 

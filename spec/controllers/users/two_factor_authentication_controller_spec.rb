@@ -144,14 +144,11 @@ describe Users::TwoFactorAuthenticationController do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        allow_any_instance_of(AAL3Policy).to receive(:piv_cac_required?).
-          and_return(true)
+        stub_sign_in(user)
+        controller.session[:sp] = { aal3_requested: true, piv_cac_requested: true }
       end
 
-      it 'redirects to PIV/CAC setup if no PIV/CAC is enabled and user is signed in' do
-        stub_sign_in(user)
-        allow_any_instance_of(TwoFactorAuthentication::PivCacPolicy).to receive(:enabled?).
-          and_return(false)
+      it 'redirects to MFA setup if no PIV/CAC is enabled' do
         get :show
 
         expect(response).to redirect_to(two_factor_options_url)

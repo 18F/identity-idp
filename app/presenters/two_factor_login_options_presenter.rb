@@ -3,13 +3,12 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   attr_reader :current_user
 
-  def initialize(current_user, view, service_provider, aal3_policy)
+  def initialize(current_user, view, service_provider, service_provider_mfa_policy)
     @current_user = current_user
     @view = view
     @service_provider = service_provider
-    return unless aal3_policy
-    @aal3_required = aal3_policy.aal3_required?
-    @piv_cac_required = aal3_policy.piv_cac_required?
+    @aal3_required = service_provider_mfa_policy.aal3_required?
+    @piv_cac_required = service_provider_mfa_policy.piv_cac_required?
   end
 
   def title
