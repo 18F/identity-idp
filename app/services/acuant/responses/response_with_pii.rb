@@ -1,7 +1,9 @@
 module Acuant
   module Responses
     class ResponseWithPii < Acuant::Response
-      def initialize(acuant_response, pii)
+      attr_reader :result_code
+
+      def initialize(acuant_response:, pii:, result_code:)
         super(
           success: acuant_response.success?,
           errors: acuant_response.errors,
@@ -9,6 +11,7 @@ module Acuant
           extra: acuant_response.extra,
         )
         @pii = pii
+        @result_code = result_code
       end
 
       def pii_from_doc

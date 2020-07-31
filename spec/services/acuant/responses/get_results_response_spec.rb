@@ -15,6 +15,12 @@ describe Acuant::Responses::GetResultsResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq([])
       expect(response.exception).to be_nil
+      expect(response.to_h).to eq(
+        success: true,
+        errors: [],
+        exception: nil,
+        result: "Passed",
+      )
     end
 
     it 'parsed PII from the doc' do
