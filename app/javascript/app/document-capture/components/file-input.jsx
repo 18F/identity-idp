@@ -60,7 +60,9 @@ function FileInput({ label, hint, accept, value, onChange }) {
               <span className="usa-file-input__drag-text">
                 {formatHTML(t('doc_auth.forms.choose_file_html'), {
                   // eslint-disable-next-line react/prop-types
-                  u: ({ children }) => <span className="usa-file-input__choose">{children}</span>,
+                  'lg-underline': ({ children }) => (
+                    <span className="usa-file-input__choose">{children}</span>
+                  ),
                 })}
               </span>
             </div>

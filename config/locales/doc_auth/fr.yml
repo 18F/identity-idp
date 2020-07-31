@@ -12,7 +12,8 @@ fr:
     forms:
       address1: Adresse
       change_file: Changer de fichier
-      choose_file_html: Faites glisser le fichier ici ou <u>choisissez dans un dossier</u>
+      choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez
+        dans un dossier</lg-underline>
       city: Ville
       dob: Date de naissance
       doc_success: Nous avons vérifié votre numéro de sécurité sociale et votre identifiant
