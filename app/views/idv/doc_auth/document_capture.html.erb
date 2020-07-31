@@ -13,7 +13,7 @@
   <div id="document-capture-form">
     <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
-    <h1>
+    <h1 class="h3 my0">
       <% if liveness_checking_enabled? %>
         <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
       <% else %>
@@ -39,9 +39,9 @@
 
       <div class="front-image mt2">
         <p>
-          <span class='bold'>
+          <strong>
             <%= t('doc_auth.headings.document_capture_front') %><br/>
-          </span>
+          </strong>
           <%= t('doc_auth.tips.document_capture_hint') %>
         </p>
 
@@ -54,9 +54,9 @@
 
       <div class="back-image mt3">
         <p>
-          <span class='bold'>
+          <strong>
             <%= t('doc_auth.headings.document_capture_back') %><br/>
-          </span>
+          </strong>
           <%= t('doc_auth.tips.document_capture_hint') %>
         </p>
 
@@ -79,9 +79,9 @@
           </ul>
 
           <p class='mt3'>
-            <span class='bold'>
+            <strong>
               <%= t('doc_auth.headings.document_capture_selfie') %><br/>
-            </span>
+            </strong>
             <%= t('doc_auth.tips.document_capture_hint') %>
           </p>
 
