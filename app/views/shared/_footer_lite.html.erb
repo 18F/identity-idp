@@ -26,7 +26,7 @@ sanitized_requested_url = request.query_parameters.slice(:request_id) %>
   <div class='container py1 px2 lg-px0 <%= 'sm-py0' if show_language_dropdown %>'>
     <div class='flex flex-center'>
       <div class='flex flex-auto flex-first'>
-        <%= link_to('https://gsa.gov', class: 'flex flex-center text-decoration-none white h6', target: '_blank') do %>
+        <%= link_to('https://gsa.gov', class: 'flex flex-center text-decoration-none white h6', target: '_blank', 'aria-label': t('shared.footer_lite.gsa')) do %>
           <%= image_tag asset_url('sp-logos/square-gsa.svg'),
             width: 20, class: 'mr1 sm-show', alt: '' %>
           <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
