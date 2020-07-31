@@ -51,7 +51,7 @@ module Acuant
         pii = results.pii_from_doc
         selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
         Acuant::Responses::ResponseWithPii.new(
-          selfie_response: selfie_response,
+          acuant_response: selfie_response,
           pii: pii,
           result_code: results.result_code,
         )
