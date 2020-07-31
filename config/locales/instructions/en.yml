@@ -61,11 +61,11 @@ en:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         number_message_html: We just called you at %{number}.
       webauthn:
+        confirm_webauthn_html: Present the security key that you associated with your
+          account.
         confirm_webauthn_only_html: This app requires a higher level of security.
           You need to verify your identity using a security key that you previously
           set up to access your information.
-        confirm_webauthn_html: Present the security key that you associated with your
-          account.
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.

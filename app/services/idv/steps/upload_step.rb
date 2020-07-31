@@ -36,6 +36,7 @@ module Idv
         mark_step_complete(:email_sent)
         mark_step_complete(:mobile_front_image)
         mark_step_complete(:mobile_back_image)
+        mark_step_complete(:mobile_document_capture)
       end
 
       def mobile
@@ -44,6 +45,7 @@ module Idv
         mark_step_complete(:email_sent)
         mark_step_complete(:front_image)
         mark_step_complete(:back_image)
+        mark_step_complete(:document_capture)
       end
     end
   end

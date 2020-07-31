@@ -42,6 +42,10 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :document_capture)
   end
 
+  def idv_doc_auth_mobile_document_capture_step
+    idv_doc_auth_step_path(step: :mobile_document_capture)
+  end
+
   def idv_doc_auth_front_image_step
     idv_doc_auth_step_path(step: :front_image)
   end
@@ -95,6 +99,12 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_document_capture_step
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
+  end
+
+  def complete_doc_auth_steps_before_mobile_document_capture_step
+    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    complete_doc_auth_steps_before_upload_step
+    click_on t('doc_auth.buttons.use_phone')
   end
 
   def complete_doc_auth_steps_before_front_image_step
