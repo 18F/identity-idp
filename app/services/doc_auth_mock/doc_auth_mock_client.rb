@@ -64,7 +64,7 @@ module DocAuthMock
       if results.success? && liveness_checking_enabled
         pii = results.pii_from_doc
         selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
-        Acuant::Responses::ResponseWithPii.new(selfie_response, pii)
+        Acuant::Responses::ResponseWithPii.new(acuant_response: selfie_response, pii: pii, billed: true)
       else
         results
       end

@@ -172,7 +172,7 @@ module Idv
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
         add_cost(:acuant_selfie) if liveness_checking_enabled?
-        add_cost(:acuant_result) if result.result_code&.billed?
+        add_cost(:acuant_result) if result.to_h[:billed]
       end
 
       def sp_session
