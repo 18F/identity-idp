@@ -27,9 +27,6 @@ fr:
       address: Adresse mail
       capture_complete: Nous avons vérifié votre ID émis par l'état
       document_capture: Ajoutez votre pièce d'identité émise par l'État
-      document_capture_html: Téléchargez votre pièce d'identité délivrée par l'État
-      document_capture_with_selfie_html: Téléchargez votre pièce d'identité officielle
-        et une photo de vous
       document_capture_back: Dos de votre pièce d'identité
       document_capture_front: Recto de votre pièce d'identité
       document_capture_heading_html: Téléchargez votre pièce d'identité délivrée par
@@ -90,11 +87,6 @@ fr:
         que pour vérifier votre identité.
       document_capture_fallback_html: Avoir des problèmes? %{link}
       document_capture_fallback_link: Cliquez ici pour télécharger une image
-      document_capture_header_text: 'Pour les meilleurs résultats:'
-      document_capture_id_text1: Utilisez un fond sombre
-      document_capture_id_text2: Prenez la photo sur une surface plane
-      document_capture_id_text3: Ne pas utiliser le flash sur votre appareil photo
-      document_capture_id_text4: La taille du fichier doit être d'au moins 2 Mo
       document_capture_selfie_instructions: Maintenant, prenez une photo de vous.
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
