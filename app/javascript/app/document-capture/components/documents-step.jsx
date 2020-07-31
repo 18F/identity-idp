@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import FileInput from './file-input';
+import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
+import DeviceContext from '../context/device';
 
 /**
  * Sides of document to present as file input.
@@ -12,9 +14,20 @@ const DOCUMENT_SIDES = ['front', 'back'];
 
 function DocumentsStep({ value, onChange }) {
   const t = useI18n();
+  const { isMobile } = useContext(DeviceContext);
 
   return (
     <>
+      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
+      <p className="margin-top-2 margin-bottom-0">
+        {t('doc_auth.instructions.document_capture_header_text')}
+      </p>
+      <ul>
+        <li>{t('doc_auth.instructions.document_capture_id_text1')}</li>
+        <li>{t('doc_auth.instructions.document_capture_id_text2')}</li>
+        <li>{t('doc_auth.instructions.document_capture_id_text3')}</li>
+        {!isMobile && <li>{t('doc_auth.instructions.document_capture_id_text4')}</li>}
+      </ul>
       {DOCUMENT_SIDES.map((side) => {
         const label = t(`doc_auth.headings.upload_${side}`);
         const inputKey = `${side}_image`;

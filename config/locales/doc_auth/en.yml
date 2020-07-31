@@ -25,6 +25,7 @@ en:
     headings:
       address: Mailing Address
       capture_complete: We have verified your state issued ID
+      document_capture: Add your state-issued ID
       document_capture_html: Upload your state&#8209;issued&nbsp;ID
       document_capture_with_selfie_html: Upload your state&#8209;issued&nbsp;ID and
         a photo of you
@@ -72,6 +73,11 @@ en:
         and share your personal information. We will only use it to verify your identity.
       document_capture_fallback_html: Having trouble? %{link}
       document_capture_fallback_link: Click here to upload an image
+      document_capture_header_text: 'For best results:'
+      document_capture_id_text1: Use a dark background
+      document_capture_id_text2: Take the photo on a flat surface
+      document_capture_id_text3: Do not use the flash on your camera
+      document_capture_id_text4: File size should be at least 2 MB
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more.
