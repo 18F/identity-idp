@@ -21,6 +21,7 @@
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
+test_stuff: 'true'
 aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
