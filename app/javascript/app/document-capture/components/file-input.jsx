@@ -16,7 +16,7 @@ export function isImageFile(file) {
 }
 
 function FileInput({ label, hint, accept, value, onChange }) {
-  const t = useI18n();
+  const { t, formatHTML } = useI18n();
   const instanceId = useInstanceId();
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
@@ -57,7 +57,14 @@ function FileInput({ label, hint, accept, value, onChange }) {
           )}
           {!value && (
             <div className="usa-file-input__instructions" aria-hidden="true">
-              <span className="usa-file-input__drag-text">{t('doc_auth.forms.choose_file')}</span>
+              <span className="usa-file-input__drag-text">
+                {formatHTML(t('doc_auth.forms.choose_file_html'), {
+                  // eslint-disable-next-line react/prop-types
+                  'lg-underline': ({ children }) => (
+                    <span className="usa-file-input__choose">{children}</span>
+                  ),
+                })}
+              </span>
             </div>
           )}
           <div className="usa-file-input__box" />

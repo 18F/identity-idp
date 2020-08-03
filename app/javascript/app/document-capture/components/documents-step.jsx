@@ -13,7 +13,7 @@ import DeviceContext from '../context/device';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 function DocumentsStep({ value, onChange }) {
-  const t = useI18n();
+  const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
   return (

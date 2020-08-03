@@ -12,7 +12,7 @@ en:
     forms:
       address1: Address
       change_file: Change file
-      choose_file: Drag file here or choose from folder
+      choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
       dob: Date of Birth
       doc_success: We've verified your social security number and state-issued ID.

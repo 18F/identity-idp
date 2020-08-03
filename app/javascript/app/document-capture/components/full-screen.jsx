@@ -5,7 +5,7 @@ import Image from './image';
 import useI18n from '../hooks/use-i18n';
 
 function FullScreen({ onRequestClose, children }) {
-  const t = useI18n();
+  const { t } = useI18n();
   const modalRef = useRef(/** @type {?HTMLDivElement} */ (null));
   const trapRef = useRef(/** @type {?import('focus-trap').FocusTrap} */ (null));
   const onRequestCloseRef = useRef(onRequestClose);
