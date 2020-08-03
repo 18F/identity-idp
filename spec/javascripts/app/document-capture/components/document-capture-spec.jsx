@@ -37,7 +37,6 @@ describe('document-capture/components/document-capture', () => {
     const continueButton = getByText('forms.buttons.continue');
     await waitFor(() => expect(continueButton.disabled).to.be.false());
     userEvent.click(continueButton);
-    userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
 
     const confirmation = await findByText(

@@ -21,7 +21,6 @@ function DocumentCapture() {
           name: 'selfie',
           component: AcuantCapture,
         },
-        { name: 'confirm', component: () => 'Confirm?' },
       ]}
       onComplete={setFormValues}
     />
