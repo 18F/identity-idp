@@ -12,7 +12,7 @@ es:
     forms:
       address1: Dirección
       change_file: Cambiar archivo
-      choose_file: Arrastre el archivo aquí o elija de la carpeta
+      choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la carpeta</lg-underline>
       city: Ciudad
       dob: Fecha de nacimiento
       doc_success: Verificamos su número de seguro social y su identificación emitida
@@ -27,9 +27,12 @@ es:
       address: Dirección de envio
       capture_complete: Hemos verificado la identificación emitida por su estado
       document_capture: Agregue su identificación emitida por el estado
-      document_capture_html: Cargue su identificación emitida por el estado
-      document_capture_with_selfie_html: Cargue su identificación emitida por el estado
-        y una foto suya
+      document_capture_back: Detrás de su identificación
+      document_capture_front: Frente de su identificación
+      document_capture_heading_html: Cargue su identificación emitida por el estado
+      document_capture_heading_with_selfie_html: Cargue su identificación emitida
+        por el estado y una foto suya
+      document_capture_selfie: Tu foto
       selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
@@ -38,17 +41,15 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
-      upload_back_html: Cargue una foto del dorso de su identificación emitida por
-        el estado.
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
-      upload_front_html: Cargue una foto del frente de su identificación emitida por
-        el
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
+      document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
+        y no guardaremos ninguna imagen.
       link_sent:
       - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
         la identificación emitida por su estado.
@@ -79,11 +80,8 @@ es:
         su identidad.
       document_capture_fallback_html: "¿Teniendo problemas? %{link}"
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
-      document_capture_header_text: 'Para mejores resultados:'
-      document_capture_id_text1: Usa un fondo oscuro
-      document_capture_id_text2: Toma la foto sobre una superficie plana
-      document_capture_id_text3: No uses el flash en tu cámara
-      document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo compararemos
+        con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Aprende más.
@@ -102,6 +100,16 @@ es:
       text4: asegúrate de tener siempre acceso
       welcome: 'Lo que necesitarás hacer:'
     tips:
+      document_capture_header_text: 'Para mejores resultados:'
+      document_capture_hint: Aceptamos los formatos BMP, PNG, TIFF y JPG.
+      document_capture_id_text1: Usa un fondo oscuro
+      document_capture_id_text2: Toma la foto sobre una superficie plana
+      document_capture_id_text3: No uses el flash en tu cámara
+      document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      document_capture_selfie_text1: Mira a la cámara y asegúrate de que toda tu cabeza
+        esté en la foto
+      document_capture_selfie_text2: Toma una foto sobre un fondo liso
+      document_capture_selfie_text3: No use sombrero o lentes de sol
       header_text: Pautas para tomar una foto de su identificación
       text1: Tómalo en una habitación con mucha luz. La luz solar indirecta es la
         mejor.
