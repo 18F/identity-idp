@@ -15,6 +15,7 @@ describe('document-capture/components/button', () => {
     expect(button.type).to.equal('button');
     expect(button.classList.contains('btn')).to.be.true();
     expect(button.classList.contains('btn-primary')).to.be.false();
+    expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.false();
   });
 
@@ -35,7 +36,18 @@ describe('document-capture/components/button', () => {
     const button = getByText('Click me');
 
     expect(button.classList.contains('btn-primary')).to.be.true();
+    expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.true();
+  });
+
+  it('renders as secondary', () => {
+    const { getByText } = render(<Button isSecondary>Click me</Button>);
+
+    const button = getByText('Click me');
+
+    expect(button.classList.contains('btn-primary')).to.be.false();
+    expect(button.classList.contains('btn-secondary')).to.be.true();
+    expect(button.classList.contains('btn-wide')).to.be.false();
   });
 
   it('renders as disabled', () => {
