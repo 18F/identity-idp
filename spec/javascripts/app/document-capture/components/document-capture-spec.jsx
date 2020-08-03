@@ -5,6 +5,16 @@ import render from '../../../support/render';
 import DocumentCapture from '../../../../../app/javascript/app/document-capture/components/document-capture';
 
 describe('document-capture/components/document-capture', () => {
+  let originalHash;
+
+  beforeEach(() => {
+    originalHash = window.location.hash;
+  });
+
+  afterEach(() => {
+    window.location.hash = originalHash;
+  });
+
   it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
