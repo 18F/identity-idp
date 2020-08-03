@@ -21,7 +21,7 @@ gem 'hiredis'
 gem 'http_accept_language'
 gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.4'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt', '>= 1.11.0'
 gem 'local_time'
@@ -60,7 +60,6 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication', '>= 2.1.1'
-gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
@@ -120,6 +119,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.1.0'
 end
