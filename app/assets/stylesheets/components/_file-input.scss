@@ -1,30 +1,30 @@
 .id-card-file-input .usa-file-input {
-  @include u-margin-top(1);
   max-width: 375px;
-  position: relative;
 
-  &::after {
-    content: '';
-    display: block;
-    // 2.125" x 3.375" are common standard ID dimensions
-    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
-  }
+  &:not(.usa-file-input--has-value) {
+    @include u-margin-top(1);
+    position: relative;
 
-  .usa-file-input__target {
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    left: 0;
-    margin-top: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+    .usa-file-input__target {
+      align-items: center;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      left: 0;
+      margin-top: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
 
-  &:not(.usa-file-input--has-value) .usa-file-input__target {
-    align-items: center;
-    justify-content: center;
+    &::after {
+      content: '';
+      display: block;
+      // 2.125" x 3.375" are common standard ID dimensions
+      padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+    }
   }
 }
 
@@ -49,28 +49,15 @@
   text-transform: uppercase;
 }
 
-.usa-file-input.usa-file-input--single-value.usa-file-input--has-value {
-  .usa-file-input__target {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .usa-file-input__preview-heading {
-    flex: 0 0 auto;
-  }
-
+.usa-file-input.usa-file-input--single-value {
   .usa-file-input__preview {
-    background: #112e51;
-    flex: 0 1 100%;
-    margin: 0;
-    min-height: 0;
     padding: 0;
   }
 
   .usa-file-input__preview__image {
-    height: 100%;
+    height: auto;
     margin-left: auto;
-    margin-right: auto;
-    width: auto;
+    margin-right: 0;
+    width: 100%;
   }
 }
