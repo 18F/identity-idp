@@ -32,12 +32,22 @@
 // Pending upstream Login Design System revisions:
 //================================================
 
-.usa-file-input:not(.usa-file-input--has-value) .usa-file-input__target {
-  border-color: color('primary');
-  border-width: 2px;
+.usa-file-input__input {
+  outline-offset: 2px;
+}
 
-  &:hover {
-    border-color: color('primary-darker');
+.usa-file-input:not(.usa-file-input--has-value) {
+  .usa-file-input__target {
+    border-color: color('primary');
+    border-width: 2px;
+
+    &:hover {
+      border-color: color('primary-darker');
+    }
+  }
+
+  .usa-file-input__input:focus {
+    outline-offset: 3px;
   }
 }
 
