@@ -17,6 +17,7 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('btn-primary')).to.be.false();
     expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.false();
+    expect(button.classList.contains('btn-link')).to.be.false();
   });
 
   it('calls click callback with no arguments', () => {
@@ -38,6 +39,7 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('btn-primary')).to.be.true();
     expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.true();
+    expect(button.classList.contains('btn-link')).to.be.false();
   });
 
   it('renders as secondary', () => {
@@ -48,6 +50,18 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('btn-primary')).to.be.false();
     expect(button.classList.contains('btn-secondary')).to.be.true();
     expect(button.classList.contains('btn-wide')).to.be.false();
+    expect(button.classList.contains('btn-link')).to.be.false();
+  });
+
+  it('renders as unstyled', () => {
+    const { getByText } = render(<Button isUnstyled>Click me</Button>);
+
+    const button = getByText('Click me');
+
+    expect(button.classList.contains('btn-primary')).to.be.false();
+    expect(button.classList.contains('btn-secondary')).to.be.false();
+    expect(button.classList.contains('btn-wide')).to.be.false();
+    expect(button.classList.contains('btn-link')).to.be.true();
   });
 
   it('renders as disabled', () => {

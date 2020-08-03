@@ -1,11 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function Button({ type, onClick, children, isPrimary, isSecondary, isDisabled, className }) {
+function Button({
+  type,
+  onClick,
+  children,
+  isPrimary,
+  isSecondary,
+  isDisabled,
+  isUnstyled,
+  className,
+}) {
   const classes = [
     'btn',
     isPrimary && 'btn-primary btn-wide',
     isSecondary && 'btn-secondary',
+    isUnstyled && 'btn-link',
     className,
   ]
     .filter(Boolean)
@@ -27,6 +37,7 @@ Button.propTypes = {
   isPrimary: PropTypes.bool,
   isSecondary: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  isUnstyled: PropTypes.bool,
   className: PropTypes.string,
 };
 
@@ -37,6 +48,7 @@ Button.defaultProps = {
   isPrimary: false,
   isSecondary: false,
   isDisabled: false,
+  isUnstyled: false,
   className: undefined,
 };
 
