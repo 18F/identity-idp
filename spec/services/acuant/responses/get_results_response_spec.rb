@@ -15,6 +15,14 @@ describe Acuant::Responses::GetResultsResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq([])
       expect(response.exception).to be_nil
+      expect(response.to_h).to eq(
+        success: true,
+        errors: [],
+        exception: nil,
+        result: 'Passed',
+      )
+      expect(response.result_code).to eq(Acuant::ResultCodes::PASSED)
+      expect(response.result_code.billed?).to eq(true)
     end
 
     it 'parsed PII from the doc' do
@@ -52,6 +60,8 @@ describe Acuant::Responses::GetResultsResponse do
         [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
       )
       expect(response.exception).to be_nil
+      expect(response.result_code).to eq(Acuant::ResultCodes::UNKNOWN)
+      expect(response.result_code.billed?).to eq(false)
     end
 
     context 'when a friendly error does not exist for the acuant error message' do

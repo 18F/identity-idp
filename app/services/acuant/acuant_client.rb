@@ -33,7 +33,7 @@ module Acuant
       merge_facial_match_and_liveness_response(facial_match_response, liveness_response)
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def post_images(front_image:, back_image:, selfie_image:,
                     liveness_checking_enabled: nil, instance_id: nil)
       document = create_document
@@ -49,12 +49,16 @@ module Acuant
       if results.success? && liveness_checking_enabled
         pii = results.pii_from_doc
         selfie_response = post_selfie(image: selfie_image, instance_id: instance_id)
-        Acuant::Responses::ResponseWithPii.new(selfie_response, pii)
+        Acuant::Responses::ResponseWithPii.new(
+          acuant_response: selfie_response,
+          pii: pii,
+          billed: results.result_code&.billed?,
+        )
       else
         results
       end
     end
-    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def get_results(instance_id:)
       Requests::GetResultsRequest.new(instance_id: instance_id).fetch

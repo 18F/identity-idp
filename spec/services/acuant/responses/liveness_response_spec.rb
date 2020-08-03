@@ -17,6 +17,7 @@ describe Acuant::Responses::LivenessResponse do
         success: true,
         errors: [],
         exception: nil,
+        liveness_assessment: 'Live',
         liveness_score: 99,
         acuant_error: { message: nil, code: nil },
       )
@@ -39,6 +40,7 @@ describe Acuant::Responses::LivenessResponse do
         success: false,
         errors: [I18n.t('errors.doc_auth.selfie')],
         exception: nil,
+        liveness_assessment: nil,
         liveness_score: nil,
         acuant_error: {
           message: 'Face is too small. Move the camera closer to the face and retake the picture.',
