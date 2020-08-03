@@ -34,8 +34,12 @@ function DocumentsStep({ value, onChange }) {
         return (
           <FileInput
             key={side}
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}
             hint={t('doc_auth.tips.document_capture_hint')}
+            /* i18n-tasks-use t('doc_auth.headings.back') */
+            /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
             accept={['image/*']}
             value={value[inputKey]}
