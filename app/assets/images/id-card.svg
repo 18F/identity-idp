@@ -25,7 +25,7 @@
     />
   </g>
   <style>
-  /* test-ignore */
+  /* lint-ignore */
   @keyframes card-loading {
     from { transform: rotate(30deg) translate(0, 0) }
     to { transform: rotate(30deg) translate(260px, -100px) }
