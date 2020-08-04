@@ -105,10 +105,6 @@ describe UserPivCacSetupForm do
 
     context 'when piv cac is required' do
       let(:token) { 'good-token' }
-      let(:form) do
-        described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
-                            piv_cac_required: true)
-      end
 
       it 'returns FormResponse with success: true when the token has an eku' do
         expect_results_with_eku(true)
@@ -138,7 +134,8 @@ describe UserPivCacSetupForm do
     response = { 'nonce' => nonce, 'has_eku' => has_eku, 'uuid' => 'bar', 'subject' => 'foo' }
     allow(PivCacService).to receive(:decode_token).with(token) { response }
 
-    result = form.submit
+    result = described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
+                                 piv_cac_required: true).submit
     expect(result.success?).to eq(has_eku)
     expect(result.errors).to eq(errors)
   end
