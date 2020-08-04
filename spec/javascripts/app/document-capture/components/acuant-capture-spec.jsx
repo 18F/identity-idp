@@ -12,6 +12,7 @@ describe('document-capture/components/acuant-capture', () => {
     // unsubscribe will attempt to reference globals that no longer exist.
     cleanup();
     delete window.AcuantJavascriptWebSdk;
+    delete window.AcuantCamera;
     delete window.AcuantCameraUI;
   });
 
@@ -61,6 +62,7 @@ describe('document-capture/components/acuant-capture', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
 
     const button = getByText('doc_auth.buttons.take_picture');
@@ -78,6 +80,7 @@ describe('document-capture/components/acuant-capture', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
     window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
 
@@ -98,6 +101,7 @@ describe('document-capture/components/acuant-capture', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
     window.AcuantCameraUI = {
       start(onImageCaptureSuccess) {
@@ -135,6 +139,7 @@ describe('document-capture/components/acuant-capture', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
     window.AcuantCameraUI = {
       start(_onImageCaptureSuccess, onImageCaptureFailure) {
@@ -161,6 +166,7 @@ describe('document-capture/components/acuant-capture', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
     window.AcuantCameraUI = {
       start: sinon.spy(),

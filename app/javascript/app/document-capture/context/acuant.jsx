@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const AcuantContext = createContext({
   isReady: false,
   isError: false,
+  isCameraSupported: null,
   credentials: null,
   endpoint: null,
 });
@@ -11,9 +12,11 @@ const AcuantContext = createContext({
 function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
   const [isReady, setIsReady] = useState(false);
   const [isError, setIsError] = useState(false);
-  const value = useMemo(() => ({ isReady, isError, endpoint, credentials }), [
+  const [isCameraSupported, setIsCameraSupported] = useState(/** @type {?boolean} */ (null));
+  const value = useMemo(() => ({ isReady, isError, isCameraSupported, endpoint, credentials }), [
     isReady,
     isError,
+    isCameraSupported,
     endpoint,
     credentials,
   ]);
@@ -24,7 +27,10 @@ function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
     const originalOnAcuantSdkLoaded = window.onAcuantSdkLoaded;
     window.onAcuantSdkLoaded = () => {
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
-        onSuccess: () => setIsReady(true),
+        onSuccess: () => {
+          setIsReady(true);
+          setIsCameraSupported(window.AcuantCamera.isCameraSupported);
+        },
         onFail: () => setIsError(true),
       });
     };
