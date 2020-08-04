@@ -25,6 +25,7 @@ es:
       zip_code: Código postal
     headings:
       address: Dirección de envio
+      back: Parte posterior
       capture_complete: Hemos verificado la identificación emitida por su estado
       document_capture: Agregue su identificación emitida por el estado
       document_capture_back: Detrás de su identificación
@@ -33,6 +34,7 @@ es:
       document_capture_heading_with_selfie_html: Cargue su identificación emitida
         por el estado y una foto suya
       document_capture_selfie: Tu foto
+      front: Frente
       selfie: Toma una selfie.
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación

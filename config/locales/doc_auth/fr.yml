@@ -26,6 +26,7 @@ fr:
       zip_code: Code postal
     headings:
       address: Adresse mail
+      back: Verso
       capture_complete: Nous avons vérifié votre ID émis par l'état
       document_capture: Ajoutez votre pièce d'identité émise par l'État
       document_capture_back: Dos de votre pièce d'identité
@@ -35,6 +36,7 @@ fr:
       document_capture_heading_with_selfie_html: Téléchargez votre pièce d'identité
         officielle et une photo de vous
       document_capture_selfie: Ta photo
+      front: De face
       selfie: Prendre un selfie.
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant

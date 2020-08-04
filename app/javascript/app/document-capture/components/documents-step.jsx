@@ -29,16 +29,22 @@ function DocumentsStep({ value, onChange }) {
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
       {DOCUMENT_SIDES.map((side) => {
-        const label = t(`doc_auth.headings.upload_${side}`);
         const inputKey = `${side}_image`;
 
         return (
           <FileInput
             key={side}
-            label={label}
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+            label={t(`doc_auth.headings.document_capture_${side}`)}
+            hint={t('doc_auth.tips.document_capture_hint')}
+            /* i18n-tasks-use t('doc_auth.headings.back') */
+            /* i18n-tasks-use t('doc_auth.headings.front') */
+            bannerText={t(`doc_auth.headings.${side}`)}
             accept={['image/*']}
             value={value[inputKey]}
             onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
+            className="id-card-file-input"
           />
         );
       })}

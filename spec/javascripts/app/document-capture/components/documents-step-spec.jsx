@@ -9,8 +9,8 @@ describe('document-capture/components/documents-step', () => {
   it('renders with front and back inputs', () => {
     const { getByLabelText } = render(<DocumentsStep />);
 
-    const front = getByLabelText('doc_auth.headings.upload_front');
-    const back = getByLabelText('doc_auth.headings.upload_back');
+    const front = getByLabelText('doc_auth.headings.document_capture_front');
+    const back = getByLabelText('doc_auth.headings.document_capture_back');
 
     expect(front).to.be.ok();
     expect(back).to.be.ok();
@@ -21,7 +21,7 @@ describe('document-capture/components/documents-step', () => {
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
 
-    userEvent.upload(getByLabelText('doc_auth.headings.upload_front'), file);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
 
     expect(onChange.calledOnce).to.be.true();
     expect(onChange.getCall(0).args[0]).to.deep.equal({ front_image: file });
@@ -31,7 +31,7 @@ describe('document-capture/components/documents-step', () => {
     const onChange = sinon.spy();
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
 
-    const input = getByLabelText('doc_auth.headings.upload_front');
+    const input = getByLabelText('doc_auth.headings.document_capture_front');
 
     // Ideally this wouldn't be so tightly-coupled with the DOM implementation, but instead attempt
     // to upload a file of an invalid type. `@testing-library/user-event` doesn't currently support

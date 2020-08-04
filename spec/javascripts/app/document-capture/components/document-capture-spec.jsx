@@ -7,7 +7,7 @@ describe('document-capture/components/document-capture', () => {
   it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const step = getByText('doc_auth.headings.upload_front');
+    const step = getByText('doc_auth.headings.document_capture_front');
 
     expect(step).to.be.ok();
   });
@@ -16,11 +16,11 @@ describe('document-capture/components/document-capture', () => {
     const { getByLabelText, getByText, findByText } = render(<DocumentCapture />);
 
     userEvent.upload(
-      getByLabelText('doc_auth.headings.upload_front'),
+      getByLabelText('doc_auth.headings.document_capture_front'),
       new window.File([''], 'upload.png', { type: 'image/png' }),
     );
     userEvent.upload(
-      getByLabelText('doc_auth.headings.upload_back'),
+      getByLabelText('doc_auth.headings.document_capture_back'),
       new window.File([''], 'upload.png', { type: 'image/png' }),
     );
     userEvent.click(getByText('forms.buttons.continue'));

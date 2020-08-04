@@ -106,7 +106,12 @@ function FormSteps({ steps, onComplete }) {
         value={values}
         onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <Button isPrimary onClick={toNextStep} isDisabled={!isStepValid(effectiveStep, values)}>
+      <Button
+        isPrimary
+        onClick={toNextStep}
+        isDisabled={!isStepValid(effectiveStep, values)}
+        className="margin-y-5"
+      >
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
     </>
