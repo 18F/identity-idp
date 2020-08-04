@@ -9,15 +9,23 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import DataURLFile from '../models/data-url-file';
 
-function AcuantCapture({ label, hint, bannerText, value, onChange }) {
+function AcuantCapture({ label, hint, bannerText, value, onChange, className }) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const [isCapturing, setIsCapturing] = useState(false);
   const { isMobile } = useContext(DeviceContext);
   const { t } = useI18n();
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
 
+  let startCaptureIfSupported;
+  if (hasCapture) {
+    startCaptureIfSupported = (event) => {
+      event.preventDefault();
+      setIsCapturing(true);
+    };
+  }
+
   return (
-    <>
+    <div className={className}>
       {isCapturing && (
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
@@ -35,6 +43,7 @@ function AcuantCapture({ label, hint, bannerText, value, onChange }) {
         bannerText={bannerText}
         accept={['image/*']}
         value={value}
+        onClick={startCaptureIfSupported}
         onChange={onChange}
       />
       {hasCapture && (
@@ -47,7 +56,7 @@ function AcuantCapture({ label, hint, bannerText, value, onChange }) {
           {t(value ? 'doc_auth.buttons.take_picture_retry' : 'doc_auth.buttons.take_picture')}
         </Button>
       )}
-    </>
+    </div>
   );
 }
 
@@ -57,6 +66,7 @@ AcuantCapture.propTypes = {
   bannerText: PropTypes.string,
   value: PropTypes.instanceOf(DataURLFile),
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };
 
 AcuantCapture.defaultProps = {
@@ -64,6 +74,7 @@ AcuantCapture.defaultProps = {
   value: null,
   bannerText: null,
   onChange: () => {},
+  className: null,
 };
 
 export default AcuantCapture;

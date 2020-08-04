@@ -140,12 +140,6 @@ describe('document-capture/components/file-input', () => {
     });
   });
 
-  it('renders with custom className', () => {
-    const { container } = render(<FileInput label="File" className="my-custom-class" />);
-
-    expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
-  });
-
   it('renders file input with label', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 

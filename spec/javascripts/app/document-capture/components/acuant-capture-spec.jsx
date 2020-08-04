@@ -109,6 +109,27 @@ describe('document-capture/components/acuant-capture', () => {
     expect(window.AcuantCameraUI.end.called).to.be.false();
   });
 
+  it('starts capturing when clicking input on supported device', () => {
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" />
+      </AcuantContextProvider>,
+    );
+
+    window.AcuantJavascriptWebSdk = {
+      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+    };
+    window.AcuantCamera = { isCameraSupported: true };
+    window.onAcuantSdkLoaded();
+    window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+
+    const button = getByLabelText('Image');
+    fireEvent.click(button);
+
+    expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+    expect(window.AcuantCameraUI.end.called).to.be.false();
+  });
+
   it('calls onChange with the captured image on successful capture', () => {
     const onChange = sinon.spy();
     const { getByText } = render(
@@ -193,5 +214,11 @@ describe('document-capture/components/acuant-capture', () => {
     unmount();
 
     expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+  });
+
+  it('renders with custom className', () => {
+    const { container } = render(<AcuantCapture label="File" className="my-custom-class" />);
+
+    expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
 });
