@@ -110,17 +110,9 @@ describe UserPivCacSetupForm do
         described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
                             piv_cac_required: true)
       end
-      let(:no_eku_token_response) do
-        { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => false, 'uuid' => x509_dn_uuid,
-          'subject' => 'x509-subject' }
-      end
-      let(:has_eku_token_response) do
-        { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => true, 'uuid' => x509_dn_uuid,
-          'subject' => 'x509-subject' }
-      end
 
       it 'returns FormResponse with success: true when the token has an eku' do
-        allow(PivCacService).to receive(:decode_token).with(token) { has_eku_token_response }
+        allow(PivCacService).to receive(:decode_token).with(token) { eku_token_response(true) }
 
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'piv_cac' }
@@ -132,7 +124,7 @@ describe UserPivCacSetupForm do
       end
 
       it 'returns FormResponse with success: false when the token does not have an eku' do
-        allow(PivCacService).to receive(:decode_token).with(token) { no_eku_token_response }
+        allow(PivCacService).to receive(:decode_token).with(token) { eku_token_response(false) }
 
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
@@ -156,5 +148,10 @@ describe UserPivCacSetupForm do
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
       end
     end
+  end
+
+  def eku_token_response(eku)
+    { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => eku, 'uuid' => x509_dn_uuid,
+      'subject' => 'x509-subject' }
   end
 end
