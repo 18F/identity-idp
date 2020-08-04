@@ -31,6 +31,7 @@ es:
         expired: Error de certificado PIV/CAC
         invalid: Error de certificado PIV/CAC
         none: Error de certificado PIV/CAC
+        not_auth_cert: Se requiere certificado de autenticación PIV/CAC
         ocsp_error: Error de certificado PIV/CAC OCSP
         revoked: Error de certificado PIV/CAC
         timeout: Error de tiempo de espera del certificado PIV/CAC

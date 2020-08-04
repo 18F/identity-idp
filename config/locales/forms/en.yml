@@ -92,6 +92,8 @@ en:
           your administrator to ensure your certificate is up to date.
         none_html: Please contact your administrator to ensure your certificate is
           up to date.
+        not_auth_cert_html: Please choose a different certificate from your PIV/CAC
+          or contact your administrator to ensure your certificate is up to date.
         ocsp_error_html: We’re having technical difficulties.  Please try again later.
         revoked_html: Please choose a different certificate from your PIV/CAC or contact
           your administrator to ensure your certificate is up to date.

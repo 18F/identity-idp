@@ -79,6 +79,7 @@ module TwoFactorAuthentication
         user: current_user,
         token: params[:token],
         nonce: piv_cac_nonce,
+        piv_cac_required: aal3_policy.piv_cac_required?,
       )
     end
 
