@@ -1,9 +1,11 @@
 import React from 'react';
 import { fireEvent, cleanup } from '@testing-library/react';
+import { waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
 import render from '../../../support/render';
 import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
+import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
 
 describe('document-capture/components/acuant-capture', () => {
   afterEach(() => {
@@ -16,31 +18,47 @@ describe('document-capture/components/acuant-capture', () => {
     delete window.AcuantCameraUI;
   });
 
-  it('renders a loading indicator while acuant is not ready', () => {
-    const { container } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
+  it('renders without capture button while acuant is not ready and on desktop', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: false }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
     );
 
-    expect(container.textContent).to.equal('Loading…');
+    expect(() => getByText('doc_auth.buttons.take_picture')).to.throw();
   });
 
-  it('renders an error indicator if acuant script fails to load', async () => {
-    const { findByText } = render(
-      <AcuantContextProvider sdkSrc="/gone.js">
-        <AcuantCapture />
-      </AcuantContextProvider>,
+  it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
     );
 
-    expect(await findByText('Error!')).to.be.ok();
+    expect(getByText('doc_auth.buttons.take_picture')).to.be.ok();
+  });
+
+  it('renders without capture button indicator if acuant script fails to load', async () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="/gone.js">
+          <AcuantCapture label="Image" />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    await waitForElementToBeRemoved(getByText('doc_auth.buttons.take_picture'));
     expect(console).to.have.loggedError(/^Error: Could not load script:/);
   });
 
-  it('renders an error indicator if acuant fails to initialize', () => {
-    const { container } = render(
+  it('renders without capture button if acuant fails to initialize', () => {
+    const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
@@ -49,13 +67,13 @@ describe('document-capture/components/acuant-capture', () => {
     };
     window.onAcuantSdkLoaded();
 
-    expect(container.textContent).to.equal('Error!');
+    expect(() => getByText('doc_auth.buttons.take_picture')).to.throw();
   });
 
   it('renders a button when successfully loaded', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
@@ -73,7 +91,7 @@ describe('document-capture/components/acuant-capture', () => {
   it('renders a canvas when capturing', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
@@ -91,10 +109,11 @@ describe('document-capture/components/acuant-capture', () => {
     expect(window.AcuantCameraUI.end.called).to.be.false();
   });
 
-  it('renders the captured image on successful capture', () => {
-    const { getByText, getByAltText } = render(
+  it('calls onChange with the captured image on successful capture', () => {
+    const onChange = sinon.spy();
+    const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" onChange={onChange} />
       </AcuantContextProvider>,
     );
 
@@ -108,8 +127,6 @@ describe('document-capture/components/acuant-capture', () => {
         const capture = {
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            width: 10,
-            height: 20,
           },
         };
         onImageCaptureSuccess(capture);
@@ -120,19 +137,16 @@ describe('document-capture/components/acuant-capture', () => {
     const button = getByText('doc_auth.buttons.take_picture');
     fireEvent.click(button);
 
-    const image = getByAltText('Captured result');
-
-    expect(image).to.be.ok();
-    expect(image.src).to.equal('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E');
-    expect(image.width).to.equal(10);
-    expect(image.height).to.equal(20);
+    expect(onChange.getCall(0).args).to.deep.equal([
+      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+    ]);
     expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
   });
 
   it('renders the button when the capture failed', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
@@ -159,7 +173,7 @@ describe('document-capture/components/acuant-capture', () => {
   it('ends the capture when the component unmounts', () => {
     const { getByText, unmount } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 

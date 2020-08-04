@@ -1,27 +1,20 @@
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
+import FileInput from './file-input';
 import FullScreen from './full-screen';
+import Button from './button';
 import useI18n from '../hooks/use-i18n';
+import DeviceContext from '../context/device';
+import DataURLFile from '../models/data-url-file';
 
-function AcuantCapture() {
-  const { isReady, isError } = useContext(AcuantContext);
+function AcuantCapture({ label, hint, bannerText, value, onChange }) {
+  const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [capture, setCapture] = useState(null);
+  const { isMobile } = useContext(DeviceContext);
   const { t } = useI18n();
-
-  if (isError) {
-    return 'Error!';
-  }
-
-  if (!isReady) {
-    return 'Loading…';
-  }
-
-  if (capture) {
-    const { data, width, height } = capture.image;
-    return <img alt="Captured result" src={data} width={width} height={height} />;
-  }
+  const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
 
   return (
     <>
@@ -29,18 +22,48 @@ function AcuantCapture() {
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              setCapture(nextCapture);
+              onChange(nextCapture.image.data);
               setIsCapturing(false);
             }}
             onImageCaptureFailure={() => setIsCapturing(false)}
           />
         </FullScreen>
       )}
-      <button type="button" onClick={() => setIsCapturing(true)}>
-        {t('doc_auth.buttons.take_picture')}
-      </button>
+      <FileInput
+        label={label}
+        hint={hint}
+        bannerText={bannerText}
+        accept={['image/*']}
+        value={value}
+        onChange={onChange}
+      />
+      {hasCapture && (
+        <Button
+          isSecondary={!value}
+          isUnstyled={!!value}
+          onClick={() => setIsCapturing(true)}
+          className="display-block margin-top-2"
+        >
+          {t(value ? 'doc_auth.buttons.take_picture_retry' : 'doc_auth.buttons.take_picture')}
+        </Button>
+      )}
     </>
   );
 }
+
+AcuantCapture.propTypes = {
+  label: PropTypes.string.isRequired,
+  hint: PropTypes.string,
+  bannerText: PropTypes.string,
+  value: PropTypes.instanceOf(DataURLFile),
+  onChange: PropTypes.func,
+};
+
+AcuantCapture.defaultProps = {
+  hint: null,
+  value: null,
+  bannerText: null,
+  onChange: () => {},
+};
 
 export default AcuantCapture;

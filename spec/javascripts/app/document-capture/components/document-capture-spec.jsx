@@ -37,10 +37,16 @@ describe('document-capture/components/document-capture', () => {
     const continueButton = getByText('forms.buttons.continue');
     await waitFor(() => expect(continueButton.disabled).to.be.false());
     userEvent.click(continueButton);
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_selfie'),
+      new window.File([''], 'selfie.png', { type: 'image/png' }),
+    );
+    const submitButton = getByText('forms.buttons.submit.default');
+    await waitFor(() => expect(submitButton.disabled).to.be.false());
+    userEvent.click(submitButton);
 
     const confirmation = await findByText(
-      'Finished sending: {"front_image":"data:image/png;base64,","back_image":"data:image/png;base64,"}',
+      'Finished sending: {"front_image":"data:image/png;base64,","back_image":"data:image/png;base64,","selfie":"data:image/png;base64,"}',
     );
 
     expect(confirmation).to.be.ok();
