@@ -734,6 +734,7 @@ DEPENDENCIES
   identity_validations!
   irb
   json-jwt (>= 1.11.0)
+  jwt
   knapsack
   lexisnexis!
   local_time
