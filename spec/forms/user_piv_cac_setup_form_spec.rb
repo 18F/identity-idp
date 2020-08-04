@@ -134,14 +134,12 @@ describe UserPivCacSetupForm do
       it 'returns FormResponse with success: false when the token does not have an eku' do
         allow(PivCacService).to receive(:decode_token).with(token) { no_eku_token_response }
 
-        result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'certificate.not_auth_cert' }, extra: extra).
-          and_return(result)
-        expect(form.submit).to eq result
-        expect(form.error_type).to eq 'certificate.not_auth_cert'
+        result = form.submit
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(type: 'certificate.not_auth_cert')
+        expect(result.extra).to eq(extra)
       end
     end
 
