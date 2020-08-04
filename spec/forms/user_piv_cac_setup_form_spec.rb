@@ -105,7 +105,6 @@ describe UserPivCacSetupForm do
 
     context 'when piv cac is required' do
       let(:token) { 'good-token' }
-      let(:x509_dn_uuid) { 'random-uuid-for-x509-subject' }
       let(:form) do
         described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
                             piv_cac_required: true)
