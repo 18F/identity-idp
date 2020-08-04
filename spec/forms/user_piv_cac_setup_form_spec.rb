@@ -112,26 +112,11 @@ describe UserPivCacSetupForm do
       end
 
       it 'returns FormResponse with success: true when the token has an eku' do
-        allow(PivCacService).to receive(:decode_token).with(token) { eku_token_response(true) }
-
-        result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit).to eq result
-        expect(form.error_type).to be_nil
+        expect_results_with_eku(true)
       end
 
       it 'returns FormResponse with success: false when the token does not have an eku' do
-        allow(PivCacService).to receive(:decode_token).with(token) { eku_token_response(false) }
-
-        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
-
-        result = form.submit
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(type: 'certificate.not_auth_cert')
-        expect(result.extra).to eq(extra)
+        expect_results_with_eku(false, type: 'certificate.not_auth_cert')
       end
     end
 
@@ -150,8 +135,13 @@ describe UserPivCacSetupForm do
     end
   end
 
-  def eku_token_response(eku)
-    { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => eku, 'uuid' => x509_dn_uuid,
+  def expect_results_with_eku(has_eku, errors = {})
+    response = { 'nonce' => nonce, 'has_eku' => has_eku, 'uuid' => x509_dn_uuid,
       'subject' => 'x509-subject' }
+    allow(PivCacService).to receive(:decode_token).with(token) { response }
+
+    result = form.submit
+    expect(result.success?).to eq(has_eku)
+    expect(result.errors).to eq(errors)
   end
 end
