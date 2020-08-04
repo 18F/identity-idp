@@ -2,6 +2,7 @@ module Idv
   module Steps
     class SelfieStep < DocAuthBaseStep
       def call
+        add_cost(:acuant_result) if get_results_response.to_h[:billed]
         if get_results_response.success?
           send_selfie_request
         else
