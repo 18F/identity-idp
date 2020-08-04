@@ -136,8 +136,7 @@ describe UserPivCacSetupForm do
   end
 
   def expect_results_with_eku(has_eku, errors = {})
-    response = { 'nonce' => nonce, 'has_eku' => has_eku, 'uuid' => x509_dn_uuid,
-      'subject' => 'x509-subject' }
+    response = { 'nonce' => nonce, 'has_eku' => has_eku, 'uuid' => 'bar', 'subject' => 'foo' }
     allow(PivCacService).to receive(:decode_token).with(token) { response }
 
     result = form.submit
