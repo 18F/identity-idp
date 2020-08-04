@@ -43,14 +43,14 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: d36270634b8157e6cd73f0c0eefe25a052f24c75
-  branch: master
+  revision: f18dc9e8e629e57e5d7ba0b44f043f8d66545482
+  tag: 0.10.0.pre.18f
   specs:
-    saml_idp (0.9.0.pre.18f)
+    saml_idp (0.10.0.pre.18f)
       activesupport
       builder
       httparty
-      nokogiri (>= 1.6.2)
+      nokogiri (>= 1.10.2)
       pkcs11
       uuid
 

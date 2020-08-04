@@ -51,11 +51,19 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_context
-    @requested_authn_context ||= saml_request.requested_authn_context || default_authn_context
+    @requested_authn_context ||= begin
+      contexts = saml_request.requested_authn_contexts
+      contexts << default_authn_context if contexts.blank?
+      contexts
+    end
   end
 
   def default_authn_context
     Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+  end
+
+  def requested_ial_authn_context
+    saml_request.requested_ial_authn_context || default_authn_context
   end
 
   def link_identity_from_session_data
@@ -71,7 +79,7 @@ module SamlIdpAuthConcern
 
   def ial_context
     @ial_context ||= IalContext.new(
-      ial: requested_authn_context,
+      ial: requested_ial_authn_context,
       service_provider: current_service_provider,
     )
   end
@@ -109,12 +117,23 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_authn_context,
+      authn_context_classref: ial_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
       signature: saml_response_signature_options,
       signed_response_message: current_service_provider.signed_response_message_requested,
     )
+  end
+
+  def ial_authn_context
+    case requested_authn_context
+    when Array
+      requested_authn_context.select do |classref|
+        classref =~ /#{Saml::Idp::Constants::IAL_AUTHN_CONTEXT_PREFIX}/
+      end.first
+    else
+      requested_authn_context
+    end
   end
 
   def saml_response_signature_options

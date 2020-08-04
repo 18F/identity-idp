@@ -35,15 +35,15 @@ class SamlRequestPresenter
   attr_reader :request, :service_provider
 
   def ial2_authn_context?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
+    (Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS & authn_context).present?
   end
 
   def ialmax_authn_context?
-    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == authn_context
+    authn_context.include? Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
   end
 
   def authn_context
-    request.requested_authn_context
+    request.requested_authn_contexts
   end
 
   def bundle

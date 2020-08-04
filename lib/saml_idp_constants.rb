@@ -5,14 +5,16 @@ module Saml
       LOA1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/1'.freeze
       LOA3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/loa/3'.freeze
 
-      IAL1_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/1'.freeze
-      IAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2'.freeze
-      IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/2?strict=true'.freeze
-      IALMAX_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/ial/0'.freeze
+      IAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/ial'.freeze
+      IAL1_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/1".freeze
+      IAL2_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2".freeze
+      IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?strict=true".freeze
+      IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
 
-      AAL2_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/2'.freeze
-      AAL3_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3'.freeze
-      AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = 'http://idmanagement.gov/ns/assurance/aal/3?hspd12=true'.freeze
+      AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'.freeze
+      AAL2_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2".freeze
+      AAL3_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3".freeze
+      AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3?hspd12=true".freeze
 
       ISSUERS_WITH_EMAIL_NAMEID_FORMAT = Figaro.env.issuers_with_email_nameid_format.split(',').
                                          freeze
