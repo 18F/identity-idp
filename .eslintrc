@@ -20,6 +20,7 @@
   "rules": {
     "prettier/prettier": "error",
     "func-names": 0,
+    "function-paren-newline": "off",
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],

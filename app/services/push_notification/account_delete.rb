@@ -99,7 +99,7 @@ module PushNotification
 
     def faraday_adapter(url)
       Faraday.new(url: url) do |faraday|
-        faraday.adapter :typhoeus
+        faraday.adapter :net_http
       end
     end
   end

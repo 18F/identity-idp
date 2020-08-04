@@ -19,6 +19,7 @@ module Idv
         return if liveness_checking_enabled?
 
         get_results_response = doc_auth_client.get_results(instance_id: flow_session[:instance_id])
+        add_cost(:acuant_result) if get_results_response.to_h[:billed]
         if get_results_response.success?
           mark_step_complete(:selfie)
           save_proofing_components

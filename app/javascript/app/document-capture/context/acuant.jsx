@@ -32,6 +32,7 @@ function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
     const script = document.createElement('script');
     script.async = true;
     script.src = sdkSrc;
+    script.onerror = () => setIsError(true);
     document.body.appendChild(script);
 
     return () => {

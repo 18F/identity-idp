@@ -38,7 +38,7 @@ describe 'idv/review/new.html.slim' do
     end
 
     it 'contains an accordion with verified user information' do
-      accordion_selector = generate_class_selector('accordion')
+      accordion_selector = generate_class_selector('usa-accordion')
       expect(rendered).to have_xpath("//#{accordion_selector}")
     end
 
