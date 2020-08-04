@@ -103,6 +103,48 @@ describe UserPivCacSetupForm do
       end
     end
 
+    context 'when piv cac is required' do
+      let(:token) { 'good-token' }
+      let(:x509_dn_uuid) { 'random-uuid-for-x509-subject' }
+      let(:form) do
+        described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
+                            piv_cac_required: true)
+      end
+      let(:no_eku_token_response) do
+        { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => false, 'uuid' => x509_dn_uuid,
+          'subject' => 'x509-subject' }
+      end
+      let(:has_eku_token_response) do
+        { 'nonce' => nonce, 'key_id' => 'foo', 'has_eku' => true, 'uuid' => x509_dn_uuid,
+          'subject' => 'x509-subject' }
+      end
+
+      it 'returns FormResponse with success: true when the token has an eku' do
+        allow(PivCacService).to receive(:decode_token).with(token) { has_eku_token_response }
+
+        result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac' }
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit).to eq result
+        expect(form.error_type).to be_nil
+      end
+
+      it 'returns FormResponse with success: false when the token does not have an eku' do
+        allow(PivCacService).to receive(:decode_token).with(token) { no_eku_token_response }
+
+        result = instance_double(FormResponse)
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: { type: 'certificate.not_auth_cert' }, extra: extra).
+          and_return(result)
+        expect(form.submit).to eq result
+        expect(form.error_type).to eq 'certificate.not_auth_cert'
+      end
+    end
+
     context 'when token is missing' do
       let(:token) {}
 
