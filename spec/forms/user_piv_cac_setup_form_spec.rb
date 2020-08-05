@@ -106,12 +106,12 @@ describe UserPivCacSetupForm do
     context 'when piv cac is required' do
       let(:token) { 'good-token' }
 
-      it 'returns FormResponse with success: true when the token has an eku' do
-        expect_results_with_eku(true)
+      it 'returns FormResponse with success: true when the token indicates auth cert' do
+        expect_results_with_auth_cert(true)
       end
 
-      it 'returns FormResponse with success: false when the token does not have an eku' do
-        expect_results_with_eku(false, type: 'certificate.not_auth_cert')
+      it 'returns FormResponse with success: false when the token indicates not an auth cert' do
+        expect_results_with_auth_cert(false, type: 'certificate.not_auth_cert')
       end
     end
 
@@ -130,13 +130,13 @@ describe UserPivCacSetupForm do
     end
   end
 
-  def expect_results_with_eku(has_eku, errors = {})
-    response = { 'nonce' => nonce, 'has_eku' => has_eku, 'uuid' => 'bar', 'subject' => 'foo' }
-    allow(PivCacService).to receive(:decode_token).with(token) { response }
+  def expect_results_with_auth_cert(is_auth_cert, errors = {})
+    resp = { 'nonce' => nonce, 'is_auth_cert' => is_auth_cert, 'uuid' => 'a', 'subject' => 'b' }
+    allow(PivCacService).to receive(:decode_token).with(token) { resp }
 
     result = described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
                                  piv_cac_required: true).submit
-    expect(result.success?).to eq(has_eku)
+    expect(result.success?).to eq(is_auth_cert)
     expect(result.errors).to eq(errors)
   end
 end

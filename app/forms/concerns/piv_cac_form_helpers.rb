@@ -26,7 +26,7 @@ module PivCacFormHelpers
   end
 
   def hspd12_compliant_cert_required_error
-    return if !@piv_cac_required || @data['has_eku']
+    return if !@piv_cac_required || @data['is_auth_cert']
     'certificate.not_auth_cert'
   end
 
