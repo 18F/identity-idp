@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
-import UploadContext from '../../../app/javascript/app/document-capture/context/upload';
+import { Provider as UploadContextProvider } from '../../../app/javascript/app/document-capture/context/upload';
 
 /**
  * Pass-through to React Testing Library, which applies default context values
@@ -21,7 +21,7 @@ function renderWithDefaultContext(element) {
     .onCall(1)
     .throws();
 
-  return render(<UploadContext.Provider value={upload}>{element}</UploadContext.Provider>);
+  return render(<UploadContextProvider upload={upload}>{element}</UploadContextProvider>);
 }
 
 export default renderWithDefaultContext;

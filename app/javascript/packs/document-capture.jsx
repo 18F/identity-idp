@@ -5,6 +5,7 @@ import AssetContext from '../app/document-capture/context/asset';
 import I18nContext from '../app/document-capture/context/i18n';
 import DeviceContext from '../app/document-capture/context/device';
 import { Provider as AcuantProvider } from '../app/document-capture/context/acuant';
+import { Provider as UploadContextProvider } from '../app/document-capture/context/upload';
 
 const { I18n: i18n, assets } = window.LoginGov;
 
@@ -27,11 +28,13 @@ render(
     endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
   >
     <I18nContext.Provider value={i18n.strings[i18n.currentLocale()]}>
-      <AssetContext.Provider value={assets}>
-        <DeviceContext.Provider value={device}>
-          <DocumentCapture />
-        </DeviceContext.Provider>
-      </AssetContext.Provider>
+      <UploadContextProvider csrf={getMetaContent('csrf-token')}>
+        <AssetContext.Provider value={assets}>
+          <DeviceContext.Provider value={device}>
+            <DocumentCapture />
+          </DeviceContext.Provider>
+        </AssetContext.Provider>
+      </UploadContextProvider>
     </I18nContext.Provider>
   </AcuantProvider>,
   appRoot,
