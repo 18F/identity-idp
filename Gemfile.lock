@@ -727,7 +727,6 @@ DEPENDENCIES
   guard-rspec
   hiredis
   http_accept_language
-  httparty
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
   identity-telephony!
