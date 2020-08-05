@@ -4,6 +4,7 @@ import FileInput from './file-input';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
+import DataURLFile from '../models/data-url-file';
 
 /**
  * Sides of document to present as file input.
@@ -54,8 +55,8 @@ function DocumentsStep({ value, onChange }) {
 
 DocumentsStep.propTypes = {
   value: PropTypes.shape({
-    upload_front: PropTypes.string,
-    upload_back: PropTypes.string,
+    front_image: PropTypes.instanceOf(DataURLFile),
+    back_image: PropTypes.instanceOf(DataURLFile),
   }),
   onChange: PropTypes.func,
 };

@@ -104,7 +104,9 @@ function FormSteps({ steps, onComplete }) {
       <Component
         key={name}
         value={values}
-        onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
+        onChange={(nextValuesPatch) => {
+          setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+        }}
       />
       <Button
         isPrimary

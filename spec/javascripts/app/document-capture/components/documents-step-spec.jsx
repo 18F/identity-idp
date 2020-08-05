@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import render from '../../../support/render';
 import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
 import DocumentsStep from '../../../../../app/javascript/app/document-capture/components/documents-step';
+import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
 
 describe('document-capture/components/documents-step', () => {
   it('renders with front and back inputs', () => {
@@ -16,15 +17,19 @@ describe('document-capture/components/documents-step', () => {
     expect(back).to.be.ok();
   });
 
-  it('calls onChange callback with uploaded image', () => {
-    const onChange = sinon.spy();
+  it('calls onChange callback with uploaded image', (done) => {
+    const onChange = sinon.stub();
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
 
-    expect(onChange.calledOnce).to.be.true();
-    expect(onChange.getCall(0).args[0]).to.deep.equal({ front_image: file });
+    onChange.callsFake((nextValue) => {
+      expect(nextValue).to.deep.equal({
+        front_image: new DataURLFile('data:image/png;base64,', 'upload.png'),
+      });
+      done();
+    });
   });
 
   it('restricts accepted file types', () => {
