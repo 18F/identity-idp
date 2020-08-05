@@ -103,7 +103,7 @@ describe('document-capture/components/file-input', () => {
       expect(isImage('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).to.be.false();
     });
 
-    it('returns false if given file is not an image (data url string)', () => {
+    it('returns true if given file is an image', () => {
       expect(
         isImage('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'),
       ).to.be.true();
