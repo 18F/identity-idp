@@ -1,27 +1,56 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
+import DataURLFile from '../models/data-url-file';
 
 /**
- * Returns true if the given file object is an image, or false otherwise.
+ * Returns true if the given data URL represents an image, or false otherwise.
  *
- * @param {File} file File object to test.
+ * @param {string} dataURL File data URL to test.
  *
- * @return {boolean} Whether given file is an image.
+ * @return {boolean} Whether given data URL is an image.
  */
-export function isImageFile(file) {
-  return /^image\//.test(file.type);
+export function isImage(dataURL) {
+  return /^data:image\//.test(dataURL);
+}
+
+/**
+ * Returns a promise resolving to the data URL representation of the given file.
+ *
+ * @param {File} file File to convert.
+ *
+ * @return {Promise<string>} Promise resolving to data URL.
+ */
+export function toDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new window.FileReader();
+    reader.addEventListener('load', () => resolve(/** @type {string} */ (reader.result)));
+    reader.addEventListener('error', reject);
+    reader.readAsDataURL(file);
+  });
 }
 
 function FileInput({ label, hint, bannerText, accept, value, onChange, className }) {
   const { t, formatHTML } = useI18n();
+  const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
+
+  /**
+   * In response to a file input change event, converts the assigned file to a data URL before
+   * calling `onChange`.
+   *
+   * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
+   */
+  function onChangeAsDataURL(event) {
+    const file = event.target.files[0];
+    toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+  }
 
   return (
     <div className={className}>
@@ -55,14 +84,20 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
         <div className="usa-file-input__target">
           {value && !isMobile && (
             <div className="usa-file-input__preview-heading">
-              <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
-              {value.name}{' '}
+              <span>
+                {value.name && (
+                  <>
+                    <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
+                    {value.name}{' '}
+                  </>
+                )}
+              </span>
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
-          {value && isImageFile(value) && (
+          {value && isImage(value.data) && (
             <div className="usa-file-input__preview" aria-hidden="true">
-              <FileImage file={value} alt="" className="usa-file-input__preview__image" />
+              <img src={value.data} alt="" className="usa-file-input__preview__image" />
             </div>
           )}
           {!value && (
@@ -85,9 +120,7 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            onChange={(event) => {
-              onChange(event.target.files[0]);
-            }}
+            onChange={onChangeAsDataURL}
             accept={accept.join()}
             aria-describedby={hint ? hintId : null}
           />
@@ -102,7 +135,7 @@ FileInput.propTypes = {
   hint: PropTypes.string,
   bannerText: PropTypes.string,
   accept: PropTypes.arrayOf(PropTypes.string),
-  value: PropTypes.instanceOf(window.File),
+  value: PropTypes.instanceOf(DataURLFile),
   onChange: PropTypes.func,
   className: PropTypes.string,
 };
