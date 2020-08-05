@@ -18,7 +18,10 @@ describe('document-capture/components/form-steps', () => {
           <span>Second</span>
           <input
             value={value.second || ''}
-            onChange={(event) => onChange({ second: event.target.value })}
+            onChange={(event) => {
+              onChange({ changed: true });
+              onChange({ second: event.target.value });
+            }}
           />
         </>
       ),
@@ -145,6 +148,7 @@ describe('document-capture/components/form-steps', () => {
 
     expect(onComplete.getCall(0).args[0]).to.eql({
       second: 'val',
+      changed: true,
     });
   });
 
