@@ -26,7 +26,7 @@ describe('document-capture/components/documents-step', () => {
 
     onChange.callsFake((nextValue) => {
       expect(nextValue).to.deep.equal({
-        front_image: new DataURLFile('data:image/png;base64,', 'upload.png'),
+        front: new DataURLFile('data:image/png;base64,', 'upload.png'),
       });
       done();
     });

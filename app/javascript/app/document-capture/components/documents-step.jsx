@@ -29,34 +29,30 @@ function DocumentsStep({ value, onChange }) {
         <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
-      {DOCUMENT_SIDES.map((side) => {
-        const inputKey = `${side}_image`;
-
-        return (
-          <FileInput
-            key={side}
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-            label={t(`doc_auth.headings.document_capture_${side}`)}
-            hint={t('doc_auth.tips.document_capture_hint')}
-            /* i18n-tasks-use t('doc_auth.headings.back') */
-            /* i18n-tasks-use t('doc_auth.headings.front') */
-            bannerText={t(`doc_auth.headings.${side}`)}
-            accept={['image/*']}
-            value={value[inputKey]}
-            onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
-            className="id-card-file-input"
-          />
-        );
-      })}
+      {DOCUMENT_SIDES.map((side) => (
+        <FileInput
+          key={side}
+          /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+          /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+          label={t(`doc_auth.headings.document_capture_${side}`)}
+          hint={t('doc_auth.tips.document_capture_hint')}
+          /* i18n-tasks-use t('doc_auth.headings.back') */
+          /* i18n-tasks-use t('doc_auth.headings.front') */
+          bannerText={t(`doc_auth.headings.${side}`)}
+          accept={['image/*']}
+          value={value[side]}
+          onChange={(nextValue) => onChange({ [side]: nextValue })}
+          className="id-card-file-input"
+        />
+      ))}
     </>
   );
 }
 
 DocumentsStep.propTypes = {
   value: PropTypes.shape({
-    front_image: PropTypes.instanceOf(DataURLFile),
-    back_image: PropTypes.instanceOf(DataURLFile),
+    front: PropTypes.instanceOf(DataURLFile),
+    back: PropTypes.instanceOf(DataURLFile),
   }),
   onChange: PropTypes.func,
 };
@@ -73,6 +69,6 @@ DocumentsStep.defaultProps = {
  *
  * @return {boolean} Whether step is valid.
  */
-export const isValid = (value) => Boolean(value.front_image && value.back_image);
+export const isValid = (value) => Boolean(value.front && value.back);
 
 export default DocumentsStep;

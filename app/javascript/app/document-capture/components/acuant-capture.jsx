@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FullScreen from './full-screen';
 import useI18n from '../hooks/use-i18n';
 
-function AcuantCapture() {
+function AcuantCapture({ onChange }) {
   const { isReady, isError } = useContext(AcuantContext);
   const [isCapturing, setIsCapturing] = useState(false);
   const [capture, setCapture] = useState(null);
@@ -29,6 +30,7 @@ function AcuantCapture() {
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
+              onChange({ selfie: nextCapture.image.data });
               setCapture(nextCapture);
               setIsCapturing(false);
             }}
@@ -42,5 +44,13 @@ function AcuantCapture() {
     </>
   );
 }
+
+AcuantCapture.propTypes = {
+  onChange: PropTypes.func,
+};
+
+AcuantCapture.defaultProps = {
+  onChange: () => {},
+};
 
 export default AcuantCapture;
