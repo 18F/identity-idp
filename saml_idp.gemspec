@@ -45,17 +45,19 @@ section of the README.
   s.add_dependency('uuid')
   s.add_dependency('builder')
   s.add_dependency('httparty')
-  s.add_dependency('nokogiri', '>= 1.6.2')
+  s.add_dependency('nokogiri', '>= 1.10.2')
   s.add_dependency("pkcs11")
 
-  s.add_development_dependency "rake"
-  s.add_development_dependency "simplecov"
+  s.add_development_dependency("capybara", "~> 3.15.1")
+  s.add_development_dependency("listen")
   s.add_development_dependency "pry-byebug"
+  s.add_development_dependency("rails", "~> 5.1")
+  s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
   s.add_development_dependency "rubocop", "0.76.0"
   s.add_development_dependency "ruby-saml", "~> 1.11.0"
-  s.add_development_dependency("rails", "~> 4.2")
-  s.add_development_dependency("capybara", "~> 3.15.1")
+  s.add_development_dependency "simplecov", "~> 0.17.0"
+  s.add_development_dependency "sqlite3"
   s.add_development_dependency("timecop")
   s.add_development_dependency("xmlenc", ">= 0.6.4")
 end

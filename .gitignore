@@ -1,5 +1,6 @@
 .DS_Store
 .Gemfile
+.byebug_history
 /.bundle
 /.rvmrc
 /coverage

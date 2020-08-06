@@ -8,8 +8,8 @@ AllCops:
   Include:
     - '**/Gemfile'
     - '**/Rakefile'
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 5.0
+  TargetRubyVersion: 2.6
+  TargetRailsVersion: 5.1
   UseCache: true
 
 Rails:

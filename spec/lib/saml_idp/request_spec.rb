@@ -1,7 +1,11 @@
 require 'spec_helper'
 module SamlIdp
   describe Request do
-    let(:raw_authn_request) { "<samlp:AuthnRequest AssertionConsumerServiceURL='http://localhost:3000/saml/consume' Destination='http://localhost:1337/saml/auth' ID='_af43d1a0-e111-0130-661a-3c0754403fdb' IssueInstant='2013-08-06T22:01:35Z' Version='2.0' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'><saml:Issuer xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>localhost:3000</saml:Issuer><samlp:NameIDPolicy AllowCreate='true' Format='urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'/><samlp:RequestedAuthnContext Comparison='exact'><saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef></samlp:RequestedAuthnContext></samlp:AuthnRequest>" }
+    let(:aal) { 'http://idmanagement.gov/ns/assurance/aal/3' }
+    let(:ial) { 'http://idmanagement.gov/ns/assurance/ial/2' }
+    let(:password) { 'urn:oasis:names:tc:SAML:2.0:ac:classes:Password' }
+    let(:authn_context_classref) { build_authn_context_classref(password) }
+    let(:raw_authn_request) { "<samlp:AuthnRequest AssertionConsumerServiceURL='http://localhost:3000/saml/consume' Destination='http://localhost:1337/saml/auth' ID='_af43d1a0-e111-0130-661a-3c0754403fdb' IssueInstant='2013-08-06T22:01:35Z' Version='2.0' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'><saml:Issuer xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>localhost:3000</saml:Issuer><samlp:NameIDPolicy AllowCreate='true' Format='urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'/><samlp:RequestedAuthnContext Comparison='exact'>#{authn_context_classref}</samlp:RequestedAuthnContext></samlp:AuthnRequest>" }
 
     let(:raw_authn_unspecified_name_id_format) { "<samlp:AuthnRequest AssertionConsumerServiceURL='http://localhost:3000/saml/consume' Destination='http://localhost:1337/saml/auth' ID='_af43d1a0-e111-0130-661a-3c0754403fdb' IssueInstant='2013-08-06T22:01:35Z' Version='2.0' xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol'><saml:Issuer xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>localhost:3000</saml:Issuer><samlp:RequestedAuthnContext Comparison='exact'><saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef></samlp:RequestedAuthnContext></samlp:AuthnRequest>" }
 
@@ -116,6 +120,68 @@ module SamlIdp
       it "should return logout_url for response_url" do
         expect(subject.response_url).to eq(subject.logout_url)
       end
+    end
+
+    describe '#requested_aal_authn_context' do
+      subject { described_class.new raw_authn_request }
+
+      context "no aal context requested" do
+        let(:authn_context_classref) { '' }
+
+        it "should return nil" do
+          expect(subject.requested_aal_authn_context).to be_nil
+        end
+      end
+
+      context "only context requested is aal" do
+        let(:authn_context_classref) { build_authn_context_classref(aal) }
+
+        it "should return the aal uri" do
+          expect(subject.requested_aal_authn_context).to eq(aal)
+        end
+      end
+
+      context "multiple contexts requested including aal" do
+        let(:authn_context_classref) { build_authn_context_classref([ial, aal]) }
+
+        it "should return the aal uri" do
+          expect(subject.requested_aal_authn_context).to eq(aal)
+        end
+      end
+    end
+
+    describe '#requested_ial_authn_context' do
+      subject { described_class.new raw_authn_request }
+
+      context "no ial context requested" do
+        let(:authn_context_classref) { '' }
+
+        it "should return nil" do
+          expect(subject.requested_ial_authn_context).to be_nil
+        end
+      end
+
+      context "only context requested is ial" do
+        let(:authn_context_classref) { build_authn_context_classref(ial) }
+
+        it "should return the ial uri" do
+          expect(subject.requested_ial_authn_context).to eq(ial)
+        end
+      end
+
+      context "multiple contexts requested including ial" do
+        let(:authn_context_classref) { build_authn_context_classref([aal, ial]) }
+
+        it "should return the ial uri" do
+          expect(subject.requested_ial_authn_context).to eq(ial)
+        end
+      end
+    end
+
+    def build_authn_context_classref(contexts)
+      [contexts].flatten.map do |c|
+        "<saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>#{c}</saml:AuthnContextClassRef>"
+      end.join
     end
   end
 end

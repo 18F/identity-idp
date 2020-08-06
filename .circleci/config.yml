@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.3.5
+      - image: circleci/ruby:2.6
         environment:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: a989576c2cf27161879ca9dfc4044dcd07ffc9d4b03827f6d464fcfff6c896a0
@@ -40,8 +40,8 @@ jobs:
       - run:
           name: Upload Test Results to Code Climate
           command: |
-            ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
-            ./cc-test-reporter upload-coverage
+            ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+            ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 
       # collect reports
       - store_test_results:

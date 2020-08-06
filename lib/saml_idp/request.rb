@@ -2,6 +2,10 @@ require 'saml_idp/xml_security'
 require 'saml_idp/service_provider'
 module SamlIdp
   class Request
+    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}.freeze
+    LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}.freeze
+    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal}.freeze
+
     def self.from_deflated_request(raw, options = {})
       if raw
         log "#{'~' * 20} RAW Request #{'~' * 20}\n#{raw}\n#{'~' * 18} Done RAW Request #{'~' * 17}\n"
@@ -69,6 +73,26 @@ module SamlIdp
       else
         nil
       end
+    end
+
+    def requested_authn_contexts
+      if authn_request? && authn_context_nodes.length > 0
+        authn_context_nodes.map(&:content)
+      else
+        []
+      end
+    end
+
+    def requested_ial_authn_context
+      requested_authn_contexts.select do |classref|
+        IAL_PREFIX.match?(classref) || LOA_PREFIX.match?(classref)
+      end.first
+    end
+
+    def requested_aal_authn_context
+      requested_authn_contexts.select do |classref|
+        AAL_PREFIX.match?(classref)
+      end.first
     end
 
     def acs_url
@@ -174,6 +198,13 @@ module SamlIdp
         saml: assertion).first
     end
     private :authn_context_node
+
+    def authn_context_nodes
+      @_authn_context_nodes ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
+        samlp: samlp,
+        saml: assertion)
+    end
+    private :authn_context_nodes
 
     def authn_request
       @_authn_request ||= xpath("//samlp:AuthnRequest", samlp: samlp).first

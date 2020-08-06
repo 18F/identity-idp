@@ -103,5 +103,18 @@ module SamlIdp
       encrypted_xml = builder.encrypt
       expect(encrypted_xml).not_to match(audience_uri)
     end
+
+    context "with multiple authn_context_classref's" do
+      let(:aal) { 'http://idmanagement.gov/ns/assurance/aal/3' }
+      let(:ial) { 'http://idmanagement.gov/ns/assurance/ial/2' }
+      let(:authn_context_classref) { [aal, ial] }
+
+      it 'chooses the IAL authn context to return in the assertion' do
+        Timecop.travel(Time.zone.local(2010, 6, 1, 13, 0, 0)) do
+          expect(subject.raw).to match(%r{ial})
+          expect(subject.raw).not_to match(%r{aal})
+        end
+      end
+    end
   end
 end
