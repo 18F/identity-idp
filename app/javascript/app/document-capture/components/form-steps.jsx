@@ -82,8 +82,26 @@ function FormSteps({ steps, onComplete }) {
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
+   *
+   * @type {import('react').FormEventHandler}
    */
-  function toNextStep() {
+  function toNextStep(event) {
+    event.preventDefault();
+
+    // It shouldn't be necessary to perform validation of the step at this point, since the spec
+    // guarantees us that submission will occur as a click on the button, which will be suppressed
+    // by the presence of the disabled attribute.
+    //
+    // "If the user agent supports letting the user submit a form implicitly (for example, on some
+    // platforms hitting the "enter" key while a text control is focused implicitly submits the
+    // form), then doing so for a form, whose default button has activation behavior and is not
+    // disabled, must cause the user agent to fire a click event at that default button."
+    //
+    // See: https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
+    //
+    // Furthermore, even if the step was progressed, the logic of effective step computation would
+    // avoid the next step being shown prematurely.
+
     const nextStepIndex = effectiveStepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
@@ -100,7 +118,7 @@ function FormSteps({ steps, onComplete }) {
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
-    <>
+    <form onSubmit={toNextStep}>
       <Component
         key={name}
         value={values}
@@ -109,14 +127,14 @@ function FormSteps({ steps, onComplete }) {
         }}
       />
       <Button
+        type="submit"
         isPrimary
-        onClick={toNextStep}
         isDisabled={!isStepValid(effectiveStep, values)}
         className="margin-y-5"
       >
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
-    </>
+    </form>
   );
 }
 
