@@ -87,6 +87,7 @@ module Users
         token: params[:token],
         nonce: piv_cac_nonce,
         name: user_session[:piv_cac_nickname],
+        piv_cac_required: aal3_policy.piv_cac_required?,
       )
     end
 
