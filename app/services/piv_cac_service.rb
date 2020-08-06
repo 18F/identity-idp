@@ -61,6 +61,7 @@ module PivCacService
     end
 
     def token_response(token)
+      # TODO: Faraday is the HTTP library of choice, replace raw NET::HTTP with Faraday equivalent.
       http = Net::HTTP.new(verify_token_uri.hostname, verify_token_uri.port)
       http.use_ssl = verify_token_uri.scheme == 'https'
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE if FeatureManagement.identity_pki_local_dev?
@@ -74,6 +75,7 @@ module PivCacService
     end
 
     def decode_request(uri, token)
+      # TODO: Faraday is the HTTP library of choice, replace raw NET::HTTP with Faraday equivalent.
       req = Net::HTTP::Post.new(uri, 'Authentication' => authenticate(token))
       req.form_data = { token: token }
       req
