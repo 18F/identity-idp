@@ -8,7 +8,7 @@ module Acuant
           exception: acuant_response.exception,
           extra: acuant_response.extra.merge(
             result: result_code.name,
-            billed: result_code.billed?
+            billed: result_code.billed?,
           ),
         )
         @pii = pii

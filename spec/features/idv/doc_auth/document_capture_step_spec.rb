@@ -54,7 +54,8 @@ feature 'doc auth document capture step' do
       end
 
       it 'proceeds to the next page with valid info and logs analytics info' do
-        allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
 
         attach_images
         click_idv_continue

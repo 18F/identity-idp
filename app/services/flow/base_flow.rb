@@ -47,8 +47,8 @@ module Flow
 
     # Duck type check for FormResponse
     def form_response?(response)
-      response.kind_of?(FormResponse) ||
-        response.kind_of?(Acuant::Response) ||
+      response.is_a?(FormResponse) ||
+        response.is_a?(Acuant::Response) ||
         (response.respond_to?(:success?) && response.respond_to?(:to_h))
     end
 
