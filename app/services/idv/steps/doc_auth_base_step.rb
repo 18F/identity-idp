@@ -3,8 +3,6 @@ module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
       include IdvSession
-      GOOD_RESULT = 1
-      FYI_RESULT = 2
 
       def initialize(flow)
         super(flow, :doc_auth)
@@ -136,7 +134,7 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
         # DP: should these cost recordings happen in the doc_auth_client?
-        add_costs
+        add_costs(result)
         result
       end
 
@@ -172,10 +170,11 @@ module Idv
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
-      def add_costs
+      def add_costs(result)
         add_cost(:acuant_front_image)
         add_cost(:acuant_back_image)
         add_cost(:acuant_selfie) if liveness_checking_enabled?
+        add_cost(:acuant_result) if result.to_h[:billed]
       end
 
       def sp_session
@@ -195,6 +194,7 @@ module Idv
           mark_step_complete(:mobile_back_image)
         else
           mark_step_complete(:document_capture)
+          mark_step_complete(:mobile_document_capture)
         end
       end
 

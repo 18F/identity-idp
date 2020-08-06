@@ -45,6 +45,10 @@ class AAL3Policy
     aal3_required? && @mfa_policy&.aal3_mfa_enabled?
   end
 
+  def multiple_aal3_configurations?
+    @mfa_policy.aal3_configurations.count > 1
+  end
+
   def piv_cac_setup_required?
     piv_cac_required? && !piv_cac_enabled?
   end
@@ -53,13 +57,13 @@ class AAL3Policy
     Figaro.env.allow_piv_cac_required == 'true' && piv_cac_requested
   end
 
-  private
-
-  attr_reader :session, :user
-
   def piv_cac_enabled?
     TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end
+
+  private
+
+  attr_reader :session, :user
 
   def aal3_requested?
     aal_level_requested == 3

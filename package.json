@@ -12,14 +12,11 @@
     "build": "true"
   },
   "dependencies": {
-    "@rails/webpacker": "^4.1.0",
-    "@testing-library/react": "^10.4.5",
     "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
     "cleave.js": "^1.5.3",
     "clipboard": "^1.6.1",
-    "coffeescript": "1.12.7",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.5",
@@ -31,16 +28,16 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "uswds": "^2.8.0",
-    "webpack-dev-server": "^3.11.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.4",
     "@babel/register": "^7.4.4",
+    "@rails/webpacker": "^4.1.0",
+    "@testing-library/dom": "^7.21.8",
+    "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^12.0.11",
-    "atob": "^2.1.2",
     "babel-eslint": "^10.1.0",
-    "btoa": "^1.2.1",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
     "eslint": "^7.4.0",
@@ -54,6 +51,7 @@
     "mocha": "^6.1.4",
     "prettier": "^2.0.5",
     "proxyquire": "^1.8.0",
-    "sinon": "^9.0.2"
+    "sinon": "^9.0.2",
+    "webpack-dev-server": "^3.11.0"
   }
 }

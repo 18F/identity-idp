@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import FileInput from './file-input';
+import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
+import DeviceContext from '../context/device';
+import DataURLFile from '../models/data-url-file';
 
 /**
  * Sides of document to present as file input.
@@ -11,21 +14,38 @@ import useI18n from '../hooks/use-i18n';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 function DocumentsStep({ value, onChange }) {
-  const t = useI18n();
+  const { t } = useI18n();
+  const { isMobile } = useContext(DeviceContext);
 
   return (
     <>
+      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
+      <p className="margin-top-2 margin-bottom-0">
+        {t('doc_auth.tips.document_capture_header_text')}
+      </p>
+      <ul>
+        <li>{t('doc_auth.tips.document_capture_id_text1')}</li>
+        <li>{t('doc_auth.tips.document_capture_id_text2')}</li>
+        <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
+        {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
+      </ul>
       {DOCUMENT_SIDES.map((side) => {
-        const label = t(`doc_auth.headings.upload_${side}`);
         const inputKey = `${side}_image`;
 
         return (
           <FileInput
             key={side}
-            label={label}
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+            label={t(`doc_auth.headings.document_capture_${side}`)}
+            hint={t('doc_auth.tips.document_capture_hint')}
+            /* i18n-tasks-use t('doc_auth.headings.back') */
+            /* i18n-tasks-use t('doc_auth.headings.front') */
+            bannerText={t(`doc_auth.headings.${side}`)}
             accept={['image/*']}
             value={value[inputKey]}
             onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
+            className="id-card-file-input"
           />
         );
       })}
@@ -35,8 +55,8 @@ function DocumentsStep({ value, onChange }) {
 
 DocumentsStep.propTypes = {
   value: PropTypes.shape({
-    upload_front: PropTypes.string,
-    upload_back: PropTypes.string,
+    front_image: PropTypes.instanceOf(DataURLFile),
+    back_image: PropTypes.instanceOf(DataURLFile),
   }),
   onChange: PropTypes.func,
 };
@@ -53,6 +73,6 @@ DocumentsStep.defaultProps = {
  *
  * @return {boolean} Whether step is valid.
  */
-DocumentsStep.isValid = (value) => Boolean(value.front_image && value.back_image);
+export const isValid = (value) => Boolean(value.front_image && value.back_image);
 
 export default DocumentsStep;

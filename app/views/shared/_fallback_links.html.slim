@@ -1,7 +1,6 @@
 p.mt3#code-instructs = @presenter.help_text
-- if @presenter.fallback_question
-  h2.my0 = @presenter.fallback_question
-  = link_to(t('two_factor_authentication.login_options_link_text'), \
-    login_two_factor_options_path)
-  br
+h2.my0 = @presenter.fallback_question
+- if @presenter.link_path
+  = link_to(@presenter.link_text, \
+    @presenter.link_path)
 br

@@ -20,6 +20,7 @@ module Idv
 
         get_results_response = DocAuthClient.client.get_results(instance_id:
                                                                     flow_session[:instance_id])
+        add_cost(:acuant_result) if get_results_response.to_h[:billed]
         if get_results_response.success?
           mark_step_complete(:selfie)
           save_proofing_components

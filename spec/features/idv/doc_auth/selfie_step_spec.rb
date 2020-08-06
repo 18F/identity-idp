@@ -6,7 +6,7 @@ feature 'doc auth self image step' do
 
   before do
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
-    sign_in_and_2fa_user
+    @user = sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
   end
 
@@ -14,11 +14,15 @@ feature 'doc auth self image step' do
     expect(page).to have_current_path(idv_doc_auth_selfie_step)
   end
 
-  it 'proceeds to the next page with valid info' do
+  it 'proceeds to the next page and logs a cost with valid info' do
+    proofing_cost = ProofingCost.find_by(user_id: @user.id)
+    count = proofing_cost.acuant_result_count
+
     attach_image
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(proofing_cost.reload.acuant_result_count).to eq(count + 1)
   end
 
   it 'restarts doc auth if the document cannot be authenticated' do

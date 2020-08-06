@@ -9,7 +9,7 @@ def get_js_with_strings(asset, translation)
   import useI18n from '../hooks/use-i18n';
 
   function DocumentCapture() {
-    const t = useI18n();
+    const { t } = useI18n();
 
     const sample = (
       <Image
@@ -25,6 +25,7 @@ def get_js_with_strings(asset, translation)
         <h2>{t('#{translation}')}</h2>
         <DocumentTips sample={sample} />
         <AcuantCapture />
+        <Image assetPath=\"#{asset}\" alt=\"\" />
       </>
     );
   }
@@ -73,7 +74,7 @@ RSpec.describe AssetChecker do
                                                                           translation_strings)
         expect(AssetChecker).to receive(:warn).with(tempfile.path)
         expect(AssetChecker).to receive(:warn).with('Missing translation, not-found')
-        expect(AssetChecker).to receive(:warn).with('Missing asset, wont_find.svg')
+        expect(AssetChecker).to receive(:warn).twice.with('Missing asset, wont_find.svg')
         expect(AssetChecker.check_files([tempfile.path])).to eq(true)
       end
     end

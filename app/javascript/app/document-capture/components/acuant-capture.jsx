@@ -8,7 +8,7 @@ function AcuantCapture() {
   const { isReady, isError } = useContext(AcuantContext);
   const [isCapturing, setIsCapturing] = useState(false);
   const [capture, setCapture] = useState(null);
-  const t = useI18n();
+  const { t } = useI18n();
 
   if (isError) {
     return 'Error!';
