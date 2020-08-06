@@ -85,6 +85,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bootsnap', '~> 1.4.7', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
