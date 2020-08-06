@@ -81,8 +81,7 @@ module PushNotification
     end
 
     def web_push(payload)
-      token = JSON::JWT.new(payload)
-      signed_token = token.sign(RequestKeyManager.private_key)
+      signed_token = JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
       "WebPush #{signed_token}"
     end
 
