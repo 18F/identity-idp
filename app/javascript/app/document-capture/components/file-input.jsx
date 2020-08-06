@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
@@ -38,6 +38,7 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
   const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
 
@@ -76,10 +77,14 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
+          isDraggingOver && 'usa-file-input--drag',
           value && 'usa-file-input--has-value',
         ]
           .filter(Boolean)
           .join(' ')}
+        onDragOver={() => setIsDraggingOver(true)}
+        onDragLeave={() => setIsDraggingOver(false)}
+        onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
           {value && !isMobile && (
