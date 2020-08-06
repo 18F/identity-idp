@@ -106,17 +106,6 @@ describe('useHistoryParam', () => {
     expect(window.location.hash).to.equal('');
   });
 
-  // Skip reason: JSDOM doesn't currently support full history navigation.
-  // Unskip prerequisite: https://github.com/jsdom/jsdom/issues/2112
-  it.skip('preserves existing query parameters', () => {
-    window.location.search = '?ok';
-    const { getByText } = render(<TestComponent />);
-
-    userEvent.click(getByText('Increment'));
-
-    expect(window.location.search).to.equal('?ok');
-  });
-
   it('encodes parameter names and values', () => {
     const { getByDisplayValue } = render(<TestComponent />);
 
