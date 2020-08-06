@@ -14,6 +14,7 @@ const dom = createDOM();
 global.window = dom.window;
 global.navigator = window.navigator;
 global.document = window.document;
+global.getComputedStyle = window.getComputedStyle;
 global.self = window;
 
 useCleanDOM();
