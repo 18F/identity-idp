@@ -24,7 +24,6 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     allow(presenter).to receive(:service_provider_mfa_policy).and_return service_provider_mfa_policy
   end
 
-
   describe '#help_text' do
     context 'with aal3 required'
     it 'supplies no help text' do
