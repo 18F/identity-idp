@@ -10,18 +10,7 @@
       content="<%= Figaro.env.acuant_sdk_initialization_creds %>"
     >
   <% end %>
-  <div id="document-capture-form">
-    <h1 class="h3 my0">
-      <%= t('doc_auth.headings.document_capture_heading_html') %>
-    </h1>
-    <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
-    <ul>
-      <li><%= t('doc_auth.tips.document_capture_id_text1') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text2') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text3') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
-    </ul>
-  </div>
+  <div id="document-capture-form"></div>
   <noscript>
     <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 

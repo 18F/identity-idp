@@ -20,7 +20,6 @@ const device = {
 };
 
 const appRoot = document.getElementById('document-capture-form');
-appRoot.innerHTML = '';
 render(
   <AcuantProvider
     credentials={getMetaContent('acuant-sdk-initialization-creds')}
