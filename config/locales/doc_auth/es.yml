@@ -51,6 +51,9 @@ es:
       welcome: Nosotros necesitamos verificar tu identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
+      document_capture_intro_acknowledgment: Recopilaremos información sobre usted
+        leyendo su identificación emitida por el estado. No almacenamos las imágenes
+        que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
       link_sent:

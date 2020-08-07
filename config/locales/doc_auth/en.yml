@@ -49,6 +49,9 @@ en:
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
+      document_capture_intro_acknowledgment: We’ll collect information about you by
+        reading your state-issued ID. We do not store images you upload. We only verify
+        your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
       link_sent:
