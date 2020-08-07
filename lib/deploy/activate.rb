@@ -8,11 +8,14 @@ require 'yaml'
 
 module Deploy
   class Activate
-    attr_reader :logger, :s3_client
+    attr_reader :logger, :s3_client, :env_yaml_path, :result_yaml_path
 
-    def initialize(logger: default_logger, s3_client: nil)
+    def initialize(logger: default_logger, s3_client: nil,
+                   result_yaml_path: nil, env_yaml_path: nil)
       @logger = logger
       @s3_client = s3_client
+      @env_yaml_path = env_yaml_path || File.join(root, 'config/application_s3_env.yml')
+      @result_yaml_path = result_yaml_path || File.join(root, 'config/application.yml')
     end
 
     def run
@@ -87,16 +90,16 @@ module Deploy
 
     def download_application_yml_from_s3
       LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/%<env>s/idp/v1/application.yml' => env_yaml_path,
+        '/%<env>s/idp/v1/application.yml' => @env_yaml_path,
       )
     end
 
     def deep_merge_s3_data_with_example_application_yml
-      File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
+      File.open(@result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
     end
 
     def set_proper_file_permissions_for_application_yml
-      FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
+      FileUtils.chmod(0o640, [@env_yaml_path, @result_yaml_path])
     end
 
     def download_from_s3_and_update_permissions(src, dest)
@@ -130,24 +133,16 @@ module Deploy
       logger
     end
 
-    def env_yaml_path
-      File.join(root, 'config/application_s3_env.yml')
-    end
-
     def root
       File.expand_path('../../../', __FILE__)
     end
 
     def application_config
-      YAML.load_file(example_application_yaml_path).deep_merge(YAML.load_file(env_yaml_path))
+      YAML.load_file(example_application_yaml_path).deep_merge(YAML.load_file(@env_yaml_path))
     end
 
     def example_application_yaml_path
       File.join(root, 'config/application.yml.default')
-    end
-
-    def result_yaml_path
-      File.join(root, 'config/application.yml')
     end
 
     def geolocation_db_path
