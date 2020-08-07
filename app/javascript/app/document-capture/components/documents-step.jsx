@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import FileInput from './file-input';
+import AcuantCapture from './acuant-capture';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
@@ -33,7 +33,7 @@ function DocumentsStep({ value, onChange }) {
         const inputKey = `${side}_image`;
 
         return (
-          <FileInput
+          <AcuantCapture
             key={side}
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
@@ -42,7 +42,6 @@ function DocumentsStep({ value, onChange }) {
             /* i18n-tasks-use t('doc_auth.headings.back') */
             /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
-            accept={['image/*']}
             value={value[inputKey]}
             onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
             className="id-card-file-input"
