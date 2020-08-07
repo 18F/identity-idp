@@ -7,6 +7,7 @@ import AcuantContext, {
 describe('document-capture/context/acuant', () => {
   afterEach(() => {
     delete window.AcuantJavascriptWebSdk;
+    delete window.AcuantCamera;
   });
 
   function ContextReader() {
@@ -20,6 +21,7 @@ describe('document-capture/context/acuant', () => {
     expect(JSON.parse(container.textContent)).to.eql({
       isReady: false,
       isError: false,
+      isCameraSupported: null,
       credentials: null,
       endpoint: null,
     });
@@ -47,6 +49,7 @@ describe('document-capture/context/acuant', () => {
     expect(JSON.parse(container.textContent)).to.eql({
       isReady: false,
       isError: false,
+      isCameraSupported: null,
       credentials: 'a',
       endpoint: 'b',
     });
@@ -62,11 +65,13 @@ describe('document-capture/context/acuant', () => {
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
+    window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
 
     expect(JSON.parse(container.textContent)).to.eql({
       isReady: true,
       isError: false,
+      isCameraSupported: true,
       credentials: null,
       endpoint: null,
     });
@@ -87,6 +92,7 @@ describe('document-capture/context/acuant', () => {
     expect(JSON.parse(container.textContent)).to.eql({
       isReady: false,
       isError: true,
+      isCameraSupported: null,
       credentials: null,
       endpoint: null,
     });

@@ -3,27 +3,31 @@ require 'login_gov/hostdata/fake_s3_client'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do
-  let(:config_dir) { Rails.root.join('tmp') }
+  let(:root) { @root }
+  let(:example_application_yaml_path) { Rails.root.join('config', 'application.yml.default') }
 
   around(:each) do |ex|
     LoginGov::Hostdata.reset!
 
-    @logger = Logger.new('/dev/null')
-    File.delete(env_yaml_path) if File.exist?(env_yaml_path)
-    File.delete(result_yaml_path) if File.exist?(result_yaml_path)
-
-    ex.run
+    Dir.mktmpdir do |dir|
+      @root = dir
+      ex.run
+    end
   end
 
-  let(:logger) { @logger }
+  let(:logger) { Logger.new('/dev/null') }
   let(:s3_client) { LoginGov::Hostdata::FakeS3Client.new }
   let(:set_up_files!) {}
 
-  let(:result_yaml_path) { config_dir.join('s3.yml') }
-  let(:env_yaml_path) { config_dir.join('env.yml') }
+  let(:result_yaml_path) { File.join(root, 'config', 'application.yml') }
+  let(:env_yaml_path) { File.join(root, 'config', 'application_s3_env.yml') }
   let(:subject) do
-    Deploy::Activate.new(logger: logger, s3_client: s3_client, result_yaml_path: result_yaml_path,
-                         env_yaml_path: env_yaml_path)
+    Deploy::Activate.new(
+      logger: logger,
+      s3_client: s3_client,
+      root: root,
+      example_application_yaml_path: example_application_yaml_path,
+    )
   end
 
   context 'in a deployed production environment' do

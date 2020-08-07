@@ -89,7 +89,7 @@ export function toDataURL(file) {
   });
 }
 
-function FileInput({ label, hint, bannerText, accept, value, errors, onChange, className }) {
+function FileInput({ label, hint, bannerText, accept, value, errors, onClick, onChange }) {
   const { t, formatHTML } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
@@ -123,7 +123,7 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onChange, c
 
   return (
     <div
-      className={[className, allErrors.length && 'usa-form-group usa-form-group--error']
+      className={[allErrors.length && 'usa-form-group usa-form-group--error']
         .filter(Boolean)
         .join(' ')}
     >
@@ -206,6 +206,7 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onChange, c
             className="usa-file-input__input"
             type="file"
             onChange={onChangeAsDataURL}
+            onClick={onClick}
             accept={accept ? accept.join() : undefined}
             aria-describedby={hint ? hintId : null}
           />
@@ -222,8 +223,8 @@ FileInput.propTypes = {
   accept: PropTypes.arrayOf(PropTypes.string),
   value: PropTypes.instanceOf(DataURLFile),
   errors: PropTypes.arrayOf(PropTypes.string),
+  onClick: PropTypes.func,
   onChange: PropTypes.func,
-  className: PropTypes.string,
 };
 
 FileInput.defaultProps = {
@@ -232,8 +233,8 @@ FileInput.defaultProps = {
   accept: null,
   value: undefined,
   errors: [],
+  onClick: () => {},
   onChange: () => {},
-  className: null,
 };
 
 export default FileInput;
