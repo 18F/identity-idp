@@ -120,7 +120,7 @@ describe IdvController do
     end
 
     context 'user does not have an active profile and has exceeded IdV attempts' do
-      let(:user) { user = create(:user) }
+      let(:user) { create(:user) }
 
       before do
         profile = create(
