@@ -103,7 +103,7 @@ describe('document-capture/components/file-input', () => {
       expect(isImage('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).to.be.false();
     });
 
-    it('returns false if given file is not an image (data url string)', () => {
+    it('returns true if given file is an image', () => {
       expect(
         isImage('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'),
       ).to.be.true();
@@ -138,12 +138,6 @@ describe('document-capture/components/file-input', () => {
       const dataURL = await toDataURL(new window.File([''], 'upload.png', { type: 'image/png' }));
       expect(dataURL).to.equal('data:image/png;base64,');
     });
-  });
-
-  it('renders with custom className', () => {
-    const { container } = render(<FileInput label="File" className="my-custom-class" />);
-
-    expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
 
   it('renders file input with label', () => {

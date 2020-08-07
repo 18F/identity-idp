@@ -1,6 +1,36 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @typedef AcuantImage
+ *
+ * @prop {string} data   Base64-encoded image data.
+ * @prop {number} width  Image width.
+ * @prop {number} height Image height.
+ */
+
+/**
+ * @typedef AcuantSuccessResponse
+ *
+ * @prop {AcuantImage} image      Image object.
+ * @prop {boolean}     isPassport Whether document is passport.
+ * @prop {number}      glare      Detected image glare.
+ * @prop {number}      sharpness  Detected image sharpness.
+ * @prop {number}      dpi        Detected image resolution.
+ *
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.3.3/SimpleHTMLApp#acuantcamera
+ */
+
+/**
+ * @typedef AcuantCaptureCanvasProps
+ *
+ * @prop {(response:AcuantSuccessResponse)=>void} onImageCaptureSuccess Success callback.
+ * @prop {(error:Error)=>void}                    onImageCaptureFailure Failure callback.
+ */
+
+/**
+ * @param {AcuantCaptureCanvasProps} props Component props.
+ */
 function AcuantCaptureCanvas({ onImageCaptureSuccess, onImageCaptureFailure }) {
   useEffect(() => {
     window.AcuantCameraUI.start(onImageCaptureSuccess, onImageCaptureFailure);

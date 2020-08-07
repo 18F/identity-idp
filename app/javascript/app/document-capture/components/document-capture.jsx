@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import AcuantCapture from './acuant-capture';
 import FormSteps from './form-steps';
 import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
+import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
 import Submission from './submission';
 
 function DocumentCapture() {
@@ -19,9 +19,9 @@ function DocumentCapture() {
         },
         {
           name: 'selfie',
-          component: AcuantCapture,
+          component: SelfieStep,
+          isValid: isSelfieStepValid,
         },
-        { name: 'confirm', component: () => 'Confirm?' },
       ]}
       onComplete={setFormValues}
     />
