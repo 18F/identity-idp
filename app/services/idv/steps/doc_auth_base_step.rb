@@ -73,7 +73,7 @@ module Idv
       end
 
       def idv_failure(result)
-        attempter_increment if result.extra.dig(:proofing_results, :exception).present?
+        attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
         if attempter_throttled?
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
