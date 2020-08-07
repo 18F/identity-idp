@@ -157,7 +157,6 @@ module Deploy
       File.join(root, 'config/application.yml')
     end
 
-
     def geolocation_db_path
       File.join(root, 'geo_data/GeoLite2-City.mmdb')
     end
