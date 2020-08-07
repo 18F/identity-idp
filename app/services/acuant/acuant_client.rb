@@ -52,7 +52,7 @@ module Acuant
         Acuant::Responses::ResponseWithPii.new(
           acuant_response: selfie_response,
           pii: pii,
-          billed: results.result_code&.billed?,
+          result_code: results.result_code,
         )
       else
         results

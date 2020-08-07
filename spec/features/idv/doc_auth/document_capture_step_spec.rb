@@ -8,6 +8,7 @@ feature 'doc auth document capture step' do
   let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
+  let(:fake_analytics) { FakeAnalytics.new }
   before do
     allow(Figaro.env).to receive(:document_capture_react_enabled).and_return('false')
     allow(Figaro.env).to receive(:document_capture_step_enabled).
@@ -52,11 +53,20 @@ feature 'doc auth document capture step' do
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
       end
 
-      it 'proceeds to the next page with valid info' do
+      it 'proceeds to the next page with valid info and logs analytics info' do
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
+
         attach_images
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          step: 'document_capture',
+          result: 'Passed',
+          billed: true,
+        )
       end
 
       it 'allows the use of a base64 encoded data url representation of the image' do

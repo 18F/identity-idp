@@ -27,7 +27,6 @@ module DocAuthMock
         success: success?,
         errors: errors,
         pii_from_doc: pii_from_doc,
-        billed: true,
       )
     end
 

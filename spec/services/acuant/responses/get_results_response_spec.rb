@@ -19,6 +19,7 @@ describe Acuant::Responses::GetResultsResponse do
         success: true,
         errors: [],
         exception: nil,
+        billed: true,
         result: 'Passed',
       )
       expect(response.result_code).to eq(Acuant::ResultCodes::PASSED)

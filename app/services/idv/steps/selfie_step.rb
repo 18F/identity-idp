@@ -2,11 +2,12 @@ module Idv
   module Steps
     class SelfieStep < DocAuthBaseStep
       def call
-        add_cost(:acuant_result) if get_results_response.to_h[:billed]
-        if get_results_response.success?
+        add_cost(:acuant_result) if results_response.to_h[:billed]
+        if results_response.success?
           send_selfie_request
+          results_response
         else
-          handle_selfie_step_failure(get_results_response)
+          handle_selfie_step_failure(results_response)
         end
       end
 
@@ -27,7 +28,7 @@ module Idv
         if user_id_from_token.present?
           CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
         else
-          extract_pii_from_doc(get_results_response)
+          extract_pii_from_doc(results_response)
         end
       end
 
@@ -43,13 +44,11 @@ module Idv
         failure(failure_response.errors.first, failure_response.to_h)
       end
 
-      # rubocop:disable Naming/AccessorMethodName
-      def get_results_response
-        @get_results_response ||= doc_auth_client.get_results(
+      def results_response
+        @results_response ||= doc_auth_client.get_results(
           instance_id: flow_session[:instance_id],
         )
       end
-      # rubocop:enable Naming/AccessorMethodName
 
       def form_submit
         Idv::ImageUploadForm.new.submit(permit(:image, :image_data_url))
