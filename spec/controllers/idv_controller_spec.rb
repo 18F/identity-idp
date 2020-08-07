@@ -120,8 +120,9 @@ describe IdvController do
     end
 
     context 'user does not have an active profile and has exceeded IdV attempts' do
-      it 'allows direct access' do
-        user = create(:user)
+      let(:user) { create(:user) }
+
+      before do
         profile = create(
           :profile,
           user: user,
@@ -134,10 +135,30 @@ describe IdvController do
         )
 
         stub_sign_in(profile.user)
+      end
 
+      it 'allows direct access' do
         get :fail
 
         expect(response).to render_template('idv/fail')
+      end
+
+      context 'when there is an SP in the session' do
+        render_views
+
+        let(:service_provider) do
+          create(:service_provider, failure_to_proof_url: 'https://foo.bar')
+        end
+
+        before do
+          session[:sp] = { issuer: service_provider.issuer }
+        end
+
+        it "includes a link back to the SP's failure to proof URL" do
+          get :fail
+
+          expect(response.body).to include('https://foo.bar')
+        end
       end
     end
   end
