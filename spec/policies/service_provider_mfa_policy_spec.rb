@@ -202,7 +202,7 @@ describe ServiceProviderMfaPolicy do
     end
   end
 
-  describe '#multiple_required_methods_enabled?' do
+  describe '#allow_user_to_switch_method?' do
     context 'aal3 required' do
       let(:aal_level_requested) { 3 }
 
@@ -212,7 +212,7 @@ describe ServiceProviderMfaPolicy do
           setup_user_piv
         end
 
-        it { expect(policy.multiple_required_methods_enabled?).to eq(true) }
+        it { expect(policy.allow_user_to_switch_method?).to eq(true) }
       end
 
       context 'the user does not have more than one aal3 method' do
@@ -220,7 +220,7 @@ describe ServiceProviderMfaPolicy do
           setup_user_webauthn_token
         end
 
-        it { expect(policy.multiple_required_methods_enabled?).to eq(false) }
+        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
       end
     end
 
@@ -231,13 +231,13 @@ describe ServiceProviderMfaPolicy do
       context 'the user has a PIV' do
         before { setup_user_piv }
 
-        it { expect(policy.multiple_required_methods_enabled?).to eq(false) }
+        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
       end
 
       context 'the user does not have a PIV' do
         before { setup_user_webauthn_token }
 
-        it { expect(policy.multiple_required_methods_enabled?).to eq(false) }
+        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
       end
 
       context 'the user has a PIV and webauthn token' do
@@ -246,14 +246,14 @@ describe ServiceProviderMfaPolicy do
           setup_user_piv
         end
 
-        it { expect(policy.multiple_required_methods_enabled?).to eq(false) }
+        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
       end
     end
 
     context 'there are no MFA reqirements' do
       before { setup_user_phone }
 
-      it { expect(policy.multiple_required_methods_enabled?).to eq(true) }
+      it { expect(policy.allow_user_to_switch_method?).to eq(true) }
     end
   end
 

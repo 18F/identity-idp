@@ -10,13 +10,13 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       new(data: { reauthn: reauthn }, view: view)
   end
 
-  let(:multiple_required_methods_enabled) { false }
+  let(:allow_user_to_switch_method) { false }
   let(:aal3_required) { false }
   let(:service_provider_mfa_policy) do
     instance_double(
       ServiceProviderMfaPolicy,
       aal3_required?: aal3_required,
-      multiple_required_methods_enabled?: multiple_required_methods_enabled,
+      allow_user_to_switch_method?: allow_user_to_switch_method,
     )
   end
 
@@ -35,7 +35,7 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     let(:aal3_required) { true }
 
     context 'with multiple AAL3 methods' do
-      let(:multiple_required_methods_enabled) { true }
+      let(:allow_user_to_switch_method) { true }
 
       it 'supplies link text' do
         expect(presenter.link_text).to eq(t('two_factor_authentication.webauthn_piv_available'))

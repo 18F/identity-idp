@@ -12,12 +12,12 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
-  let(:multiple_required_methods_enabled) { false }
+  let(:allow_user_to_switch_method) { false }
   let(:aal3_required) { true }
   let(:service_provider_mfa_policy) do
     instance_double(ServiceProviderMfaPolicy,
                     aal3_required?: aal3_required,
-                    multiple_required_methods_enabled?: multiple_required_methods_enabled)
+                    allow_user_to_switch_method?: allow_user_to_switch_method)
   end
 
   before do
@@ -61,14 +61,14 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     let(:aal3_required) { true }
 
     context 'with multiple AAL3 methods' do
-      let(:multiple_required_methods_enabled) { true }
+      let(:allow_user_to_switch_method) { true }
 
       it 'supplies link text' do
         expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
       end
     end
     context 'with only one AAL3 method do' do
-      let(:multiple_required_methods_enabled) { false }
+      let(:allow_user_to_switch_method) { false }
 
       it ' supplies no link text' do
         expect(presenter.link_text).to eq('')

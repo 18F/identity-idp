@@ -50,7 +50,7 @@ class ServiceProviderMfaPolicy
     piv_cac_requested?
   end
 
-  def multiple_required_methods_enabled?
+  def allow_user_to_switch_method?
     return false if piv_cac_required?
     return true unless aal3_required?
     piv_cac_enabled? && webauthn_enabled?
