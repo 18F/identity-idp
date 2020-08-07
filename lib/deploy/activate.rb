@@ -133,7 +133,7 @@ module Deploy
     end
 
     def root
-      Rails.root
+      File.expand_path('../../../', __FILE__)
     end
 
     def application_config
