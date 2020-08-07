@@ -22,8 +22,9 @@ describe Deploy::Activate do
 
   let(:result_yaml_path) { config_dir.join('s3.yml') }
   let(:env_yaml_path) { config_dir.join('env.yml') }
-  let(:subject) { Deploy::Activate.new(logger: logger, s3_client: s3_client, result_yaml_path: result_yaml_path,
-                                       env_yaml_path: env_yaml_path) }
+  let(:subject) do
+    Deploy::Activate.new(logger: logger, s3_client: s3_client, result_yaml_path: result_yaml_path, env_yaml_path: env_yaml_path)
+  end
 
   context 'in a deployed production environment' do
     before do

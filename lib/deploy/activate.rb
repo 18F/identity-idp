@@ -10,7 +10,8 @@ module Deploy
   class Activate
     attr_reader :logger, :s3_client, :env_yaml_path, :result_yaml_path
 
-    def initialize(logger: default_logger, s3_client: nil, result_yaml_path: nil, env_yaml_path: nil)
+    def initialize(logger: default_logger, s3_client: nil,
+                   result_yaml_path: nil, env_yaml_path: nil)
       @logger = logger
       @s3_client = s3_client
       @env_yaml_path = env_yaml_path || File.join(root, 'config/application_s3_env.yml')
