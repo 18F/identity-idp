@@ -10,3 +10,4 @@ begin
 rescue LoadError
   # bootsnap is only for dev/test
 end
+# rubocop:enable Lint/HandleExceptions
