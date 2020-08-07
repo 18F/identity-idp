@@ -2,9 +2,12 @@
 
 <%= image_tag('alert/warning-lg.svg', alt: '', width: 54) %>
 
-<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.heading") %></h1>
+<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.exception") %></h1>
 
-<p><%= t("idv.failure.sessions.warning") %></p>
+<p>
+  <%= t('idv.failure.exceptions.text_html',
+    link: link_to(t('idv.failure.exceptions.link'), MarketingSite.contact_url)) %>
+</p>
 
 <%= render 'idv/shared/back_to_sp_link' %>
 
