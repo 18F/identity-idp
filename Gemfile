@@ -107,7 +107,6 @@ group :test do
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
-  gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
   gem 'gmail'
   gem 'rack-test', '>= 1.1.0'
