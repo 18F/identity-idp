@@ -8,7 +8,7 @@ require 'yaml'
 
 module Deploy
   class Activate
-    attr_reader :logger, :s3_client
+    attr_reader :logger, :s3_client, :env_yaml_path, :result_yaml_path
 
     def initialize(logger: default_logger, s3_client: nil, result_yaml_path: nil, env_yaml_path: nil)
       @logger = logger
