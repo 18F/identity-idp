@@ -7,12 +7,10 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
-  config.action_controller.asset_host = proc do |source, request|
+  config.action_controller.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
-    if request
-      Figaro.env.asset_host || Figaro.env.domain_name
-    end
+    (Figaro.env.asset_host || Figaro.env.domain_name) if request
   end
   config.assets.js_compressor = :uglifier
   config.assets.compile = false

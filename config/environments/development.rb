@@ -2,7 +2,7 @@ Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = true
 
-  config.action_controller.asset_host = proc do |source, request|
+  config.action_controller.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
     Figaro.env.domain_name if request
