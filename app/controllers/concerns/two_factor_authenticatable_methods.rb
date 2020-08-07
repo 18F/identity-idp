@@ -2,7 +2,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
-  include Aal3Concern
 
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
@@ -48,17 +47,18 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     return unless initial_authentication_context?
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
-    return if aal3_policy.aal3_configured_but_not_used?
+    return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
 
     redirect_to after_otp_verification_confirmation_url
   end
 
-  def check_aal3_bypass
-    return unless aal3_policy.aal3_configured_and_required?
+  def check_sp_required_mfa_bypass
+    return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     method = two_factor_authentication_method
-    return if AAL3Policy::AAL3_METHODS.include? method
-    aal3_redirect = aal3_redirect_url(current_user)
-    redirect_to aal3_redirect || aal3_required_url
+    return if service_provider_mfa_policy.aal3_required? &&
+              ServiceProviderMfaPolicy::AAL3_METHODS.include?(method)
+    return if service_provider_mfa_policy.piv_cac_required? && method == 'piv_cac'
+    prompt_to_verify_sp_required_mfa
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
