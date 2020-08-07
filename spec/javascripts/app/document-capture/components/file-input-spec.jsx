@@ -1,6 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
+import { fireEvent } from '@testing-library/react';
 import { expect } from 'chai';
 import render from '../../../support/render';
 import FileInput, {
@@ -176,7 +177,24 @@ describe('document-capture/components/file-input', () => {
     expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
   });
 
-  it.skip('supports change by drag and drop', () => {});
+  it('adds drag effects', () => {
+    const { getByLabelText } = render(<FileInput label="File" />);
+
+    const input = getByLabelText('File');
+    const container = input.closest('.usa-file-input');
+
+    fireEvent.dragOver(input);
+    expect(container.classList.contains('usa-file-input--drag')).to.be.true();
+
+    fireEvent.dragLeave(input);
+    expect(container.classList.contains('usa-file-input--drag')).to.be.false();
+
+    fireEvent.dragOver(input);
+    expect(container.classList.contains('usa-file-input--drag')).to.be.true();
+
+    fireEvent.drop(input);
+    expect(container.classList.contains('usa-file-input--drag')).to.be.false();
+  });
 
   it.skip('shows an error state', () => {});
 });
