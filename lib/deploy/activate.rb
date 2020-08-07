@@ -8,14 +8,12 @@ require 'yaml'
 
 module Deploy
   class Activate
-    attr_reader :logger, :s3_client, :env_yaml_path, :result_yaml_path
+    attr_reader :logger, :s3_client, :root_path
 
-    def initialize(logger: default_logger, s3_client: nil,
-                   result_yaml_path: nil, env_yaml_path: nil)
+    def initialize(logger: default_logger, s3_client: nil, root_path: default_root_path)
       @logger = logger
       @s3_client = s3_client
-      @env_yaml_path = env_yaml_path || File.join(root, 'config/application_s3_env.yml')
-      @result_yaml_path = result_yaml_path || File.join(root, 'config/application.yml')
+      @root_path = root_path
     end
 
     def run
@@ -36,7 +34,7 @@ module Deploy
     def clone_idp_config
       private_git_repo_url = ENV.fetch('IDP_private_config_repo',
                                        'git@github.com:18F/identity-idp-config.git')
-      checkout_dir = File.join(root, idp_config_checkout_name)
+      checkout_dir = File.join(root_path, idp_config_checkout_name)
 
       cmd = ['git', 'clone', private_git_repo_url, checkout_dir]
       logger.info('+ ' + cmd.join(' '))
@@ -53,31 +51,31 @@ module Deploy
     def setup_idp_config_symlinks
       # service_providers.yml
       symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'service_providers.yml'),
-        File.join(root, 'config/service_providers.yml'),
+        File.join(root_path, idp_config_checkout_name, 'service_providers.yml'),
+        File.join(root_path, 'config/service_providers.yml'),
       )
 
       # agencies.yml
       symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'agencies.yml'),
-        File.join(root, 'config/agencies.yml'),
+        File.join(root_path, idp_config_checkout_name, 'agencies.yml'),
+        File.join(root_path, 'config/agencies.yml'),
       )
 
       # Service provider public keys
       symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'certs/sp'),
-        File.join(root, 'certs/sp'),
+        File.join(root_path, idp_config_checkout_name, 'certs/sp'),
+        File.join(root_path, 'certs/sp'),
       )
 
       # Public assets: sp-logos
       # Inject the logo files into the app's asset folder. deploy/activate is
       # run before deploy/build-post-config, so these will be picked up by the
       # rails asset pipeline.
-      logos_dir = File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos')
+      logos_dir = File.join(root_path, idp_config_checkout_name, 'public/assets/images/sp-logos')
       Dir.entries(logos_dir).each do |name|
         next if name.start_with?('.')
         target = File.join(logos_dir, name)
-        link = File.join(root, 'app/assets/images/sp-logos', name)
+        link = File.join(root_path, 'app/assets/images/sp-logos', name)
         symlink_verbose(target, link, force: true)
       end
     end
@@ -133,7 +131,11 @@ module Deploy
       logger
     end
 
-    def root
+    def env_yaml_path
+      File.join(root_path, 'config/application_s3_env.yml')
+    end
+
+    def default_root_path
       File.expand_path('../../../', __FILE__)
     end
 
@@ -142,15 +144,19 @@ module Deploy
     end
 
     def example_application_yaml_path
-      File.join(root, 'config/application.yml.default')
+      File.join(default_root_path, 'config/application.yml.default')
+    end
+
+    def result_yaml_path
+      File.join(root_path, 'config/application.yml')
     end
 
     def geolocation_db_path
-      File.join(root, 'geo_data/GeoLite2-City.mmdb')
+      File.join(root_path, 'geo_data/GeoLite2-City.mmdb')
     end
 
     def pwned_passwords_path
-      File.join(root, 'pwned_passwords/pwned_passwords.txt')
+      File.join(root_path, 'pwned_passwords/pwned_passwords.txt')
     end
   end
 end

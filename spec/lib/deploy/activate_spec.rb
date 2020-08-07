@@ -3,7 +3,7 @@ require 'login_gov/hostdata/fake_s3_client'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do
-  let(:config_dir) { Rails.root.join('tmp') }
+  let(:config_dir) { Rails.root.join('tmp', 'config') }
 
   around(:each) do |ex|
     LoginGov::Hostdata.reset!
@@ -19,11 +19,10 @@ describe Deploy::Activate do
   let(:s3_client) { LoginGov::Hostdata::FakeS3Client.new }
   let(:set_up_files!) {}
 
-  let(:result_yaml_path) { config_dir.join('s3.yml') }
-  let(:env_yaml_path) { config_dir.join('env.yml') }
+  let(:result_yaml_path) { config_dir.join('application.yml') }
+  let(:env_yaml_path) { config_dir.join('application_s3_env.yml') }
   let(:subject) do
-    Deploy::Activate.new(logger: logger, s3_client: s3_client, result_yaml_path: result_yaml_path,
-                         env_yaml_path: env_yaml_path)
+    Deploy::Activate.new(logger: logger, s3_client: s3_client, root_path: 'tmp')
   end
 
   context 'in a deployed production environment' do
