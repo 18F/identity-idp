@@ -110,10 +110,14 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onChange, c
    */
   function onChangeAsDataURL(event) {
     const file = event.target.files[0];
-    if (isValidForAccepts(file.type, accept)) {
-      toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+    if (file) {
+      if (isValidForAccepts(file.type, accept)) {
+        toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+      } else {
+        setOwnErrors((previousErrors) => [...previousErrors, t('errors.doc_auth.selfie')]);
+      }
     } else {
-      setOwnErrors((previousErrors) => [...previousErrors, t('errors.doc_auth.selfie')]);
+      onChange(file);
     }
   }
 

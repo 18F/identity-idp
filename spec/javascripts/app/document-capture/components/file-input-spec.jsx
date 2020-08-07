@@ -2,6 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
+import { waitFor } from '@testing-library/dom';
 import { expect } from 'chai';
 import render from '../../../support/render';
 import FileInput, {
@@ -249,6 +250,20 @@ describe('document-capture/components/file-input', () => {
     onChange.onCall(1).callsFake((nextValue) => {
       expect(nextValue.name).to.equal('upload2.png');
       expect(nextValue.data).to.equal('data:image/png;base64,');
+      done();
+    });
+  });
+
+  it('allows clearing the selected value', (done) => {
+    const file = new window.File([''], 'upload1.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+    onChange.onCall(0).callsFake(async () => {
+      fireEvent.change(input, { target: { files: [] } });
+      await waitFor(() => expect(input.value).to.be.empty());
       done();
     });
   });
