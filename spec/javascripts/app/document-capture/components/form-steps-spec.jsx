@@ -14,8 +14,9 @@ describe('document-capture/components/form-steps', () => {
     {
       name: 'second',
       component: ({ value = {}, onChange }) => (
-        <>
-          <span>Second</span>
+        // eslint-disable-next-line jsx-a11y/label-has-associated-control
+        <label>
+          Second
           <input
             value={value.second || ''}
             onChange={(event) => {
@@ -23,7 +24,7 @@ describe('document-capture/components/form-steps', () => {
               onChange({ second: event.target.value });
             }}
           />
-        </>
+        </label>
       ),
       isValid: (value) => Boolean(value.second),
     },
@@ -194,12 +195,30 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(getByText('forms.buttons.submit.default'));
   });
 
-  it('maintains focus after step change', async () => {
-    const { getByText } = render(<FormSteps steps={STEPS} />);
+  it('shifts focus to first tabbable after step change', async () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(document.activeElement).to.equal(getByText('forms.buttons.continue'));
+    expect(document.activeElement).to.equal(getByLabelText('Second'));
+  });
+
+  it('shifts focus to form after step change if next step has no tabbables', async () => {
+    const steps = [...STEPS];
+    steps[2] = { ...steps[2], isValid: () => false };
+    const { getByText, getByRole } = render(<FormSteps steps={steps} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.type(getByRole('textbox'), 'val');
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(document.activeElement.nodeName).to.equal('FORM');
+  });
+
+  it("doesn't assign focus on mount", async () => {
+    const { activeElement: originalActiveElement } = document;
+    render(<FormSteps steps={STEPS} />);
+    expect(document.activeElement).to.equal(originalActiveElement);
   });
 
   it('validates step completion', () => {
