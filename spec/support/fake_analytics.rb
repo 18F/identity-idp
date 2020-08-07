@@ -23,7 +23,7 @@ RSpec::Matchers.define :have_logged_event do |event_name, attributes|
   match do |actual|
     expect(actual).to be_kind_of(FakeAnalytics)
 
-    expect(actual.events[event_name]).to(be_any { |event| attributes < event })
+    expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
   end
 
   failure_message do |actual|
