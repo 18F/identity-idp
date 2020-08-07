@@ -38,11 +38,6 @@ describe('document-capture/components/documents-step', () => {
 
     const input = getByLabelText('doc_auth.headings.document_capture_front');
 
-    // Ideally this wouldn't be so tightly-coupled with the DOM implementation, but instead attempt
-    // to upload a file of an invalid type. `@testing-library/user-event` doesn't currently support
-    // this usage.
-    //
-    // See: https://github.com/testing-library/user-event/issues/421
     expect(input.getAttribute('accept')).to.equal('image/*');
   });
 

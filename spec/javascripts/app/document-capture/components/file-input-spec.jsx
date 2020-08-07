@@ -2,16 +2,102 @@ import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
+import { waitFor } from '@testing-library/dom';
 import { expect } from 'chai';
 import render from '../../../support/render';
 import FileInput, {
+  getDataURLMimeType,
+  getAcceptPattern,
   isImage,
+  isValidForAccepts,
   toDataURL,
 } from '../../../../../app/javascript/app/document-capture/components/file-input';
 import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
 import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
 
 describe('document-capture/components/file-input', () => {
+  describe('getDataURLMimeType', () => {
+    it('returns text/plain when mediatype is absent', () => {
+      const url = 'data:,Hello%2C%20World!';
+
+      expect(getDataURLMimeType(url)).to.equal('text/plain');
+    });
+
+    it('returns mime type with parameter', () => {
+      const url = 'data:text/plain;charset=US-ASCII,Hello%2C%20World!';
+
+      expect(getDataURLMimeType(url)).to.equal('text/plain');
+    });
+
+    it('returns mime type with base64', () => {
+      const url = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
+
+      expect(getDataURLMimeType(url)).to.equal('text/plain');
+    });
+
+    it('returns mime type with data', () => {
+      const url = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+      expect(getDataURLMimeType(url)).to.equal('image/gif');
+    });
+  });
+
+  describe('getAcceptPattern', () => {
+    it('returns a pattern for audio matching', () => {
+      const accept = 'audio/*';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern.test('audio/mp3')).to.be.true();
+      expect(pattern.test('xaudio/mp3')).to.be.false();
+      expect(pattern.test('video/mp4')).to.be.false();
+      expect(pattern.test('image/jpg')).to.be.false();
+    });
+
+    it('returns a pattern for video matching', () => {
+      const accept = 'video/*';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern.test('video/mp4')).to.be.true();
+      expect(pattern.test('xvideo/mp4')).to.be.false();
+      expect(pattern.test('audio/mp3')).to.be.false();
+      expect(pattern.test('image/jpg')).to.be.false();
+    });
+
+    it('returns a pattern for image matching', () => {
+      const accept = 'image/*';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern.test('image/jpg')).to.be.true();
+      expect(pattern.test('ximage/jpg')).to.be.false();
+      expect(pattern.test('audio/mp3')).to.be.false();
+      expect(pattern.test('video/mp4')).to.be.false();
+    });
+
+    it('returns a pattern for mime type matching', () => {
+      const accept = 'image/jpg';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern.test('image/jpg')).to.be.true();
+      expect(pattern.test('ximage/jpg')).to.be.false();
+      expect(pattern.test('audio/mp3')).to.be.false();
+      expect(pattern.test('video/mp4')).to.be.false();
+    });
+
+    it('returns undefined for unknown accept', () => {
+      const accept = 'jpg';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern).to.be.undefined();
+    });
+
+    it('returns undefined for file extension matching', () => {
+      const accept = '.jpg';
+      const pattern = getAcceptPattern(accept);
+
+      expect(pattern).to.be.undefined();
+    });
+  });
+
   describe('isImage', () => {
     it('returns false if given file is not an image', () => {
       expect(isImage('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).to.be.false();
@@ -21,6 +107,29 @@ describe('document-capture/components/file-input', () => {
       expect(
         isImage('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'),
       ).to.be.true();
+    });
+  });
+
+  describe('isValidForAccepts', () => {
+    it('returns false if invalid', () => {
+      const url = 'text/plain';
+      const accept = ['image/*'];
+
+      expect(isValidForAccepts(url, accept)).to.be.false();
+    });
+
+    it('returns true if valid', () => {
+      const url = 'image/gif';
+      const accept = ['image/*'];
+
+      expect(isValidForAccepts(url, accept)).to.be.true();
+    });
+
+    it('returns true if accept is nullish', () => {
+      const url = 'image/gif';
+      const accept = null;
+
+      expect(isValidForAccepts(url, accept)).to.be.true();
     });
   });
 
@@ -145,6 +254,20 @@ describe('document-capture/components/file-input', () => {
     });
   });
 
+  it('allows clearing the selected value', (done) => {
+    const file = new window.File([''], 'upload1.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+    onChange.onCall(0).callsFake(async () => {
+      fireEvent.change(input, { target: { files: [] } });
+      await waitFor(() => expect(input.value).to.be.empty());
+      done();
+    });
+  });
+
   it('omits desktop-relevant details in mobile context', async () => {
     const { container, getByText, findByRole, rerender } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
@@ -196,5 +319,16 @@ describe('document-capture/components/file-input', () => {
     expect(container.classList.contains('usa-file-input--drag')).to.be.false();
   });
 
-  it.skip('shows an error state', () => {});
+  it('shows an error state', () => {
+    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const { getByLabelText, getByText } = render(
+      <FileInput label="File" accept={['text/*']} onChange={onChange} />,
+    );
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+
+    expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+  });
 });
