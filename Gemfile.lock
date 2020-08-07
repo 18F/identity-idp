@@ -262,7 +262,6 @@ GEM
     factory_bot_rails (5.2.0)
       factory_bot (~> 5.2.0)
       railties (>= 4.2.0)
-    fakefs (0.20.1)
     faker (2.7.0)
       i18n (>= 1.6, < 1.8)
     faraday (1.0.1)
@@ -720,7 +719,6 @@ DEPENDENCIES
   email_spec
   exception_notification (>= 4.4.0)
   factory_bot_rails (>= 5.2.0)
-  fakefs
   faker
   faraday
   fasterer
