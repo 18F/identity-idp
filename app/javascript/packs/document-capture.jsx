@@ -20,6 +20,7 @@ const device = {
 };
 
 const appRoot = document.getElementById('document-capture-form');
+const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
 render(
   <AcuantProvider
     credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -28,7 +29,7 @@ render(
     <I18nContext.Provider value={i18n.strings[i18n.currentLocale()]}>
       <AssetContext.Provider value={assets}>
         <DeviceContext.Provider value={device}>
-          <DocumentCapture />
+          <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
         </DeviceContext.Provider>
       </AssetContext.Provider>
     </I18nContext.Provider>
