@@ -39,7 +39,7 @@ function AcuantCapture({ label, hint, bannerText, value, onChange, className }) 
       )}
       <FileInput
         label={label}
-        hint={hint}
+        hint={hasCapture ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
         accept={['image/*']}
         value={value}
