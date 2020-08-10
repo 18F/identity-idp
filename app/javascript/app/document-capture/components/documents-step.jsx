@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import FileInput from './file-input';
+import AcuantCapture from './acuant-capture';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
@@ -29,22 +29,25 @@ function DocumentsStep({ value, onChange }) {
         <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
-      {DOCUMENT_SIDES.map((side) => (
-        <FileInput
-          key={side}
-          /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-          /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-          label={t(`doc_auth.headings.document_capture_${side}`)}
-          hint={t('doc_auth.tips.document_capture_hint')}
-          /* i18n-tasks-use t('doc_auth.headings.back') */
-          /* i18n-tasks-use t('doc_auth.headings.front') */
-          bannerText={t(`doc_auth.headings.${side}`)}
-          accept={['image/*']}
-          value={value[side]}
-          onChange={(nextValue) => onChange({ [side]: nextValue })}
-          className="id-card-file-input"
-        />
-      ))}
+      {DOCUMENT_SIDES.map((side) => {
+        const inputKey = `${side}_image`;
+
+        return (
+          <AcuantCapture
+            key={side}
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+            label={t(`doc_auth.headings.document_capture_${side}`)}
+            hint={t('doc_auth.tips.document_capture_hint')}
+            /* i18n-tasks-use t('doc_auth.headings.back') */
+            /* i18n-tasks-use t('doc_auth.headings.front') */
+            bannerText={t(`doc_auth.headings.${side}`)}
+            value={value[inputKey]}
+            onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
+            className="id-card-file-input"
+          />
+        );
+      })}
     </>
   );
 }

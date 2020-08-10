@@ -23,13 +23,13 @@ describe PwnedPasswords::LookupPassword do
       ]
     end
 
-    it 'returns false for pwned passwords' do
+    it 'returns true for pwned passwords' do
       pwned_passwords.each do |password|
         expect(PwnedPasswords::LookupPassword.call(password)).to be true
       end
     end
 
-    it 'returns true for non pwned passwords' do
+    it 'returns false for non pwned passwords' do
       good_passwords.each do |password|
         expect(PwnedPasswords::LookupPassword.call(password)).to be false
       end

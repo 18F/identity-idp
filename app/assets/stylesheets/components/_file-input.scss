@@ -51,6 +51,14 @@
   }
 }
 
+.usa-form-group--error .usa-file-input .usa-file-input__target {
+  border-color: color('error-dark');
+
+  &:hover {
+    border-color: color('error-darker');
+  }
+}
+
 .usa-file-input__banner-text {
   @include u-font('sans', 'xl');
   @include u-margin-bottom(1);

@@ -67,7 +67,7 @@ module DocAuthMock
         Acuant::Responses::ResponseWithPii.new(
           acuant_response: selfie_response,
           pii: pii,
-          billed: true,
+          result_code: Acuant::ResultCodes::PASSED,
         )
       else
         results

@@ -10,11 +10,15 @@ feature 'doc auth self image step' do
     complete_doc_auth_steps_before_ssn_step
   end
 
+  let(:fake_analytics) { FakeAnalytics.new }
+
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_selfie_step)
   end
 
-  it 'proceeds to the next page and logs a cost with valid info' do
+  it 'proceeds to the next page, logs a cost, and logs analytics after submitting valid info' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     proofing_cost = ProofingCost.find_by(user_id: @user.id)
     count = proofing_cost.acuant_result_count
 
@@ -23,6 +27,11 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(proofing_cost.reload.acuant_result_count).to eq(count + 1)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::DOC_AUTH + ' submitted',
+      step: 'selfie',
+      result: 'Passed',
+    )
   end
 
   it 'restarts doc auth if the document cannot be authenticated' do

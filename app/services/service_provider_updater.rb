@@ -52,7 +52,7 @@ class ServiceProviderUpdater
 
   def dashboard_service_providers
     body = dashboard_response.body
-    return parse_service_providers(body) if dashboard_response.code == 200
+    return parse_service_providers(body) if dashboard_response.status == 200
     log_error "Failed to parse response from #{url}: #{body}"
     []
   rescue StandardError
@@ -65,7 +65,7 @@ class ServiceProviderUpdater
   end
 
   def dashboard_response
-    @_dashboard_response ||= HTTParty.get(url)
+    @_dashboard_response ||= Faraday.get(url)
   end
 
   def log_error(msg)

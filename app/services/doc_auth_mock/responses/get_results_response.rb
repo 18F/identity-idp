@@ -8,14 +8,17 @@ module DocAuthMock
         errors: [],
         exception: nil,
         pii_from_doc:,
-        billed: true
+        result_code: Acuant::ResultCodes::PASSED
       )
         @pii_from_doc = pii_from_doc
         super(
           success: success,
           errors: errors,
           exception: exception,
-          extra: { billed: billed },
+          extra: {
+            billed: result_code.billed?,
+            result: result_code.name,
+          },
         )
       end
     end

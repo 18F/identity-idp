@@ -1,10 +1,51 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
 import DataURLFile from '../models/data-url-file';
+
+/**
+ * Given a data URL string, returns the MIME type.
+ *
+ * @see https://tools.ietf.org/html/rfc2397#section-3
+ *
+ * @param {string} dataURL Data URL.
+ *
+ * @return {string} MIME type.
+ */
+export function getDataURLMimeType(dataURL) {
+  const [mimeType] = dataURL.replace(/^data:/, '').split(/[;,]/);
+  return mimeType || 'text/plain';
+}
+
+/**
+ * Given a token of an file input accept attribute, returns an equivalent regular expression
+ * pattern, or undefined if a pattern cannot be determined. This is an approximation, and not fully
+ * spec-compliant to allowable characters in what is considered a valid MIME type.
+ *
+ * @see https://html.spec.whatwg.org/multipage/input.html#attr-input-accept
+ * @see https://tools.ietf.org/html/rfc7231#section-3.1.1.1
+ * @see https://tools.ietf.org/html/rfc2045#section-5.1
+ *
+ * @param {string} accept Accept token.
+ *
+ * @return {RegExp=} Regular expression, or undefined if cannot be determined.
+ */
+export function getAcceptPattern(accept) {
+  switch (accept) {
+    case 'audio/*':
+    case 'video/*':
+    case 'image/*': {
+      const [type] = accept.split('/');
+      return new RegExp(`^${type}/.+`);
+    }
+
+    default:
+      return /^[\w-]+\/[\w-]+$/.test(accept) ? new RegExp(`^${accept}$`) : undefined;
+  }
+}
 
 /**
  * Returns true if the given data URL represents an image, or false otherwise.
@@ -14,7 +55,22 @@ import DataURLFile from '../models/data-url-file';
  * @return {boolean} Whether given data URL is an image.
  */
 export function isImage(dataURL) {
-  return /^data:image\//.test(dataURL);
+  return getAcceptPattern('image/*').test(getDataURLMimeType(dataURL));
+}
+
+/**
+ * Returns true if the given MIME type is valid for the array of accept tokens or if the accept
+ * parameter is empty. Returns false otherwise.
+ *
+ * @param {string}    mimeType MIME type to test.
+ * @param {?string[]} accept   Accept tokens.
+ *
+ * @return {boolean} Whether data URL is valid.
+ */
+export function isValidForAccepts(mimeType, accept) {
+  return (
+    !accept || accept.map(getAcceptPattern).some((pattern) => pattern && pattern.test(mimeType))
+  );
 }
 
 /**
@@ -33,13 +89,18 @@ export function toDataURL(file) {
   });
 }
 
-function FileInput({ label, hint, bannerText, accept, value, onChange, className }) {
+function FileInput({ label, hint, bannerText, accept, value, errors, onClick, onChange }) {
   const { t, formatHTML } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [ownErrors, setOwnErrors] = useState(/** @type {string[]} */ ([]));
+  useMemo(() => setOwnErrors([]), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
+
+  const allErrors = [...ownErrors, ...errors];
 
   /**
    * In response to a file input change event, converts the assigned file to a data URL before
@@ -49,11 +110,23 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
    */
   function onChangeAsDataURL(event) {
     const file = event.target.files[0];
-    toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+    if (file) {
+      if (isValidForAccepts(file.type, accept)) {
+        toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+      } else {
+        setOwnErrors((previousErrors) => [...previousErrors, t('errors.doc_auth.selfie')]);
+      }
+    } else {
+      onChange(file);
+    }
   }
 
   return (
-    <div className={className}>
+    <div
+      className={[allErrors.length && 'usa-form-group usa-form-group--error']
+        .filter(Boolean)
+        .join(' ')}
+    >
       {/*
        * Disable reason: The Airbnb configuration of the `jsx-a11y` rule is strict in that it
        * requires _both_ the `for` attribute and nesting, to maximize support for assistive
@@ -65,9 +138,17 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
        * See: https://github.com/airbnb/javascript/pull/2136
        */}
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label htmlFor={inputId} className="usa-label">
+      <label
+        htmlFor={inputId}
+        className={['usa-label', allErrors.length && 'usa-label--error'].filter(Boolean).join(' ')}
+      >
         {label}
       </label>
+      {allErrors.map((error) => (
+        <span key={error} className="usa-error-message" role="alert">
+          {error}
+        </span>
+      ))}
       {hint && (
         <span className="usa-hint" id={hintId}>
           {hint}
@@ -76,10 +157,14 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
+          isDraggingOver && 'usa-file-input--drag',
           value && 'usa-file-input--has-value',
         ]
           .filter(Boolean)
           .join(' ')}
+        onDragOver={() => setIsDraggingOver(true)}
+        onDragLeave={() => setIsDraggingOver(false)}
+        onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
           {value && !isMobile && (
@@ -121,7 +206,8 @@ function FileInput({ label, hint, bannerText, accept, value, onChange, className
             className="usa-file-input__input"
             type="file"
             onChange={onChangeAsDataURL}
-            accept={accept.join()}
+            onClick={onClick}
+            accept={accept ? accept.join() : undefined}
             aria-describedby={hint ? hintId : null}
           />
         </div>
@@ -136,17 +222,19 @@ FileInput.propTypes = {
   bannerText: PropTypes.string,
   accept: PropTypes.arrayOf(PropTypes.string),
   value: PropTypes.instanceOf(DataURLFile),
+  errors: PropTypes.arrayOf(PropTypes.string),
+  onClick: PropTypes.func,
   onChange: PropTypes.func,
-  className: PropTypes.string,
 };
 
 FileInput.defaultProps = {
   hint: null,
   bannerText: null,
-  accept: [],
+  accept: null,
   value: undefined,
+  errors: [],
+  onClick: () => {},
   onChange: () => {},
-  className: null,
 };
 
 export default FileInput;
