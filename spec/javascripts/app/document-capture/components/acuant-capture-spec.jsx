@@ -221,4 +221,37 @@ describe('document-capture/components/acuant-capture', () => {
 
     expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
+
+  it('does not show hint if capture is supported', () => {
+    const { getByText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" />
+      </AcuantContextProvider>,
+    );
+
+    window.AcuantJavascriptWebSdk = {
+      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+    };
+    window.AcuantCamera = { isCameraSupported: true };
+    window.onAcuantSdkLoaded();
+
+    expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
+  });
+
+  it('shows hint if capture is not supported', () => {
+    const { getByText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" />
+      </AcuantContextProvider>,
+    );
+
+    window.AcuantJavascriptWebSdk = {
+      initialize: (_credentials, _endpoint, { onFail }) => onFail(),
+    };
+    window.onAcuantSdkLoaded();
+
+    const hint = getByText('doc_auth.tips.document_capture_hint');
+
+    expect(hint).to.be.ok();
+  });
 });
