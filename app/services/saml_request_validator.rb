@@ -39,16 +39,11 @@ class SamlRequestValidator
   end
 
   def valid_authn_context?
-    case authn_context
-    when Array
-      authn_contexts = authn_context.reject do |classref|
-        %r{#{::Regexp.quote(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)}}.match? classref
-      end
-      authn_contexts.all? do |classref|
-        Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref)
-      end
-    else
-      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(authn_context)
+    authn_contexts = authn_context.reject do |classref|
+      classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+    end
+    authn_contexts.all? do |classref|
+      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref)
     end
   end
 

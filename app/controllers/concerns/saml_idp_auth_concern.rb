@@ -51,10 +51,10 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_context
-    @requested_authn_context ||= begin
-      contexts = saml_request.requested_authn_contexts
-      contexts << default_authn_context if contexts.blank?
-      contexts
+    @requested_authn_context ||= if saml_request.requested_authn_contexts.present?
+      saml_request.requested_authn_contexts
+    else
+      [ default_authn_context ]
     end
   end
 
