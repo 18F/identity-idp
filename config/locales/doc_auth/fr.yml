@@ -56,6 +56,9 @@ fr:
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
+      document_capture_intro_acknowledgment: Nous collecterons des informations sur
+        vous en lisant votre pièce d'identité officielle. Nous ne stockons pas les
+        images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
       link_sent:
