@@ -9,7 +9,7 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import DataURLFile from '../models/data-url-file';
 
-function AcuantCapture({ label, hint, bannerText, value, onChange, className }) {
+function AcuantCapture({ label, bannerText, value, onChange, className }) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const [isCapturing, setIsCapturing] = useState(false);
   const { isMobile } = useContext(DeviceContext);
@@ -62,7 +62,6 @@ function AcuantCapture({ label, hint, bannerText, value, onChange, className }) 
 
 AcuantCapture.propTypes = {
   label: PropTypes.string.isRequired,
-  hint: PropTypes.string,
   bannerText: PropTypes.string,
   value: PropTypes.instanceOf(DataURLFile),
   onChange: PropTypes.func,
@@ -70,7 +69,6 @@ AcuantCapture.propTypes = {
 };
 
 AcuantCapture.defaultProps = {
-  hint: null,
   value: null,
   bannerText: null,
   onChange: () => {},
