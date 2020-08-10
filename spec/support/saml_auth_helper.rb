@@ -49,11 +49,11 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs/saml2019.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
   end
 
   def saml_test_sp_cert
-    @saml_test_sp_cert ||= File.read(Rails.root.join('certs/sp/saml_test_sp.crt'))
+    @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
   end
 
   def auth_request
@@ -249,7 +249,7 @@ module SamlAuthHelper
   end
 
   def saml_test_key
-    @saml_test_key ||= File.read(Rails.root.join('keys/saml_test_sp.key'))
+    @saml_test_key ||= File.read(Rails.root.join('keys', 'saml_test_sp.key'))
   end
 
   # generates a SAML response and returns a parsed Nokogiri XML document
