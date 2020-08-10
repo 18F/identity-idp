@@ -6,8 +6,11 @@ en:
       change_ssn: change
       continue: Continue
       start_over: Start over
+      take_or_upload_picture: "<lg-take-photo>Take photo</lg-take-photo> or <lg-upload>Upload
+        photo</lg-upload>"
       take_picture: Take photo
       take_picture_retry: Retake photo
+      upload_picture: Upload a photo
       use_phone: Use your phone
     forms:
       address1: Address
