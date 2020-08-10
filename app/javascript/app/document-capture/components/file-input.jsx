@@ -191,7 +191,6 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
               {isMobile && bannerText ? null : (
                 <span className="usa-file-input__drag-text">
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
-                    // eslint-disable-next-line react/prop-types
                     'lg-underline': ({ children }) => (
                       <span className="usa-file-input__choose">{children}</span>
                     ),

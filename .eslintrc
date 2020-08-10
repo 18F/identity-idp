@@ -30,6 +30,7 @@
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
+    "react/prop-types": ["error", { "skipUndeclared": true }],
     "react/jsx-one-expression-per-line": "off"
   },
   "parserOptions": {
