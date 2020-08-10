@@ -76,8 +76,96 @@ describe Acuant::Request do
       end
     end
 
+    context 'when the request resolves with retriable error then succeeds it only retries once' do
+      it 'calls New Relic notice_error each retry' do
+        allow(subject).to receive(:handle_http_response) do |http_response|
+          http_response
+        end
+
+        stub_request(:get, full_url).
+            with(headers: request_headers).
+            to_return(
+              { body: 'test response body', status: 404 },
+              { body: 'test response body', status: 200 },
+            )
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+            with(anything, hash_including(:custom_params)).once
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when the request resolves with a 404 status it retries' do
+      it 'calls New Relic notice_error each retry' do
+        allow(subject).to receive(:handle_http_response) do |http_response|
+          http_response
+        end
+
+        stub_request(:get, full_url).
+            with(headers: request_headers).
+            to_return(
+              { body: 'test response body', status: 404 },
+              { body: 'test response body', status: 404 },
+            )
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+            with(anything, hash_including(:custom_params)).twice
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when the request resolves with a 438 status it retries' do
+      it 'calls New Relic notice_error each retry' do
+        allow(subject).to receive(:handle_http_response) do |http_response|
+          http_response
+        end
+
+        stub_request(:get, full_url).
+            with(headers: request_headers).
+            to_return(
+              { body: 'test response body', status: 438 },
+              { body: 'test response body', status: 438 },
+            )
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+          with(anything, hash_including(:custom_params)).twice
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when the request resolves with a 438 status it retries' do
+      it 'calls New Relic notice_error each retry' do
+        allow(subject).to receive(:handle_http_response) do |http_response|
+          http_response
+        end
+
+        stub_request(:get, full_url).
+            with(headers: request_headers).
+            to_return(
+              { body: 'test response body', status: 439 },
+              { body: 'test response body', status: 439 },
+            )
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+            with(anything, hash_including(:custom_params)).twice
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+      end
+    end
+
     context 'when the request times out' do
-      it 'returns a response with a timeout message and exception and notifies NewRelicy' do
+      it 'returns a response with a timeout message and exception and notifies NewRelic' do
         stub_request(:get, full_url).to_timeout
 
         expect(NewRelic::Agent).to receive(:notice_error)
