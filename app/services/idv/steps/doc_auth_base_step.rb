@@ -58,10 +58,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthClient.doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthClient.doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
