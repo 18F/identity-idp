@@ -86,11 +86,11 @@ describe Acuant::Request do
           with(headers: request_headers).
           to_return(
             { body: 'test response body', status: 404 },
-            body: 'test response body', status: 200,
+            { body: 'test response body', status: 200 },
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
-            with(anything, hash_including(:custom_params)).once
+          with(anything, hash_including(:custom_params)).once
 
         response = subject.fetch
 
@@ -113,7 +113,7 @@ describe Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
-            with(anything, hash_including(:custom_params)).twice
+          with(anything, hash_including(:custom_params)).twice
 
         response = subject.fetch
 
@@ -157,7 +157,7 @@ describe Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
-            with(anything, hash_including(:custom_params)).twice
+          with(anything, hash_including(:custom_params)).twice
 
         response = subject.fetch
 

@@ -65,7 +65,7 @@ module Acuant
         backoff_factor: 2,
         retry_statuses: [404, 438, 439],
         retry_block: lambda do |_env, _options, retries, exc|
-          NewRelic::Agent.notice_error(exc, { custom_params: { retry: retries } })
+          NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
         end,
       }
 
