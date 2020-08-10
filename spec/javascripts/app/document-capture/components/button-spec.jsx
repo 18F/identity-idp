@@ -20,7 +20,7 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('btn-link')).to.be.false();
   });
 
-  it('calls click callback with no arguments', () => {
+  it('calls click callback with the event argument', () => {
     const onClick = sinon.spy();
     const { getByText } = render(
       <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
