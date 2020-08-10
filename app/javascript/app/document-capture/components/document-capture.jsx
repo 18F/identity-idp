@@ -11,6 +11,10 @@ function DocumentCapture() {
   const { isMobile } = useContext(DeviceContext);
 
   const steps = [
+    isMobile && {
+      name: 'intro',
+      component: MobileIntroStep,
+    },
     {
       name: 'documents',
       component: DocumentsStep,
@@ -21,14 +25,7 @@ function DocumentCapture() {
       component: SelfieStep,
       isValid: isSelfieStepValid,
     },
-  ];
-
-  if (isMobile) {
-    steps.unshift({
-      name: 'intro',
-      component: MobileIntroStep,
-    });
-  }
+  ].filter(Boolean);
 
   return formValues ? (
     <Submission payload={formValues} />
