@@ -49,11 +49,11 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs/saml2019.crt'))
   end
 
   def saml_test_sp_cert
-    @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
+    @saml_test_sp_cert ||= File.read(Rails.root.join('certs/sp/saml_test_sp.crt'))
   end
 
   def auth_request
@@ -213,6 +213,15 @@ module SamlAuthHelper
     settings
   end
 
+  def ial1_with_aal3_saml_settings
+    settings = sp1_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+    ]
+    settings
+  end
+
   def sp1_authnrequest
     auth_request.create(sp1_saml_settings)
   end
@@ -229,6 +238,10 @@ module SamlAuthHelper
     auth_request.create(aal3_sp1_saml_settings)
   end
 
+  def ial1_aal3_authnrequest
+    auth_request.create(ial1_with_aal3_saml_settings)
+  end
+
   def missing_authn_context_saml_settings
     settings = saml_settings.dup
     settings.authn_context = nil
@@ -236,7 +249,7 @@ module SamlAuthHelper
   end
 
   def saml_test_key
-    @saml_test_key ||= File.read(Rails.root.join('keys', 'saml_test_sp.key'))
+    @saml_test_key ||= File.read(Rails.root.join('keys/saml_test_sp.key'))
   end
 
   # generates a SAML response and returns a parsed Nokogiri XML document

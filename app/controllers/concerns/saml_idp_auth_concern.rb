@@ -117,23 +117,12 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: ial_authn_context,
+      authn_context_classref: requested_ial_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
       signature: saml_response_signature_options,
       signed_response_message: current_service_provider.signed_response_message_requested,
     )
-  end
-
-  def ial_authn_context
-    case requested_authn_context
-    when Array
-      requested_authn_context.select do |classref|
-        classref =~ /#{Saml::Idp::Constants::IAL_AUTHN_CONTEXT_PREFIX}/
-      end.first
-    else
-      requested_authn_context
-    end
   end
 
   def saml_response_signature_options

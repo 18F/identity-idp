@@ -40,6 +40,11 @@ module Saml
         AAL3_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
         AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
       }.freeze
+
+      AUTHN_CONTEXT_AAL_TO_CLASSREF = {
+        Authorization::AAL2 => AAL2_AUTHN_CONTEXT_CLASSREF,
+        Authorization::AAL3 => AAL3_AUTHN_CONTEXT_CLASSREF,
+      }.freeze
     end
   end
 end
