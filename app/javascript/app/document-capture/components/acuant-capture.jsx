@@ -77,7 +77,7 @@ function AcuantCapture({ label, hint, bannerText, value, onChange, className }) 
             isSecondary={!value}
             isUnstyled={!!value}
             onClick={startCaptureOrTriggerUpload}
-            className={`margin-right-${value ? 1 : 2}`}
+            className={value ? 'margin-right-1' : 'margin-right-2'}
           >
             {hasCapture &&
               (value
