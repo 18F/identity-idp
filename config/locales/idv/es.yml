@@ -40,6 +40,9 @@ es:
         link: contáctanos
         text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo
           mañana.
+      exceptions:
+        link: contáctanos
+        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
@@ -51,6 +54,7 @@ es:
         timeout: Nuestra solicitud para verificar tu información ha caducado.
         warning: Compruebe la información que ingresó.
       sessions:
+        exception: Hubo un error interno al procesar su solicitud.
         fail_html: Para su seguridad, la verificación de identidad de su cuenta está
           <strong>bloqueada durante 24 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con su información
