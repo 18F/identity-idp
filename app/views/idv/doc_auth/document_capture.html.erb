@@ -10,7 +10,7 @@
       content="<%= Figaro.env.acuant_sdk_initialization_creds %>"
     >
   <% end %>
-  <div id="document-capture-form"></div>
+  <%= tag.div id: 'document-capture-form', data: { liveness: liveness_checking_enabled?.presence } %>
   <noscript>
     <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
