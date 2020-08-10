@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useMemo } from 'react';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -19,6 +19,13 @@ import DataURLFile from '../models/data-url-file';
  */
 
 /**
+ * The minimal glare score value to be considered acceptable.
+ *
+ * @type {number}
+ */
+const ACCEPTABLE_GLARE_SCORE = 50;
+
+/**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
  *
@@ -29,6 +36,8 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
   const inputRef = useRef(/** @type {?HTMLElement} */ (null));
   const isForceUploading = useRef(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [ownError, setOwnError] = useState(/** @type {?string} */ (null));
+  useMemo(() => setOwnError(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
@@ -69,7 +78,12 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              onChange(new DataURLFile(nextCapture.image.data));
+              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
+                setOwnError(t('errors.doc_auth.photo_glare'));
+              } else {
+                onChange(new DataURLFile(nextCapture.image.data));
+              }
+
               setIsCapturing(false);
             }}
             onImageCaptureFailure={() => setIsCapturing(false)}
@@ -83,6 +97,7 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
         bannerText={bannerText}
         accept={['image/*']}
         value={value}
+        errors={ownError ? [ownError] : undefined}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChange}
       />
