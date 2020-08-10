@@ -22,13 +22,15 @@ describe('document-capture/components/button', () => {
 
   it('calls click callback with no arguments', () => {
     const onClick = sinon.spy();
-    const { getByText } = render(<Button onClick={onClick}>Click me</Button>);
+    const { getByText } = render(
+      <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
+    );
 
     const button = getByText('Click me');
     userEvent.click(button);
 
     expect(onClick.calledOnce).to.be.true();
-    expect(onClick.getCall(0).args).to.deep.equal([]);
+    expect(onClick.getCall(0).args[0]).to.equal('click');
   });
 
   it('renders as primary', () => {

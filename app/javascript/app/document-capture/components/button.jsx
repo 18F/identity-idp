@@ -24,7 +24,7 @@ function Button({
   return (
     // Disable reason: We can assume `type` is provided as valid, or the default `button`.
     // eslint-disable-next-line react/button-has-type
-    <button type={type} onClick={() => onClick()} disabled={isDisabled} className={classes}>
+    <button type={type} onClick={onClick} disabled={isDisabled} className={classes}>
       {children}
     </button>
   );
@@ -43,7 +43,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   type: 'button',
-  onClick: () => {},
+  onClick: undefined,
   children: null,
   isPrimary: false,
   isSecondary: false,
