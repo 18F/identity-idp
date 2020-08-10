@@ -14,22 +14,30 @@ describe AttributeAsserter do
   end
   let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
   let(:service_provider_ial) { 2 }
+  let(:service_provider_aal) { nil }
   let(:service_provider) do
     instance_double(
       ServiceProvider,
       issuer: 'http://localhost:3000',
       ial: service_provider_ial,
+      aal: service_provider_aal,
       liveness_checking_required: false,
       metadata: {},
     )
   end
   let(:raw_ial1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
   let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
+  let(:raw_ial1_aal3_authn_request) do
+    CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
+  end
   let(:ial1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_authn_request)
   end
   let(:ial2_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
+  end
+  let(:ial1_aal3_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
   end
   let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
 
@@ -246,6 +254,65 @@ describe AttributeAsserter do
 
         it 'silently skips invalid attribute name' do
           expect(user.asserted_attributes.keys).to eq(%i[uuid email])
+        end
+      end
+    end
+
+    context 'verified user and IAL1 AAL3 request' do
+      context 'service provider configured for AAL3' do
+        let(:service_provider_aal) { 3 }
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: ial1_authn_request,
+            decrypted_pii: decrypted_pii,
+          )
+        end
+
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name])
+          subject.build
+        end
+
+        it 'includes aal' do
+          expect(user.asserted_attributes.keys).to include(:aal)
+        end
+
+        it 'creates a getter function for aal attribute' do
+          expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq expected_aal
+        end
+      end
+
+      context 'service provider requests AAL3' do
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: ial1_aal3_authn_request,
+            decrypted_pii: decrypted_pii,
+          )
+        end
+
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name])
+          subject.build
+        end
+
+        it 'includes aal' do
+          expect(user.asserted_attributes.keys).to include(:aal)
+        end
+
+        it 'creates a getter function for aal attribute' do
+          expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq expected_aal
         end
       end
     end
