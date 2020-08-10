@@ -83,11 +83,11 @@ describe Acuant::Request do
         end
 
         stub_request(:get, full_url).
-            with(headers: request_headers).
-            to_return(
-              { body: 'test response body', status: 404 },
-              { body: 'test response body', status: 200 },
-            )
+          with(headers: request_headers).
+          to_return(
+            { body: 'test response body', status: 404 },
+            body: 'test response body', status: 200,
+          )
 
         expect(NewRelic::Agent).to receive(:notice_error).
             with(anything, hash_including(:custom_params)).once
@@ -98,6 +98,7 @@ describe Acuant::Request do
       end
     end
 
+    # rubocop:disable Style/BracesAroundHashParameters
     context 'when the request resolves with a 404 status it retries' do
       it 'calls New Relic notice_error each retry' do
         allow(subject).to receive(:handle_http_response) do |http_response|
@@ -105,11 +106,11 @@ describe Acuant::Request do
         end
 
         stub_request(:get, full_url).
-            with(headers: request_headers).
-            to_return(
-              { body: 'test response body', status: 404 },
-              { body: 'test response body', status: 404 },
-            )
+          with(headers: request_headers).
+          to_return(
+            { body: 'test response body', status: 404 },
+            { body: 'test response body', status: 404 },
+          )
 
         expect(NewRelic::Agent).to receive(:notice_error).
             with(anything, hash_including(:custom_params)).twice
@@ -127,11 +128,11 @@ describe Acuant::Request do
         end
 
         stub_request(:get, full_url).
-            with(headers: request_headers).
-            to_return(
-              { body: 'test response body', status: 438 },
-              { body: 'test response body', status: 438 },
-            )
+          with(headers: request_headers).
+          to_return(
+            { body: 'test response body', status: 438 },
+            { body: 'test response body', status: 438 },
+          )
 
         expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:custom_params)).twice
@@ -149,11 +150,11 @@ describe Acuant::Request do
         end
 
         stub_request(:get, full_url).
-            with(headers: request_headers).
-            to_return(
-              { body: 'test response body', status: 439 },
-              { body: 'test response body', status: 439 },
-            )
+          with(headers: request_headers).
+          to_return(
+            { body: 'test response body', status: 439 },
+            { body: 'test response body', status: 439 },
+          )
 
         expect(NewRelic::Agent).to receive(:notice_error).
             with(anything, hash_including(:custom_params)).twice
@@ -163,6 +164,7 @@ describe Acuant::Request do
         expect(response.success?).to eq(false)
       end
     end
+    # rubocop:enable Style/BracesAroundHashParameters
 
     context 'when the request times out' do
       it 'returns a response with a timeout message and exception and notifies NewRelic' do
