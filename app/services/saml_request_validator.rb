@@ -7,7 +7,7 @@ class SamlRequestValidator
 
   def call(service_provider:, authn_context:, nameid_format:)
     self.service_provider = service_provider
-    self.authn_context = authn_context
+    self.authn_context = Array(authn_context)
     self.nameid_format = nameid_format
 
     FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
