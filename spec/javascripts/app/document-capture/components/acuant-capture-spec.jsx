@@ -161,9 +161,11 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      expect(onChange.getCall(0).args).to.deep.equal([
+      expect(onChange.getCall(0).args).to.have.lengthOf(1);
+      expect(onChange.getCall(0).args[0]).to.be.instanceOf(DataURLFile);
+      expect(onChange.getCall(0).args[0].data).to.equal(
         'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-      ]);
+      );
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 

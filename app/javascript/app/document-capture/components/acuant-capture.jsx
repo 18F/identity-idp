@@ -1,5 +1,4 @@
 import React, { useContext, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -9,7 +8,23 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import DataURLFile from '../models/data-url-file';
 
-function AcuantCapture({ label, bannerText, value, onChange, className }) {
+/**
+ * @typedef AcuantCaptureProps
+ *
+ * @prop {string}                        label      Label associated with file input.
+ * @prop {string=}                       bannerText Optional banner text to show in file input.
+ * @prop {DataURLFile=}                  value      Current value.
+ * @prop {(nextValue:DataURLFile)=>void} onChange   Callback receiving next value on change.
+ * @prop {string=}                       className  Optional additional class names.
+ */
+
+/**
+ * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
+ * in supported devices.
+ *
+ * @param {AcuantCaptureProps} props Props object.
+ */
+function AcuantCapture({ label, bannerText, value, onChange = () => {}, className }) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLElement} */ (null));
   const isForceUploading = useRef(false);
@@ -54,7 +69,7 @@ function AcuantCapture({ label, bannerText, value, onChange, className }) {
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              onChange(nextCapture.image.data);
+              onChange(new DataURLFile(nextCapture.image.data));
               setIsCapturing(false);
             }}
             onImageCaptureFailure={() => setIsCapturing(false)}
@@ -100,20 +115,5 @@ function AcuantCapture({ label, bannerText, value, onChange, className }) {
     </div>
   );
 }
-
-AcuantCapture.propTypes = {
-  label: PropTypes.string.isRequired,
-  bannerText: PropTypes.string,
-  value: PropTypes.instanceOf(DataURLFile),
-  onChange: PropTypes.func,
-  className: PropTypes.string,
-};
-
-AcuantCapture.defaultProps = {
-  value: null,
-  bannerText: null,
-  onChange: () => {},
-  className: null,
-};
 
 export default AcuantCapture;
