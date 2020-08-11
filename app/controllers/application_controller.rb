@@ -219,7 +219,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def confirm_two_factor_authenticated(id = nil)
-    return prompt_to_sign_in(id) unless user_signed_in?
+    return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
     authenticate_user!(force: true)
     return prompt_to_setup_mfa unless two_factor_enabled?
     return prompt_to_verify_mfa unless user_fully_authenticated?
@@ -230,11 +230,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     true
   end
 
-  def prompt_to_sign_in(request_id)
-    flash[:error] = t('devise.failure.unauthenticated')
-    new_user_session_params = {}
-    new_user_session_params[:request_id] = request_id if request_id.present?
-    redirect_to new_user_session_url(new_user_session_params)
+  def prompt_to_sign_in_with_request_id(request_id)
+    redirect_to new_user_session_url(request_id: request_id)
   end
 
   def prompt_to_setup_mfa
@@ -259,6 +256,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     else
       login_two_factor_piv_cac_url
     end
+  end
+
+  def user_needs_new_session_with_request_id?(id)
+    !user_signed_in? && id.present?
   end
 
   def two_factor_enabled?
