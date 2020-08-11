@@ -7,6 +7,7 @@
     "npm": "6.x.x"
   },
   "scripts": {
+    "typecheck": "tsc",
     "lint": "eslint app spec --ext .js,.jsx",
     "test": "mocha 'spec/javascripts/**/**spec.js?(x)'",
     "build": "true"
@@ -37,6 +38,7 @@
     "@testing-library/dom": "^7.21.8",
     "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^12.0.11",
+    "@types/react": "^16.9.46",
     "babel-eslint": "^10.1.0",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
@@ -52,6 +54,7 @@
     "prettier": "^2.0.5",
     "proxyquire": "^1.8.0",
     "sinon": "^9.0.2",
+    "typescript": "^3.9.7",
     "webpack-dev-server": "^3.11.0"
   }
 }
