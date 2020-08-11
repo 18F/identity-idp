@@ -80,7 +80,8 @@ module Db
 
       def verified_profiles_count_for_issuer
         query = <<~SQL
-          select count(*) from identities where service_provider = '#{issuer}'
+          select count(*) from identities where service_provider = '#{issuer}' and
+          user_id in (select user_id from profiles)
         SQL
         ActiveRecord::Base.connection.execute(query)
       end

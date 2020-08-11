@@ -13,6 +13,7 @@ module Db
         <<~SQL
           select count(*) from identities
           where ial>=2 and service_provider = '#{@issuer}' and #{start} <= created_at and created_at < #{finish}
+          and user_id in (select user_id from profiles)
         SQL
       end
 
