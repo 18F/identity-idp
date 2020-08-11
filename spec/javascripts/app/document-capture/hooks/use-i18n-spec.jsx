@@ -1,7 +1,7 @@
 import React from 'react';
-import render from '../../../support/render';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import useI18n, { formatHTML } from '@18f/identity-document-capture/hooks/use-i18n';
+import render from '../../../support/render';
 
 describe('document-capture/hooks/use-i18n', () => {
   describe('formatHTML', () => {

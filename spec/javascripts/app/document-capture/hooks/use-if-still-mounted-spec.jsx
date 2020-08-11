@@ -1,8 +1,8 @@
 import React from 'react';
 import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
-import render from '../../../support/render';
 import useIfStillMounted from '@18f/identity-document-capture/hooks/use-if-still-mounted';
+import render from '../../../support/render';
 
 describe('document-capture/hooks/use-if-still-mounted', () => {
   function TestComponent({ callback }) {

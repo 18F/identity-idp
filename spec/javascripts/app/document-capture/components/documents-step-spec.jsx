@@ -1,10 +1,10 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import render from '../../../support/render';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
+import render from '../../../support/render';
 
 describe('document-capture/components/documents-step', () => {
   it('renders with front and back inputs', () => {

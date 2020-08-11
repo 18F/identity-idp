@@ -2,11 +2,11 @@ import React from 'react';
 import { fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import render from '../../../support/render';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
+import render from '../../../support/render';
 
 describe('document-capture/components/acuant-capture', () => {
   afterEach(() => {

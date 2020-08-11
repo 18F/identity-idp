@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import render from '../../../support/render';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '@18f/identity-document-capture/context/acuant';
+import render from '../../../support/render';
 
 describe('document-capture/context/acuant', () => {
   afterEach(() => {

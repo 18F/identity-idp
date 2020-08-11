@@ -1,8 +1,8 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import render from '../../../support/render';
 import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
+import render from '../../../support/render';
 
 describe('document-capture/components/document-capture', () => {
   let originalHash;

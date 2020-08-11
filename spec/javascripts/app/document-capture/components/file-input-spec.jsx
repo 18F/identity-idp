@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import { waitFor } from '@testing-library/dom';
 import { expect } from 'chai';
-import render from '../../../support/render';
 import FileInput, {
   getDataURLMimeType,
   getAcceptPattern,
@@ -14,6 +13,7 @@ import FileInput, {
 } from '@18f/identity-document-capture/components/file-input';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
+import render from '../../../support/render';
 
 describe('document-capture/components/file-input', () => {
   describe('getDataURLMimeType', () => {

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import render from '../../../support/render';
 import AssetContext from '@18f/identity-document-capture/context/asset';
+import render from '../../../support/render';
 
 describe('document-capture/context/asset', () => {
   const ContextValue = () => JSON.stringify(useContext(AssetContext));
