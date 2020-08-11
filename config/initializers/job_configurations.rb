@@ -145,3 +145,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::DocAuthDropOffRatesReport.new.call },
 )
+
+# IAA Billing Report
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'IAA billing report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::IaaBillingReport.new.call },
+)
