@@ -1,6 +1,3 @@
 <% keys = YAML.load_file Rails.root.join('config', 'js_locale_strings.yml') %>
 
-window.LoginGov.I18n.strings.fr = {};
-<% keys.each do |key| %>
-  window.LoginGov.I18n.strings.fr['<%= ActionController::Base.helpers.j key %>'] = '<%= ActionController::Base.helpers.j I18n.t(key, locale: 'fr') %>';
-<% end %>
+window.LoginGov.I18n.strings.fr = <%= keys.map { |key| [key, I18n.t(key, locale: 'fr')] }.to_h.to_json %>;
