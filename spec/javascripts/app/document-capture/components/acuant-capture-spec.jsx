@@ -3,10 +3,10 @@ import { fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import render from '../../../support/render';
-import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
-import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
-import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
-import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
+import AcuantCapture from '../../../../../app/javascript/packages/document-capture/components/acuant-capture';
+import { Provider as AcuantContextProvider } from '../../../../../app/javascript/packages/document-capture/context/acuant';
+import DeviceContext from '../../../../../app/javascript/packages/document-capture/context/device';
+import DataURLFile from '../../../../../app/javascript/packages/document-capture/models/data-url-file';
 
 describe('document-capture/components/acuant-capture', () => {
   afterEach(() => {

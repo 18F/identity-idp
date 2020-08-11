@@ -1,6 +1,6 @@
 import React from 'react';
 import render from '../../../support/render';
-import useInstanceId from '../../../../../app/javascript/app/document-capture/hooks/use-instance-id';
+import useInstanceId from '../../../../../app/javascript/packages/document-capture/hooks/use-instance-id';
 
 describe('document-capture/hooks/use-instance-id', () => {
   function TestComponent() {

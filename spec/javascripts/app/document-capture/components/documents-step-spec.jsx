@@ -2,9 +2,9 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import render from '../../../support/render';
-import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
-import DocumentsStep from '../../../../../app/javascript/app/document-capture/components/documents-step';
-import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
+import DeviceContext from '../../../../../app/javascript/packages/document-capture/context/device';
+import DocumentsStep from '../../../../../app/javascript/packages/document-capture/components/documents-step';
+import DataURLFile from '../../../../../app/javascript/packages/document-capture/models/data-url-file';
 
 describe('document-capture/components/documents-step', () => {
   it('renders with front and back inputs', () => {

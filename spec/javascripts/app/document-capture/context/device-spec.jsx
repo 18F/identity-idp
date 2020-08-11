@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import render from '../../../support/render';
-import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
+import DeviceContext from '../../../../../app/javascript/packages/document-capture/context/device';
 
 describe('document-capture/context/device', () => {
   const ContextValue = () => JSON.stringify(useContext(DeviceContext));

@@ -2,7 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import render from '../../../support/render';
-import useIfStillMounted from '../../../../../app/javascript/app/document-capture/hooks/use-if-still-mounted';
+import useIfStillMounted from '../../../../../app/javascript/packages/document-capture/hooks/use-if-still-mounted';
 
 describe('document-capture/hooks/use-if-still-mounted', () => {
   function TestComponent({ callback }) {

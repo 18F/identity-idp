@@ -1,4 +1,4 @@
-import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
+import DataURLFile from '../../../../../app/javascript/packages/document-capture/models/data-url-file';
 
 describe('document-capture/models/data-url-file', () => {
   it('constructs with data', () => {

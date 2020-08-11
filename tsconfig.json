@@ -7,5 +7,5 @@
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "include": ["app/javascript/app/document-capture"]
+  "include": ["app/javascript/packages/document-capture"]
 }
