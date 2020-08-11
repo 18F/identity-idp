@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
@@ -324,5 +324,12 @@ describe('document-capture/components/file-input', () => {
     userEvent.upload(input, file);
 
     expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+  });
+
+  it('forwards ref', () => {
+    const ref = createRef();
+    render(<FileInput ref={ref} label="File" />);
+
+    expect(ref.current.nodeName).to.equal('INPUT');
   });
 });

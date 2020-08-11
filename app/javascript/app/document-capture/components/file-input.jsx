@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
@@ -89,7 +89,8 @@ export function toDataURL(file) {
   });
 }
 
-function FileInput({ label, hint, bannerText, accept, value, errors, onClick, onChange }) {
+const FileInput = forwardRef((props, ref) => {
+  const { label, hint, bannerText, accept, value, errors, onClick, onChange } = props;
   const { t, formatHTML } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
@@ -191,7 +192,6 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
               {isMobile && bannerText ? null : (
                 <span className="usa-file-input__drag-text">
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
-                    // eslint-disable-next-line react/prop-types
                     'lg-underline': ({ children }) => (
                       <span className="usa-file-input__choose">{children}</span>
                     ),
@@ -202,6 +202,7 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
           )}
           <div className="usa-file-input__box" />
           <input
+            ref={ref}
             id={inputId}
             className="usa-file-input__input"
             type="file"
@@ -214,7 +215,7 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
       </div>
     </div>
   );
-}
+});
 
 FileInput.propTypes = {
   label: PropTypes.string.isRequired,
