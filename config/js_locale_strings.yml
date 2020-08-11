@@ -24,6 +24,7 @@
 - doc_auth.tips.document_capture_selfie_text1
 - doc_auth.tips.document_capture_selfie_text2
 - doc_auth.tips.document_capture_selfie_text3
+- errors.doc_auth.photo_glare
 - errors.doc_auth.selfie
 - errors.messages.format_mismatch
 - errors.messages.missing_field
