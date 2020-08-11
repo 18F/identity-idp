@@ -26,7 +26,7 @@ render(
     credentials={getMetaContent('acuant-sdk-initialization-creds')}
     endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
   >
-    <I18nContext.Provider value={i18n.strings[i18n.currentLocale()]}>
+    <I18nContext.Provider value={i18n.strings}>
       <AssetContext.Provider value={assets}>
         <DeviceContext.Provider value={device}>
           <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
