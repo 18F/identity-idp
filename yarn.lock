@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@18f/identity-document-capture@file:./app/javascript/packages/document-capture":
+  version "1.0.0"
+  dependencies:
+    focus-trap "^2.3.0"
+    react "^16.13.1"
+    tabbable "^4.0.0"
+
 "@babel/code-frame@^7.0.0":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"

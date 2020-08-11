@@ -1,10 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import DocumentCapture from '../packages/document-capture/components/document-capture';
-import AssetContext from '../packages/document-capture/context/asset';
-import I18nContext from '../packages/document-capture/context/i18n';
-import DeviceContext from '../packages/document-capture/context/device';
-import { Provider as AcuantProvider } from '../packages/document-capture/context/acuant';
+import {
+  DocumentCapture,
+  AssetContext,
+  I18nContext,
+  DeviceContext,
+  AcuantProvider,
+} from '@18f/identity-document-capture';
 
 const { I18n: i18n, assets } = window.LoginGov;
 
