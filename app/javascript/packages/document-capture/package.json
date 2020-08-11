@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "dependencies": {
     "focus-trap": "^2.3.0",
-    "react": "^16.13.1",
-    "tabbable": "^4.0.0"
+    "react": "^16.13.1"
   }
 }

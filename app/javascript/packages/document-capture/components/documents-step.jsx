@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import AcuantCapture from './acuant-capture';
-import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 
@@ -36,7 +35,6 @@ function DocumentsStep({ value = {}, onChange = () => {} }) {
 
   return (
     <>
-      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p className="margin-top-2 margin-bottom-0">
         {t('doc_auth.tips.document_capture_header_text')}
       </p>

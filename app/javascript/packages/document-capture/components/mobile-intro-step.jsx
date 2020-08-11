@@ -1,5 +1,4 @@
 import React from 'react';
-import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 
 function MobileIntroStep() {
@@ -7,7 +6,6 @@ function MobileIntroStep() {
 
   return (
     <>
-      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p className="margin-top-2">{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <p>
         <a href="/verify/jurisdiction/errors/no_id">{t('idv.messages.jurisdiction.no_id')}</a>
