@@ -1,10 +1,24 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import AcuantCapture from './acuant-capture';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
-import DataURLFile from '../models/data-url-file';
+
+/** @typedef {import('../models/data-url-file')} DataURLFile */
+
+/**
+ * @typedef DocumentsStepValue
+ *
+ * @prop {DataURLFile=} front_image Front image value.
+ * @prop {DataURLFile=} back_image  Back image value.
+ */
+
+/**
+ * @typedef DocumentsStepProps
+ *
+ * @prop {DocumentsStepValue=}                            value Current value.
+ * @prop {(nextValue:Partial<DocumentsStepValue>)=>void=} onChange Value change handler.
+ */
 
 /**
  * Sides of document to present as file input.
@@ -13,7 +27,10 @@ import DataURLFile from '../models/data-url-file';
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
-function DocumentsStep({ value, onChange }) {
+/**
+ * @param {DocumentsStepProps} props Props object.
+ */
+function DocumentsStep({ value = {}, onChange = () => {} }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
@@ -50,19 +67,6 @@ function DocumentsStep({ value, onChange }) {
     </>
   );
 }
-
-DocumentsStep.propTypes = {
-  value: PropTypes.shape({
-    front_image: PropTypes.instanceOf(DataURLFile),
-    back_image: PropTypes.instanceOf(DataURLFile),
-  }),
-  onChange: PropTypes.func,
-};
-
-DocumentsStep.defaultProps = {
-  value: {},
-  onChange: () => {},
-};
 
 /**
  * Returns true if the step is valid for the given values, or false otherwise.

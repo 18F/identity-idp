@@ -30,8 +30,8 @@
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
-    "react/prop-types": ["error", { "skipUndeclared": true }],
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+    "react/prop-types": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,
@@ -50,13 +50,5 @@
       "app/phone-internationalization",
       "app/i18n-dropdown"
     ]
-  },
-  "overrides": [
-    {
-      "files": ["spec/javascripts/**/*"],
-      "rules": {
-        "react/prop-types": "off"
-      }
-    }
-  ]
+  }
 }
