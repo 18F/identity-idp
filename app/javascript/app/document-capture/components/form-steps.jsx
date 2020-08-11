@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import tabbable from 'tabbable';
 import Button from './button';
 import useI18n from '../hooks/use-i18n';
@@ -8,10 +7,18 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @typedef FormStep
  *
- * @prop {string}                    name      Step name, used in history parameter.
- * @prop {import('react').Component} component Step component implementation.
- * @prop {(values:object)=>boolean}  isValid   Step validity function. Given set of form values,
- *                                             returns true if values satisfy requirements.
+ * @prop {string}                            name      Step name, used in history parameter.
+ * @prop {import('react').FunctionComponent} component Step component implementation.
+ * @prop {(values:object)=>boolean=}         isValid   Step validity function. Given set of form
+ *                                                     values, returns true if values satisfy
+ *                                                     requirements.
+ */
+
+/**
+ * @typedef FormStepsProps
+ *
+ * @prop {FormStep[]=}                        steps      Form steps.
+ * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
  */
 
 /**
@@ -54,7 +61,10 @@ export function getLastValidStepIndex(steps, values) {
   return index === -1 ? steps.length - 1 : index - 1;
 }
 
-function FormSteps({ steps, onComplete }) {
+/**
+ * @param {FormStepsProps} props Props object.
+ */
+function FormSteps({ steps = [], onComplete = () => {} }) {
   const [values, setValues] = useState({});
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const isProgressingToNextStep = useRef(false);
@@ -151,21 +161,5 @@ function FormSteps({ steps, onComplete }) {
     </form>
   );
 }
-
-FormSteps.propTypes = {
-  steps: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      component: PropTypes.elementType.isRequired,
-      isValid: PropTypes.func,
-    }),
-  ),
-  onComplete: PropTypes.func,
-};
-
-FormSteps.defaultProps = {
-  steps: [],
-  onComplete: () => {},
-};
 
 export default FormSteps;

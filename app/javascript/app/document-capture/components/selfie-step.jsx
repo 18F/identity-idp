@@ -1,11 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import AcuantCapture from './acuant-capture';
-import DataURLFile from '../models/data-url-file';
 
-function SelfieStep({ value, onChange }) {
+/** @typedef {import('../models/data-url-file').default} DataURLFile */
+
+/**
+ * @typedef SelfieStepValue
+ *
+ * @prop {DataURLFile=} selfie Selfie value.
+ */
+
+/**
+ * @typedef SelfieStepProps
+ *
+ * @prop {SelfieStepValue=}                            value    Current value.
+ * @prop {(nextValue:Partial<SelfieStepValue>)=>void=} onChange Change handler.
+ */
+
+/**
+ * @param {SelfieStepProps} props Props object.
+ */
+function SelfieStep({ value = {}, onChange = () => {} }) {
   const { t } = useI18n();
 
   return (
@@ -29,18 +45,6 @@ function SelfieStep({ value, onChange }) {
     </>
   );
 }
-
-SelfieStep.propTypes = {
-  value: PropTypes.shape({
-    selfie: PropTypes.instanceOf(DataURLFile),
-  }),
-  onChange: PropTypes.func,
-};
-
-SelfieStep.defaultProps = {
-  value: {},
-  onChange: () => {},
-};
 
 /**
  * Returns true if the step is valid for the given values, or false otherwise.
