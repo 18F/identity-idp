@@ -11,9 +11,9 @@ import FileInput, {
   isImage,
   isValidForAccepts,
   toDataURL,
-} from '../../../../../app/javascript/packages/document-capture/components/file-input';
-import DeviceContext from '../../../../../app/javascript/packages/document-capture/context/device';
-import DataURLFile from '../../../../../app/javascript/packages/document-capture/models/data-url-file';
+} from '@18f/identity-document-capture/components/file-input';
+import DeviceContext from '@18f/identity-document-capture/context/device';
+import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 
 describe('document-capture/components/file-input', () => {
   describe('getDataURLMimeType', () => {

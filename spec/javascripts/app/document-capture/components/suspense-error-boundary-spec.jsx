@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import render from '../../../support/render';
-import SuspenseErrorBoundary from '../../../../../app/javascript/packages/document-capture/components/suspense-error-boundary';
+import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
 
 describe('document-capture/components/suspense-error-boundary', () => {
   it('renders its children', async () => {

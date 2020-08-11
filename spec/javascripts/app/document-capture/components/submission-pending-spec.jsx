@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import SubmissionPending from '../../../../../app/javascript/packages/document-capture/components/submission-pending';
+import SubmissionPending from '@18f/identity-document-capture/components/submission-pending';
 
 describe('document-capture/components/submission-pending', () => {
   it('renders interstitial content', () => {

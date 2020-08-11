@@ -2,7 +2,7 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import render from '../../../support/render';
-import DocumentCapture from '../../../../../app/javascript/packages/document-capture/components/document-capture';
+import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
 
 describe('document-capture/components/document-capture', () => {
   let originalHash;

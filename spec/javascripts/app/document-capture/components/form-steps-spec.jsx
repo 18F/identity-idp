@@ -6,7 +6,7 @@ import FormSteps, {
   isStepValid,
   getStepIndexByName,
   getLastValidStepIndex,
-} from '../../../../../app/javascript/packages/document-capture/components/form-steps';
+} from '@18f/identity-document-capture/components/form-steps';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
