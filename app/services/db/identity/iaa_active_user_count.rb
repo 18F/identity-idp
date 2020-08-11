@@ -1,3 +1,20 @@
+# generate incremental IAL2 active user counts by IAA (rolling up applications)
+# incremental means a user can only be active for one month in the entire span of the IAA
+#
+# strategy: get active users in the current month in identities and
+# subtract out those active in prior months from monthly_sp_auth_counts
+#
+# for each IAA:
+# SELECT COUNT(*) as active_count FROM identities
+# WHERE service_provider in (issuer1, issuer2, ...)
+# AND last_ial2_authenticated_at >= first_of_the_month
+# AND user_id IN (select user_id from profiles)
+# AND user_id NOT IN (
+#   SELECT DISTINCT user_id
+#   FROM monthly_sp_auth_counts
+#   WHERE issuer IN (issuer1, issuer2, ...) and ial=2
+#   and year_month in (iaa_start_year_month, iaa_start_year_month+1, ... previous_month)
+
 module Db
   module Identity
     class IaaActiveUserCount
@@ -10,23 +27,30 @@ module Db
       def call(ial, today)
         issuers = issuers_sql(iaa)
         return unless issuers
-        and_month_in_iaa_start_month_to_last_month = prior_months_sql(today)
+        prior_months = prior_months_sql(today)
+        prior_months = from_monthly_sp_counts(issuers, ial, prior_months) if prior_months.present?
         sql = format(<<~SQL, sql_params(today))
-          SELECT COUNT(*) FROM identities
+          SELECT COUNT(*) as active_count FROM identities
           WHERE service_provider in #{issuers}
           AND last_ial#{ial}_authenticated_at >= %{beginning_of_month} and
-          user_id NOT IN (
-            SELECT DISTINCT user_id FROM monthly_sp_auth_counts
-            WHERE issuer IN #{issuers} and ial=#{ial}
-            #{and_month_in_iaa_start_month_to_last_month}
-          )
+          user_id IN (select user_id from profiles)
+          #{prior_months}
         SQL
-        ActiveRecord::Base.connection.execute(sql)[0]
+        ActiveRecord::Base.connection.execute(sql)[0]['active_count']
       end
 
       private
 
       attr_reader :iaa, :iaa_start_date, :iaa_end_date
+
+      def from_monthly_sp_counts(issuers, ial, prior_months)
+        <<~SQL
+          AND user_id NOT IN (
+            SELECT DISTINCT user_id FROM monthly_sp_auth_counts WHERE issuer IN #{issuers} and ial=#{ial}
+            #{prior_months}
+          )
+        SQL
+      end
 
       def sql_params(today)
         {

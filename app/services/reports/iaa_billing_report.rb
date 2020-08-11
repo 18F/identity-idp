@@ -5,21 +5,26 @@ module Reports
     REPORT_NAME = 'iaa-billing-report'.freeze
 
     def call
-      ret = []
-      results = transaction_with_timeout do
-        unique_iaa_sps.each do |sp|
-          count = Db::Identity::IaaActiveUserCount.new(
-            sp.iaa,
-            sp.iaa_start_date,
-            sp.iaa_end_date,
-          ).call(2, Time.zone.today)
-          ret << { service_provider: sp.to_json, ial2_count: count }
-        end
+      results = []
+      transaction_with_timeout do
+        unique_iaa_sps.each { |sp| results << iaa_results(sp) }
       end
       save_report(REPORT_NAME, results.to_json)
     end
 
     private
+
+    def iaa_results(sp)
+      count = Db::Identity::IaaActiveUserCount.new(
+        sp.iaa,
+        sp.iaa_start_date,
+        sp.iaa_end_date,
+      ).call(2, Time.zone.today)
+      { iaa: sp.iaa,
+        iaa_start_date: sp.iaa_start_date.strftime('%Y-%m-%d'),
+        iaa_end_date: sp.iaa_end_date.strftime('%Y-%m-%d'),
+        ial2_active_count: count }.stringify_keys
+    end
 
     def unique_iaa_sps
       iaa_done = {}
