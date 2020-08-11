@@ -8,6 +8,7 @@ describe('document-capture/components/submission-pending', () => {
 
     const heading = getByText('doc_auth.headings.interstitial');
 
+    expect(document.activeElement).to.equal(heading);
     expect(heading).to.be.ok();
   });
 });
