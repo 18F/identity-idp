@@ -54,7 +54,7 @@ function AcuantCapture({ label, bannerText, value, onChange, className }) {
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              onChange(nextCapture.image.data);
+              onChange(new DataURLFile(nextCapture.image.data));
               setIsCapturing(false);
             }}
             onImageCaptureFailure={() => setIsCapturing(false)}
