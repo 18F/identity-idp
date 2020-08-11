@@ -11,9 +11,12 @@
 - doc_auth.headings.document_capture_front
 - doc_auth.headings.document_capture_selfie
 - doc_auth.headings.front
+- doc_auth.headings.interstitial
 - doc_auth.headings.photo
 - doc_auth.headings.selfie
 - doc_auth.info.document_capture_intro_acknowledgment
+- doc_auth.info.interstitial_eta
+- doc_auth.info.interstitial_thanks
 - doc_auth.instructions.document_capture_selfie_instructions
 - doc_auth.tips.document_capture_header_text
 - doc_auth.tips.document_capture_hint

@@ -40,6 +40,7 @@ fr:
         officielle et une photo de vous
       document_capture_selfie: Ta photo
       front: De face
+      interstitial: Nous traitons vos images…
       photo: Photo
       selfie: Prenez une photo de vous
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
@@ -64,6 +65,9 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
+      interstitial_eta: Cela peut prendre jusqu'à une minute. Nous chargerons automatiquement
+        l’étape suivante une fois celle-ci terminée.
+      interstitial_thanks: Merci pour votre patience!
       link_sent:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
