@@ -14,7 +14,7 @@ describe Reports::IaaBillingReport do
     ]
   end
 
-  it 'is empty' do
+  it 'works' do
     expect(subject.call).to eq(results.to_json)
   end
 end
