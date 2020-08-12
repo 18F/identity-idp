@@ -12,14 +12,15 @@ import DataURLFile from '../models/data-url-file';
 /**
  * @typedef FileInputProps
  *
- * @prop {string}                    label      Input label.
- * @prop {string=}                   hint       Optional hint text.
- * @prop {string=}                   bannerText Optional banner overlay text.
- * @prop {string[]=}                 accept     Optional array of file input accept patterns.
- * @prop {DataURLFile=}              value      Current value.
- * @prop {string[]=}                 errors     Errors to show.
- * @prop {(ReactMouseEvent)=>void=}  onClick    Input click handler.
- * @prop {(ReactChangeEvent)=>void=} onChange   Input change handler.
+ * @prop {string}                          label      Input label.
+ * @prop {string=}                         hint       Optional hint text.
+ * @prop {string=}                         bannerText Optional banner overlay text.
+ * @prop {string[]=}                       accept     Optional array of file input accept patterns.
+ * @prop {DataURLFile=}                    value      Current value.
+ * @prop {string[]=}                       errors     Errors to show.
+ * @prop {(event:ReactMouseEvent)=>void=}  onClick    Input click handler.
+ * @prop {(nextValue:DataURLFile?)=>void=} onChange   Input change handler.
+ * @prop {(message:string)=>void=}         onError    Callback to trigger if upload error occurs.
  */
 
 /**
@@ -118,6 +119,7 @@ const FileInput = forwardRef((props, ref) => {
     errors = [],
     onClick = () => {},
     onChange = () => {},
+    onError = () => {},
   } = props;
   const { t, formatHTML } = useI18n();
   const ifStillMounted = useIfStillMounted();
@@ -144,9 +146,10 @@ const FileInput = forwardRef((props, ref) => {
         toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
       } else {
         setOwnErrors((previousErrors) => [...previousErrors, t('errors.doc_auth.selfie')]);
+        onError(t('errors.doc_auth.selfie'));
       }
     } else {
-      onChange(file);
+      onChange(null);
     }
   }
 
