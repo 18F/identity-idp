@@ -2,11 +2,38 @@ module Idv
   class ImageUploadController < ApplicationController
     include IdvSession
 
+    respond_to :json
+
     def create
-      validation_error = validate_request(request)
-      response = validation_error || upload_and_check_images
-      render json: response
+      image_form = ApiImageUploadForm.new(params)
+      form_response = image_form.submit
+
+
+
+      if form_response.success?
+        doc_response = doc_auth_client.post_images(
+          front_image: image_form.front_image,
+          back_image: image_form.back_image,
+          selfie_image: image_form.back_image,
+          liveness_checking_enabled: liveness_checking_enabled?
+        )
+
+        # TODO: something better here
+        # upload_info = {
+        #   documents: doc_response.to_h,
+        # }
+        # store_pii(doc_response)
+        # user_session['idv/doc_auth']['api_upload'] = upload_info
+      end
+
+      render json: { eyyy: true }
     end
+
+    # def create
+    #   validation_error = validate_request(request)
+    #   response = validation_error || upload_and_check_images
+    #   render json: response
+    # end
 
     private
 
@@ -16,12 +43,6 @@ module Idv
                                         selfie_image: @selfie_image,
                                         liveness_checking_enabled: liveness_checking_enabled?)
       return error_json(doc_response.errors.first) unless doc_response.success?
-      upload_info = {
-        documents: doc_response.to_h,
-      }
-      store_pii(doc_response)
-      user_session['idv/doc_auth']['api_upload'] = upload_info
-      success_json('Uploaded images')
     end
 
     def store_pii(doc_response)
@@ -66,8 +87,8 @@ module Idv
       }
     end
 
-    def client
-      @client ||= DocAuthClient.client
+    def doc_auth_client
+      @doc_auth_client ||= DocAuthClient.doc_auth_client
     end
   end
 end
