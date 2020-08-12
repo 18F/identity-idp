@@ -30,8 +30,8 @@ describe Idv::ImageUploadController do
     end
     it 'returns error status when not provided image fields' do
       post :create, params: {
-        'not': 'right',
-        'back': 'back_image',
+        not: 'right',
+        back: 'back_image',
       }, format: :json
       response_json = JSON.parse(response.body)
       expect(response_json['status']).to eq('error')
@@ -41,9 +41,9 @@ describe Idv::ImageUploadController do
     context 'when image upload succeeds' do
       it 'returns a successful response and modifies the session' do
         post :create, params: {
-          'front': 'front_image',
-          'back': 'back_image',
-          'selfie': 'selfie_image',
+          front: 'front_image',
+          back: 'back_image',
+          selfie: 'selfie_image',
         }, format: :json
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('success')
@@ -55,9 +55,9 @@ describe Idv::ImageUploadController do
       let(:upload_errors) { ['Too blurry', 'Wrong document'] }
       it 'returns an error response and does not modify the session' do
         post :create, params: {
-          'front': 'front_image',
-          'back': 'back_image',
-          'selfie': 'selfie_image',
+          front: 'front_image',
+          back: 'back_image',
+          selfie: 'selfie_image',
         }, format: :json
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('error')
