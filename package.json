@@ -6,6 +6,9 @@
     "node": "12.x.x",
     "npm": "6.x.x"
   },
+  "workspaces": [
+    "app/javascript/packages/*"
+  ],
   "scripts": {
     "typecheck": "tsc",
     "lint": "eslint app spec --ext .js,.jsx",
@@ -27,7 +30,6 @@
     "normalize.css": "^4.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "tabbable": "^4.0.0",
     "uswds": "^2.8.0",
     "zxcvbn": "^4.4.2"
   },

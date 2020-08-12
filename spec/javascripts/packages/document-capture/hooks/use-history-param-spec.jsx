@@ -1,9 +1,9 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
-import render from '../../../support/render';
 import useHistoryParam, {
   getQueryParam,
-} from '../../../../../app/javascript/app/document-capture/hooks/use-history-param';
+} from '@18f/identity-document-capture/hooks/use-history-param';
+import render from '../../../support/render';
 
 describe('getQueryParam', () => {
   const queryString = 'a&b=Hello%20world&c';

@@ -1,7 +1,7 @@
 import React from 'react';
+import Image from '@18f/identity-document-capture/components/image';
+import AssetContext from '@18f/identity-document-capture/context/asset';
 import render from '../../../support/render';
-import Image from '../../../../../app/javascript/app/document-capture/components/image';
-import AssetContext from '../../../../../app/javascript/app/document-capture/context/asset';
 
 describe('document-capture/components/image', () => {
   it('renders the given assetPath as src if the asset is not known', () => {

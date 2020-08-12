@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
-import FullScreen from '../../../../../app/javascript/app/document-capture/components/full-screen';
+import FullScreen from '@18f/identity-document-capture/components/full-screen';
 
 describe('document-capture/components/full-screen', () => {
   it('renders with a close button', () => {

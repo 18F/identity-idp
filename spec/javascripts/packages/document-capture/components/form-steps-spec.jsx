@@ -1,12 +1,12 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import render from '../../../support/render';
 import FormSteps, {
   isStepValid,
   getStepIndexByName,
   getLastValidStepIndex,
-} from '../../../../../app/javascript/app/document-capture/components/form-steps';
+} from '@18f/identity-document-capture/components/form-steps';
+import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [

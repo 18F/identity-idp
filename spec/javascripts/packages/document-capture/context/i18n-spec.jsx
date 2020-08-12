@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
+import I18nContext from '@18f/identity-document-capture/context/i18n';
 import render from '../../../support/render';
-import AssetContext from '../../../../../app/javascript/app/document-capture/context/asset';
 
-describe('document-capture/context/asset', () => {
-  const ContextValue = () => JSON.stringify(useContext(AssetContext));
+describe('document-capture/context/i18n', () => {
+  const ContextValue = () => JSON.stringify(useContext(I18nContext));
 
   it('defaults to empty object', () => {
     const { container } = render(<ContextValue />);
