@@ -1,5 +1,13 @@
+/**
+ * Endpoint to which payload is submitted.
+ *
+ * @type {string}
+ */
 const ENDPOINT = '/api/verify/upload';
 
+/**
+ * @type {import('../context/upload').UploadImplementation}
+ */
 function upload(payload, csrf) {
   return fetch(ENDPOINT, {
     method: 'POST',
