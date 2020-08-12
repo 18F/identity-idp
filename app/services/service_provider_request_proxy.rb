@@ -11,7 +11,7 @@ class ServiceProviderRequestProxy
   cattr_accessor :redis_last_uuid
 
   def self.from_uuid(uuid)
-    find_by(uuid: uuid) || NullServiceProviderRequest.new
+    find_by(uuid: uuid.to_s) || NullServiceProviderRequest.new
   rescue ArgumentError # a null byte in the uuid will raise this
     NullServiceProviderRequest.new
   end
