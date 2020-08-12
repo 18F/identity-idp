@@ -18,9 +18,12 @@ import DataURLFile from '../models/data-url-file';
  * @prop {(nextValue:DataURLFile)=>void} onChange              Callback receiving next value on
  *                                                             change.
  * @prop {string=}                       className             Optional additional class names.
- * @prop {number=}                       minimumGlareScore
- * @prop {number=}                       minimumSharpnessScore
- * @prop {number=}                       minimumFileSize
+ * @prop {number=}                       minimumGlareScore     Minimum glare score to be considered
+ *                                                             acceptable.
+ * @prop {number=}                       minimumSharpnessScore Minimum sharpness score to be
+ *                                                             considered acceptable.
+ * @prop {number=}                       minimumFileSize       Minimum file size (in bytes) to be
+ *                                                             considered acceptable.
  */
 
 /**
