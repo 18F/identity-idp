@@ -17,7 +17,7 @@ import DataURLFile from '../models/data-url-file';
  * @prop {string=}                         bannerText Optional banner overlay text.
  * @prop {string[]=}                       accept     Optional array of file input accept patterns.
  * @prop {DataURLFile=}                    value      Current value.
- * @prop {string[]=}                       errors     Errors to show.
+ * @prop {string=}                         error      Error to show.
  * @prop {(event:ReactMouseEvent)=>void=}  onClick    Input click handler.
  * @prop {(nextValue:DataURLFile?)=>void=} onChange   Input change handler.
  * @prop {(message:string)=>void=}         onError    Callback to trigger if upload error occurs.
@@ -116,7 +116,7 @@ const FileInput = forwardRef((props, ref) => {
     bannerText,
     accept,
     value,
-    errors = [],
+    error,
     onClick = () => {},
     onChange = () => {},
     onError = () => {},
@@ -126,12 +126,10 @@ const FileInput = forwardRef((props, ref) => {
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [ownErrors, setOwnErrors] = useState(/** @type {string[]} */ ([]));
-  useMemo(() => setOwnErrors([]), [value]);
+  const [ownError, setOwnError] = useState(/** @type {string?} */ null);
+  useMemo(() => setOwnError(null), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
-
-  const allErrors = [...ownErrors, ...errors];
 
   /**
    * In response to a file input change event, converts the assigned file to a data URL before
@@ -145,19 +143,20 @@ const FileInput = forwardRef((props, ref) => {
       if (isValidForAccepts(file.type, accept)) {
         toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
       } else {
-        setOwnErrors((previousErrors) => [...previousErrors, t('errors.doc_auth.selfie')]);
-        onError(t('errors.doc_auth.selfie'));
+        const nextOwnError = t('errors.doc_auth.selfie');
+        setOwnError(nextOwnError);
+        onError(nextOwnError);
       }
     } else {
       onChange(null);
     }
   }
 
+  const shownError = error ?? ownError;
+
   return (
     <div
-      className={[allErrors.length && 'usa-form-group usa-form-group--error']
-        .filter(Boolean)
-        .join(' ')}
+      className={[shownError && 'usa-form-group usa-form-group--error'].filter(Boolean).join(' ')}
     >
       {/*
        * Disable reason: The Airbnb configuration of the `jsx-a11y` rule is strict in that it
@@ -172,15 +171,15 @@ const FileInput = forwardRef((props, ref) => {
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         htmlFor={inputId}
-        className={['usa-label', allErrors.length && 'usa-label--error'].filter(Boolean).join(' ')}
+        className={['usa-label', shownError && 'usa-label--error'].filter(Boolean).join(' ')}
       >
         {label}
       </label>
-      {allErrors.map((error) => (
-        <span key={error} className="usa-error-message" role="alert">
-          {error}
+      {shownError && (
+        <span className="usa-error-message" role="alert">
+          {shownError}
         </span>
-      ))}
+      )}
       {hint && (
         <span className="usa-hint" id={hintId}>
           {hint}

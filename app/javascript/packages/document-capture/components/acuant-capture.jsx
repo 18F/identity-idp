@@ -106,7 +106,7 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
         bannerText={bannerText}
         accept={['image/*']}
         value={value}
-        errors={ownError ? [ownError] : undefined}
+        error={ownError}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChange}
       />
