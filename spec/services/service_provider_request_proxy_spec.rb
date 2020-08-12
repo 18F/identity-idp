@@ -41,14 +41,31 @@ describe ServiceProviderRequestProxy do
       end
     end
 
-    context 'when the record does not exists' do
+    context 'when the record does not exist' do
       it 'returns an instance of NullServiceProviderRequest' do
         expect(ServiceProviderRequestProxy.from_uuid('123')).
           to be_an_instance_of NullServiceProviderRequest
       end
+    end
 
-      it 'returns an instance of NullServiceProviderRequest when the uuid contains a null byte' do
+    context 'bad input' do
+      it 'handles a null byte in the uuid' do
         expect(ServiceProviderRequestProxy.from_uuid("\0")).
+          to be_an_instance_of NullServiceProviderRequest
+      end
+
+      it 'handles nil' do
+        expect(ServiceProviderRequestProxy.from_uuid(nil)).
+          to be_an_instance_of NullServiceProviderRequest
+      end
+
+      it 'handles hashes' do
+        expect(ServiceProviderRequestProxy.from_uuid({})).
+          to be_an_instance_of NullServiceProviderRequest
+      end
+
+      it 'handles arrays' do
+        expect(ServiceProviderRequestProxy.from_uuid([])).
           to be_an_instance_of NullServiceProviderRequest
       end
     end
