@@ -12,7 +12,7 @@ executors:
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.6.5-node-browsers
+      - image: circleci/ruby:2.6.6-node-browsers
         environment:
           RAILS_ENV: test
 
@@ -23,7 +23,7 @@ executors:
         environment:
           POSTGRES_USER: circleci
 
-      - image: redis:4.0.1
+      - image: redis:5.0.8
 
 commands:
   bundle-yarn-install:

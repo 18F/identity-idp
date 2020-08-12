@@ -17,7 +17,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
   TargetRubyVersion: 2.6
-  TargetRailsVersion: 5.1
+  TargetRailsVersion: 5.2
   UseCache: true
 
 Rails:
