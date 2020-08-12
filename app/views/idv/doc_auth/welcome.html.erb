@@ -95,3 +95,4 @@
 
 <%= javascript_pack_tag('clipboard') %>
 <%= javascript_pack_tag('ial2-consent-button') %>
+<%= javascript_pack_tag('document-capture-welcome') if FeatureManagement.document_capture_step_enabled? %>
