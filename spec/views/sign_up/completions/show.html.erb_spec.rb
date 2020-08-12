@@ -80,7 +80,6 @@ describe 'sign_up/completions/show.html.erb' do
         ialmax_requested: false,
         consent_has_expired: false,
       )
-      IdentityLinker.new(@user, service_provider.issuer).link_identity
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       assign(:pii, {})
     end
