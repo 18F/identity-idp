@@ -27,7 +27,7 @@ render(
     credentials={getMetaContent('acuant-sdk-initialization-creds')}
     endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
   >
-    <I18nContext.Provider value={i18n.strings[i18n.currentLocale()]}>
+    <I18nContext.Provider value={i18n.strings}>
       <UploadContextProvider csrf={getMetaContent('csrf-token')}>
         <AssetContext.Provider value={assets}>
           <DeviceContext.Provider value={device}>

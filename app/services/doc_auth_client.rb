@@ -1,15 +1,13 @@
 class DocAuthClient
   def self.client
-    @doc_auth_client ||= begin
-                           case doc_auth_vendor
-                           when 'acuant'
-                             ::Acuant::AcuantClient.new
-                           when 'mock'
-                             ::DocAuthMock::DocAuthMockClient.new
-                           else
-                             raise "#{doc_auth_vendor} is not a valid doc auth vendor"
-                           end
-                         end
+    case doc_auth_vendor
+    when 'acuant'
+      ::Acuant::AcuantClient.new
+    when 'mock'
+      ::DocAuthMock::DocAuthMockClient.new
+    else
+      raise "#{doc_auth_vendor} is not a valid doc auth vendor"
+    end
   end
 
   ##

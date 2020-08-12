@@ -1,10 +1,21 @@
 import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import createFocusTrap from 'focus-trap';
 import Image from './image';
 import useI18n from '../hooks/use-i18n';
 
-function FullScreen({ onRequestClose, children }) {
+/** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef FullScreenProps
+ *
+ * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
+ * @prop {ReactNode} children       Child elements.
+ */
+
+/**
+ * @param {FullScreenProps} props Props object.
+ */
+function FullScreen({ onRequestClose = () => {}, children }) {
   const { t } = useI18n();
   const modalRef = useRef(/** @type {?HTMLDivElement} */ (null));
   const trapRef = useRef(/** @type {?import('focus-trap').FocusTrap} */ (null));
@@ -37,14 +48,5 @@ function FullScreen({ onRequestClose, children }) {
     </div>
   );
 }
-
-FullScreen.propTypes = {
-  onRequestClose: PropTypes.func,
-  children: PropTypes.node.isRequired,
-};
-
-FullScreen.defaultProps = {
-  onRequestClose: () => {},
-};
 
 export default FullScreen;

@@ -1,12 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+/**
+ * @typedef PageHeadingProps
+ *
+ * @prop {import('react').ReactNode} children Child elements.
+ */
+
+/**
+ * @param {PageHeadingProps} props Props object.
+ */
 function PageHeading({ children }) {
   return <h1 className="h3 my0">{children}</h1>;
 }
-
-PageHeading.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default PageHeading;

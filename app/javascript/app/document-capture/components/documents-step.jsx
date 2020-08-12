@@ -1,10 +1,24 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import AcuantCapture from './acuant-capture';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
-import DataURLFile from '../models/data-url-file';
+
+/** @typedef {import('../models/data-url-file')} DataURLFile */
+
+/**
+ * @typedef DocumentsStepValue
+ *
+ * @prop {DataURLFile=} front Front image value.
+ * @prop {DataURLFile=} back  Back image value.
+ */
+
+/**
+ * @typedef DocumentsStepProps
+ *
+ * @prop {DocumentsStepValue=}                            value Current value.
+ * @prop {(nextValue:Partial<DocumentsStepValue>)=>void=} onChange Value change handler.
+ */
 
 /**
  * Sides of document to present as file input.
@@ -13,7 +27,10 @@ import DataURLFile from '../models/data-url-file';
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
-function DocumentsStep({ value, onChange }) {
+/**
+ * @param {DocumentsStepProps} props Props object.
+ */
+function DocumentsStep({ value = {}, onChange = () => {} }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
@@ -38,7 +55,6 @@ function DocumentsStep({ value, onChange }) {
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}
-            hint={t('doc_auth.tips.document_capture_hint')}
             /* i18n-tasks-use t('doc_auth.headings.back') */
             /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
@@ -51,19 +67,6 @@ function DocumentsStep({ value, onChange }) {
     </>
   );
 }
-
-DocumentsStep.propTypes = {
-  value: PropTypes.shape({
-    front: PropTypes.instanceOf(DataURLFile),
-    back: PropTypes.instanceOf(DataURLFile),
-  }),
-  onChange: PropTypes.func,
-};
-
-DocumentsStep.defaultProps = {
-  value: {},
-  onChange: () => {},
-};
 
 /**
  * Returns true if the step is valid for the given values, or false otherwise.

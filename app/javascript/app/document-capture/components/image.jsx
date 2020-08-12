@@ -1,7 +1,16 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import AssetContext from '../context/asset';
 
+/**
+ * @typedef ImageProps
+ *
+ * @prop {string} assetPath Asset path to resolve.
+ * @prop {string} alt       Image alt attribute.
+ */
+
+/**
+ * @param {ImageProps & Record<string,any>} props Props object.
+ */
 function Image({ assetPath, alt, ...imgProps }) {
   const assets = useContext(AssetContext);
 
@@ -18,10 +27,5 @@ function Image({ assetPath, alt, ...imgProps }) {
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <img src={src} alt={alt} {...imgProps} />;
 }
-
-Image.propTypes = {
-  assetPath: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
-};
 
 export default Image;

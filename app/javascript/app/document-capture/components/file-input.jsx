@@ -1,10 +1,26 @@
-import React, { useContext, useState, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext, useState, useMemo, forwardRef } from 'react';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
 import DataURLFile from '../models/data-url-file';
+
+/** @typedef {import('react').MouseEvent} ReactMouseEvent */
+/** @typedef {import('react').ChangeEvent} ReactChangeEvent */
+/** @typedef {import('react').RefAttributes} ReactRefAttributes */
+
+/**
+ * @typedef FileInputProps
+ *
+ * @prop {string}                    label      Input label.
+ * @prop {string=}                   hint       Optional hint text.
+ * @prop {string=}                   bannerText Optional banner overlay text.
+ * @prop {string[]=}                 accept     Optional array of file input accept patterns.
+ * @prop {DataURLFile=}              value      Current value.
+ * @prop {string[]=}                 errors     Errors to show.
+ * @prop {(ReactMouseEvent)=>void=}  onClick    Input click handler.
+ * @prop {(ReactChangeEvent)=>void=} onChange   Input change handler.
+ */
 
 /**
  * Given a data URL string, returns the MIME type.
@@ -89,7 +105,20 @@ export function toDataURL(file) {
   });
 }
 
-function FileInput({ label, hint, bannerText, accept, value, errors, onClick, onChange }) {
+/**
+ * @type {import('react').ForwardRefExoticComponent<FileInputProps & ReactRefAttributes>}
+ */
+const FileInput = forwardRef((props, ref) => {
+  const {
+    label,
+    hint,
+    bannerText,
+    accept,
+    value,
+    errors = [],
+    onClick = () => {},
+    onChange = () => {},
+  } = props;
   const { t, formatHTML } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
@@ -191,7 +220,6 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
               {isMobile && bannerText ? null : (
                 <span className="usa-file-input__drag-text">
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
-                    // eslint-disable-next-line react/prop-types
                     'lg-underline': ({ children }) => (
                       <span className="usa-file-input__choose">{children}</span>
                     ),
@@ -202,6 +230,7 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
           )}
           <div className="usa-file-input__box" />
           <input
+            ref={ref}
             id={inputId}
             className="usa-file-input__input"
             type="file"
@@ -214,27 +243,6 @@ function FileInput({ label, hint, bannerText, accept, value, errors, onClick, on
       </div>
     </div>
   );
-}
-
-FileInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  hint: PropTypes.string,
-  bannerText: PropTypes.string,
-  accept: PropTypes.arrayOf(PropTypes.string),
-  value: PropTypes.instanceOf(DataURLFile),
-  errors: PropTypes.arrayOf(PropTypes.string),
-  onClick: PropTypes.func,
-  onChange: PropTypes.func,
-};
-
-FileInput.defaultProps = {
-  hint: null,
-  bannerText: null,
-  accept: null,
-  value: undefined,
-  errors: [],
-  onClick: () => {},
-  onChange: () => {},
-};
+});
 
 export default FileInput;
