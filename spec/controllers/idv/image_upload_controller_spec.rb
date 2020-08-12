@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadController do
-  describe '#upload' do
+  describe '#create' do
     let(:content_type) { 'application/json' }
     let(:upload_errors) { [] }
     before do
@@ -22,14 +22,14 @@ describe Idv::ImageUploadController do
     context 'with an invalid content type' do
       let(:content_type) { 'text/plain' }
       it 'supplies an error status' do
-        post :upload, params: {}
+        post :create, params: {}
         response_json = JSON.parse(response.body)
         expect(response_json['status']).to eq('error')
         expect(response_json['message']).to eq("Invalid content type #{request.content_type}")
       end
     end
     it 'returns error status when not provided image fields' do
-      post :upload, params: {
+      post :create, params: {
         'not': 'right',
         'back': 'back_image',
       }, format: :json
@@ -40,7 +40,7 @@ describe Idv::ImageUploadController do
 
     context 'when image upload succeeds' do
       it 'returns a successful response and modifies the session' do
-        post :upload, params: {
+        post :create, params: {
           'front': 'front_image',
           'back': 'back_image',
           'selfie': 'selfie_image',
@@ -54,7 +54,7 @@ describe Idv::ImageUploadController do
     context 'when image upload fails' do
       let(:upload_errors) { ['Too blurry', 'Wrong document'] }
       it 'returns an error response and does not modify the session' do
-        post :upload, params: {
+        post :create, params: {
           'front': 'front_image',
           'back': 'back_image',
           'selfie': 'selfie_image',

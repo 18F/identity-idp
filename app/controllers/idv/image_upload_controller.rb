@@ -2,7 +2,7 @@ module Idv
   class ImageUploadController < ApplicationController
     include IdvSession
 
-    def upload
+    def create
       validation_error = validate_request(request)
       response = validation_error || upload_and_check_images
       render json: response
