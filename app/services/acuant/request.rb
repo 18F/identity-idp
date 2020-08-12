@@ -92,7 +92,7 @@ module Acuant
         http_response.status,
       ].join(' ')
       exception = RuntimeError.new(message)
-      Response.new(
+      DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
         exception: exception,
@@ -101,7 +101,7 @@ module Acuant
 
     def handle_connection_error(exception)
       NewRelic::Agent.notice_error(exception)
-      Response.new(
+      DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
         exception: exception,

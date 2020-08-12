@@ -206,7 +206,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def mock_general_doc_auth_client_error(method)
     DocAuthMock::DocAuthMockClient.mock_response!(
       method: method,
-      response: Acuant::Response.new(
+      response: DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.general_error')],
       ),

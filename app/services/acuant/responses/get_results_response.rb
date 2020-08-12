@@ -1,18 +1,16 @@
 module Acuant
   module Responses
-    class GetResultsResponse < Acuant::Response
+    class GetResultsResponse < DocAuthClient::Response
       def initialize(http_response)
         @http_response = http_response
         super(
           success: successful_result?,
           errors: error_messages_from_alerts,
+          extra: {
+            result: result_code.name,
+            billed: result_code.billed,
+          },
         )
-      end
-
-      def pii_from_doc
-        return {} unless successful_result?
-
-        ::Acuant::PiiFromDoc.new(parsed_response_body).call
       end
 
       # Explicitly override #to_h here because this method response object contains PII.
@@ -32,6 +30,12 @@ module Acuant
       # @return [Acuant::ResultCode::ResultCode]
       def result_code
         Acuant::ResultCodes.from_int(parsed_response_body['Result'])
+      end
+
+      def pii_from_doc
+        return {} unless successful_result?
+
+        ::Acuant::PiiFromDoc.new(parsed_response_body).call
       end
 
       private

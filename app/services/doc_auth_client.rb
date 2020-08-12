@@ -1,4 +1,4 @@
-class DocAuthClient
+module DocAuthClient
   def self.client
     case doc_auth_vendor
     when 'acuant'
