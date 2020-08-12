@@ -53,9 +53,8 @@ describe 'sign_up/completions/show.html.erb' do
   context 'signing in through an SP' do
     let(:service_provider) do
       create(:service_provider,
-        friendly_name: 'My Agency App',
-        agency: 'Department of Agencies',
-      )
+             friendly_name: 'My Agency App',
+             agency: 'Department of Agencies')
     end
 
     let(:view_context) { ActionController::Base.new.view_context }
@@ -84,16 +83,14 @@ describe 'sign_up/completions/show.html.erb' do
       assign(:pii, {})
     end
 
-
     it 'shows the app name, not the agency name' do
       render
 
       text = view_context.strip_tags(rendered)
       expect(text).to include('My Agency App')
       expect(text).to_not include('Department of Agencies')
-      expect(text).to include(
-        I18n.t('help_text.requested_attributes.intro_html', app_name: APP_NAME, sp: 'My Agency App')
-      )
+      expect(text).to include(I18n.t('help_text.requested_attributes.intro_html',
+                                     app_name: APP_NAME, sp: 'My Agency App'))
     end
   end
 
