@@ -1,5 +1,5 @@
 unless Rails.env.production?
-  namespace spec: :environment do
+  namespace :spec do
     desc 'Executes user flow specs'
     RSpec::Core::RakeTask.new('user_flows') do |t|
       t.rspec_opts = %w[--tag user_flow

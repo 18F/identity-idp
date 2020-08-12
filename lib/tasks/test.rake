@@ -1,4 +1,4 @@
-namespace test: :environment do
+namespace :test do
   # Use `> log/test.log` to empty test.log before re-running tests to get an accurate list
   # Note you must run tests with `COVERAGE=true` to generate scannable logs.
   desc 'Scan test.log for rendered views and show gaps in test coverage'
