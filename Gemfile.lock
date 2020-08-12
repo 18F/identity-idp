@@ -327,7 +327,6 @@ GEM
     ice_nine (0.11.2)
     iniparse (1.4.4)
     irb (1.0.0)
-    jaro_winkler (1.5.4)
     jmespath (1.4.0)
     json (2.3.0)
     json-jwt (1.12.0)
@@ -529,14 +528,17 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.3)
-    rubocop (0.80.1)
-      jaro_winkler (~> 1.5.1)
+    rubocop (0.85.1)
       parallel (~> 1.10)
       parser (>= 2.7.0.1)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.7)
       rexml
+      rubocop-ast (>= 0.0.3)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (0.3.0)
+      parser (>= 2.7.1.4)
     rubocop-rails (2.5.2)
       activesupport
       rack (>= 1.1)
@@ -636,7 +638,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.6.1)
+    unicode-display_width (1.7.0)
     unicode_plot (0.0.4)
       enumerable-statistics (>= 2.0.1)
     uniform_notifier (1.13.0)
@@ -773,7 +775,7 @@ DEPENDENCIES
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)
-  rubocop (~> 0.80.0)
+  rubocop (~> 0.85.0)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar
   ruby-saml
