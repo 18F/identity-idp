@@ -150,6 +150,7 @@ describe('document-capture/components/acuant-capture', () => {
         start(onImageCaptureSuccess) {
           const capture = {
             glare: 70,
+            sharpness: 70,
             image: {
               data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
             },
@@ -269,6 +270,7 @@ describe('document-capture/components/acuant-capture', () => {
         start(onImageCaptureSuccess) {
           const capture = {
             glare: 38,
+            sharpness: 70,
             image: {
               data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
             },
@@ -282,6 +284,42 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = getByText('errors.doc_auth.photo_glare');
+
+      expect(error).to.be.ok();
+    });
+
+    it('renders error message if capture succeeds but photo is too blurry', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 70,
+            sharpness: 38,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      const error = getByText('errors.doc_auth.photo_blurry');
 
       expect(error).to.be.ok();
     });

@@ -61,6 +61,7 @@ en:
         </ul>
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
+      photo_blurry: Photo is too blurry, please try again.
       photo_glare: Photo has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.

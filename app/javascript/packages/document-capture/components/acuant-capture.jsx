@@ -19,11 +19,18 @@ import DataURLFile from '../models/data-url-file';
  */
 
 /**
- * The minimal glare score value to be considered acceptable.
+ * The minimum glare score value to be considered acceptable.
  *
  * @type {number}
  */
 const ACCEPTABLE_GLARE_SCORE = 50;
+
+/**
+ * The minimum sharpness score value to be considered acceptable.
+ *
+ * @type {number}
+ */
+const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
@@ -80,6 +87,8 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
             onImageCaptureSuccess={(nextCapture) => {
               if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnError(t('errors.doc_auth.photo_glare'));
+              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
+                setOwnError(t('errors.doc_auth.photo_blurry'));
               } else {
                 onChange(new DataURLFile(nextCapture.image.data));
               }
