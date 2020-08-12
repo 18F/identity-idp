@@ -348,3 +348,6 @@ Style/RedundantRegexpEscape:
 
 Style/SlicingWithRange:
   Enabled: false
+
+Rails/ApplicationMailer:
+  Enabled: false

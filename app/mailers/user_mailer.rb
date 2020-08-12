@@ -1,5 +1,5 @@
 # rubocop:disable Metrics/ClassLength
-class UserMailer < ApplicationMailer
+class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
