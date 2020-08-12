@@ -16,7 +16,6 @@
     "build": "true"
   },
   "dependencies": {
-    "@18f/identity-document-capture": "file:./app/javascript/packages/document-capture",
     "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
