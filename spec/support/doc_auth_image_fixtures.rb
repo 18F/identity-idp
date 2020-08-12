@@ -1,10 +1,10 @@
 module DocAuthImageFixtures
   def self.document_front_image
-    load_image_fixture('id-front.jpg')
+    load_image_fixture('id-front.png')
   end
 
   def self.document_back_image
-    load_image_fixture('id-back.jpg')
+    load_image_fixture('id-back.png')
   end
 
   def self.document_face_image

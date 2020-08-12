@@ -17,5 +17,7 @@ global.document = window.document;
 global.getComputedStyle = window.getComputedStyle;
 global.self = window;
 
+process.env.ACUANT_MINIMUM_FILE_SIZE = 0;
+
 useCleanDOM();
 useConsoleLogSpy();

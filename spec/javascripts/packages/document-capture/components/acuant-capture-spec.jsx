@@ -2,7 +2,9 @@ import React from 'react';
 import { fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
+import AcuantCapture, {
+  getDataURLFileSize,
+} from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
@@ -17,6 +19,24 @@ describe('document-capture/components/acuant-capture', () => {
     delete window.AcuantJavascriptWebSdk;
     delete window.AcuantCamera;
     delete window.AcuantCameraUI;
+  });
+
+  describe('getDataURLFileSize', () => {
+    it('returns file size in bytes', () => {
+      const result = getDataURLFileSize(
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+      );
+
+      expect(result).to.equal(41);
+    });
+
+    it('returns file size of bytes (base64)', () => {
+      const result = getDataURLFileSize(
+        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4=',
+      );
+
+      expect(result).to.equal(41);
+    });
   });
 
   context('mobile', () => {
@@ -165,7 +185,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       expect(onChange.getCall(0).args).to.have.lengthOf(1);
       expect(onChange.getCall(0).args[0]).to.be.instanceOf(DataURLFile);
-      expect(onChange.getCall(0).args[0].data).to.equal(
+      expect(onChange.getCall(0).args[0].data).to.be.equal(
         'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
       );
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
@@ -293,6 +313,124 @@ describe('document-capture/components/acuant-capture', () => {
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 70,
+            sharpness: 20,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      const error = getByText('errors.doc_auth.photo_blurry');
+
+      expect(error).to.be.ok();
+    });
+
+    it('shows at most one error message between AcuantCapture and FileInput', () => {
+      const { getByLabelText, getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 70,
+            sharpness: 20,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const file = new window.File([''], 'upload.txt', { type: 'text/plain' });
+
+      const input = getByLabelText('Image');
+      userEvent.upload(input, file);
+
+      expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      expect(getByText('errors.doc_auth.photo_blurry')).to.be.ok();
+      expect(() => getByText('errors.doc_auth.selfie')).to.throw();
+    });
+
+    it('removes error message once image is corrected', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      let isBlurry = true;
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 70,
+            sharpness: isBlurry ? 20 : 70,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      isBlurry = false;
+
+      fireEvent.click(button);
+
+      expect(() => getByText('errors.doc_auth.photo_file_size')).to.throw();
+    });
+
+    it('renders error message if capture succeeds but photo is too small', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" minimumFileSize={500 * 1024} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );

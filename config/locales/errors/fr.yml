@@ -62,6 +62,8 @@ fr:
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
       photo_blurry: La photo est trop floue, veuillez réessayer.
+      photo_file_size: La photo est trop compressée, veuillez réessayer avec une qualité
+        supérieure.
       photo_glare: La photo a des reflets, veuillez réessayer.
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d'identité. Veuillez contacter votre fournisseur de services
