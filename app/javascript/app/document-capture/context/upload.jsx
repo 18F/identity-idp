@@ -1,25 +1,30 @@
 import React, { createContext } from 'react';
-import PropTypes from 'prop-types';
 import defaultUpload from '../services/upload';
 
 const UploadContext = createContext(defaultUpload);
 
-function UploadContextProvider({ upload, csrf, children }) {
+/** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef {(payload:Record<string,any>,csrf?:string)=>Promise<any>} UploadImplementation
+ */
+
+/**
+ * @typedef UploadContextProviderProps
+ *
+ * @prop {UploadImplementation=} upload   Custom upload implementation.
+ * @prop {string=}               csrf     CSRF token to send as parameter to upload implementation.
+ * @prop {ReactNode}             children Child elements.
+ */
+
+/**
+ * @param {UploadContextProviderProps} props Props object.
+ */
+function UploadContextProvider({ upload = defaultUpload, csrf, children }) {
   const uploadWithCSRF = (payload) => upload(payload, csrf);
 
   return <UploadContext.Provider value={uploadWithCSRF}>{children}</UploadContext.Provider>;
 }
-
-UploadContextProvider.propTypes = {
-  upload: PropTypes.func,
-  csrf: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
-
-UploadContextProvider.defaultProps = {
-  upload: defaultUpload,
-  csrf: undefined,
-};
 
 export default UploadContext;
 export { UploadContextProvider as Provider };
