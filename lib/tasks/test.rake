@@ -1,8 +1,8 @@
-namespace :test do
+namespace test: :environment do
   # Use `> log/test.log` to empty test.log before re-running tests to get an accurate list
   # Note you must run tests with `COVERAGE=true` to generate scannable logs.
   desc 'Scan test.log for rendered views and show gaps in test coverage'
-  task :scan_log_for_view_coverage do
+  task scan_log_for_view_coverage: :environment do
     # match lines like 'Rendered two_factor_authentication/otp_verification/show.html.erb'
     # Rendered + space + word + [/ + non-whitespace](any number of times).html(.erb|.slim|'')
     regex_finder = %r{Rendered\s\w*(/\S*)*\.html(\.slim|\.erb|)}

@@ -3,4 +3,3 @@ $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 require 'asset_checker'
 
 exit(AssetChecker.check_files(ARGV) ? 1 : 0)
-

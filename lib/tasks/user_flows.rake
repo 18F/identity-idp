@@ -1,5 +1,5 @@
 unless Rails.env.production?
-  namespace :spec do
+  namespace spec: :environment do
     desc 'Executes user flow specs'
     RSpec::Core::RakeTask.new('user_flows') do |t|
       t.rspec_opts = %w[--tag user_flow
@@ -9,7 +9,7 @@ unless Rails.env.production?
     end
 
     desc 'Exports user flows for the web'
-    task 'user_flows:web' do
+    task 'user_flows:web' => :environment do
       ENV['RAILS_DISABLE_ASSET_DIGEST'] = 'true'
       require './lib/user_flow_exporter'
       Rake::Task['spec:user_flows'].invoke

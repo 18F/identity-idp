@@ -1,7 +1,6 @@
 module Db
   module SpCost
     class TotalSpCostSummary
-      # rubocop:disable Metrics/MethodLength
       def self.call(start, finish)
         params = {
           start: ActiveRecord::Base.connection.quote(start),
@@ -16,7 +15,6 @@ module Db
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end

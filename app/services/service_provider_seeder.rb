@@ -5,7 +5,6 @@ class ServiceProviderSeeder
     @deploy_env = deploy_env
   end
 
-  # rubocop:disable Metrics/MethodLength
   def run
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
@@ -20,7 +19,6 @@ class ServiceProviderSeeder
                                 'native'))
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   private
 
