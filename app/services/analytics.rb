@@ -74,7 +74,7 @@ class Analytics
     }
   end
 
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   ACCOUNT_RESET = 'Account Reset'.freeze
   ACCOUNT_DELETE_SUBMITTED = 'Account Delete submitted'.freeze
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
@@ -217,5 +217,5 @@ class Analytics
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
 end
 # rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 # rubocop:enable Metrics/ClassLength

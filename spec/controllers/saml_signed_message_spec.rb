@@ -32,7 +32,7 @@ describe SamlIdpController do
           expect(signature_count).to eq 2
         end
 
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
         it 'finds a Signature referencing the Response' do
           response_id = REXML::XPath.match(saml_response, '//samlp:Response').first.attributes['ID']
           signature_ref = REXML::XPath.match(saml_response, '//ds:Reference').first.attributes['URI'][1..-1]
@@ -58,7 +58,7 @@ describe SamlIdpController do
 
           expect(signature_ref).to eq assertion_id
         end
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
       end
     end
   end

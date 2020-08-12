@@ -142,7 +142,6 @@ RSpec.describe ServiceProviderSeeder do
       end
     end
 
-    # rubocop:disable Lint/HandleExceptions
     context 'when there is a syntax error in the service_provider.yml config file' do
       let(:seeder) do
         ServiceProviderSeeder.new
@@ -186,6 +185,5 @@ RSpec.describe ServiceProviderSeeder do
         expect { seeder.send(:service_providers) }.to raise_error(KeyError)
       end
     end
-    # rubocop:enable Lint/HandleExceptions
   end
 end

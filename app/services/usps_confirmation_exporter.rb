@@ -28,7 +28,7 @@ class UspsConfirmationExporter
     [HEADER_ROW_ID, num_entries]
   end
 
-  # rubocop:disable MethodLength, AbcSize
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def make_entry_row(entry)
     now = current_date
     due = now + OTP_MAX_VALID_DAYS.days
@@ -49,7 +49,7 @@ class UspsConfirmationExporter
       "https://#{Figaro.env.domain_name}",
     ]
   end
-  # rubocop:enable MethodLength, AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def format_date(date)
     "#{date.strftime('%-B %-e')}, #{date.year}"

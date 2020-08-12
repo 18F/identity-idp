@@ -8,7 +8,7 @@ describe Encryption::MultiRegionKMSClient do
     )
 
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
-    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Metrics/LineLength
+    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
   end
 
   let(:first_plaintext) { 'a' * 3000 }

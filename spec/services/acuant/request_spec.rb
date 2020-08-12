@@ -76,7 +76,6 @@ describe Acuant::Request do
       end
     end
 
-    # rubocop:disable Style/BracesAroundHashParameters
     context 'when the request resolves with retriable error then succeeds it only retries once' do
       it 'calls New Relic notice_error each retry' do
         allow(subject).to receive(:handle_http_response) do |http_response|
@@ -164,7 +163,6 @@ describe Acuant::Request do
         expect(response.success?).to eq(false)
       end
     end
-    # rubocop:enable Style/BracesAroundHashParameters
 
     context 'when the request times out' do
       it 'returns a response with a timeout message and exception and notifies NewRelic' do

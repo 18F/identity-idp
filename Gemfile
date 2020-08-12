@@ -94,7 +94,7 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
-  gem 'rubocop', '~> 0.72.0', require: false
+  gem 'rubocop', '~> 0.80.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'slim_lint'
 end
