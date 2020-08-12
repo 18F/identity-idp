@@ -102,10 +102,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.friendly_name || sp.agency
   end
 
-  def sp_agency
-    sp.agency || sp.friendly_name
-  end
-
   def sp_return_url
     if sp.redirect_uris.present? && valid_oidc_request?
       URIService.add_params(
