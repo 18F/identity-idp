@@ -204,7 +204,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     connection_pool (2.2.2)
     cose (0.10.0)
       cbor (~> 0.5.9)
@@ -394,11 +394,11 @@ GEM
     overcommit (0.51.0)
       childprocess (>= 0.6.3, < 4)
       iniparse (~> 1.4)
-    parallel (1.19.1)
+    parallel (1.19.2)
     parallel_tests (2.29.2)
       parallel
-    parser (2.7.1.3)
-      ast (~> 2.4.0)
+    parser (2.7.1.4)
+      ast (~> 2.4.1)
     pg (1.1.4)
     phonelib (0.6.39)
     pkcs11 (0.3.2)
@@ -773,7 +773,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)
   rubocop (~> 0.72.0)
-  rubocop-rails (>= 2.3.2)
+  rubocop-rails (>= 2.5.2)
   ruby-progressbar
   ruby-saml
   safe_target_blank (>= 1.0.2)
