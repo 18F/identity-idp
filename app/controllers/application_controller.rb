@@ -154,13 +154,14 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
   end
 
-  def piv_cac_required_setup_url
-    aal3_policy.piv_cac_setup_required? ? two_factor_options_url : nil
+  def service_provider_mfa_setup_url
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
   end
 
   def after_sign_in_path_for(_user)
-    piv_cac_required_setup_url || add_piv_cac_setup_url || user_session.delete(:stored_location) ||
-      sp_session_request_url_without_prompt_login || signed_in_url
+    service_provider_mfa_setup_url || add_piv_cac_setup_url ||
+      user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
+      signed_in_url
   end
 
   def signed_in_url
@@ -218,23 +219,47 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   def confirm_two_factor_authenticated(id = nil)
-    return redirect_to(new_user_session_url(request_id: id)) if !user_signed_in? && id.present?
+    return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
     authenticate_user!(force: true)
-    return if user_fully_authenticated? # This verifies MFA is setup and the user has MFAed
-    return prompt_to_set_up_2fa unless two_factor_enabled?
-    prompt_to_enter_otp
+    return prompt_to_setup_mfa unless two_factor_enabled?
+    return prompt_to_verify_mfa unless user_fully_authenticated?
+    return prompt_to_setup_mfa if service_provider_mfa_policy.
+                                  user_needs_sp_auth_method_setup?
+    return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
+                                               user_needs_sp_auth_method_verification?
+    true
   end
 
-  def prompt_to_set_up_2fa
+  def prompt_to_sign_in_with_request_id(request_id)
+    redirect_to new_user_session_url(request_id: request_id)
+  end
+
+  def prompt_to_setup_mfa
     redirect_to two_factor_options_url
   end
 
-  def prompt_to_set_up_aal3_mfa
-    redirect_to aal3_multi_factor_options_url
+  def prompt_to_verify_mfa
+    redirect_to user_two_factor_authentication_url
   end
 
-  def prompt_to_enter_otp
-    redirect_to user_two_factor_authentication_url
+  def prompt_to_verify_sp_required_mfa
+    redirect_to sp_required_mfa_verification_url
+  end
+
+  def sp_required_mfa_verification_url
+    return login_two_factor_piv_cac_url if service_provider_mfa_policy.piv_cac_required?
+
+    if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+      login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
+      login_two_factor_webauthn_url
+    else
+      login_two_factor_piv_cac_url
+    end
+  end
+
+  def user_needs_new_session_with_request_id?(id)
+    !user_signed_in? && id.present?
   end
 
   def two_factor_enabled?
@@ -267,8 +292,8 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     @mfa_policy ||= MfaPolicy.new(current_user)
   end
 
-  def aal3_policy
-    @aal3 ||= AAL3Policy.new(
+  def service_provider_mfa_policy
+    @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
       service_provider: sp_from_sp_session,
       auth_method: user_session[:auth_method],

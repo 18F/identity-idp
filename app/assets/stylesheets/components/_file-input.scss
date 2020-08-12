@@ -1,0 +1,81 @@
+.id-card-file-input .usa-file-input {
+  max-width: 375px;
+
+  &:not(.usa-file-input--has-value) {
+    @include u-margin-top(1);
+    position: relative;
+
+    .usa-file-input__target {
+      align-items: center;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      left: 0;
+      margin-top: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      // 2.125" x 3.375" are common standard ID dimensions
+      padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+    }
+  }
+}
+
+//================================================
+// Pending upstream Login Design System revisions:
+//================================================
+
+.usa-file-input__input {
+  outline-offset: 2px;
+}
+
+.usa-file-input:not(.usa-file-input--has-value) {
+  .usa-file-input__target {
+    border-color: color('primary');
+    border-width: 2px;
+
+    &:hover {
+      border-color: color('primary-darker');
+    }
+  }
+
+  .usa-file-input__input:focus {
+    outline-offset: 3px;
+  }
+}
+
+.usa-form-group--error .usa-file-input .usa-file-input__target {
+  border-color: color('error-dark');
+
+  &:hover {
+    border-color: color('error-darker');
+  }
+}
+
+.usa-file-input__banner-text {
+  @include u-font('sans', 'xl');
+  @include u-margin-bottom(1);
+  color: color('primary');
+  display: block;
+  text-transform: uppercase;
+}
+
+.usa-file-input.usa-file-input--single-value {
+  .usa-file-input__preview {
+    padding: 0;
+  }
+
+  .usa-file-input__preview__image {
+    height: auto;
+    margin-left: auto;
+    margin-right: 0;
+    width: 100%;
+  }
+}

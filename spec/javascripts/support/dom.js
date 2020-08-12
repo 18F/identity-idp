@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { JSDOM, ResourceLoader } from 'jsdom';
 
 /**
@@ -6,7 +7,7 @@ import { JSDOM, ResourceLoader } from 'jsdom';
  * @return {import('jsdom').JSDOM} DOM instance.
  */
 export function createDOM() {
-  return new JSDOM('', {
+  const dom = new JSDOM('', {
     url: 'http://example.test',
     resources: new (class extends ResourceLoader {
       // eslint-disable-next-line class-methods-use-this
@@ -18,6 +19,28 @@ export function createDOM() {
     })(),
     runScripts: 'dangerously',
   });
+
+  // JSDOM doesn't implement `offsetParent`, which is used by some third-party libraries to detect
+  // if a node is visible (e.g. `tabbable`). This is enough to return a sensible value. Note that
+  // this is not spec-compliant to what defines an offsetParent.
+  //
+  // See: https://github.com/jsdom/jsdom/issues/1261
+  Object.defineProperty(dom.window.HTMLElement.prototype, 'offsetParent', {
+    get() {
+      return this.parentNode;
+    },
+  });
+
+  // JSDOM doesn't implement scrollTo, and loudly complains (logs) when it's called, conflicting
+  // with global log error capturing. This suppresses said logging.
+  sinon
+    .stub(dom.window, 'scrollTo')
+    .withArgs(sinon.match.object)
+    .throws(new Error())
+    .withArgs(sinon.match.number, sinon.match.number)
+    .callsFake((scrollX, scrollY) => Object.assign(dom.window, { scrollX, scrollY }));
+
+  return dom;
 }
 
 /**

@@ -13,7 +13,7 @@ module PivCacFormHelpers
   end
 
   def not_error_token
-    possible_error = @data['error']
+    possible_error = @data['error'] || hspd12_compliant_cert_required_error
     if possible_error
       self.error_type = possible_error
       self.key_id = @data['key_id']
@@ -23,6 +23,11 @@ module PivCacFormHelpers
       self.x509_dn = @data['subject']
       true
     end
+  end
+
+  def hspd12_compliant_cert_required_error
+    return if !@piv_cac_required || @data['is_auth_cert']
+    'certificate.not_auth_cert'
   end
 
   def token_has_correct_nonce

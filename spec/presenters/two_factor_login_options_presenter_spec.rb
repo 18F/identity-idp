@@ -5,8 +5,17 @@ describe TwoFactorLoginOptionsPresenter do
 
   let(:user) { User.new }
   let(:view) { ActionController::Base.new.view_context }
-  let(:presenter) do
-    TwoFactorLoginOptionsPresenter.new(user, view, nil, nil)
+  let(:aal3_required) { false }
+  let(:piv_cac_required) { false }
+
+  subject(:presenter) do
+    TwoFactorLoginOptionsPresenter.new(
+      user: user,
+      view: view,
+      service_provider: nil,
+      aal3_required: false,
+      piv_cac_required: false,
+    )
   end
 
   it 'supplies a title' do

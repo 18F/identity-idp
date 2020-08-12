@@ -213,6 +213,15 @@ module SamlAuthHelper
     settings
   end
 
+  def ial1_with_aal3_saml_settings
+    settings = sp1_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+    ]
+    settings
+  end
+
   def sp1_authnrequest
     auth_request.create(sp1_saml_settings)
   end
@@ -227,6 +236,10 @@ module SamlAuthHelper
 
   def aal3_sp1_authnrequest
     auth_request.create(aal3_sp1_saml_settings)
+  end
+
+  def ial1_aal3_authnrequest
+    auth_request.create(ial1_with_aal3_saml_settings)
   end
 
   def missing_authn_context_saml_settings

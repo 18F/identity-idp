@@ -6,8 +6,11 @@ es:
       change_ssn: cambio
       continue: Continue
       start_over: Comenzar de nuevo
+      take_or_upload_picture: "<lg-take-photo>Toma una foto</lg-take-photo> o <lg-upload>Sube
+        una foto</lg-upload>"
       take_picture: Tomar la foto
       take_picture_retry: Retomar foto
+      upload_picture: Sube una foto
       use_phone: Usa tu telefono
     forms:
       address1: Dirección
@@ -25,6 +28,7 @@ es:
       zip_code: Código postal
     headings:
       address: Dirección de envio
+      back: Parte posterior
       capture_complete: Hemos verificado la identificación emitida por su estado
       document_capture: Agregue su identificación emitida por el estado
       document_capture_back: Detrás de su identificación
@@ -33,7 +37,9 @@ es:
       document_capture_heading_with_selfie_html: Cargue su identificación emitida
         por el estado y una foto suya
       document_capture_selfie: Tu foto
-      selfie: Toma una selfie.
+      front: Frente
+      photo: Foto
+      selfie: Toma una selfie
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
       take_pic_front: Toma una foto del frente de tu identificación
@@ -48,6 +54,9 @@ es:
       welcome: Nosotros necesitamos verificar tu identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
+      document_capture_intro_acknowledgment: Recopilaremos información sobre usted
+        leyendo su identificación emitida por el estado. No almacenamos las imágenes
+        que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
       link_sent:

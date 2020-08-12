@@ -24,12 +24,14 @@
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
+    "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+    "react/prop-types": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,
@@ -48,13 +50,5 @@
       "app/phone-internationalization",
       "app/i18n-dropdown"
     ]
-  },
-  "overrides": [
-    {
-      "files": ["spec/javascripts/**/*"],
-      "rules": {
-        "react/prop-types": "off"
-      }
-    }
-  ]
+  }
 }

@@ -25,6 +25,7 @@ module Acuant
           errors: errors,
           exception: exception,
           result: result_code.name,
+          billed: result_code.billed,
         }
       end
 

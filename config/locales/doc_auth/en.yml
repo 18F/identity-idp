@@ -6,8 +6,11 @@ en:
       change_ssn: change
       continue: Continue
       start_over: Start over
+      take_or_upload_picture: "<lg-take-photo>Take photo</lg-take-photo> or <lg-upload>Upload
+        photo</lg-upload>"
       take_picture: Take photo
       take_picture_retry: Retake photo
+      upload_picture: Upload a photo
       use_phone: Use your phone
     forms:
       address1: Address
@@ -24,6 +27,7 @@ en:
       zip_code: Zip Code
     headings:
       address: Mailing Address
+      back: Back
       capture_complete: We have verified your state issued ID
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
@@ -32,7 +36,9 @@ en:
       document_capture_heading_with_selfie_html: Add your state&#8209;issued&nbsp;ID
         and selfie
       document_capture_selfie: Your photo
-      selfie: Take a selfie.
+      front: Front
+      photo: Photo
+      selfie: Take a selfie
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
       take_pic_front: Take a photo of the front of your ID
@@ -46,6 +52,9 @@ en:
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
+      document_capture_intro_acknowledgment: We’ll collect information about you by
+        reading your state-issued ID. We do not store images you upload. We only verify
+        your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
       link_sent:

@@ -9,10 +9,12 @@ module FederatedProtocols
     end
 
     def ial
-      request.requested_authn_context || default_authn_context
+      request.requested_ial_authn_context || default_authn_context
     end
 
-    def aal; end
+    def aal
+      request.requested_aal_authn_context
+    end
 
     def requested_attributes
       @_attributes ||= SamlRequestPresenter.new(

@@ -1,12 +1,72 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 
-function AcuantCaptureCanvas({ onImageCaptureSuccess, onImageCaptureFailure }) {
+/**
+ * @typedef AcuantCameraUI
+ *
+ * @prop {(AcuantSuccessCallback,AcuantFailureCallback)=>void} start Start capture.
+ * @prop {()=>void}                                            end   End capture.
+ */
+
+/**
+ * @typedef AcuantGlobals
+ *
+ * @prop {AcuantCameraUI} AcuantCameraUI Acuant camera UI API.
+ */
+
+/**
+ * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
+
+/**
+ * @typedef AcuantImage
+ *
+ * @prop {string} data   Base64-encoded image data.
+ * @prop {number} width  Image width.
+ * @prop {number} height Image height.
+ */
+
+/**
+ * @typedef AcuantSuccessResponse
+ *
+ * @prop {AcuantImage} image      Image object.
+ * @prop {boolean}     isPassport Whether document is passport.
+ * @prop {number}      glare      Detected image glare.
+ * @prop {number}      sharpness  Detected image sharpness.
+ * @prop {number}      dpi        Detected image resolution.
+ *
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.3.3/SimpleHTMLApp#acuantcamera
+ */
+
+/**
+ * @typedef {(response:AcuantSuccessResponse)=>void} AcuantSuccessCallback
+ */
+
+/**
+ * @typedef {(error:Error)=>void} AcuantFailureCallback
+ */
+
+/**
+ * @typedef AcuantCaptureCanvasProps
+ *
+ * @prop {AcuantSuccessCallback} onImageCaptureSuccess Success callback.
+ * @prop {AcuantFailureCallback} onImageCaptureFailure Failure callback.
+ */
+
+/**
+ * @param {AcuantCaptureCanvasProps} props Component props.
+ */
+function AcuantCaptureCanvas({
+  onImageCaptureSuccess = () => {},
+  onImageCaptureFailure = () => {},
+}) {
   useEffect(() => {
-    window.AcuantCameraUI.start(onImageCaptureSuccess, onImageCaptureFailure);
+    /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
+      onImageCaptureSuccess,
+      onImageCaptureFailure,
+    );
 
     return () => {
-      window.AcuantCameraUI.end();
+      /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
     };
   }, []);
 
@@ -23,15 +83,5 @@ function AcuantCaptureCanvas({ onImageCaptureSuccess, onImageCaptureFailure }) {
     </>
   );
 }
-
-AcuantCaptureCanvas.propTypes = {
-  onImageCaptureSuccess: PropTypes.func,
-  onImageCaptureFailure: PropTypes.func,
-};
-
-AcuantCaptureCanvas.defaultProps = {
-  onImageCaptureSuccess: () => {},
-  onImageCaptureFailure: () => {},
-};
 
 export default AcuantCaptureCanvas;

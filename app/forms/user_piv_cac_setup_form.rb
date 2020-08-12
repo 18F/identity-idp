@@ -2,7 +2,8 @@ class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type, :name, :key_id
+  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type, :name, :key_id,
+                :piv_cac_required
   attr_reader :name_taken
 
   validates :token, presence: true

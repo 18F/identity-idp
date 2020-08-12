@@ -33,33 +33,6 @@ module Idv
         DataUrlImage.new(flow_params[:selfie_image_data_url])
       end
 
-      def doc_auth_client
-        @doc_auth_client ||= begin
-          case doc_auth_vendor
-          when 'acuant'
-            ::Acuant::AcuantClient.new
-          when 'mock'
-            ::DocAuthMock::DocAuthMockClient.new
-          else
-            raise "#{doc_auth_vendor} is not a valid doc auth vendor"
-          end
-        end
-      end
-
-      ##
-      # The `acuant_simulator` config is deprecated. The logic to switch vendors
-      # based on its value can be removed once FORCE_ACUANT_CONFIG_UPGRADE in
-      # acuant_simulator_config_validation.rb has been set to true for at least
-      # a deploy cycle.
-      #
-      def doc_auth_vendor
-        vendor_from_config = Figaro.env.doc_auth_vendor
-        if vendor_from_config.blank?
-          return Figaro.env.acuant_simulator == 'true' ? 'mock' : 'acuant'
-        end
-        vendor_from_config
-      end
-
       def idv_throttle_params
         [current_user.id, :idv_resolution]
       end
@@ -73,9 +46,11 @@ module Idv
       end
 
       def idv_failure(result)
-        attempter_increment
+        attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
         if attempter_throttled?
           redirect_to idv_session_errors_failure_url
+        elsif result.extra.dig(:proofing_results, :exception).present?
+          redirect_to idv_session_errors_exception_url
         else
           redirect_to idv_session_errors_warning_url
         end
@@ -83,10 +58,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthClient.doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthClient.doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
@@ -103,7 +78,7 @@ module Idv
       def post_front_image
         return throttled_response if throttled_else_increment
 
-        result = doc_auth_client.post_front_image(
+        result = DocAuthClient.client.post_front_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -114,7 +89,7 @@ module Idv
       def post_back_image
         return throttled_response if throttled_else_increment
 
-        result = doc_auth_client.post_back_image(
+        result = DocAuthClient.client.post_back_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -125,7 +100,7 @@ module Idv
       def post_images
         return throttled_response if throttled_else_increment
 
-        result = doc_auth_client.post_images(
+        result = DocAuthClient.client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
           selfie_image: selfie_image&.read,

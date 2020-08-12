@@ -49,14 +49,16 @@ module TwoFactorAuthCode
 
     private
 
-    def aal3_policy
-      @aal3 ||= AAL3Policy.new(user: @view.current_user,
-                               service_provider: ServiceProvider.from_issuer(
-                                 @view.sp_session[:issuer],
-                               ),
-                               auth_method: @view.user_session[:auth_method],
-                               aal_level_requested: @view.sp_session[:aal_level_requested],
-                               piv_cac_requested: @view.sp_session[:piv_cac_requested])
+    def service_provider_mfa_policy
+      @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
+        user: @view.current_user,
+        service_provider: ServiceProvider.from_issuer(
+          @view.sp_session[:issuer],
+        ),
+        auth_method: @view.user_session[:auth_method],
+        aal_level_requested: @view.sp_session[:aal_level_requested],
+        piv_cac_requested: @view.sp_session[:piv_cac_requested],
+      )
     end
 
     def no_factors_enabled?
