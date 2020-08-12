@@ -46,7 +46,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
 
     const confirmation = await findByText(
-      'Finished sending: {"front_image":"data:image/png;base64,","back_image":"data:image/png;base64,","selfie":"data:image/png;base64,"}',
+      'Finished sending: {"front":"data:image/png;base64,","back":"data:image/png;base64,","selfie":"data:image/png;base64,"}',
     );
 
     expect(confirmation).to.be.ok();
