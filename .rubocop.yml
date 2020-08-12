@@ -15,6 +15,7 @@ AllCops:
     - 'lib/user_flow_exporter.rb'
     - 'node_modules/**/*'
     - 'tmp/**/*'
+    - 'vendor/**/*'
   TargetRubyVersion: 2.6
   TargetRailsVersion: 5.1
   UseCache: true
