@@ -61,7 +61,7 @@ es:
         </ul>
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      photo_glare: La foto tiene demasiado brillo. Inténtalo de nuevo.
+      photo_glare: La foto tiene un resplandor. Vuelve a intentarlo.
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
         de verificación de identidad. Póngase en contacto con su proveedor de servicios
         para obtener más información.

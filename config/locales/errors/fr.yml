@@ -61,7 +61,7 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
-      photo_glare: La photo est trop éblouissante. Veuillez réessayer.
+      photo_glare: La photo a des reflets, veuillez réessayer.
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d'identité. Veuillez contacter votre fournisseur de services
         pour plus d'informations.
