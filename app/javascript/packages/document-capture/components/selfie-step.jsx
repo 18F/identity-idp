@@ -1,5 +1,4 @@
 import React from 'react';
-import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import AcuantCapture from './acuant-capture';
 
@@ -26,7 +25,6 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
 
   return (
     <>
-      <PageHeading>{t('doc_auth.headings.selfie')}</PageHeading>
       <p className="margin-top-2">
         {t('doc_auth.instructions.document_capture_selfie_instructions')}
       </p>

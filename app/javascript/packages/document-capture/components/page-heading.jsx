@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 /**
  * @typedef PageHeadingProps
@@ -7,10 +7,18 @@ import React from 'react';
  */
 
 /**
- * @param {PageHeadingProps} props Props object.
+ * @param {PageHeadingProps & Record<string,any>} props Props object.
  */
-function PageHeading({ children }) {
-  return <h1 className="h3 my0">{children}</h1>;
+function PageHeading({ children, className, ...props }, ref) {
+  const classes = ['h3', 'my0', className].filter(Boolean).join(' ');
+
+  return (
+    // Disable reason: Intended as pass-through to heading HTML element.
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <h1 ref={ref} {...props} className={classes}>
+      {children}
+    </h1>
+  );
 }
 
-export default PageHeading;
+export default forwardRef(PageHeading);

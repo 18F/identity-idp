@@ -10,9 +10,10 @@ import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', component: () => <span>First</span> },
+    { name: 'first', title: 'First Title', component: () => <span>First</span> },
     {
       name: 'second',
+      title: 'Second Title',
       component: ({ value = {}, onChange }) => (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
         <label>
@@ -28,7 +29,7 @@ describe('document-capture/components/form-steps', () => {
       ),
       isValid: (value) => Boolean(value.second),
     },
-    { name: 'last', component: () => <span>Last</span> },
+    { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
   ];
 
   let originalHash;
@@ -195,24 +196,12 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(getByText('forms.buttons.submit.default'));
   });
 
-  it('shifts focus to first tabbable after step change', async () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
+  it('shifts focus to next heading on step change', async () => {
+    const { getByText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(document.activeElement).to.equal(getByLabelText('Second'));
-  });
-
-  it('shifts focus to form after step change if next step has no tabbables', async () => {
-    const steps = [...STEPS];
-    steps[2] = { ...steps[2], isValid: () => false };
-    const { getByText, getByRole } = render(<FormSteps steps={steps} />);
-
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
-    userEvent.click(getByText('forms.buttons.continue'));
-
-    expect(document.activeElement.nodeName).to.equal('FORM');
+    expect(document.activeElement).to.equal(getByText('Second Title'));
   });
 
   it("doesn't assign focus on mount", async () => {

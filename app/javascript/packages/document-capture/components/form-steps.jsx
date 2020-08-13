@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import tabbable from 'tabbable';
 import Button from './button';
+import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
@@ -8,6 +8,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @typedef FormStep
  *
  * @prop {string}                            name      Step name, used in history parameter.
+ * @prop {string}                            title     Step title, shown as heading.
  * @prop {import('react').FunctionComponent} component Step component implementation.
  * @prop {(values:object)=>boolean=}         isValid   Step validity function. Given set of form
  *                                                     values, returns true if values satisfy
@@ -67,7 +68,7 @@ export function getLastValidStepIndex(steps, values) {
 function FormSteps({ steps = [], onComplete = () => {} }) {
   const [values, setValues] = useState({});
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
-  const isProgressingToNextStep = useRef(false);
+  const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step');
   const { t } = useI18n();
 
@@ -86,15 +87,6 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
       setStepName(effectiveStep.name);
     }
   }, []);
-
-  useEffect(() => {
-    // After a step progression, shift focus to the first tabbable element within the new form
-    // contents. The form itself serves as a fallback in case there are no tabbable elements.
-    if (isProgressingToNextStep.current && formRef.current) {
-      (tabbable(formRef.current)[0] ?? formRef.current).focus();
-      isProgressingToNextStep.current = false;
-    }
-  }, [stepName]);
 
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!effectiveStep) {
@@ -135,14 +127,17 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
       setStepName(nextStepName);
     }
 
-    isProgressingToNextStep.current = true;
+    headingRef.current.focus();
   }
 
-  const { component: Component, name } = effectiveStep;
+  const { component: Component, name, title } = effectiveStep;
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep} tabIndex={-1}>
+    <form ref={formRef} onSubmit={toNextStep}>
+      <PageHeading key="title" ref={headingRef} tabIndex={-1}>
+        {title}
+      </PageHeading>
       <Component
         key={name}
         value={values}

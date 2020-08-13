@@ -5,6 +5,7 @@ import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
+import useI18n from '../hooks/use-i18n';
 
 /**
  * @typedef DocumentCaptureProps
@@ -18,20 +19,24 @@ import Submission from './submission';
  */
 function DocumentCapture({ isLivenessEnabled = true }) {
   const [formValues, setFormValues] = useState(null);
+  const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
   const steps = [
     isMobile && {
       name: 'intro',
+      title: t('doc_auth.headings.document_capture'),
       component: MobileIntroStep,
     },
     {
       name: 'documents',
+      title: t('doc_auth.headings.document_capture'),
       component: DocumentsStep,
       isValid: isDocumentsStepValid,
     },
     isLivenessEnabled && {
       name: 'selfie',
+      title: t('doc_auth.headings.selfie'),
       component: SelfieStep,
       isValid: isSelfieStepValid,
     },
