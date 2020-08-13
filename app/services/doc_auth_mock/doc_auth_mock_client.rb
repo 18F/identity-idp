@@ -1,4 +1,4 @@
-# rubocop:disable Lint/UnusedMethodArgument, Metrics/ClassLength
+# rubocop:disable Lint/UnusedMethodArgument
 module DocAuthMock
   class DocAuthMockClient
     class << self
@@ -48,7 +48,6 @@ module DocAuthMock
       Acuant::Response.new(success: true)
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def post_images(front_image:, back_image:, selfie_image:,
                     liveness_checking_enabled: nil, instance_id: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
@@ -73,7 +72,6 @@ module DocAuthMock
         results
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
@@ -133,4 +131,4 @@ module DocAuthMock
     end
   end
 end
-# rubocop:enable Lint/UnusedMethodArgument, Metrics/ClassLength
+# rubocop:enable Lint/UnusedMethodArgument

@@ -33,7 +33,6 @@ module Acuant
       merge_facial_match_and_liveness_response(facial_match_response, liveness_response)
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def post_images(front_image:, back_image:, selfie_image:,
                     liveness_checking_enabled: nil, instance_id: nil)
       document = create_document
@@ -58,7 +57,6 @@ module Acuant
         results
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def get_results(instance_id:)
       Requests::GetResultsRequest.new(instance_id: instance_id).fetch

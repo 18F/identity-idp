@@ -1,5 +1,4 @@
 # Handles SET events (Security Event Tokens)
-# rubocop:disable Metrics/ClassLength
 class SecurityEventForm
   include ActionView::Helpers::TranslationHelper
   include ActiveModel::Model
@@ -247,4 +246,3 @@ class SecurityEventForm
     }
   end
 end
-# rubocop:enable Metrics/ClassLength

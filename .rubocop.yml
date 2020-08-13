@@ -26,7 +26,7 @@ Rails:
 Metrics/AbcSize:
   Description: A calculated magnitude based on number of assignments, branches, and
     conditions.
-  Enabled: true
+  Enabled: false
   Max: 15
   Exclude:
   - spec/**/*
@@ -46,7 +46,7 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
-  Enabled: true
+  Enabled: false
   CountComments: false
   Max: 100
 
@@ -65,7 +65,7 @@ Layout/LineLength:
 Metrics/MethodLength:
   Description: Avoid methods longer than 15 lines of code.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: true
+  Enabled: false
   CountComments: false
   Max: 15
   Exclude:

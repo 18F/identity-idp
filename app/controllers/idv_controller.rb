@@ -6,7 +6,6 @@ class IdvController < ApplicationController
   before_action :confirm_idv_needed, only: [:fail]
   before_action :profile_needs_reactivation?, only: [:index]
 
-  # rubocop:disable Metrics/AbcSize
   def index
     if decorated_session.requested_more_recent_verification?
       verify_identity
@@ -21,7 +20,6 @@ class IdvController < ApplicationController
       verify_identity
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def activated
     redirect_to idv_url unless active_profile?

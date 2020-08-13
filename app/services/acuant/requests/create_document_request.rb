@@ -9,7 +9,6 @@ module Acuant
         super().merge 'Content-Type' => 'application/json'
       end
 
-      # rubocop:disable Metrics/MethodLength
       def body
         {
           AuthenticationSensitivity: 0,
@@ -31,7 +30,6 @@ module Acuant
           SubscriptionId: Figaro.env.acuant_assure_id_subscription_id,
         }.to_json
       end
-      # rubocop:enable Metrics/MethodLength
 
       def handle_http_response(response)
         Responses::CreateDocumentResponse.new(response)

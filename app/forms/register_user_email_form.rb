@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class RegisterUserEmailForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -133,4 +132,3 @@ class RegisterUserEmailForm
     @_user ||= User.find_with_email(email) || AnonymousUser.new
   end
 end
-# rubocop:enable Metrics/ClassLength

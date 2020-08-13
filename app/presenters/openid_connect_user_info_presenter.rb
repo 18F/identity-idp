@@ -31,7 +31,6 @@ class OpenidConnectUserInfoPresenter
     EmailContext.new(identity.user).last_sign_in_email_address.email
   end
 
-  # rubocop:disable Metrics/AbcSize
   def ial2_attributes
     phone = stringify_attr(ial2_data.phone)
 
@@ -45,7 +44,6 @@ class OpenidConnectUserInfoPresenter
       phone_verified: phone.present? ? true : nil,
     }
   end
-  # rubocop:enable Metrics/AbcSize
 
   def x509_attributes
     {

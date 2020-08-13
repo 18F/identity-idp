@@ -56,7 +56,6 @@ module Acuant
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
     def faraday_connection
       retry_options = {
         max: 2,
@@ -78,7 +77,6 @@ module Acuant
         conn.request :retry, retry_options
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def faraday_request_params
       timeout = Figaro.env.acuant_timeout&.to_i || 45
