@@ -316,14 +316,36 @@ describe('document-capture/components/file-input', () => {
   it('shows an error state', () => {
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
+    const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
-      <FileInput label="File" accept={['text/*']} onChange={onChange} />,
+      <FileInput label="File" accept={['text/*']} onChange={onChange} onError={onError} />,
     );
 
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
     expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('errors.doc_auth.selfie');
+  });
+
+  it('shows an error from rendering parent', () => {
+    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const onError = sinon.stub();
+    const props = { label: 'File', accept: ['text/*'], onChange, onError };
+    const { getByLabelText, getByText, rerender } = render(<FileInput {...props} />);
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+
+    expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('errors.doc_auth.selfie');
+
+    rerender(<FileInput {...props} error="Oops!" />);
+
+    expect(getByText('Oops!')).to.be.ok();
+    expect(() => getByText('errors.doc_auth.selfie')).to.throw();
+    expect(onError.callCount).to.equal(1);
   });
 
   it('forwards ref', () => {
