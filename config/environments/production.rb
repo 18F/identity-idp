@@ -25,8 +25,8 @@ Rails.application.configure do
   }
   config.action_mailer.asset_host = Figaro.env.asset_host || Figaro.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_options = { 
-    from: "#{Figaro.env.email_from_display_name} <#{Figaro.env.email_from}>" 
+  config.action_mailer.default_options = {
+    from: "#{Figaro.env.email_from_display_name} <#{Figaro.env.email_from}>",
   }
   config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
                                            :test
