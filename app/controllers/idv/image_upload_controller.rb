@@ -24,9 +24,10 @@ module Idv
         # }
         # store_pii(doc_response)
         # user_session['idv/doc_auth']['api_upload'] = upload_info
+        render_form_response(doc_response)
+      else
+        render_form_response(form_response)
       end
-
-      render json: { eyyy: true }
     end
 
     # def create
@@ -36,6 +37,16 @@ module Idv
     # end
 
     private
+
+    def render_form_response(form_response)
+      if form_response.success?
+        render json: {
+          success: true
+        }
+      else
+        render json: form_response.to_h, status: :bad_request
+      end
+    end
 
     def upload_and_check_images
       doc_response = client.post_images(front_image: @front_image,
@@ -88,7 +99,7 @@ module Idv
     end
 
     def doc_auth_client
-      @doc_auth_client ||= DocAuthClient.doc_auth_client
+      @doc_auth_client ||= DocAuthClient.client
     end
   end
 end

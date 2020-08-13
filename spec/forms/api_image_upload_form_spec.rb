@@ -42,8 +42,8 @@ RSpec.describe ApiImageUploadForm do
       let(:selfie_image) { 'http://cool.com' }
 
       it 'is not valid' do
-        expect(form.valid?).to rendereq(true)
-        expect(form.errors).to be_blank
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:selfie_image]).to eq(['invalid image url'])
       end
     end
   end

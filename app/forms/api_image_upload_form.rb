@@ -39,7 +39,7 @@ class ApiImageUploadForm
   def validate_images
     IMAGE_KEYS.each do |image_key|
       if params[image_key]
-        errors.add(image_key, t('errors.invalid_image')) unless valid_image?(params[image_key])
+        errors.add(image_key, 'invalid image url') unless valid_image?(params[image_key])
       end
     end
   end
