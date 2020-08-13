@@ -15,8 +15,9 @@ AllCops:
     - 'lib/user_flow_exporter.rb'
     - 'node_modules/**/*'
     - 'tmp/**/*'
+    - 'vendor/**/*'
   TargetRubyVersion: 2.6
-  TargetRailsVersion: 5.1
+  TargetRailsVersion: 5.2
   UseCache: true
 
 Rails:
@@ -25,7 +26,7 @@ Rails:
 Metrics/AbcSize:
   Description: A calculated magnitude based on number of assignments, branches, and
     conditions.
-  Enabled: true
+  Enabled: false
   Max: 15
   Exclude:
   - spec/**/*
@@ -45,11 +46,11 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
-  Enabled: true
+  Enabled: false
   CountComments: false
   Max: 100
 
-Metrics/LineLength:
+Layout/LineLength:
   Description: Limit lines to 100 characters.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
   Enabled: true
@@ -64,7 +65,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Description: Avoid methods longer than 15 lines of code.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: true
+  Enabled: false
   CountComments: false
   Max: 15
   Exclude:
@@ -112,7 +113,7 @@ Rails/TimeZone:
     - strict
     - flexible
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same
@@ -195,7 +196,7 @@ Style/IfUnlessModifier:
   Enabled: true
 
 # Checks the indentation of the first element in an array literal.
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -282,7 +283,7 @@ Style/TrailingCommaInHashLiteral:
     - consistent_comma
     - no_comma
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   MinNameLength: 2
 
 Style/ExpandPathArguments:
@@ -290,7 +291,6 @@ Style/ExpandPathArguments:
 
 Style/FormatStringToken:
   Enabled: false
-
 
 Style/SingleLineBlockParams:
   Enabled: false
@@ -302,4 +302,52 @@ Naming/MemoizedInstanceVariableName:
   Enabled: false
 
 Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Lint/SuppressedException:
+  Enabled: false
+
+Lint/SendWithMixinArgument:
+  Enabled: false
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: false
+
+Style/ExponentialNotation:
+  Enabled: false
+
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: false
+
+Rails/ApplicationMailer:
   Enabled: false

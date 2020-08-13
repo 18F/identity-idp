@@ -51,9 +51,9 @@ module IdvStepHelper
   end
 
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   alias complete_idv_steps_before_confirmation_step complete_idv_steps_with_phone_before_confirmation_step
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
 
   def complete_idv_steps_with_usps_before_review_step(user = user_with_2fa)
     complete_idv_steps_before_usps_step(user)

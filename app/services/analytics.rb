@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class Analytics
   def initialize(user:, request:, sp:, ahoy: nil)
     @user = user
@@ -60,7 +59,6 @@ class Analytics
     @browser ||= DeviceDetector.new(request.user_agent)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def browser_attributes
     {
       user_agent: request.user_agent,
@@ -74,7 +72,7 @@ class Analytics
     }
   end
 
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   ACCOUNT_RESET = 'Account Reset'.freeze
   ACCOUNT_DELETE_SUBMITTED = 'Account Delete submitted'.freeze
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
@@ -216,6 +214,4 @@ class Analytics
   WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/LineLength
-# rubocop:enable Metrics/ClassLength
+# rubocop:enable Layout/LineLength

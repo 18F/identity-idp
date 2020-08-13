@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/AbcSize, Metrics/ClassLength, Metrics/MethodLength
-
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'login_gov/hostdata'
@@ -166,4 +164,3 @@ module Deploy
     end
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/ClassLength, Metrics/MethodLength

@@ -72,9 +72,6 @@ plugins:
     enabled: true
   reek:
     enabled: false
-  rubocop:
-    enabled: true
-    channel: rubocop-0-72
   scss-lint:
     enabled: true
     checks:
