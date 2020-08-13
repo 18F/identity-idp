@@ -12,6 +12,8 @@ es:
       take_picture_retry: Retomar foto
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
+    errors:
+      invalid_image_url: URL de datos de imagen no formateada correctamente
     forms:
       address1: Dirección
       change_file: Cambiar archivo

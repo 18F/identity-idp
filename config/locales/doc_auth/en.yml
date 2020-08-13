@@ -12,6 +12,8 @@ en:
       take_picture_retry: Retake photo
       upload_picture: Upload a photo
       use_phone: Use your phone
+    errors:
+      invalid_image_url: image data URL not formatted correctly
     forms:
       address1: Address
       change_file: Change file

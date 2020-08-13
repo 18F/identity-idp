@@ -12,6 +12,8 @@ fr:
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
+    errors:
+      invalid_image_url: L'URL des données d'image n'est pas formatée correctement
     forms:
       address1: Adresse
       change_file: Changer de fichier
