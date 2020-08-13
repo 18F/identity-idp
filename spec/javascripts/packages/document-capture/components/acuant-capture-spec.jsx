@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, cleanup } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import AcuantCapture, {
