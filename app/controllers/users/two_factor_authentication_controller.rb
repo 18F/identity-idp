@@ -1,5 +1,4 @@
 module Users
-  # rubocop:disable Metrics/ClassLength
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
 
@@ -232,5 +231,4 @@ module Users
       end
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

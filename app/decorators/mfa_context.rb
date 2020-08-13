@@ -63,7 +63,6 @@ class MfaContext
       piv_cac_configurations + auth_app_configurations
   end
 
-  # rubocop:disable Metrics/AbcSize
   def enabled_mfa_methods_count
     phone_configurations.to_a.select(&:mfa_enabled?).count +
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
@@ -72,7 +71,6 @@ class MfaContext
       auth_app_configurations.to_a.select(&:mfa_enabled?).count +
       personal_key_method_count
   end
-  # rubocop:enable Metrics/AbcSize
 
   # returns a hash showing the count for each enabled 2FA configuration,
   # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.

@@ -24,7 +24,7 @@ describe SendSignUpEmailConfirmation do
       email_address.update!(confirmed_at: Time.zone.now)
       mail = double
       expect(mail).to receive(:deliver_later)
-      expect(UserMailer). to receive(:email_confirmation_instructions).with(
+      expect(UserMailer).to receive(:email_confirmation_instructions).with(
         user,
         email_address.email,
         confirmation_token,
@@ -39,7 +39,7 @@ describe SendSignUpEmailConfirmation do
       it 'sends an email with a link to try another email if the current email is unconfirmed' do
         mail = double
         expect(mail).to receive(:deliver_later)
-        expect(UserMailer). to receive(:unconfirmed_email_instructions).with(
+        expect(UserMailer).to receive(:unconfirmed_email_instructions).with(
           user,
           email_address.email,
           confirmation_token,
@@ -80,7 +80,7 @@ describe SendSignUpEmailConfirmation do
 
         mail = double
         expect(mail).to receive(:deliver_later)
-        expect(UserMailer). to receive(:email_confirmation_instructions).with(
+        expect(UserMailer).to receive(:email_confirmation_instructions).with(
           user, email_address.email, confirmation_token, instance_of(Hash)
         ).and_return(mail)
 

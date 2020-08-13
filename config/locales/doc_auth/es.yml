@@ -38,8 +38,9 @@ es:
         por el estado y una foto suya
       document_capture_selfie: Tu foto
       front: Frente
+      interstitial: Estamos procesando tus imágenes…
       photo: Foto
-      selfie: Toma una selfie
+      selfie: Toma una foto de ti mismo
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
       take_pic_front: Toma una foto del frente de tu identificación
@@ -59,6 +60,9 @@ es:
         que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
+      interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
+        paso automáticamente cuando esté listo.
+      interstitial_thanks: "¡Gracias por su paciencia!"
       link_sent:
       - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
         la identificación emitida por su estado.

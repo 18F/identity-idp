@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
@@ -171,4 +170,3 @@ class UserMailer < ActionMailer::Base
     !banlist.include?(modified_email)
   end
 end
-# rubocop:enable Metrics/ClassLength

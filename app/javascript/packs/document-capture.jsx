@@ -1,10 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import DocumentCapture from '../app/document-capture/components/document-capture';
-import AssetContext from '../app/document-capture/context/asset';
-import I18nContext from '../app/document-capture/context/i18n';
-import DeviceContext from '../app/document-capture/context/device';
-import { Provider as AcuantProvider } from '../app/document-capture/context/acuant';
+import {
+  DocumentCapture,
+  AssetContext,
+  I18nContext,
+  DeviceContext,
+  AcuantProvider,
+} from '@18f/identity-document-capture';
 
 const { I18n: i18n, assets } = window.LoginGov;
 
@@ -12,7 +14,7 @@ function getMetaContent(name) {
   return document.querySelector(`meta[name="${name}"]`)?.content ?? null;
 }
 
-/** @type {import('../app/document-capture/context/device').DeviceContext} */
+/** @type {import('@18f/identity-document-capture/context/device').DeviceContext} */
 const device = {
   isMobile:
     'mediaDevices' in window.navigator &&

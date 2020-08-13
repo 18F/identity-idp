@@ -1,6 +1,6 @@
 require_relative 'saml_auth_helper'
 
-class SamlResponseDoc # rubocop:disable Metrics/ClassLength
+class SamlResponseDoc
   include SamlAuthHelper
 
   attr_reader :original_encrypted

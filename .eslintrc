@@ -49,6 +49,15 @@
       "app/utils/ms-formatter",
       "app/phone-internationalization",
       "app/i18n-dropdown"
-    ]
-  }
+    ],
+    "import/internal-regex": "^@18f/identity-"
+  },
+  "overrides": [
+    {
+      "files": "spec/javascripts/**/*",
+      "rules": {
+        "react/jsx-props-no-spreading": "off"
+      }
+    }
+  ]
 }

@@ -1,7 +1,6 @@
 require 'stringex/unidecoder'
 require 'stringex/core_ext'
 
-# rubocop:disable Metrics/ClassLength
 class AttributeAsserter
   VALID_ATTRIBUTES = %i[
     first_name
@@ -25,7 +24,7 @@ class AttributeAsserter
     self.decrypted_pii = decrypted_pii
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
@@ -34,7 +33,7 @@ class AttributeAsserter
     add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
     user.asserted_attributes = attrs
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   private
 
@@ -127,4 +126,3 @@ class AttributeAsserter
     bundle.include?(:ascii)
   end
 end
-# rubocop:enable Metrics/ClassLength

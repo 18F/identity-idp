@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
-import UploadContext from '../../../app/javascript/app/document-capture/context/upload';
+import UploadContext from '@18f/identity-document-capture/context/upload';
 
 /**
  * Pass-through to React Testing Library, which applies default context values
