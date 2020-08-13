@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth document capture step' do
+feature 'document capture step' do
   include IdvStepHelper
   include DocAuthHelper
   include InPersonHelper
@@ -8,14 +8,11 @@ feature 'doc auth document capture step' do
   let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
-  let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(Figaro.env).to receive(:document_capture_react_enabled).and_return('false')
     allow(Figaro.env).to receive(:document_capture_step_enabled).
       and_return(document_capture_step_enabled)
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end
@@ -36,37 +33,21 @@ feature 'doc auth document capture step' do
 
       it 'is on the correct_page' do
         expect(current_path).to eq(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-        expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-        expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_front_html')))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_back_html')))
+        expect(page).to have_content(t('doc_auth.headings.selfie'))
       end
 
-      it 'displays tips' do
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+      it 'displays tips and sample images' do
+        expect(page).to have_content(I18n.t('doc_auth.tips.text1'))
+        expect(page).to have_css('img[src*=state-id-sample-front]')
       end
 
-      it 'proceeds to the next page with valid info and logs analytics info' do
-        allow_any_instance_of(ApplicationController).
-          to receive(:analytics).and_return(fake_analytics)
-
+      it 'proceeds to the next page with valid info' do
         attach_images
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
-        expect(fake_analytics).to have_logged_event(
-          Analytics::DOC_AUTH + ' submitted',
-          step: 'document_capture',
-          result: 'Passed',
-          billed: true,
-        )
       end
 
       it 'allows the use of a base64 encoded data url representation of the image' do
@@ -157,21 +138,9 @@ feature 'doc auth document capture step' do
 
       it 'is on the correct_page, but does not show the selfie upload option' do
         expect(current_path).to eq(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-        expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-      end
-
-      it 'displays tips' do
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_front_html')))
+        expect(page).to have_content(render_html_string(t('doc_auth.headings.upload_back_html')))
+        expect(page).not_to have_content(t('doc_auth.headings.selfie'))
       end
 
       it 'proceeds to the next page with valid info' do
@@ -242,5 +211,10 @@ feature 'doc auth document capture step' do
 
   def next_step
     idv_doc_auth_ssn_step
+  end
+
+  def render_html_string(html_string)
+    rendered = Nokogiri::HTML.parse(html_string).text
+    strip_nbsp(rendered)
   end
 end

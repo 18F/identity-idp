@@ -40,19 +40,6 @@ can be resolved automatically by running `yarn run lint --fix`. You may also
 consider one of the [avaialable editor integrations](https://prettier.io/docs/en/editors.html),
 which can simplify your workflow to apply formatting automatically on save.
 
-### Dependencies
-
-Since the IDP is not a Node.js application or library, the distinction between `dependencies` and `devDependencies` is largely one of communicating intent to other developers on the team based on whether they are brought in to benefit the user or the developer. It does not have a meaningful difference on how those dependencies are used by the application.
-
-In most situations, the following advice should apply:
-
-- `dependencies` include modules which are relevant for runtime (user-facing) features.
-  - Examples: Component libraries, input validation libraries
-- `devDependencies` include modules which largely support the developer.
-  - Examples: Build tools, testing libraries
-
-When installing a dependency, you can make this distinction by including or omitting the `--dev` (`-D`) flag when using `yarn add` or `yarn remove`. Refer to the [Yarn CLI documentation](https://classic.yarnpkg.com/en/docs/cli/) for more information about installing, removing, and upgrading packages.
-
 ## Testing
 
 ### At a Glance

@@ -9,9 +9,7 @@ module Idv
       @remaining_step_attempts = remaining_step_attempts
     end
 
-    def recovery_warning
-      @remaining_step_attempts = remaining_step_attempts
-    end
+    def failure; end
 
     private
 

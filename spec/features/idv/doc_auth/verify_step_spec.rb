@@ -54,20 +54,6 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
-  it 'does not proceed to the next page if resolution raises an exception' do
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_ssn_that_raises_exception
-    click_idv_continue
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_session_errors_exception_path)
-
-    click_on t('idv.failure.button.warning')
-
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
-  end
-
   it 'does not proceed to the next page if ssn is a duplicate' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step

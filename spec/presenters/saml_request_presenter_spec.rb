@@ -6,8 +6,8 @@ describe SamlRequestPresenter do
       it 'only returns :email' do
         request = instance_double(FakeSamlRequest)
         allow(FakeSamlRequest).to receive(:new).and_return(request)
-        allow(request).to receive(:requested_authn_contexts).
-          and_return([Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF])
+        allow(request).to receive(:requested_authn_context).
+          and_return(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
 
         parser = instance_double(SamlRequestParser)
         allow(SamlRequestParser).to receive(:new).with(request).and_return(parser)

@@ -36,8 +36,8 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
                                     user: current_user,
-                                    aal3_required: service_provider_mfa_policy.aal3_required?,
-                                    piv_cac_required: service_provider_mfa_policy.piv_cac_required?)
+                                    aal3_required: aal3_policy.aal3_required?,
+                                    piv_cac_required: aal3_policy.piv_cac_required?)
     end
 
     def process_valid_form
@@ -63,9 +63,14 @@ module Users
     end
 
     def confirm_user_needs_2fa_setup
+      return if aal3_policy.piv_cac_setup_required?
       return unless mfa_policy.two_factor_enabled?
-      return if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
+      return if aal3_mfa_setup_required?
       redirect_to after_mfa_setup_path
+    end
+
+    def aal3_mfa_setup_required?
+      aal3_policy.aal3_required? && !mfa_policy.aal3_mfa_enabled?
     end
 
     def two_factor_options_form_params

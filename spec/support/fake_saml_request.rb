@@ -11,20 +11,6 @@ class FakeSamlRequest
     Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
   end
 
-  def requested_authn_contexts
-    [
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-    ]
-  end
-
-  def requested_ial_authn_context
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-  end
-
-  def requested_aal_authn_context
-    nil
-  end
-
   def valid?
     true
   end

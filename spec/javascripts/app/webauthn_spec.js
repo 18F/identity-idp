@@ -1,20 +1,21 @@
+import atob from 'atob';
+import btoa from 'btoa';
 import * as WebAuthn from '../../../app/javascript/app/webauthn';
 
 describe('WebAuthn', () => {
-  let originalNavigator;
-  let originalCredentials;
   beforeEach(() => {
-    originalNavigator = global.navigator;
-    originalCredentials = global.navigator.credentials;
-    global.navigator.credentials = {
-      create: () => {},
-      get: () => {},
+    global.window = {
+      atob,
+      btoa,
+      location: { hostname: 'testing.webauthn.js' },
     };
-  });
-
-  afterEach(() => {
-    global.navigator = originalNavigator;
-    global.navigator.credentials = originalCredentials;
+    global.Uint8Array = Buffer;
+    global.navigator = {
+      credentials: {
+        create: () => {},
+        get: () => {},
+      },
+    };
   });
 
   describe('isWebAuthnEnabled', () => {
@@ -40,15 +41,15 @@ describe('WebAuthn', () => {
     const userId = '123';
     const userEmail = 'test@test.com';
     const userChallenge = '[1, 2, 3, 4, 5, 6, 7, 8]';
-    const excludeCredentials = 'Y3JlZGVudGlhbDEyMw==,Y3JlZGVudGlhbDQ1Ng=='; // Base64-encoded 'credential123,credential456'
+    const excludeCredentials = 'credential123,credential456';
 
     it('enrolls a device using the proper create options', (done) => {
       const expectedCreateOptions = {
         publicKey: {
-          challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
-          rp: { name: 'example.test' },
+          challenge: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]),
+          rp: { name: 'testing.webauthn.js' },
           user: {
-            id: new Uint8Array([123, 0, 0, 0, 0, 0, 0, 0]),
+            id: Buffer.from([123, 0, 0, 0, 0, 0, 0, 0]),
             name: 'test@test.com',
             displayName: 'test@test.com',
           },
@@ -142,13 +143,13 @@ describe('WebAuthn', () => {
 
   describe('verifyWebauthnDevice', () => {
     const userChallenge = '[1, 2, 3, 4, 5, 6, 7, 8]';
-    const credentialIds = 'Y3JlZGVudGlhbDEyMw==,Y3JlZGVudGlhbDQ1Ng=='; // Base64-encoded 'credential123,credential456'
+    const credentialIds = 'credential123,credential456';
 
     it('enrolls a device using the proper get options', (done) => {
       const expectedGetOptions = {
         publicKey: {
-          challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
-          rpId: 'example.test',
+          challenge: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]),
+          rpId: 'testing.webauthn.js',
           allowCredentials: [
             {
               // encodes to 'credential123'

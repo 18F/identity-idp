@@ -1,0 +1,7 @@
+.p2.clearfix.border-top
+  .clearfix.mxn1
+    .sm-col.sm-col-6.px1
+      .bold.truncate = event.event_type
+      = event.last_sign_in_location_and_ip
+    .sm-col.sm-col-6.px1.sm-right-align
+      = local_time(event.happened_at, t('time.formats.event_timestamp'))

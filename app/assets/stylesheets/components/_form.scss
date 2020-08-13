@@ -180,17 +180,3 @@ input::-webkit-inner-spin-button {
 .text-hint {
   color: #707070;
 }
-
-//================================================
-// Pending upstream Login Design System revisions:
-//================================================
-
-.usa-form-group--error {
-  border-left-style: none;
-  margin-top: 0;
-  padding-left: 0;
-
-  @include at-media('desktop') {
-    margin-left: 0;
-  }
-}

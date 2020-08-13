@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import sinon from 'sinon';
 import UploadContext from '../../../app/javascript/app/document-capture/context/upload';
 
 /**
@@ -14,14 +13,11 @@ import UploadContext from '../../../app/javascript/app/document-capture/context/
  * @return {import('@testing-library/react').RenderResult}
  */
 function renderWithDefaultContext(element) {
-  const upload = sinon
-    .stub()
-    .onCall(0)
-    .callsFake((payload) => Promise.resolve(payload))
-    .onCall(1)
-    .throws();
-
-  return render(<UploadContext.Provider value={upload}>{element}</UploadContext.Provider>);
+  return render(
+    <UploadContext.Provider value={(payload) => Promise.resolve(payload)}>
+      {element}
+    </UploadContext.Provider>,
+  );
 }
 
 export default renderWithDefaultContext;

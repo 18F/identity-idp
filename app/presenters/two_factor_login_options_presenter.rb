@@ -1,14 +1,15 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user
+  attr_reader :current_user
 
-  def initialize(user:, view:, service_provider:, aal3_required:, piv_cac_required:)
-    @user = user
+  def initialize(current_user, view, service_provider, aal3_policy)
+    @current_user = current_user
     @view = view
     @service_provider = service_provider
-    @aal3_required = aal3_required
-    @piv_cac_required = piv_cac_required
+    return unless aal3_policy
+    @aal3_required = aal3_policy.aal3_required?
+    @piv_cac_required = aal3_policy.piv_cac_required?
   end
 
   def title
@@ -28,19 +29,18 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def options
-    mfa = MfaContext.new(user)
-
-    if @piv_cac_required
-      configurations = mfa.piv_cac_configurations
-    elsif @aal3_required
+    mfa = MfaContext.new(current_user)
+    if @aal3_required
       configurations = mfa.aal3_configurations
+    elsif @piv_cac_required
+      configurations = mfa.piv_cac_configurations
     else
       configurations = mfa.two_factor_configurations
       # for now, we include the personal key since that's our current behavior,
       # but there are designs to remove personal key from the option list and
       # make it a link with some additional text to call it out as a special
       # case.
-      if TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?
+      if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
         configurations << mfa.personal_key_configuration
       end
     end
@@ -86,10 +86,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_token
-    user&.account_reset_request&.request_token
+    current_user&.account_reset_request&.request_token
   end
 
   def account_reset_token_valid?
-    user&.account_reset_request&.granted_token_valid?
+    current_user&.account_reset_request&.granted_token_valid?
   end
 end

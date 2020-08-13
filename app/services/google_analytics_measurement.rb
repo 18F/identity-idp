@@ -6,7 +6,7 @@ class GoogleAnalyticsMeasurement
 
   cattr_accessor :adapter do
     Faraday.new(url: GA_URL, request: { open_timeout: TIMEOUT, timeout: TIMEOUT }) do |faraday|
-      faraday.adapter :net_http
+      faraday.adapter :typhoeus
     end
   end
 
@@ -19,7 +19,6 @@ class GoogleAnalyticsMeasurement
 
   def send_event
     adapter.post do |request|
-      request.headers['Content-Type'] = 'application/json'
       request.body = request_body
     end
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
@@ -30,13 +29,13 @@ class GoogleAnalyticsMeasurement
 
   def request_body
     {
-      v: '1',
+      v: 1,
       tid: Figaro.env.google_analytics_key,
       t: :event,
       ec: category,
       ea: event_action,
       el: method,
       cid: client_id,
-    }.to_json
+    }
   end
 end

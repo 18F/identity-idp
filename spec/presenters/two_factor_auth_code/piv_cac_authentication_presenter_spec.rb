@@ -12,20 +12,6 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
-  let(:allow_user_to_switch_method) { false }
-  let(:aal3_required) { true }
-  let(:service_provider_mfa_policy) do
-    instance_double(ServiceProviderMfaPolicy,
-                    aal3_required?: aal3_required,
-                    allow_user_to_switch_method?: allow_user_to_switch_method)
-  end
-
-  before do
-    allow(presenter).to receive(
-      :service_provider_mfa_policy,
-    ).and_return(service_provider_mfa_policy)
-  end
-
   describe '#header' do
     let(:expected_header) { t('two_factor_authentication.piv_cac_header_text') }
 
@@ -39,9 +25,19 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         app: content_tag(:strong, APP_NAME))
     end
 
-    context 'with AAL3 required, and only one method enabled' do
-      let(:aal3_required) { true }
+    let(:multiple_configurations) { false }
+    let(:aal_required) { true }
+    let(:aal3_policy) do
+      instance_double('AAL3Policy',
+                      aal3_required?: aal_required,
+                      multiple_aal3_configurations?: multiple_configurations)
+    end
 
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+    end
+
+    context 'with AAL3 required, and only one method enabled' do
       let(:expected_help_text) do
         t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
       end
@@ -50,7 +46,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       end
     end
     context 'without AAL3 required' do
-      let(:aal3_required) { false }
+      let(:aal_required) { false }
       it 'finds the help text' do
         expect(presenter.help_text).to eq expected_help_text
       end
@@ -58,19 +54,20 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   describe '#link_text' do
-    let(:aal3_required) { true }
-
+    let(:aal3_policy) { instance_double('AAL3Policy') }
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+      allow(aal3_policy).to receive(:aal3_required?).and_return true
+    end
     context 'with multiple AAL3 methods' do
-      let(:allow_user_to_switch_method) { true }
-
       it 'supplies link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return true
         expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
       end
     end
     context 'with only one AAL3 method do' do
-      let(:allow_user_to_switch_method) { false }
-
       it ' supplies no link text' do
+        allow(aal3_policy).to receive(:multiple_aal3_configurations?).and_return false
         expect(presenter.link_text).to eq('')
       end
     end

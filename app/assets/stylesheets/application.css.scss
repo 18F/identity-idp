@@ -11,5 +11,4 @@
 // up work should upgrade to use a newer USWDS, at which time this should be removed altogether.
 #document-capture-form { // scss-lint:disable IdSelector
   @import 'uswds/dist/scss/elements/form-controls/file-input';
-  @import 'components/file-input';
 }

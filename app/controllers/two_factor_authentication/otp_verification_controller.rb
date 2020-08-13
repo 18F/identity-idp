@@ -2,7 +2,6 @@ module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
     before_action :confirm_voice_capability, only: [:show]
 

@@ -7,7 +7,7 @@ class SamlRequestValidator
 
   def call(service_provider:, authn_context:, nameid_format:)
     self.service_provider = service_provider
-    self.authn_context = Array(authn_context)
+    self.authn_context = authn_context
     self.nameid_format = nameid_format
 
     FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
@@ -32,29 +32,10 @@ class SamlRequestValidator
   end
 
   def authorized_authn_context
-    if !valid_authn_context? ||
-       (ial2_context_requested? && service_provider.ial != 2)
+    if !Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(authn_context) ||
+       (Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context) &&
+            service_provider.ial != 2)
       errors.add(:authn_context, :unauthorized_authn_context)
-    end
-  end
-
-  def valid_authn_context?
-    authn_contexts = authn_context.reject do |classref|
-      classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
-    end
-    authn_contexts.all? do |classref|
-      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref)
-    end
-  end
-
-  def ial2_context_requested?
-    case authn_context
-    when Array
-      authn_context.any? do |classref|
-        Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
-      end
-    else
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
     end
   end
 

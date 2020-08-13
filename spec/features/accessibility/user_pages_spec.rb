@@ -138,22 +138,4 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
-
-  scenario 'device events page' do
-    user = sign_in_and_2fa_user
-    device = create(:device, user: user)
-    create(:event, user: user)
-
-    visit account_events_path(id: device.id)
-
-    expect(page).to be_accessible.according_to :section508, :"best-practice"
-  end
-
-  scenario 'delete user page' do
-    sign_in_and_2fa_user
-
-    visit account_delete_path
-
-    expect(page).to be_accessible.according_to :section508, :"best-practice"
-  end
 end

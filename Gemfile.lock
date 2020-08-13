@@ -1,13 +1,14 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 149b5b480f0319ec39410e497bb4bbffd1652014
-  tag: v3.4.1
+  revision: f88d3cda9646aaae7f21f5bd37621618743dd88e
+  tag: v3.4.0
   specs:
-    aamva (3.4.1)
+    aamva (3.4.0)
       dotenv
       faraday
       hashie
       retries
+      typhoeus
       xmldsig
 
 GIT
@@ -20,12 +21,12 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 42074c77e3570197791075afb7b0a0f60de84e89
-  tag: v2.1.0
+  revision: 29f554ed2ea237c59a20fdbe4a675508b9c8539d
+  tag: v1.2.0
   specs:
-    lexisnexis (2.1.0)
+    lexisnexis (1.2.0)
       dotenv
-      faraday
+      typhoeus
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
@@ -43,27 +44,28 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f18dc9e8e629e57e5d7ba0b44f043f8d66545482
-  tag: 0.10.0.pre.18f
+  revision: d36270634b8157e6cd73f0c0eefe25a052f24c75
+  branch: master
   specs:
-    saml_idp (0.10.0.pre.18f)
+    saml_idp (0.9.0.pre.18f)
       activesupport
       builder
       httparty
-      nokogiri (>= 1.10.2)
+      nokogiri (>= 1.6.2)
       pkcs11
       uuid
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 656d5cd779217b8be02bdb82ef747cd0fe0680e1
-  tag: v0.1.5
+  revision: d752e9e8ff08ee1412c1c58227f91b3a25474138
+  tag: v0.1.4
   specs:
-    identity-telephony (0.1.5)
+    identity-telephony (0.1.4)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
       twilio-ruby
+      typhoeus
 
 GEM
   remote: https://rubygems.org/
@@ -168,8 +170,6 @@ GEM
     bindata (2.4.7)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.4.7)
-      msgpack (~> 1.0)
     brakeman (4.7.1)
     browser (2.7.1)
     builder (3.2.4)
@@ -239,7 +239,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.7.6)
+    dotenv (2.7.5)
     dotiw (4.0.1)
       actionpack (>= 4)
       i18n
@@ -253,6 +253,8 @@ GEM
     equalizer (0.0.11)
     errbase (0.2.0)
     erubi (1.9.0)
+    ethon (0.12.0)
+      ffi (>= 1.3.0)
     exception_notification (4.4.0)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
@@ -262,9 +264,10 @@ GEM
     factory_bot_rails (5.2.0)
       factory_bot (~> 5.2.0)
       railties (>= 4.2.0)
+    fakefs (0.20.1)
     faker (2.7.0)
       i18n (>= 1.6, < 1.8)
-    faraday (1.0.1)
+    faraday (0.17.0)
       multipart-post (>= 1.2, < 3)
     fasterer (0.8.0)
       colorize (~> 0.7)
@@ -302,7 +305,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    hashdiff (1.0.1)
+    hashdiff (1.0.0)
     hashie (4.1.0)
     heapy (0.1.4)
     highline (2.0.3)
@@ -369,7 +372,6 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.1)
-    msgpack (1.3.3)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     mustermann (1.1.1)
@@ -380,14 +382,13 @@ GEM
     net-ssh (5.2.0)
     newrelic_rpm (6.12.0.367)
     nio4r (2.5.2)
-    nokogiri (1.10.10)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
     oauth (0.5.4)
-    octokit (4.18.0)
-      faraday (>= 0.9)
+    octokit (4.14.0)
       sawyer (~> 0.8.0, >= 0.5.3)
     openssl (2.1.2)
     orm_adapter (0.5.0)
@@ -621,8 +622,8 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.1)
-    twilio-ruby (5.39.2)
-      faraday (>= 0.9, < 2.0)
+    twilio-ruby (5.29.0)
+      faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
     two_factor_authentication (2.1.1)
@@ -631,6 +632,8 @@ GEM
       rails (>= 3.1.1)
       randexp
       rotp (>= 3.2.0)
+    typhoeus (1.3.1)
+      ethon (>= 0.9.0)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -664,7 +667,7 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (~> 1.0)
       selenium-webdriver (~> 3.0)
-    webmock (3.8.3)
+    webmock (3.7.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -704,7 +707,6 @@ DEPENDENCIES
   base32-crockford
   better_errors (>= 2.5.1)
   binding_of_caller
-  bootsnap (~> 1.4.7)
   brakeman
   bullet (>= 6.0.2)
   bummr
@@ -719,8 +721,8 @@ DEPENDENCIES
   email_spec
   exception_notification (>= 4.4.0)
   factory_bot_rails (>= 5.2.0)
+  fakefs
   faker
-  faraday
   fasterer
   figaro
   foundation_emails
@@ -729,13 +731,13 @@ DEPENDENCIES
   guard-rspec
   hiredis
   http_accept_language
+  httparty
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
   identity-telephony!
   identity_validations!
   irb
   json-jwt (>= 1.11.0)
-  jwt
   knapsack
   lexisnexis!
   local_time
@@ -792,6 +794,7 @@ DEPENDENCIES
   timecop
   twilio-ruby
   two_factor_authentication (>= 2.1.1)
+  typhoeus
   uglifier (~> 3.2)
   user_agent_parser
   valid_email (>= 0.1.3)

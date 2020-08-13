@@ -4,14 +4,17 @@ class FailurePresenter
   STATE_CONFIG = {
     failure: {
       icon: 'alert/fail-x.svg',
+      alt_text: 'failure',
       color: 'red',
     },
     locked: {
       icon: 'alert/temp-lock.svg',
+      alt_text: 'locked',
       color: 'red',
     },
     warning: {
       icon: 'alert/warning-lg.svg',
+      alt_text: 'warning',
       color: 'yellow',
     },
   }.freeze

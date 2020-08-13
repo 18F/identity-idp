@@ -1,72 +1,24 @@
 import React from 'react';
 import render from '../../../support/render';
 import I18nContext from '../../../../../app/javascript/app/document-capture/context/i18n';
-import useI18n, {
-  formatHTML,
-} from '../../../../../app/javascript/app/document-capture/hooks/use-i18n';
+import useI18n from '../../../../../app/javascript/app/document-capture/hooks/use-i18n';
 
 describe('document-capture/hooks/use-i18n', () => {
-  describe('formatHTML', () => {
-    it('returns html string treated as escaped text without handler', () => {
-      const formatted = formatHTML('Hello <strong>world</strong>!', {});
+  const LocalizedString = ({ stringKey }) => useI18n()(stringKey);
 
-      const { container } = render(formatted);
+  it('returns localized key value', () => {
+    const { container } = render(
+      <I18nContext.Provider value={{ sample: 'translation' }}>
+        <LocalizedString stringKey="sample" />
+      </I18nContext.Provider>,
+    );
 
-      expect(container.innerHTML).to.equal('Hello &lt;strong&gt;world&lt;/strong&gt;!');
-    });
-
-    it('returns html string chunked by handlers', () => {
-      const formatted = formatHTML('Hello <strong>world</strong>!', {
-        strong: ({ children }) => <strong>{children}</strong>,
-      });
-
-      const { container } = render(formatted);
-
-      expect(container.innerHTML).to.equal('Hello <strong>world</strong>!');
-    });
-
-    it('returns html string chunked by multiple handlers', () => {
-      const formatted = formatHTML(
-        'Message: <lg-custom>Hello</lg-custom> <strong>world</strong>!',
-        {
-          'lg-custom': () => 'Greetings',
-          strong: ({ children }) => <strong>{children}</strong>,
-        },
-      );
-
-      const { container } = render(formatted);
-
-      expect(container.innerHTML).to.equal('Message: Greetings <strong>world</strong>!');
-    });
-
-    it('removes dangling empty text fragment', () => {
-      const formatted = formatHTML('Hello <strong>world</strong>', {
-        strong: ({ children }) => <strong>{children}</strong>,
-      });
-
-      const { container } = render(formatted);
-
-      expect(container.childNodes).to.have.lengthOf(2);
-    });
+    expect(container.textContent).to.equal('translation');
   });
 
-  describe('t', () => {
-    const LocalizedString = ({ stringKey }) => useI18n().t(stringKey);
+  it('falls back to key value', () => {
+    const { container } = render(<LocalizedString stringKey="sample" />);
 
-    it('returns localized key value', () => {
-      const { container } = render(
-        <I18nContext.Provider value={{ sample: 'translation' }}>
-          <LocalizedString stringKey="sample" />
-        </I18nContext.Provider>,
-      );
-
-      expect(container.textContent).to.equal('translation');
-    });
-
-    it('falls back to key value', () => {
-      const { container } = render(<LocalizedString stringKey="sample" />);
-
-      expect(container.textContent).to.equal('sample');
-    });
+    expect(container.textContent).to.equal('sample');
   });
 });

@@ -180,7 +180,6 @@ jobs:
           name: Run Lints
           command: |
             yarn run lint
-            yarn run typecheck
             bundle exec slim-lint app/views
   build-latest-container:
     working_directory: ~/identity-idp
