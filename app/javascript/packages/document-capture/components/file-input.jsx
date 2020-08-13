@@ -16,6 +16,8 @@ import DataURLFile from '../models/data-url-file';
  * @prop {string=}                         hint       Optional hint text.
  * @prop {string=}                         bannerText Optional banner overlay text.
  * @prop {string[]=}                       accept     Optional array of file input accept patterns.
+ * @prop {'user'|'environment'=}           capture    Optional facing mode if file input is used for
+ *                                                    capture.
  * @prop {DataURLFile=}                    value      Current value.
  * @prop {string=}                         error      Error to show.
  * @prop {(event:ReactMouseEvent)=>void=}  onClick    Input click handler.
@@ -115,6 +117,7 @@ const FileInput = forwardRef((props, ref) => {
     hint,
     bannerText,
     accept,
+    capture,
     value,
     error,
     onClick = () => {},
@@ -237,6 +240,7 @@ const FileInput = forwardRef((props, ref) => {
             className="usa-file-input__input"
             type="file"
             onChange={onChangeAsDataURL}
+            capture={capture}
             onClick={onClick}
             accept={accept ? accept.join() : undefined}
             aria-describedby={hint ? hintId : null}

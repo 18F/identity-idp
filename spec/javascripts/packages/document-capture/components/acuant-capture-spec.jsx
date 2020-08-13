@@ -7,6 +7,7 @@ import AcuantCapture, {
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
+import I18nContext from '@18f/identity-document-capture/context/i18n';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
@@ -394,6 +395,50 @@ describe('document-capture/components/acuant-capture', () => {
 
       expect(error).to.be.ok();
     });
+
+    it('triggers forced upload', () => {
+      const { getByText } = render(
+        <I18nContext.Provider
+          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        >
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </I18nContext.Provider>,
+      );
+
+      initialize();
+
+      const button = getByText('Upload');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+    });
+
+    it('triggers forced upload with `capture` value', () => {
+      const { getByText, getByLabelText } = render(
+        <I18nContext.Provider
+          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        >
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" capture="environment" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </I18nContext.Provider>,
+      );
+
+      initialize();
+
+      const button = getByText('Upload');
+      const input = getByLabelText('Image');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+      expect(input.getAttribute('capture')).to.equal('environment');
+    });
   });
 
   context('desktop', () => {
@@ -461,5 +506,20 @@ describe('document-capture/components/acuant-capture', () => {
     const hint = getByText('doc_auth.tips.document_capture_hint');
 
     expect(hint).to.be.ok();
+  });
+
+  it('captures by `capture` value', () => {
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" capture="environment" />
+      </AcuantContextProvider>,
+    );
+
+    initialize();
+
+    const button = getByLabelText('Image');
+    fireEvent.click(button);
+
+    expect(window.AcuantCameraUI.start.called).to.be.false();
   });
 });
