@@ -11,19 +11,19 @@ import DataURLFile from '../models/data-url-file';
 /**
  * @typedef AcuantCaptureProps
  *
- * @prop {string}                        label                 Label associated with file input.
- * @prop {string=}                       bannerText            Optional banner text to show in file
- *                                                             input.
- * @prop {DataURLFile=}                  value                 Current value.
- * @prop {(nextValue:DataURLFile)=>void} onChange              Callback receiving next value on
- *                                                             change.
- * @prop {string=}                       className             Optional additional class names.
- * @prop {number=}                       minimumGlareScore     Minimum glare score to be considered
- *                                                             acceptable.
- * @prop {number=}                       minimumSharpnessScore Minimum sharpness score to be
- *                                                             considered acceptable.
- * @prop {number=}                       minimumFileSize       Minimum file size (in bytes) to be
- *                                                             considered acceptable.
+ * @prop {string}                         label                 Label associated with file input.
+ * @prop {string=}                        bannerText            Optional banner text to show in file
+ *                                                              input.
+ * @prop {DataURLFile=}                   value                 Current value.
+ * @prop {(nextValue:DataURLFile?)=>void} onChange              Callback receiving next value on
+ *                                                              change.
+ * @prop {string=}                        className             Optional additional class names.
+ * @prop {number=}                        minimumGlareScore     Minimum glare score to be considered
+ *                                                              acceptable.
+ * @prop {number=}                        minimumSharpnessScore Minimum sharpness score to be
+ *                                                              considered acceptable.
+ * @prop {number=}                        minimumFileSize       Minimum file size (in bytes) to be
+ *                                                              considered acceptable.
  */
 
 /**
@@ -116,10 +116,10 @@ function AcuantCapture({
    * for common checks derived from DataURLFile properties (file size, etc). If invalid, error state
    * is assigned with appropriate error message.
    *
-   * @param {DataURLFile} nextValue Next value candidate.
+   * @param {DataURLFile?} nextValue Next value candidate.
    */
   function onChangeIfValid(nextValue) {
-    if (getDataURLFileSize(nextValue.data) < minimumFileSize) {
+    if (nextValue && getDataURLFileSize(nextValue.data) < minimumFileSize) {
       setOwnError(t('errors.doc_auth.photo_file_size'));
     } else {
       setOwnError(null);

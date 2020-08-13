@@ -483,6 +483,27 @@ describe('document-capture/components/acuant-capture', () => {
     expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
 
+  it('clears a selected value', () => {
+    const onChange = sinon.spy();
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture
+          label="Image"
+          value={
+            new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
+          }
+          onChange={onChange}
+        />
+      </AcuantContextProvider>,
+    );
+
+    const input = getByLabelText('Image');
+    fireEvent.change(input, { target: { files: [] } });
+
+    expect(onChange.getCall(0).args).to.have.lengthOf(1);
+    expect(onChange.getCall(0).args).to.deep.equal([null]);
+  });
+
   it('does not show hint if capture is supported', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
