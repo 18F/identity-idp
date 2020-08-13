@@ -23,7 +23,7 @@ Rails.application.configure do
   }
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
-  config.action_mailer.default_options = { from: Figaro.env.email_from }
+  config.action_mailer.default_options = { from: "#{Figaro.env.email_from_display_name} <#{Figaro.env.email_from}>" }
 
   config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']
