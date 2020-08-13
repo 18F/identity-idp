@@ -6,7 +6,7 @@ describe('document-capture/components/submission-pending', () => {
   it('renders interstitial content', () => {
     const { getByText } = render(<SubmissionPending />);
 
-    const heading = getByText('We are processing your images…');
+    const heading = getByText('doc_auth.headings.interstitial');
 
     expect(heading).to.be.ok();
   });

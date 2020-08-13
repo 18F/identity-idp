@@ -1,13 +1,16 @@
 import React from 'react';
 import Image from './image';
+import useI18n from '../hooks/use-i18n';
 
 function SubmissionPending() {
+  const { t } = useI18n();
+
   return (
     <div>
       <Image assetPath="id-card.svg" alt="" width="216" height="116" />
-      <h2>We are processing your images…</h2>
-      <p>This might take up to a minute. We’ll load the next step automatically when it’s done.</p>
-      <p>Thanks for your patience!</p>
+      <h2>{t('doc_auth.headings.interstitial')}</h2>
+      <p>{t('doc_auth.info.interstitial_eta')}</p>
+      <p>{t('doc_auth.info.interstitial_thanks')}</p>
     </div>
   );
 }
