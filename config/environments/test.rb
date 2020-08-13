@@ -17,7 +17,7 @@ Rails.application.configure do
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
-  config.assets.debug = true
+  config.assets.debug = false
 
   config.action_controller.asset_host = if ENV.key?('RAILS_ASSET_HOST')
                                           ENV['RAILS_ASSET_HOST']
