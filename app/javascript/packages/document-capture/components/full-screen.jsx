@@ -34,6 +34,11 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     return trapRef.current.deactivate;
   }, []);
 
+  useEffect(() => {
+    document.body.classList.add('has-full-screen-overlay');
+    return () => document.body.classList.remove('has-full-screen-overlay');
+  }, []);
+
   return (
     <div ref={modalRef} aria-modal="true" className="full-screen bg-white">
       <button

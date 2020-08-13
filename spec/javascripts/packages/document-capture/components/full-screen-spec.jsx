@@ -81,4 +81,14 @@ describe('document-capture/components/full-screen', () => {
 
     expect(onRequestClose.calledOnce).to.be.true();
   });
+
+  it('toggles modal class on body while mounted', () => {
+    const { unmount } = render(<FullScreen>Content</FullScreen>);
+
+    expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
+
+    unmount();
+
+    expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
+  });
 });
