@@ -13,7 +13,7 @@ module DocAuthClient
     def merge(other)
       Response.new(
         success: success? && other.success?,
-        errors: [errors, *other.errors],
+        errors: [*errors, *other.errors],
         exception: exception || other.exception,
         extra: extra.merge(other.extra),
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
