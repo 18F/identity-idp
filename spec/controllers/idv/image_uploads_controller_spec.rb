@@ -27,8 +27,12 @@ describe Idv::ImageUploadsController do
 
         json = JSON.parse(response.body, symbolize_names: true)
         expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq('Missing image keys')
+        expect(json[:errors]).to eq(['Front Please fill in this field.'])
       end
+    end
+
+    context 'with a bad image URL' do
+      before { params.merge!(front: bad_image_data) }
 
       context 'with a locale param' do
         before { params.merge!(locale: 'es') }
@@ -77,7 +81,7 @@ describe Idv::ImageUploadsController do
 
         json = JSON.parse(response.body, symbolize_names: true)
         expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq('Too blurry')
+        expect(json[:errors]).to eq(['Too blurry', 'Wrong document'])
       end
     end
   end

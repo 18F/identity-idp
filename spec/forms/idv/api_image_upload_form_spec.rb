@@ -60,7 +60,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['invalid image url'])
+        expect(form.errors[:selfie]).to eq(['image data URL not formatted correctly'])
       end
     end
   end
