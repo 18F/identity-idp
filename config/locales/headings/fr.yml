@@ -48,6 +48,7 @@ fr:
         expired: Le certificat que vous avez sélectionné a expiré.
         invalid: Le certificat que vous avez sélectionné n'est pas valide.
         none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
+        not_auth_cert: Veuillez choisir un autre certificat de votre carte PIV/CAC.
         ocsp_error: Nous avons des difficultés techniques. Veuillez réessayer plus
           tard.
         revoked: Le certificat que vous avez sélectionné a été retiré de votre carte.

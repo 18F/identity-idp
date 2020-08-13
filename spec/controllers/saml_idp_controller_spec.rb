@@ -203,7 +203,7 @@ describe SamlIdpController do
           success: false,
           errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
+          authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           service_provider: 'http://localhost:3000',
         }
 
@@ -229,7 +229,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -257,7 +257,7 @@ describe SamlIdpController do
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'invalid_provider',
         }
 
@@ -287,7 +287,7 @@ describe SamlIdpController do
             authn_context: [t('errors.messages.unauthorized_authn_context')],
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
+          authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           service_provider: 'invalid_provider',
         }
 
@@ -311,6 +311,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -333,6 +334,7 @@ describe SamlIdpController do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: nil,
+          piv_cac_requested: false,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -449,7 +451,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -471,7 +473,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
           idv: false,
           finish_profile: false,
@@ -497,7 +499,7 @@ describe SamlIdpController do
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: 'http://idmanagement.gov/ns/assurance/ial/1',
+          authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
           service_provider: 'http://localhost:3000',
         }
 
@@ -953,7 +955,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'http://localhost:3000',
           idv: true,
           finish_profile: false,
@@ -988,7 +990,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -1013,7 +1015,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: true,

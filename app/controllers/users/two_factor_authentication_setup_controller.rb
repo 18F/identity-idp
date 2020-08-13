@@ -36,10 +36,10 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
                                     user: current_user,
-                                    aal3_required: aal3_policy.aal3_required?)
+                                    aal3_required: service_provider_mfa_policy.aal3_required?,
+                                    piv_cac_required: service_provider_mfa_policy.piv_cac_required?)
     end
 
-    # rubocop:disable Metrics/MethodLength
     def process_valid_form
       case @two_factor_options_form.selection
       when 'voice', 'sms', 'phone'
@@ -54,7 +54,6 @@ module Users
         redirect_to backup_code_setup_url
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def handle_empty_selection
       return if params[:two_factor_options_form].present?
@@ -65,12 +64,8 @@ module Users
 
     def confirm_user_needs_2fa_setup
       return unless mfa_policy.two_factor_enabled?
-      return if aal3_mfa_setup_required?
+      return if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       redirect_to after_mfa_setup_path
-    end
-
-    def aal3_mfa_setup_required?
-      aal3_policy.aal3_required? && !mfa_policy.aal3_mfa_enabled?
     end
 
     def two_factor_options_form_params

@@ -1,10 +1,8 @@
 ---
 en:
   image_description:
-    accordian_minus_buttom: Minus button
-    accordian_plus_buttom: Plus button
     camera_mobile_phone: Camera flashing on a mobile phone
+    close: Close button
     spinner: Loading spinner
     totp_qrcode: QR code for authenticator app
     us_flag: US flag
-    close: Close button

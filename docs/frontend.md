@@ -16,11 +16,12 @@
 
 ### At a Glance
 
-- site should work if JS is off (and have enhanced features if JS is on)
-- uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/)
-- JS modules are installed & managed via `yarn` (see `package.json`)
+- Site should work if JS is off (and have enhanced features if JS is on).
+- Uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/).
+- JS modules are installed & managed via `yarn` (see `package.json`).
 - JS is transpiled, bundled, and minified via `webpacker` (using
-  `rails-webpacker` gem to utilize Rails asset pipeline)
+  `rails-webpacker` gem to utilize Rails asset pipeline).
+- Reusable code is organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
 ### Prettier
 
@@ -39,6 +40,35 @@ Prettier is integrated with [the project's linting setup](#eslint). Most issues
 can be resolved automatically by running `yarn run lint --fix`. You may also
 consider one of the [avaialable editor integrations](https://prettier.io/docs/en/editors.html),
 which can simplify your workflow to apply formatting automatically on save.
+
+### Dependencies
+
+Since the IDP is not a Node.js application or library, the distinction between `dependencies` and `devDependencies` is largely one of communicating intent to other developers on the team based on whether they are brought in to benefit the user or the developer. It does not have a meaningful difference on how those dependencies are used by the application.
+
+In most situations, the following advice should apply:
+
+- `dependencies` include modules which are relevant for runtime (user-facing) features.
+  - Examples: Component libraries, input validation libraries
+- `devDependencies` include modules which largely support the developer.
+  - Examples: Build tools, testing libraries
+
+When installing a dependency, you can make this distinction by including or omitting the `--dev` (`-D`) flag when using `yarn add` or `yarn remove`. Refer to the [Yarn CLI documentation](https://classic.yarnpkg.com/en/docs/cli/) for more information about installing, removing, and upgrading packages.
+
+### Yarn Workspaces
+
+[Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and organize code which is used just like any other NPM package, but which doesn't require the overhead involved in publishing those modules and keeping versions in sync across multiple repositories. The IDP uses Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding practices in abstractions.
+
+In practice:
+
+- All folders within `app/javascript/packages` are treated as workspace packages.
+- Each package should have its own `package.json` that includes...
+  - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
+  - ...a listing of its own dependencies, including to other workspace packages using [`file:` prefix](https://classic.yarnpkg.com/en/docs/cli/add/).
+  - ...[`"private": true`](https://docs.npmjs.com/files/package.json#private), since workspaces packages are currently not published to NPM.
+  - ...a value for the `version` field, since it is required. The value value can be anything, and `"1.0.0"` is a good default.
+- Each package should include an `index.js` which serves as the entry-point and public API for the package.
+
+A package might have a corresponding file by the same package name contained within `app/javascript/packs` that serves as the integration point between packages and the Rails application. This is to encourage packages to be reusable, where the file in `packs` contains any logic required to wire the package to the running Rails application. Because Yarn will alias workspace packages using symlinks, you can reference a package using the name you assigned using the guidelines above for `package.json` `name` field (for example, `import { Button } from '@18f/identity-components';`).
 
 ## Testing
 

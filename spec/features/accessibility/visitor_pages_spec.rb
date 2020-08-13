@@ -25,4 +25,10 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
   end
+
+  scenario 'new user cancel registration page' do
+    visit sign_up_cancel_path
+
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
+  end
 end

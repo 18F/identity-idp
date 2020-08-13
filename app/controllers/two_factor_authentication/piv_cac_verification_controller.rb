@@ -69,6 +69,7 @@ module TwoFactorAuthentication
     def piv_cac_view_data
       {
         two_factor_authentication_method: two_factor_authentication_method,
+        hide_fallback_question: service_provider_mfa_policy.piv_cac_required?,
         user_email: current_user.email_addresses.take.email,
       }.merge(generic_data)
     end
@@ -78,6 +79,7 @@ module TwoFactorAuthentication
         user: current_user,
         token: params[:token],
         nonce: piv_cac_nonce,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
       )
     end
 

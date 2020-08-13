@@ -139,6 +139,21 @@ describe Users::TwoFactorAuthenticationController do
         expect(response).to redirect_to two_factor_options_url
       end
     end
+
+    context 'when SP requires PIV/CAC' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        stub_sign_in(user)
+        controller.session[:sp] = { aal3_requested: true, piv_cac_requested: true }
+      end
+
+      it 'redirects to MFA setup if no PIV/CAC is enabled' do
+        get :show
+
+        expect(response).to redirect_to(two_factor_options_url)
+      end
+    end
   end
 
   describe '#send_code' do

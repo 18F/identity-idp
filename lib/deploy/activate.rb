@@ -10,9 +10,16 @@ module Deploy
   class Activate
     attr_reader :logger, :s3_client
 
-    def initialize(logger: default_logger, s3_client: nil)
+    def initialize(
+      logger: default_logger,
+      s3_client: nil,
+      root: nil,
+      example_application_yaml_path: nil
+    )
       @logger = logger
       @s3_client = s3_client
+      @root = root
+      @example_application_yaml_path = example_application_yaml_path
     end
 
     def run
@@ -130,12 +137,8 @@ module Deploy
       logger
     end
 
-    def env_yaml_path
-      File.join(root, 'config/application_s3_env.yml')
-    end
-
     def root
-      File.expand_path('../../../', __FILE__)
+      @root || File.expand_path('../../../', __FILE__)
     end
 
     def application_config
@@ -143,7 +146,11 @@ module Deploy
     end
 
     def example_application_yaml_path
-      File.join(root, 'config/application.yml.default')
+      @example_application_yaml_path || File.join(root, 'config/application.yml.default')
+    end
+
+    def env_yaml_path
+      File.join(root, 'config/application_s3_env.yml')
     end
 
     def result_yaml_path

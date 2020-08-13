@@ -10,13 +10,48 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       new(data: { reauthn: reauthn }, view: view)
   end
 
+  let(:allow_user_to_switch_method) { false }
+  let(:aal3_required) { false }
+  let(:service_provider_mfa_policy) do
+    instance_double(
+      ServiceProviderMfaPolicy,
+      aal3_required?: aal3_required,
+      allow_user_to_switch_method?: allow_user_to_switch_method,
+    )
+  end
+
+  before do
+    allow(presenter).to receive(:service_provider_mfa_policy).and_return service_provider_mfa_policy
+  end
+
   describe '#help_text' do
+    context 'with aal3 required'
     it 'supplies no help text' do
       expect(presenter.help_text).to eq('')
     end
   end
 
+  describe '#link_text' do
+    let(:aal3_required) { true }
+
+    context 'with multiple AAL3 methods' do
+      let(:allow_user_to_switch_method) { true }
+
+      it 'supplies link text' do
+        expect(presenter.link_text).to eq(t('two_factor_authentication.webauthn_piv_available'))
+      end
+    end
+
+    context 'with only one AAL3 method do' do
+      it 'supplies no link text' do
+        expect(presenter.link_text).to eq('')
+      end
+    end
+  end
+
   describe '#fallback_question' do
+    let(:aal3_required) { false }
+
     it 'supplies a fallback_question' do
       expect(presenter.fallback_question).to \
         eq(t('two_factor_authentication.webauthn_fallback.question'))

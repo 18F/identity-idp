@@ -12,6 +12,20 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
+  let(:allow_user_to_switch_method) { false }
+  let(:aal3_required) { true }
+  let(:service_provider_mfa_policy) do
+    instance_double(ServiceProviderMfaPolicy,
+                    aal3_required?: aal3_required,
+                    allow_user_to_switch_method?: allow_user_to_switch_method)
+  end
+
+  before do
+    allow(presenter).to receive(
+      :service_provider_mfa_policy,
+    ).and_return(service_provider_mfa_policy)
+  end
+
   describe '#header' do
     let(:expected_header) { t('two_factor_authentication.piv_cac_header_text') }
 
@@ -25,7 +39,41 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         app: content_tag(:strong, APP_NAME))
     end
 
-    it { expect(presenter.help_text).to eq expected_help_text }
+    context 'with AAL3 required, and only one method enabled' do
+      let(:aal3_required) { true }
+
+      let(:expected_help_text) do
+        t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
+      end
+      it 'finds the PIV/CAC only help text' do
+        expect(presenter.help_text).to eq expected_help_text
+      end
+    end
+    context 'without AAL3 required' do
+      let(:aal3_required) { false }
+      it 'finds the help text' do
+        expect(presenter.help_text).to eq expected_help_text
+      end
+    end
+  end
+
+  describe '#link_text' do
+    let(:aal3_required) { true }
+
+    context 'with multiple AAL3 methods' do
+      let(:allow_user_to_switch_method) { true }
+
+      it 'supplies link text' do
+        expect(presenter.link_text).to eq(t('two_factor_authentication.piv_cac_webauthn_available'))
+      end
+    end
+    context 'with only one AAL3 method do' do
+      let(:allow_user_to_switch_method) { false }
+
+      it ' supplies no link text' do
+        expect(presenter.link_text).to eq('')
+      end
+    end
   end
 
   describe '#piv_cac_capture_text' do

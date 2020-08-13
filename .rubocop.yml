@@ -86,6 +86,9 @@ Naming/VariableName:
   Exclude:
     - 'spec/services/pii/nist_encryption_spec.rb'
 
+Rails/FilePath:
+  Enabled: false
+
 Rails/HttpPositionalArguments:
   Description: 'Use keyword arguments instead of positional arguments in http method calls.'
   Enabled: true

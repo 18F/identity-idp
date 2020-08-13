@@ -138,7 +138,7 @@ describe PushNotification::AccountDelete do
     subject.call(user_id)
   end
 
-  it 'writes to NewRelic on conection errors' do
+  it 'writes to NewRelic on connection errors' do
     error = Faraday::ConnectionFailed.new('error')
     allow_any_instance_of(PushNotification::AccountDelete).
       to receive(:post_to_push_notification_url).and_raise(error)

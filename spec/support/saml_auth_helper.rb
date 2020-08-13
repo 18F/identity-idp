@@ -213,6 +213,15 @@ module SamlAuthHelper
     settings
   end
 
+  def ial1_with_aal3_saml_settings
+    settings = sp1_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+    ]
+    settings
+  end
+
   def sp1_authnrequest
     auth_request.create(sp1_saml_settings)
   end
@@ -227,6 +236,10 @@ module SamlAuthHelper
 
   def aal3_sp1_authnrequest
     auth_request.create(aal3_sp1_saml_settings)
+  end
+
+  def ial1_aal3_authnrequest
+    auth_request.create(ial1_with_aal3_saml_settings)
   end
 
   def missing_authn_context_saml_settings
@@ -321,6 +334,23 @@ module SamlAuthHelper
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       prompt: 'login',
+      nonce: nonce,
+    )
+  end
+
+  def visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
+    state = SecureRandom.hex
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    nonce = SecureRandom.hex
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF + ' ' +
+        Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email x509 x509:presented',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
       nonce: nonce,
     )
   end
