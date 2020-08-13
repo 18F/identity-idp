@@ -16,7 +16,7 @@ if !Rails.env.production? && !File.exist?(GEO_DATA_FILEPATH)
   Geocoder::Lookup::Test.set_default_stub(
     [
       { 'city' => '', 'country' => 'United States', 'state_code' => '' },
-    ]
+    ],
   )
 else
   Geocoder.configure(
