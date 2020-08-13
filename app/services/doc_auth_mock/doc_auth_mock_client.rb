@@ -91,11 +91,6 @@ module DocAuthMock
 
       self.class.response_mocks[method_name.to_sym]
     end
-
-    def handle_document_verification_failure(get_results_response)
-      extra = { notice: I18n.t('errors.doc_auth.general_info') }
-      DocAuthClient::Response.new(success: false, extra: extra).merge(get_results_response)
-    end
   end
 end
 # rubocop:enable Lint/UnusedMethodArgument

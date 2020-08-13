@@ -58,26 +58,5 @@ module Acuant
         results_response
       end
     end
-
-    private
-
-    def post_front_and_back_images(front_image:, back_image:, instance_id:)
-      front_image_response = post_front_image(front_image: front_image, instance_id: instance_id)
-      return front_image_response unless front_image_response.success?
-
-      post_back_image(back_image: back_image, instance_id: instance_id)
-    end
-
-    def fetch_doc_auth_results(instance_id)
-      results_response = get_results(instance_id: instance_id)
-      return handle_document_verification_failure(results_response) unless results_response.success?
-
-      results_response
-    end
-
-    def handle_document_verification_failure(get_results_response)
-      extra = { notice: I18n.t('errors.doc_auth.general_info') }
-      DocAuthClient::Response.new(success: false, extra: extra).merge(get_results_response)
-    end
   end
 end
