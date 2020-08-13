@@ -58,7 +58,7 @@ module DocAuthMock
       instance_id = document_response.instance_id
 
       front_image_response = post_front_image(image: front_image, instance_id: instance_id)
-      return front_image_response unless front_image_response.success?
+      return front_image_response unlessaf front_image_response.success?
 
       back_image_response = post_back_image(image: back_image, instance_id: instance_id)
       return back_image_response unless back_image_response.success?
