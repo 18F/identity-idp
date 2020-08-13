@@ -314,6 +314,7 @@ development:
     return_to_sp_url: 'http://localhost:3001'
     redirect_uris:
       - 'http://localhost:3001/auth/logindotgov/callback'
+      - 'http://localhost:3001'
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uris:
