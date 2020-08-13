@@ -60,9 +60,10 @@ const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES = process.env.ACUANT_MINIMUM_FILE_SIZE
-  ? Number(process.env.ACUANT_MINIMUM_FILE_SIZE)
-  : 500 * 1024;
+const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
+  process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
+    ? 500 * 1024
+    : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
