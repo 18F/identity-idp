@@ -27,12 +27,12 @@ module Db
       def call(ial, today)
         issuers = issuers_sql(iaa)
         return unless issuers
-        sql = format(<<~SQL, sql_params(today))
+        sql = format(<<~SQL, sql_params(today, issuers, ial))
           SELECT COUNT(*) as active_count FROM identities
-          WHERE service_provider in #{issuers}
-          AND last_ial#{ial}_authenticated_at >= %{beginning_of_month} and
+          WHERE service_provider in %{issuers}
+          AND last_ial%{ial}_authenticated_at >= %{beginning_of_month} and
           user_id IN (select user_id from profiles)
-          #{prior_months_sql(ial, today, issuers)}
+          %{prior_months_sql}
         SQL
         ActiveRecord::Base.connection.execute(sql)[0]['active_count']
       end
@@ -50,9 +50,12 @@ module Db
         SQL
       end
 
-      def sql_params(today)
+      def sql_params(today, issuers, ial)
         {
           beginning_of_month: ActiveRecord::Base.connection.quote(today.beginning_of_month),
+          ial: ial,
+          prior_months_sql: prior_months_sql(ial, today, issuers),
+          issuers: issuers,
         }
       end
 
