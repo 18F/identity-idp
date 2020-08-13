@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
   subject(:form) do
@@ -57,6 +57,15 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when an image data URI is not a properly encoded image' do
       let(:selfie_image) { 'http://cool.com' }
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:selfie]).to eq(['image data URL not formatted correctly'])
+      end
+    end
+
+    context 'when an image data URI is not even a valid URI' do
+      let(:selfie_image) { 'aaaa' }
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)

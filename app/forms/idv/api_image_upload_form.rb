@@ -61,18 +61,8 @@ module Idv
     end
 
     def valid_image?(data_url)
-      uri = URI(data_url)
-      return false if uri.opaque.blank?
-
-      content_type_encoding, data = uri.opaque.split(',')
-      content_type, encoding = content_type_encoding.split(';')
-
-      uri.scheme == 'data' &&
-        content_type.start_with?('image/') &&
-        (
-          (encoding == 'base64' && Base64.decode64(data).present?) ||
-          (!encoding && CGI.unescape(data).present?)
-        )
+      image = Idv::DataUrlImage.new(data_url)
+      image.content_type.start_with?('image/') && image.read.present?
     end
   end
 end
