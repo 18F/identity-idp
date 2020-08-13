@@ -48,7 +48,7 @@ module DocAuthMock
       DocAuthClient::Response.new(success: true)
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def post_images(front_image:, back_image:, selfie_image:, liveness_checking_enabled: nil)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -72,7 +72,7 @@ module DocAuthMock
         results_response
       end
     end
-    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     def get_results(instance_id:)
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
@@ -98,4 +98,4 @@ module DocAuthMock
     end
   end
 end
-# rubocop:enable Lint/UnusedMethodArgument, Metrics/ClassLength
+# rubocop:enable Lint/UnusedMethodArgument
