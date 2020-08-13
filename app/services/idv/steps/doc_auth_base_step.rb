@@ -117,7 +117,7 @@ module Idv
 
       def throttled_response
         redirect_to throttled_url
-        ::Acuant::Response.new(
+        DocAuthClient::Response.new(
           success: false,
           errors: [I18n.t('errors.doc_auth.acuant_throttle')],
         )

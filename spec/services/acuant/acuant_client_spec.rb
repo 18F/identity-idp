@@ -99,11 +99,10 @@ describe Acuant::AcuantClient do
           back_image: DocAuthImageFixtures.document_back_image,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_enabled: liveness_enabled,
-          instance_id: instance_id,
         )
 
         expect(result.success?).to eq(true)
-        expect(result.class).to eq(Acuant::Responses::ResponseWithPii)
+        expect(result.pii_from_doc).to_not be_empty
       end
     end
 
@@ -114,7 +113,6 @@ describe Acuant::AcuantClient do
           back_image: DocAuthImageFixtures.document_back_image,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_enabled: liveness_enabled,
-          instance_id: instance_id,
         )
 
         expect(result.success?).to eq(true)
@@ -132,11 +130,9 @@ describe Acuant::AcuantClient do
           back_image: DocAuthImageFixtures.document_back_image,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_enabled: liveness_enabled,
-          instance_id: instance_id,
         )
 
         expect(result.success?).to eq(false)
-        expect(result).to be_kind_of(FormResponse)
       end
     end
   end
@@ -224,7 +220,7 @@ describe Acuant::AcuantClient do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq([])
-        expect(result.class).to eq(Acuant::Response)
+        expect(result.class).to eq(DocAuthClient::Response)
         expect(get_face_stub).to have_been_requested
         expect(facial_match_stub).to have_been_requested
         expect(liveness_stub).to have_been_requested

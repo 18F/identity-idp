@@ -138,7 +138,7 @@ feature 'doc auth document capture step' do
       it 'catches network connection errors on post_front_image' do
         DocAuthMock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
-          response: Acuant::Response.new(
+          response: DocAuthClient::Response.new(
             success: false,
             errors: [I18n.t('errors.doc_auth.acuant_network_error')],
           ),
@@ -225,7 +225,7 @@ feature 'doc auth document capture step' do
       it 'catches network connection errors on post_front_image' do
         DocAuthMock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
-          response: Acuant::Response.new(
+          response: DocAuthClient::Response.new(
             success: false,
             errors: [I18n.t('errors.doc_auth.acuant_network_error')],
           ),

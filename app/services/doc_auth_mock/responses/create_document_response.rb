@@ -1,6 +1,6 @@
 module DocAuthMock
   module Responses
-    class CreateDocumentResponse < Acuant::Response
+    class CreateDocumentResponse < DocAuthClient::Response
       attr_reader :instance_id
 
       def initialize(success: true, errors: [], exception: nil, instance_id:)
