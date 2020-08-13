@@ -10,7 +10,7 @@ module Idv
 
     # @return [String]
     def content_type
-      content_type, *rest = @header.split(';')
+      content_type, *_rest = @header.split(';')
       content_type.to_s
     end
 
