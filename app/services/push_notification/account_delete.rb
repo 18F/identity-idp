@@ -81,7 +81,8 @@ module PushNotification
     end
 
     def web_push(payload)
-      signed_token = JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+      token = JSON::JWT.new(payload)
+      signed_token = token.sign(RequestKeyManager.private_key)
       "WebPush #{signed_token}"
     end
 
@@ -98,7 +99,7 @@ module PushNotification
 
     def faraday_adapter(url)
       Faraday.new(url: url) do |faraday|
-        faraday.adapter :net_http
+        faraday.adapter :typhoeus
       end
     end
   end

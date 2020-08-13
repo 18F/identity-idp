@@ -15,22 +15,18 @@ describe('document-capture/components/button', () => {
     expect(button.type).to.equal('button');
     expect(button.classList.contains('btn')).to.be.true();
     expect(button.classList.contains('btn-primary')).to.be.false();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.false();
   });
 
-  it('calls click callback with the event argument', () => {
+  it('calls click callback with no arguments', () => {
     const onClick = sinon.spy();
-    const { getByText } = render(
-      <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
-    );
+    const { getByText } = render(<Button onClick={onClick}>Click me</Button>);
 
     const button = getByText('Click me');
     userEvent.click(button);
 
     expect(onClick.calledOnce).to.be.true();
-    expect(onClick.getCall(0).args[0]).to.equal('click');
+    expect(onClick.getCall(0).args).to.deep.equal([]);
   });
 
   it('renders as primary', () => {
@@ -39,31 +35,7 @@ describe('document-capture/components/button', () => {
     const button = getByText('Click me');
 
     expect(button.classList.contains('btn-primary')).to.be.true();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.true();
-    expect(button.classList.contains('btn-link')).to.be.false();
-  });
-
-  it('renders as secondary', () => {
-    const { getByText } = render(<Button isSecondary>Click me</Button>);
-
-    const button = getByText('Click me');
-
-    expect(button.classList.contains('btn-primary')).to.be.false();
-    expect(button.classList.contains('btn-secondary')).to.be.true();
-    expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.false();
-  });
-
-  it('renders as unstyled', () => {
-    const { getByText } = render(<Button isUnstyled>Click me</Button>);
-
-    const button = getByText('Click me');
-
-    expect(button.classList.contains('btn-primary')).to.be.false();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
-    expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.true();
   });
 
   it('renders as disabled', () => {

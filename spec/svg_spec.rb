@@ -10,9 +10,7 @@ RSpec.describe 'SVG files' do
       it 'does not contain inline style tags (that render poorly in IE due to CSP)' do
         doc = Nokogiri::XML(File.read(svg_path))
 
-        expect(doc.css('style')).to be_empty.or(
-          have_attributes(text: match(%r{^\s*/\*\s*lint-ignore\s*\*/})),
-        )
+        expect(doc.css('style')).to be_empty
       end
     end
   end

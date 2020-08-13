@@ -1,8 +1,9 @@
+<br/>
 <%= button_to(
   t('doc_auth.buttons.start_over'),
   idv_doc_auth_step_path(step: :reset),
   method: :put,
   class: 'btn btn-link',
-  form_class: 'inline-block mt3'
+  form_class: 'inline-block'
 ) %>
 <%= render 'shared/cancel', link: idv_cancel_path %>

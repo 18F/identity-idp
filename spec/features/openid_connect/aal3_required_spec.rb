@@ -21,15 +21,8 @@ describe 'AAL3 authentication required in an OIDC context' do
       it 'sends user to authenticate with AAL3 auth' do
         sign_in_before_2fa(user_with_aal3_2fa)
 
-        visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+        visit_idp_from_ial1_oidc_sp_requiring_aal3(prompt: 'select_account')
         visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
-      end
-
-      it 'does not allow an already signed in user to bypass AAL3 auth' do
-        sign_in_and_2fa_user(user_with_aal3_2fa)
-        visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
     end
@@ -54,13 +47,6 @@ describe 'AAL3 authentication required in an OIDC context' do
         sign_in_before_2fa(user_with_aal3_2fa)
         visit_idp_from_ial1_oidc_sp_requiring_aal3(prompt: 'select_account')
         visit login_two_factor_path(otp_delivery_preference: 'sms')
-
-        expect(current_url).to eq(login_two_factor_webauthn_url)
-      end
-
-      it 'does not allow an already signed in user to bypass AAL3 auth' do
-        sign_in_and_2fa_user(user_with_aal3_2fa)
-        visit_idp_from_ial1_oidc_sp_requiring_aal3(prompt: 'select_account')
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end

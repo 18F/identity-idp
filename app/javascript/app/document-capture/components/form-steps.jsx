@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import tabbable from 'tabbable';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
@@ -7,18 +7,10 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @typedef FormStep
  *
- * @prop {string}                            name      Step name, used in history parameter.
- * @prop {import('react').FunctionComponent} component Step component implementation.
- * @prop {(values:object)=>boolean=}         isValid   Step validity function. Given set of form
- *                                                     values, returns true if values satisfy
- *                                                     requirements.
- */
-
-/**
- * @typedef FormStepsProps
- *
- * @prop {FormStep[]=}                        steps      Form steps.
- * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
+ * @prop {string}                    name      Step name, used in history parameter.
+ * @prop {import('react').Component} component Step component implementation.
+ * @prop {(values:object)=>boolean}  isValid   Step validity function. Given set of form values,
+ *                                             returns true if values satisfy requirements.
  */
 
 /**
@@ -61,15 +53,10 @@ export function getLastValidStepIndex(steps, values) {
   return index === -1 ? steps.length - 1 : index - 1;
 }
 
-/**
- * @param {FormStepsProps} props Props object.
- */
-function FormSteps({ steps = [], onComplete = () => {} }) {
+function FormSteps({ steps, onComplete }) {
   const [values, setValues] = useState({});
-  const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
-  const isProgressingToNextStep = useRef(false);
   const [stepName, setStepName] = useHistoryParam('step');
-  const { t } = useI18n();
+  const t = useI18n();
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
   // parameter present, in which case the first step should be used, and (2) the values may not be
@@ -87,15 +74,6 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
     }
   }, []);
 
-  useEffect(() => {
-    // After a step progression, shift focus to the first tabbable element within the new form
-    // contents. The form itself serves as a fallback in case there are no tabbable elements.
-    if (isProgressingToNextStep.current && formRef.current) {
-      (tabbable(formRef.current)[0] ?? formRef.current).focus();
-      isProgressingToNextStep.current = false;
-    }
-  }, [stepName]);
-
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!effectiveStep) {
     return null;
@@ -104,26 +82,8 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
-   *
-   * @type {import('react').FormEventHandler}
    */
-  function toNextStep(event) {
-    event.preventDefault();
-
-    // It shouldn't be necessary to perform validation of the step at this point, since the spec
-    // guarantees us that submission will occur as a click on the button, which will be suppressed
-    // by the presence of the disabled attribute.
-    //
-    // "If the user agent supports letting the user submit a form implicitly (for example, on some
-    // platforms hitting the "enter" key while a text control is focused implicitly submits the
-    // form), then doing so for a form, whose default button has activation behavior and is not
-    // disabled, must cause the user agent to fire a click event at that default button."
-    //
-    // See: https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
-    //
-    // Furthermore, even if the step was progressed, the logic of effective step computation would
-    // avoid the next step being shown prematurely.
-
+  function toNextStep() {
     const nextStepIndex = effectiveStepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
@@ -134,32 +94,39 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
-
-    isProgressingToNextStep.current = true;
   }
 
   const { component: Component, name } = effectiveStep;
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep} tabIndex={-1}>
+    <>
       <Component
         key={name}
         value={values}
-        onChange={(nextValuesPatch) => {
-          setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
-        }}
+        onChange={(nextValuesPatch) => setValues({ ...values, ...nextValuesPatch })}
       />
-      <Button
-        type="submit"
-        isPrimary
-        isDisabled={!isStepValid(effectiveStep, values)}
-        className="margin-y-5"
-      >
+      <Button isPrimary onClick={toNextStep} isDisabled={!isStepValid(effectiveStep, values)}>
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
-    </form>
+    </>
   );
 }
+
+FormSteps.propTypes = {
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      component: PropTypes.elementType.isRequired,
+      isValid: PropTypes.func,
+    }),
+  ),
+  onComplete: PropTypes.func,
+};
+
+FormSteps.defaultProps = {
+  steps: [],
+  onComplete: () => {},
+};
 
 export default FormSteps;

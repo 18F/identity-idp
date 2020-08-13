@@ -1,18 +1,6 @@
 import React, { Component, Suspense } from 'react';
+import PropTypes from 'prop-types';
 
-/** @typedef {import('react').ReactNode} ReactNode */
-
-/**
- * @typedef SuspenseErrorBoundaryProps
- *
- * @prop {ReactNode} fallback      Fallback to show while suspense pending.
- * @prop {ReactNode} errorFallback Fallback to show if suspense resolves as error.
- * @prop {ReactNode} children      Suspense child.
- */
-
-/**
- * @extends {Component<SuspenseErrorBoundaryProps>}
- */
 class SuspenseErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -33,5 +21,11 @@ class SuspenseErrorBoundary extends Component {
     return hasError ? errorFallback : <Suspense fallback={fallback}>{children}</Suspense>;
   }
 }
+
+SuspenseErrorBoundary.propTypes = {
+  fallback: PropTypes.node.isRequired,
+  errorFallback: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export default SuspenseErrorBoundary;

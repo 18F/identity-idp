@@ -103,18 +103,6 @@ describe UserPivCacSetupForm do
       end
     end
 
-    context 'when piv cac is required' do
-      let(:token) { 'good-token' }
-
-      it 'returns FormResponse with success: true when the token indicates auth cert' do
-        expect_results_with_auth_cert(true)
-      end
-
-      it 'returns FormResponse with success: false when the token indicates not an auth cert' do
-        expect_results_with_auth_cert(false, type: 'certificate.not_auth_cert')
-      end
-    end
-
     context 'when token is missing' do
       let(:token) {}
 
@@ -128,15 +116,5 @@ describe UserPivCacSetupForm do
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
       end
     end
-  end
-
-  def expect_results_with_auth_cert(is_auth_cert, errors = {})
-    resp = { 'nonce' => nonce, 'is_auth_cert' => is_auth_cert, 'uuid' => 'a', 'subject' => 'b' }
-    allow(PivCacService).to receive(:decode_token).with(token) { resp }
-
-    result = described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
-                                 piv_cac_required: true).submit
-    expect(result.success?).to eq(is_auth_cert)
-    expect(result.errors).to eq(errors)
   end
 end

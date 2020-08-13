@@ -14,7 +14,6 @@ module Db
           select count(*) from identities
           where service_provider='#{issuer}' and ial>=2
           and user_id in (select user_id from doc_auth_logs where #{start} <= welcome_view_at and welcome_view_at < #{finish} and #{at_least_one_image_submitted})
-          and user_id in (select user_id from profiles)
         SQL
       end
 

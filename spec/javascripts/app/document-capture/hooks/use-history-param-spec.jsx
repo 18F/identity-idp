@@ -82,26 +82,6 @@ describe('useHistoryParam', () => {
     expect(window.location.hash).to.equal('#the%20count=2');
   });
 
-  it('scrolls to top on programmatic history manipulation', () => {
-    const { getByText } = render(<TestComponent />);
-
-    window.scrollX = 100;
-    window.scrollY = 100;
-
-    userEvent.click(getByText('Increment'));
-
-    expect(window.scrollX).to.equal(0);
-    expect(window.scrollY).to.equal(0);
-
-    window.scrollX = 100;
-    window.scrollY = 100;
-
-    window.history.back();
-
-    expect(window.scrollX).to.equal(100);
-    expect(window.scrollY).to.equal(100);
-  });
-
   it('syncs by history events', async () => {
     const { getByText, getByDisplayValue, findByDisplayValue } = render(<TestComponent />);
 
@@ -124,6 +104,17 @@ describe('useHistoryParam', () => {
 
     expect(await findByDisplayValue('0')).to.be.ok();
     expect(window.location.hash).to.equal('');
+  });
+
+  // Skip reason: JSDOM doesn't currently support full history navigation.
+  // Unskip prerequisite: https://github.com/jsdom/jsdom/issues/2112
+  it.skip('preserves existing query parameters', () => {
+    window.location.search = '?ok';
+    const { getByText } = render(<TestComponent />);
+
+    userEvent.click(getByText('Increment'));
+
+    expect(window.location.search).to.equal('?ok');
   });
 
   it('encodes parameter names and values', () => {

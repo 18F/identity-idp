@@ -64,7 +64,7 @@ feature 'IAL1 Single Sign On' do
 
       expect(current_url).to match new_user_session_path
       expect(page).to have_content(sp_content)
-      expect(page).to_not have_css('.usa-accordion__heading')
+      expect(page).to_not have_css('.accordion-header')
     end
 
     it 'shows user the start page with a link back to the SP' do

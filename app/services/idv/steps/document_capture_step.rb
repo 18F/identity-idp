@@ -6,7 +6,6 @@ module Idv
         if response.success?
           save_proofing_components
           extract_pii_from_doc(response)
-          response
         else
           handle_document_verification_failure(response)
         end

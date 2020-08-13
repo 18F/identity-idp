@@ -14,17 +14,16 @@ gem 'device_detector'
 gem 'devise', '~> 4.7.1'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
-gem 'faraday'
 gem 'figaro'
 gem 'foundation_emails'
 gem 'gibberish'
 gem 'hiredis'
 gem 'http_accept_language'
+gem 'httparty'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.4'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt', '>= 1.11.0'
-gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
 gem 'maxminddb'
@@ -49,7 +48,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.10.0.pre.18f'
+gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
@@ -61,6 +60,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication', '>= 2.1.1'
+gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
@@ -85,7 +85,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bootsnap', '~> 1.4.7', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
@@ -107,6 +106,7 @@ group :test do
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
+  gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
   gem 'gmail'
   gem 'rack-test', '>= 1.1.0'
@@ -120,6 +120,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.1.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v1.2.0'
 end

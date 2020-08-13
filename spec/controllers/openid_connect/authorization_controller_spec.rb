@@ -32,6 +32,50 @@ RSpec.describe OpenidConnect::AuthorizationController do
         stub_sign_in user
       end
 
+      context 'service providers requires AAL3' do
+        let(:user) { create(:profile, :active, :verified).user }
+        before do
+          auth_assertions = [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF]
+          params[:acr_values] = auth_assertions.join(' ')
+          IdentityLinker.new(user, client_id).link_identity(ial: 3)
+          user.identities.last.update!(
+            verified_attributes: %w[given_name family_name birthdate verified_at],
+          )
+          allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+        end
+
+        context 'user has AAL3 enabled' do
+          before do
+            create(
+              :webauthn_configuration,
+              user: user,
+              credential_id: credential_id,
+              credential_public_key: credential_public_key,
+            )
+            controller.user_session[:auth_method] = 'webauthn'
+          end
+
+          it 'redirects to the SP with params' do
+            # Mock this user signing in with AAL3
+            action
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+            redirect_params = URIService.params(response.location)
+
+            expect(redirect_params[:code]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+        end
+
+        context 'user does not have AAL3 enabled' do
+          it 'redirects to the two factor options page' do
+            action
+            expect(controller).to redirect_to two_factor_options_url
+          end
+        end
+      end
+
       context 'with valid params' do
         it 'redirects back to the client app with a code' do
           IdentityLinker.new(user, client_id).link_identity(ial: 1)

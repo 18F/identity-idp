@@ -6,6 +6,7 @@ module OpenidConnect
     include VerifyProfileConcern
     include SecureHeadersConcern
     include AuthorizationCountConcern
+    include Aal3Concern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -13,6 +14,7 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
+    before_action :confirm_user_has_aal3_mfa_if_requested, only: [:index]
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :bump_auth_count, only: [:index]
 
@@ -20,6 +22,7 @@ module OpenidConnect
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       link_identity_to_service_provider
+      return redirect_to(aal3_required_url) if aal3_policy.aal3_required_but_not_used?
       return redirect_to(user_authorization_confirmation_url) if auth_count == 1
       handle_successful_handoff
     end
@@ -35,10 +38,9 @@ module OpenidConnect
 
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                                 service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
+      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       redirect_to user_two_factor_authentication_url if device_not_remembered?
+      redirect_to user_two_factor_authentication_url if aal3_policy.aal3_configured_but_not_used?
     end
 
     def device_not_remembered?

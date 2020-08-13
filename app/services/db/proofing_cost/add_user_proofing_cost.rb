@@ -4,7 +4,6 @@ module Db
       TOKEN_WHITELIST = %i[
         acuant_front_image
         acuant_back_image
-        acuant_result
         aamva
         lexis_nexis_resolution
         lexis_nexis_address

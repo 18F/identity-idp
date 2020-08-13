@@ -10,39 +10,31 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       new(data: { reauthn: reauthn }, view: view)
   end
 
-  let(:allow_user_to_switch_method) { false }
-  let(:aal3_required) { false }
-  let(:service_provider_mfa_policy) do
-    instance_double(
-      ServiceProviderMfaPolicy,
-      aal3_required?: aal3_required,
-      allow_user_to_switch_method?: allow_user_to_switch_method,
-    )
-  end
-
-  before do
-    allow(presenter).to receive(:service_provider_mfa_policy).and_return service_provider_mfa_policy
-  end
-
   describe '#help_text' do
-    context 'with aal3 required'
     it 'supplies no help text' do
       expect(presenter.help_text).to eq('')
     end
   end
 
   describe '#link_text' do
-    let(:aal3_required) { true }
+    let(:multiple_aal3_configurations) { true }
+    let(:aal3_policy) do
+      instance_double('AAL3Policy',
+                      aal3_required?: true,
+                      multiple_aal3_configurations?: multiple_aal3_configurations)
+    end
 
+    before do
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
+      allow(aal3_policy).to receive(:aal3_required?).and_return true
+    end
     context 'with multiple AAL3 methods' do
-      let(:allow_user_to_switch_method) { true }
-
       it 'supplies link text' do
         expect(presenter.link_text).to eq(t('two_factor_authentication.webauthn_piv_available'))
       end
     end
-
     context 'with only one AAL3 method do' do
+      let(:multiple_aal3_configurations) { false }
       it 'supplies no link text' do
         expect(presenter.link_text).to eq('')
       end
@@ -50,9 +42,10 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   describe '#fallback_question' do
-    let(:aal3_required) { false }
-
     it 'supplies a fallback_question' do
+      aal3_policy = instance_double('AAL3Policy')
+      allow(aal3_policy).to receive(:aal3_required?).and_return false
+      allow(presenter).to receive(:aal3_policy).and_return aal3_policy
       expect(presenter.fallback_question).to \
         eq(t('two_factor_authentication.webauthn_fallback.question'))
     end

@@ -18,10 +18,6 @@ module DocAuthHelper
     fill_in 'doc_auth_ssn', with: '123-45-6666'
   end
 
-  def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in 'doc_auth_ssn', with: '000-00-0000'
-  end
-
   def fill_out_ssn_form_ok
     fill_in 'doc_auth_ssn', with: '666-66-1234'
   end
@@ -44,10 +40,6 @@ module DocAuthHelper
 
   def idv_doc_auth_document_capture_step
     idv_doc_auth_step_path(step: :document_capture)
-  end
-
-  def idv_doc_auth_mobile_document_capture_step
-    idv_doc_auth_step_path(step: :mobile_document_capture)
   end
 
   def idv_doc_auth_front_image_step
@@ -90,33 +82,23 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :email_sent)
   end
 
-  def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_welcome_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_upload_step
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+  def complete_doc_auth_steps_before_document_capture_step
+    complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def complete_doc_auth_steps_before_mobile_document_capture_step
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+  def complete_doc_auth_steps_before_front_image_step
     complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
-  end
-
-  def complete_doc_auth_steps_before_front_image_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_on t('doc_auth.info.upload_computer_link')
   end
 
@@ -131,16 +113,14 @@ module DocAuthHelper
 AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1')
   end
 
-  def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
-    complete_doc_auth_steps_before_back_image_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+  def complete_doc_auth_steps_before_ssn_step
+    complete_doc_auth_steps_before_back_image_step
     attach_image
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_back_image_step(expect_accessible: false)
-    complete_doc_auth_steps_before_front_image_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+  def complete_doc_auth_steps_before_back_image_step
+    complete_doc_auth_steps_before_front_image_step
     attach_image
     click_idv_continue
   end
@@ -151,31 +131,26 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_doc_success_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
-  end
-
-  def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_doc_success_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
-  end
-
-  def complete_doc_auth_steps_before_address_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_doc_success_step
     complete_doc_auth_steps_before_verify_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    click_idv_continue
+  end
+
+  def complete_all_doc_auth_steps
+    complete_doc_auth_steps_before_doc_success_step
+    click_idv_continue
+  end
+
+  def complete_doc_auth_steps_before_address_step
+    complete_doc_auth_steps_before_verify_step
     click_link t('doc_auth.buttons.change_address')
   end
 
-  def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+  def complete_doc_auth_steps_before_verify_step
+    complete_doc_auth_steps_before_ssn_step
     if page.current_path == idv_doc_auth_selfie_step
       attach_image
       click_idv_continue
-      expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     end
     fill_out_ssn_form_ok
     click_idv_continue

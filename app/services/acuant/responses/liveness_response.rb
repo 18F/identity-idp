@@ -30,7 +30,6 @@ module Acuant
         {
           liveness_score: liveness_score,
           acuant_error: acuant_error,
-          liveness_assessment: liveness_assessment,
         }
       end
 
@@ -43,11 +42,7 @@ module Acuant
       end
 
       def successful_result?
-        liveness_assessment == 'Live'
-      end
-
-      def liveness_assessment
-        parsed_response_body.dig('LivenessResult', 'LivenessAssessment')
+        parsed_response_body.dig('LivenessResult', 'LivenessAssessment') == 'Live'
       end
     end
   end

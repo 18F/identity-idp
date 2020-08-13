@@ -3,7 +3,6 @@ module TwoFactorAuthentication
   class WebauthnVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :check_sp_required_mfa_bypass
     before_action :confirm_webauthn_enabled, only: :show
 
     def show

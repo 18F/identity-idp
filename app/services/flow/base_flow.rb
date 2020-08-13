@@ -40,16 +40,9 @@ module Flow
     end
 
     def form_response(obj, value)
-      response = form_response?(value) ? value : FormResponse.new(success: true, errors: {})
+      response = value.class == FormResponse ? value : FormResponse.new(success: true, errors: {})
       obj.mark_step_complete if response.success?
       response
-    end
-
-    # Duck type check for FormResponse
-    def form_response?(response)
-      response.is_a?(FormResponse) ||
-        response.is_a?(Acuant::Response) ||
-        (response.respond_to?(:success?) && response.respond_to?(:to_h))
     end
 
     delegate :flash, :session, :current_user, :params, :request, to: :@controller

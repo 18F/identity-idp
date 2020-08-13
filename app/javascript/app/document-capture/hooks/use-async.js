@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import useIfStillMounted from './use-if-still-mounted';
 
 /**
  * @typedef SuspenseResource
@@ -25,23 +26,33 @@ import { useState } from 'react';
  * @return {SuspenseResource} Suspense resource object.
  */
 function useAsync(createPromise, ...args) {
-  const [read] = useState(() => {
-    let hasData = false;
-    let data;
-    let hasError = false;
-    let error;
+  const ifStillMounted = useIfStillMounted();
+  const [data, setData] = useState();
+  const [hasData, setHasData] = useState(false);
+  const [error, setError] = useState();
+  const [hasError, setHasError] = useState(false);
+  const read = useCallback(
+    () =>
+      createPromise(...args)
+        .then(
+          ifStillMounted((nextData) => {
+            setData(nextData);
+            setHasData(true);
+          }),
+        )
+        .catch(
+          ifStillMounted((nextError) => {
+            setError(nextError);
+            setHasError(true);
+          }),
+        ),
+    args,
+  );
 
-    const promise = createPromise(...args)
-      .then((nextData) => {
-        hasData = true;
-        data = nextData;
-      })
-      .catch((nextError) => {
-        hasError = true;
-        error = nextError;
-      });
+  return {
+    read() {
+      const promise = read();
 
-    return () => {
       if (hasData) {
         return data;
       }
@@ -51,10 +62,8 @@ function useAsync(createPromise, ...args) {
       }
 
       throw promise;
-    };
-  });
-
-  return { read };
+    },
+  };
 }
 
 export default useAsync;

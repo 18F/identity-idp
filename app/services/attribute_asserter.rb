@@ -1,7 +1,6 @@
 require 'stringex/unidecoder'
 require 'stringex/core_ext'
 
-# rubocop:disable Metrics/ClassLength
 class AttributeAsserter
   VALID_ATTRIBUTES = %i[
     first_name
@@ -25,16 +24,15 @@ class AttributeAsserter
     self.decrypted_pii = decrypted_pii
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/AbcSize
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
-    add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
     user.asserted_attributes = attrs
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize
 
   private
 
@@ -67,12 +65,6 @@ class AttributeAsserter
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
-  def add_aal(attrs)
-    context = authn_request.requested_aal_authn_context
-    context ||= Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[service_provider.aal]
-    attrs[:aal] = { getter: aal_getter_function(context) } if context
-  end
-
   def uuid_getter_function
     lambda do |principal|
       identity = principal.decorate.active_identity_for(service_provider)
@@ -82,10 +74,6 @@ class AttributeAsserter
 
   def verified_at_getter_function
     ->(principal) { principal.active_profile&.verified_at&.iso8601 }
-  end
-
-  def aal_getter_function(aal_authn_context)
-    ->(_principal) { aal_authn_context }
   end
 
   def attribute_getter_function(attr)
@@ -120,11 +108,10 @@ class AttributeAsserter
   end
 
   def authn_context
-    authn_request.requested_ial_authn_context
+    authn_request.requested_authn_context
   end
 
   def ascii?
     bundle.include?(:ascii)
   end
 end
-# rubocop:enable Metrics/ClassLength

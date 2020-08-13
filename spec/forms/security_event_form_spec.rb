@@ -6,8 +6,7 @@ RSpec.describe SecurityEventForm do
   subject(:form) { SecurityEventForm.new(body: jwt) }
 
   let(:user) { create(:user) }
-  let(:agency) { Agency.last || Agency.create(name: 'Test Agency') }
-  let(:service_provider) { create(:service_provider, agency_id: agency.id) }
+  let(:service_provider) { create(:service_provider) }
   let(:rp_private_key) do
     OpenSSL::PKey::RSA.new(
       File.read(Rails.root.join('keys', 'saml_test_sp.key')),
@@ -34,7 +33,7 @@ RSpec.describe SecurityEventForm do
     }
   end
 
-  let(:subject_sub) { AgencyIdentityLinker.new(identity).link_identity.uuid }
+  let(:subject_sub) { identity.uuid }
   let(:jwt_headers) { { typ: 'secevent+jwt' } }
   let(:jwt) { JWT.encode(jwt_payload, rp_private_key, 'RS256', jwt_headers) }
 
@@ -271,15 +270,6 @@ RSpec.describe SecurityEventForm do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('setData')
           expect(form.errors[:sub]).to include('invalid event.subject.sub claim')
-        end
-      end
-
-      context 'when the service provider has no agency' do
-        let(:service_provider) { create(:service_provider, agency: nil, agency_id: nil) }
-
-        it 'is still valid' do
-          expect(valid?).to eq(true)
-          expect(form.error_code).to eq(nil)
         end
       end
     end

@@ -21,9 +21,10 @@
       <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
       <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
       <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
-      <%= label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold', for: 'nickname' %>
+      <%= label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold' %>
       <%= text_field_tag :name, '', required: true, id: 'nickname',
-            class: 'block col-12 field monospace', size: 16, maxlength: 20 %>
+            class: 'block col-12 field monospace', size: 16, maxlength: 20,
+            'aria-labelledby': 'totp-label' %>
      <div class='border border-light-blue rounded-lg px2 py1 mt3'>
        <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
        <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'my2 ml2 mr1' %>

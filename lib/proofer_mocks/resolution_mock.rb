@@ -5,10 +5,8 @@ class ResolutionMock < Proofer::Base
 
   proof do |applicant, result|
     first_name = applicant[:first_name]
-    ssn = applicant[:ssn]
 
     raise 'Failed to contact proofing vendor' if first_name =~ /Fail/i
-    raise 'Failed to contact proofing vendor' if ssn == '000-00-0000'
 
     if first_name.match?(/Bad/i)
       result.add_error(:first_name, 'Unverified first name.')
