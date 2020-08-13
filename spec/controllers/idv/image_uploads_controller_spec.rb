@@ -41,9 +41,8 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
-          expect(json[:errors]).to eq([
-            "Frente #{I18n.t('doc_auth.errors.invalid_image_url', locale: 'es')}",
-          ])
+          expect(json[:errors]).
+            to eq(["Frente #{I18n.t('doc_auth.errors.invalid_image_url', locale: 'es')}"])
         end
       end
     end
@@ -68,7 +67,7 @@ describe Idv::ImageUploadsController do
           response: DocAuthClient::Response.new(
             success: false,
             errors: ['Too blurry', 'Wrong document'],
-          )
+          ),
         )
       end
 

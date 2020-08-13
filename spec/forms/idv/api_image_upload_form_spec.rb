@@ -8,17 +8,17 @@ RSpec.describe Idv::ApiImageUploadForm do
         back: back_image,
         selfie: selfie_image,
       },
-      liveness_checking_enabled: liveness_checking_enabled?
+      liveness_checking_enabled: liveness_checking_enabled?,
     )
   end
 
   let(:liveness_checking_enabled?) { true }
   let(:red_dot_png_image_uri) do
-    <<-EOS.gsub(/\s/, '')
+    <<-STR.gsub(/\s/, '')
       data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
       AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
       9TXL0Y4OHwAAAABJRU5ErkJggg==
-    EOS
+    STR
   end
 
   let(:front_image) { red_dot_png_image_uri }

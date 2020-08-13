@@ -7,7 +7,7 @@ module Idv
     def create
       image_form = Idv::ApiImageUploadForm.new(
         params,
-        liveness_checking_enabled: liveness_checking_enabled?
+        liveness_checking_enabled: liveness_checking_enabled?,
       )
 
       form_response = image_form.submit
@@ -17,7 +17,7 @@ module Idv
           front_image: image_form.front,
           back_image: image_form.back,
           selfie_image: image_form.back,
-          liveness_checking_enabled: liveness_checking_enabled?
+          liveness_checking_enabled: liveness_checking_enabled?,
         )
 
         store_pii(doc_response) if doc_response.success?
@@ -37,7 +37,7 @@ module Idv
     def render_form_response(form_response)
       if form_response.success?
         render json: {
-          success: true
+          success: true,
         }
       else
         render json: form_response.to_h,
