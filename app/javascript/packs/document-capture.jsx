@@ -8,6 +8,7 @@ import {
   AcuantProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
+import { isCameraCapableMobile } from '@18f/identity-device';
 
 const { I18n: i18n, assets } = window.LoginGov;
 
@@ -17,9 +18,7 @@ function getMetaContent(name) {
 
 /** @type {import('@18f/identity-document-capture/context/device').DeviceContext} */
 const device = {
-  isMobile:
-    'mediaDevices' in window.navigator &&
-    /ip(hone|ad|od)|android/i.test(window.navigator.userAgent),
+  isMobile: isCameraCapableMobile(),
 };
 
 loadPolyfills(['fetch']).then(() => {
