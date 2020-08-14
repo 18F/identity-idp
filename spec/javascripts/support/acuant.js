@@ -3,9 +3,9 @@ import { cleanup } from '@testing-library/react';
 
 export function useAcuant() {
   afterEach(() => {
-    // While RTL will perform this automatically, it must to occur prior to
-    // resetting the global variables, since otherwise the component's effect
-    // unsubscribe will attempt to reference globals that no longer exist.
+    // While React Testing Library will perform this automatically, it must to occur prior to
+    // resetting the global variables, since otherwise the component's effect unsubscribe will
+    // attempt to reference globals that no longer exist.
     cleanup();
     delete window.AcuantJavascriptWebSdk;
     delete window.AcuantCamera;
