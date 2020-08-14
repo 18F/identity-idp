@@ -36,6 +36,8 @@ module Idv
         extra = get_results_response.to_h.merge(
           notice: I18n.t('errors.doc_auth.general_info'),
         )
+        Funnel::DocAuth::LogDocumentError.call(user_id,
+                                               get_results_response&.result_code&.name.to_s)
         failure(get_results_response.errors.first, extra)
       end
 

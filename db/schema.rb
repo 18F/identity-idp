@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_03_211145) do
+ActiveRecord::Schema.define(version: 2020_08_14_144213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,7 @@ ActiveRecord::Schema.define(version: 2020_08_03_211145) do
     t.integer "selfie_submit_count", default: 0
     t.integer "selfie_error_count", default: 0
     t.string "issuer"
+    t.string "last_document_error"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
