@@ -19,7 +19,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @typedef FormStepsProps
  *
  * @prop {FormStep[]=}                        steps         Form steps.
- * @prop {Record<string,any>}                 initialValues Form values to populate initial state.
+ * @prop {Record<string,any>=}                initialValues Form values to populate initial state.
  * @prop {(values:Record<string,any>)=>void=} onComplete    Form completion callback.
  */
 

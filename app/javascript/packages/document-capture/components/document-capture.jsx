@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
 import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
@@ -21,6 +22,7 @@ import useI18n from '../hooks/use-i18n';
  */
 function DocumentCapture({ isLivenessEnabled = true }) {
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
+  const [isSubmissionError, setIsSubmissionError] = useState(false);
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
@@ -44,10 +46,23 @@ function DocumentCapture({ isLivenessEnabled = true }) {
     },
   ].filter(Boolean));
 
-  return formValues ? (
-    <Submission payload={formValues} />
+  /**
+   * Clears error state and sets form values for submission.
+   *
+   * @param {Record<string,any>} nextFormValues Submitted form values.
+   */
+  function submitForm(nextFormValues) {
+    setIsSubmissionError(false);
+    setFormValues(nextFormValues);
+  }
+
+  return formValues && !isSubmissionError ? (
+    <Submission payload={formValues} onError={() => setIsSubmissionError(true)} />
   ) : (
-    <FormSteps steps={steps} onComplete={setFormValues} />
+    <>
+      {isSubmissionError && <Alert type="error">{t('errors.doc_auth.acuant_network_error')}</Alert>}
+      <FormSteps steps={steps} initialValues={formValues ?? undefined} onComplete={submitForm} />
+    </>
   );
 }
 
