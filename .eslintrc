@@ -13,6 +13,7 @@
     "expect": true
   },
   "rules": {
+    "consistent-return": "off",
     "prettier/prettier": "error",
     "func-names": 0,
     "function-paren-newline": "off",
