@@ -12,7 +12,8 @@ module Db
       def verified_user_counts_query
         <<~SQL
           select count(*) from identities
-          where ial>=2 and service_provider = '#{@issuer}'
+          where ial>=2 and service_provider = '#{@issuer}' and
+          user_id in (select user_id from profiles)
         SQL
       end
 

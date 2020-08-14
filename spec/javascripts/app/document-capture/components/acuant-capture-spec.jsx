@@ -1,9 +1,12 @@
 import React from 'react';
 import { fireEvent, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import render from '../../../support/render';
 import AcuantCapture from '../../../../../app/javascript/app/document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '../../../../../app/javascript/app/document-capture/context/acuant';
+import DeviceContext from '../../../../../app/javascript/app/document-capture/context/device';
+import DataURLFile from '../../../../../app/javascript/app/document-capture/models/data-url-file';
 
 describe('document-capture/components/acuant-capture', () => {
   afterEach(() => {
@@ -12,23 +15,318 @@ describe('document-capture/components/acuant-capture', () => {
     // unsubscribe will attempt to reference globals that no longer exist.
     cleanup();
     delete window.AcuantJavascriptWebSdk;
+    delete window.AcuantCamera;
     delete window.AcuantCameraUI;
   });
 
-  it('renders a loading indicator while acuant is not ready', () => {
-    const { container } = render(
+  context('mobile', () => {
+    it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      expect(getByText('doc_auth.buttons.take_picture')).to.be.ok();
+    });
+
+    it('renders with upload button as mobile-primary (secondary) button if acuant script fails to load', async () => {
+      const { findByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="/gone.js">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      const button = await findByText('doc_auth.buttons.upload_picture');
+      expect(button.classList.contains('btn-secondary')).to.be.true();
+      expect(console).to.have.loggedError(/^Error: Could not load script:/);
+      userEvent.click(button);
+    });
+
+    it('renders without capture button if acuant fails to initialize', async () => {
+      const { findByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onFail }) => onFail(),
+      };
+      window.onAcuantSdkLoaded();
+
+      const button = await findByText('doc_auth.buttons.upload_picture');
+      expect(button.classList.contains('btn-secondary')).to.be.true();
+    });
+
+    it('renders a button when successfully loaded', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+
+      const button = getByText('doc_auth.buttons.take_picture');
+
+      expect(button).to.be.ok();
+    });
+
+    it('renders a canvas when capturing', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+      expect(window.AcuantCameraUI.end.called).to.be.false();
+    });
+
+    it('starts capturing when clicking input on supported device', () => {
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+
+      const button = getByLabelText('Image');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+      expect(window.AcuantCameraUI.end.called).to.be.false();
+    });
+
+    it('calls onChange with the captured image on successful capture', () => {
+      const onChange = sinon.spy();
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" onChange={onChange} />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 70,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      expect(onChange.getCall(0).args).to.have.lengthOf(1);
+      expect(onChange.getCall(0).args[0]).to.be.instanceOf(DataURLFile);
+      expect(onChange.getCall(0).args[0].data).to.equal(
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+      );
+      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+    });
+
+    it('ends the capture when the component unmounts', () => {
+      const { getByText, unmount } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start: sinon.spy(),
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      unmount();
+
+      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+    });
+
+    it('renders retry button when value and capture supported', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture
+              label="Image"
+              value={
+                new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
+              }
+            />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+
+      const button = getByText('doc_auth.buttons.take_picture_retry');
+      expect(button).to.be.ok();
+
+      userEvent.click(button);
+      expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+    });
+
+    it('renders upload button when value and capture not supported', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture
+              label="Image"
+              value={
+                new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
+              }
+            />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: false };
+      window.onAcuantSdkLoaded();
+
+      const button = getByText('doc_auth.buttons.upload_picture');
+      expect(button).to.be.ok();
+
+      userEvent.click(button);
+    });
+
+    it('renders error message if capture succeeds but photo glare exceeds threshold', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+      };
+      window.AcuantCamera = { isCameraSupported: true };
+      window.onAcuantSdkLoaded();
+      window.AcuantCameraUI = {
+        start(onImageCaptureSuccess) {
+          const capture = {
+            glare: 38,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          };
+          onImageCaptureSuccess(capture);
+        },
+        end: sinon.spy(),
+      };
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      const error = getByText('errors.doc_auth.photo_glare');
+
+      expect(error).to.be.ok();
+    });
+  });
+
+  context('desktop', () => {
+    it('renders without capture button while acuant is not ready and on desktop', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: false }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      expect(() => getByText('doc_auth.buttons.take_picture')).to.throw();
+    });
+  });
+
+  it('renders with custom className', () => {
+    const { container } = render(<AcuantCapture label="File" className="my-custom-class" />);
+
+    expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
+  });
+
+  it('does not show hint if capture is supported', () => {
+    const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
-    expect(container.textContent).to.equal('Loading…');
+    window.AcuantJavascriptWebSdk = {
+      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+    };
+    window.AcuantCamera = { isCameraSupported: true };
+    window.onAcuantSdkLoaded();
+
+    expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
   });
 
-  it('renders an error indicator if acuant fails to load', () => {
-    const { container } = render(
+  it('shows hint if capture is not supported', () => {
+    const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
+        <AcuantCapture label="Image" />
       </AcuantContextProvider>,
     );
 
@@ -37,130 +335,8 @@ describe('document-capture/components/acuant-capture', () => {
     };
     window.onAcuantSdkLoaded();
 
-    expect(container.textContent).to.equal('Error!');
-  });
+    const hint = getByText('doc_auth.tips.document_capture_hint');
 
-  it('renders a button when successfully loaded', () => {
-    const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
-    );
-
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.onAcuantSdkLoaded();
-
-    const button = getByText('doc_auth.buttons.take_picture');
-
-    expect(button).to.be.ok();
-  });
-
-  it('renders a canvas when capturing', () => {
-    const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
-    );
-
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.onAcuantSdkLoaded();
-    window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
-
-    const button = getByText('doc_auth.buttons.take_picture');
-    fireEvent.click(button);
-
-    expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
-    expect(window.AcuantCameraUI.end.called).to.be.false();
-  });
-
-  it('renders the captured image on successful capture', () => {
-    const { getByText, getByAltText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
-    );
-
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.onAcuantSdkLoaded();
-    window.AcuantCameraUI = {
-      start(onImageCaptureSuccess) {
-        const capture = {
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            width: 10,
-            height: 20,
-          },
-        };
-        onImageCaptureSuccess(capture);
-      },
-      end: sinon.spy(),
-    };
-
-    const button = getByText('doc_auth.buttons.take_picture');
-    fireEvent.click(button);
-
-    const image = getByAltText('Captured result');
-
-    expect(image).to.be.ok();
-    expect(image.src).to.equal('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E');
-    expect(image.width).to.equal(10);
-    expect(image.height).to.equal(20);
-    expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
-  });
-
-  it('renders the button when the capture failed', () => {
-    const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
-    );
-
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.onAcuantSdkLoaded();
-    window.AcuantCameraUI = {
-      start(_onImageCaptureSuccess, onImageCaptureFailure) {
-        onImageCaptureFailure(new Error());
-      },
-      end: sinon.spy(),
-    };
-
-    let button = getByText('doc_auth.buttons.take_picture');
-    fireEvent.click(button);
-    button = getByText('doc_auth.buttons.take_picture');
-
-    expect(button).to.be.ok();
-    expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
-  });
-
-  it('ends the capture when the component unmounts', () => {
-    const { getByText, unmount } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture />
-      </AcuantContextProvider>,
-    );
-
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.onAcuantSdkLoaded();
-    window.AcuantCameraUI = {
-      start: sinon.spy(),
-      end: sinon.spy(),
-    };
-
-    const button = getByText('doc_auth.buttons.take_picture');
-    fireEvent.click(button);
-
-    unmount();
-
-    expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+    expect(hint).to.be.ok();
   });
 });

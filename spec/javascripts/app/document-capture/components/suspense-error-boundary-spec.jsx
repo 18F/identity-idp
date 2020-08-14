@@ -1,5 +1,4 @@
 import React, { lazy } from 'react';
-import sinon from 'sinon';
 import render from '../../../support/render';
 import SuspenseErrorBoundary from '../../../../../app/javascript/app/document-capture/components/suspense-error-boundary';
 
@@ -32,8 +31,6 @@ describe('document-capture/components/suspense-error-boundary', () => {
       throw new Error();
     };
 
-    sinon.stub(console, 'error').callsFake(() => {});
-
     const { findByText } = render(
       <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
         <Child />
@@ -41,8 +38,6 @@ describe('document-capture/components/suspense-error-boundary', () => {
     );
 
     expect(await findByText('Error')).to.be.ok();
-
-    // eslint-disable-next-line no-console
-    console.error.restore();
+    expect(console).to.have.loggedError();
   });
 });

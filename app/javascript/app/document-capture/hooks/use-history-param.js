@@ -29,6 +29,21 @@ export function getQueryParam(queryString, name) {
 }
 
 /**
+ * Scrolls the page to the given set of X and Y coordinates. Progressively enhances to use smooth
+ * scrolling if supported.
+ *
+ * @param {number} left Left (X) coordinate.
+ * @param {number} top  Top (Y) coordinate.
+ */
+function scrollTo(left, top) {
+  try {
+    window.scrollTo({ left, top, behavior: 'smooth' });
+  } catch {
+    window.scrollTo(left, top);
+  }
+}
+
+/**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
  * Returns a `useState`-like tuple of the current value and a setter to assign the next parameter
  * value.
@@ -56,6 +71,8 @@ function useHistoryParam(name) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     window.history.pushState(null, null, nextURL);
+
+    scrollTo(0, 0);
 
     setValue(nextValue);
   }

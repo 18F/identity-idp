@@ -23,12 +23,18 @@ describe('document-capture/hooks/use-async', () => {
 
   it('returns suspense resource that renders fallback', async () => {
     let resolve;
-    const createPromise = () =>
-      new Promise((_resolve) => {
-        resolve = () => {
-          _resolve();
-        };
-      });
+    const createPromise = sinon
+      .stub()
+      .onCall(0)
+      .returns(
+        new Promise((_resolve) => {
+          resolve = () => {
+            _resolve();
+          };
+        }),
+      )
+      .onCall(1)
+      .throws();
 
     const { container, findByText } = render(<Parent createPromise={createPromise} />);
 
@@ -41,22 +47,26 @@ describe('document-capture/hooks/use-async', () => {
 
   it('returns suspense resource that renders error fallback', async () => {
     let reject;
-    const createPromise = () =>
-      new Promise((_resolve, _reject) => {
-        reject = () => {
-          _reject();
-        };
-      });
+    const createPromise = sinon
+      .stub()
+      .onCall(0)
+      .returns(
+        new Promise((_resolve, _reject) => {
+          reject = () => {
+            _reject();
+          };
+        }),
+      )
+      .onCall(1)
+      .throws();
 
     const { container, findByText } = render(<Parent createPromise={createPromise} />);
 
     expect(container.textContent).to.equal('Loading');
 
-    sinon.stub(console, 'error').callsFake(() => {});
     reject();
 
     expect(await findByText('Error')).to.be.ok();
-    // eslint-disable-next-line no-console
-    console.error.restore();
+    expect(console).to.have.loggedError();
   });
 });

@@ -1,0 +1,18 @@
+<% title t("idv.failure.sessions.heading") %>
+
+<%= image_tag('alert/warning-lg.svg', alt: '', width: 54) %>
+
+<h1 class="h3 mb1 mt3 my0"><%= t("idv.failure.sessions.exception") %></h1>
+
+<p>
+  <%= t('idv.failure.exceptions.text_html',
+    link: link_to(t('idv.failure.exceptions.link'), MarketingSite.contact_url)) %>
+</p>
+
+<%= render 'idv/shared/reset_your_account' %>
+
+<div class='mt3'>
+  <%= link_to t("idv.failure.button.warning"), idv_recovery_path %>
+</div>
+
+<%= render 'idv/doc_auth/in_person_proofing_option' %>

@@ -3,6 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
+    before_action :check_sp_required_mfa_bypass
 
     def show
       analytics.track_event(

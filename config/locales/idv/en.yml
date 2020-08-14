@@ -38,6 +38,9 @@ en:
       errors:
         link: please contact us
         text_html: If you keep getting these errors, %{link}, or try again tomorrow.
+      exceptions:
+        link: please contact us
+        text_html: Please try again. If you keep getting these errors, %{link}.
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
@@ -49,6 +52,7 @@ en:
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       sessions:
+        exception: There was an internal error processing your request.
         fail_html: For your security, identity verification for your account is <strong>locked
           for 24 hours</strong>.
         heading: We could not find records matching your personal information.

@@ -1,0 +1,13 @@
+<div class='p2 clearfix border-top'>
+  <div class='clearfix mxn1'>
+    <div class='sm-col sm-col-6 px1'>
+      <div class="bold truncate">
+        <%= event.event_type %>
+      </div>
+      <%= event.last_sign_in_location_and_ip %>
+    </div>
+    <div class='sm-col sm-col-6 px1 sm-right-align'>
+      <%=  local_time(event.happened_at, t('time.formats.event_timestamp')) %>
+    </div>
+  </div>
+</div>
