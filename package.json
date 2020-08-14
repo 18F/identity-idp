@@ -34,6 +34,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
     "@babel/eslint-parser": "^7.11.3",
     "@babel/eslint-plugin": "^7.11.3",
     "@babel/preset-react": "^7.10.4",
@@ -45,7 +46,7 @@
     "@types/react": "^16.9.46",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^7.4.0",
+    "eslint": "^7.6.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
