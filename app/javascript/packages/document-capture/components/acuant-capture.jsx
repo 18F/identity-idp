@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useMemo } from 'react';
+import React, { useContext, useRef, useState, useMemo, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -90,6 +90,14 @@ function AcuantCapture({
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
+  useEffect(() => {
+    // If capture had started before Acuant was ready, stop capture if readiness reveals that no
+    // capture is supported. This takes advantage of the fact that state setter is noop if value of
+    // `isCapturing` is already false.
+    if (!hasCapture) {
+      setIsCapturing(false);
+    }
+  }, [hasCapture]);
 
   /**
    * Responds to a click by starting capture if supported in the environment, or triggering the

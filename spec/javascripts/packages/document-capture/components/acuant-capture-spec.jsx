@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, cleanup } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import AcuantCapture, {
@@ -9,17 +9,10 @@ import { Provider as AcuantContextProvider } from '@18f/identity-document-captur
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
+import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/acuant-capture', () => {
-  afterEach(() => {
-    // While RTL will perform this automatically, it must to occur prior to
-    // resetting the global variables, since otherwise the component's effect
-    // unsubscribe will attempt to reference globals that no longer exist.
-    cleanup();
-    delete window.AcuantJavascriptWebSdk;
-    delete window.AcuantCamera;
-    delete window.AcuantCameraUI;
-  });
+  const { initialize } = useAcuant();
 
   describe('getDataURLFileSize', () => {
     it('returns file size in bytes', () => {
@@ -50,6 +43,22 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       expect(getByText('doc_auth.buttons.take_picture')).to.be.ok();
+    });
+
+    it('cancels capture if assumed support is not actually supported once ready', () => {
+      const { container, getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      userEvent.click(getByText('doc_auth.buttons.take_picture'));
+
+      initialize({ isSuccess: true, isCameraSupported: false });
+
+      expect(container.querySelector('.full-screen')).to.be.null();
     });
 
     it('renders with upload button as mobile-primary (secondary) button if acuant script fails to load', async () => {

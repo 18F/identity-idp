@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import AcuantContext from '../context/acuant';
 
 /**
  * @typedef AcuantCameraUI
@@ -59,16 +60,22 @@ function AcuantCaptureCanvas({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
 }) {
+  const { isReady } = useContext(AcuantContext);
+
   useEffect(() => {
-    /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
-      onImageCaptureSuccess,
-      onImageCaptureFailure,
-    );
+    if (isReady) {
+      /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
+        onImageCaptureSuccess,
+        onImageCaptureFailure,
+      );
+    }
 
     return () => {
-      /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
+      if (isReady) {
+        /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
+      }
     };
-  }, []);
+  }, [isReady]);
 
   // The video element is never visible to the user, but it needs to be present
   // in the DOM for the Acuant SDK to capture the feed from the camera.
