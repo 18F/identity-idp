@@ -13,7 +13,8 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      invalid_image_url: L'URL des données d'image n'est pas formatée correctement
+      not_a_file: n'a pas été joint en tant que fichier
+      must_be_image: doit être une image
     forms:
       address1: Adresse
       change_file: Changer de fichier

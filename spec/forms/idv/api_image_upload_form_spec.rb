@@ -12,18 +12,10 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
+  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
   let(:liveness_checking_enabled?) { true }
-  let(:red_dot_png_image_uri) do
-    <<-STR.gsub(/\s/, '')
-      data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-      AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-      9TXL0Y4OHwAAAABJRU5ErkJggg==
-    STR
-  end
-
-  let(:front_image) { red_dot_png_image_uri }
-  let(:back_image) { red_dot_png_image_uri }
-  let(:selfie_image) { red_dot_png_image_uri }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -55,22 +47,40 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when an image data URI is not a properly encoded image' do
-      let(:selfie_image) { 'http://cool.com' }
-
-      it 'is not valid' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['image data URL not formatted correctly'])
-      end
-    end
-
-    context 'when an image data URI is not even a valid URI' do
+    context 'when an image is not a multipart file' do
       let(:selfie_image) { 'aaaa' }
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['image data URL not formatted correctly'])
+        expect(form.errors[:selfie]).to eq(['was not attached as a file'])
       end
+    end
+
+    context 'when file does not have an image content type' do
+      let(:tempfile) do
+        Tempfile.new.tap do |f|
+          f.write('test')
+          f.close
+        end
+      end
+      let(:selfie_image) { Rack::Test::UploadedFile.new(tempfile.path, 'text/plain') }
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:selfie]).to eq(['must be an image'])
+      end
+    end
+
+    context 'when file is empty' do
+      let(:tempfile) { Tempfile.new }
+      let(:selfie_image) { Rack::Test::UploadedFile.new(tempfile.path, 'image/jpeg') }
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:selfie]).to eq(['must be an image'])
+      end
+
+      after { tempfile.unlink }
     end
   end
 end

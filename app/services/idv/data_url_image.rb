@@ -19,7 +19,7 @@ module Idv
       if base64_encoded?
         Base64.decode64(@data)
       else
-        URI.decode(@data)
+        URI.decode_www_form_component(@data)
       end
     end
 

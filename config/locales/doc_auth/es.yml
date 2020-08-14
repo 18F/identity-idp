@@ -13,7 +13,8 @@ es:
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
     errors:
-      invalid_image_url: URL de datos de imagen no formateada correctamente
+      not_a_file: no se adjuntó como un archivo
+      must_be_image: debe ser una imagen
     forms:
       address1: Dirección
       change_file: Cambiar archivo

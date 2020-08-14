@@ -2,9 +2,6 @@ require 'rails_helper'
 
 describe Idv::ImageUploadsController do
   describe '#create' do
-    let(:image_data) { 'data:image/png;base64,AAA' }
-    let(:bad_image_data) { 'http://bad.com' }
-
     before do
       sign_in_as_user
     end
@@ -13,74 +10,96 @@ describe Idv::ImageUploadsController do
 
     let(:params) do
       {
-        front: image_data,
-        back: image_data,
-        selfie: image_data,
+        front: DocAuthImageFixtures.document_front_image_multipart,
+        back: DocAuthImageFixtures.document_back_image_multipart,
+        selfie: DocAuthImageFixtures.selfie_image_multipart,
       }
     end
 
-    context 'when fields are missing' do
-      before { params.delete(:front) }
+    context 'when document capture is not enabled' do
+      before do
+        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+      end
 
-      it 'returns error status when not provided image fields' do
-        action
-
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq(['Front Please fill in this field.'])
+      it 'disables the endpoint' do
+        expect { get :action }.
+          to raise_error(ActionController::UrlGenerationError, /No route matches/)
       end
     end
 
-    context 'with a bad image URL' do
-      before { params.merge!(front: bad_image_data) }
+    context 'when document capture is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
+      end
 
-      context 'with a locale param' do
-        before { params.merge!(locale: 'es') }
+      context 'when fields are missing' do
+        before { params.delete(:front) }
 
-        it 'translates errors using the locale param' do
+        it 'returns error status when not provided image fields' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:success]).to eq(false)
+          expect(json[:errors]).to eq(['Front of your ID Please fill in this field.'])
+        end
+      end
+
+      context 'when a value is not a file' do
+        before { params.merge!(front: 'some string') }
+
+        it 'returns an error' do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:errors]).
-            to eq(["Frente #{I18n.t('doc_auth.errors.invalid_image_url', locale: 'es')}"])
+            to eq(["Front of your ID #{I18n.t('doc_auth.errors.not_a_file')}"])
+        end
+
+        context 'with a locale param' do
+          before { params.merge!(locale: 'es') }
+
+          it 'translates errors using the locale param' do
+            action
+
+            json = JSON.parse(response.body, symbolize_names: true)
+            expect(json[:errors]).
+              to eq(['Frente de su identificación ' +
+                      I18n.t('doc_auth.errors.not_a_file', locale: 'es')])
+          end
         end
       end
-    end
 
-    context 'when image upload succeeds' do
-      it 'returns a successful response and modifies the session' do
-        pending 'modifying the session'
+      context 'when image upload succeeds' do
+        it 'returns a successful response and modifies the session' do
+          pending 'modifying the session'
 
-        action
+          action
 
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(json[:success]).to eq(true)
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:success]).to eq(true)
 
-        expect(subject.user_session['idv/doc_auth']).to include('api_upload')
-      end
-    end
-
-    context 'when image upload fails' do
-      before do
-        DocAuthMock::DocAuthMockClient.mock_response!(
-          method: :post_images,
-          response: DocAuthClient::Response.new(
-            success: false,
-            errors: ['Too blurry', 'Wrong document'],
-          ),
-        )
+          expect(subject.user_session['idv/doc_auth']).to include('api_upload')
+        end
       end
 
-      it 'returns an error response' do
-        post :create, params: {
-          front: image_data,
-          back: image_data,
-          selfie: image_data,
-        }, format: :json
+      context 'when image upload fails' do
+        before do
+          DocAuthMock::DocAuthMockClient.mock_response!(
+            method: :post_images,
+            response: DocAuthClient::Response.new(
+              success: false,
+              errors: ['Too blurry', 'Wrong document'],
+            ),
+          )
+        end
 
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq(['Too blurry', 'Wrong document'])
+        it 'returns an error response' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:success]).to eq(false)
+          expect(json[:errors]).to eq(['Too blurry', 'Wrong document'])
+        end
       end
     end
   end

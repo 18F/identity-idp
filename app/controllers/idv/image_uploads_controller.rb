@@ -14,9 +14,9 @@ module Idv
 
       if form_response.success?
         doc_response = doc_auth_client.post_images(
-          front_image: image_form.front,
-          back_image: image_form.back,
-          selfie_image: image_form.back,
+          front_image: image_form.front.read,
+          back_image: image_form.back.read,
+          selfie_image: image_form.back&.read,
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 

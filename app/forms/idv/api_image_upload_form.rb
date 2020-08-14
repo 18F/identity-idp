@@ -42,10 +42,10 @@ module Idv
     end
 
     def self.human_attribute_name(attr, options = {})
-      # i18n-tasks-use t('doc_auth.headings.front')
-      # i18n-tasks-use t('doc_auth.headings.back')
-      # i18n-tasks-use t('doc_auth.headings.selfie')
-      I18n.t(attr, options.merge(scope: 'doc_auth.headings'))
+      # i18n-tasks-use t('doc_auth.headings.document_capture_front')
+      # i18n-tasks-use t('doc_auth.headings.document_capture_back')
+      # i18n-tasks-use t('doc_auth.headings.document_capture_selfie')
+      I18n.t("doc_auth.headings.document_capture_#{attr}", options)
     end
 
     private
@@ -54,15 +54,23 @@ module Idv
 
     def validate_images
       IMAGE_KEYS.each do |image_key|
-        if params[image_key] && !valid_image?(params[image_key])
-          errors.add(image_key, t('doc_auth.errors.invalid_image_url'))
-        end
+        validate_image(image_key) if params[image_key]
       end
     end
 
-    def valid_image?(data_url)
-      image = Idv::DataUrlImage.new(data_url)
-      image.content_type.start_with?('image/') && image.read.present?
+    def validate_image(image_key)
+      file = params[image_key]
+
+      unless file.respond_to?(:content_type)
+        errors.add(image_key, t('doc_auth.errors.not_a_file'))
+        return
+      end
+
+      data = file.read
+      file.rewind
+
+      return if file.content_type.start_with?('image/') || data.empty?
+      errors.add(image_key, t('doc_auth.errors.must_be_image'))
     end
   end
 end

@@ -227,6 +227,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     File.read('spec/support/fixtures/doc_auth_front_image_data_url.data')
   end
 
+  def doc_auth_front_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_front_image.jpeg', 'image/jpeg')
+  end
+
   def doc_auth_front_image_data_url_data
     Base64.decode64(doc_auth_front_image_data_url.split(',').last)
   end
@@ -239,6 +243,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     File.read('spec/support/fixtures/doc_auth_back_image_data_url.data')
   end
 
+  def doc_auth_back_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_back_image.jpeg', 'image/jpeg')
+  end
+
   def doc_auth_back_image_data_url_data
     Base64.decode64(doc_auth_back_image_data_url.split(',').last)
   end
@@ -249,6 +257,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def doc_auth_selfie_image_data_url
     File.read('spec/support/fixtures/doc_auth_selfie_image_data_url.data')
+  end
+
+  def doc_auth_selfie_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_selfie_image.jpeg', 'image/jpeg')
   end
 
   def doc_auth_selfie_image_data_url_data
