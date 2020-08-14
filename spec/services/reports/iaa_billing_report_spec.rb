@@ -8,12 +8,21 @@ describe Reports::IaaBillingReport do
   let(:issuer3) { 'foo3' }
   let(:iaa) { 'iaa' }
   let(:iaa2) { 'iaa2' }
+  let(:iaa_start_date1_str) { '2020-02-01' }
+  let(:iaa_end_date1_str) { '2021-02-01' }
+  let(:iaa_start_date2_str) { '2020-05-01' }
+  let(:iaa_end_date2_str) { '2021-05-01' }
+  let(:iaa_start_date1) { Time.zone.parse(iaa_start_date1_str) }
+  let(:iaa_end_date1) { Time.zone.parse(iaa_end_date1_str) }
+  let(:iaa_start_date2) { Time.zone.parse(iaa_start_date2_str) }
+  let(:iaa_end_date2) { Time.zone.parse(iaa_end_date2_str) }
+
   let(:results_for_1_iaa) do
     [
       {
         'iaa': 'iaa',
-        'iaa_start_date': '2019-12-15',
-        'iaa_end_date': '2020-07-15',
+        'iaa_start_date': iaa_start_date1_str,
+        'iaa_end_date': iaa_end_date1_str,
         'ial2_active_count': 0,
         'auth_counts':
           [
@@ -45,15 +54,15 @@ describe Reports::IaaBillingReport do
     [
       {
         'iaa': 'iaa',
-        'iaa_start_date': '2019-12-15',
-        'iaa_end_date': '2020-07-15',
-        'ial2_active_count': 0,
+        'iaa_start_date': iaa_start_date1_str,
+        'iaa_end_date': iaa_end_date1_str,
+        'ial2_active_count': 1,
         'auth_counts':
           [
             {
               'issuer': 'foo',
               'ial': 1,
-              'count': 0,
+              'count': 7,
             },
             {
               'issuer': 'foo',
@@ -64,9 +73,9 @@ describe Reports::IaaBillingReport do
       },
       {
         'iaa': 'iaa2',
-        'iaa_start_date': '2019-12-15',
-        'iaa_end_date': '2020-07-15',
-        'ial2_active_count': 0,
+        'iaa_start_date': iaa_start_date2_str,
+        'iaa_end_date': iaa_end_date2_str,
+        'ial2_active_count': 1,
         'auth_counts':
           [
             {
@@ -77,7 +86,7 @@ describe Reports::IaaBillingReport do
             {
               'issuer': 'foo2',
               'ial': 2,
-              'count': 0,
+              'count': 3,
             },
             {
               'issuer': 'foo3',
@@ -97,6 +106,11 @@ describe Reports::IaaBillingReport do
 
   before do
     ServiceProvider.delete_all
+    Timecop.travel now
+  end
+
+  after do
+    Timecop.return
   end
 
   it 'works with no SPs' do
@@ -111,9 +125,9 @@ describe Reports::IaaBillingReport do
 
   it 'rolls up 2 issuers in a single IAA' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
-                           iaa_start_date: now - 6.months, iaa_end_date: now + 1.month)
+                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
     ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa,
-                           iaa_start_date: now - 6.months, iaa_end_date: now + 1.month)
+                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
 
     expect(subject.call).to eq(results_for_1_iaa.to_json)
   end
@@ -123,11 +137,11 @@ describe Reports::IaaBillingReport do
     today_year_month = now.strftime('%Y%m')
 
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
-                           iaa_start_date: now - 6.months, iaa_end_date: now + 1.month)
+                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
     ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa2,
-                           iaa_start_date: now - 6.months, iaa_end_date: now + 1.month)
+                           iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
     ServiceProvider.create(issuer: issuer3, friendly_name: issuer3, ial: 2, iaa: iaa2,
-                           iaa_start_date: now - 6.months, iaa_end_date: now + 1.month)
+                           iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
     Identity.create(user_id: 1, service_provider: issuer, uuid: 'a',
                     last_ial2_authenticated_at: now - 1.hour)
     Identity.create(user_id: 2, service_provider: issuer2, uuid: 'b',
