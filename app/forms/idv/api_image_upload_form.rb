@@ -75,7 +75,7 @@ module Idv
       data = file.read
       file.rewind
 
-      return if file.content_type.start_with?('image/') || data.empty?
+      return if file.content_type.start_with?('image/') && data.present?
       errors.add(image_key, t('doc_auth.errors.must_be_image'))
     end
   end
