@@ -16,7 +16,7 @@ import React, { createContext, useMemo, useEffect, useState } from 'react';
  */
 
 /**
- * @typedef {(credentials:string,endpoint:string,AcuantCallbackOptions)=>void} AcuantInitialize
+ * @typedef {(credentials:string?,endpoint:string?,AcuantCallbackOptions)=>void} AcuantInitialize
  */
 
 /**
@@ -41,17 +41,17 @@ import React, { createContext, useMemo, useEffect, useState } from 'react';
  * @typedef AcuantContextProviderProps
  *
  * @prop {string=}   sdkSrc      SDK source URL.
- * @prop {string=}   credentials SDK credentials.
- * @prop {string=}   endpoint    Endpoint to submit payload.
+ * @prop {string?=}  credentials SDK credentials.
+ * @prop {string?=}  endpoint    Endpoint to submit payload.
  * @prop {ReactNode} children    Child element.
  */
 
 const AcuantContext = createContext({
   isReady: false,
   isError: false,
-  isCameraSupported: null,
-  credentials: null,
-  endpoint: null,
+  isCameraSupported: /** @type {boolean?} */ (null),
+  credentials: /** @type {string?} */ (null),
+  endpoint: /** @type {string?} */ (null),
 });
 
 /**

@@ -35,11 +35,13 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     onRequestCloseRef.current = onRequestClose;
   }, [onRequestClose]);
   useEffect(() => {
-    trapRef.current = createFocusTrap(modalRef.current, {
-      onDeactivate: () => onRequestCloseRef.current(),
-    });
-    trapRef.current.activate();
-    return trapRef.current.deactivate;
+    if (modalRef.current) {
+      trapRef.current = createFocusTrap(modalRef.current, {
+        onDeactivate: () => onRequestCloseRef.current(),
+      });
+      trapRef.current.activate();
+      return trapRef.current.deactivate;
+    }
   }, []);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ function FullScreen({ onRequestClose = () => {}, children }) {
       <button
         type="button"
         aria-label={t('users.personal_key.close')}
-        onClick={() => trapRef.current.deactivate()}
+        onClick={() => trapRef.current?.deactivate()}
         className="full-screen-close-button usa-button padding-2 margin-2"
       >
         <Image alt="" assetPath="close-white-alt.svg" className="full-screen-close-icon" />

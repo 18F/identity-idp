@@ -6,7 +6,7 @@ function SubmissionPending() {
   const { t } = useI18n();
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   useEffect(() => {
-    headingRef.current.focus();
+    headingRef.current?.focus();
   }, []);
 
   return (
