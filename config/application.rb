@@ -22,7 +22,7 @@ module Upaya
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
         mail.address = Figaro.env.email_from
-        mail.display_mail = Figaro.env.email_from_display_name
+        mail.display_name = Figaro.env.email_from_display_name
       end.to_s,
     }
 
