@@ -114,6 +114,18 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' submitted', result
       )
     end
+
+    it 'progresses from welcome to upload' do
+      put :update, params: { step: 'welcome', ial2_consent_given: true }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+    end
+
+    it 'skips from welcome to document capture' do
+      put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+    end
   end
 
   def mock_next_step(step)
