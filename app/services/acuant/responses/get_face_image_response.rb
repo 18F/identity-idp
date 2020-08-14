@@ -1,6 +1,6 @@
 module Acuant
   module Responses
-    class GetFaceImageResponse < Acuant::Response
+    class GetFaceImageResponse < DocAuthClient::Response
       attr_reader :http_response
 
       def initialize(http_response)

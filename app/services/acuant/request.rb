@@ -56,7 +56,6 @@ module Acuant
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
     def faraday_connection
       retry_options = {
         max: 2,
@@ -78,7 +77,6 @@ module Acuant
         conn.request :retry, retry_options
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def faraday_request_params
       timeout = Figaro.env.acuant_timeout&.to_i || 45
@@ -92,7 +90,7 @@ module Acuant
         http_response.status,
       ].join(' ')
       exception = RuntimeError.new(message)
-      Response.new(
+      DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
         exception: exception,
@@ -101,7 +99,7 @@ module Acuant
 
     def handle_connection_error(exception)
       NewRelic::Agent.notice_error(exception)
-      Response.new(
+      DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
         exception: exception,

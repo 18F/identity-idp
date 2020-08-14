@@ -9,7 +9,7 @@ unless Rails.env.production?
     end
 
     desc 'Exports user flows for the web'
-    task 'user_flows:web' do
+    task 'user_flows:web' => :environment do
       ENV['RAILS_DISABLE_ASSET_DIGEST'] = 'true'
       require './lib/user_flow_exporter'
       Rake::Task['spec:user_flows'].invoke

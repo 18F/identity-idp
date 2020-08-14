@@ -1,4 +1,4 @@
-class OpenidConnectTokenForm # rubocop:disable Metrics/ClassLength
+class OpenidConnectTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers

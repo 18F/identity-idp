@@ -44,7 +44,7 @@ feature 'doc auth mobile back image step' do
   it 'does not proceed to the next page if the image upload fails' do
     DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
-      response: Acuant::Response.new(
+      response: DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
       ),

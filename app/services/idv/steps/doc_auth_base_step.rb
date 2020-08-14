@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -118,7 +117,7 @@ module Idv
 
       def throttled_response
         redirect_to throttled_url
-        ::Acuant::Response.new(
+        DocAuthClient::Response.new(
           success: false,
           errors: [I18n.t('errors.doc_auth.acuant_throttle')],
         )
@@ -188,5 +187,3 @@ module Idv
     end
   end
 end
-
-# rubocop:enable Metrics/ClassLength

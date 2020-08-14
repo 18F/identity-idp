@@ -45,11 +45,8 @@ module Flow
       response
     end
 
-    # Duck type check for FormResponse
     def form_response?(response)
-      response.is_a?(FormResponse) ||
-        response.is_a?(Acuant::Response) ||
-        (response.respond_to?(:success?) && response.respond_to?(:to_h))
+      response.is_a?(FormResponse) || response.is_a?(DocAuthClient::Response)
     end
 
     delegate :flash, :session, :current_user, :params, :request, to: :@controller

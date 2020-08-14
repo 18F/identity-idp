@@ -11,19 +11,59 @@ import DataURLFile from '../models/data-url-file';
 /**
  * @typedef AcuantCaptureProps
  *
- * @prop {string}                        label      Label associated with file input.
- * @prop {string=}                       bannerText Optional banner text to show in file input.
- * @prop {DataURLFile=}                  value      Current value.
- * @prop {(nextValue:DataURLFile)=>void} onChange   Callback receiving next value on change.
- * @prop {string=}                       className  Optional additional class names.
+ * @prop {string}                         label                 Label associated with file input.
+ * @prop {string=}                        bannerText            Optional banner text to show in file
+ *                                                              input.
+ * @prop {DataURLFile=}                   value                 Current value.
+ * @prop {(nextValue:DataURLFile?)=>void} onChange              Callback receiving next value on
+ *                                                              change.
+ * @prop {string=}                        className             Optional additional class names.
+ * @prop {number=}                        minimumGlareScore     Minimum glare score to be considered
+ *                                                              acceptable.
+ * @prop {number=}                        minimumSharpnessScore Minimum sharpness score to be
+ *                                                              considered acceptable.
+ * @prop {number=}                        minimumFileSize       Minimum file size (in bytes) to be
+ *                                                              considered acceptable.
  */
 
 /**
- * The minimal glare score value to be considered acceptable.
+ * Returns the file size (bytes) of a file represented as a data URL.
+ *
+ * @param {string} dataURL Data URL.
+ *
+ * @return {number} File size, in bytes.
+ */
+export function getDataURLFileSize(dataURL) {
+  const [header, data] = dataURL.split(',');
+  const isBase64 = /;base64$/.test(header);
+  const decodedData = isBase64 ? window.atob(data) : decodeURIComponent(data);
+
+  return decodedData.length;
+}
+
+/**
+ * The minimum glare score value to be considered acceptable.
  *
  * @type {number}
  */
-const ACCEPTABLE_GLARE_SCORE = 50;
+const DEFAULT_ACCEPTABLE_GLARE_SCORE = 50;
+
+/**
+ * The minimum sharpness score value to be considered acceptable.
+ *
+ * @type {number}
+ */
+const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
+
+/**
+ * The minimum file size (bytes) for an image to be considered acceptable.
+ *
+ * @type {number}
+ */
+const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
+  process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
+    ? 250 * 1024
+    : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
@@ -31,7 +71,16 @@ const ACCEPTABLE_GLARE_SCORE = 50;
  *
  * @param {AcuantCaptureProps} props Props object.
  */
-function AcuantCapture({ label, bannerText, value, onChange = () => {}, className }) {
+function AcuantCapture({
+  label,
+  bannerText,
+  value,
+  onChange = () => {},
+  className,
+  minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
+  minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
+}) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLElement} */ (null));
   const isForceUploading = useRef(false);
@@ -63,6 +112,22 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
   }
 
   /**
+   * Calls onChange with next value if valid. Validation occurs separately to AcuantCaptureCanvas
+   * for common checks derived from DataURLFile properties (file size, etc). If invalid, error state
+   * is assigned with appropriate error message.
+   *
+   * @param {DataURLFile?} nextValue Next value candidate.
+   */
+  function onChangeIfValid(nextValue) {
+    if (nextValue && getDataURLFileSize(nextValue.data) < minimumFileSize) {
+      setOwnError(t('errors.doc_auth.photo_file_size'));
+    } else {
+      setOwnError(null);
+      onChange(nextValue);
+    }
+  }
+
+  /**
    * Triggers upload to occur, regardless of support for direct capture. This is necessary since the
    * default behavior for interacting with the file input is intercepted when capture is supported.
    * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
@@ -78,10 +143,12 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
+              if (nextCapture.glare < minimumGlareScore) {
                 setOwnError(t('errors.doc_auth.photo_glare'));
+              } else if (nextCapture.sharpness < minimumSharpnessScore) {
+                setOwnError(t('errors.doc_auth.photo_blurry'));
               } else {
-                onChange(new DataURLFile(nextCapture.image.data));
+                onChangeIfValid(new DataURLFile(nextCapture.image.data));
               }
 
               setIsCapturing(false);
@@ -97,9 +164,10 @@ function AcuantCapture({ label, bannerText, value, onChange = () => {}, classNam
         bannerText={bannerText}
         accept={['image/*']}
         value={value}
-        errors={ownError ? [ownError] : undefined}
+        error={ownError}
         onClick={startCaptureOrTriggerUpload}
-        onChange={onChange}
+        onChange={onChangeIfValid}
+        onError={() => setOwnError(null)}
       />
       <div className="margin-top-2">
         {isMobile && (

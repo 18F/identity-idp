@@ -1,6 +1,6 @@
 module Acuant
   module Responses
-    class LivenessResponse < Acuant::Response
+    class LivenessResponse < DocAuthClient::Response
       attr_reader :http_response
 
       def initialize(http_response)

@@ -6,16 +6,11 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "mocha": true
+    "mocha": true,
+    "jquery": true
   },
   "globals": {
-    "$": true,
-    "__DEV__": true,
-    "assert": true,
-    "chai": true,
-    "sinon": true,
-    "expect": true,
-    "fixture": true
+    "expect": true
   },
   "rules": {
     "prettier/prettier": "error",
@@ -51,5 +46,13 @@
       "app/i18n-dropdown"
     ],
     "import/internal-regex": "^@18f/identity-"
-  }
+  },
+  "overrides": [
+    {
+      "files": "spec/javascripts/**/*",
+      "rules": {
+        "react/jsx-props-no-spreading": "off"
+      }
+    }
+  ]
 }

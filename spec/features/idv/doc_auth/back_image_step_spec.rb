@@ -56,7 +56,7 @@ feature 'doc auth back image step' do
   it 'does not proceed to the next page if the image upload fails' do
     DocAuthMock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
-      response: Acuant::Response.new(
+      response: DocAuthClient::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
       ),
@@ -98,7 +98,7 @@ feature 'doc auth back image step' do
     error_message = I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')
     DocAuthMock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: Acuant::Response.new(
+      response: DocAuthClient::Response.new(
         success: false,
         errors: [error_message],
       ),

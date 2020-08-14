@@ -23,10 +23,14 @@ module DocAuthMock
     end
 
     def call
-      DocAuthMock::Responses::GetResultsResponse.new(
+      DocAuthClient::Response.new(
         success: success?,
         errors: errors,
         pii_from_doc: pii_from_doc,
+        extra: {
+          result: success? ? 'Passed' : 'Caution',
+          billed: true,
+        },
       )
     end
 

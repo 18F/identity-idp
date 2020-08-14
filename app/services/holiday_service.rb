@@ -25,7 +25,6 @@ class HolidayService
     observed_holidays.any? { |oh| oh == date }
   end
 
-  # rubocop:disable Metrics/MethodLength
   def holidays
     [
       new_years,
@@ -40,7 +39,6 @@ class HolidayService
       christmas,
     ]
   end
-  # rubocop:enable Metrics/MethodLength
 
   def observed_holidays
     holidays.

@@ -25,7 +25,7 @@ module Acuant
       end
 
       def handle_http_response(_response)
-        Acuant::Responses::UploadImageResponse.new
+        DocAuthClient::Response.new(success: true)
       end
 
       def method

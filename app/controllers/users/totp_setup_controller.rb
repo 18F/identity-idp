@@ -1,5 +1,4 @@
 module Users
-  # rubocop:disable Metrics/ClassLength
   class TotpSetupController < ApplicationController
     include RememberDeviceConcern
     include MfaSetupConcern
@@ -132,5 +131,4 @@ module Users
       current_user.auth_app_configurations.count
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
