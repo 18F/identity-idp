@@ -1,19 +1,75 @@
 import React, { createContext, useMemo, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+
+/** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef AcuantCamera
+ *
+ * @prop {boolean} isCameraSupported Whether camera is supported.
+ */
+
+/**
+ * @typedef AcuantCallbackOptions
+ *
+ * @prop {()=>void} onSuccess Success callback.
+ * @prop {()=>void} onFail    Failure callback.
+ */
+
+/**
+ * @typedef {(credentials:string,endpoint:string,AcuantCallbackOptions)=>void} AcuantInitialize
+ */
+
+/**
+ * @typedef AcuantJavaScriptWebSDK
+ *
+ * @prop {AcuantInitialize} initialize Acuant SDK initializer.
+ */
+
+/**
+ * @typedef AcuantGlobals
+ *
+ * @prop {()=>void}               onAcuantSdkLoaded      Acuant initialization callback.
+ * @prop {AcuantCamera}           AcuantCamera           Acuant camera API.
+ * @prop {AcuantJavaScriptWebSDK} AcuantJavascriptWebSdk Acuant web SDK.
+ */
+
+/**
+ * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
+
+/**
+ * @typedef AcuantContextProviderProps
+ *
+ * @prop {string=}   sdkSrc      SDK source URL.
+ * @prop {string=}   credentials SDK credentials.
+ * @prop {string=}   endpoint    Endpoint to submit payload.
+ * @prop {ReactNode} children    Child element.
+ */
 
 const AcuantContext = createContext({
   isReady: false,
   isError: false,
+  isCameraSupported: null,
   credentials: null,
   endpoint: null,
 });
 
-function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
+/**
+ * @param {AcuantContextProviderProps} props Props object.
+ */
+function AcuantContextProvider({
+  sdkSrc = '/AcuantJavascriptWebSdk.min.js',
+  credentials = null,
+  endpoint = null,
+  children,
+}) {
   const [isReady, setIsReady] = useState(false);
   const [isError, setIsError] = useState(false);
-  const value = useMemo(() => ({ isReady, isError, endpoint, credentials }), [
+  const [isCameraSupported, setIsCameraSupported] = useState(/** @type {?boolean} */ (null));
+  const value = useMemo(() => ({ isReady, isError, isCameraSupported, endpoint, credentials }), [
     isReady,
     isError,
+    isCameraSupported,
     endpoint,
     credentials,
   ]);
@@ -21,41 +77,37 @@ function AcuantContextProvider({ sdkSrc, credentials, endpoint, children }) {
   useEffect(() => {
     // Acuant SDK expects this global to be assigned at the time the script is
     // loaded, which is why the script element is manually appended to the DOM.
-    const originalOnAcuantSdkLoaded = window.onAcuantSdkLoaded;
-    window.onAcuantSdkLoaded = () => {
-      window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
-        onSuccess: () => setIsReady(true),
-        onFail: () => setIsError(true),
-      });
+    const originalOnAcuantSdkLoaded = /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded;
+    /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded = () => {
+      /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.initialize(
+        credentials,
+        endpoint,
+        {
+          onSuccess: () => {
+            setIsReady(true);
+            setIsCameraSupported(
+              /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
+            );
+          },
+          onFail: () => setIsError(true),
+        },
+      );
     };
 
     const script = document.createElement('script');
     script.async = true;
     script.src = sdkSrc;
+    script.onerror = () => setIsError(true);
     document.body.appendChild(script);
 
     return () => {
-      window.onAcuantSdkLoaded = originalOnAcuantSdkLoaded;
+      /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded = originalOnAcuantSdkLoaded;
       document.body.removeChild(script);
     };
   }, []);
 
   return <AcuantContext.Provider value={value}>{children}</AcuantContext.Provider>;
 }
-
-AcuantContextProvider.propTypes = {
-  sdkSrc: PropTypes.string,
-  credentials: PropTypes.string,
-  endpoint: PropTypes.string,
-  children: PropTypes.node,
-};
-
-AcuantContextProvider.defaultProps = {
-  sdkSrc: '/AcuantJavascriptWebSdk.min.js',
-  credentials: null,
-  endpoint: null,
-  children: null,
-};
 
 export const Provider = AcuantContextProvider;
 

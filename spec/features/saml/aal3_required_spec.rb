@@ -34,6 +34,13 @@ describe 'AAL3 authentication required in an SAML context' do
         visit login_two_factor_path(otp_delivery_preference: 'sms')
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
+
+      it 'does not allow an already signed in user to bypass AAL3 auth' do
+        sign_in_and_2fa_user(user_with_aal3_2fa)
+        visit aal3_sp1_authnrequest
+
+        expect(current_url).to eq(login_two_factor_webauthn_url)
+      end
     end
   end
 end

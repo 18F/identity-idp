@@ -56,15 +56,29 @@ module Acuant
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def faraday_connection
+      retry_options = {
+        max: 2,
+        interval: 0.05,
+        interval_randomness: 0.5,
+        backoff_factor: 2,
+        retry_statuses: [404, 438, 439],
+        retry_block: lambda do |_env, _options, retries, exc|
+          NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
+        end,
+      }
+
       Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
         conn.adapter :net_http
         conn.basic_auth(
           Figaro.env.acuant_assure_id_username,
           Figaro.env.acuant_assure_id_password,
         )
+        conn.request :retry, retry_options
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def faraday_request_params
       timeout = Figaro.env.acuant_timeout&.to_i || 45

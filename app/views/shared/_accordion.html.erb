@@ -1,0 +1,15 @@
+<div class="usa-accordion usa-accordion--bordered">
+  <<%= options.fetch(:heading_level, 'div')%> class="usa-accordion__heading">
+    <button type="button" class="usa-accordion__button" aria-expanded="false" aria-controls="<%= target_id %>">
+      <%= header_text %>
+    </button>
+  </<%= options.fetch(:heading_level, 'div')%>>
+  <div id="<%= target_id %>" class="usa-accordion__container">
+    <div class="usa-accordion__content usa-prose">
+      <%= yield %>
+    </div>
+    <% unless options[:hide_close_link] %>
+      <button type="button" class="usa-accordion__close-button"><%= t('users.personal_key.close') %></button>
+    <% end %>
+  </div>
+</div>

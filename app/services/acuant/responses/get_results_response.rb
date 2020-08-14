@@ -1,9 +1,6 @@
 module Acuant
   module Responses
     class GetResultsResponse < Acuant::Response
-      GOOD_RESULT = 1
-      FYI_RESULT = 2
-
       def initialize(http_response)
         @http_response = http_response
         super(
@@ -25,9 +22,16 @@ module Acuant
       def to_h
         {
           success: success?,
-          erorrs: errors,
+          errors: errors,
           exception: exception,
+          result: result_code.name,
+          billed: result_code.billed,
         }
+      end
+
+      # @return [Acuant::ResultCode::ResultCode]
+      def result_code
+        Acuant::ResultCodes.from_int(parsed_response_body['Result'])
       end
 
       private
@@ -57,7 +61,7 @@ module Acuant
       end
 
       def successful_result?
-        parsed_response_body['Result'] == GOOD_RESULT
+        result_code == Acuant::ResultCodes::PASSED
       end
     end
   end
