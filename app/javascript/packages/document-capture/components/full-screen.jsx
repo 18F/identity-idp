@@ -13,6 +13,14 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * Number of active instances of FullScreen currently mounted, used in determining when overlay body
+ * class should be added or removed.
+ *
+ * @type {number}
+ */
+let activeInstances = 0;
+
+/**
  * @param {FullScreenProps} props Props object.
  */
 function FullScreen({ onRequestClose = () => {}, children }) {
@@ -32,6 +40,18 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     });
     trapRef.current.activate();
     return trapRef.current.deactivate;
+  }, []);
+
+  useEffect(() => {
+    if (activeInstances++ === 0) {
+      document.body.classList.add('has-full-screen-overlay');
+    }
+
+    return () => {
+      if (--activeInstances === 0) {
+        document.body.classList.remove('has-full-screen-overlay');
+      }
+    };
   }, []);
 
   return (

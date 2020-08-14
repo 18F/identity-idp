@@ -22,6 +22,7 @@
     "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
+    "no-plusplus": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
