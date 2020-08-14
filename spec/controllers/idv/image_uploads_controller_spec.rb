@@ -22,8 +22,8 @@ describe Idv::ImageUploadsController do
       end
 
       it 'disables the endpoint' do
-        expect { get :action }.
-          to raise_error(ActionController::UrlGenerationError, /No route matches/)
+        action
+        expect(response).to be_not_found
       end
     end
 

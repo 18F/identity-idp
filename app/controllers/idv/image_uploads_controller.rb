@@ -2,6 +2,8 @@ module Idv
   class ImageUploadsController < ApplicationController
     include ApplicationHelper # for liveness_checking_enabled?
 
+    before_action :render_404_if_disabled
+
     respond_to :json
 
     def create
@@ -29,6 +31,10 @@ module Idv
     end
 
     private
+
+    def render_404_if_disabled
+      render_not_found unless FeatureManagement.document_capture_step_enabled?
+    end
 
     def store_pii(doc_response)
       # stub for future PR

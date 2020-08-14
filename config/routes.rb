@@ -29,9 +29,7 @@ Rails.application.routes.draw do
         via: %i[get post],
         format: :xml
 
-  if FeatureManagement.document_capture_step_enabled?
-    post '/api/verify/images' => 'idv/image_uploads#create'
-  end
+  post '/api/verify/images' => 'idv/image_uploads#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
