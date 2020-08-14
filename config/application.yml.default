@@ -50,6 +50,7 @@ doc_auth_extend_timeout_by_minutes: '40'
 document_capture_step_enabled: 'false'
 document_capture_react_enabled: 'true'
 email_from: no-reply@login.gov
+email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
 google_analytics_key:

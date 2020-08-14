@@ -8,7 +8,7 @@ Devise.setup do |config|
   config.case_insensitive_keys = []
   config.confirm_within = 24.hours
   config.expire_all_remember_me_on_sign_out = true
-  config.mailer_sender = email_with_name(Figaro.env.email_from, Figaro.env.email_from)
+  config.mailer_sender = email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name)
   config.paranoid = true
   config.password_length = 12..128
   config.reset_password_within = 6.hours
