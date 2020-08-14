@@ -58,7 +58,7 @@ module Reports
       ServiceProvider.where.not(iaa: nil).each do |sp|
         iaa = sp.iaa
         (sps_for_iaa[iaa] ||= []) << sp
-        next if sp.ial == 1 || iaa_done[iaa]
+        next if iaa_done[iaa]
         sps << sp
         iaa_done[iaa] = true
       end
