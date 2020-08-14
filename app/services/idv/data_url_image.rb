@@ -19,7 +19,7 @@ module Idv
       if base64_encoded?
         Base64.decode64(@data)
       else
-        CGI.unescape(@data)
+        URI.decode(@data)
       end
     end
 

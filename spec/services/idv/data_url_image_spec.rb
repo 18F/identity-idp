@@ -33,7 +33,7 @@ describe Idv::DataUrlImage do
     end
 
     context 'when data is not base64-encoded' do
-      let(:data_url) { 'data:image/png,a+b+c+%3F' }
+      let(:data_url) { 'data:image/png,a%20b%20c%20%3F' }
 
       it 'CGI unescapes the data' do
         expect(data_url_image.read).to eq('a b c ?')
