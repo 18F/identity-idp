@@ -56,8 +56,7 @@ class UpdateUser
   end
 
   def current_made_default_at
-    return phone_configuration.made_default_at if attributes[:phone_id].present?
-    nil
+    phone_configuration.made_default_at if attributes[:phone_id].present?
   end
 
   def phone_configuration
