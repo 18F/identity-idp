@@ -14,6 +14,10 @@ describe('document-capture/components/acuant-capture-canvas', () => {
       </AcuantContextProvider>,
     );
 
+    // At this point, it's assumed `window.AcuantCameraUI.start` has not been called. This can't be
+    // asserted, since the global is only assigned as part of `initialize` itself. But we can rely
+    // on the fact that if it was called, an error would be thrown, and the test would fail.
+
     initialize();
 
     expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
