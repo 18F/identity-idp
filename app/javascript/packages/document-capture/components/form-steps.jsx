@@ -18,8 +18,9 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @typedef FormStepsProps
  *
- * @prop {FormStep[]=}                        steps      Form steps.
- * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
+ * @prop {FormStep[]=}                        steps         Form steps.
+ * @prop {Record<string,any>}                 initialValues Form values to populate initial state.
+ * @prop {(values:Record<string,any>)=>void=} onComplete    Form completion callback.
  */
 
 /**
@@ -65,8 +66,8 @@ export function getLastValidStepIndex(steps, values) {
 /**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {} }) {
-  const [values, setValues] = useState({});
+function FormSteps({ steps = [], onComplete = () => {}, initialValues = {} }) {
+  const [values, setValues] = useState(initialValues);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step');
