@@ -28,7 +28,10 @@ Rails.application.routes.draw do
   match '/api/twilio/voice' => 'twilio_voice#show',
         via: %i[get post],
         format: :xml
-  post '/api/verify/images' => 'idv/image_uploads#create'
+
+  if FeatureManagement.document_capture_step_enabled?
+    post '/api/verify/images' => 'idv/image_uploads#create'
+  end
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
