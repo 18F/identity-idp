@@ -62,7 +62,7 @@ const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
  */
 const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
   process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
-    ? 500 * 1024
+    ? 250 * 1024
     : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
 
 /**
