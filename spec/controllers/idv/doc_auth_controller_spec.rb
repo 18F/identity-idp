@@ -115,16 +115,34 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'progresses from welcome to upload' do
-      put :update, params: { step: 'welcome', ial2_consent_given: true }
+    describe 'when document capture is enabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
+      end
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
+
+      it 'skips from welcome to document capture' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      end
     end
 
-    it 'skips from welcome to document capture' do
-      put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+    describe 'when document capture is disabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('false')
+      end
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
     end
   end
 
