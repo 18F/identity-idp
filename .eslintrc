@@ -32,10 +32,6 @@
     "react/jsx-one-expression-per-line": "off",
     "react/prop-types": "off"
   },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
-  },
   "settings": {
     "import/core-modules": [
       "app/components/index",
