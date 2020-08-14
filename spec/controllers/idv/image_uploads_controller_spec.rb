@@ -6,7 +6,7 @@ describe Idv::ImageUploadsController do
       sign_in_as_user
     end
 
-    subject(:action) { post :create, params: params, format: :json }
+    subject(:action) { post :create, params: params }
 
     let(:params) do
       {
