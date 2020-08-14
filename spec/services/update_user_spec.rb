@@ -70,6 +70,15 @@ describe UpdateUser do
           expect(phone_configuration.made_default_at).to eq nil
         end
       end
+
+      context 'when phone is not set as default' do
+        it 'updates made_default_at with nil value' do
+          attributes[:otp_make_default_number] = 'false'
+          UpdateUser.new(user: user, attributes: attributes).call
+          phone_configuration = user.phone_configurations.reload.first
+          expect(phone_configuration.made_default_at).to eq nil
+        end
+      end
     end
 
     context 'when updating an existing phone' do
