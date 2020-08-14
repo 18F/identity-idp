@@ -1,32 +1,16 @@
 module Idv
   class DataUrlImage
     def initialize(data_url)
-      header, data = URI(data_url.chomp).opaque.to_s.split(',', 2)
-      @header = header.to_s
-      @data = data.to_s
+      @header, base64_data = data_url.split(',', 2)
+      @data = Base64.decode64(base64_data || '')
     end
 
-    BASE64_CONTENT_TYPE = /;base64$/.freeze
-
-    # @return [String]
     def content_type
-      content_type, *_rest = @header.split(';')
-      content_type.to_s
+      @header.gsub(/^data:/, '').gsub(/;base64$/, '')
     end
 
-    # @return [String]
     def read
-      if base64_encoded?
-        Base64.decode64(@data)
-      else
-        URI.decode_www_form_component(@data)
-      end
-    end
-
-    private
-
-    def base64_encoded?
-      !!@header.match(BASE64_CONTENT_TYPE)
+      @data
     end
   end
 end
