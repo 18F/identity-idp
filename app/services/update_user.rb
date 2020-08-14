@@ -46,12 +46,10 @@ class UpdateUser
   end
 
   def made_default_at_date
-    otp_make_default_number = attributes[:otp_make_default_number]
-
-    if otp_make_default_number.blank? || otp_make_default_number == 'false'
-      current_made_default_at
-    else
+    if attributes[:otp_make_default_number].to_s == 'true'
       Time.zone.now
+    else
+      current_made_default_at
     end
   end
 
