@@ -121,5 +121,5 @@ end
 
 group :production do
   gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.1.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.2.0'
 end
