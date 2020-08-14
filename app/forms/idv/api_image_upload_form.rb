@@ -35,10 +35,16 @@ module Idv
       @liveness_checking_enabled
     end
 
-    IMAGE_KEYS.each do |image_key|
-      define_method(image_key) do
-        params[image_key]
-      end
+    def front
+      params[:front]
+    end
+
+    def back
+      params[:back]
+    end
+
+    def selfie
+      params[:selfie]
     end
 
     def self.human_attribute_name(attr, options = {})
