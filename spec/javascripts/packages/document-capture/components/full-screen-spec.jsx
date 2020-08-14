@@ -91,4 +91,25 @@ describe('document-capture/components/full-screen', () => {
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
   });
+
+  it('only removes body class when last mounted modal is removed', () => {
+    const { rerender } = render(
+      <>
+        <FullScreen>Please don’t</FullScreen>
+        <FullScreen>do this.</FullScreen>
+      </>,
+    );
+
+    rerender(
+      <>
+        <FullScreen>Please don’t</FullScreen>
+      </>,
+    );
+
+    expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
+
+    rerender(<></>);
+
+    expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
+  });
 });
