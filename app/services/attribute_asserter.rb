@@ -14,14 +14,23 @@ class AttributeAsserter
     dob
     ssn
     phone
+    x509
+    x509:subject
+    x509:presented
   ].freeze
 
-  def initialize(user:, service_provider:, name_id_format:, authn_request:, decrypted_pii:)
+  def initialize(user:,
+                 service_provider:,
+                 name_id_format:,
+                 authn_request:,
+                 decrypted_pii:,
+                 session:)
     self.user = user
     self.service_provider = service_provider
     self.name_id_format = name_id_format
     self.authn_request = authn_request
     self.decrypted_pii = decrypted_pii
+    self.session = session
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -31,13 +40,19 @@ class AttributeAsserter
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
+    add_x509(attrs) if x509_data
     user.asserted_attributes = attrs
   end
   # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   private
 
-  attr_accessor :user, :service_provider, :name_id_format, :authn_request, :decrypted_pii
+  attr_accessor :user,
+                :service_provider,
+                :name_id_format,
+                :authn_request,
+                :decrypted_pii,
+                :session
 
   def ial_context
     @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)
@@ -70,6 +85,11 @@ class AttributeAsserter
     context = authn_request.requested_aal_authn_context
     context ||= Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[service_provider.aal]
     attrs[:aal] = { getter: aal_getter_function(context) } if context
+  end
+
+  def add_x509(attrs)
+    attrs[:x509_subject] = { getter: ->(_principal) { x509_data.subject } }
+    attrs[:x509_presented] = { getter: ->(_principal) { x509_data.presented } }
   end
 
   def uuid_getter_function
@@ -120,6 +140,18 @@ class AttributeAsserter
 
   def authn_context
     authn_request.requested_ial_authn_context
+  end
+
+  def x509_data
+    @x509_data ||= begin
+      x509_hash = session[:decrypted_x509]
+      X509::Attributes.new_from_json(x509_hash) if x509_hash
+    end
+  end
+
+  def session_store
+    config = Rails.application.config
+    config.session_store.new({}, config.session_options)
   end
 
   def ascii?
