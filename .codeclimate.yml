@@ -9,8 +9,7 @@ checks:
   file-lines:
     enabled: false
   method-complexity:
-    config:
-      threshold: 15
+    enabled: false
   method-count:
     enabled: false
   method-lines:

@@ -7,6 +7,7 @@ import AcuantCapture, {
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
+import I18nContext from '@18f/identity-document-capture/context/i18n';
 import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
@@ -56,7 +57,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       userEvent.click(getByText('doc_auth.buttons.take_picture'));
 
-      initialize({ isSuccess: true, isCameraSupported: false });
+      initialize({ isCameraSupported: false });
 
       expect(container.querySelector('.full-screen')).to.be.null();
     });
@@ -85,10 +86,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onFail }) => onFail(),
-      };
-      window.onAcuantSdkLoaded();
+      initialize({ isSuccess: false });
 
       const button = await findByText('doc_auth.buttons.upload_picture');
       expect(button.classList.contains('btn-secondary')).to.be.true();
@@ -103,11 +101,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
+      initialize();
 
       const button = getByText('doc_auth.buttons.take_picture');
 
@@ -123,12 +117,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+      initialize();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -146,12 +135,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+      initialize();
 
       const button = getByLabelText('Image');
       fireEvent.click(button);
@@ -170,24 +154,17 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 70,
-            sharpness: 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 70,
+          sharpness: 70,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -209,15 +186,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start: sinon.spy(),
-        end: sinon.spy(),
-      };
+      initialize();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -241,12 +210,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = { start: sinon.spy(), end: sinon.spy() };
+      initialize();
 
       const button = getByText('doc_auth.buttons.take_picture_retry');
       expect(button).to.be.ok();
@@ -269,11 +233,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: false };
-      window.onAcuantSdkLoaded();
+      initialize({ isCameraSupported: false });
 
       const button = getByText('doc_auth.buttons.upload_picture');
       expect(button).to.be.ok();
@@ -290,24 +250,17 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 38,
-            sharpness: 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 38,
+          sharpness: 70,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -326,24 +279,17 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 70,
-            sharpness: 20,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 70,
+          sharpness: 20,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -362,24 +308,17 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 70,
-            sharpness: 20,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 70,
+          sharpness: 20,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const file = new window.File([''], 'upload.txt', { type: 'text/plain' });
 
@@ -406,24 +345,17 @@ describe('document-capture/components/acuant-capture', () => {
 
       let isBlurry = true;
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 70,
-            sharpness: isBlurry ? 20 : 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 70,
+          sharpness: isBlurry ? 20 : 70,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -444,24 +376,17 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
-      window.AcuantCameraUI = {
-        start(onImageCaptureSuccess) {
-          const capture = {
-            glare: 70,
-            sharpness: 38,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          };
-          onImageCaptureSuccess(capture);
-        },
-        end: sinon.spy(),
-      };
+      initialize();
+      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
+        const capture = {
+          glare: 70,
+          sharpness: 38,
+          image: {
+            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+          },
+        };
+        onImageCaptureSuccess(capture);
+      });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -469,6 +394,50 @@ describe('document-capture/components/acuant-capture', () => {
       const error = getByText('errors.doc_auth.photo_blurry');
 
       expect(error).to.be.ok();
+    });
+
+    it('triggers forced upload', () => {
+      const { getByText } = render(
+        <I18nContext.Provider
+          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        >
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </I18nContext.Provider>,
+      );
+
+      initialize();
+
+      const button = getByText('Upload');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+    });
+
+    it('triggers forced upload with `capture` value', () => {
+      const { getByText, getByLabelText } = render(
+        <I18nContext.Provider
+          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        >
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" capture="environment" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </I18nContext.Provider>,
+      );
+
+      initialize();
+
+      const button = getByText('Upload');
+      const input = getByLabelText('Image');
+      fireEvent.click(button);
+
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+      expect(input.getAttribute('capture')).to.equal('environment');
     });
   });
 
@@ -520,11 +489,7 @@ describe('document-capture/components/acuant-capture', () => {
       </AcuantContextProvider>,
     );
 
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-    };
-    window.AcuantCamera = { isCameraSupported: true };
-    window.onAcuantSdkLoaded();
+    initialize();
 
     expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
   });
@@ -536,13 +501,25 @@ describe('document-capture/components/acuant-capture', () => {
       </AcuantContextProvider>,
     );
 
-    window.AcuantJavascriptWebSdk = {
-      initialize: (_credentials, _endpoint, { onFail }) => onFail(),
-    };
-    window.onAcuantSdkLoaded();
+    initialize({ isSuccess: false });
 
     const hint = getByText('doc_auth.tips.document_capture_hint');
 
     expect(hint).to.be.ok();
+  });
+
+  it('captures by `capture` value', () => {
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" capture="environment" />
+      </AcuantContextProvider>,
+    );
+
+    initialize();
+
+    const button = getByLabelText('Image');
+    fireEvent.click(button);
+
+    expect(window.AcuantCameraUI.start.called).to.be.false();
   });
 });

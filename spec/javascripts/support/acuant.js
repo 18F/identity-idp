@@ -13,7 +13,7 @@ export function useAcuant() {
   });
 
   return {
-    initialize({ isSuccess = true, isCameraSupported = false } = {}) {
+    initialize({ isSuccess = true, isCameraSupported = true } = {}) {
       window.AcuantJavascriptWebSdk = {
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
           isSuccess ? onSuccess() : onFail(),
