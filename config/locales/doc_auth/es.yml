@@ -12,6 +12,9 @@ es:
       take_picture_retry: Retomar foto
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
+    errors:
+      not_a_file: no se adjuntó como un archivo
+      must_be_image: debe ser una imagen
     forms:
       address1: Dirección
       change_file: Cambiar archivo
