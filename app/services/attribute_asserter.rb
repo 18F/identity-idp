@@ -14,9 +14,6 @@ class AttributeAsserter
     dob
     ssn
     phone
-    x509
-    x509:subject
-    x509:presented
   ].freeze
 
   def initialize(user:,
@@ -40,7 +37,7 @@ class AttributeAsserter
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
-    add_x509(attrs) if x509_data
+    add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
   # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
