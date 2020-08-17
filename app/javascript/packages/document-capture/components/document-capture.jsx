@@ -60,7 +60,11 @@ function DocumentCapture({ isLivenessEnabled = true }) {
     <Submission payload={formValues} onError={() => setIsSubmissionError(true)} />
   ) : (
     <>
-      {isSubmissionError && <Alert type="error">{t('errors.doc_auth.acuant_network_error')}</Alert>}
+      {isSubmissionError && (
+        <Alert type="error" className="margin-bottom-2">
+          {t('errors.doc_auth.acuant_network_error')}
+        </Alert>
+      )}
       <FormSteps
         steps={steps}
         initialValues={isSubmissionError && formValues ? formValues : undefined}
