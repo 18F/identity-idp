@@ -7,6 +7,8 @@ import DeviceContext from '../context/device';
 import Submission from './submission';
 import useI18n from '../hooks/use-i18n';
 
+/** @typedef {import('./form-steps').FormStep} FormStep */
+
 /**
  * @typedef DocumentCaptureProps
  *
@@ -18,11 +20,11 @@ import useI18n from '../hooks/use-i18n';
  * @param {DocumentCaptureProps} props Props object.
  */
 function DocumentCapture({ isLivenessEnabled = true }) {
-  const [formValues, setFormValues] = useState(null);
+  const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
-  const steps = [
+  const steps = /** @type {FormStep[]} */ ([
     isMobile && {
       name: 'intro',
       title: t('doc_auth.headings.document_capture'),
@@ -40,7 +42,7 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       component: SelfieStep,
       isValid: isSelfieStepValid,
     },
-  ].filter(Boolean);
+  ].filter(Boolean));
 
   return formValues ? (
     <Submission payload={formValues} />

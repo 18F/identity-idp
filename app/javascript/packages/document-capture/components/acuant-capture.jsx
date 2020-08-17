@@ -14,7 +14,7 @@ import DataURLFile from '../models/data-url-file';
  * @prop {string}                         label                 Label associated with file input.
  * @prop {string=}                        bannerText            Optional banner text to show in file
  *                                                              input.
- * @prop {DataURLFile=}                   value                 Current value.
+ * @prop {DataURLFile?=}                  value                 Current value.
  * @prop {(nextValue:DataURLFile?)=>void} onChange              Callback receiving next value on
  *                                                              change.
  * @prop {'user'|'environment'=}          capture               Facing mode of capture. If capture
@@ -113,7 +113,7 @@ function AcuantCapture({
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target !== inputRef.current) {
-      inputRef.current.click();
+      inputRef.current?.click();
     } else if (hasCapture) {
       if (!capture && !isForceUploading.current) {
         event.preventDefault();
@@ -146,6 +146,10 @@ function AcuantCapture({
    * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
    */
   function forceUpload() {
+    if (!inputRef.current) {
+      return;
+    }
+
     isForceUploading.current = true;
 
     const originalCapture = inputRef.current.getAttribute('capture');
@@ -189,7 +193,7 @@ function AcuantCapture({
         accept={['image/*']}
         capture={capture}
         value={value}
-        error={ownError}
+        error={ownError ?? undefined}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChangeIfValid}
         onError={() => setOwnError(null)}

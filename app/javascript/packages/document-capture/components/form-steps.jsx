@@ -127,7 +127,7 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
       setStepName(nextStepName);
     }
 
-    headingRef.current.focus();
+    headingRef.current?.focus();
   }
 
   const { component: Component, name, title } = effectiveStep;

@@ -7,7 +7,7 @@ import AcuantCapture from './acuant-capture';
 /**
  * @typedef SelfieStepValue
  *
- * @prop {DataURLFile=} selfie Selfie value.
+ * @prop {DataURLFile?=} selfie Selfie value.
  */
 
 /**

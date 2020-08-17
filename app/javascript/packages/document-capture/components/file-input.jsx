@@ -18,7 +18,7 @@ import DataURLFile from '../models/data-url-file';
  * @prop {string[]=}                       accept     Optional array of file input accept patterns.
  * @prop {'user'|'environment'=}           capture    Optional facing mode if file input is used for
  *                                                    capture.
- * @prop {DataURLFile=}                    value      Current value.
+ * @prop {DataURLFile?=}                   value      Current value.
  * @prop {string=}                         error      Error to show.
  * @prop {(event:ReactMouseEvent)=>void=}  onClick    Input click handler.
  * @prop {(nextValue:DataURLFile?)=>void=} onChange   Input change handler.
@@ -74,7 +74,8 @@ export function getAcceptPattern(accept) {
  * @return {boolean} Whether given data URL is an image.
  */
 export function isImage(dataURL) {
-  return getAcceptPattern('image/*').test(getDataURLMimeType(dataURL));
+  const pattern = /** @type {RegExp} */ (getAcceptPattern('image/*'));
+  return pattern.test(getDataURLMimeType(dataURL));
 }
 
 /**
@@ -82,7 +83,7 @@ export function isImage(dataURL) {
  * parameter is empty. Returns false otherwise.
  *
  * @param {string}    mimeType MIME type to test.
- * @param {?string[]} accept   Accept tokens.
+ * @param {string[]=} accept   Accept tokens.
  *
  * @return {boolean} Whether data URL is valid.
  */
@@ -129,7 +130,7 @@ const FileInput = forwardRef((props, ref) => {
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [ownError, setOwnError] = useState(/** @type {string?} */ null);
+  const [ownError, setOwnError] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnError(null), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
@@ -141,7 +142,7 @@ const FileInput = forwardRef((props, ref) => {
    * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
    */
   function onChangeAsDataURL(event) {
-    const file = event.target.files[0];
+    const file = /** @type {FileList} */ (event.target.files)[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {
         toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
@@ -243,7 +244,7 @@ const FileInput = forwardRef((props, ref) => {
             capture={capture}
             onClick={onClick}
             accept={accept ? accept.join() : undefined}
-            aria-describedby={hint ? hintId : null}
+            aria-describedby={hint ? hintId : undefined}
           />
         </div>
       </div>

@@ -70,7 +70,7 @@ function useHistoryParam(name) {
 
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
-    window.history.pushState(null, null, nextURL);
+    window.history.pushState(null, '', nextURL);
 
     scrollTo(0, 0);
 

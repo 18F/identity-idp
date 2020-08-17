@@ -5,9 +5,9 @@ import React, { Component, Suspense } from 'react';
 /**
  * @typedef SuspenseErrorBoundaryProps
  *
- * @prop {ReactNode} fallback      Fallback to show while suspense pending.
- * @prop {ReactNode} errorFallback Fallback to show if suspense resolves as error.
- * @prop {ReactNode} children      Suspense child.
+ * @prop {NonNullable<ReactNode>|null} fallback      Fallback to show while suspense pending.
+ * @prop {NonNullable<ReactNode>|null} errorFallback Fallback to show if suspense resolves as error.
+ * @prop {ReactNode} children                        Suspense child.
  */
 
 /**
