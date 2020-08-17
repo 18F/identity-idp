@@ -36,9 +36,14 @@ module Idv
         extra = get_results_response.to_h.merge(
           notice: I18n.t('errors.doc_auth.general_info'),
         )
+        log_document_error(get_results_response)
+        failure(get_results_response.errors.first, extra)
+      end
+
+      def log_document_error(get_results_response)
+        return unless get_results_response.class == Acuant::Responses::GetResultsResponse
         Funnel::DocAuth::LogDocumentError.call(user_id,
                                                get_results_response&.result_code&.name.to_s)
-        failure(get_results_response.errors.first, extra)
       end
 
       def form_submit
