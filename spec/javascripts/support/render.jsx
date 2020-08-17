@@ -6,7 +6,8 @@ import UploadContext from '@18f/identity-document-capture/context/upload';
 /**
  * @typedef RenderOptions
  *
- * @prop {boolean=} isUploadFailure Whether to simulate upload failure.
+ * @prop {boolean=} isUploadFailure Whether to simulate upload failure. Defaults to `false`.
+ * @prop {number=} expectedUploads Number of times upload is expected to be called. Defaults to `1`.
  */
 
 /**
@@ -21,16 +22,21 @@ import UploadContext from '@18f/identity-document-capture/context/upload';
  * @return {import('@testing-library/react').RenderResult}
  */
 function renderWithDefaultContext(element, options = {}) {
-  const { isUploadFailure } = options;
+  const { isUploadFailure = false, expectedUploads = 1 } = options;
 
   const upload = sinon
     .stub()
-    .onCall(0)
     .callsFake((payload) =>
       isUploadFailure ? Promise.reject(new Error('Failure!')) : Promise.resolve(payload),
     )
-    .onCall(1)
-    .throws();
+    .onCall(expectedUploads)
+    .throws(
+      new Error(
+        `Expected upload to have been called at most ${expectedUploads} times. It was called ${
+          expectedUploads + 1
+        } times.`,
+      ),
+    );
 
   return render(<UploadContext.Provider value={upload}>{element}</UploadContext.Provider>);
 }
