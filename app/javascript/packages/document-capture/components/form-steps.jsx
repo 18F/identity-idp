@@ -88,6 +88,11 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     if (effectiveStep && stepName && effectiveStep.name !== stepName) {
       setStepName(effectiveStep.name);
     }
+
+    // Treat explicit initial step the same as step transition, placing focus to header.
+    if (initialStep && headingRef.current) {
+      headingRef.current.focus();
+    }
   }, []);
 
   // An empty steps array is allowed, in which case there is nothing to render.

@@ -222,6 +222,7 @@ describe('document-capture/components/form-steps', () => {
     const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
 
     expect(window.location.hash).to.equal('#step=second');
+    expect(document.activeElement).to.equal(getByText('Second Title'));
     expect(getByText('Second')).to.be.ok();
   });
 
