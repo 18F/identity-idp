@@ -20,6 +20,7 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {FormStep[]=}                        steps         Form steps.
  * @prop {Record<string,any>=}                initialValues Form values to populate initial state.
+ * @prop {string=}                            initialStep   Step to start from.
  * @prop {(values:Record<string,any>)=>void=} onComplete    Form completion callback.
  */
 
@@ -66,11 +67,11 @@ export function getLastValidStepIndex(steps, values) {
 /**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {}, initialValues = {} }) {
+function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, initialStep }) {
   const [values, setValues] = useState(initialValues);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
-  const [stepName, setStepName] = useHistoryParam('step');
+  const [stepName, setStepName] = useHistoryParam('step', initialStep);
   const { t } = useI18n();
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
