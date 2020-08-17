@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "typecheck": "tsc",
-    "lint": "eslint app spec --ext .js,.jsx",
+    "lint": "eslint app spec babel.config.js --ext .js,.jsx",
     "test": "mocha 'spec/javascripts/**/**spec.js?(x)'",
     "build": "true"
   },
