@@ -28,7 +28,7 @@ module Idv
     private
 
     def base64_encoded?
-      !!@header.match(BASE64_CONTENT_TYPE)
+      @header.match?(BASE64_CONTENT_TYPE)
     end
   end
 end
