@@ -2,12 +2,10 @@ import React from 'react';
 import useI18n from '../hooks/use-i18n';
 import AcuantCapture from './acuant-capture';
 
-/** @typedef {import('../models/data-url-file').default} DataURLFile */
-
 /**
  * @typedef SelfieStepValue
  *
- * @prop {DataURLFile?=} selfie Selfie value.
+ * @prop {Blob?=} selfie Selfie value.
  */
 
 /**

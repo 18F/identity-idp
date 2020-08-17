@@ -1,9 +1,8 @@
 import React, { useContext, useState, useMemo, forwardRef } from 'react';
+import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
-import DataURLFile from '../models/data-url-file';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').ChangeEvent} ReactChangeEvent */
@@ -12,32 +11,17 @@ import DataURLFile from '../models/data-url-file';
 /**
  * @typedef FileInputProps
  *
- * @prop {string}                          label      Input label.
- * @prop {string=}                         hint       Optional hint text.
- * @prop {string=}                         bannerText Optional banner overlay text.
- * @prop {string[]=}                       accept     Optional array of file input accept patterns.
- * @prop {'user'|'environment'=}           capture    Optional facing mode if file input is used for
- *                                                    capture.
- * @prop {DataURLFile?=}                   value      Current value.
- * @prop {string=}                         error      Error to show.
- * @prop {(event:ReactMouseEvent)=>void=}  onClick    Input click handler.
- * @prop {(nextValue:DataURLFile?)=>void=} onChange   Input change handler.
- * @prop {(message:string)=>void=}         onError    Callback to trigger if upload error occurs.
+ * @prop {string} label Input label.
+ * @prop {string=} hint Optional hint text.
+ * @prop {string=} bannerText Optional banner overlay text.
+ * @prop {string[]=} accept Optional array of file input accept patterns.
+ * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
+ * @prop {Blob?=} value Current value.
+ * @prop {string=} error Error to show.
+ * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
+ * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
+ * @prop {(message:string)=>void=} onError Callback to trigger if upload error occurs.
  */
-
-/**
- * Given a data URL string, returns the MIME type.
- *
- * @see https://tools.ietf.org/html/rfc2397#section-3
- *
- * @param {string} dataURL Data URL.
- *
- * @return {string} MIME type.
- */
-export function getDataURLMimeType(dataURL) {
-  const [mimeType] = dataURL.replace(/^data:/, '').split(/[;,]/);
-  return mimeType || 'text/plain';
-}
 
 /**
  * Given a token of an file input accept attribute, returns an equivalent regular expression
@@ -67,15 +51,15 @@ export function getAcceptPattern(accept) {
 }
 
 /**
- * Returns true if the given data URL represents an image, or false otherwise.
+ * Returns true if the given file represents an image, or false otherwise.
  *
- * @param {string} dataURL File data URL to test.
+ * @param {Blob} file File to test.
  *
- * @return {boolean} Whether given data URL is an image.
+ * @return {boolean} Whether given file is an image.
  */
-export function isImage(dataURL) {
+export function isImage(file) {
   const pattern = /** @type {RegExp} */ (getAcceptPattern('image/*'));
-  return pattern.test(getDataURLMimeType(dataURL));
+  return pattern.test(file.type);
 }
 
 /**
@@ -85,28 +69,12 @@ export function isImage(dataURL) {
  * @param {string}    mimeType MIME type to test.
  * @param {string[]=} accept   Accept tokens.
  *
- * @return {boolean} Whether data URL is valid.
+ * @return {boolean} Whether file is valid.
  */
 export function isValidForAccepts(mimeType, accept) {
   return (
     !accept || accept.map(getAcceptPattern).some((pattern) => pattern && pattern.test(mimeType))
   );
-}
-
-/**
- * Returns a promise resolving to the data URL representation of the given file.
- *
- * @param {File} file File to convert.
- *
- * @return {Promise<string>} Promise resolving to data URL.
- */
-export function toDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new window.FileReader();
-    reader.addEventListener('load', () => resolve(/** @type {string} */ (reader.result)));
-    reader.addEventListener('error', reject);
-    reader.readAsDataURL(file);
-  });
 }
 
 /**
@@ -126,7 +94,6 @@ const FileInput = forwardRef((props, ref) => {
     onError = () => {},
   } = props;
   const { t, formatHTML } = useI18n();
-  const ifStillMounted = useIfStillMounted();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -136,16 +103,16 @@ const FileInput = forwardRef((props, ref) => {
   const hintId = `${inputId}-hint`;
 
   /**
-   * In response to a file input change event, converts the assigned file to a data URL before
-   * calling `onChange`.
+   * In response to a file input change event, confirms that the file is valid before calling
+   * `onChange`.
    *
    * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
    */
-  function onChangeAsDataURL(event) {
+  function onChangeIfValid(event) {
     const file = /** @type {FileList} */ (event.target.files)[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {
-        toDataURL(file).then(ifStillMounted((data) => onChange(new DataURLFile(data, file.name))));
+        onChange(file);
       } else {
         const nextOwnError = t('errors.doc_auth.selfie');
         setOwnError(nextOwnError);
@@ -202,7 +169,7 @@ const FileInput = forwardRef((props, ref) => {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && !isMobile && (
+          {value && value instanceof window.File && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value.name && (
@@ -215,9 +182,9 @@ const FileInput = forwardRef((props, ref) => {
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
-          {value && isImage(value.data) && (
+          {value && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
-              <img src={value.data} alt="" className="usa-file-input__preview__image" />
+              <FileImage file={value} alt="" className="usa-file-input__preview__image" />
             </div>
           )}
           {!value && (
@@ -240,7 +207,7 @@ const FileInput = forwardRef((props, ref) => {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            onChange={onChangeAsDataURL}
+            onChange={onChangeIfValid}
             capture={capture}
             onClick={onClick}
             accept={accept ? accept.join() : undefined}

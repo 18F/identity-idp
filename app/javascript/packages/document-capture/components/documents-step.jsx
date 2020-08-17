@@ -3,13 +3,11 @@ import AcuantCapture from './acuant-capture';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 
-/** @typedef {import('../models/data-url-file')} DataURLFile */
-
 /**
  * @typedef DocumentsStepValue
  *
- * @prop {DataURLFile=} front_image Front image value.
- * @prop {DataURLFile=} back_image  Back image value.
+ * @prop {Blob=} front_image Front image value.
+ * @prop {Blob=} back_image Back image value.
  */
 
 /**

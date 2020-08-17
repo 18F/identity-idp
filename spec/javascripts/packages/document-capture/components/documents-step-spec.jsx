@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
-import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
 
 describe('document-capture/components/documents-step', () => {
@@ -17,19 +16,13 @@ describe('document-capture/components/documents-step', () => {
     expect(back).to.be.ok();
   });
 
-  it('calls onChange callback with uploaded image', (done) => {
+  it('calls onChange callback with uploaded image', () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-
-    onChange.callsFake((nextValue) => {
-      expect(nextValue).to.deep.equal({
-        front_image: new DataURLFile('data:image/png;base64,', 'upload.png'),
-      });
-      done();
-    });
+    expect(onChange.getCall(0).args[0]).to.deep.equal({ front_image: file });
   });
 
   it('restricts accepted file types', () => {
