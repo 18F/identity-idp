@@ -146,11 +146,6 @@ class AttributeAsserter
     end
   end
 
-  def session_store
-    config = Rails.application.config
-    config.session_store.new({}, config.session_options)
-  end
-
   def ascii?
     bundle.include?(:ascii)
   end
