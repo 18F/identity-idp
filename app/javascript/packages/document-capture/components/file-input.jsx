@@ -172,12 +172,8 @@ const FileInput = forwardRef((props, ref) => {
           {value && value instanceof window.File && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
-                {value.name && (
-                  <>
-                    <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
-                    {value.name}{' '}
-                  </>
-                )}
+                <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
+                {value.name}{' '}
               </span>
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
