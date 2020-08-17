@@ -51,4 +51,43 @@ describe('document-capture/components/document-capture', () => {
 
     expect(confirmation).to.be.ok();
   });
+
+  it('handles submission failure', async () => {
+    const { getByLabelText, getByText, findByRole } = render(<DocumentCapture />, {
+      isUploadFailure: true,
+    });
+
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    const continueButton = getByText('forms.buttons.continue');
+    await waitFor(() => expect(continueButton.disabled).to.be.false());
+    userEvent.click(continueButton);
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_selfie'),
+      new window.File([''], 'selfie.png', { type: 'image/png' }),
+    );
+    const submitButton = getByText('forms.buttons.submit.default');
+    await waitFor(() => expect(submitButton.disabled).to.be.false());
+    userEvent.click(submitButton);
+
+    const notice = await findByRole('alert');
+    expect(notice.textContent).to.equal('errors.doc_auth.acuant_network_error');
+
+    const heading = getByText('doc_auth.headings.selfie');
+    expect(document.activeElement).to.equal(heading);
+
+    const hasValueSelected = !!getByText('doc_auth.forms.change_file');
+    expect(hasValueSelected).to.be.true();
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+  });
 });
