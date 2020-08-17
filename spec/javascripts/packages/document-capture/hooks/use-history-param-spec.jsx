@@ -28,8 +28,8 @@ describe('getQueryParam', () => {
 });
 
 describe('useHistoryParam', () => {
-  function TestComponent() {
-    const [count = 0, setCount] = useHistoryParam('the count');
+  function TestComponent({ initialValue }) {
+    const [count = 0, setCount] = useHistoryParam('the count', initialValue);
 
     return (
       <>
@@ -65,6 +65,13 @@ describe('useHistoryParam', () => {
     window.location.hash = '#the%20count=5';
     const { getByDisplayValue } = render(<TestComponent />);
 
+    expect(getByDisplayValue('5')).to.be.ok();
+  });
+
+  it('accepts an initial value to use in absence of an initial URL', () => {
+    const { getByDisplayValue } = render(<TestComponent initialValue="5" />);
+
+    expect(window.location.hash).to.equal('#the%20count=5');
     expect(getByDisplayValue('5')).to.be.ok();
   });
 

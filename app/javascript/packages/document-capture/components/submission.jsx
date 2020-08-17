@@ -4,22 +4,27 @@ import UploadContext from '../context/upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionComplete from './submission-complete';
 import SubmissionPending from './submission-pending';
+import CallbackOnMount from './callback-on-mount';
 
 /**
  * @typedef SubmissionProps
  *
  * @prop {Record<string,string>} payload Payload object.
+ * @prop {()=>void}              onError Error callback.
  */
 
 /**
  * @param {SubmissionProps} props Props object.
  */
-function Submission({ payload }) {
+function Submission({ payload, onError }) {
   const upload = useContext(UploadContext);
   const resource = useAsync(upload, payload);
 
   return (
-    <SuspenseErrorBoundary fallback={<SubmissionPending />} errorFallback="Error">
+    <SuspenseErrorBoundary
+      fallback={<SubmissionPending />}
+      errorFallback={<CallbackOnMount onMount={onError} />}
+    >
       <SubmissionComplete resource={resource} />
     </SuspenseErrorBoundary>
   );

@@ -53,24 +53,27 @@ function scrollTo(left, top) {
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param {string} name Parameter name to sync.
+ * @param {string}  name         Parameter name to sync.
+ * @param {string=} initialValue Value to use as initial in absence of another value.
  *
  * @return {[any,(nextParamValue:any)=>void]} Tuple of current state, state setter.
  */
-function useHistoryParam(name) {
+function useHistoryParam(name, initialValue) {
   const getCurrentQueryParam = () =>
     getQueryParam(window.location.hash.slice(1), name) ?? undefined;
 
   const [value, setValue] = useState(getCurrentQueryParam);
 
-  function setParamValue(nextValue) {
-    const nextURL = nextValue
+  function getValueURL(nextValue) {
+    return nextValue
       ? `#${[name, nextValue].map(encodeURIComponent).join('=')}`
       : window.location.pathname + window.location.search;
+  }
 
+  function setParamValue(nextValue) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
-    window.history.pushState(null, '', nextURL);
+    window.history.pushState(null, '', getValueURL(nextValue));
 
     scrollTo(0, 0);
 
@@ -80,6 +83,11 @@ function useHistoryParam(name) {
   useEffect(() => {
     function syncValue() {
       setValue(getCurrentQueryParam());
+    }
+
+    if (value === undefined && initialValue) {
+      setValue(initialValue);
+      window.history.replaceState(null, '', getValueURL(initialValue));
     }
 
     window.addEventListener('popstate', syncValue);
