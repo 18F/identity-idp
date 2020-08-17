@@ -18,7 +18,7 @@ import React from 'react';
  */
 function Alert({ type = 'other', children }) {
   return (
-    <div className={`usa-alert usa-alert--${type}`}>
+    <div className={`usa-alert usa-alert--${type}`} role="alert">
       <div className="usa-alert__body">
         <p className="usa-alert__text">{children}</p>
       </div>
