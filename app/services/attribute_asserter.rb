@@ -21,13 +21,13 @@ class AttributeAsserter
                  name_id_format:,
                  authn_request:,
                  decrypted_pii:,
-                 session:)
+                 user_session:)
     self.user = user
     self.service_provider = service_provider
     self.name_id_format = name_id_format
     self.authn_request = authn_request
     self.decrypted_pii = decrypted_pii
-    self.session = session
+    self.user_session = user_session
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -49,7 +49,7 @@ class AttributeAsserter
                 :name_id_format,
                 :authn_request,
                 :decrypted_pii,
-                :session
+                :user_session
 
   def ial_context
     @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)
@@ -141,7 +141,7 @@ class AttributeAsserter
 
   def x509_data
     @x509_data ||= begin
-      x509_hash = session[:decrypted_x509]
+      x509_hash = user_session[:decrypted_x509]
       X509::Attributes.new_from_json(x509_hash) if x509_hash
     end
   end

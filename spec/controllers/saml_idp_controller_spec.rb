@@ -125,7 +125,7 @@ describe SamlIdpController do
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
-          session: {},
+          user_session: {},
         )
       end
 

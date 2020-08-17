@@ -97,7 +97,7 @@ module SamlIdpAuthConcern
       name_id_format: name_id_format,
       authn_request: saml_request,
       decrypted_pii: decrypted_pii,
-      session: user_session,
+      user_session: user_session,
     )
   end
 

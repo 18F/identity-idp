@@ -5,7 +5,7 @@ describe AttributeAsserter do
 
   let(:ial1_user) { create(:user, :signed_up) }
   let(:user) { create(:profile, :active, :verified).user }
-  let(:session) { {} }
+  let(:user_session) { {} }
   let(:identity) do
     build(
       :identity,
@@ -51,7 +51,7 @@ describe AttributeAsserter do
           service_provider: service_provider,
           authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
-          session: session,
+          user_session: user_session,
         )
       end
 
@@ -156,7 +156,7 @@ describe AttributeAsserter do
         end
 
         context 'user did not presented piv/cac' do
-          let(:session) do
+          let(:user_session) do
             {
               decrypted_x509: nil,
             }
@@ -168,7 +168,7 @@ describe AttributeAsserter do
         end
 
         context 'user presented piv/cac' do
-          let(:session) do
+          let(:user_session) do
             {
               decrypted_x509: {
                 subject: 'x509 subject',
@@ -193,7 +193,7 @@ describe AttributeAsserter do
           service_provider: service_provider,
           authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
-          session: session,
+          user_session: user_session,
         )
       end
 
@@ -304,7 +304,7 @@ describe AttributeAsserter do
         end
 
         context 'user did not presented piv/cac' do
-          let(:session) do
+          let(:user_session) do
             {
               decrypted_x509: nil,
             }
@@ -316,7 +316,7 @@ describe AttributeAsserter do
         end
 
         context 'user presented piv/cac' do
-          let(:session) do
+          let(:user_session) do
             {
               decrypted_x509: {
                 subject: 'x509 subject',
@@ -343,7 +343,7 @@ describe AttributeAsserter do
             service_provider: service_provider,
             authn_request: ial1_authn_request,
             decrypted_pii: decrypted_pii,
-            session: session,
+            user_session: user_session,
           )
         end
 
@@ -372,7 +372,7 @@ describe AttributeAsserter do
             service_provider: service_provider,
             authn_request: ial1_aal3_authn_request,
             decrypted_pii: decrypted_pii,
-            session: session,
+            user_session: user_session,
           )
         end
 
@@ -430,7 +430,7 @@ describe AttributeAsserter do
           service_provider: service_provider,
           authn_request: ial2_authn_request,
           decrypted_pii: decrypted_pii,
-          session: session,
+          user_session: user_session,
         )
       end
 
@@ -445,7 +445,7 @@ describe AttributeAsserter do
           service_provider: service_provider,
           authn_request: ial1_authn_request,
           decrypted_pii: decrypted_pii,
-          session: session,
+          user_session: user_session,
         )
       end
 
