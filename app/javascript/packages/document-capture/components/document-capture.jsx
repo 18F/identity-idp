@@ -61,7 +61,12 @@ function DocumentCapture({ isLivenessEnabled = true }) {
   ) : (
     <>
       {isSubmissionError && <Alert type="error">{t('errors.doc_auth.acuant_network_error')}</Alert>}
-      <FormSteps steps={steps} initialValues={formValues ?? undefined} onComplete={submitForm} />
+      <FormSteps
+        steps={steps}
+        initialValues={isSubmissionError && formValues ? formValues : undefined}
+        initialStep={isSubmissionError ? 'selfie' : undefined}
+        onComplete={submitForm}
+      />
     </>
   );
 }
