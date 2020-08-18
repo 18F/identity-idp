@@ -7,6 +7,13 @@ feature 'doc auth back image step' do
   let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
 
+  let(:failed_http_response) do
+    instance_double(
+      Faraday::Response,
+      body: AcuantFixtures.get_results_response_failure,
+    )
+  end
+
   before do
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_back_image_step
@@ -131,5 +138,18 @@ feature 'doc auth back image step' do
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
+  end
+
+  it 'logs the last error in doc auth' do
+    DocAuthMock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: Acuant::Responses::GetResultsResponse.new(failed_http_response),
+    )
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(DocAuthLog.first.last_document_error).to eq('Unknown')
   end
 end
