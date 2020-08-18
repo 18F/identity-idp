@@ -8,3 +8,4 @@ en:
         in to change your password.
       event_not_found: The link to change your password is invalid. Sign in to change
         your password.
+      no_account: There is no account associated with this event.

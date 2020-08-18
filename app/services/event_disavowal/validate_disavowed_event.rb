@@ -2,11 +2,18 @@ module EventDisavowal
   class ValidateDisavowedEvent
     include ActiveModel::Model
 
-    validates :event, presence: { message: I18n.t('event_disavowals.errors.event_not_found') }
+    validates :event, presence: {
+      message: proc { I18n.t('event_disavowals.errors.event_not_found') },
+    }
     validate :event_is_not_already_disavowed
     validate :event_disavowment_is_not_expired
+    validates_presence_of :user, {
+      message: proc { I18n.t('event_disavowals.errors.no_account') },
+    }
 
     attr_reader :event
+
+    delegate :user, to: :event
 
     def initialize(event)
       @event = event

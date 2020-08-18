@@ -8,3 +8,4 @@ es:
         sesión para cambiar tu contraseña.
       event_not_found: El enlace para cambiar su contraseña no es válido. Inicia sesión
         para cambiar tu contraseña.
+      no_account: No hay ninguna cuenta asociada con este evento.

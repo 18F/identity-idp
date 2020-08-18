@@ -40,7 +40,7 @@ class EventDisavowalController < ApplicationController
     result = EventDisavowal::ValidateDisavowedEvent.new(disavowed_event).call
     return if result.success?
     analytics.track_event(Analytics::EVENT_DISAVOWAL_TOKEN_INVALID, result.to_h)
-    flash[:error] = result.errors[:event].first
+    flash[:error] = (result.errors[:event] || result.errors.first.last).first
     redirect_to root_url
   end
 
