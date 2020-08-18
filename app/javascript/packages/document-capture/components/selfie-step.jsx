@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import useI18n from '../hooks/use-i18n';
+import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
+import SelfieCapture from './selfie-capture';
 
 /**
  * @typedef SelfieStepValue
@@ -20,6 +22,7 @@ import AcuantCapture from './acuant-capture';
  */
 function SelfieStep({ value = {}, onChange = () => {} }) {
   const { t } = useI18n();
+  const { isMobile } = useContext(DeviceContext);
 
   return (
     <>
@@ -32,13 +35,20 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
         <li>{t('doc_auth.tips.document_capture_selfie_text2')}</li>
         <li>{t('doc_auth.tips.document_capture_selfie_text3')}</li>
       </ul>
-      <AcuantCapture
-        capture="user"
-        label={t('doc_auth.headings.document_capture_selfie')}
-        bannerText={t('doc_auth.headings.photo')}
-        value={value.selfie}
-        onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-      />
+      {isMobile ? (
+        <AcuantCapture
+          capture="user"
+          label={t('doc_auth.headings.document_capture_selfie')}
+          bannerText={t('doc_auth.headings.photo')}
+          value={value.selfie}
+          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+        />
+      ) : (
+        <SelfieCapture
+          value={value.selfie}
+          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+        />
+      )}
     </>
   );
 }

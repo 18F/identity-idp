@@ -1,0 +1,99 @@
+.selfie-capture {
+  align-items: center;
+  border: 2px dashed color('primary');
+  border-radius: .375rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+
+  &::after {
+    content: '';
+    padding-bottom: 100%;
+  }
+}
+
+.selfie-capture--capturing,
+.selfie-capture--has-value {
+  border-color: color('base-light');
+  border-radius: 0;
+  border-width: 1px;
+}
+
+.selfie-capture--has-value::after {
+  content: none;
+}
+
+.selfie-capture__frame-corner {
+  border: 3px solid color('primary');
+  height: 4rem;
+  left: 50%;
+  position: absolute;
+  top: 30%;
+  width: 3rem;
+
+  &:nth-child(1) {
+    border-bottom-width: 0;
+    border-right-width: 0;
+    transform: translate(-275%, -175%);
+  }
+
+  &:nth-child(2) {
+    border-bottom-width: 0;
+    border-left-width: 0;
+    transform: translate(175%, -175%);
+  }
+
+  &:nth-child(3) {
+    border-right-width: 0;
+    border-top-width: 0;
+    transform: translate(-275%, 175%);
+  }
+
+  &:nth-child(4) {
+    border-left-width: 0;
+    border-top-width: 0;
+    transform: translate(175%, 175%);
+  }
+}
+
+.selfie-capture__preview-image,
+.selfie-capture__video {
+  transform: scaleX(-1); // Mirror the video so that the user's head moves in anticipated direction.
+}
+
+.selfie-capture__video {
+  bottom: 0;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.selfie-capture__capture {
+  @include u-padding(2);
+  background-color: color('primary');
+  border: 3px solid color('white');
+  border-radius: 50%;
+  bottom: 5%;
+  color: color('white');
+  left: 50%;
+  line-height: 1;
+  position: absolute;
+  transform: translateX(-50%);
+
+  &:hover {
+    background-color: color('primary-dark');
+  }
+}
+
+.selfie-capture__capture-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+// Disable reason: The ID selector is temporary, and is only needed as long as Login Design System
+// has yet to be upgraded to USWDS 2.7+.
+#document-capture-form .selfie-capture__preview-heading.usa-file-input__preview-heading { // scss-lint:disable IdSelector
+  pointer-events: all;
+  width: 100%;
+}
