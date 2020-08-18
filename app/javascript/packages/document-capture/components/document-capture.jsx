@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
 import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
@@ -6,6 +7,8 @@ import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
 import useI18n from '../hooks/use-i18n';
+
+/** @typedef {import('./form-steps').FormStep} FormStep */
 
 /**
  * @typedef DocumentCaptureProps
@@ -18,11 +21,12 @@ import useI18n from '../hooks/use-i18n';
  * @param {DocumentCaptureProps} props Props object.
  */
 function DocumentCapture({ isLivenessEnabled = true }) {
-  const [formValues, setFormValues] = useState(null);
+  const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
+  const [isSubmissionError, setIsSubmissionError] = useState(false);
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
-  const steps = [
+  const steps = /** @type {FormStep[]} */ ([
     isMobile && {
       name: 'intro',
       title: t('doc_auth.headings.document_capture'),
@@ -40,12 +44,34 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       component: SelfieStep,
       isValid: isSelfieStepValid,
     },
-  ].filter(Boolean);
+  ].filter(Boolean));
 
-  return formValues ? (
-    <Submission payload={formValues} />
+  /**
+   * Clears error state and sets form values for submission.
+   *
+   * @param {Record<string,any>} nextFormValues Submitted form values.
+   */
+  function submitForm(nextFormValues) {
+    setIsSubmissionError(false);
+    setFormValues(nextFormValues);
+  }
+
+  return formValues && !isSubmissionError ? (
+    <Submission payload={formValues} onError={() => setIsSubmissionError(true)} />
   ) : (
-    <FormSteps steps={steps} onComplete={setFormValues} />
+    <>
+      {isSubmissionError && (
+        <Alert type="error" className="margin-bottom-2">
+          {t('errors.doc_auth.acuant_network_error')}
+        </Alert>
+      )}
+      <FormSteps
+        steps={steps}
+        initialValues={isSubmissionError && formValues ? formValues : undefined}
+        initialStep={isSubmissionError ? 'selfie' : undefined}
+        onComplete={submitForm}
+      />
+    </>
   );
 }
 

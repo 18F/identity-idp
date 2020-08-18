@@ -217,4 +217,22 @@ describe('document-capture/components/form-steps', () => {
 
     expect(window.location.hash).to.equal('#step=second');
   });
+
+  it('accepts initial step', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+
+    expect(window.location.hash).to.equal('#step=second');
+    expect(document.activeElement).to.equal(getByText('Second Title'));
+    expect(getByText('Second')).to.be.ok();
+  });
+
+  it('accepts initial values', () => {
+    const { getByLabelText } = render(
+      <FormSteps steps={STEPS} initialStep="second" initialValues={{ second: 'prefilled' }} />,
+    );
+
+    const input = getByLabelText('Second');
+
+    expect(input.value).to.equal('prefilled');
+  });
 });

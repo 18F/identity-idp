@@ -114,6 +114,36 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' submitted', result
       )
     end
+
+    describe 'when document capture is enabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
+      end
+
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
+
+      it 'skips from welcome to document capture' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      end
+    end
+
+    describe 'when document capture is disabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('false')
+      end
+
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
+    end
   end
 
   def mock_next_step(step)

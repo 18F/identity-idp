@@ -1,7 +1,7 @@
 {
   "extends": "airbnb",
-  "parser": "babel-eslint",
-  "plugins": ["prettier"],
+  "parser": "@babel/eslint-parser",
+  "plugins": ["prettier", "@babel"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -13,6 +13,8 @@
     "expect": true
   },
   "rules": {
+    "@babel/no-unused-expressions": "error",
+    "consistent-return": "off",
     "prettier/prettier": "error",
     "func-names": 0,
     "function-paren-newline": "off",
@@ -22,15 +24,13 @@
     "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
+    "no-plusplus": "off",
+    "no-unused-expressions": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/prop-types": "off"
-  },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
   },
   "settings": {
     "import/core-modules": [

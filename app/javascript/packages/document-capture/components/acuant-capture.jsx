@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useMemo } from 'react';
+import React, { useContext, useRef, useState, useMemo, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -14,9 +14,13 @@ import DataURLFile from '../models/data-url-file';
  * @prop {string}                         label                 Label associated with file input.
  * @prop {string=}                        bannerText            Optional banner text to show in file
  *                                                              input.
- * @prop {DataURLFile=}                   value                 Current value.
+ * @prop {DataURLFile?=}                  value                 Current value.
  * @prop {(nextValue:DataURLFile?)=>void} onChange              Callback receiving next value on
  *                                                              change.
+ * @prop {'user'|'environment'=}          capture               Facing mode of capture. If capture
+ *                                                              is not specified and a camera is
+ *                                                              supported, defaults to the Acuant
+ *                                                              environment camera capture.
  * @prop {string=}                        className             Optional additional class names.
  * @prop {number=}                        minimumGlareScore     Minimum glare score to be considered
  *                                                              acceptable.
@@ -76,13 +80,14 @@ function AcuantCapture({
   bannerText,
   value,
   onChange = () => {},
+  capture,
   className,
   minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
   minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
 }) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
-  const inputRef = useRef(/** @type {?HTMLElement} */ (null));
+  const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [ownError, setOwnError] = useState(/** @type {?string} */ (null));
@@ -90,6 +95,14 @@ function AcuantCapture({
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
+  useEffect(() => {
+    // If capture had started before Acuant was ready, stop capture if readiness reveals that no
+    // capture is supported. This takes advantage of the fact that state setter is noop if value of
+    // `isCapturing` is already false.
+    if (!hasCapture) {
+      setIsCapturing(false);
+    }
+  }, [hasCapture]);
 
   /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
@@ -99,15 +112,15 @@ function AcuantCapture({
    * @param {import('react').MouseEvent} event Click event.
    */
   function startCaptureOrTriggerUpload(event) {
-    if (hasCapture) {
-      if (!isForceUploading.current) {
+    if (event.target !== inputRef.current) {
+      inputRef.current?.click();
+    } else if (hasCapture) {
+      if (!capture && !isForceUploading.current) {
         event.preventDefault();
         setIsCapturing(true);
       }
 
       isForceUploading.current = false;
-    } else if (event.target !== inputRef.current) {
-      inputRef.current.click();
     }
   }
 
@@ -133,13 +146,28 @@ function AcuantCapture({
    * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
    */
   function forceUpload() {
+    if (!inputRef.current) {
+      return;
+    }
+
     isForceUploading.current = true;
+
+    const originalCapture = inputRef.current.getAttribute('capture');
+
+    if (originalCapture !== null) {
+      inputRef.current.removeAttribute('capture');
+    }
+
     inputRef.current.click();
+
+    if (originalCapture !== null) {
+      inputRef.current.setAttribute('capture', originalCapture);
+    }
   }
 
   return (
     <div className={className}>
-      {isCapturing && (
+      {isCapturing && !capture && (
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
@@ -163,8 +191,9 @@ function AcuantCapture({
         hint={hasCapture ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
         accept={['image/*']}
+        capture={capture}
         value={value}
-        error={ownError}
+        error={ownError ?? undefined}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChangeIfValid}
         onError={() => setOwnError(null)}

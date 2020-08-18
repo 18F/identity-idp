@@ -18,8 +18,10 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @typedef FormStepsProps
  *
- * @prop {FormStep[]=}                        steps      Form steps.
- * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
+ * @prop {FormStep[]=}                        steps         Form steps.
+ * @prop {Record<string,any>=}                initialValues Form values to populate initial state.
+ * @prop {string=}                            initialStep   Step to start from.
+ * @prop {(values:Record<string,any>)=>void=} onComplete    Form completion callback.
  */
 
 /**
@@ -65,11 +67,11 @@ export function getLastValidStepIndex(steps, values) {
 /**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {} }) {
-  const [values, setValues] = useState({});
+function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, initialStep }) {
+  const [values, setValues] = useState(initialValues);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
-  const [stepName, setStepName] = useHistoryParam('step');
+  const [stepName, setStepName] = useHistoryParam('step', initialStep);
   const { t } = useI18n();
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
@@ -85,6 +87,11 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
     // history parameter, it is synced after mount.
     if (effectiveStep && stepName && effectiveStep.name !== stepName) {
       setStepName(effectiveStep.name);
+    }
+
+    // Treat explicit initial step the same as step transition, placing focus to header.
+    if (initialStep && headingRef.current) {
+      headingRef.current.focus();
     }
   }, []);
 
@@ -127,7 +134,7 @@ function FormSteps({ steps = [], onComplete = () => {} }) {
       setStepName(nextStepName);
     }
 
-    headingRef.current.focus();
+    headingRef.current?.focus();
   }
 
   const { component: Component, name, title } = effectiveStep;

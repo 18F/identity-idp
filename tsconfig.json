@@ -3,6 +3,8 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "jsx": "react",
     "esModuleInterop": true,
     "moduleResolution": "node"

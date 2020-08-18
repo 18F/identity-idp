@@ -13,6 +13,14 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * Number of active instances of FullScreen currently mounted, used in determining when overlay body
+ * class should be added or removed.
+ *
+ * @type {number}
+ */
+let activeInstances = 0;
+
+/**
  * @param {FullScreenProps} props Props object.
  */
 function FullScreen({ onRequestClose = () => {}, children }) {
@@ -27,11 +35,25 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     onRequestCloseRef.current = onRequestClose;
   }, [onRequestClose]);
   useEffect(() => {
-    trapRef.current = createFocusTrap(modalRef.current, {
-      onDeactivate: () => onRequestCloseRef.current(),
-    });
-    trapRef.current.activate();
-    return trapRef.current.deactivate;
+    if (modalRef.current) {
+      trapRef.current = createFocusTrap(modalRef.current, {
+        onDeactivate: () => onRequestCloseRef.current(),
+      });
+      trapRef.current.activate();
+      return trapRef.current.deactivate;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeInstances++ === 0) {
+      document.body.classList.add('has-full-screen-overlay');
+    }
+
+    return () => {
+      if (--activeInstances === 0) {
+        document.body.classList.remove('has-full-screen-overlay');
+      }
+    };
   }, []);
 
   return (
@@ -39,7 +61,7 @@ function FullScreen({ onRequestClose = () => {}, children }) {
       <button
         type="button"
         aria-label={t('users.personal_key.close')}
-        onClick={() => trapRef.current.deactivate()}
+        onClick={() => trapRef.current?.deactivate()}
         className="full-screen-close-button usa-button padding-2 margin-2"
       >
         <Image alt="" assetPath="close-white-alt.svg" className="full-screen-close-icon" />

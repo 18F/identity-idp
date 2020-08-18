@@ -29,6 +29,8 @@ Rails.application.routes.draw do
         via: %i[get post],
         format: :xml
 
+  post '/api/verify/images' => 'idv/image_uploads#create'
+
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 

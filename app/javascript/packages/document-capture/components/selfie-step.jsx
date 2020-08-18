@@ -7,7 +7,7 @@ import AcuantCapture from './acuant-capture';
 /**
  * @typedef SelfieStepValue
  *
- * @prop {DataURLFile=} selfie Selfie value.
+ * @prop {DataURLFile?=} selfie Selfie value.
  */
 
 /**
@@ -35,6 +35,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
         <li>{t('doc_auth.tips.document_capture_selfie_text3')}</li>
       </ul>
       <AcuantCapture
+        capture="user"
         label={t('doc_auth.headings.document_capture_selfie')}
         bannerText={t('doc_auth.headings.photo')}
         value={value.selfie}

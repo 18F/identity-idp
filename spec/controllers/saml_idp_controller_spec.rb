@@ -439,7 +439,7 @@ describe SamlIdpController do
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'defaults to persistant' do
+      it 'defaults to persistent' do
         auth_settings = missing_nameid_format_saml_settings
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
