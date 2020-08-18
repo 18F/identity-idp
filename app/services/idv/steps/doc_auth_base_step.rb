@@ -184,7 +184,7 @@ module Idv
       end
 
       def log_document_error(get_results_response)
-        return unless get_results_response.class == Acuant::Responses::GetResultsResponse
+        return unless get_results_response.is_a?(Acuant::Responses::GetResultsResponse)
         Funnel::DocAuth::LogDocumentError.call(user_id,
                                                get_results_response&.result_code&.name.to_s)
       end
