@@ -97,7 +97,7 @@ describe EventDisavowalController do
       end
     end
 
-    context 'with an user that has been deleted' do
+    context 'with an event whose user has been deleted' do
       before do
         event.user.delete
       end
