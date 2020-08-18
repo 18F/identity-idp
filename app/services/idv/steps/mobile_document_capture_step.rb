@@ -20,6 +20,7 @@ module Idv
                  else
                    { notice: I18n.t('errors.doc_auth.document_capture_info_html') }
                  end
+        log_document_error(response)
         extra = response.to_h.merge(notice)
         failure(response.errors.first, extra)
       end
