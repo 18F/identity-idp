@@ -12,7 +12,7 @@
   <% end %>
   <%= tag.div id: 'document-capture-form', data: {
     liveness: liveness_checking_enabled?.presence,
-    endpoint: verify_images_api_url
+    endpoint: api_verify_images_url
   } %>
   <noscript>
     <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
