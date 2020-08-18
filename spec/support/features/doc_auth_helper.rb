@@ -213,6 +213,17 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
+  def mock_doc_auth_acuant_error_unknown
+    failed_http_response = instance_double(
+      Faraday::Response,
+      body: AcuantFixtures.get_results_response_failure,
+    )
+    DocAuthMock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: Acuant::Responses::GetResultsResponse.new(failed_http_response),
+    )
+  end
+
   def attach_images(liveness_enabled: true)
     attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
     attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'

@@ -141,10 +141,7 @@ feature 'doc auth back image step' do
   end
 
   it 'logs the last error in doc auth' do
-    DocAuthMock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: Acuant::Responses::GetResultsResponse.new(failed_http_response),
-    )
+    mock_doc_auth_acuant_error_unknown
 
     attach_image
     click_idv_continue
