@@ -110,7 +110,7 @@ describe EventDisavowalController do
             errors: {
               user: [t('event_disavowals.errors.no_account')],
             },
-          )
+          ),
         )
 
         post :create, params: {
