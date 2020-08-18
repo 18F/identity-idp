@@ -108,7 +108,7 @@ describe EventDisavowalController do
           build_analytics_hash(
             success: false,
             errors: {
-              user: ["There is no account associated with this event."],
+              user: [t('event_disavowals.errors.no_account')],
             },
           )
         )
