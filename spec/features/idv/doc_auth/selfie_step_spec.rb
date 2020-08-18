@@ -59,4 +59,14 @@ feature 'doc auth self image step' do
     expect(page).to have_current_path(idv_doc_auth_front_image_step)
     expect(page).to have_content(t('errors.doc_auth.selfie'))
   end
+
+  it 'logs the last doc auth error' do
+    mock_doc_auth_acuant_error_unknown
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(DocAuthLog.first.last_document_error).to eq('Unknown')
+  end
 end

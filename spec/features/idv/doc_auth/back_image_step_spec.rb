@@ -132,4 +132,14 @@ feature 'doc auth back image step' do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
   end
+
+  it 'logs the last error in doc auth' do
+    mock_doc_auth_acuant_error_unknown
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(DocAuthLog.first.last_document_error).to eq('Unknown')
+  end
 end

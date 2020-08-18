@@ -183,6 +183,12 @@ module Idv
         client.device_type != 'desktop'
       end
 
+      def log_document_error(get_results_response)
+        return unless get_results_response.is_a?(Acuant::Responses::GetResultsResponse)
+        Funnel::DocAuth::LogDocumentError.call(user_id,
+                                               get_results_response&.result_code&.name.to_s)
+      end
+
       delegate :idv_session, :session, to: :@flow
     end
   end
