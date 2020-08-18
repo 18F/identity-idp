@@ -287,4 +287,12 @@ describe('document-capture/components/file-input', () => {
 
     expect(ref.current.nodeName).to.equal('INPUT');
   });
+
+  it('can mark the input as required', () => {
+    const { getByLabelText } = render(<FileInput label="File" required />);
+
+    const input = getByLabelText('File');
+
+    expect(input.required).to.be.true();
+  });
 });

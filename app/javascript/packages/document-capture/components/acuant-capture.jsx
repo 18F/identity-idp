@@ -14,6 +14,7 @@ import DeviceContext from '../context/device';
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Callback receiving next value on change.
+ * @prop {boolean=} required Whether value is required for file input.
  * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
  * camera is supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
@@ -73,6 +74,7 @@ function AcuantCapture({
   label,
   bannerText,
   value,
+  required,
   onChange = () => {},
   capture,
   className,
@@ -187,6 +189,7 @@ function AcuantCapture({
         accept={['image/*']}
         capture={capture}
         value={value}
+        required={required}
         error={ownError ?? undefined}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChangeIfValid}
