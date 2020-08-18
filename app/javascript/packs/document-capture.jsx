@@ -22,7 +22,9 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-loadPolyfills(['fetch']).then(() => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPolyfills(['fetch']);
+
   const appRoot = document.getElementById('document-capture-form');
   const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
 
