@@ -59,13 +59,8 @@ function toBlob(dataURL) {
   const [type] = header.replace(/^data:/, '').split(';');
   const decodedData = isBase64 ? window.atob(data) : decodeURIComponent(data);
 
-  const buffer = new ArrayBuffer(decodedData.length);
-  const view = new Uint8Array(buffer);
-  for (let i = 0; i < decodedData.length; i++) {
-    view[i] = decodedData.charCodeAt(i);
-  }
-
-  return new window.Blob([buffer], { type });
+  const view = Uint8Array.from(decodedData, (chunk) => chunk.charCodeAt(0));
+  return new window.Blob([view], { type });
 }
 
 /**
