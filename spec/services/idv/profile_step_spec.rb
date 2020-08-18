@@ -40,7 +40,7 @@ describe Idv::ProfileStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to eq true
       expect(idv_session.resolution_successful).to eq true
-      expect(idv_session.applicant).to eq(user_attrs.merge(uuid: user.uuid))
+      expect(idv_session.applicant).to eq(user_attrs.merge(uuid: user.uuid, uuid_prefix: nil))
     end
 
     it 'fails with bad params' do

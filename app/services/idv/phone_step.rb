@@ -49,7 +49,12 @@ module Idv
     def applicant
       @applicant ||= idv_session.applicant.merge(
         phone: normalized_phone,
+        uuid_prefix: uuid_prefix
       )
+    end
+
+    def uuid_prefix
+      ServiceProvider.from_issuer(idv_session.issuer).app_id
     end
 
     def normalized_phone

@@ -28,7 +28,7 @@ describe Idv::PhoneStep do
       expect(result.errors).to be_empty
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
-      expect(idv_session.applicant).to eq(first_name: 'Some', phone: good_phone)
+      expect(idv_session.applicant).to eq(first_name: 'Some', phone: good_phone, uuid_prefix: nil)
     end
 
     it 'fails with bad params' do
