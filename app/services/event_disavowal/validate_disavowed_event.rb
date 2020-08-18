@@ -13,7 +13,7 @@ module EventDisavowal
 
     attr_reader :event
 
-    delegate :user, to: :event
+    delegate :user, to: :event, allow_nil: true
 
     def initialize(event)
       @event = event
