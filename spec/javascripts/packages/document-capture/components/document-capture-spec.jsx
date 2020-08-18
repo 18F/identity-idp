@@ -45,9 +45,7 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(submitButton.disabled).to.be.false());
     userEvent.click(submitButton);
 
-    const confirmation = await findByText(
-      'Finished sending: {"front_image":{},"back_image":{},"selfie":{}}',
-    );
+    const confirmation = await findByText('Finished sending: {"front":{},"back":{},"selfie":{}}');
 
     expect(confirmation).to.be.ok();
   });

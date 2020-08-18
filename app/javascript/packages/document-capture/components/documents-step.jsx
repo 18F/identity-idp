@@ -6,8 +6,8 @@ import DeviceContext from '../context/device';
 /**
  * @typedef DocumentsStepValue
  *
- * @prop {Blob=} front_image Front image value.
- * @prop {Blob=} back_image Back image value.
+ * @prop {Blob=} front Front image value.
+ * @prop {Blob=} back Back image value.
  */
 
 /**
@@ -42,24 +42,20 @@ function DocumentsStep({ value = {}, onChange = () => {} }) {
         <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
-      {DOCUMENT_SIDES.map((side) => {
-        const inputKey = `${side}_image`;
-
-        return (
-          <AcuantCapture
-            key={side}
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-            label={t(`doc_auth.headings.document_capture_${side}`)}
-            /* i18n-tasks-use t('doc_auth.headings.back') */
-            /* i18n-tasks-use t('doc_auth.headings.front') */
-            bannerText={t(`doc_auth.headings.${side}`)}
-            value={value[inputKey]}
-            onChange={(nextValue) => onChange({ [inputKey]: nextValue })}
-            className="id-card-file-input"
-          />
-        );
-      })}
+      {DOCUMENT_SIDES.map((side) => (
+        <AcuantCapture
+          key={side}
+          /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+          /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+          label={t(`doc_auth.headings.document_capture_${side}`)}
+          /* i18n-tasks-use t('doc_auth.headings.back') */
+          /* i18n-tasks-use t('doc_auth.headings.front') */
+          bannerText={t(`doc_auth.headings.${side}`)}
+          value={value[side]}
+          onChange={(nextValue) => onChange({ [side]: nextValue })}
+          className="id-card-file-input"
+        />
+      ))}
     </>
   );
 }
@@ -71,6 +67,6 @@ function DocumentsStep({ value = {}, onChange = () => {} }) {
  *
  * @return {boolean} Whether step is valid.
  */
-export const isValid = (value) => Boolean(value.front_image && value.back_image);
+export const isValid = (value) => Boolean(value.front && value.back);
 
 export default DocumentsStep;
