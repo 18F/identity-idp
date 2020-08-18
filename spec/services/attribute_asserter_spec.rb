@@ -155,7 +155,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        context 'user did not presented piv/cac' do
+        context 'user did not present piv/cac' do
           let(:user_session) do
             {
               decrypted_x509: nil,
@@ -303,7 +303,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        context 'user did not presented piv/cac' do
+        context 'user did not present piv/cac' do
           let(:user_session) do
             {
               decrypted_x509: nil,

@@ -140,6 +140,7 @@ class AttributeAsserter
   end
 
   def x509_data
+    return @x509_data if defined?(@x509_data)
     @x509_data ||= begin
       x509_hash = user_session[:decrypted_x509]
       X509::Attributes.new_from_json(x509_hash) if x509_hash
