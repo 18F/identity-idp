@@ -6,44 +6,21 @@ import FullScreen from './full-screen';
 import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
-import DataURLFile from '../models/data-url-file';
 
 /**
  * @typedef AcuantCaptureProps
  *
- * @prop {string}                         label                 Label associated with file input.
- * @prop {string=}                        bannerText            Optional banner text to show in file
- *                                                              input.
- * @prop {DataURLFile?=}                  value                 Current value.
- * @prop {(nextValue:DataURLFile?)=>void} onChange              Callback receiving next value on
- *                                                              change.
- * @prop {'user'|'environment'=}          capture               Facing mode of capture. If capture
- *                                                              is not specified and a camera is
- *                                                              supported, defaults to the Acuant
- *                                                              environment camera capture.
- * @prop {string=}                        className             Optional additional class names.
- * @prop {number=}                        minimumGlareScore     Minimum glare score to be considered
- *                                                              acceptable.
- * @prop {number=}                        minimumSharpnessScore Minimum sharpness score to be
- *                                                              considered acceptable.
- * @prop {number=}                        minimumFileSize       Minimum file size (in bytes) to be
- *                                                              considered acceptable.
+ * @prop {string} label Label associated with file input.
+ * @prop {string=} bannerText Optional banner text to show in file input.
+ * @prop {Blob?=} value Current value.
+ * @prop {(nextValue:Blob?)=>void} onChange Callback receiving next value on change.
+ * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
+ * camera is supported, defaults to the Acuant environment camera capture.
+ * @prop {string=} className Optional additional class names.
+ * @prop {number=} minimumGlareScore Minimum glare score to be considered acceptable.
+ * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
+ * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
  */
-
-/**
- * Returns the file size (bytes) of a file represented as a data URL.
- *
- * @param {string} dataURL Data URL.
- *
- * @return {number} File size, in bytes.
- */
-export function getDataURLFileSize(dataURL) {
-  const [header, data] = dataURL.split(',');
-  const isBase64 = /;base64$/.test(header);
-  const decodedData = isBase64 ? window.atob(data) : decodeURIComponent(data);
-
-  return decodedData.length;
-}
 
 /**
  * The minimum glare score value to be considered acceptable.
@@ -68,6 +45,23 @@ const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
   process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
     ? 250 * 1024
     : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
+
+/**
+ * Returns an instance of File representing the given data URL.
+ *
+ * @param {string} dataURL Data URL.
+ *
+ * @return {Blob} File representation.
+ */
+function toBlob(dataURL) {
+  const [header, data] = dataURL.split(',');
+  const isBase64 = /;base64$/.test(header);
+  const [type] = header.replace(/^data:/, '').split(';');
+  const decodedData = isBase64 ? window.atob(data) : decodeURIComponent(data);
+
+  const view = Uint8Array.from(decodedData, (chunk) => chunk.charCodeAt(0));
+  return new window.Blob([view], { type });
+}
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
@@ -126,13 +120,13 @@ function AcuantCapture({
 
   /**
    * Calls onChange with next value if valid. Validation occurs separately to AcuantCaptureCanvas
-   * for common checks derived from DataURLFile properties (file size, etc). If invalid, error state
-   * is assigned with appropriate error message.
+   * for common checks derived from file properties (file size, etc). If invalid, error state is
+   * assigned with appropriate error message.
    *
-   * @param {DataURLFile?} nextValue Next value candidate.
+   * @param {Blob?} nextValue Next value candidate.
    */
   function onChangeIfValid(nextValue) {
-    if (nextValue && getDataURLFileSize(nextValue.data) < minimumFileSize) {
+    if (nextValue && nextValue.size < minimumFileSize) {
       setOwnError(t('errors.doc_auth.photo_file_size'));
     } else {
       setOwnError(null);
@@ -176,7 +170,7 @@ function AcuantCapture({
               } else if (nextCapture.sharpness < minimumSharpnessScore) {
                 setOwnError(t('errors.doc_auth.photo_blurry'));
               } else {
-                onChangeIfValid(new DataURLFile(nextCapture.image.data));
+                onChangeIfValid(toBlob(nextCapture.image.data));
               }
 
               setIsCapturing(false);

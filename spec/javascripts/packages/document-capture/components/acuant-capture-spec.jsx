@@ -2,36 +2,15 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import AcuantCapture, {
-  getDataURLFileSize,
-} from '@18f/identity-document-capture/components/acuant-capture';
+import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
-import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
-
-  describe('getDataURLFileSize', () => {
-    it('returns file size in bytes', () => {
-      const result = getDataURLFileSize(
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-      );
-
-      expect(result).to.equal(41);
-    });
-
-    it('returns file size of bytes (base64)', () => {
-      const result = getDataURLFileSize(
-        'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4=',
-      );
-
-      expect(result).to.equal(41);
-    });
-  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -170,10 +149,8 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       expect(onChange.getCall(0).args).to.have.lengthOf(1);
-      expect(onChange.getCall(0).args[0]).to.be.instanceOf(DataURLFile);
-      expect(onChange.getCall(0).args[0].data).to.be.equal(
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-      );
+      expect(onChange.getCall(0).args[0]).to.be.instanceOf(window.Blob);
+      expect(onChange.getCall(0).args[0].type).to.be.equal('image/svg+xml');
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 
@@ -202,9 +179,7 @@ describe('document-capture/components/acuant-capture', () => {
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture
               label="Image"
-              value={
-                new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
-              }
+              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
             />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -225,9 +200,7 @@ describe('document-capture/components/acuant-capture', () => {
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture
               label="Image"
-              value={
-                new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
-              }
+              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
             />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -467,9 +440,7 @@ describe('document-capture/components/acuant-capture', () => {
       <AcuantContextProvider sdkSrc="about:blank">
         <AcuantCapture
           label="Image"
-          value={
-            new DataURLFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E')
-          }
+          value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
           onChange={onChange}
         />
       </AcuantContextProvider>,

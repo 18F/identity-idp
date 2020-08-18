@@ -2,46 +2,16 @@ import React, { createRef } from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
-import { waitFor } from '@testing-library/dom';
 import { expect } from 'chai';
 import FileInput, {
-  getDataURLMimeType,
   getAcceptPattern,
   isImage,
   isValidForAccepts,
-  toDataURL,
 } from '@18f/identity-document-capture/components/file-input';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import DataURLFile from '@18f/identity-document-capture/models/data-url-file';
 import render from '../../../support/render';
 
 describe('document-capture/components/file-input', () => {
-  describe('getDataURLMimeType', () => {
-    it('returns text/plain when mediatype is absent', () => {
-      const url = 'data:,Hello%2C%20World!';
-
-      expect(getDataURLMimeType(url)).to.equal('text/plain');
-    });
-
-    it('returns mime type with parameter', () => {
-      const url = 'data:text/plain;charset=US-ASCII,Hello%2C%20World!';
-
-      expect(getDataURLMimeType(url)).to.equal('text/plain');
-    });
-
-    it('returns mime type with base64', () => {
-      const url = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
-
-      expect(getDataURLMimeType(url)).to.equal('text/plain');
-    });
-
-    it('returns mime type with data', () => {
-      const url = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-      expect(getDataURLMimeType(url)).to.equal('image/gif');
-    });
-  });
-
   describe('getAcceptPattern', () => {
     it('returns a pattern for audio matching', () => {
       const accept = 'audio/*';
@@ -100,13 +70,11 @@ describe('document-capture/components/file-input', () => {
 
   describe('isImage', () => {
     it('returns false if given file is not an image', () => {
-      expect(isImage('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).to.be.false();
+      expect(isImage(new window.File([], 'demo.txt', { type: 'text/plain' }))).to.be.false();
     });
 
     it('returns true if given file is an image', () => {
-      expect(
-        isImage('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'),
-      ).to.be.true();
+      expect(isImage(new window.File([], 'demo.png', { type: 'image/png' }))).to.be.true();
     });
   });
 
@@ -130,13 +98,6 @@ describe('document-capture/components/file-input', () => {
       const accept = null;
 
       expect(isValidForAccepts(url, accept)).to.be.true();
-    });
-  });
-
-  describe('toDataURL', () => {
-    it('returns a promise resolving to the data URL representation of the file', async () => {
-      const dataURL = await toDataURL(new window.File([''], 'upload.png', { type: 'image/png' }));
-      expect(dataURL).to.equal('data:image/png;base64,');
     });
   });
 
@@ -166,9 +127,9 @@ describe('document-capture/components/file-input', () => {
     expect(hint).to.equal('Must be small');
   });
 
-  it('renders a value preview for a file with name assigned', async () => {
+  it('renders a value preview for a file', async () => {
     const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value={new DataURLFile('data:image/png;base64,', 'demo.png')} />,
+      <FileInput label="File" value={new window.File([], 'demo.png', { type: 'image/png' })} />,
     );
 
     const preview = await findByRole('img', { hidden: true });
@@ -181,24 +142,9 @@ describe('document-capture/components/file-input', () => {
     );
   });
 
-  it('renders a value preview for a file with name not assigned', async () => {
-    const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value={new DataURLFile('data:image/png;base64,')} />,
-    );
-
-    const preview = await findByRole('img', { hidden: true });
-    const input = getByLabelText('File');
-
-    expect(input).to.be.ok();
-    expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
-      'doc_auth.forms.change_file',
-    );
-  });
-
   it('does not render preview if value is not image', async () => {
     const { container } = render(
-      <FileInput label="File" value={new DataURLFile('data:text/plain;base64,', 'demo.txt')} />,
+      <FileInput label="File" value={new window.File([], 'demo.txt', { type: 'text/plain' })} />,
     );
 
     expect(container.querySelector('.usa-file-input__preview')).to.not.be.ok();
@@ -212,7 +158,7 @@ describe('document-capture/components/file-input', () => {
     expect(getByLabelText('File').accept).to.equal('image/png,image/bmp');
   });
 
-  it('calls onChange with next value', (done) => {
+  it('calls onChange with next value', () => {
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
@@ -220,14 +166,10 @@ describe('document-capture/components/file-input', () => {
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
-    onChange.callsFake((nextValue) => {
-      expect(nextValue.name).to.equal('upload.png');
-      expect(nextValue.data).to.equal('data:image/png;base64,');
-      done();
-    });
+    expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
-  it('allows changing the selected value', (done) => {
+  it('allows changing the selected value', () => {
     const file1 = new window.File([''], 'upload1.png', { type: 'image/png' });
     const file2 = new window.File([''], 'upload2.png', { type: 'image/png' });
     const onChange = sinon.stub();
@@ -235,31 +177,22 @@ describe('document-capture/components/file-input', () => {
 
     const input = getByLabelText('File');
     userEvent.upload(input, file1);
-    onChange.onCall(0).callsFake((nextValue) => {
-      expect(nextValue.name).to.equal('upload1.png');
-      expect(nextValue.data).to.equal('data:image/png;base64,');
-      userEvent.upload(input, file2);
-    });
+    userEvent.upload(input, file2);
 
-    onChange.onCall(1).callsFake((nextValue) => {
-      expect(nextValue.name).to.equal('upload2.png');
-      expect(nextValue.data).to.equal('data:image/png;base64,');
-      done();
-    });
+    expect(onChange.getCall(0).args[0]).to.equal(file1);
+    expect(onChange.getCall(1).args[0]).to.equal(file2);
   });
 
-  it('allows clearing the selected value', (done) => {
+  it('allows clearing the selected value', () => {
     const file = new window.File([''], 'upload1.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
     userEvent.upload(input, file);
-    onChange.onCall(0).callsFake(async () => {
-      fireEvent.change(input, { target: { files: [] } });
-      await waitFor(() => expect(input.value).to.be.empty());
-      done();
-    });
+    fireEvent.change(input, { target: { files: [] } });
+    expect(onChange.getCall(1).args[0]).to.be.null();
+    expect(input.value).to.be.empty();
   });
 
   it('omits desktop-relevant details in mobile context', async () => {
@@ -285,7 +218,7 @@ describe('document-capture/components/file-input', () => {
         <FileInput
           label="File"
           bannerText="File goes here"
-          value={new DataURLFile('data:image/png;base64,', 'demo.png')}
+          value={new window.File([], 'demo.png', { type: 'image/png' })}
         />
       </DeviceContext.Provider>,
     );
