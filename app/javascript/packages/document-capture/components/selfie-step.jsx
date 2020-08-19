@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { hasMediaAccess } from '@18f/identity-device';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
@@ -35,7 +36,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
         <li>{t('doc_auth.tips.document_capture_selfie_text2')}</li>
         <li>{t('doc_auth.tips.document_capture_selfie_text3')}</li>
       </ul>
-      {isMobile ? (
+      {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
