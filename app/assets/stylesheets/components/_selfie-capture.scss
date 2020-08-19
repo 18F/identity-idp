@@ -24,6 +24,22 @@
   content: none;
 }
 
+.selfie-capture__consent-prompt {
+  left: 11%;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 78%;
+}
+
+// Disable reason: The ID selector is temporary, and is only needed as long as Login Design System
+// has yet to be upgraded to USWDS 2.7+.
+#document-capture-form .selfie-capture__consent-prompt-banner.usa-file-input__banner-text { // scss-lint:disable IdSelector
+  @include u-margin-bottom(4);
+  text-transform: none;
+}
+
 .selfie-capture__frame-corner {
   border: 3px solid color('primary');
   height: 4rem;

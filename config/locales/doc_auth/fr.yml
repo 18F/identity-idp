@@ -13,8 +13,8 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      not_a_file: n'a pas été joint en tant que fichier
       must_be_image: doit être une image
+      not_a_file: n'a pas été joint en tant que fichier
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -104,6 +104,11 @@ fr:
         que pour vérifier votre identité.
       document_capture_fallback_html: Avoir des problèmes? %{link}
       document_capture_fallback_link: Cliquez ici pour télécharger une image
+      document_capture_selfie_consent_banner: Autorisez login.gov à utiliser la caméra
+        de votre appareil
+      document_capture_selfie_consent_reason: login.gov a besoin d'une autorisation
+        pour utiliser votre caméra afin que vous puissiez prouver que votre identifiant
+        vous appartient.
       document_capture_selfie_instructions: Maintenant, prenez une photo de vous.
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
