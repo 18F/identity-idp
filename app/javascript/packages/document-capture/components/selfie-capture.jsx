@@ -96,7 +96,7 @@ function SelfieCapture({ value, onChange }) {
               </div>
               <button
                 type="button"
-                className="selfie-capture__capture"
+                className="usa-button selfie-capture__capture"
                 aria-label={t('doc_auth.buttons.take_picture')}
                 onClick={onCapture}
               >

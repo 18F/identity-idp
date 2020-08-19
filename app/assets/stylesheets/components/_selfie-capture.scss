@@ -85,21 +85,18 @@
   top: 0;
 }
 
-.selfie-capture__capture {
+.usa-button.selfie-capture__capture {
   @include u-padding(2);
-  background-color: color('primary');
   border: 3px solid color('white');
   border-radius: 50%;
-  bottom: 5%;
-  color: color('white');
-  left: 50%;
   line-height: 1;
+}
+
+.selfie-capture__capture {
+  bottom: 5%;
+  left: 50%;
   position: absolute;
   transform: translateX(-50%);
-
-  &:hover {
-    background-color: color('primary-dark');
-  }
 }
 
 .selfie-capture__capture-icon {
