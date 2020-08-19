@@ -246,8 +246,7 @@ feature 'doc auth document capture step' do
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
-        page.driver.put current_path
-        visit current_path
+        submit_empty_form
 
         expect(page).to have_current_path(next_step)
       end
@@ -258,16 +257,14 @@ feature 'doc auth document capture step' do
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
-        page.driver.put current_path
-        visit current_path
+        submit_empty_form
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
 
       it 'does not proceed to the next step if there is no result' do
-        page.driver.put current_path
-        visit current_path
+        submit_empty_form
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
@@ -289,5 +286,10 @@ feature 'doc auth document capture step' do
 
   def next_step
     idv_doc_auth_ssn_step
+  end
+
+  def submit_empty_form
+    page.driver.put current_path
+    visit current_path
   end
 end
