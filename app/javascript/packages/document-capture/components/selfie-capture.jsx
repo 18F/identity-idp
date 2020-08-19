@@ -17,13 +17,20 @@ import useInstanceId from '../hooks/use-instance-id';
 function SelfieCapture({ value, onChange }) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
+  const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
   const setVideoRef = useCallback((ref) => {
-    // React will call an assigned `ref` callback with `null` at the time the element is being
-    // removed, which is an opportunity to stop any in-progress capture.
-    if (!ref && videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
-      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+    // React will call an assigned `ref` callback with `null` at the time the element is removed.
+    if (!ref) {
+      // Stop any in-progress capture.
+      if (videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
+        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      }
+
+      // Shift focus back to label if it's assumed that the component will remain mounted, so that a
+      // focus loss does not occur.
+      if (labelRef.current) labelRef.current.focus();
     }
 
     videoRef.current = ref;
@@ -101,7 +108,9 @@ function SelfieCapture({ value, onChange }) {
   return (
     <>
       <div
+        ref={labelRef}
         id={labelId}
+        tabIndex={-1}
         className={['usa-label', isAccessRejected && 'usa-label--error'].filter(Boolean).join(' ')}
       >
         {t('doc_auth.headings.document_capture_selfie')}
