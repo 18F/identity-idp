@@ -4,8 +4,16 @@ describe Idv::ProfileStep do
   include IdvHelper
 
   let(:user) { create(:user) }
-  let(:service_provider) { create(:service_provider, issuer: 'http://sp.example.com', app_id: '123') }
-  let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: service_provider.issuer) }
+  let(:service_provider) do
+    create(:service_provider,
+           issuer: 'http://sp.example.com',
+           app_id: '123')
+  end
+  let(:idv_session) do
+    Idv::Session.new(user_session: {},
+                     current_user: user,
+                     issuer: service_provider.issuer)
+  end
   let(:user_attrs) do
     {
       first_name: 'Some',
