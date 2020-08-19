@@ -50,7 +50,7 @@ module Idv
       end
 
       def request_includes_images?
-        params.keys.include?('doc_auth')
+        params.key?('doc_auth')
       end
 
       def form_submit
