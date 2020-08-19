@@ -1,4 +1,5 @@
 .selfie-capture {
+  @include u-margin-top(1);
   align-items: center;
   border: 2px dashed color('primary');
   border-radius: .375rem;

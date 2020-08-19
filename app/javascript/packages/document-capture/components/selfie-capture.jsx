@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
+import useInstanceId from '../hooks/use-instance-id';
 
 /**
  * @typedef SelfieCaptureProps
@@ -14,6 +15,7 @@ import useI18n from '../hooks/use-i18n';
  * @param {SelfieCaptureProps} props Props object.
  */
 function SelfieCapture({ value, onChange }) {
+  const instanceId = useInstanceId();
   const { t } = useI18n();
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
@@ -94,8 +96,16 @@ function SelfieCapture({ value, onChange }) {
     .filter(Boolean)
     .join(' ');
 
+  const labelId = `selfie-capture-label-${instanceId}`;
+
   return (
     <>
+      <div
+        id={labelId}
+        className={['usa-label', isAccessRejected && 'usa-label--error'].filter(Boolean).join(' ')}
+      >
+        {t('doc_auth.headings.document_capture_selfie')}
+      </div>
       {isAccessRejected && (
         <span className="usa-error-message" role="alert">
           {t('doc_auth.instructions.document_capture_selfie_consent_blocked')}
@@ -120,7 +130,7 @@ function SelfieCapture({ value, onChange }) {
           <>
             {/* Disable reason: Video is used only for direct capture */}
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <video ref={setVideoRef} className="selfie-capture__video" />
+            <video ref={setVideoRef} className="selfie-capture__video" aria-describedby={labelId} />
             {isCapturing ? (
               <>
                 <div className="selfie-capture__frame">
