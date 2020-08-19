@@ -41,7 +41,7 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('progresses through steps to completion', async () => {
-    const { getByLabelText, getByText, findByText } = render(<DocumentCapture />);
+    const { getByLabelText, getByText } = render(<DocumentCapture />);
 
     userEvent.upload(
       getByLabelText('doc_auth.headings.document_capture_front'),
@@ -60,11 +60,19 @@ describe('document-capture/components/document-capture', () => {
     );
     const submitButton = getByText('forms.buttons.submit.default');
     await waitFor(() => expect(submitButton.disabled).to.be.false());
-    userEvent.click(submitButton);
 
-    const confirmation = await findByText('Finished sending: {"front":{},"back":{},"selfie":{}}');
+    return new Promise((resolve) => {
+      const form = document.createElement('form');
+      form.className = 'js-document-capture-form';
+      document.body.appendChild(form);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        document.body.removeChild(form);
+        resolve();
+      });
 
-    expect(confirmation).to.be.ok();
+      userEvent.click(submitButton);
+    });
   });
 
   it('renders unhandled submission failure', async () => {
