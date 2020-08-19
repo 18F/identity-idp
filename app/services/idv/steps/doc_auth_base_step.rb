@@ -166,7 +166,6 @@ module Idv
           mark_step_complete(:mobile_back_image)
         else
           mark_step_complete(:document_capture)
-          mark_step_complete(:mobile_document_capture)
         end
       end
 

@@ -26,7 +26,6 @@ module Idv
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         mark_step_complete(:email_sent)
-        mark_step_complete(:mobile_document_capture)
       end
     end
   end
