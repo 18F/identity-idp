@@ -15,45 +15,60 @@ import useI18n from '../hooks/use-i18n';
  */
 function SelfieCapture({ value, onChange }) {
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
-  const assignVideoRef = useCallback((ref) => {
+  const setVideoRef = useCallback((ref) => {
+    // React will call an assigned `ref` callback with `null` at the time the element is being
+    // removed, which is an opportunity to stop any in-progress capture.
     if (!ref && videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
 
     videoRef.current = ref;
   }, []);
+
   const [isCapturing, setIsCapturing] = useState(false);
+  // Sync capturing state with the availability of a value. If a value is assigned while capture is
+  // in progress, reset state. Most often, this is a direct result of calling `onChange` with the
+  // next value.
   useMemo(() => setIsCapturing(isCapturing && !value), [value]);
+
   const ifStillMounted = useIfStillMounted();
   const { t } = useI18n();
   useEffect(() => {
-    if (!value && !isCapturing) {
-      navigator.mediaDevices.getUserMedia({ video: true }).then(
-        ifStillMounted((/** @type {MediaStream} */ stream) => {
-          if (!videoRef.current) {
-            return;
-          }
-
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          setIsCapturing(true);
-        }),
-      );
+    // Start capturing only if not already capturing, and if value has yet to be assigned.
+    if (value || isCapturing) {
+      return;
     }
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(
+      ifStillMounted((/** @type {MediaStream} */ stream) => {
+        if (!videoRef.current) {
+          return;
+        }
+
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+        setIsCapturing(true);
+      }),
+    );
   }, [value]);
 
   function onCapture() {
-    if (!videoRef.current) {
+    const video = videoRef.current;
+    if (!video) {
       return;
     }
 
     const canvas = document.createElement('canvas');
-    const { videoWidth: width, videoHeight: height } = videoRef.current;
+    const { videoWidth: width, videoHeight: height } = video;
     canvas.height = height;
     canvas.width = height;
-    canvas
-      .getContext('2d')
-      ?.drawImage(videoRef.current, (width - height) / 2, 0, height, height, 0, 0, height, height);
+
+    // The capture is shown as a square, even if the video input aspect ratio is not square. To
+    // ensure that the captured image matches what is shown to the user, offset the source to X
+    // corresponding with centered squared height.
+    const sourceX = (width - height) / 2;
+
+    canvas.getContext('2d')?.drawImage(video, sourceX, 0, height, height, 0, 0, height, height);
     canvas.toBlob(ifStillMounted(onChange));
   }
 
@@ -85,7 +100,7 @@ function SelfieCapture({ value, onChange }) {
         <>
           {/* Disable reason: Video is used only for direct capture */}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video ref={assignVideoRef} className="selfie-capture__video" />
+          <video ref={setVideoRef} className="selfie-capture__video" />
           {isCapturing ? (
             <>
               <div className="selfie-capture__frame">
