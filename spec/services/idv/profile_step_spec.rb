@@ -4,7 +4,8 @@ describe Idv::ProfileStep do
   include IdvHelper
 
   let(:user) { create(:user) }
-  let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: nil) }
+  let(:service_provider) { create(:service_provider, issuer: 'http://sp.example.com', app_id: '123') }
+  let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: service_provider.issuer) }
   let(:user_attrs) do
     {
       first_name: 'Some',
@@ -40,7 +41,7 @@ describe Idv::ProfileStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to eq true
       expect(idv_session.resolution_successful).to eq true
-      expect(idv_session.applicant).to eq(user_attrs.merge(uuid: user.uuid, uuid_prefix: nil))
+      expect(idv_session.applicant).to eq(user_attrs.merge(uuid: user.uuid, uuid_prefix: '123'))
     end
 
     it 'fails with bad params' do

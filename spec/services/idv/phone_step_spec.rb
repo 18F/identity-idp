@@ -4,8 +4,9 @@ describe Idv::PhoneStep do
   include IdvHelper
 
   let(:user) { build(:user) }
+  let(:service_provider) { create(:service_provider, issuer: 'http://sp.example.com', app_id: '123') }
   let(:idv_session) do
-    idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
+    idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: service_provider.issuer)
     idvs.applicant = { first_name: 'Some' }
     idvs
   end
@@ -28,7 +29,7 @@ describe Idv::PhoneStep do
       expect(result.errors).to be_empty
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
-      expect(idv_session.applicant).to eq(first_name: 'Some', phone: good_phone, uuid_prefix: nil)
+      expect(idv_session.applicant).to eq(first_name: 'Some', phone: good_phone, uuid_prefix: service_provider.app_id)
     end
 
     it 'fails with bad params' do
