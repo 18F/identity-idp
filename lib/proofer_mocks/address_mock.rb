@@ -1,6 +1,8 @@
 class AddressMock < Proofer::Base
   required_attributes :phone
 
+  optional_attributes :uuid, :uuid_prefix
+
   stage :address
 
   proof do |applicant, result|

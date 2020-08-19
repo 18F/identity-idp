@@ -1,6 +1,8 @@
 class ResolutionMock < Proofer::Base
   required_attributes :first_name, :ssn, :zipcode
 
+  optional_attributes :uuid, :uuid_prefix
+
   stage :resolution
 
   proof do |applicant, result|
