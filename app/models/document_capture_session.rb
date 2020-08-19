@@ -13,6 +13,7 @@ class DocumentCaptureSession < ApplicationRecord
       success: doc_auth_response.success?,
       pii: doc_auth_response.pii_from_doc,
     )
+    save!
   end
 
   private

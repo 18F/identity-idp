@@ -4,15 +4,18 @@ describe Idv::ImageUploadsController do
   describe '#create' do
     before do
       sign_in_as_user
+      controller.current_user.document_capture_sessions.create!
     end
 
     subject(:action) { post :create, params: params }
 
+    let(:document_capture_session) { controller.current_user.document_capture_sessions.last }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
         back: DocAuthImageFixtures.document_back_image_multipart,
         selfie: DocAuthImageFixtures.selfie_image_multipart,
+        document_capture_session_uuid: document_capture_session.uuid,
       }
     end
 
@@ -71,14 +74,12 @@ describe Idv::ImageUploadsController do
 
       context 'when image upload succeeds' do
         it 'returns a successful response and modifies the session' do
-          pending 'modifying the session'
-
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(true)
 
-          expect(subject.user_session['idv/doc_auth']).to include('api_upload')
+          expect(document_capture_session.reload.load_result.success?).to eq(true)
         end
       end
 

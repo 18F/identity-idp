@@ -34,6 +34,7 @@ loadPolyfills(['fetch']).then(() => {
       <UploadContextProvider
         endpoint={appRoot.getAttribute('data-endpoint')}
         csrf={getMetaContent('csrf-token')}
+        sessionUUID={appRoot.getAttribute('data-document-capture-session-uuid')}
       >
         <I18nContext.Provider value={i18n.strings}>
           <AssetContext.Provider value={assets}>

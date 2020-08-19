@@ -7,6 +7,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         front: front_image,
         back: back_image,
         selfie: selfie_image,
+        document_capture_session_uuid: document_capture_session_uuid,
       },
       liveness_checking_enabled: liveness_checking_enabled?,
     )
@@ -15,6 +16,8 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+  let!(:document_capture_session) { DocumentCaptureSession.create! }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:liveness_checking_enabled?) { true }
 
   describe '#valid?' do
@@ -81,6 +84,24 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       after { tempfile.unlink }
+    end
+
+    context 'when document_capture_session_uuid param is missing' do
+      let(:document_capture_session_uuid) { nil }
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
+      end
+    end
+
+    context 'when document_capture_session_uuid does not correspond to a record' do
+      let(:document_capture_session_uuid) { 'unassociated-test-uuid' }
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
+      end
     end
   end
 end
