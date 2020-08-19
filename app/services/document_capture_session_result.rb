@@ -13,6 +13,13 @@ class DocumentCaptureSessionResult
       decrypt_and_deserialize(id, ciphertext)
     end
 
+    def store(id:, success:, pii:)
+      result = new(id: id, success: success, pii: pii)
+      REDIS_POOL.with do |client|
+        client.write(key(id), result.serialize_and_encrypt, expires_in: 60)
+      end
+    end
+
     def key(id)
       [REDIS_KEY_PREFIX, id].join(':')
     end
@@ -42,22 +49,14 @@ class DocumentCaptureSessionResult
     @pii = pii
   end
 
-  def unload
-    REDIS_POOL.with do |client|
-      client.write(self.class.key(id), serialize_and_encrypt, expires_in: 60)
-    end
-  end
-
-  private
-
-  def serialize_and_encrypt
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(serialize)
-  end
-
   def serialize
     {
       success: success,
       pii: pii,
     }.to_json
+  end
+
+  def serialize_and_encrypt
+    Encryption::Encryptors::SessionEncryptor.new.encrypt(serialize)
   end
 end
