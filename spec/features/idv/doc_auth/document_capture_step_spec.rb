@@ -238,9 +238,58 @@ feature 'doc auth document capture step' do
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
+
+    context 'when there is a stored result' do
+      it 'proceeds to the next step if the result was successful' do
+        document_capture_session = user.document_capture_sessions.last
+        response = DocAuthClient::Response.new(success: true)
+        document_capture_session.store_result_from_response(response)
+        document_capture_session.save!
+
+        submit_empty_form
+
+        expect(page).to have_current_path(next_step)
+      end
+
+      it 'does not proceed to the next step if the result was not successful' do
+        document_capture_session = user.document_capture_sessions.last
+        response = DocAuthClient::Response.new(success: false)
+        document_capture_session.store_result_from_response(response)
+        document_capture_session.save!
+
+        submit_empty_form
+
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+
+      it 'does not proceed to the next step if there is no result' do
+        submit_empty_form
+
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      end
+
+      it 'uses the form params if form params are present' do
+        document_capture_session = user.document_capture_sessions.last
+        response = DocAuthClient::Response.new(success: false)
+        document_capture_session.store_result_from_response(response)
+        document_capture_session.save!
+
+        attach_images(liveness_enabled: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(next_step)
+      end
+    end
   end
 
   def next_step
     idv_doc_auth_ssn_step
+  end
+
+  def submit_empty_form
+    page.driver.put current_path
+    visit current_path
   end
 end

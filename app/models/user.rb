@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_one :doc_auth, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
   has_one :doc_capture, dependent: :destroy
+  has_many :document_capture_sessions, dependent: :destroy
   has_one :account_recovery_request, dependent: :destroy
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy

@@ -173,6 +173,17 @@ module Idv
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end
 
+      def create_document_capture_session
+        document_capture_session = DocumentCaptureSession.create(user_id: user_id)
+        flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      end
+
+      def document_capture_session
+        @document_capture_session ||= DocumentCaptureSession.find_by(
+          uuid: flow_session[:document_capture_session_uuid],
+        )
+      end
+
       def no_sp?
         sp_session[:issuer].blank?
       end

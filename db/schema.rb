@@ -206,6 +206,16 @@ ActiveRecord::Schema.define(version: 2020_08_14_144213) do
     t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
   end
 
+  create_table "document_capture_sessions", force: :cascade do |t|
+    t.string "uuid"
+    t.string "result_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
+    t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id"
     t.string "confirmation_token", limit: 255
@@ -583,4 +593,5 @@ ActiveRecord::Schema.define(version: 2020_08_14_144213) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
+  add_foreign_key "document_capture_sessions", "users"
 end
