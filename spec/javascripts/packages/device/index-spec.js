@@ -40,7 +40,11 @@ describe('hasMediaAccess', () => {
   });
 
   afterEach(() => {
-    navigator.mediaDevices = originalMediaDevices;
+    if (originalMediaDevices === undefined) {
+      delete navigator.mediaDevices;
+    } else {
+      navigator.mediaDevices = originalMediaDevices;
+    }
   });
 
   it('returns false if no media device API access', () => {
@@ -74,7 +78,11 @@ describe('isCameraCapableMobile', () => {
 
   afterEach(() => {
     navigator.userAgent = originalUserAgent;
-    navigator.mediaDevices = originalMediaDevices;
+    if (originalMediaDevices === undefined) {
+      delete navigator.mediaDevices;
+    } else {
+      navigator.mediaDevices = originalMediaDevices;
+    }
   });
 
   it('returns false if not mobile', () => {
