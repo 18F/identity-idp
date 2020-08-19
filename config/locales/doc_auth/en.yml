@@ -94,6 +94,9 @@ en:
       document_capture_fallback_link: Click here to upload an image
       document_capture_selfie_consent_banner: Allow login.gov to use your device's
         camera
+      document_capture_selfie_consent_blocked: Access to your camera is blocked, but
+        it is required to verify your identity. Please reset your settings for this
+        website, then refresh the page.
       document_capture_selfie_consent_reason: login.gov needs permission to use your
         camera so that you can prove your ID belongs to you.
       document_capture_selfie_instructions: Now take a picture of yourself. We'll

@@ -98,6 +98,9 @@ es:
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
       document_capture_selfie_consent_banner: Permita que login.gov use la cámara
         de su dispositivo
+      document_capture_selfie_consent_blocked: El acceso a su cámara está bloqueado,
+        pero es necesario para verificar su identidad. Restablezca la configuración
+        de este sitio web y luego actualice la página.
       document_capture_selfie_consent_reason: login.gov necesita permiso para usar
         su cámara para que pueda probar que su identificación le pertenece.
       document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo compararemos

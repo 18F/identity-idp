@@ -106,6 +106,9 @@ fr:
       document_capture_fallback_link: Cliquez ici pour télécharger une image
       document_capture_selfie_consent_banner: Autorisez login.gov à utiliser la caméra
         de votre appareil
+      document_capture_selfie_consent_blocked: L'accès à votre caméra est bloqué,
+        mais il est nécessaire de vérifier votre identité. Veuillez réinitialiser
+        vos paramètres pour ce site Web, puis actualiser la page.
       document_capture_selfie_consent_reason: login.gov a besoin d'une autorisation
         pour utiliser votre caméra afin que vous puissiez prouver que votre identifiant
         vous appartient.
