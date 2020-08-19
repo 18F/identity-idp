@@ -6,6 +6,7 @@ import {
   I18nContext,
   DeviceContext,
   AcuantProvider,
+  UploadContextProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -24,18 +25,24 @@ const device = {
 loadPolyfills(['fetch']).then(() => {
   const appRoot = document.getElementById('document-capture-form');
   const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
+
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
       endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
     >
-      <I18nContext.Provider value={i18n.strings}>
-        <AssetContext.Provider value={assets}>
-          <DeviceContext.Provider value={device}>
-            <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
-          </DeviceContext.Provider>
-        </AssetContext.Provider>
-      </I18nContext.Provider>
+      <UploadContextProvider
+        endpoint={appRoot.getAttribute('data-endpoint')}
+        csrf={getMetaContent('csrf-token')}
+      >
+        <I18nContext.Provider value={i18n.strings}>
+          <AssetContext.Provider value={assets}>
+            <DeviceContext.Provider value={device}>
+              <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
+            </DeviceContext.Provider>
+          </AssetContext.Provider>
+        </I18nContext.Provider>
+      </UploadContextProvider>
     </AcuantProvider>,
     appRoot,
   );

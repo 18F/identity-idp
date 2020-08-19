@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
-import UploadContext from '@18f/identity-document-capture/context/upload';
+import { UploadContextProvider } from '@18f/identity-document-capture';
 
 /**
  * @typedef RenderOptions
@@ -38,7 +38,7 @@ function renderWithDefaultContext(element, options = {}) {
       ),
     );
 
-  return render(<UploadContext.Provider value={upload}>{element}</UploadContext.Provider>);
+  return render(<UploadContextProvider upload={upload}>{element}</UploadContextProvider>);
 }
 
 export default renderWithDefaultContext;

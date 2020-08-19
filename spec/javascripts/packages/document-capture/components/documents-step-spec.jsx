@@ -22,7 +22,7 @@ describe('document-capture/components/documents-step', () => {
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-    expect(onChange.getCall(0).args[0]).to.deep.equal({ front_image: file });
+    expect(onChange.getCall(0).args[0]).to.deep.equal({ front: file });
   });
 
   it('restricts accepted file types', () => {
