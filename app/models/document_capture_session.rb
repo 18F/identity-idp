@@ -8,12 +8,11 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_result_from_response(doc_auth_response)
-    result = DocumentCaptureSessionResult.new(
+    DocumentCaptureSessionResult.store(
       id: generate_result_id,
       success: doc_auth_response.success?,
       pii: doc_auth_response.pii_from_doc,
     )
-    result.unload
   end
 
   private
