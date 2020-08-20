@@ -13,8 +13,8 @@ es:
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
     errors:
-      not_a_file: no se adjuntó como un archivo
       must_be_image: debe ser una imagen
+      not_a_file: no se adjuntó como un archivo
     forms:
       address1: Dirección
       change_file: Cambiar archivo
@@ -96,6 +96,12 @@ es:
         su identidad.
       document_capture_fallback_html: "¿Teniendo problemas? %{link}"
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
+      document_capture_selfie_consent_banner: Permita que login.gov use la cámara
+        de su dispositivo
+      document_capture_selfie_consent_blocked: Verifique la configuración de su navegador
+        web para este sitio para permitir que login.gov acceda a la cámara.
+      document_capture_selfie_consent_reason: login.gov necesita permiso para usar
+        su cámara para que pueda probar que su identificación le pertenece.
       document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo compararemos
         con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su

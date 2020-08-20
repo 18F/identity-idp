@@ -39,6 +39,7 @@
 .usa-file-input:not(.usa-file-input--has-value) {
   .usa-file-input__target {
     border-color: color('primary');
+    border-radius: .375rem;
     border-width: 2px;
 
     &:hover {
