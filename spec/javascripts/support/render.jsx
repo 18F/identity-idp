@@ -6,7 +6,7 @@ import { UploadContextProvider } from '@18f/identity-document-capture';
 /**
  * @typedef RenderOptions
  *
- * @prop {Error=} uploadError Whether to simulate upload failure. Defaults to `false`.
+ * @prop {Error=} uploadError Whether to simulate upload failure.
  * @prop {number=} expectedUploads Number of times upload is expected to be called. Defaults to `1`.
  */
 
