@@ -7,10 +7,10 @@ module Idv
       ].freeze
 
       def call
-        if request_includes_images?
-          post_images_and_handle_result
+        if request_should_use_stored_result?
+          handle_stored_result
         else
-          handle_stored_response
+          post_images_and_handle_result
         end
       end
 
@@ -39,9 +39,8 @@ module Idv
         failure(response.errors.first, extra)
       end
 
-      def handle_stored_response
-        stored_result = document_capture_session&.load_result
-        if stored_result.present? && stored_result.success?
+      def handle_stored_result
+        if stored_result.success?
           extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
@@ -49,12 +48,20 @@ module Idv
         end
       end
 
-      def request_includes_images?
-        params.key?('doc_auth')
+      def stored_result
+        @stored_document_capture_session_result ||= document_capture_session&.load_result
+      end
+
+      def request_should_use_stored_result?
+        return false if stored_result.blank?
+        IMAGE_UPLOAD_PARAM_NAMES.each do |param_name|
+          return false if flow_params[param_name].present?
+        end
+        true
       end
 
       def form_submit
-        return FormResponse.new(success: true, errors: {}) unless request_includes_images?
+        return FormResponse.new(success: true, errors: {}) if request_should_use_stored_result?
 
         Idv::DocumentCaptureForm.
           new(liveness_checking_enabled: liveness_checking_enabled?).

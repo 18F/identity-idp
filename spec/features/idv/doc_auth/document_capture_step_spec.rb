@@ -267,7 +267,6 @@ feature 'doc auth document capture step' do
         submit_empty_form
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
 
       it 'uses the form params if form params are present' do
@@ -289,7 +288,10 @@ feature 'doc auth document capture step' do
   end
 
   def submit_empty_form
-    page.driver.put current_path
+    page.driver.put(
+      current_path,
+      doc_auth: { front_image: nil, back_image: nil, selfie_image: nil },
+    )
     visit current_path
   end
 end
