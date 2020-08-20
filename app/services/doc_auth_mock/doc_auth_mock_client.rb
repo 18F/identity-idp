@@ -45,7 +45,7 @@ module DocAuthMock
       return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
       self.class.last_uploaded_selfie_image = image
-      DocAuthClient::Response.new(success: false, errors: ['This is a test error'])
+      DocAuthClient::Response.new(success: true)
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
