@@ -1,4 +1,7 @@
-import upload, { toFormData } from '@18f/identity-document-capture/services/upload';
+import upload, {
+  UploadFormEntriesError,
+  toFormData,
+} from '@18f/identity-document-capture/services/upload';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/services/upload', () => {
@@ -57,6 +60,7 @@ describe('document-capture/services/upload', () => {
     try {
       await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
     } catch (error) {
+      expect(error).to.be.instanceOf(UploadFormEntriesError);
       expect(error.message).to.equal('Foo missing, Baz missing');
     }
   });
@@ -75,6 +79,7 @@ describe('document-capture/services/upload', () => {
     try {
       await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
     } catch (error) {
+      expect(error).to.be.instanceof(Error);
       expect(error.message).to.equal('Server error');
     }
   });

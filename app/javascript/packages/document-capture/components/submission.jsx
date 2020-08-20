@@ -10,7 +10,7 @@ import CallbackOnMount from './callback-on-mount';
  * @typedef SubmissionProps
  *
  * @prop {Record<string,string>} payload Payload object.
- * @prop {()=>void}              onError Error callback.
+ * @prop {(error:Error)=>void} onError Error callback.
  */
 
 /**
@@ -23,7 +23,7 @@ function Submission({ payload, onError }) {
   return (
     <SuspenseErrorBoundary
       fallback={<SubmissionPending />}
-      errorFallback={<CallbackOnMount onMount={onError} />}
+      errorFallback={({ error }) => <CallbackOnMount onMount={() => onError(error)} />}
     >
       <SubmissionComplete resource={resource} />
     </SuspenseErrorBoundary>

@@ -1,7 +1,10 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
+import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
+import DocumentCapture, {
+  getFormattedErrors,
+} from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
 
 describe('document-capture/components/document-capture', () => {
@@ -13,6 +16,20 @@ describe('document-capture/components/document-capture', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
+  });
+
+  describe('getFormattedErrors', () => {
+    it('formats one message', () => {
+      const { container } = render(getFormattedErrors(['Boom!']));
+
+      expect(container.innerHTML).to.equal('Boom!');
+    });
+
+    it('formats many messages', () => {
+      const { container } = render(getFormattedErrors(['Boom!', 'Wham!', 'Ka-pow!']));
+
+      expect(container.innerHTML).to.equal('Boom!<br>Wham!<br>Ka-pow!');
+    });
   });
 
   it('renders the form steps', () => {
@@ -50,9 +67,9 @@ describe('document-capture/components/document-capture', () => {
     expect(confirmation).to.be.ok();
   });
 
-  it('handles submission failure', async () => {
+  it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, findByRole } = render(<DocumentCapture />, {
-      isUploadFailure: true,
+      uploadError: new Error('Server unavailable'),
       expectedUploads: 2,
     });
 
@@ -103,5 +120,46 @@ describe('document-capture/components/document-capture', () => {
     expect(console).to.have.loggedError(
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
+  });
+
+  it('renders handled submission failure', async () => {
+    const uploadError = new UploadFormEntriesError('Front image has glare, Back image is missing');
+    uploadError.rawErrors = ['Front image has glare', 'Back image is missing'];
+    const { getByLabelText, getByText, findByRole } = render(<DocumentCapture />, { uploadError });
+
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    const continueButton = getByText('forms.buttons.continue');
+    await waitFor(() => expect(continueButton.disabled).to.be.false());
+    userEvent.click(continueButton);
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_selfie'),
+      new window.File([''], 'selfie.png', { type: 'image/png' }),
+    );
+    const submitButton = getByText('forms.buttons.submit.default');
+    await waitFor(() => expect(submitButton.disabled).to.be.false());
+    userEvent.click(submitButton);
+
+    const notice = await findByRole('alert');
+    expect(notice.querySelector('p').innerHTML).to.equal(
+      'Front image has glare<br>Back image is missing',
+    );
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+
+    const heading = getByText('doc_auth.headings.document_capture');
+    expect(document.activeElement).to.equal(heading);
+
+    const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
+    expect(hasValueSelected).to.be.true();
   });
 });
