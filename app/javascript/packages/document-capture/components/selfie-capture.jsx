@@ -163,7 +163,7 @@ function SelfieCapture({ value, onChange }) {
           <>
             {/* Disable reason: Video is used only for direct capture */}
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <video ref={setVideoRef} className="selfie-capture__video" aria-describedby={labelId} />
+            <video ref={setVideoRef} className="selfie-capture__video" aria-labelledby={labelId} />
             {isCapturing ? (
               <>
                 <div className="selfie-capture__frame">
