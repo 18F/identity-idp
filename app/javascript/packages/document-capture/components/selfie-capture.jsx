@@ -23,20 +23,27 @@ function SelfieCapture({ value, onChange }) {
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
   const setVideoRef = useCallback((ref) => {
-    // React will call an assigned `ref` callback with `null` at the time the element is removed.
-    if (!ref) {
-      // Stop any in-progress capture.
-      if (videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      }
-
-      // Shift focus back to label if it's assumed that the component will remain mounted, so that a
-      // focus loss does not occur.
-      if (labelRef.current) labelRef.current.focus();
+    // React will call an assigned `ref` callback with `null` at the time the element is being
+    // removed, which is an opportunity to stop any in-progress capture.
+    if (!ref && videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
+      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
 
     videoRef.current = ref;
   }, []);
+
+  // A change in whether a value exists will render a different element hierarchy. If focus was
+  // contained within the element hierarchy at the time of this switch, ensure that focus is placed
+  // back to somewhere common, so that a focus loss does not occur.
+  const hadValue = useRef(!!value);
+  useMemo(() => {
+    const nextHadValue = !!value;
+    if (hadValue.current !== nextHadValue && wrapperRef.current?.contains(document.activeElement)) {
+      labelRef.current?.focus();
+    }
+
+    hadValue.current = nextHadValue;
+  }, [value]);
 
   const [isAccessRejected, setIsAccessRejected] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
