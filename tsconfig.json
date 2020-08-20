@@ -8,7 +8,8 @@
     "jsx": "react",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "lib": ["ES2020"]
+    "module": "ESNext",
+    "target": "ESNext"
   },
   "include": ["app/javascript/packages"]
 }
