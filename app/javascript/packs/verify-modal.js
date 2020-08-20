@@ -6,8 +6,12 @@ function verifyModal() {
   const modal = new window.LoginGov.Modal({ el: '#verification-modal' });
   const modalDismiss = document.getElementById('js-close-modal');
 
-  if (flash) flash.classList.add('display-none');
-  if (modalSelector) modal.show();
+  if (flash) {
+    flash.classList.add('display-none');
+  }
+  if (modalSelector) {
+    modal.show();
+  }
 
   if (modalDismiss) {
     modalDismiss.addEventListener('click', () => {

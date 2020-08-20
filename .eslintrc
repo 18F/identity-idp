@@ -15,6 +15,7 @@
   "rules": {
     "@babel/no-unused-expressions": "error",
     "consistent-return": "off",
+    "curly": ["error", "all"],
     "prettier/prettier": "error",
     "func-names": 0,
     "function-paren-newline": "off",
