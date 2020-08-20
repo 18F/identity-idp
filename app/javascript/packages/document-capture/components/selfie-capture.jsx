@@ -19,6 +19,7 @@ function SelfieCapture({ value, onChange }) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
   const setVideoRef = useCallback((ref) => {
@@ -77,22 +78,36 @@ function SelfieCapture({ value, onChange }) {
   }, [value]);
 
   function onCapture() {
-    const video = videoRef.current;
-    if (!video) {
+    if (!videoRef.current || !wrapperRef.current) {
       return;
     }
 
     const canvas = document.createElement('canvas');
-    const { videoWidth: width, videoHeight: height } = video;
-    canvas.height = height;
-    canvas.width = height;
+    const { videoWidth, videoHeight } = videoRef.current;
+    const { clientWidth: width, clientHeight: height } = wrapperRef.current;
 
     // The capture is shown as a square, even if the video input aspect ratio is not square. To
     // ensure that the captured image matches what is shown to the user, offset the source to X
     // corresponding with centered squared height.
-    const sourceX = (width - height) / 2;
+    const downsizeRatio = height / videoHeight;
+    const sourceX = (videoWidth - width / downsizeRatio) / 2;
 
-    canvas.getContext('2d')?.drawImage(video, sourceX, 0, height, height, 0, 0, height, height);
+    canvas.height = height;
+    canvas.width = width;
+
+    canvas
+      .getContext('2d')
+      ?.drawImage(
+        videoRef.current,
+        sourceX,
+        0,
+        width / downsizeRatio,
+        height / downsizeRatio,
+        0,
+        0,
+        width,
+        height,
+      );
     canvas.toBlob(ifStillMounted(onChange));
   }
 
@@ -121,7 +136,7 @@ function SelfieCapture({ value, onChange }) {
           {t('doc_auth.instructions.document_capture_selfie_consent_blocked')}
         </span>
       )}
-      <div className={classes}>
+      <div ref={wrapperRef} className={classes}>
         {value ? (
           <>
             <div className="selfie-capture__preview-heading usa-file-input__preview-heading">

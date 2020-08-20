@@ -10,7 +10,7 @@
 
   &::after {
     content: '';
-    padding-bottom: 100%;
+    padding-bottom: 85%;
   }
 }
 
@@ -43,34 +43,34 @@
 
 .selfie-capture__frame-corner {
   border: 3px solid color('primary');
-  height: 4rem;
+  height: 3rem;
   left: 50%;
   position: absolute;
-  top: 30%;
-  width: 3rem;
+  top: 2rem;
+  width: 2rem;
 
   &:nth-child(1) {
     border-bottom-width: 0;
     border-right-width: 0;
-    transform: translate(-275%, -175%);
+    transform: translate(-8rem, 0);
   }
 
   &:nth-child(2) {
     border-bottom-width: 0;
     border-left-width: 0;
-    transform: translate(175%, -175%);
+    transform: translate(6rem, 0);
   }
 
   &:nth-child(3) {
     border-right-width: 0;
     border-top-width: 0;
-    transform: translate(-275%, 175%);
+    transform: translate(-8rem, 13rem);
   }
 
   &:nth-child(4) {
     border-left-width: 0;
     border-top-width: 0;
-    transform: translate(175%, 175%);
+    transform: translate(6rem, 13rem);
   }
 }
 
@@ -94,7 +94,7 @@
 }
 
 .selfie-capture__capture {
-  bottom: 5%;
+  bottom: 1.5rem;
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
