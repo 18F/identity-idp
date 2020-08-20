@@ -10,7 +10,6 @@ const UploadContext = createContext(defaultUpload);
  *
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
- * @prop {string} sessionUUID The UUID of the document capture session to write results to.
  */
 
 /**
@@ -39,15 +38,15 @@ const UploadContext = createContext(defaultUpload);
  * @prop {UploadImplementation=} upload Custom upload implementation.
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
- * @prop {string} sessionUUID The UUID of the document capture session to write results to.
+ * @prop {Record<string,any>} formData Extra form data to merge into the payload before uploading
  * @prop {ReactNode} children Child elements.
  */
 
 /**
  * @param {UploadContextProviderProps} props Props object.
  */
-function UploadContextProvider({ upload = defaultUpload, endpoint, csrf, sessionUUID, children }) {
-  const uploadWithCSRF = (payload) => upload(payload, { endpoint, csrf, sessionUUID });
+function UploadContextProvider({ upload = defaultUpload, endpoint, csrf, formData, children }) {
+  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
 
   return <UploadContext.Provider value={uploadWithCSRF}>{children}</UploadContext.Provider>;
 }

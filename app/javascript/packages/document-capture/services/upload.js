@@ -18,14 +18,13 @@ export function toFormData(object) {
 /**
  * @type {import('../context/upload').UploadImplementation}
  */
-async function upload(payload, { endpoint, csrf, sessionUUID }) {
-  const payloadWithSessionUUID = { ...payload, document_capture_session_uuid: sessionUUID };
+async function upload(payload, { endpoint, csrf }) {
   const response = await window.fetch(endpoint, {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrf,
     },
-    body: toFormData(payloadWithSessionUUID),
+    body: toFormData(payload),
   });
 
   if (!response.ok && response.status !== 400) {
