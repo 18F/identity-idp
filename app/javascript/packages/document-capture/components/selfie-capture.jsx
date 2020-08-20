@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { Icon } from '@18f/identity-components';
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
@@ -154,19 +155,7 @@ function SelfieCapture({ value, onChange }) {
                   aria-label={t('doc_auth.buttons.take_picture')}
                   onClick={onCapture}
                 >
-                  <svg
-                    aria-hidden
-                    focusable={false}
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    className="selfie-capture__capture-icon"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M512 144v288c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h88l12.3-32.9c7-18.7 24.9-31.1 44.9-31.1h125.5c20 0 37.9 12.4 44.9 31.1L376 96h88c26.5 0 48 21.5 48 48zM376 288c0-66.2-53.8-120-120-120s-120 53.8-120 120 53.8 120 120 120 120-53.8 120-120zm-32 0c0 48.5-39.5 88-88 88s-88-39.5-88-88 39.5-88 88-88 88 39.5 88 88z"
-                    />
-                  </svg>
+                  <Icon.Camera className="selfie-capture__capture-icon" />
                 </button>
               </>
             ) : (
