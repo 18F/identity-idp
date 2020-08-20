@@ -87,7 +87,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
       )
-      expect(subject.sp_name).to eq sp.agency
+      expect(subject.sp_name).to eq sp.agency.name
       expect(subject.sp_name).to_not be_nil
     end
   end

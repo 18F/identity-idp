@@ -79,9 +79,13 @@ describe NullServiceProvider do
   context 'matching methods on ServiceProvider' do
     it 'has all the methods that ServiceProvider has' do
       sp_methods = ServiceProvider.instance_methods(false)
+      ignored_methods = %i[
+        autosave_associated_records_for_agency
+        belongs_to_counter_cache_after_update
+      ]
       null_sp_methods = NullServiceProvider.instance_methods
 
-      expect(sp_methods - null_sp_methods).to be_empty
+      expect(sp_methods - ignored_methods - null_sp_methods).to be_empty
     end
 
     it 'has stubs for all the column names' do
