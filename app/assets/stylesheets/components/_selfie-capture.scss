@@ -21,6 +21,15 @@
   border-width: 1px;
 }
 
+.selfie-capture--access-rejected {
+  border-color: color('error-dark');
+  border-width: 3px;
+
+  &:hover {
+    border-color: color('error-darker');
+  }
+}
+
 .selfie-capture--has-value::after {
   content: none;
 }
@@ -32,6 +41,10 @@
   top: 50%;
   transform: translateY(-50%);
   width: 78%;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 // Disable reason: The ID selector is temporary, and is only needed as long as Login Design System

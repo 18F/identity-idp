@@ -114,6 +114,7 @@ function SelfieCapture({ value, onChange }) {
   const classes = [
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
+    isAccessRejected && 'selfie-capture--access-rejected',
     value && 'selfie-capture--has-value',
   ]
     .filter(Boolean)
@@ -133,7 +134,7 @@ function SelfieCapture({ value, onChange }) {
       </div>
       {isAccessRejected && (
         <span className="usa-error-message" role="alert">
-          {t('doc_auth.instructions.document_capture_selfie_consent_blocked')}
+          {t('errors.doc_auth.document_capture_selfie_consent_blocked')}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>
@@ -178,9 +179,10 @@ function SelfieCapture({ value, onChange }) {
                 <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
                   {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
                 </strong>
-                <span className="usa-file-input__drag-text">
-                  {t('doc_auth.instructions.document_capture_selfie_consent_reason')}
-                </span>
+                <p>{t('doc_auth.instructions.document_capture_selfie_consent_reason')}</p>
+                {isAccessRejected && (
+                  <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
+                )}
               </div>
             )}
           </>
