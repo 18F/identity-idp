@@ -18,11 +18,12 @@ module Idv
         # validate them here before continuing.
         return if liveness_checking_enabled?
 
-        get_results_response = DocAuthClient.client.get_results(
+        get_results_response = DocAuth::Client.client.get_results(
           instance_id: flow_session[:instance_id],
         )
         if get_results_response.success?
           mark_step_complete(:selfie)
+          # DP: handle multiple clients?
           CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
         else
           handle_document_verification_failure(get_results_response)

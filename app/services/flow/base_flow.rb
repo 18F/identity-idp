@@ -46,7 +46,7 @@ module Flow
     end
 
     def form_response?(response)
-      response.is_a?(FormResponse) || response.is_a?(DocAuthClient::Response)
+      response.is_a?(FormResponse) || response.is_a?(DocAuth::Response)
     end
 
     delegate :flash, :session, :current_user, :params, :request, to: :@controller
