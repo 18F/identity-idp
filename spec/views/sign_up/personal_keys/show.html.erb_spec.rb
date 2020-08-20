@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/personal_keys/show.html.slim' do
+describe 'sign_up/personal_keys/show.html.erb' do
   before do
     @code = 'foo bar'
   end
