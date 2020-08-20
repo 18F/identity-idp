@@ -26,7 +26,7 @@ feature 'doc auth mobile front image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_mobile_back_image_step)
-    expect(DocAuthMock::DocAuthMockClient.last_uploaded_front_image).to eq(
+    expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
       doc_auth_image_data_url_data,
     )
   end

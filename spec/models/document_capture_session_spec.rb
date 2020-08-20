@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe DocumentCaptureSession do
   let(:doc_auth_response) do
-    DocAuthClient::Response.new(
+    DocAuth::Response.new(
       success: true,
       pii_from_doc: {
         first_name: 'Testy',

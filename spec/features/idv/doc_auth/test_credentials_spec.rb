@@ -28,10 +28,10 @@ feature 'doc auth test credentials' do
   it 'does not initalize a acuant mock if the simulator is not enabled' do
     allow(Figaro.env).to receive(:doc_auth_vendor).and_return('acuant')
 
-    simulated_client = DocAuthMock::DocAuthMockClient.new
-    allow(Acuant::AcuantClient).to receive(:new).and_return(simulated_client)
+    simulated_client = DocAuth::Mock::DocAuthMockClient.new
+    allow(DocAuth::Acuant::AcuantClient).to receive(:new).and_return(simulated_client)
 
-    expect(DocAuthMock::DocAuthMockClient).to_not receive(:new)
+    expect(DocAuth::Mock::DocAuthMockClient).to_not receive(:new)
 
     complete_all_doc_auth_steps
   end
@@ -54,7 +54,7 @@ feature 'doc auth test credentials' do
     it 'uses the mock vendor when acuant_simulator is true' do
       allow(Figaro.env).to receive(:acuant_simulator).and_return('true')
 
-      expect(Acuant::AcuantClient).to_not receive(:new)
+      expect(DocAuth::Acuant::AcuantClient).to_not receive(:new)
 
       complete_all_doc_auth_steps
     end
@@ -62,10 +62,10 @@ feature 'doc auth test credentials' do
     it 'uses the acuant vendor when acuant_simulator is not true' do
       allow(Figaro.env).to receive(:acuant_simulator).and_return('false')
 
-      simulated_client = DocAuthMock::DocAuthMockClient.new
-      allow(Acuant::AcuantClient).to receive(:new).and_return(simulated_client)
+      simulated_client = DocAuth::Mock::DocAuthMockClient.new
+      allow(DocAuth::Acuant::AcuantClient).to receive(:new).and_return(simulated_client)
 
-      expect(DocAuthMock::DocAuthMockClient).to_not receive(:new)
+      expect(DocAuth::Mock::DocAuthMockClient).to_not receive(:new)
 
       complete_all_doc_auth_steps
     end
