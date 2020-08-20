@@ -16,11 +16,9 @@ describe 'idv/doc_auth/upload.html.erb' do
       allow(view).to receive(:liveness_checking_enabled?).and_return(true)
       render template: 'idv/doc_auth/upload.html.erb'
 
-      expect(rendered).to include(CGI.escapeHTML(t('doc_auth.headings.upload_liveness_enabled')))
+      expect(rendered).to include(t('doc_auth.headings.upload_liveness_enabled'))
       expect(rendered).to include(CGI.escapeHTML(t('doc_auth.info.upload_liveness_enabled')))
-      expect(rendered).to include(
-        CGI.escapeHTML(t('doc_auth.headings.upload_from_phone_liveness_enabled')),
-      )
+      expect(rendered).to include(t('doc_auth.headings.upload_from_phone_liveness_enabled'))
     end
   end
 
@@ -29,9 +27,9 @@ describe 'idv/doc_auth/upload.html.erb' do
       allow(view).to receive(:liveness_checking_enabled?).and_return(false)
       render template: 'idv/doc_auth/upload.html.erb'
 
-      expect(rendered).to include(CGI.escapeHTML(t('doc_auth.headings.upload')))
+      expect(rendered).to include(t('doc_auth.headings.upload'))
       expect(rendered).to include(CGI.escapeHTML(t('doc_auth.info.upload')))
-      expect(rendered).to include(CGI.escapeHTML(t('doc_auth.headings.upload_from_phone')))
+      expect(rendered).to include(t('doc_auth.headings.upload_from_phone'))
     end
   end
 end
