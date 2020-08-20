@@ -11,6 +11,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
+    validates_presence_of :document_capture_session
     validates_presence_of :selfie, if: :liveness_checking_enabled?
 
     validate :validate_images
@@ -45,6 +46,16 @@ module Idv
 
     def selfie
       params[:selfie]
+    end
+
+    def document_capture_session_uuid
+      params[:document_capture_session_uuid]
+    end
+
+    def document_capture_session
+      @document_capture_session ||= DocumentCaptureSession.find_by(
+        uuid: document_capture_session_uuid,
+      )
     end
 
     def self.human_attribute_name(attr, options = {})

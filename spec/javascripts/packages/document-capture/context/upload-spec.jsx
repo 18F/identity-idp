@@ -64,4 +64,27 @@ describe('document-capture/context/upload', () => {
       </UploadContextProvider>,
     );
   });
+
+  it('can merge form data to pass to uploader', (done) => {
+    render(
+      <UploadContextProvider
+        upload={(payload) => Promise.resolve(payload)}
+        formData={{ foo: 'bar' }}
+      >
+        {createElement(() => {
+          const upload = useContext(UploadContext);
+          useEffect(() => {
+            upload({ sent: true }).then((result) => {
+              expect(result).to.deep.equal({
+                sent: true,
+                foo: 'bar',
+              });
+              done();
+            });
+          }, [upload]);
+          return null;
+        })}
+      </UploadContextProvider>,
+    );
+  });
 });
