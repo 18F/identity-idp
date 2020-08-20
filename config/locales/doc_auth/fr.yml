@@ -13,8 +13,8 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      not_a_file: n'a pas été joint en tant que fichier
       must_be_image: doit être une image
+      not_a_file: n'a pas été joint en tant que fichier
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -56,8 +56,11 @@ fr:
         l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
+      upload_from_phone_liveness_enabled: Utilisez un téléphone mobile pour ajouter
+        votre pièce d'identité et prendre une photo de vous
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
+      upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
@@ -89,6 +92,11 @@ fr:
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
         et nous n'enregistrerons aucune image. Nous acceptons les formats BMP, PNG,
         TIFF et JPG.
+      upload_liveness_enabled: Nous collecterons des informations vous concernant
+        en lisant votre pièce d'identité délivrée par l'État. Ensuite, vous prendrez
+        une photo de vous pour confirmer que vous êtes le propriétaire de la pièce
+        d'identité.
+      upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       use_cac_html: "<strong>Êtes-vous DoD ou militaire?</strong> %{link}"
       use_cac_link: Utilisez plutôt votre carte CAC
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,

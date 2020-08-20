@@ -1,7 +1,25 @@
 <% title t('doc_auth.titles.doc_auth') %>
 
-<h1 class='h3 mt0 mb1'><%= t('doc_auth.headings.upload') %></h1>
-<%= t('doc_auth.info.upload') %>
+<h1 class='h3 mt0 mb1'>
+  <% if liveness_checking_enabled? %>
+    <%= t('doc_auth.headings.upload_liveness_enabled') %>
+  <% else %>
+    <%= t('doc_auth.headings.upload') %>
+  <% end %>
+</h1>
+
+<% if liveness_checking_enabled? %>
+  <p>
+    <%= t('doc_auth.info.upload_liveness_enabled') %>
+  </p>
+  <p>
+    <%= t('doc_auth.info.upload_no_image_storage') %>
+  </p>
+<% else %>
+  <p>
+    <%= t('doc_auth.info.upload') %>
+  </p>
+<% end %>
 
 <div class='mt2 mb3'>
   <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_errors_no_id_path %>
@@ -34,7 +52,11 @@
   </div>
   <div class='sm-col sm-col-9'>
     <div class='bold h1 margin-y-105'>
-      <%= t('doc_auth.headings.upload_from_phone') %>
+      <% if liveness_checking_enabled? %>
+        <%= t('doc_auth.headings.upload_from_phone_liveness_enabled') %>
+      <% else %>
+        <%= t('doc_auth.headings.upload_from_phone') %>
+      <% end %>
     </div>
     <%= t('doc_auth.info.upload_from_phone') %>
     <br/>

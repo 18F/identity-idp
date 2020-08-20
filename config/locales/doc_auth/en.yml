@@ -13,8 +13,8 @@ en:
       upload_picture: Upload a photo
       use_phone: Use your phone
     errors:
-      not_a_file: was not attached as a file
       must_be_image: must be an image
+      not_a_file: was not attached as a file
     forms:
       address1: Address
       change_file: Change file
@@ -51,7 +51,10 @@ en:
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
+      upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take
+        a photo of yourself
       upload_front: Upload an image of the front of your state issued ID
+      upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
       welcome: We need to verify your identity
     info:
@@ -78,6 +81,11 @@ en:
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
+      upload_liveness_enabled: We'll collect information about you by reading your
+        state-issued ID. Then, you'll take a photo of yourself to confirm that you
+        are the owner of the ID.
+      upload_no_image_storage: We do not store images you upload. We only verify your
+        identity.
       use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
       use_cac_link: Use your CAC card instead
       welcome: We verify your identity to make sure you are you—not someone pretending
