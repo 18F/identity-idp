@@ -13,7 +13,8 @@ class ServiceProviderSeeder
                   active: true,
                   native: true,
                   friendly_name: config['friendly_name'])
-      end.update!(config.except('restrict_to_deploy_env',
+      end.update!(config.except('agency',
+                                'restrict_to_deploy_env',
                                 'uuid_priority',
                                 'protocol',
                                 'native'))
