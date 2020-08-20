@@ -1,0 +1,17 @@
+<div class='p2 clearfix border-top border-blue-light'>
+  <div class='col col-8'>
+    <div class='bold col col-12 sm-col-6'>
+      <%= name %>
+    </div>
+    <div class='col col-12 sm-col-6 truncate'>
+      <%= content if local_assigns.key? :content %>
+    </div>
+  </div>
+  <div class='col col-4 right-align'>
+    <% if local_assigns.key? :path %>
+      <%= render action, path: path, name: name %>
+    <% elsif local_assigns.key? :action %>
+      <%= render action %>
+    <% end %>
+  </div>
+</div>
