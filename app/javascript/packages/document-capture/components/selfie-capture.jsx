@@ -4,6 +4,7 @@ import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
+import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 
 /**
  * @typedef SelfieCaptureProps
@@ -20,6 +21,8 @@ function SelfieCapture({ value, onChange }) {
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const retryButtonRef = useFocusFallbackRef(labelRef);
+  const captureButtonRef = useFocusFallbackRef(labelRef);
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
   const setVideoRef = useCallback((ref) => {
@@ -31,19 +34,6 @@ function SelfieCapture({ value, onChange }) {
 
     videoRef.current = ref;
   }, []);
-
-  // A change in whether a value exists will render a different element hierarchy. If focus was
-  // contained within the element hierarchy at the time of this switch, ensure that focus is placed
-  // back to somewhere common, so that a focus loss does not occur.
-  const hadValue = useRef(!!value);
-  useMemo(() => {
-    const nextHadValue = !!value;
-    if (hadValue.current !== nextHadValue && wrapperRef.current?.contains(document.activeElement)) {
-      labelRef.current?.focus();
-    }
-
-    hadValue.current = nextHadValue;
-  }, [value]);
 
   const [isAccessRejected, setIsAccessRejected] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -150,6 +140,7 @@ function SelfieCapture({ value, onChange }) {
             <div className="selfie-capture__preview-heading usa-file-input__preview-heading">
               <span />
               <button
+                ref={retryButtonRef}
                 type="button"
                 onClick={() => onChange(null)}
                 className="usa-file-input__choose usa-button--unstyled"
@@ -173,6 +164,7 @@ function SelfieCapture({ value, onChange }) {
                   <div className="selfie-capture__frame-corner" />
                 </div>
                 <button
+                  ref={captureButtonRef}
                   type="button"
                   className="usa-button selfie-capture__capture"
                   aria-label={t('doc_auth.buttons.take_picture')}
