@@ -54,7 +54,7 @@ describe 'sign_up/completions/show.html.erb' do
     let(:service_provider) do
       create(:service_provider,
              friendly_name: 'My Agency App',
-             agency: 'Department of Agencies')
+             agency: create(:agency, name: 'Department of Agencies'))
     end
 
     let(:view_context) { ActionController::Base.new.view_context }
@@ -101,7 +101,7 @@ describe 'sign_up/completions/show.html.erb' do
       sp = create(
         :service_provider,
         friendly_name: "SP app #{index}",
-        agency: "Agency #{index}",
+        agency: create(:agency, name: "Agency #{index}"),
       )
       create(:identity, service_provider: sp.issuer, user: user)
     end

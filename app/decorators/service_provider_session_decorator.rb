@@ -99,7 +99,7 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_name
-    sp.friendly_name || sp.agency
+    sp.friendly_name || sp.agency&.name
   end
 
   def sp_return_url
