@@ -7,7 +7,9 @@
     "strictNullChecks": true,
     "jsx": "react",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext"
   },
   "include": ["app/javascript/packages"]
 }

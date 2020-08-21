@@ -1,6 +1,11 @@
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 /** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
 
+export class UploadFormEntriesError extends Error {
+  /** @type {string[]} */
+  rawErrors = [];
+}
+
 /**
  * Returns a FormData representation of the given object.
  *
@@ -35,7 +40,11 @@ async function upload(payload, { endpoint, csrf }) {
 
   const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());
   if (!result.success) {
-    throw Error(/** @type {UploadErrorResponse} */ (result).errors.join(', '));
+    /** @type {UploadErrorResponse} */
+    const errorResult = result;
+    const error = new UploadFormEntriesError(errorResult.errors.join(', '));
+    error.rawErrors = errorResult.errors;
+    throw error;
   }
 
   return /** @type {UploadSuccessResponse} */ (result);
