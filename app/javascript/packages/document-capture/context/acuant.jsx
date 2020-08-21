@@ -84,10 +84,10 @@ function AcuantContextProvider({
         endpoint,
         {
           onSuccess: () => {
-            setIsReady(true);
             setIsCameraSupported(
               /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
             );
+            setIsReady(true);
           },
           onFail: () => setIsError(true),
         },

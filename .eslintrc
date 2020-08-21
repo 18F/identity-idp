@@ -34,7 +34,8 @@
     "react/jsx-curly-newline": "off",
     "react/jsx-indent": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "require-await": "error"
   },
   "settings": {
     "import/core-modules": [

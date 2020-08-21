@@ -196,7 +196,7 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(getByText('forms.buttons.submit.default'));
   });
 
-  it('shifts focus to next heading on step change', async () => {
+  it('shifts focus to next heading on step change', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
@@ -204,7 +204,7 @@ describe('document-capture/components/form-steps', () => {
     expect(document.activeElement).to.equal(getByText('Second Title'));
   });
 
-  it("doesn't assign focus on mount", async () => {
+  it("doesn't assign focus on mount", () => {
     const { activeElement: originalActiveElement } = document;
     render(<FormSteps steps={STEPS} />);
     expect(document.activeElement).to.equal(originalActiveElement);

@@ -3,7 +3,7 @@ import FileImage from '@18f/identity-document-capture/components/file-image';
 import render from '../../../support/render';
 
 describe('document-capture/components/file-image', () => {
-  it('renders nothing prior to load', async () => {
+  it('renders nothing prior to load', () => {
     const { container } = render(
       <FileImage file={new window.File([''], 'demo', { type: 'image/png' })} alt="image" />,
     );

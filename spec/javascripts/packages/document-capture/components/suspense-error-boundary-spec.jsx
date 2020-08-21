@@ -3,7 +3,7 @@ import SuspenseErrorBoundary from '@18f/identity-document-capture/components/sus
 import render from '../../../support/render';
 
 describe('document-capture/components/suspense-error-boundary', () => {
-  it('renders its children', async () => {
+  it('renders its children', () => {
     const { container } = render(
       <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
         No error

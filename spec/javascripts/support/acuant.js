@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 
 export function useAcuant() {
   afterEach(() => {
@@ -20,7 +20,7 @@ export function useAcuant() {
       };
       window.AcuantCamera = { isCameraSupported };
       window.AcuantCameraUI = { start: sinon.stub(), end: sinon.stub() };
-      window.onAcuantSdkLoaded();
+      act(window.onAcuantSdkLoaded);
     },
   };
 }
