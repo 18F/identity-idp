@@ -1,5 +1,11 @@
 class SecurityEvent < ApplicationRecord
-  CREDENTIAL_CHANGE_REQUIRED = 'https://schemas.openid.net/secevent/risc/event-type/account-credential-change-required'.freeze
+  AUTHORIZATION_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/authorization-fraud-detected'.freeze
+  IDENTITY_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/identity-fraud-detected'.freeze
+
+  EVENT_TYPES = [
+    AUTHORIZATION_FRAUD_DETECTED,
+    IDENTITY_FRAUD_DETECTED,
+  ].freeze
 
   belongs_to :user
 end

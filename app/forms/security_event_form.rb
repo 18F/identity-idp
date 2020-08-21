@@ -40,6 +40,7 @@ class SecurityEventForm
         issuer: service_provider.issuer,
         jti: jti,
         user: user,
+        occurred_at: occurred_at,
       )
     end
 
@@ -139,7 +140,7 @@ class SecurityEventForm
   def validate_event_type
     if event_type.blank?
       errors.add(:event_type, t('risc.security_event.errors.event_type_missing'))
-    elsif event_type != SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
+    elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
         t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
@@ -197,8 +198,9 @@ class SecurityEventForm
   def event_type
     return nil if jwt_payload['events'].blank?
 
-    if jwt_payload['events'].key?(SecurityEvent::CREDENTIAL_CHANGE_REQUIRED)
-      SecurityEvent::CREDENTIAL_CHANGE_REQUIRED
+    matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
+    if matching_event_types.present?
+      matching_event_types.first
     else
       jwt_payload['events'].keys.first
     end
@@ -235,6 +237,11 @@ class SecurityEventForm
 
   def user
     identity&.user
+  end
+
+  def occurred_at
+    occurred_at_int = event.dig('occurred_at')
+    Time.zone.at(occurred_at_int) if occurred_at_int
   end
 
   def extra_analytics_attributes

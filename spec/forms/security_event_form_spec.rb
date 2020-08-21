@@ -23,7 +23,7 @@ RSpec.describe SecurityEventForm do
       iat: Time.zone.now.to_i,
       aud: api_risc_security_events_url,
       events: {
-        SecurityEvent::CREDENTIAL_CHANGE_REQUIRED => {
+        SecurityEvent::AUTHORIZATION_FRAUD_DETECTED => {
           subject: {
             subject_type: 'iss_sub',
             iss: root_url,
@@ -47,9 +47,22 @@ RSpec.describe SecurityEventForm do
       security_event = SecurityEvent.last
       aggregate_failures do
         expect(security_event.jti).to eq(jwt_payload[:jti])
-        expect(security_event.event_type).to eq(SecurityEvent::CREDENTIAL_CHANGE_REQUIRED)
+        expect(security_event.event_type).to eq(SecurityEvent::AUTHORIZATION_FRAUD_DETECTED)
         expect(security_event.issuer).to eq(service_provider.issuer)
         expect(security_event.user).to eq(user)
+      end
+    end
+
+    context 'when the event has an occurred_at' do
+      let(:occurred_at) { 5.days.ago }
+      before do
+        jwt_payload[:events].first.last[:occurred_at] = occurred_at.to_i
+      end
+
+      it 'saves the occurred_at to the database' do
+        submit
+
+        expect(SecurityEvent.last.occurred_at.to_i).to eq(occurred_at.to_i)
       end
     end
 
@@ -89,7 +102,7 @@ RSpec.describe SecurityEventForm do
           SecurityEvent.create!(
             user: user,
             jti: jti,
-            event_type: SecurityEvent::CREDENTIAL_CHANGE_REQUIRED,
+            event_type: SecurityEvent::AUTHORIZATION_FRAUD_DETECTED,
             issuer: service_provider.issuer,
           )
         end
@@ -112,7 +125,7 @@ RSpec.describe SecurityEventForm do
           SecurityEvent.create!(
             user: user,
             jti: jti,
-            event_type: SecurityEvent::CREDENTIAL_CHANGE_REQUIRED,
+            event_type: SecurityEvent::AUTHORIZATION_FRAUD_DETECTED,
             issuer: 'issuer2',
           )
         end
@@ -220,7 +233,7 @@ RSpec.describe SecurityEventForm do
 
       context 'with a bad event type' do
         before do
-          event = jwt_payload[:events].delete(SecurityEvent::CREDENTIAL_CHANGE_REQUIRED)
+          event = jwt_payload[:events].delete(SecurityEvent::AUTHORIZATION_FRAUD_DETECTED)
           jwt_payload[:events]['wrong-event-type'] = event
         end
 
