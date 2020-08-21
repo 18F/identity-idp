@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/_nav_auth.html.slim' do
+describe 'accounts/_nav_auth.html.erb' do
   context 'user is signed in' do
     before do
       @user = build_stubbed(:user, :signed_up)
@@ -10,7 +10,7 @@ describe 'accounts/_nav_auth.html.slim' do
     end
 
     it 'contains welcome message' do
-      expect(rendered).to have_content "Welcome #{@user.email}"
+      expect(rendered).to have_content "Welcome #{@user.email}", normalize_ws: true
     end
 
     it 'does not contain link to cancel the auth process' do
