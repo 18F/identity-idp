@@ -22,16 +22,29 @@
 }
 
 .selfie-capture--access-rejected {
-  border-color: color('error-dark');
+  border-color: color('error');
   border-width: 3px;
 
   &:hover {
-    border-color: color('error-darker');
+    border-color: color('error-dark');
   }
 }
 
 .selfie-capture--has-value::after {
   content: none;
+}
+
+// Disable reason: Technically the qualifiers are redundant, but are included to communicate
+// expectations and precautions around why the qualifiers exist. The focus styling is specific to
+// non-interactive content not included in regular tab order, expected to be used only for
+// programmatic fallback, and with exception to allow supported `:focus-visible` to restore
+// identified indicator.
+div.selfie-capture__label[tabindex="-1"]:focus { // scss-lint:disable QualifyingElement
+  outline: none;
+
+  &:focus-visible {
+    @include focus-outline;
+  }
 }
 
 .selfie-capture__consent-prompt {
@@ -59,7 +72,7 @@
   height: 3rem;
   left: 50%;
   position: absolute;
-  top: 2rem;
+  top: 1.5rem;
   width: 2rem;
 
   &:nth-child(1) {
@@ -100,10 +113,15 @@
 }
 
 .usa-button.selfie-capture__capture {
-  @include u-padding(2);
+  align-items: center;
   border: 3px solid color('white');
   border-radius: 50%;
+  display: flex;
+  height: 4rem;
+  justify-content: center;
   line-height: 1;
+  padding: 0;
+  width: 4rem;
 }
 
 .selfie-capture__capture {

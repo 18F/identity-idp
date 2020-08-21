@@ -27,9 +27,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
 
   return (
     <>
-      <p className="margin-top-2">
-        {t('doc_auth.instructions.document_capture_selfie_instructions')}
-      </p>
+      <p>{t('doc_auth.instructions.document_capture_selfie_instructions')}</p>
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_selfie_text1')}</li>

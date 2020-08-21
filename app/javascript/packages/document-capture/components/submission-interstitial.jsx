@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import Image from './image';
 import useI18n from '../hooks/use-i18n';
+import PageHeading from './page-heading';
 
 /**
  * @typedef SubmissionInterstitialProps
@@ -22,11 +23,11 @@ function SubmissionInterstitial({ autoFocus = false }) {
 
   return (
     <div>
-      <Image assetPath="id-card.svg" alt="" width="216" height="116" />
-      <h2 ref={headingRef} tabIndex={-1}>
+      <Image assetPath="id-card.svg" alt="" width="216" height="116" className="margin-bottom-4" />
+      <PageHeading ref={headingRef} tabIndex={-1}>
         {t('doc_auth.headings.interstitial')}
-      </h2>
-      <p>{t('doc_auth.info.interstitial_eta')}</p>
+      </PageHeading>
+      <p className="margin-top-4">{t('doc_auth.info.interstitial_eta')}</p>
       <p>{t('doc_auth.info.interstitial_thanks')}</p>
     </div>
   );
