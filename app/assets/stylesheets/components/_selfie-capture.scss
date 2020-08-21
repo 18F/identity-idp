@@ -34,6 +34,19 @@
   content: none;
 }
 
+// Disable reason: Technically the qualifiers are redundant, but are included to communicate
+// expectations and precautions around why the qualifiers exist. The focus styling is specific to
+// non-interactive content not included in regular tab order, expected to be used only for
+// programmatic fallback, and with exception to allow supported `:focus-visible` to restore
+// identified indicator.
+div.selfie-capture__label[tabindex="-1"]:focus { // scss-lint:disable QualifyingElement
+  outline: none;
+
+  &:focus-visible {
+    @include focus-outline;
+  }
+}
+
 .selfie-capture__consent-prompt {
   left: 11%;
   position: absolute;
