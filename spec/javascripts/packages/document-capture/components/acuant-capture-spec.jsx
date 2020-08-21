@@ -493,4 +493,18 @@ describe('document-capture/components/acuant-capture', () => {
 
     expect(window.AcuantCameraUI.start.called).to.be.false();
   });
+
+  it('can mark the input as required', () => {
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" capture="environment" required />
+      </AcuantContextProvider>,
+    );
+
+    initialize();
+
+    const input = getByLabelText('Image');
+
+    expect(input.required).to.be.true();
+  });
 });
