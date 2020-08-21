@@ -2,11 +2,22 @@ import React, { useRef, useEffect } from 'react';
 import Image from './image';
 import useI18n from '../hooks/use-i18n';
 
-function SubmissionPending() {
+/**
+ * @typedef SubmissionInterstitialProps
+ *
+ * @prop {boolean=} autoFocus Whether to focus heading immediately on mount.
+ */
+
+/**
+ * @param {SubmissionInterstitialProps} props Props object.
+ */
+function SubmissionInterstitial({ autoFocus = false }) {
   const { t } = useI18n();
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   useEffect(() => {
-    headingRef.current?.focus();
+    if (autoFocus) {
+      headingRef.current?.focus();
+    }
   }, []);
 
   return (
@@ -21,4 +32,4 @@ function SubmissionPending() {
   );
 }
 
-export default SubmissionPending;
+export default SubmissionInterstitial;

@@ -3,7 +3,7 @@ import useAsync from '../hooks/use-async';
 import UploadContext from '../context/upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionComplete from './submission-complete';
-import SubmissionPending from './submission-pending';
+import SubmissionInterstitial from './submission-interstitial';
 import CallbackOnMount from './callback-on-mount';
 
 /**
@@ -22,7 +22,7 @@ function Submission({ payload, onError }) {
 
   return (
     <SuspenseErrorBoundary
-      fallback={<SubmissionPending />}
+      fallback={<SubmissionInterstitial autoFocus />}
       errorFallback={({ error }) => <CallbackOnMount onMount={() => onError(error)} />}
     >
       <SubmissionComplete resource={resource} />
