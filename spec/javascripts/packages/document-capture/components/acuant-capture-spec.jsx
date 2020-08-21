@@ -25,7 +25,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(getByText('doc_auth.buttons.take_picture')).to.be.ok();
     });
 
-    it('cancels capture if assumed support is not actually supported once ready', async () => {
+    it('cancels capture if assumed support is not actually supported once ready', () => {
       const { container, getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">

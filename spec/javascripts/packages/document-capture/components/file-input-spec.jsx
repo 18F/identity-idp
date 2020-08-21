@@ -142,7 +142,7 @@ describe('document-capture/components/file-input', () => {
     );
   });
 
-  it('does not render preview if value is not image', async () => {
+  it('does not render preview if value is not image', () => {
     const { container } = render(
       <FileInput label="File" value={new window.File([], 'demo.txt', { type: 'text/plain' })} />,
     );
