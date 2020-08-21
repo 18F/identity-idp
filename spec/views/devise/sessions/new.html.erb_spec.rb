@@ -78,7 +78,7 @@ describe 'devise/sessions/new.html.erb' do
         t('headings.create_account_with_sp.sp_text'),
       ].join(' ')
 
-      expect(rendered).to have_content(sp_content)
+      expect(rendered).to have_content(sp_content, normalize_ws: true)
     end
 
     it 'displays a back to sp link' do
