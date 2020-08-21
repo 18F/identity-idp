@@ -1,0 +1,5 @@
+<%= address[:address1] %><br>
+<% if address[:address2].present? %>
+  <%= address[:address2] %><br>
+<% end %>
+<%= "#{address[:city]}, #{address[:state]} #{address[:zipcode]}" %>
