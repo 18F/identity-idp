@@ -9,7 +9,7 @@ feature 'adding email address' do
     sign_in_user_and_add_email(user)
 
     visit account_path
-    expect(page).to have_content("#{email} #{t('email_addresses.unconfirmed')}")
+    expect(page).to have_content("#{email}   #{t('email_addresses.unconfirmed')}")
 
     click_on_link_in_confirmation_email
 
