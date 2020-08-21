@@ -1,7 +1,6 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
@@ -39,7 +38,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       initialize({ isCameraSupported: false });
 
-      await waitFor(() => expect(container.querySelector('.full-screen')).to.be.not.ok());
+      expect(container.querySelector('.full-screen')).to.be.null();
     });
 
     it('renders with upload button as mobile-primary (secondary) button if acuant script fails to load', async () => {
