@@ -22,7 +22,9 @@ export function getQueryParam(queryString, name) {
   const pairs = queryString.split('&');
   for (let i = 0; i < pairs.length; i += 1) {
     const [key, value = ''] = pairs[i].split('=').map(decodeURIComponent);
-    if (key === name) return value;
+    if (key === name) {
+      return value;
+    }
   }
 
   return null;
