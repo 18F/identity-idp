@@ -22,11 +22,11 @@
 }
 
 .selfie-capture--access-rejected {
-  border-color: color('error-dark');
+  border-color: color('error');
   border-width: 3px;
 
   &:hover {
-    border-color: color('error-darker');
+    border-color: color('error-dark');
   }
 }
 

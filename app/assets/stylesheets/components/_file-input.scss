@@ -53,10 +53,10 @@
 }
 
 .usa-form-group--error .usa-file-input .usa-file-input__target {
-  border-color: color('error-dark');
+  border-color: color('error');
 
   &:hover {
-    border-color: color('error-darker');
+    border-color: color('error-dark');
   }
 }
 
