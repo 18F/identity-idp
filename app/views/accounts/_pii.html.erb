@@ -1,0 +1,99 @@
+<% if locked_for_session %>
+  <div class='mb2'>
+    <div class='usa-alert usa-alert--warning'>
+      <div class='usa-alert__body'>
+        <div class='usa-alert__text'>
+          <%= t('account.re_verify.banner') %>
+
+          <%= link_to(t('account.re_verify.footer'), user_password_confirm_path) %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<div class='mb3 profile-info-box'>
+  <div class='bg-lightest-blue py1 px2 h6 caps clearfix'>
+    <div class='col col-11'>
+      <%= t('headings.account.profile_info') %>
+      <%= image_tag asset_url('user.svg'), width: 8, class: 'ml1' %>
+    </div>
+    <div class='col col-1 right-align'>
+      <%= image_tag asset_url('lock.svg'), width: 8, class: 'mr1' %>
+    </div>
+  </div>
+  <div class='p2'>
+    <div class='clearfix mxn1'>
+      <div class='sm-col sm-col-4 px1 bold'>
+        <%= t('account.index.full_name') %>
+      </div>
+      <div class='sm-col sm-col-8 px1 truncate'>
+        <%= pii.full_name %>
+      </div>
+    </div>
+  </div>
+  <div class='p2 border-top'>
+    <div class='clearfix mxn1'>
+      <div class='sm-col sm-col-4 px1 bold'>
+        <%= t('account.index.address') %>
+      </div>
+      <div class='sm-col sm-col-8 px1'>
+        <%= pii.address1 %>
+        <br>
+        <% if pii.address2.present? %>
+          <%= pii.address2 %>
+          <br>
+        <% end %>
+        <% if pii.city.present? && pii.state.present? %>
+          <%= "#{pii.city}, #{pii.state} #{pii.zipcode}" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class='p2 border-top'>
+    <div class='clearfix mxn1'>
+      <div class='sm-col sm-col-4 px1 bold'>
+        <%= t('account.index.dob') %>
+      </div>
+      <div class='sm-col sm-col-8 px1'>
+        <%= pii.dob %>
+      </div>
+    </div>
+  </div>
+  <div class='p2 border-top'>
+    <div class='clearfix mxn1'>
+      <div class='sm-col sm-col-4 px1 bold'>
+        <%= t('account.index.ssn') %>
+      </div>
+      <div class='sm-col sm-col-8 px1'>
+        ***-**-****
+      </div>
+    </div>
+  </div>
+  <div class='p2 border-top border-bottom'>
+    <div class='clearfix mxn1'>
+      <div class='sm-col sm-col-4 px1 bold'>
+        <%= t('account.index.phone') %>
+      </div>
+      <div class='sm-col sm-col-8 px1'>
+        <%= pii.phone %>
+      </div>
+    </div>
+  </div>
+  <% unless locked_for_session %>
+    <div class='bg-gray-lighter px2 py1 clearfix fs-12p'>
+      <% if !pii.obfuscated %>
+        <div class='col col-12 sm-col-6'>
+          <%= image_tag asset_url('lock.svg'), width: 8, class: 'mr1' %>
+          <%= t('account.security.text') %>
+        </div>
+        <%= link_to t('account.security.link'), MarketingSite.help_url %>
+      <% else %>
+        <div class='col col-12 sm-col-6'>
+          <%= image_tag asset_url('lock.svg'), width: 8, class: 'mr1' %>
+          <%= t('account.security.text') %>
+          <%= link_to t('account.security.link'), MarketingSite.help_url %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
