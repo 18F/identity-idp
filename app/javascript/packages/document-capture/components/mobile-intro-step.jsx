@@ -6,7 +6,7 @@ function MobileIntroStep() {
 
   return (
     <>
-      <p className="margin-top-2">{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
+      <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <p>
         <a href="/verify/jurisdiction/errors/no_id">{t('idv.messages.jurisdiction.no_id')}</a>
       </p>
