@@ -61,8 +61,6 @@ RSpec.describe AssetChecker do
       after { tempfile.unlink }
 
       it 'identifies issues' do
-        allow(asset_checker).to receive(:load_included_strings).and_return(asset_strings,
-                                                                           translation_strings)
         expect(asset_checker).to receive(:warn).with(tempfile.path)
         expect(asset_checker).to receive(:warn).with('Missing translation, not-found')
         expect(asset_checker).to receive(:warn).twice.with('Missing asset, wont_find.svg')
