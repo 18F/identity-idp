@@ -9,12 +9,15 @@ module Flow
     end
 
     def base_call
-      form_response = form_submit
-      unless form_response.success?
-        flow_session[:error_message] = form_response.errors
-        return form_response
+      @form_response = form_submit
+      unless @form_response.success?
+        flow_session[:error_message] = @form_response.errors
+        return @form_response
       end
-      call
+      result = call
+      return @form_response if result.nil?
+      FormResponse.new(success: result.success?, errors: result.errors,
+                       extra: result.extra.merge(@form_response.extra))
     end
 
     def mark_step_complete(step = nil)

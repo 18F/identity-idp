@@ -15,10 +15,14 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_hash)
     end
 
     private
+
+    def extra_hash
+      { is_fallback_link: image.present? }
+    end
 
     def image_or_image_data_url_presence
       return if image.present? || image_data_url.present?
