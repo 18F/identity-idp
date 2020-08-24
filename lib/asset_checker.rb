@@ -22,7 +22,7 @@ class AssetChecker
   def file_has_missing?(file)
     data = File.open(file).read
     missing_translations = find_missing(data, /\Wt\s?\(['"]([^'"]*?)['"]\)/, @translation_strings)
-    missing_assets = find_missing(data, /\WassetPath=["'](.*?)['"]/, @asset_strings)
+    missing_assets = find_missing(data, /\WgetAssetPath\(["'](.*?)['"]\)/, @asset_strings)
     has_missing = (missing_translations.any? || missing_assets.any?)
     if has_missing
       warn file

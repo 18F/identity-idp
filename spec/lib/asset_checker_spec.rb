@@ -86,15 +86,16 @@ RSpec.describe AssetChecker do
       import React from 'react';
       import AcuantCapture from './acuant-capture';
       import DocumentTips from './document-tips';
-      import Image from './image';
       import useI18n from '../hooks/use-i18n';
+      import useAsset from '../hooks/use-asset';
 
       function DocumentCapture() {
         const { t } = useI18n();
+        const { getAssetPath } = useAsset();
 
         const sample = (
-          <Image
-            assetPath="#{asset}"
+          <img
+            src={getAssetPath('#{asset}')}
             alt="Sample front of state issued ID"
             width={450}
             height={338}
@@ -106,7 +107,7 @@ RSpec.describe AssetChecker do
             <h2>{t('#{translation}')}</h2>
             <DocumentTips sample={sample} />
             <AcuantCapture />
-            <Image assetPath="#{asset}" alt="" />
+            <Image src={getAssetPath('#{asset}')} alt="" />
           </>
         );
       }
