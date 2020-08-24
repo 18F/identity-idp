@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_flashes.html.slim' do
+describe 'shared/_flashes.html.erb' do
   it 'renders nothing when flash key, but not message, is present' do
     allow(view).to receive(:flash).and_return(error: '')
     render

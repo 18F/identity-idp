@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_address.html.slim' do
+describe 'shared/_address.html.erb' do
   let(:address) do
     {
       address1: '123 Fake St',
@@ -15,7 +15,7 @@ describe 'shared/_address.html.slim' do
     it 'renders all the fields of the address' do
       render 'shared/address', address: address
 
-      expect(rendered.split('<br>')).to eq(
+      expect(rendered.split('<br>').map(&:strip)).to eq(
         [
           '123 Fake St',
           'Apt 456',

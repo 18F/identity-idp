@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_nav_branded.html.slim' do
+describe 'shared/_nav_branded.html.erb' do
   let(:view_context) { ActionController::Base.new.view_context }
 
   context 'with a SP-logo configured' do
@@ -68,7 +68,7 @@ describe 'shared/_nav_branded.html.slim' do
       render
     end
 
-    it 'displayes the generic  SP logo' do
+    it 'displayes the generic SP logo' do
       expect(rendered).to have_css("img[alt*='No logo no problem']")
     end
   end

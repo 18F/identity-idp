@@ -1,0 +1,10 @@
+<p class='mt3' id='code-instructs'>
+  <%= @presenter.help_text %>
+</p>
+<h2 class='my0'>
+  <%= @presenter.fallback_question %>
+</h2>
+<% if @presenter.link_path %>
+  <%= link_to(@presenter.link_text, @presenter.link_path) %>
+<% end %>
+<br>

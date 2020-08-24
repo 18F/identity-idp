@@ -37,15 +37,7 @@
         <%= t('account.index.address') %>
       </div>
       <div class='sm-col sm-col-8 px1'>
-        <%= pii.address1 %>
-        <br>
-        <% if pii.address2.present? %>
-          <%= pii.address2 %>
-          <br>
-        <% end %>
-        <% if pii.city.present? && pii.state.present? %>
-          <%= "#{pii.city}, #{pii.state} #{pii.zipcode}" %>
-        <% end %>
+        <%= render 'shared/address', address: pii %>
       </div>
     </div>
   </div>
