@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import createFocusTrap from 'focus-trap';
-import Image from './image';
 import useI18n from '../hooks/use-i18n';
+import useAsset from '../hooks/use-asset';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -25,6 +25,7 @@ let activeInstances = 0;
  */
 function FullScreen({ onRequestClose = () => {}, children }) {
   const { t } = useI18n();
+  const { getAssetPath } = useAsset();
   const modalRef = useRef(/** @type {?HTMLDivElement} */ (null));
   const trapRef = useRef(/** @type {?import('focus-trap').FocusTrap} */ (null));
   const onRequestCloseRef = useRef(onRequestClose);
@@ -64,7 +65,7 @@ function FullScreen({ onRequestClose = () => {}, children }) {
         onClick={() => trapRef.current?.deactivate()}
         className="full-screen-close-button usa-button padding-2 margin-2"
       >
-        <Image alt="" assetPath="close-white-alt.svg" className="full-screen-close-icon" />
+        <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen-close-icon" />
       </button>
       {children}
     </div>

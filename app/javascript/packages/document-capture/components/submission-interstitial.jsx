@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import Image from './image';
 import useI18n from '../hooks/use-i18n';
+import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';
 
 /**
@@ -14,6 +14,7 @@ import PageHeading from './page-heading';
  */
 function SubmissionInterstitial({ autoFocus = false }) {
   const { t } = useI18n();
+  const { getAssetPath } = useAsset();
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   useEffect(() => {
     if (autoFocus) {
@@ -23,7 +24,13 @@ function SubmissionInterstitial({ autoFocus = false }) {
 
   return (
     <div>
-      <Image assetPath="id-card.svg" alt="" width="216" height="116" className="margin-bottom-4" />
+      <img
+        src={getAssetPath('id-card.svg')}
+        alt=""
+        width="216"
+        height="116"
+        className="margin-bottom-4"
+      />
       <PageHeading ref={headingRef} tabIndex={-1}>
         {t('doc_auth.headings.interstitial')}
       </PageHeading>
