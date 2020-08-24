@@ -87,7 +87,10 @@ function AcuantCaptureCanvas({
       {!isReady && (
         <img
           src={getAssetPath('spinner.gif')}
-          srcSet={`${getAssetPath('spinner.gif')}, ${getAssetPath('spinner@2x.gif')} 2x`}
+          srcSet={`
+            ${getAssetPath('spinner.gif')},
+            ${getAssetPath('spinner@2x.gif')} 2x
+          `}
           alt=""
           width="144"
           height="144"
