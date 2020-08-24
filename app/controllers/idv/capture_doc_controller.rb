@@ -22,7 +22,14 @@ module Idv
     end
 
     def add_unsafe_eval_to_capture_steps
-      return unless %w[mobile_front_image capture_mobile_back_image selfie].include?(current_step)
+      return unless %w[
+        front_image
+        back_image
+        mobile_front_image
+        mobile_back_image
+        selfie
+        document_capture
+      ].include?(current_step)
 
       # required to run wasm until wasm-eval is available
       SecureHeaders.append_content_security_policy_directives(
