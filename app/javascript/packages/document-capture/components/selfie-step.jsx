@@ -41,6 +41,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
           bannerText={t('doc_auth.headings.photo')}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+          allowUpload={false}
           required
         />
       ) : (
