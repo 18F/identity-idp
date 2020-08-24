@@ -1,16 +1,19 @@
 require 'yaml'
 
 class AssetChecker
-  attr_reader :files
+  ASSETS_FILE = 'app/assets/javascripts/assets.js.erb'.freeze
+  TRANSLATIONS_FILE = 'config/js_locale_strings.yml'.freeze
 
-  def initialize(files)
+  attr_reader :files, :assets_file, :translations_file
+
+  def initialize(files, assets_file: ASSETS_FILE, translations_file: TRANSLATIONS_FILE)
     @files = files
+    @assets_file = assets_file
+    @translations_file = translations_file
   end
 
   # @return [Boolean] true if any files are missing
   def check_files
-    assets_file = 'app/assets/javascripts/assets.js.erb'
-    translations_file = 'config/js_locale_strings.yml'
     @asset_strings = load_included_strings(assets_file)
     @translation_strings = YAML.load_file(translations_file)
     files.any? { |f| file_has_missing?(f) }
