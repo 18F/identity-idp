@@ -77,7 +77,10 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(continueButton.disabled).to.be.false());
     expect(isFormValid(continueButton.closest('form'))).to.be.true();
     userEvent.click(continueButton);
-    fireEvent.change(getByLabelText('doc_auth.headings.document_capture_selfie'), {
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    const didClick = fireEvent.click(selfieInput);
+    expect(didClick).to.be.true();
+    fireEvent.change(selfieInput, {
       target: {
         files: [new window.File([''], 'upload.png', { type: 'image/png' })],
       },
