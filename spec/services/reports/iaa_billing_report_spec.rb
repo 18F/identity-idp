@@ -50,58 +50,59 @@ describe Reports::IaaBillingReport do
       },
     ]
   end
-  let(:results_for_2_iaas) do
-    [
-      {
-        'iaa': 'iaa',
-        'iaa_start_date': iaa_start_date1_str,
-        'iaa_end_date': iaa_end_date1_str,
-        'ial2_active_count': 1,
-        'auth_counts':
-          [
-            {
-              'issuer': 'foo',
-              'ial': 1,
-              'count': 7,
-            },
-            {
-              'issuer': 'foo',
-              'ial': 2,
-              'count': 0,
-            },
-          ],
-      },
-      {
-        'iaa': 'iaa2',
-        'iaa_start_date': iaa_start_date2_str,
-        'iaa_end_date': iaa_end_date2_str,
-        'ial2_active_count': 1,
-        'auth_counts':
-          [
-            {
-              'issuer': 'foo2',
-              'ial': 1,
-              'count': 0,
-            },
-            {
-              'issuer': 'foo2',
-              'ial': 2,
-              'count': 3,
-            },
-            {
-              'issuer': 'foo3',
-              'ial': 1,
-              'count': 0,
-            },
-            {
-              'issuer': 'foo3',
-              'ial': 2,
-              'count': 0,
-            },
-          ],
-      },
-    ]
+  let(:results_for_2_iaas_1) do
+    {
+      'iaa': 'iaa',
+      'iaa_start_date': iaa_start_date1_str,
+      'iaa_end_date': iaa_end_date1_str,
+      'ial2_active_count': 1,
+      'auth_counts':
+      [
+        {
+          'issuer': 'foo',
+          'ial': 1,
+          'count': 7,
+        },
+        {
+          'issuer': 'foo',
+          'ial': 2,
+          'count': 0,
+        },
+      ],
+    }
   end
+  let(:results_for_2_iaas_2) do
+    {
+      'iaa': 'iaa2',
+      'iaa_start_date': iaa_start_date2_str,
+      'iaa_end_date': iaa_end_date2_str,
+      'ial2_active_count': 1,
+      'auth_counts':
+        [
+          {
+            'issuer': 'foo2',
+            'ial': 1,
+            'count': 0,
+          },
+          {
+            'issuer': 'foo2',
+            'ial': 2,
+            'count': 3,
+          },
+          {
+            'issuer': 'foo3',
+            'ial': 1,
+            'count': 0,
+          },
+          {
+            'issuer': 'foo3',
+            'ial': 2,
+            'count': 0,
+          },
+        ],
+    }
+  end
+
   let(:now) { Time.zone.parse('2020-06-15') }
 
   before do
@@ -156,6 +157,8 @@ describe Reports::IaaBillingReport do
     MonthlySpAuthCount.create(issuer: issuer2, ial: 2, year_month: today_year_month, user_id: 3,
                               auth_count: 3)
 
-    expect(subject.call).to eq(results_for_2_iaas.to_json)
+    tuples = subject.call
+    expect(tuples).to include(results_for_2_iaas_1.to_json)
+    expect(tuples).to include(results_for_2_iaas_2.to_json)
   end
 end
