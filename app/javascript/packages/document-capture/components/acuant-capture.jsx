@@ -111,7 +111,7 @@ function AcuantCapture({
     if (event.target === inputRef.current) {
       const shouldStartCapture = hasCapture && !capture && !isForceUploading.current;
 
-      if (!allowUpload || shouldStartCapture) {
+      if ((!allowUpload && !capture) || shouldStartCapture) {
         event.preventDefault();
       }
 
