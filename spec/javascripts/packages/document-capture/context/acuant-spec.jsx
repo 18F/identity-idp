@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { createElement, useContext } from 'react';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '@18f/identity-document-capture/context/acuant';
@@ -75,6 +75,28 @@ describe('document-capture/context/acuant', () => {
       credentials: null,
       endpoint: null,
     });
+  });
+
+  it('has camera availability at time of ready', () => {
+    render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        {createElement(() => {
+          const { isReady, isCameraSupported } = useContext(AcuantContext);
+
+          if (isReady) {
+            expect(isCameraSupported).to.be.true();
+          }
+
+          return null;
+        })}
+      </AcuantContextProvider>,
+    );
+
+    window.AcuantJavascriptWebSdk = {
+      initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+    };
+    window.AcuantCamera = { isCameraSupported: true };
+    window.onAcuantSdkLoaded();
   });
 
   it('provides error context when failed to loaded', () => {
