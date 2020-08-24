@@ -70,36 +70,36 @@ RSpec.describe AssetChecker do
   end
 
   def build_js_with_strings(asset, translation)
-    "
-    import React from 'react';
-    import AcuantCapture from './acuant-capture';
-    import DocumentTips from './document-tips';
-    import Image from './image';
-    import useI18n from '../hooks/use-i18n';
+    <<-STR
+      import React from 'react';
+      import AcuantCapture from './acuant-capture';
+      import DocumentTips from './document-tips';
+      import Image from './image';
+      import useI18n from '../hooks/use-i18n';
 
-    function DocumentCapture() {
-      const { t } = useI18n();
+      function DocumentCapture() {
+        const { t } = useI18n();
 
-      const sample = (
-        <Image
-          assetPath=\"#{asset}\"
-          alt=\"Sample front of state issued ID\"
-          width={450}
-          height={338}
-        />
-      );
+        const sample = (
+          <Image
+            assetPath=\"#{asset}\"
+            alt=\"Sample front of state issued ID\"
+            width={450}
+            height={338}
+          />
+        );
 
-      return (
-        <>
-          <h2>{t('#{translation}')}</h2>
-          <DocumentTips sample={sample} />
-          <AcuantCapture />
-          <Image assetPath=\"#{asset}\" alt=\"\" />
-        </>
-      );
-    }
+        return (
+          <>
+            <h2>{t('#{translation}')}</h2>
+            <DocumentTips sample={sample} />
+            <AcuantCapture />
+            <Image assetPath=\"#{asset}\" alt=\"\" />
+          </>
+        );
+      }
 
-    export default DocumentCapture;
-    "
+      export default DocumentCapture;
+    STR
   end
 end
