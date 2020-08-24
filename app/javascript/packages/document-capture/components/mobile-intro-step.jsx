@@ -10,6 +10,7 @@ function MobileIntroStep() {
       <p>
         <a href="/verify/jurisdiction/errors/no_id">{t('idv.messages.jurisdiction.no_id')}</a>
       </p>
+      <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_id_text1')}</li>
         <li>{t('doc_auth.tips.document_capture_id_text2')}</li>
