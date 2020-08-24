@@ -107,7 +107,7 @@ RSpec.describe AssetChecker do
             <h2>{t('#{translation}')}</h2>
             <DocumentTips sample={sample} />
             <AcuantCapture />
-            <Image src={getAssetPath('#{asset}')} alt="" />
+            <img src={getAssetPath('#{asset}')} alt="" />
           </>
         );
       }
