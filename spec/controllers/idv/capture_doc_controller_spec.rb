@@ -113,7 +113,7 @@ describe Idv::CaptureDocController do
       end
 
       it 'add unsafe-eval to the CSP for capture steps' do
-        steps = %i[mobile_front_image capture_mobile_back_image selfie document_capture]
+        steps = %i[mobile_front_image capture_mobile_back_image selfie]
         steps.each do |step|
           mock_next_step(step)
 
