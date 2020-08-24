@@ -15,7 +15,7 @@ module Flow
         return @form_response
       end
       result = call
-      return @form_response if result.nil?
+      return @form_response if result.nil? || !result.respond_to?(:success?)
       FormResponse.new(success: result.success?, errors: result.errors,
                        extra: result.extra.merge(@form_response.extra))
     end
