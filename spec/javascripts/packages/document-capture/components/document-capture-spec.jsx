@@ -1,13 +1,22 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
+import { fireEvent } from '@testing-library/react';
 import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
+import { AcuantProvider } from '@18f/identity-document-capture';
 import DocumentCapture, {
   getFormattedErrors,
 } from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
+import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/document-capture', () => {
+  const { initialize } = useAcuant();
+
+  function isFormValid(form) {
+    return [...form.querySelectorAll('input')].every((input) => input.checkValidity());
+  }
+
   let originalHash;
 
   beforeEach(() => {
@@ -41,25 +50,41 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('progresses through steps to completion', async () => {
-    const { getByLabelText, getByText } = render(<DocumentCapture />);
+    const { getByLabelText, getByText } = render(
+      <AcuantProvider sdkSrc="about:blank">
+        <DocumentCapture />
+      </AcuantProvider>,
+    );
 
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    const continueButton = getByText('forms.buttons.continue');
-    await waitFor(() => expect(continueButton.disabled).to.be.false());
+    initialize();
+    window.AcuantCameraUI.start.callsArgWithAsync(0, {
+      glare: 70,
+      sharpness: 70,
+      image: {
+        data: 'data:image/png;base64,',
+      },
+    });
+
+    let continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_selfie'),
-      new window.File([''], 'selfie.png', { type: 'image/png' }),
-    );
+    fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
+      target: {
+        files: [new window.File([''], 'upload.png', { type: 'image/png' })],
+      },
+    });
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
+    continueButton = getByText('forms.buttons.continue');
+    await waitFor(() => expect(continueButton.disabled).to.be.false());
+    expect(isFormValid(continueButton.closest('form'))).to.be.true();
+    userEvent.click(continueButton);
+    fireEvent.change(getByLabelText('doc_auth.headings.document_capture_selfie'), {
+      target: {
+        files: [new window.File([''], 'upload.png', { type: 'image/png' })],
+      },
+    });
     const submitButton = getByText('forms.buttons.submit.default');
     await waitFor(() => expect(submitButton.disabled).to.be.false());
+    expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     return new Promise((resolve) => {
       const form = document.createElement('form');

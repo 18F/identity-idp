@@ -40,8 +40,6 @@ describe('document-capture/components/documents-step', () => {
 
     expect(front).to.be.ok();
     expect(back).to.be.ok();
-    expect(front.required).to.be.true();
-    expect(back.required).to.be.true();
   });
 
   it('calls onChange callback with uploaded image', () => {

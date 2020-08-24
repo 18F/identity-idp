@@ -51,7 +51,6 @@ function DocumentsStep({ value = {}, onChange = () => {} }) {
           bannerText={t(`doc_auth.headings.${side}`)}
           value={value[side]}
           onChange={(nextValue) => onChange({ [side]: nextValue })}
-          required
           className="id-card-file-input"
         />
       ))}

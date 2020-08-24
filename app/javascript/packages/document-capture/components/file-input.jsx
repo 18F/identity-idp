@@ -20,7 +20,6 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string=} error Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
- * @prop {boolean=} required Whether value is required for file input.
  * @prop {(message:string)=>void=} onError Callback to trigger if upload error occurs.
  */
 
@@ -89,7 +88,6 @@ const FileInput = forwardRef((props, ref) => {
     accept,
     capture,
     value,
-    required,
     error,
     onClick = () => {},
     onChange = () => {},
@@ -206,7 +204,6 @@ const FileInput = forwardRef((props, ref) => {
             className="usa-file-input__input"
             type="file"
             onChange={onChangeIfValid}
-            required={required}
             capture={capture}
             onClick={onClick}
             accept={accept ? accept.join() : undefined}

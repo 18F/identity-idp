@@ -23,15 +23,6 @@ describe('document-capture/components/selfie-step', () => {
     });
   });
 
-  it('renders with required input', () => {
-    const { getByLabelText } = render(<SelfieStep />);
-
-    const input = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(input).to.be.ok();
-    expect(input.required).to.be.true();
-  });
-
   it('calls onChange callback with uploaded image', () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<SelfieStep onChange={onChange} />);
