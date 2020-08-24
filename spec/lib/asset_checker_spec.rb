@@ -7,13 +7,13 @@ RSpec.describe AssetChecker do
 
   describe '::ASSETS_FILE' do
     it 'exists' do
-      expect(File.exists?(AssetChecker::ASSETS_FILE)).to eq(true)
+      expect(File.exist?(AssetChecker::ASSETS_FILE)).to eq(true)
     end
   end
 
   describe '::TRANSLATIONS_FILE' do
     it 'exists' do
-      expect(File.exists?(AssetChecker::TRANSLATIONS_FILE)).to eq(true)
+      expect(File.exist?(AssetChecker::TRANSLATIONS_FILE)).to eq(true)
     end
   end
 
