@@ -28,12 +28,12 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_hash)
+      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
     end
 
     private
 
-    def extra_hash
+    def extra_analytics_attributes
       is_fallback_link = front_image.present? || back_image.present? || selfie_image.present?
       { is_fallback_link: is_fallback_link }
     end
