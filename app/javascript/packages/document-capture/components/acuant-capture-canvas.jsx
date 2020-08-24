@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
+import useAsset from '../hooks/use-asset';
 
 /**
  * @typedef AcuantCameraUI
@@ -61,6 +62,7 @@ function AcuantCaptureCanvas({
   onImageCaptureFailure = () => {},
 }) {
   const { isReady } = useContext(AcuantContext);
+  const { getAssetPath } = useAsset();
 
   useEffect(() => {
     if (isReady) {
@@ -82,6 +84,21 @@ function AcuantCaptureCanvas({
 
   return (
     <>
+      {!isReady && (
+        <img
+          src={getAssetPath('spinner.gif')}
+          srcSet={`${getAssetPath('spinner.gif')}, ${getAssetPath('spinner@2x.gif')} 2x`}
+          alt=""
+          width="144"
+          height="144"
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-72px, -72px)',
+          }}
+        />
+      )}
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video id="acuant-player" controls autoPlay playsInline style={{ display: 'none' }} />
       <div id="acuant-sdk-capture-view">
