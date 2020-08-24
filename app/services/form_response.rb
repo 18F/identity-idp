@@ -1,7 +1,7 @@
 class FormResponse
   def initialize(success:, errors:, extra: {})
     @success = success
-    @errors = errors.respond_to?(:to_hash) ? errors.to_hash : errors.to_h
+    @errors = errors.to_hash
     @extra = extra
   end
 
