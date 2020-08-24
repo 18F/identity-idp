@@ -5,15 +5,15 @@ function useAsset() {
   const assets = useContext(AssetContext);
 
   /**
-   * Returns the mapped URL path associated with the given asset path. If the mapped URL path is not
-   * known, the original path is returned.
+   * Returns the mapped URL path associated with the given asset path, or `undefined` if the mapped
+   * URL path is not known.
    *
    * @param {string} assetPath Asset path.
    *
-   * @return {string} Mapped URL path.
+   * @return {string|undefined} Mapped URL path, or undefined if there is no associated asset path.
    */
   const getAssetPath = (assetPath) =>
-    Object.prototype.hasOwnProperty.call(assets, assetPath) ? assets[assetPath] : assetPath;
+    Object.prototype.hasOwnProperty.call(assets, assetPath) ? assets[assetPath] : undefined;
 
   return { getAssetPath };
 }

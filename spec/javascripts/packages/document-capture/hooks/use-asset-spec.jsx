@@ -5,7 +5,7 @@ import render from '../../../support/render';
 
 describe('document-capture/hooks/use-asset', () => {
   describe('getAssetPath', () => {
-    it('returns the given assetPath if the asset is not known', () => {
+    it('returns undefined if the asset is not known', () => {
       const { getByAltText } = render(
         createElement(() => {
           const { getAssetPath } = useAsset();
@@ -15,7 +15,7 @@ describe('document-capture/hooks/use-asset', () => {
 
       const img = getByAltText('unknown');
 
-      expect(img.getAttribute('src')).to.equal('unknown.png');
+      expect(img.hasAttribute('src')).to.be.false();
     });
 
     it('returns mapped src if known by context', () => {
