@@ -42,6 +42,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           required
+          className="id-card-file-input"
         />
       ) : (
         <SelfieCapture
