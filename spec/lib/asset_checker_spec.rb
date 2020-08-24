@@ -5,29 +5,41 @@ RSpec.describe AssetChecker do
     AssetChecker.new(files, assets_file: assets_file, translations_file: translations_file)
   end
 
-  let(:assets_file) { Tempfile.new }
-  let(:translations_file) { Tempfile.new }
-
-  before do
-    File.open(assets_file.path, 'w') do |f|
-      f.puts <<-STR
-        <% keys = [
-          #{asset_strings.map(&:inspect).join("\n")}
-        ] %>
-      STR
-    end
-
-    File.open(translations_file.path, 'w') do |f|
-      f.puts YAML.dump(translation_strings)
+  describe '::ASSETS_FILE' do
+    it 'exists' do
+      expect(File.exists?(AssetChecker::ASSETS_FILE)).to eq(true)
     end
   end
 
-  after do
-    assets_file.unlink
-    translations_file.unlink
+  describe '::TRANSLATIONS_FILE' do
+    it 'exists' do
+      expect(File.exists?(AssetChecker::TRANSLATIONS_FILE)).to eq(true)
+    end
   end
 
   describe '#check_files' do
+    let(:assets_file) { Tempfile.new }
+    let(:translations_file) { Tempfile.new }
+
+    before do
+      File.open(assets_file.path, 'w') do |f|
+        f.puts <<-STR
+          <% keys = [
+            #{asset_strings.map(&:inspect).join("\n")}
+          ] %>
+        STR
+      end
+
+      File.open(translations_file.path, 'w') do |f|
+        f.puts YAML.dump(translation_strings)
+      end
+    end
+
+    after do
+      assets_file.unlink
+      translations_file.unlink
+    end
+
     let(:translation_strings) { %w[first_translation second_translation] }
     let(:asset_strings) { %w[first_asset.png second_asset.gif] }
 
