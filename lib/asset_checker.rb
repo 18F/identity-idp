@@ -1,7 +1,7 @@
 require 'yaml'
 
 class AssetChecker
-  ASSETS_FILE = 'app/assets/javascripts/assets.js.erb'.freeze
+  ASSETS_FILE = 'app/views/idv/doc_auth/document_capture.html.erb'.freeze
   TRANSLATIONS_FILE = 'config/js_locale_strings.yml'.freeze
 
   attr_reader :files, :assets_file, :translations_file
@@ -22,7 +22,7 @@ class AssetChecker
   def file_has_missing?(file)
     data = File.open(file).read
     missing_translations = find_missing(data, /\Wt\s?\(['"]([^'"]*?)['"]\)/, @translation_strings)
-    missing_assets = find_missing(data, /\WassetPath=["'](.*?)['"]/, @asset_strings)
+    missing_assets = find_missing(data, /\WgetAssetPath\(["'](.*?)['"]\)/, @asset_strings)
     has_missing = (missing_translations.any? || missing_assets.any?)
     if has_missing
       warn file
@@ -43,7 +43,7 @@ class AssetChecker
 
   def load_included_strings(file)
     data = File.open(file).read
-    key_data = data.split('<% keys = [').last.split('] %>').first
+    key_data = data.split('<% asset_keys = [').last.split('] %>').first
     key_data.scan(/['"](.*)['"]/).flatten
   end
 end
