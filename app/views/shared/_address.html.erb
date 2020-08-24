@@ -2,4 +2,6 @@
 <% if address[:address2].present? %>
   <%= address[:address2] %><br>
 <% end %>
-<%= "#{address[:city]}, #{address[:state]} #{address[:zipcode]}" %>
+<% if address[:city].present? && address[:state].present? %>
+  <%= "#{address[:city]}, #{address[:state]} #{address[:zipcode]}" %>
+<% end %>
