@@ -61,10 +61,13 @@
 }
 
 .usa-file-input__banner-text {
-  @include u-font('sans', 'xl');
-  @include u-margin-bottom(1);
+  @include u-font-family('sans');
+  @include u-margin-bottom(2);
   color: color('primary');
   display: block;
+  font-size: 1.625rem;
+  letter-spacing: .4px;
+  line-height: 1.5rem;
   text-transform: uppercase;
 }
 
