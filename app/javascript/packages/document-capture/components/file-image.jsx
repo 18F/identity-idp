@@ -15,7 +15,7 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  */
 function FileImage({ file, alt, className }) {
   const cache = useContext(FileBase64CacheContext);
-  const [, forceRender] = useState((prevState = 0) => 1 - prevState);
+  const [, forceRender] = useState();
   const imageData = cache.get(file);
   const ifStillMounted = useIfStillMounted();
 
@@ -23,7 +23,7 @@ function FileImage({ file, alt, className }) {
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
       cache.set(file, /** @type {string} */ (target?.result));
-      ifStillMounted(forceRender)();
+      ifStillMounted(forceRender)((prevState = 0) => 1 - prevState);
     };
     reader.readAsDataURL(file);
   }, [file]);
