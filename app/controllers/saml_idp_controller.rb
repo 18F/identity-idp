@@ -16,11 +16,11 @@ class SamlIdpController < ApplicationController
   before_action :bump_auth_count, only: [:auth]
 
   def auth
-    link_identity_from_session_data
     capture_analytics
     return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
     return redirect_to(user_authorization_confirmation_url) if auth_count == 1
+    link_identity_from_session_data
     handle_successful_handoff
   end
 
