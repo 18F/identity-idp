@@ -325,7 +325,6 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
-    iniparse (1.4.4)
     irb (1.0.0)
     jmespath (1.4.0)
     json (2.3.0)
@@ -390,9 +389,6 @@ GEM
       sawyer (~> 0.8.0, >= 0.5.3)
     openssl (2.1.2)
     orm_adapter (0.5.0)
-    overcommit (0.51.0)
-      childprocess (>= 0.6.3, < 4)
-      iniparse (~> 1.4)
     parallel (1.19.2)
     parallel_tests (2.29.2)
       parallel
@@ -747,7 +743,6 @@ DEPENDENCIES
   net-sftp
   newrelic_rpm
   octokit
-  overcommit
   parallel_tests
   pg
   phonelib
