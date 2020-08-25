@@ -53,12 +53,8 @@ module Flow
       FormResponse.new(success: success, errors: errors, extra: extra)
     end
 
-    def form_response?(response)
-      response.is_a?(FormResponse) || response.is_a?(DocAuth::Response)
-    end
-
     def acceptable_response_object?(obj)
-      obj.is_a?(FormResponse) || obj.is_a?(DocAuthClient::Response)
+      obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
 
     delegate :flash, :session, :current_user, :params, :request, to: :@controller
