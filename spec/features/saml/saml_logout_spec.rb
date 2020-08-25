@@ -14,9 +14,7 @@ feature 'SAML logout' do
         visit auth_request.create(sp_saml_settings)
         click_continue
 
-        service_provider = ServiceProvider.from_issuer(sp_saml_settings.issuer)
         settings = sp_saml_settings.dup
-        # settings.name_identifier_value = user.decorate.active_identity_for(service_provider).uuid
 
         # Sign out of the IDP
         visit account_path
@@ -39,7 +37,6 @@ feature 'SAML logout' do
         visit auth_request.create(sp_saml_settings)
         click_continue
 
-        service_provider = ServiceProvider.from_issuer(sp_saml_settings.issuer)
         settings = sp_saml_settings.dup
 
         # SAML logout request
@@ -60,7 +57,6 @@ feature 'SAML logout' do
         visit auth_request.create(sp_saml_settings)
         click_continue
 
-        service_provider = ServiceProvider.from_issuer(sp_saml_settings.issuer)
         settings = sp_saml_settings.dup
 
         request = OneLogin::RubySaml::Logoutrequest.new
