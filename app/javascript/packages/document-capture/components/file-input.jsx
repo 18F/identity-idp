@@ -7,6 +7,7 @@ import useI18n from '../hooks/use-i18n';
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').ChangeEvent} ReactChangeEvent */
 /** @typedef {import('react').RefAttributes} ReactRefAttributes */
+/** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef FileInputProps
@@ -17,7 +18,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob?=} value Current value.
- * @prop {string=} error Error to show.
+ * @prop {ReactNode=} error Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
  * @prop {(message:string)=>void=} onError Callback to trigger if upload error occurs.

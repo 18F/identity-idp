@@ -8,6 +8,8 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import FileBase64CacheContext from '../context/file-base64-cache';
 
+/** @typedef {import('react').ReactNode} ReactNode */
+
 /**
  * @typedef AcuantCaptureProps
  *
@@ -22,6 +24,7 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
  * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
+ * @prop {ReactNode=} error Error to show.
  */
 
 /**
@@ -82,6 +85,7 @@ function AcuantCapture({
   minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
   allowUpload = true,
+  error,
 }) {
   const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
@@ -201,7 +205,7 @@ function AcuantCapture({
         accept={['image/*']}
         capture={capture}
         value={value}
-        error={ownError ?? undefined}
+        error={ownError ?? error}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChangeIfValid}
         onError={() => setOwnError(null)}

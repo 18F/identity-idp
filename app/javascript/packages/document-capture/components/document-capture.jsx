@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
-import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
+import DocumentsStep, { validate as validateDocumentsStep } from './documents-step';
+import SelfieStep, { validate as validateSelfieStep } from './selfie-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
@@ -49,13 +49,13 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       name: 'documents',
       title: t('doc_auth.headings.document_capture'),
       component: DocumentsStep,
-      isValid: isDocumentsStepValid,
+      validate: validateDocumentsStep,
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
       component: SelfieStep,
-      isValid: isSelfieStepValid,
+      validate: validateSelfieStep,
     },
   ].filter(Boolean));
 

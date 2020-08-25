@@ -27,7 +27,7 @@ describe('document-capture/components/form-steps', () => {
           />
         </label>
       ),
-      isValid: (value) => Boolean(value.second),
+      validate: (value) => (value.second ? undefined : { second: new Error() }),
     },
     { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
   ];
@@ -52,7 +52,10 @@ describe('document-capture/components/form-steps', () => {
     });
 
     it('returns the result of the validity function given form values', () => {
-      const step = { name: 'example', isValid: (value) => value.ok };
+      const step = {
+        name: 'example',
+        validate: (values) => (values.ok ? undefined : { ok: new Error() }),
+      };
 
       const result = isStepValid(step, { ok: false });
 
@@ -82,7 +85,10 @@ describe('document-capture/components/form-steps', () => {
     });
 
     it('returns -1 if all steps are invalid', () => {
-      const steps = [...STEPS].map((step) => ({ ...step, isValid: () => false }));
+      const steps = [...STEPS].map((step) => ({
+        ...step,
+        validate: () => ({ missing: new Error() }),
+      }));
       const result = getLastValidStepIndex(steps, {});
 
       expect(result).to.be.equal(-1);

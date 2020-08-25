@@ -2,33 +2,36 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import DocumentsStep, { isValid } from '@18f/identity-document-capture/components/documents-step';
+import DocumentsStep, { validate } from '@18f/identity-document-capture/components/documents-step';
 import render from '../../../support/render';
 
 describe('document-capture/components/documents-step', () => {
-  describe('isValid', () => {
-    it('returns false if both front and back are unset', () => {
+  describe('validate', () => {
+    it('returns errors if both front and back are unset', () => {
       const value = {};
-      const result = isValid(value);
+      const result = validate(value);
 
-      expect(result).to.be.false();
+      expect(result).to.have.keys(['front', 'back']);
+      expect(result.front).to.be.instanceOf(Error);
+      expect(result.back).to.be.instanceOf(Error);
     });
 
-    it('returns false if one of front and back are unset', () => {
+    it('returns error if one of front and back are unset', () => {
       const value = { front: new window.File([], 'upload.png', { type: 'image/png' }) };
-      const result = isValid(value);
+      const result = validate(value);
 
-      expect(result).to.be.false();
+      expect(result).to.have.keys(['back']);
+      expect(result.back).to.be.instanceOf(Error);
     });
 
-    it('returns true if both front and back are set', () => {
+    it('returns empty object if both front and back are set', () => {
       const value = {
         front: new window.File([], 'upload.png', { type: 'image/png' }),
         back: new window.File([], 'upload.png', { type: 'image/png' }),
       };
-      const result = isValid(value);
+      const result = validate(value);
 
-      expect(result).to.be.true();
+      expect(result).to.deep.equal({});
     });
   });
 
