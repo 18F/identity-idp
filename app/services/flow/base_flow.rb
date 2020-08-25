@@ -48,8 +48,9 @@ module Flow
     def create_form_response(obj)
       success = obj.respond_to?(:success?) ? obj.success? : true
       errors = obj.respond_to?(:errors?) ? obj.errors? : {}
+      extra = obj.respond_to?(:extra?) ? obj.extra? : {}
       errors = {} if errors.blank?
-      FormResponse.new(success: success, errors: errors)
+      FormResponse.new(success: success, errors: errors, extra: extra)
     end
 
     def form_response?(response)
