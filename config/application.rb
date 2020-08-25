@@ -8,6 +8,7 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
+    config.force_ssl = true
     config.active_job.queue_adapter = 'inline'
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
@@ -40,8 +41,10 @@ module Upaya
     # Use a custom log formatter to get timestamp
     config.log_formatter = Upaya::UpayaLogFormatter.new
 
-    require 'headers_filter'
-    config.middleware.insert_before 0, HeadersFilter
+    unless ENV['ECS_APPLICATION']
+      require 'headers_filter'
+      config.middleware.insert_before 0, HeadersFilter
+    end
     require 'utf8_sanitizer'
     config.middleware.use Utf8Sanitizer
 
