@@ -1,0 +1,18 @@
+<% title @presenter.title %>
+
+<h1 class='h3 my0'>
+  <%= @presenter.heading %>
+</h1>
+
+<p class='mt2 mb2'>
+  <%= raw @presenter.info %>
+</p>
+
+<div class='no-spinner'>
+  <%= link_to @presenter.piv_cac_capture_text,
+              @presenter.piv_cac_service_link,
+              class: 'btn btn-primary activate-spinner' %>
+</div>
+
+<%= render 'shared/spinner' %>
+<%= render 'shared/cancel', link: new_user_session_url %>
