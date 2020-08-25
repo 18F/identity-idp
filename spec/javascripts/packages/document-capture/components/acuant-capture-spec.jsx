@@ -124,6 +124,27 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
+    it('shows error if capture fails', async () => {
+      const { container, getByLabelText, findByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      fireEvent.click(button);
+
+      await findByText('errors.doc_auth.capture_failure');
+      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      expect(container.querySelector('.full-screen')).to.be.null();
+    });
+
     it('calls onChange with the captured image on successful capture', async () => {
       const onChange = sinon.mock();
       const { getByText } = render(

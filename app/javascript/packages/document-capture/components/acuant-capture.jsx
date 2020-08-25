@@ -182,7 +182,10 @@ function AcuantCapture({
 
               setIsCapturing(false);
             }}
-            onImageCaptureFailure={() => setIsCapturing(false)}
+            onImageCaptureFailure={() => {
+              setOwnError(t('errors.doc_auth.capture_failure'));
+              setIsCapturing(false);
+            }}
           />
         </FullScreen>
       )}
