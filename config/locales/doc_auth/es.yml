@@ -81,6 +81,8 @@ es:
         por el estado. No almacenamos imágenes que cargue. Solo verificamos su identidad.
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: "¿No tienes teléfono?"
+      upload_from_computer_not_allowed: Inicie sesión en su cuenta login.gov en cualquier
+        dispositivo que tenga una cámara, como una tableta o computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
@@ -89,8 +91,8 @@ es:
         propietario de la identificación.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac_html: "<strong>¿Eres DoD o militar?</strong> %{link}"
-      use_cac_link: Use su tarjeta CAC en su lugar
+      use_cac_html: "¿Tiene una identificación de empleado del gobierno? %{link}"
+      use_cac_link: Usa un PIV/CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder
         a servicios que manejan información confidencial.

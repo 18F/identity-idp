@@ -75,9 +75,10 @@ en:
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
       upload: We'll collect information about you by reading your state-issued ID.
-        We do not store images you upload. We only verify your identity.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don't have a phone?
+      upload_from_computer_not_allowed: Sign in to your login.gov account on any device that has a
+        camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
@@ -86,8 +87,8 @@ en:
         are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your
         identity.
-      use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
-      use_cac_link: Use your CAC card instead
+      use_cac_html: "Do you have a government employee ID? %{link}"
+      use_cac_link: Use a PIV/CAC instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
         information.

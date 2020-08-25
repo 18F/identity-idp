@@ -12,21 +12,18 @@
   <p>
     <%= t('doc_auth.info.upload_liveness_enabled') %>
   </p>
-  <p>
-    <%= t('doc_auth.info.upload_no_image_storage') %>
-  </p>
 <% else %>
   <p>
     <%= t('doc_auth.info.upload') %>
   </p>
 <% end %>
 
-<div class='mt2 mb3'>
-  <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_errors_no_id_path %>
-</div>
+<p>
+  <strong><%= t('doc_auth.info.upload_no_image_storage') %></strong>
+</p>
 
 <% if Figaro.env.cac_proofing_enabled == 'true' && desktop_device? %>
-  <div class='mt2 mb3'>
+  <div class='mt2 mb2'>
     <%= t(
       'doc_auth.info.use_cac_html',
       link: link_to(
@@ -36,6 +33,10 @@
     ) %>
   </div>
 <% end %>
+
+<div class='mt2 mb3'>
+  <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_errors_no_id_path %>
+</div>
 
 <hr/>
 
@@ -47,7 +48,8 @@
       width: 80,
     ) %>
   </div>
-  <div class='usa-tag caps text-ink bg-primary-lighter margin-top-1 display-inline-block'>
+  <div id="recommended-tag"
+       class='usa-tag caps text-ink bg-primary-lighter margin-top-1display-inline-block <%= 'hidden' if liveness_checking_enabled? %>'>
     <%= t('doc_auth.info.tag') %>
   </div>
   <div class='sm-col sm-col-9'>
@@ -76,7 +78,8 @@
 <hr/>
 
 <div class='clearfix mt3 mb3'>
-  <div class='sm-col sm-col-12'>
+  <div id="upload-comp-liveness-off"
+    class='sm-col sm-col-12 <%= 'hidden' if liveness_checking_enabled? %>'>
     <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
     <%= simple_form_for(
       :doc_auth,
@@ -89,7 +92,16 @@
       </button>
     <% end %>
   </div>
+  <div id="upload-comp-liveness"
+       class='sm-col sm-col-12 <%= 'hidden' unless liveness_checking_enabled? %>'>
+    <strong><%= t('doc_auth.info.upload_from_computer') %></strong>
+    <%= t('doc_auth.info.upload_from_computer_not_allowed') %>
+  </div>
 </div>
 
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= javascript_pack_tag 'image-preview' %>
+
+<% unless Figaro.env.document_capture_react_enabled == 'false' %>
+  <%= javascript_pack_tag 'upload-step' %>
+<% end %>
