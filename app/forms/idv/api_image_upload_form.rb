@@ -24,9 +24,9 @@ module Idv
     # Normally we'd return FormResponse, but that has errors as a hash,
     # where the proofer reponses have errors as an array. This is easier to compare
     # with the proofer responses
-    # @return [DocAuthClient::Response]
+    # @return [DocAuth::Response]
     def submit
-      DocAuthClient::Response.new(
+      DocAuth::Response.new(
         success: valid?,
         errors: errors.full_messages,
       )

@@ -16,11 +16,15 @@ function highlightRadioBtn() {
       const label = radio.parentNode.parentNode;
       const name = radio.getAttribute('name');
 
-      if (radio.checked) label.classList.add('bg-lightest-blue');
+      if (radio.checked) {
+        label.classList.add('bg-lightest-blue');
+      }
 
       radio.addEventListener('change', function () {
         clearHighlight(name);
-        if (radio.checked) label.classList.add('bg-lightest-blue');
+        if (radio.checked) {
+          label.classList.add('bg-lightest-blue');
+        }
       });
 
       radio.addEventListener('focus', function () {

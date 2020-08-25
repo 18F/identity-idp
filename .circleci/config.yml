@@ -183,6 +183,7 @@ jobs:
             yarn run typecheck
             bundle exec rubocop
             bundle exec slim-lint app/views
+            make check_asset_strings
   build-latest-container:
     working_directory: ~/identity-idp
     docker:

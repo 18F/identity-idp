@@ -1,0 +1,11 @@
+<%= button_to(
+  create_new_personal_key_url,
+  method: :post,
+  class: 'btn btn-link ml1',
+  form_class: 'inline-block',
+) do %>
+  <span class='hide'>
+    <%= t('account.items.personal_key') %>
+  </span>
+  <%= t('account.links.regenerate_personal_key') %>
+<% end %>

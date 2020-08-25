@@ -15,12 +15,14 @@
   "rules": {
     "@babel/no-unused-expressions": "error",
     "consistent-return": "off",
+    "curly": ["error", "all"],
     "prettier/prettier": "error",
     "func-names": 0,
     "function-paren-newline": "off",
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
+    "indent": "off",
     "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
@@ -30,8 +32,10 @@
     "object-curly-newline": "off",
     "operator-linebreak": "off",
     "react/jsx-curly-newline": "off",
+    "react/jsx-indent": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "require-await": "error"
   },
   "settings": {
     "import/core-modules": [

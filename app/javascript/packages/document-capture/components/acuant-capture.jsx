@@ -20,6 +20,7 @@ import DeviceContext from '../context/device';
  * @prop {number=} minimumGlareScore Minimum glare score to be considered acceptable.
  * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
  * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
+ * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  */
 
 /**
@@ -79,6 +80,7 @@ function AcuantCapture({
   minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
   minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
+  allowUpload = true,
 }) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -106,15 +108,20 @@ function AcuantCapture({
    * @param {import('react').MouseEvent} event Click event.
    */
   function startCaptureOrTriggerUpload(event) {
-    if (event.target !== inputRef.current) {
-      inputRef.current?.click();
-    } else if (hasCapture) {
-      if (!capture && !isForceUploading.current) {
+    if (event.target === inputRef.current) {
+      const shouldStartCapture = hasCapture && !capture && !isForceUploading.current;
+
+      if ((!allowUpload && !capture) || shouldStartCapture) {
         event.preventDefault();
+      }
+
+      if (shouldStartCapture) {
         setIsCapturing(true);
       }
 
       isForceUploading.current = false;
+    } else {
+      inputRef.current?.click();
     }
   }
 
@@ -182,7 +189,7 @@ function AcuantCapture({
       <FileInput
         ref={inputRef}
         label={label}
-        hint={hasCapture ? undefined : t('doc_auth.tips.document_capture_hint')}
+        hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
         accept={['image/*']}
         capture={capture}
@@ -200,15 +207,16 @@ function AcuantCapture({
             onClick={startCaptureOrTriggerUpload}
             className={value ? 'margin-right-1' : 'margin-right-2'}
           >
-            {hasCapture &&
+            {(hasCapture || !allowUpload) &&
               (value
                 ? t('doc_auth.buttons.take_picture_retry')
                 : t('doc_auth.buttons.take_picture'))}
-            {!hasCapture && t('doc_auth.buttons.upload_picture')}
+            {!hasCapture && allowUpload && t('doc_auth.buttons.upload_picture')}
           </Button>
         )}
         {isMobile &&
           hasCapture &&
+          allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (

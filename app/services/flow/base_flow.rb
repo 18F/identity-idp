@@ -49,13 +49,17 @@ module Flow
       success = obj.respond_to?(:success?) ? obj.success? : true
       errors = obj.respond_to?(:errors?) ? obj.errors? : {}
       errors = {} if errors.blank?
-      errors = { array: errors } if errors.is_a?(Array)
       FormResponse.new(success: success, errors: errors)
+    end
+
+    def form_response?(response)
+      response.is_a?(FormResponse) || response.is_a?(DocAuth::Response)
     end
 
     def acceptable_response_object?(obj)
       obj.is_a?(FormResponse) || obj.is_a?(DocAuthClient::Response)
     end
+
     delegate :flash, :session, :current_user, :params, :request, to: :@controller
   end
 end

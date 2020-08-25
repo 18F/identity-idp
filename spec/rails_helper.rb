@@ -86,7 +86,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    DocAuthMock::DocAuthMockClient.reset!
+    DocAuth::Mock::DocAuthMockClient.reset!
   end
 
   config.around(:each, type: :feature) do |example|

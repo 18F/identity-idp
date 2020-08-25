@@ -54,7 +54,7 @@ module Idv
     end
 
     def doc_auth_client
-      @doc_auth_client ||= DocAuthClient.client
+      @doc_auth_client ||= DocAuth::Client.client
     end
   end
 end

@@ -24,11 +24,11 @@ class Identity < ApplicationRecord
   end
 
   def display_name
-    sp_metadata[:friendly_name] || sp_metadata[:agency] || service_provider
+    sp_metadata[:friendly_name] || sp.agency&.name || service_provider
   end
 
   def agency_name
-    sp_metadata[:agency] || sp_metadata[:friendly_name] || service_provider
+    sp.agency&.name || sp_metadata[:friendly_name] || service_provider
   end
 
   def piv_cac_enabled?

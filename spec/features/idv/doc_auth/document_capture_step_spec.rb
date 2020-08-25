@@ -76,13 +76,13 @@ feature 'doc auth document capture step' do
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_front_image).to eq(
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
           doc_auth_front_image_data_url_data,
         )
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
           doc_auth_back_image_data_url_data,
         )
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_selfie_image).to eq(
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to eq(
           doc_auth_selfie_image_data_url_data,
         )
       end
@@ -136,9 +136,9 @@ feature 'doc auth document capture step' do
       end
 
       it 'catches network connection errors on post_front_image' do
-        DocAuthMock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
-          response: DocAuthClient::Response.new(
+          response: DocAuth::Response.new(
             success: false,
             errors: [I18n.t('errors.doc_auth.acuant_network_error')],
           ),
@@ -187,13 +187,13 @@ feature 'doc auth document capture step' do
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_front_image).to eq(
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
           doc_auth_front_image_data_url_data,
         )
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
           doc_auth_back_image_data_url_data,
         )
-        expect(DocAuthMock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
       end
 
       it 'throttles calls to acuant and allows retry after the attempt window' do
@@ -223,9 +223,9 @@ feature 'doc auth document capture step' do
       end
 
       it 'catches network connection errors on post_front_image' do
-        DocAuthMock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
-          response: DocAuthClient::Response.new(
+          response: DocAuth::Response.new(
             success: false,
             errors: [I18n.t('errors.doc_auth.acuant_network_error')],
           ),
@@ -242,7 +242,7 @@ feature 'doc auth document capture step' do
     context 'when there is a stored result' do
       it 'proceeds to the next step if the result was successful' do
         document_capture_session = user.document_capture_sessions.last
-        response = DocAuthClient::Response.new(success: true)
+        response = DocAuth::Response.new(success: true)
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
@@ -253,7 +253,7 @@ feature 'doc auth document capture step' do
 
       it 'does not proceed to the next step if the result was not successful' do
         document_capture_session = user.document_capture_sessions.last
-        response = DocAuthClient::Response.new(success: false)
+        response = DocAuth::Response.new(success: false)
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
@@ -267,12 +267,11 @@ feature 'doc auth document capture step' do
         submit_empty_form
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
       end
 
       it 'uses the form params if form params are present' do
         document_capture_session = user.document_capture_sessions.last
-        response = DocAuthClient::Response.new(success: false)
+        response = DocAuth::Response.new(success: false)
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
@@ -289,7 +288,10 @@ feature 'doc auth document capture step' do
   end
 
   def submit_empty_form
-    page.driver.put current_path
+    page.driver.put(
+      current_path,
+      doc_auth: { front_image: nil, back_image: nil, selfie_image: nil },
+    )
     visit current_path
   end
 end

@@ -1,4 +1,6 @@
 import React from 'react';
+import CallbackOnMount from './callback-on-mount';
+import SubmissionInterstitial from './submission-interstitial';
 
 /**
  * @typedef Resource
@@ -18,9 +20,20 @@ import React from 'react';
  * @param {SubmissionCompleteProps} props Props object.
  */
 function SubmissionComplete({ resource }) {
-  const response = resource.read();
+  resource.read();
 
-  return <>Finished sending: {JSON.stringify(response)}</>;
+  function submitCaptureForm() {
+    /** @type {HTMLFormElement?} */
+    const form = document.querySelector('.js-document-capture-form');
+    form?.submit();
+  }
+
+  return (
+    <>
+      <SubmissionInterstitial />
+      <CallbackOnMount onMount={submitCaptureForm} />
+    </>
+  );
 }
 
 export default SubmissionComplete;

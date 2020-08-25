@@ -20,7 +20,9 @@ function useIfStillMounted() {
   });
 
   const ifStillMounted = (fn) => (...args) => {
-    if (isMounted.current) fn(...args);
+    if (isMounted.current) {
+      fn(...args);
+    }
   };
 
   return ifStillMounted;

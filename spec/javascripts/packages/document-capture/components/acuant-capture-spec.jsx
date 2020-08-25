@@ -412,6 +412,46 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
       expect(input.getAttribute('capture')).to.equal('environment');
     });
+
+    it('optionally disallows upload', () => {
+      const { getByText, getByLabelText } = render(
+        <I18nContext.Provider
+          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        >
+          <AcuantContextProvider sdkSrc="about:blank">
+            <DeviceContext.Provider value={{ isMobile: true }}>
+              <AcuantCapture label="Image" allowUpload={false} />
+            </DeviceContext.Provider>
+          </AcuantContextProvider>
+        </I18nContext.Provider>,
+      );
+
+      initialize();
+
+      const input = getByLabelText('Image');
+      const didClick = fireEvent.click(input);
+
+      expect(() => getByText('Upload')).to.throw();
+      expect(didClick).to.be.false();
+      expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+      expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
+    });
+
+    it('still captures by `capture` value when upload disallowed', () => {
+      const { getByLabelText } = render(
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" capture="environment" allowUpload={false} />
+        </AcuantContextProvider>,
+      );
+
+      initialize();
+
+      const button = getByLabelText('Image');
+      const defaultPrevented = !fireEvent.click(button);
+
+      expect(defaultPrevented).to.be.false();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+    });
   });
 
   context('desktop', () => {
@@ -425,6 +465,20 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       expect(() => getByText('doc_auth.buttons.take_picture')).to.throw();
+    });
+
+    it('optionally disallows upload', () => {
+      const { getByText } = render(
+        <AcuantContextProvider sdkSrc="about:blank">
+          <DeviceContext.Provider value={{ isMobile: false }}>
+            <AcuantCapture label="Image" allowUpload={false} />
+          </DeviceContext.Provider>
+        </AcuantContextProvider>,
+      );
+
+      expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
+
+      initialize();
     });
   });
 
@@ -489,8 +543,9 @@ describe('document-capture/components/acuant-capture', () => {
     initialize();
 
     const button = getByLabelText('Image');
-    fireEvent.click(button);
+    const defaultPrevented = !fireEvent.click(button);
 
+    expect(defaultPrevented).to.be.false();
     expect(window.AcuantCameraUI.start.called).to.be.false();
   });
 });

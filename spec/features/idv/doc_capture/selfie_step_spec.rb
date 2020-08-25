@@ -37,9 +37,9 @@ feature 'doc auth self image step' do
   end
 
   it 'restarts doc auth if the selfie cannot be matched' do
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :post_selfie,
-      response: DocAuthClient::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.selfie')],
       ),

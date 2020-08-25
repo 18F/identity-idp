@@ -194,9 +194,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_general_doc_auth_client_error(method)
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: DocAuthClient::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.general_error')],
       ),
@@ -208,9 +208,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       Faraday::Response,
       body: AcuantFixtures.get_results_response_failure,
     )
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: Acuant::Responses::GetResultsResponse.new(failed_http_response),
+      response: DocAuth::Acuant::Responses::GetResultsResponse.new(failed_http_response),
     )
   end
 

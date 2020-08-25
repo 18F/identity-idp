@@ -6,7 +6,7 @@ shared_examples 'sp requesting attributes' do |sp|
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
   let(:saved_pii) do
-    DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+    DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
       ssn: good_ssn,
       phone: '+1 (555) 555-1234',
     )

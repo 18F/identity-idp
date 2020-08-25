@@ -2,10 +2,36 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+import DocumentsStep, { isValid } from '@18f/identity-document-capture/components/documents-step';
 import render from '../../../support/render';
 
 describe('document-capture/components/documents-step', () => {
+  describe('isValid', () => {
+    it('returns false if both front and back are unset', () => {
+      const value = {};
+      const result = isValid(value);
+
+      expect(result).to.be.false();
+    });
+
+    it('returns false if one of front and back are unset', () => {
+      const value = { front: new window.File([], 'upload.png', { type: 'image/png' }) };
+      const result = isValid(value);
+
+      expect(result).to.be.false();
+    });
+
+    it('returns true if both front and back are set', () => {
+      const value = {
+        front: new window.File([], 'upload.png', { type: 'image/png' }),
+        back: new window.File([], 'upload.png', { type: 'image/png' }),
+      };
+      const result = isValid(value);
+
+      expect(result).to.be.true();
+    });
+  });
+
   it('renders with front and back inputs', () => {
     const { getByLabelText } = render(<DocumentsStep />);
 

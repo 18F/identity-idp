@@ -6,7 +6,9 @@ class Events {
   }
 
   on(eventName, handler = noOp, context = null) {
-    if (!eventName) return;
+    if (!eventName) {
+      return;
+    }
 
     const handlersForEvent = this.handlers[eventName] || [];
 

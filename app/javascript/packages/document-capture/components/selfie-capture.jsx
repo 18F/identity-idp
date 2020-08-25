@@ -125,7 +125,9 @@ function SelfieCapture({ value, onChange }) {
         ref={labelRef}
         id={labelId}
         tabIndex={-1}
-        className={['usa-label', isAccessRejected && 'usa-label--error'].filter(Boolean).join(' ')}
+        className={['selfie-capture__label', 'usa-label', isAccessRejected && 'usa-label--error']
+          .filter(Boolean)
+          .join(' ')}
       >
         {t('doc_auth.headings.document_capture_selfie')}
       </div>

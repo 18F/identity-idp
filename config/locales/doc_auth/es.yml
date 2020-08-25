@@ -52,8 +52,11 @@ es:
       upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
+      upload_from_phone_liveness_enabled: Use un teléfono móvil para agregar su identificación
+        y tomar una foto de usted mismo
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
+      upload_liveness_enabled: "¿Cómo te gustaría verificar tu identidad?"
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:
@@ -81,6 +84,11 @@ es:
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
+      upload_liveness_enabled: Recopilaremos información sobre usted leyendo su identificación
+        emitida por el estado. Luego, se tomará una foto para confirmar que es el
+        propietario de la identificación.
+      upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
+        su identidad.
       use_cac_html: "<strong>¿Eres DoD o militar?</strong> %{link}"
       use_cac_link: Use su tarjeta CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
