@@ -13,10 +13,7 @@ module Flow
         flow_session[:error_message] = form_response.errors
         return form_response
       end
-      result = call
-      return form_response if result.nil? || !result.respond_to?(:success?)
-      FormResponse.new(success: result.success?, errors: result.errors,
-                       extra: result.extra.merge(form_response.extra))
+      call
     end
 
     def mark_step_complete(step = nil)
