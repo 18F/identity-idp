@@ -1,0 +1,17 @@
+<% if decorated_session.sp_alert?(request.path) %>
+  <div class='alert alert-notice sm-left-align'>
+    <p class='mb1'>
+      <% if current_page?(new_user_session_path) %>
+             <%= raw sanitize(decorated_session.sp_msg('sign_in'),
+                              tags: %w[a b br p], attributes: %w[href]) %>
+      <% elsif current_page?(sign_up_email_path) %>
+        <%= raw sanitize(decorated_session.sp_msg('sign_up'),
+                         tags: %w[a b br p], attributes: %w[href]) %>
+      <% else %>
+        <%= raw sanitize(decorated_session.sp_msg('forgot_password',
+                                                  sp_create_link: decorated_session.sp_create_link),
+                                                  tags: %w[a b br p], attributes: %w[href]) %>
+      <% end %>
+    </p>
+  </div>
+<% end %>
