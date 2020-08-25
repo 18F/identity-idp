@@ -101,7 +101,4 @@
 
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= javascript_pack_tag 'image-preview' %>
-
-<% unless Figaro.env.document_capture_react_enabled == 'false' %>
-  <%= javascript_pack_tag 'upload-step' %>
-<% end %>
+<%= javascript_pack_tag 'upload-step' %>
