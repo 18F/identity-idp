@@ -38,17 +38,12 @@ function renderWithDefaultContext(element, options = {}) {
       ),
     );
 
-  const result = render(
-    <UploadContextProvider upload={upload}>{element}</UploadContextProvider>,
-    baseRenderOptions,
-  );
-
-  return {
-    ...result,
-    rerender(nextElement, nextOptions) {
-      renderWithDefaultContext(nextElement, { ...nextOptions, container: result.container });
-    },
-  };
+  return render(element, {
+    ...baseRenderOptions,
+    wrapper: ({ children }) => (
+      <UploadContextProvider upload={upload}>{children}</UploadContextProvider>
+    ),
+  });
 }
 
 export default renderWithDefaultContext;
