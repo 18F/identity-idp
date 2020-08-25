@@ -40,7 +40,7 @@ module Flow
     end
 
     def form_response(obj, value)
-      response = value.is_a?(FormResponse) ? value : create_form_response(value)
+      response = acceptable_response_object?(value) ? value : create_form_response(value)
       obj.mark_step_complete if response.success?
       response
     end
@@ -49,9 +49,13 @@ module Flow
       success = obj.respond_to?(:success?) ? obj.success? : true
       errors = obj.respond_to?(:errors?) ? obj.errors? : {}
       errors = {} if errors.blank?
+      errors = { array: errors } if errors.is_a?(Array)
       FormResponse.new(success: success, errors: errors)
     end
 
+    def acceptable_response_object?(obj)
+      obj.is_a?(FormResponse) || obj.is_a?(DocAuthClient::Response)
+    end
     delegate :flash, :session, :current_user, :params, :request, to: :@controller
   end
 end
