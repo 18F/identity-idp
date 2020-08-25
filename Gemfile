@@ -79,7 +79,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
-  gem 'overcommit', require: false
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end
