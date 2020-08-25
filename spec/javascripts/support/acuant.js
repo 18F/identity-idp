@@ -13,13 +13,18 @@ export function useAcuant() {
   });
 
   return {
-    initialize({ isSuccess = true, isCameraSupported = true } = {}) {
+    initialize({
+      isSuccess = true,
+      isCameraSupported = true,
+      start = sinon.stub(),
+      end = sinon.stub(),
+    } = {}) {
       window.AcuantJavascriptWebSdk = {
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
           isSuccess ? onSuccess() : onFail(),
       };
       window.AcuantCamera = { isCameraSupported };
-      window.AcuantCameraUI = { start: sinon.stub(), end: sinon.stub() };
+      window.AcuantCameraUI = { start, end };
       act(window.onAcuantSdkLoaded);
     },
   };
