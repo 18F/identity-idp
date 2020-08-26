@@ -5,8 +5,7 @@ class FormResponse
     @extra = extra
   end
 
-  attr_reader :errors
-  attr_accessor :extra # so we can chain extra analytics
+  attr_reader :errors, :extra
 
   def success?
     @success
@@ -14,6 +13,16 @@ class FormResponse
 
   def to_h
     { success: success, errors: errors }.merge!(extra)
+  end
+
+  def merge(other)
+    errors = @errors.presence || other.errors
+    errors = Hash[errors.collect { |item| [item, ''] }] if errors.class == Array
+    FormResponse.new(
+      success: success? && other.success?,
+      errors: errors,
+      extra: extra.merge(other.extra),
+    )
   end
 
   private

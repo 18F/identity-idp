@@ -34,8 +34,7 @@ module Flow
 
     def create_response(form_submit_response, call_response)
       return form_submit_response unless BaseStep.acceptable_response_object?(call_response)
-      call_response.extra.merge!(form_submit_response.extra)
-      call_response
+      form_submit_response.merge(call_response)
     end
 
     def form_submit

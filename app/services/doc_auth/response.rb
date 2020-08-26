@@ -1,7 +1,6 @@
 module DocAuth
   class Response
-    attr_reader :errors, :exception, :pii_from_doc
-    attr_accessor :extra # so we can chain extra analytics
+    attr_reader :errors, :exception, :extra, :pii_from_doc
 
     def initialize(success:, errors: [], exception: nil, extra: {}, pii_from_doc: {})
       @success = success
