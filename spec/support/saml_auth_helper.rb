@@ -272,7 +272,7 @@ module SamlAuthHelper
 
   def visit_saml_auth_path
     visit api_saml_auth2019_path(
-      SAMLRequest: CGI.unescape(saml_request(saml_settings))
+      SAMLRequest: CGI.unescape(saml_request(saml_settings)),
     )
   end
 
