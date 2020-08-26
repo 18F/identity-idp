@@ -81,6 +81,7 @@ class SamlIdpController < ApplicationController
   def handle_successful_handoff
     track_events
     delete_branded_experience
+    return redirect_to(account_url) if saml_request.response_url.blank?
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 

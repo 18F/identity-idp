@@ -270,6 +270,12 @@ module SamlAuthHelper
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
+  def visit_saml_auth_path
+    visit api_saml_auth2019_path(
+      SAMLRequest: CGI.unescape(saml_request(saml_settings))
+    )
+  end
+
   private
 
   def link_user_to_identity(user, link, settings)
