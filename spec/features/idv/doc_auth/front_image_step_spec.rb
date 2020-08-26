@@ -93,7 +93,7 @@ feature 'doc auth front image step' do
       method: :post_front_image,
       response: DocAuth::Response.new(
         success: false,
-        errors: [I18n.t('errors.doc_auth.acuant_network_error')],
+        errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
       ),
     )
 

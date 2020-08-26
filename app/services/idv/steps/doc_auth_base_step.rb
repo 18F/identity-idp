@@ -119,7 +119,7 @@ module Idv
         redirect_to throttled_url
         DocAuth::Response.new(
           success: false,
-          errors: [I18n.t('errors.doc_auth.acuant_throttle')],
+          errors: { limit: I18n.t('errors.doc_auth.acuant_throttle') },
         )
       end
 
