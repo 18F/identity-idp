@@ -25,7 +25,7 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors.messages,
-        extra: {}
+        extra: {},
       )
     end
 

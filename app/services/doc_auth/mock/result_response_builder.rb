@@ -38,9 +38,9 @@ module DocAuth
       private
 
       def errors
-      error = parsed_yaml_from_uploaded_file&.dig('friendly_error')
-      return {} if error.blank?
-      { results: [error] }
+        error = parsed_yaml_from_uploaded_file&.dig('friendly_error')
+        return {} if error.blank?
+        { results: [error] }
       end
 
       def parsed_yaml_from_uploaded_file
