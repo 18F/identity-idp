@@ -49,7 +49,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.10.0.pre.18f'
+gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
@@ -79,7 +79,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
-  gem 'overcommit', require: false
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end
@@ -94,8 +93,8 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
-  gem 'rubocop', '~> 0.72.0', require: false
-  gem 'rubocop-rails', '>= 2.3.2', require: false
+  gem 'rubocop', '~> 0.85.0', require: false
+  gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'slim_lint'
 end
 
@@ -121,5 +120,5 @@ end
 
 group :production do
   gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.2.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.3.0'
 end

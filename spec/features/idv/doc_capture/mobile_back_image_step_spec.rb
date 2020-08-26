@@ -30,7 +30,7 @@ feature 'doc capture mobile back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -47,8 +47,8 @@ feature 'doc capture mobile back image step' do
   it 'does not attempt to verify the document if selfie checking is enabled' do
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
-    mock_client = DocAuthMock::DocAuthMockClient.new
-    allow(DocAuthMock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+    mock_client = DocAuth::Mock::DocAuthMockClient.new
+    allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
 
     expect(mock_client).to_not receive(:get_results)
 

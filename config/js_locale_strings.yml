@@ -11,9 +11,15 @@
 - doc_auth.headings.document_capture_front
 - doc_auth.headings.document_capture_selfie
 - doc_auth.headings.front
+- doc_auth.headings.interstitial
 - doc_auth.headings.photo
 - doc_auth.headings.selfie
 - doc_auth.info.document_capture_intro_acknowledgment
+- doc_auth.info.interstitial_eta
+- doc_auth.info.interstitial_thanks
+- doc_auth.instructions.document_capture_selfie_consent_banner
+- doc_auth.instructions.document_capture_selfie_consent_blocked
+- doc_auth.instructions.document_capture_selfie_consent_reason
 - doc_auth.instructions.document_capture_selfie_instructions
 - doc_auth.tips.document_capture_header_text
 - doc_auth.tips.document_capture_hint
@@ -24,6 +30,10 @@
 - doc_auth.tips.document_capture_selfie_text1
 - doc_auth.tips.document_capture_selfie_text2
 - doc_auth.tips.document_capture_selfie_text3
+- errors.doc_auth.acuant_network_error
+- errors.doc_auth.document_capture_selfie_consent_blocked
+- errors.doc_auth.photo_blurry
+- errors.doc_auth.photo_file_size
 - errors.doc_auth.photo_glare
 - errors.doc_auth.selfie
 - errors.messages.format_mismatch

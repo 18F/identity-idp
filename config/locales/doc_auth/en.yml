@@ -12,6 +12,9 @@ en:
       take_picture_retry: Retake photo
       upload_picture: Upload a photo
       use_phone: Use your phone
+    errors:
+      must_be_image: must be an image
+      not_a_file: was not attached as a file
     forms:
       address1: Address
       change_file: Change file
@@ -37,8 +40,9 @@ en:
         and selfie
       document_capture_selfie: Your photo
       front: Front
+      interstitial: We are processing your images…
       photo: Photo
-      selfie: Take a selfie
+      selfie: Take a photo of yourself
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
       take_pic_front: Take a photo of the front of your ID
@@ -47,7 +51,10 @@ en:
       upload: How would you like to upload your state issued ID?
       upload_back: Upload an image of the back of your state issued ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
+      upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take
+        a photo of yourself
       upload_front: Upload an image of the front of your state issued ID
+      upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
       welcome: We need to verify your identity
     info:
@@ -57,6 +64,9 @@ en:
         your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
+      interstitial_eta: This might take up to a minute. We’ll load the next step automatically
+        when it’s done.
+      interstitial_thanks: Thanks for your patience!
       link_sent:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
@@ -65,14 +75,20 @@ en:
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
       upload: We'll collect information about you by reading your state-issued ID.
-        We do not store images you upload. We only verify your identity.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don't have a phone?
+      upload_from_computer_not_allowed: Sign in to your login.gov account on any device
+        that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
       upload_image: We only use your ID to verify your identity, and we will not save
         any images.  We accept BMP, PNG, TIFF, and JPG formats.
-      use_cac_html: "<strong>Are you DoD or military?</strong> %{link}"
-      use_cac_link: Use your CAC card instead
+      upload_liveness_enabled: We'll collect information about you by reading your
+        state-issued ID. Then, you'll take a photo of yourself to confirm that you
+        are the owner of the ID.
+      upload_no_image_storage: We do not store images you upload. We only verify your
+        identity.
+      use_cac_html: Do you have a government employee ID? %{link}
+      use_cac_link: Use a PIV/CAC instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
         information.
@@ -85,6 +101,12 @@ en:
         and share your personal information. We will only use it to verify your identity.
       document_capture_fallback_html: Having trouble? %{link}
       document_capture_fallback_link: Click here to upload an image
+      document_capture_selfie_consent_banner: Allow login.gov to use your device's
+        camera
+      document_capture_selfie_consent_blocked: Check your web browser’s settings for
+        this site to allow login.gov to access the camera.
+      document_capture_selfie_consent_reason: login.gov needs permission to use your
+        camera so that you can prove your ID belongs to you.
       document_capture_selfie_instructions: Now take a picture of yourself. We'll
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow

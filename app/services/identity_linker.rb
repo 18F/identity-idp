@@ -64,7 +64,6 @@ class IdentityLinker
     }
   end
 
-  # rubocop:disable Metrics/MethodLength
   def optional_attributes(
     code_challenge: nil,
     ial: nil,
@@ -87,7 +86,6 @@ class IdentityLinker
       hash[:deleted_at] = nil if clear_deleted_at
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def merge_attributes(verified_attributes)
     verified_attributes = verified_attributes.to_a.map(&:to_s)

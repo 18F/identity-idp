@@ -45,9 +45,9 @@ feature 'doc auth self image step' do
   end
 
   it 'restarts doc auth if the selfie cannot be matched' do
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :post_selfie,
-      response: Acuant::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.selfie')],
       ),
@@ -58,5 +58,15 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_doc_auth_front_image_step)
     expect(page).to have_content(t('errors.doc_auth.selfie'))
+  end
+
+  it 'logs the last doc auth error' do
+    mock_doc_auth_acuant_error_unknown
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(DocAuthLog.first.last_document_error).to eq('Unknown')
   end
 end

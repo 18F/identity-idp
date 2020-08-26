@@ -140,7 +140,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS +
-          [DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
+          [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
 
       sign_in_and_2fa_user
@@ -162,7 +162,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS -
-          [DocAuthMock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
+          [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
 
       sign_in_and_2fa_user

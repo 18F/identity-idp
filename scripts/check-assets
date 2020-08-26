@@ -2,5 +2,6 @@
 $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 require 'asset_checker'
 
-exit(AssetChecker.check_files(ARGV) ? 1 : 0)
+has_missing = AssetChecker.new(ARGV).check_files
 
+exit 1 if has_missing

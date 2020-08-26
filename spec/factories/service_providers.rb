@@ -6,7 +6,7 @@ FactoryBot.define do
     friendly_name { 'Test Service Provider' }
     issuer { SecureRandom.uuid }
     return_to_sp_url { '/' }
-    agency { 'Test Agency' }
+    agency { association :agency }
     help_text do
       { 'sign_in': { en: '<b>custom sign in help text for %{sp_name}</b>' },
         'sign_up': { en: '<b>custom sign up help text for %{sp_name}</b>' },

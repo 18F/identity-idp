@@ -1,4 +1,4 @@
-class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
+class ServiceProviderSessionDecorator
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
@@ -99,11 +99,7 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
   end
 
   def sp_name
-    sp.friendly_name || sp.agency
-  end
-
-  def sp_agency
-    sp.agency || sp.friendly_name
+    sp.friendly_name || sp.agency&.name
   end
 
   def sp_return_url
@@ -126,7 +122,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
     sp.failure_to_proof_url || sp_return_url
   end
 
-  # rubocop:disable Metrics/AbcSize
   def sp_alert?(path)
     sign_in_path =
       I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
@@ -139,7 +134,6 @@ class ServiceProviderSessionDecorator # rubocop:disable Metrics/ClassLength
                             forgot_password_path => 'forgot_password' }
     custom_alert?(path_to_section_map[path])
   end
-  # rubocop:enable Metrics/AbcSize
 
   def mfa_expiration_interval
     aal_1_expiration = Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours

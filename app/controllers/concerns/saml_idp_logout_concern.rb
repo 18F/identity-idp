@@ -26,9 +26,9 @@ module SamlIdpLogoutConcern
       current_user,
       signature: saml_response_signature_options,
     )
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     Rails.logger.info "#{'~' * 10} Response #{'~' * 10}\n#{response}\n#{'~' * 10} Done with response #{'~' * 10}"
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
     response
   end
 

@@ -5,7 +5,6 @@ class ServiceProviderSeeder
     @deploy_env = deploy_env
   end
 
-  # rubocop:disable Metrics/MethodLength
   def run
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
@@ -14,19 +13,18 @@ class ServiceProviderSeeder
                   active: true,
                   native: true,
                   friendly_name: config['friendly_name'])
-      end.update!(config.except('restrict_to_deploy_env',
+      end.update!(config.except('agency',
+                                'restrict_to_deploy_env',
                                 'uuid_priority',
                                 'protocol',
                                 'native'))
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   private
 
   attr_reader :rails_env, :deploy_env
 
-  # rubocop:disable Metrics/AbcSize
   def service_providers
     file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
     content = ERB.new(file).result
@@ -38,7 +36,6 @@ class ServiceProviderSeeder
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
   end
-  # rubocop:enable Metrics/AbcSize
 
   def remote_setting
     RemoteSetting.find_by(name: 'service_providers.yml')&.contents

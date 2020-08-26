@@ -38,7 +38,7 @@ feature 'doc auth back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-    expect(DocAuthMock::DocAuthMockClient.last_uploaded_back_image).to eq(
+    expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -54,9 +54,9 @@ feature 'doc auth back image step' do
   end
 
   it 'does not proceed to the next page if the image upload fails' do
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
-      response: Acuant::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.acuant_network_error')],
       ),
@@ -83,8 +83,8 @@ feature 'doc auth back image step' do
   it 'does not attempt to verify the document if selfie checking is enabled' do
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
-    mock_client = DocAuthMock::DocAuthMockClient.new
-    allow(DocAuthMock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+    mock_client = DocAuth::Mock::DocAuthMockClient.new
+    allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
 
     expect(mock_client).to_not receive(:get_results)
 
@@ -96,9 +96,9 @@ feature 'doc auth back image step' do
 
   it 'renders a friendly error message if one is present on the response' do
     error_message = I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: Acuant::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [error_message],
       ),
@@ -131,5 +131,15 @@ feature 'doc auth back image step' do
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
+  end
+
+  it 'logs the last error in doc auth' do
+    mock_doc_auth_acuant_error_unknown
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_front_image_step)
+    expect(DocAuthLog.first.last_document_error).to eq('Unknown')
   end
 end

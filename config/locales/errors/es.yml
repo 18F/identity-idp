@@ -44,6 +44,7 @@ es:
         <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
+      document_capture_selfie_consent_blocked: El acceso a su cámara está bloqueado
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.
@@ -61,7 +62,10 @@ es:
         </ul>
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      photo_glare: La foto tiene demasiado brillo. Inténtalo de nuevo.
+      photo_blurry: La foto está demasiado borrosa. Vuelve a intentarlo.
+      photo_file_size: La foto está demasiado comprimida. Vuelve a intentarlo con
+        una calidad superior.
+      photo_glare: La foto tiene un resplandor. Vuelve a intentarlo.
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
         de verificación de identidad. Póngase en contacto con su proveedor de servicios
         para obtener más información.

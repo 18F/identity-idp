@@ -12,10 +12,13 @@ global.expect = chai.expect;
 // managing history API (pushState, etc).
 const dom = createDOM();
 global.window = dom.window;
+global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
 global.navigator = window.navigator;
 global.document = window.document;
 global.getComputedStyle = window.getComputedStyle;
 global.self = window;
+
+process.env.ACUANT_MINIMUM_FILE_SIZE = '0';
 
 useCleanDOM();
 useConsoleLogSpy();

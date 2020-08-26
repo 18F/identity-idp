@@ -18,7 +18,7 @@ module Idv
         # validate them here before continuing.
         return if liveness_checking_enabled?
 
-        get_results_response = DocAuthClient.client.get_results(
+        get_results_response = DocAuth::Client.client.get_results(
           instance_id: flow_session[:instance_id],
         )
         add_cost(:acuant_result) if get_results_response.to_h[:billed]
@@ -36,6 +36,7 @@ module Idv
         extra = get_results_response.to_h.merge(
           notice: I18n.t('errors.doc_auth.general_info'),
         )
+        log_document_error(get_results_response)
         failure(get_results_response.errors.first, extra)
       end
 

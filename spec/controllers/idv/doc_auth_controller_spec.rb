@@ -80,7 +80,14 @@ describe Idv::DocAuthController do
     end
 
     it 'add unsafe-eval to the CSP for capture steps' do
-      capture_steps = %i[front_image back_image mobile_front_image mobile_back_image selfie]
+      capture_steps = %i[
+        front_image
+        back_image
+        mobile_front_image
+        mobile_back_image
+        selfie
+        document_capture
+      ]
       capture_steps.each do |step|
         mock_next_step(step)
 
@@ -113,6 +120,36 @@ describe Idv::DocAuthController do
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
+    end
+
+    describe 'when document capture is enabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
+      end
+
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
+
+      it 'skips from welcome to document capture' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      end
+    end
+
+    describe 'when document capture is disabled' do
+      before(:each) do
+        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('false')
+      end
+
+      it 'progresses from welcome to upload' do
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+      end
     end
   end
 

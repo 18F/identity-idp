@@ -43,7 +43,7 @@ describe EventDisavowalController do
   end
 
   describe '#create' do
-    context 'with a valid passowrd' do
+    context 'with a valid password' do
       it 'tracks an analytics event' do
         expect(@analytics).to receive(:track_event).with(
           Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
@@ -94,6 +94,29 @@ describe EventDisavowalController do
         }
 
         post :create, params: params
+      end
+    end
+
+    context 'with an event whose user has been deleted' do
+      before do
+        event.user.delete
+      end
+
+      it 'errors' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          build_analytics_hash(
+            success: false,
+            errors: {
+              user: [t('event_disavowals.errors.no_account')],
+            },
+          ),
+        )
+
+        post :create, params: {
+          disavowal_token: disavowal_token,
+          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
+        }
       end
     end
   end

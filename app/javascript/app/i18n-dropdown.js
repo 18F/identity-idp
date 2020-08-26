@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (desktopLink) languagePicker(desktopLink, desktopDropdown);
-  if (mobileLink) languagePicker(mobileLink, mobileDropdown);
+  if (desktopLink) {
+    languagePicker(desktopLink, desktopDropdown);
+  }
+  if (mobileLink) {
+    languagePicker(mobileLink, mobileDropdown);
+  }
 });

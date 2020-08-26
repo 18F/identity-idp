@@ -1,7 +1,6 @@
 require 'stringex/unidecoder'
 require 'stringex/core_ext'
 
-# rubocop:disable Metrics/ClassLength
 class AttributeAsserter
   VALID_ATTRIBUTES = %i[
     first_name
@@ -17,28 +16,40 @@ class AttributeAsserter
     phone
   ].freeze
 
-  def initialize(user:, service_provider:, name_id_format:, authn_request:, decrypted_pii:)
+  def initialize(user:,
+                 service_provider:,
+                 name_id_format:,
+                 authn_request:,
+                 decrypted_pii:,
+                 user_session:)
     self.user = user
     self.service_provider = service_provider
     self.name_id_format = name_id_format
     self.authn_request = authn_request
     self.decrypted_pii = decrypted_pii
+    self.user_session = user_session
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
+    add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   private
 
-  attr_accessor :user, :service_provider, :name_id_format, :authn_request, :decrypted_pii
+  attr_accessor :user,
+                :service_provider,
+                :name_id_format,
+                :authn_request,
+                :decrypted_pii,
+                :user_session
 
   def ial_context
     @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)
@@ -71,6 +82,11 @@ class AttributeAsserter
     context = authn_request.requested_aal_authn_context
     context ||= Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[service_provider.aal]
     attrs[:aal] = { getter: aal_getter_function(context) } if context
+  end
+
+  def add_x509(attrs)
+    attrs[:x509_subject] = { getter: ->(_principal) { x509_data.subject } }
+    attrs[:x509_presented] = { getter: ->(_principal) { x509_data.presented } }
   end
 
   def uuid_getter_function
@@ -123,8 +139,15 @@ class AttributeAsserter
     authn_request.requested_ial_authn_context
   end
 
+  def x509_data
+    return @x509_data if defined?(@x509_data)
+    @x509_data ||= begin
+      x509_hash = user_session[:decrypted_x509]
+      X509::Attributes.new_from_json(x509_hash) if x509_hash
+    end
+  end
+
   def ascii?
     bundle.include?(:ascii)
   end
 end
-# rubocop:enable Metrics/ClassLength

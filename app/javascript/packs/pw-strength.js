@@ -35,7 +35,9 @@ function getStrength(z) {
 }
 
 function getFeedback(z) {
-  if (!z || z.score > 2) return '&nbsp;';
+  if (!z || z.score > 2) {
+    return '&nbsp;';
+  }
 
   const { warning, suggestions } = z.feedback;
 
@@ -43,14 +45,20 @@ function getFeedback(z) {
     return I18n.t(`zxcvbn.feedback.${I18n.key(str)}`);
   }
 
-  if (!warning && !suggestions.length) return '&nbsp;';
-  if (warning) return lookup(warning);
+  if (!warning && !suggestions.length) {
+    return '&nbsp;';
+  }
+  if (warning) {
+    return lookup(warning);
+  }
 
   return `${suggestions.map((s) => lookup(s)).join('')}`;
 }
 
 function disableSubmit(submitEl, length = 0, score = 0) {
-  if (!submitEl) return;
+  if (!submitEl) {
+    return;
+  }
 
   if (score < 3 || length < 12) {
     submitEl.setAttribute('disabled', true);

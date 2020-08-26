@@ -1,5 +1,5 @@
 module Users
-  class SessionsController < Devise::SessionsController # rubocop:disable Metrics/ClassLength
+  class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
     include SecureHeadersConcern
     include RememberDeviceConcern

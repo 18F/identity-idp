@@ -107,7 +107,7 @@ describe Identity do
 
   describe '#agency_name' do
     it 'returns service provider agency first' do
-      expect(identity_with_sp.agency_name).to eq(service_provider.agency)
+      expect(identity_with_sp.agency_name).to eq(service_provider.agency.name)
     end
 
     it 'returns service_provider friendly_name if agency is missing' do

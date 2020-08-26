@@ -1,3 +1,7 @@
+body.has-full-screen-overlay { // scss-lint:disable QualifyingElement
+  overflow: hidden;
+}
+
 .full-screen {
   bottom: 0;
   left: 0;

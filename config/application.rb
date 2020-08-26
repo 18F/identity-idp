@@ -19,6 +19,13 @@ module Upaya
 
     routes.default_url_options[:host] = Figaro.env.domain_name
 
+    config.action_mailer.default_options = {
+      from: Mail::Address.new.tap do |mail|
+        mail.address = Figaro.env.email_from
+        mail.display_name = Figaro.env.email_from_display_name
+      end.to_s,
+    }
+
     config.lograge.custom_options = lambda do |event|
       event.payload[:timestamp] = Time.zone.now.iso8601
       event.payload[:uuid] = SecureRandom.uuid
