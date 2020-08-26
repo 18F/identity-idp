@@ -26,7 +26,7 @@ import useI18n from '../hooks/use-i18n';
  *
  * @return {ReactNode[]} Formatted error messages.
  */
-export function getFormattedErrors(errors) {
+export function getFormattedErrorMessages(errors) {
   return errors.flatMap((error, i) => [<br key={i} />, error]).slice(1);
 }
 
@@ -85,7 +85,9 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       {submissionError && (
         <Alert type="error" className="margin-bottom-2">
           {isFormEntriesError
-            ? getFormattedErrors(/** @type {UploadFormEntriesError} */ (submissionError).rawErrors)
+            ? getFormattedErrorMessages(
+                /** @type {UploadFormEntriesError} */ (submissionError).rawErrorMessages,
+              )
             : t('errors.doc_auth.acuant_network_error')}
         </Alert>
       )}

@@ -13,13 +13,13 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
  *
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Change handler.
- * @prop {ReactNode=} error Error to show.
+ * @prop {ReactNode=} errorMessage Error to show.
  */
 
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange, error }) {
+function SelfieCapture({ value, onChange, errorMessage }) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
@@ -67,9 +67,9 @@ function SelfieCapture({ value, onChange, error }) {
         }),
       )
       .catch(
-        ifStillMounted((mediaError) => {
-          if (mediaError.name !== 'NotAllowedError') {
-            throw mediaError;
+        ifStillMounted((error) => {
+          if (error.name !== 'NotAllowedError') {
+            throw error;
           }
 
           setIsAccessRejected(true);
@@ -111,17 +111,17 @@ function SelfieCapture({ value, onChange, error }) {
     canvas.toBlob(ifStillMounted(onChange));
   }
 
-  let shownError;
+  let shownErrorMessage;
   if (isAccessRejected) {
-    shownError = t('errors.doc_auth.document_capture_selfie_consent_blocked');
-  } else if (error) {
-    shownError = error;
+    shownErrorMessage = t('errors.doc_auth.document_capture_selfie_consent_blocked');
+  } else if (errorMessage) {
+    shownErrorMessage = errorMessage;
   }
 
   const classes = [
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
-    shownError && 'selfie-capture--error',
+    shownErrorMessage && 'selfie-capture--error',
     value && 'selfie-capture--has-value',
   ]
     .filter(Boolean)
@@ -135,15 +135,15 @@ function SelfieCapture({ value, onChange, error }) {
         ref={labelRef}
         id={labelId}
         tabIndex={-1}
-        className={['selfie-capture__label', 'usa-label', shownError && 'usa-label--error']
+        className={['selfie-capture__label', 'usa-label', shownErrorMessage && 'usa-label--error']
           .filter(Boolean)
           .join(' ')}
       >
         {t('doc_auth.headings.document_capture_selfie')}
       </div>
-      {shownError && (
+      {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
-          {shownError}
+          {shownErrorMessage}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>

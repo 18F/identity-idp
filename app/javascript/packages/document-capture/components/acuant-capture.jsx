@@ -24,7 +24,7 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
  * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
- * @prop {ReactNode=} error Error to show.
+ * @prop {ReactNode=} errorMessage Error to show.
  */
 
 /**
@@ -85,15 +85,15 @@ function AcuantCapture({
   minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
   allowUpload = true,
-  error,
+  errorMessage,
 }) {
   const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [ownError, setOwnError] = useState(/** @type {?string} */ (null));
-  useMemo(() => setOwnError(null), [value]);
+  const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
+  useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
@@ -140,9 +140,9 @@ function AcuantCapture({
    */
   function onChangeIfValid(nextValue) {
     if (nextValue && nextValue.size < minimumFileSize) {
-      setOwnError(t('errors.doc_auth.photo_file_size'));
+      setOwnErrorMessage(t('errors.doc_auth.photo_file_size'));
     } else {
-      setOwnError(null);
+      setOwnErrorMessage(null);
       onChange(nextValue);
     }
   }
@@ -179,9 +179,9 @@ function AcuantCapture({
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
               if (nextCapture.glare < minimumGlareScore) {
-                setOwnError(t('errors.doc_auth.photo_glare'));
+                setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
               } else if (nextCapture.sharpness < minimumSharpnessScore) {
-                setOwnError(t('errors.doc_auth.photo_blurry'));
+                setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
               } else {
                 const dataAsBlob = toBlob(nextCapture.image.data);
                 fileCache.set(dataAsBlob, nextCapture.image.data);
@@ -191,7 +191,7 @@ function AcuantCapture({
               setIsCapturing(false);
             }}
             onImageCaptureFailure={() => {
-              setOwnError(t('errors.doc_auth.capture_failure'));
+              setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturing(false);
             }}
           />
@@ -205,10 +205,10 @@ function AcuantCapture({
         accept={['image/*']}
         capture={capture}
         value={value}
-        error={ownError ?? error}
+        errorMessage={ownErrorMessage ?? errorMessage}
         onClick={startCaptureOrTriggerUpload}
         onChange={onChangeIfValid}
-        onError={() => setOwnError(null)}
+        onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">
         {isMobile && (

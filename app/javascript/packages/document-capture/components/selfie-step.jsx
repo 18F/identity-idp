@@ -51,13 +51,13 @@ function SelfieStep({ value = {}, onChange = () => {}, errors = {} }) {
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
           className="id-card-file-input"
-          error={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
+          errorMessage={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
         />
       ) : (
         <SelfieCapture
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          error={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
+          errorMessage={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
         />
       )}
     </>

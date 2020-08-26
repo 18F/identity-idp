@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
 import { AcuantProvider } from '@18f/identity-document-capture';
 import DocumentCapture, {
-  getFormattedErrors,
+  getFormattedErrorMessages,
 } from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
@@ -27,15 +27,15 @@ describe('document-capture/components/document-capture', () => {
     window.location.hash = originalHash;
   });
 
-  describe('getFormattedErrors', () => {
+  describe('getFormattedErrorMessages', () => {
     it('formats one message', () => {
-      const { container } = render(getFormattedErrors(['Boom!']));
+      const { container } = render(getFormattedErrorMessages(['Boom!']));
 
       expect(container.innerHTML).to.equal('Boom!');
     });
 
     it('formats many messages', () => {
-      const { container } = render(getFormattedErrors(['Boom!', 'Wham!', 'Ka-pow!']));
+      const { container } = render(getFormattedErrorMessages(['Boom!', 'Wham!', 'Ka-pow!']));
 
       expect(container.innerHTML).to.equal('Boom!<br>Wham!<br>Ka-pow!');
     });
@@ -178,7 +178,7 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders handled submission failure', async () => {
     const uploadError = new UploadFormEntriesError('Front image has glare, Back image is missing');
-    uploadError.rawErrors = ['Front image has glare', 'Back image is missing'];
+    uploadError.rawErrorMessages = ['Front image has glare', 'Back image is missing'];
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
       <DocumentCapture />,
       {

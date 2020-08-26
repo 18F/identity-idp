@@ -60,7 +60,7 @@ function DocumentsStep({ value = {}, onChange = () => {}, errors = {} }) {
           value={value[side]}
           onChange={(nextValue) => onChange({ [side]: nextValue })}
           className="id-card-file-input"
-          error={errors[side] ? <FormErrorMessage error={errors[side]} /> : undefined}
+          errorMessage={errors[side] ? <FormErrorMessage error={errors[side]} /> : undefined}
         />
       ))}
     </>
