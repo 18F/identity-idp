@@ -25,7 +25,7 @@ module DocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
-        Responses::CreateDocumentResponse.new(success: true, errors: [], instance_id: instance_id)
+        Responses::CreateDocumentResponse.new(success: true, errors: {}, instance_id: instance_id)
       end
 
       def post_front_image(image:, instance_id:)

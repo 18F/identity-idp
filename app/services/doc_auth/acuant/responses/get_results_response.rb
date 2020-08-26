@@ -44,9 +44,9 @@ module DocAuth
         attr_reader :http_response
 
         def error_messages_from_alerts
-          return [] if successful_result?
+          return {} if successful_result?
 
-          raw_alerts.map do |raw_alert|
+          messages = raw_alerts.map do |raw_alert|
             # If a friendly message exists for this alert, we want to return that.
             # If a friendly message does not exist, FriendlyError::Message will return the raw alert
             # to us. In that case we respond with a general error.
@@ -55,6 +55,8 @@ module DocAuth
             next I18n.t('errors.doc_auth.general_error') if friendly_message == raw_alert_message
             friendly_message
           end
+
+          { results: messages }
         end
 
         def parsed_response_body

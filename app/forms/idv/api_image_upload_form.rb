@@ -21,14 +21,11 @@ module Idv
       @liveness_checking_enabled = liveness_checking_enabled
     end
 
-    # Normally we'd return FormResponse, but that has errors as a hash,
-    # where the proofer reponses have errors as an array. This is easier to compare
-    # with the proofer responses
-    # @return [DocAuth::Response]
     def submit
-      DocAuth::Response.new(
+      FormResponse.new(
         success: valid?,
-        errors: errors.full_messages,
+        errors: errors.messages,
+        extra: {}
       )
     end
 
