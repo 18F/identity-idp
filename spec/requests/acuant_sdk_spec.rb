@@ -11,11 +11,19 @@ describe 'requesting acuant SDK assets' do
     end
 
     it 'renders a WASM asset' do
-      get '/verify/doc_auth/AcuantImageProcessingService.wasm'
+      get '/verify/doc_auth/AcuantImageProcessingWorker.wasm'
 
       expect(response.status).to eq(200)
       expect(response.headers['Content-Type']).to eq('application/wasm')
-      expect(response.body.length).to eq(File.size('public/AcuantImageProcessingService.wasm'))
+      expect(response.body.length).to eq(File.size('public/AcuantImageProcessingWorker.wasm'))
+    end
+
+    it 'renders a .js.mem asset' do
+      get '/verify/doc_auth/AcuantImageProcessingService.js.mem'
+
+      expect(response.status).to eq(200)
+      expect(response.headers['Content-Type']).to eq('application/octet-stream')
+      expect(response.body.length).to eq(File.size('public/AcuantImageProcessingService.js.mem'))
     end
 
     it 'adds unsafe-eval to the CSP' do

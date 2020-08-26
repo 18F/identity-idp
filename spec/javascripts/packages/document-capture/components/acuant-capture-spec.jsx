@@ -156,12 +156,17 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(0, {
-          glare: 70,
-          sharpness: 70,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            glare: 70,
+            sharpness: 70,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          });
         }),
       });
 
@@ -245,12 +250,17 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(0, {
-          glare: 38,
-          sharpness: 70,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            glare: 38,
+            sharpness: 70,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          });
         }),
       });
 
@@ -272,12 +282,17 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(0, {
-          glare: 70,
-          sharpness: 20,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            glare: 70,
+            sharpness: 20,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          });
         }),
       });
 
@@ -299,12 +314,17 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(0, {
-          glare: 70,
-          sharpness: 20,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            glare: 70,
+            sharpness: 20,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          });
         }),
       });
 
@@ -335,20 +355,30 @@ describe('document-capture/components/acuant-capture', () => {
         start: sinon
           .stub()
           .onFirstCall()
-          .callsArgWithAsync(0, {
-            glare: 70,
-            sharpness: 20,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
+          .callsFake(async (callbacks) => {
+            await Promise.resolve();
+            callbacks.onCaptured();
+            await Promise.resolve();
+            callbacks.onCropped({
+              glare: 70,
+              sharpness: 20,
+              image: {
+                data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+              },
+            });
           })
           .onSecondCall()
-          .callsArgWithAsync(0, {
-            glare: 70,
-            sharpness: 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
+          .callsFake(async (callbacks) => {
+            await Promise.resolve();
+            callbacks.onCaptured();
+            await Promise.resolve();
+            callbacks.onCropped({
+              glare: 70,
+              sharpness: 70,
+              image: {
+                data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+              },
+            });
           }),
       });
 
@@ -371,12 +401,17 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(0, {
-          glare: 70,
-          sharpness: 38,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            glare: 70,
+            sharpness: 38,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          });
         }),
       });
 

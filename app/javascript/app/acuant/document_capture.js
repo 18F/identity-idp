@@ -13,7 +13,24 @@ const {
 export const imageCaptureButtonClicked = (event) => {
   event.preventDefault();
   acuantImageCaptureStarted();
-  window.AcuantCameraUI.start(acuantImageCaptureSuccess, acuantImageCaptureFailed);
+
+  const start = window.AcuantCamera.isCameraSupported
+    ? window.AcuantCameraUI.start.bind(window.AcuantCameraUI)
+    : window.AcuantCamera.startManualCapture.bind(window.AcuantCamera);
+
+  start(
+    {
+      onCaptured() {},
+      onCropped(response) {
+        if (response) {
+          acuantImageCaptureSuccess(response);
+        } else {
+          acuantImageCaptureFailed();
+        }
+      },
+    },
+    acuantImageCaptureFailed,
+  );
 };
 
 export const initializeAcuantSdk = (credentials = null, endpoint = null) => {
@@ -33,7 +50,7 @@ export const loadAndInitializeAcuantSdk = () => {
   window.onAcuantSdkLoaded = initializeAcuantSdk;
 
   const sdk = document.createElement('script');
-  sdk.src = 'AcuantJavascriptWebSdk.min.js';
+  sdk.src = 'AcuantJavascriptWebSdk.min.js?v=11.4.1';
   sdk.async = true;
 
   document.body.appendChild(sdk);
