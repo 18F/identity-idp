@@ -112,6 +112,9 @@ describe DocAuth::Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
+          with(RuntimeError).once
+
+        expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:custom_params)).twice
 
         response = subject.fetch
@@ -134,6 +137,9 @@ describe DocAuth::Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
+          with(RuntimeError).once
+
+        expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:custom_params)).twice
 
         response = subject.fetch
@@ -154,6 +160,9 @@ describe DocAuth::Acuant::Request do
             { body: 'test response body', status: 439 },
             { body: 'test response body', status: 439 },
           )
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+          with(RuntimeError).once
 
         expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:custom_params)).twice
