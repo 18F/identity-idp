@@ -48,12 +48,20 @@ describe FormResponse do
       expect(combined_response.extra).to eq({ step: 'foo', is_fallback_link: true })
     end
 
-    it 'handles both arrays and hashes for errors' do
-      response1 = FormResponse.new(success: true, errors: {})
+    it 'handles both arrays and hashes' do
+      response1 = FormResponse.new(success: false, errors: {})
       response2 = DocAuth::Response.new(success: true, errors: ['foo'])
 
       combined_response = response1.merge(response2)
       expect(combined_response.errors).to eq({ other: ['foo'] })
+    end
+
+    it 'returns true if one is false and one is true' do
+      response1 = FormResponse.new(success: false, errors: {})
+      response2 = DocAuth::Response.new(success: true)
+
+      combined_response = response1.merge(response2)
+      expect(combined_response.success?).to eq(false)
     end
   end
 
