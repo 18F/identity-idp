@@ -17,7 +17,7 @@ class FormResponse
 
   def merge(other)
     errors = @errors.presence || other.errors
-    errors = Hash[errors.collect { |item| [item, ''] }] if errors.class == Array
+    errors = { other: other.errors } if other.errors.is_a?(Array)
     FormResponse.new(
       success: success? && other.success?,
       errors: errors,
