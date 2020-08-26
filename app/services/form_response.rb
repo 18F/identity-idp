@@ -5,7 +5,8 @@ class FormResponse
     @extra = extra
   end
 
-  attr_reader :errors, :extra
+  attr_reader :errors
+  attr_accessor :extra # so we can chain extra analytics
 
   def success?
     @success

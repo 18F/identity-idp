@@ -13,7 +13,7 @@ module Flow
         flow_session[:error_message] = form_response.errors
         return form_response
       end
-      call
+      create_response(form_response, call)
     end
 
     def mark_step_complete(step = nil)
@@ -26,7 +26,17 @@ module Flow
       flow_session.delete(klass.to_s)
     end
 
+    def self.acceptable_response_object?(obj)
+      obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
+    end
+
     private
+
+    def create_response(form_submit_response, call_response)
+      return form_submit_response unless BaseStep.acceptable_response_object?(call_response)
+      call_response.extra.merge!(form_submit_response.extra)
+      call_response
+    end
 
     def form_submit
       FormResponse.new(success: true, errors: {})

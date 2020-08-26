@@ -40,21 +40,17 @@ module Flow
     end
 
     def form_response(obj, value)
-      response = acceptable_response_object?(value) ? value : create_form_response(value)
+      response = BaseStep.acceptable_response_object?(value) ? value : create_form_response(value)
       obj.mark_step_complete if response.success?
       response
     end
 
     def create_form_response(obj)
       success = obj.respond_to?(:success?) ? obj.success? : true
-      errors = obj.respond_to?(:errors?) ? obj.errors? : {}
-      extra = obj.respond_to?(:extra?) ? obj.extra? : {}
+      errors = obj.respond_to?(:errors) ? obj.errors : {}
+      extra = obj.respond_to?(:extra) ? obj.extra : {}
       errors = {} if errors.blank?
       FormResponse.new(success: success, errors: errors, extra: extra)
-    end
-
-    def acceptable_response_object?(obj)
-      obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
 
     delegate :flash, :session, :current_user, :params, :request, to: :@controller
