@@ -50,7 +50,7 @@ describe FormResponse do
 
     it 'merges errors' do
       response1 = FormResponse.new(success: false, errors: { front: 'error' })
-      response2 = DocAuth::Response.new(success: true, errors: { back: 'error'})
+      response2 = DocAuth::Response.new(success: true, errors: { back: 'error' })
 
       combined_response = response1.merge(response2)
       expect(combined_response.errors).to eq(front: 'error', back: 'error')
