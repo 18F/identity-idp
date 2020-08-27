@@ -33,6 +33,16 @@ describe 'requesting acuant SDK assets' do
     end
   end
 
+  context 'with optional version prefix' do
+    it 'renders an asset' do
+      get '/verify/doc_auth/11.4.1/AcuantJavascriptWebSdk.min.js'
+
+      expect(response.status).to eq(200)
+      expect(response.headers['Content-Type']).to eq('application/javascript')
+      expect(response.body).to eq(File.read('public/AcuantJavascriptWebSdk.min.js'))
+    end
+  end
+
   context 'with something that is not a valid Acuant SDK asset' do
     it 'renders a 404' do
       get '/verify/doc_auth/uselss-noise.min.js'
