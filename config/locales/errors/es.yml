@@ -22,7 +22,7 @@ es:
         Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: Para evitar abusos, limitamos el número de veces que puede
         intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
-      capture_failure: La cámara no se pudo inicializar. Vuelva a intentarlo.
+      capture_failure: La cámara no se pudo iniciar. Vuelve a intentarlo.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
       document_capture_info_html: |-
