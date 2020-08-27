@@ -43,7 +43,7 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq(['Front of your ID Please fill in this field.'])
+          expect(json[:errors]).to eq(['front Please fill in this field.'])
         end
       end
 
@@ -55,7 +55,7 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:errors]).
-            to eq(["Front of your ID #{I18n.t('doc_auth.errors.not_a_file')}"])
+            to eq(["front #{I18n.t('doc_auth.errors.not_a_file')}"])
         end
 
         context 'with a locale param' do
@@ -66,8 +66,7 @@ describe Idv::ImageUploadsController do
 
             json = JSON.parse(response.body, symbolize_names: true)
             expect(json[:errors]).
-              to eq(['Frente de su identificación ' +
-                      I18n.t('doc_auth.errors.not_a_file', locale: 'es')])
+              to eq(["front #{I18n.t('doc_auth.errors.not_a_file', locale: 'es')}"])
           end
         end
       end
@@ -89,7 +88,7 @@ describe Idv::ImageUploadsController do
             method: :post_images,
             response: DocAuth::Response.new(
               success: false,
-              errors: ['Too blurry', 'Wrong document'],
+              errors: { front: ['Too blurry', 'Wrong document'] },
             ),
           )
         end
@@ -99,7 +98,7 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq(['Too blurry', 'Wrong document'])
+          expect(json[:errors]).to eq(['front Too blurry', 'front Wrong document'])
         end
       end
     end

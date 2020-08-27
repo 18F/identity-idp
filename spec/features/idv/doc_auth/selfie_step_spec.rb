@@ -49,7 +49,7 @@ feature 'doc auth self image step' do
       method: :post_selfie,
       response: DocAuth::Response.new(
         success: false,
-        errors: [I18n.t('errors.doc_auth.selfie')],
+        errors: { results: I18n.t('errors.doc_auth.selfie') },
       ),
     )
 

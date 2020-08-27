@@ -116,9 +116,7 @@ describe DocAuth::Mock::DocAuthMockClient do
         method: :get_results,
         response: DocAuth::Response.new(
           success: false,
-          errors: [
-            { back_image: 'blurry' },
-          ],
+          errors: { back_image: 'blurry' },
         ),
       )
     end
@@ -131,7 +129,7 @@ describe DocAuth::Mock::DocAuthMockClient do
       )
 
       expect(post_images_response.success?).to eq(false)
-      expect(post_images_response.errors).to eq([{ back_image: 'blurry' }])
+      expect(post_images_response.errors).to eq(back_image: 'blurry')
     end
   end
 end

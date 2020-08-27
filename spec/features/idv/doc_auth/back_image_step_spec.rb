@@ -58,7 +58,7 @@ feature 'doc auth back image step' do
       method: :post_back_image,
       response: DocAuth::Response.new(
         success: false,
-        errors: [I18n.t('errors.doc_auth.acuant_network_error')],
+        errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
       ),
     )
 
@@ -100,7 +100,7 @@ feature 'doc auth back image step' do
       method: :get_results,
       response: DocAuth::Response.new(
         success: false,
-        errors: [error_message],
+        errors: { result: [error_message] },
       ),
     )
 

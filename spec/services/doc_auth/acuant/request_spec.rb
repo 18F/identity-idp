@@ -69,7 +69,7 @@ describe DocAuth::Acuant::Request do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+        expect(response.errors).to eq(network: I18n.t('errors.doc_auth.acuant_network_error'))
         expect(response.exception.message).to eq(
           'DocAuth::Acuant::Request Unexpected HTTP response 404',
         )
@@ -182,7 +182,7 @@ describe DocAuth::Acuant::Request do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+        expect(response.errors).to eq(network: I18n.t('errors.doc_auth.acuant_network_error'))
         expect(response.exception).to be_a(Faraday::ConnectionFailed)
       end
     end

@@ -13,11 +13,11 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
 
     it 'returns a successful response with no errors' do
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(response.to_h).to eq(
         success: true,
-        errors: [],
+        errors: {},
         exception: nil,
         billed: true,
         result: 'Passed',
@@ -58,7 +58,7 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
         # This is the error message for the error in the response fixture
-        [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
+        results: [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
       )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
@@ -79,7 +79,7 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
           # This is the error message for the error in the response fixture
-          [I18n.t('errors.doc_auth.general_error')],
+          results: [I18n.t('errors.doc_auth.general_error')],
         )
         expect(response.exception).to be_nil
       end

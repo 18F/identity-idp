@@ -171,7 +171,7 @@ describe DocAuth::Acuant::AcuantClient do
       result = subject.create_document
 
       expect(result.success?).to eq(false)
-      expect(result.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+      expect(result.errors).to eq(network: I18n.t('errors.doc_auth.acuant_network_error'))
       expect(result.exception.message).to eq(
         'DocAuth::Acuant::Requests::CreateDocumentRequest Unexpected HTTP response 500',
       )
@@ -186,7 +186,7 @@ describe DocAuth::Acuant::AcuantClient do
       result = subject.create_document
 
       expect(result.success?).to eq(false)
-      expect(result.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+      expect(result.errors).to eq(network: I18n.t('errors.doc_auth.acuant_network_error'))
       expect(result.exception.message).to eq(
         'Connection failed',
       )
@@ -219,7 +219,7 @@ describe DocAuth::Acuant::AcuantClient do
         )
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to eq([])
+        expect(result.errors).to eq({})
         expect(result.class).to eq(DocAuth::Response)
         expect(get_face_stub).to have_been_requested
         expect(facial_match_stub).to have_been_requested
@@ -237,7 +237,7 @@ describe DocAuth::Acuant::AcuantClient do
         )
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq([I18n.t('errors.doc_auth.acuant_network_error')])
+        expect(result.errors).to eq(network: I18n.t('errors.doc_auth.acuant_network_error'))
       end
     end
 
@@ -255,7 +255,7 @@ describe DocAuth::Acuant::AcuantClient do
         )
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+        expect(result.errors).to eq(facial_match: I18n.t('errors.doc_auth.selfie'))
       end
     end
 
@@ -273,7 +273,7 @@ describe DocAuth::Acuant::AcuantClient do
         )
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+        expect(result.errors).to eq(liveness: I18n.t('errors.doc_auth.selfie'))
       end
     end
   end

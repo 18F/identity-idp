@@ -48,7 +48,12 @@ module Idv
           success: true,
         }
       else
-        render json: form_response.to_h,
+        # FOLLOWUP: refactor the client to accept a hash of errors
+        errors_arr = form_response.errors.flat_map do |key, errs|
+          Array(errs).map { |err| "#{key} #{err}" }
+        end
+
+        render json: form_response.to_h.merge(errors: errors_arr),
                status: :bad_request
       end
     end
