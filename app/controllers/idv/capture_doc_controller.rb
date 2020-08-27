@@ -27,6 +27,7 @@ module Idv
         back_image
         mobile_front_image
         mobile_back_image
+        capture_mobile_back_image
         selfie
         document_capture
       ].include?(current_step)
