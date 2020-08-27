@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep, { isValid as isDocumentsStepValid } from './documents-step';
-import SelfieStep, { isValid as isSelfieStepValid } from './selfie-step';
+import DocumentsStep, { validate as validateDocumentsStep } from './documents-step';
+import SelfieStep, { validate as validateSelfieStep } from './selfie-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
@@ -26,7 +26,7 @@ import useI18n from '../hooks/use-i18n';
  *
  * @return {ReactNode[]} Formatted error messages.
  */
-export function getFormattedErrors(errors) {
+export function getFormattedErrorMessages(errors) {
   return errors.flatMap((error, i) => [<br key={i} />, error]).slice(1);
 }
 
@@ -49,13 +49,13 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       name: 'documents',
       title: t('doc_auth.headings.document_capture'),
       component: DocumentsStep,
-      isValid: isDocumentsStepValid,
+      validate: validateDocumentsStep,
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
       component: SelfieStep,
-      isValid: isSelfieStepValid,
+      validate: validateSelfieStep,
     },
   ].filter(Boolean));
 
@@ -85,7 +85,9 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       {submissionError && (
         <Alert type="error" className="margin-bottom-2">
           {isFormEntriesError
-            ? getFormattedErrors(/** @type {UploadFormEntriesError} */ (submissionError).rawErrors)
+            ? getFormattedErrorMessages(
+                /** @type {UploadFormEntriesError} */ (submissionError).rawErrorMessages,
+              )
             : t('errors.doc_auth.acuant_network_error')}
         </Alert>
       )}

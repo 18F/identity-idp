@@ -3,7 +3,7 @@
 
 export class UploadFormEntriesError extends Error {
   /** @type {string[]} */
-  rawErrors = [];
+  rawErrorMessages = [];
 }
 
 /**
@@ -43,7 +43,7 @@ async function upload(payload, { endpoint, csrf }) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
     const error = new UploadFormEntriesError(errorResult.errors.join(', '));
-    error.rawErrors = errorResult.errors;
+    error.rawErrorMessages = errorResult.errors;
     throw error;
   }
 
