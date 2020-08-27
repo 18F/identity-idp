@@ -18,14 +18,6 @@ import DeviceContext from '../context/device';
  */
 
 /**
- * @typedef DocumentsStepProps
- *
- * @prop {DocumentsStepValue=} value Current value.
- * @prop {(nextValue:Partial<DocumentsStepValue>)=>void=} onChange Value change handler.
- * @prop {Partial<FormStepValidateResult<DocumentsStepValue>>=} errors Current validation errors.
- */
-
-/**
  * Sides of document to present as file input.
  *
  * @type {string[]}
@@ -33,9 +25,14 @@ import DeviceContext from '../context/device';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
- * @param {DocumentsStepProps} props Props object.
+ * @param {import('./form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
-function DocumentsStep({ value = {}, onChange = () => {}, errors = {} }) {
+function DocumentsStep({
+  value = {},
+  onChange = () => {},
+  errors = {},
+  registerField = () => undefined,
+}) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
@@ -51,6 +48,7 @@ function DocumentsStep({ value = {}, onChange = () => {}, errors = {} }) {
       {DOCUMENT_SIDES.map((side) => (
         <AcuantCapture
           key={side}
+          ref={registerField(side)}
           /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
           /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
           label={t(`doc_auth.headings.document_capture_${side}`)}

@@ -74,8 +74,11 @@ describe('document-capture/components/document-capture', () => {
     // messages.
     let continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
-    const errors = await findAllByText('simple_form.required.text');
+    let errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+    );
 
     // Providing values should remove errors progressively.
     fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
@@ -84,6 +87,9 @@ describe('document-capture/components/document-capture', () => {
       },
     });
     await waitFor(() => expect(getAllByText('simple_form.required.text')).to.have.lengthOf(1));
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+    );
 
     userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
 
@@ -93,6 +99,16 @@ describe('document-capture/components/document-capture', () => {
     expect(isFormValid(continueButton.closest('form'))).to.be.true();
     userEvent.click(continueButton);
 
+    // Trigger validation by attempting to submit.
+    const submitButton = getByText('forms.buttons.submit.default');
+    userEvent.click(continueButton);
+    errors = await findAllByText('simple_form.required.text');
+    expect(errors).to.have.lengthOf(1);
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.headings.document_capture_selfie'),
+    );
+
+    // Provide value.
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
     const didClick = fireEvent.click(selfieInput);
     expect(didClick).to.be.true();
@@ -101,7 +117,9 @@ describe('document-capture/components/document-capture', () => {
         files: [new window.File([''], 'upload.png', { type: 'image/png' })],
       },
     });
-    const submitButton = getByText('forms.buttons.submit.default');
+
+    // Continue only once all errors have been removed.
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     return new Promise((resolve) => {

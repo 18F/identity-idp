@@ -19,17 +19,14 @@ import FormErrorMessage from './form-error-message';
  */
 
 /**
- * @typedef SelfieStepProps
- *
- * @prop {SelfieStepValue=} value Current value.
- * @prop {(nextValue:Partial<SelfieStepValue>)=>void=} onChange Change handler.
- * @prop {Partial<FormStepValidateResult<SelfieStepValue>>=} errors Current validation errors.
+ * @param {import('./form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
-
-/**
- * @param {SelfieStepProps} props Props object.
- */
-function SelfieStep({ value = {}, onChange = () => {}, errors = {} }) {
+function SelfieStep({
+  value = {},
+  onChange = () => {},
+  errors = {},
+  registerField = () => undefined,
+}) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
@@ -44,6 +41,7 @@ function SelfieStep({ value = {}, onChange = () => {}, errors = {} }) {
       </ul>
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
+          ref={registerField('selfie')}
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}
@@ -55,6 +53,7 @@ function SelfieStep({ value = {}, onChange = () => {}, errors = {} }) {
         />
       ) : (
         <SelfieCapture
+          ref={registerField('selfie')}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           errorMessage={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
