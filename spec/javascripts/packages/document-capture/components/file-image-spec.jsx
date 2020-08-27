@@ -21,6 +21,22 @@ describe('document-capture/components/file-image', () => {
     expect(image.getAttribute('src')).to.match(/^data:image\/png;base64,/);
   });
 
+  it('renders a a changed file object as an image', async () => {
+    const { findByAltText, rerender } = render(
+      <FileImage file={new window.File([''], 'demo', { type: 'image/png' })} alt="first image" />,
+    );
+
+    await findByAltText('first image');
+
+    rerender(
+      <FileImage file={new window.File([''], 'demo', { type: 'image/png' })} alt="second image" />,
+    );
+
+    const image = await findByAltText('second image');
+
+    expect(image.getAttribute('src')).to.match(/^data:image\/png;base64,/);
+  });
+
   it('renders with className', async () => {
     const { findByAltText } = render(
       <FileImage

@@ -6,6 +6,7 @@ import FullScreen from './full-screen';
 import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
+import FileBase64CacheContext from '../context/file-base64-cache';
 
 /**
  * @typedef AcuantCaptureProps
@@ -82,6 +83,7 @@ function AcuantCapture({
   minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
   allowUpload = true,
 }) {
+  const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
@@ -177,7 +179,9 @@ function AcuantCapture({
               } else if (nextCapture.sharpness < minimumSharpnessScore) {
                 setOwnError(t('errors.doc_auth.photo_blurry'));
               } else {
-                onChangeIfValid(toBlob(nextCapture.image.data));
+                const dataAsBlob = toBlob(nextCapture.image.data);
+                fileCache.set(dataAsBlob, nextCapture.image.data);
+                onChangeIfValid(dataAsBlob);
               }
 
               setIsCapturing(false);
